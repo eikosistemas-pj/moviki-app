@@ -100,6 +100,11 @@
   .mpBtn:hover{background:#0052cc}
   .mpTag{display:inline-block;background:#00D4FF;color:#0D1B2A;font-size:11px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px}
   .mpAviso{color:#ff9b9b;font-size:14px;margin-top:12px;min-height:18px}
+  .mpBtn.sel{background:#00D4FF;color:#0D1B2A;font-weight:700;box-shadow:0 0 0 2px #00D4FF}
+  .mpSelInfo{color:#dbe9ff;font-size:14px;margin-top:14px;padding:10px;background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.35);border-radius:8px}
+  .mpBtnConf{display:block;width:100%;margin-top:12px;padding:13px;border-radius:10px;border:none;background:#00D4FF;color:#0D1B2A;font-size:15px;font-weight:700;cursor:pointer}
+  .mpBtnConf:hover{filter:brightness(1.06)}
+  .mpBtnConf:disabled{background:#20364d;color:#6b7f96;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -156,22 +161,24 @@
           <div id="mpStatus" class="mpStatus"></div>
           <div class="mpCampo"><label for="cpfAssinatura">Seu CPF ou CNPJ</label>
             <input id="cpfAssinatura" type="text" placeholder="Só números" inputmode="numeric"></div>
-          <div class="mpPlanos">
+                    <div class="mpPlanos">
             <div class="mpPlano">
               <div class="mpNome">Pró</div>
               <div class="mpDesc">+ Cardápio, Promoções e Eventos</div>
-              <button class="mpBtn" onclick="assinar('pro','mensal')">Mensal · R$ 37,90</button>
-              <button class="mpBtn" onclick="assinar('pro','trimestral')">Trimestral · R$ 99,90</button>
-              <button class="mpBtn" onclick="assinar('pro','anual')">Anual · R$ 379,00 <span class="mpTag">2 meses grátis</span></button>
+              <button class="mpBtn" onclick="selecionarPlano('pro','mensal',this)">Mensal · R$ 37,90</button>
+              <button class="mpBtn" onclick="selecionarPlano('pro','trimestral',this)">Trimestral · R$ 99,90</button>
+              <button class="mpBtn" onclick="selecionarPlano('pro','anual',this)">Anual · R$ 379,00 <span class="mpTag">2 meses grátis</span></button>
             </div>
             <div class="mpPlano">
               <div class="mpNome">Premium</div>
               <div class="mpDesc">Tudo do Pró + extras</div>
-              <button class="mpBtn" onclick="assinar('premium','mensal')">Mensal · R$ 49,90</button>
-              <button class="mpBtn" onclick="assinar('premium','trimestral')">Trimestral · R$ 134,90</button>
-              <button class="mpBtn" onclick="assinar('premium','anual')">Anual · R$ 499,00 <span class="mpTag">2 meses grátis</span></button>
+              <button class="mpBtn" onclick="selecionarPlano('premium','mensal',this)">Mensal · R$ 49,90</button>
+              <button class="mpBtn" onclick="selecionarPlano('premium','trimestral',this)">Trimestral · R$ 134,90</button>
+              <button class="mpBtn" onclick="selecionarPlano('premium','anual',this)">Anual · R$ 499,00 <span class="mpTag">2 meses grátis</span></button>
             </div>
           </div>
+          <div id="mpSelInfo" class="mpSelInfo escondido"></div>
+          <button id="mpConfirmar" class="mpBtnConf" onclick="confirmarPlano()" disabled>Confirmar meu plano · ir para o pagamento</button>
           <div id="mpAviso" class="mpAviso"></div>
         </div>
       </div>
@@ -276,19 +283,34 @@
       s.innerHTML='✅ Seu plano atual: <b>'+(planoPainel==='premium'?'Premium':'Pró')+'</b>'+ate+'.';
     }else{s.innerHTML='Seu plano atual: <b>Básico</b> (grátis). Escolha Pró ou Premium pra liberar mais recursos.';}
   }
-  window.assinar=async function(plano,periodo){
+  let planoSel=null,periodoSel=null;
+  const _precoLabel={pro:{mensal:'Mensal · R$ 37,90',trimestral:'Trimestral · R$ 99,90',anual:'Anual · R$ 379,00'},premium:{mensal:'Mensal · R$ 49,90',trimestral:'Trimestral · R$ 134,90',anual:'Anual · R$ 499,00'}};
+  window.selecionarPlano=function(plano,periodo,btn){
+    planoSel=plano;periodoSel=periodo;
+    document.querySelectorAll('.mpBtn').forEach(b=>b.classList.remove('sel'));
+    if(btn)btn.classList.add('sel');
+    const nome=plano==='premium'?'Premium':'Pró';
+    const info=el('mpSelInfo');info.classList.remove('escondido');
+    info.innerHTML='Selecionado: <b>'+nome+'</b> · '+_precoLabel[plano][periodo];
+    el('mpConfirmar').disabled=false;
+    el('mpAviso').textContent='';
+  };
+  window.confirmarPlano=async function(){
     const av=el('mpAviso');av.style.color='#9fb3c8';av.textContent='';
+    if(!planoSel){av.style.color='#ff9b9b';av.textContent='Escolha um plano primeiro.';return;}
     const cpf=(el('cpfAssinatura').value||'').replace(/\D/g,'');
     if(cpf.length!==11&&cpf.length!==14){av.style.color='#ff9b9b';av.textContent='Informe um CPF (11 dígitos) ou CNPJ (14).';return;}
     if(!usuarioAtual){av.style.color='#ff9b9b';av.textContent='Faça login primeiro.';return;}
+    const c=el('mpConfirmar');const txt=c.textContent;c.disabled=true;c.textContent='Gerando seu pagamento...';
     av.textContent='Gerando seu pagamento...';
     try{
       const token=await usuarioAtual.getIdToken();
-      const r=await fetch(ROBO+'/api/criar-assinatura',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({plano,periodo,cpfCnpj:cpf,nome:(el('nome').value||'').trim(),email:usuarioAtual.email})});
+      const r=await fetch(ROBO+'/api/criar-assinatura',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({plano:planoSel,periodo:periodoSel,cpfCnpj:cpf,nome:(el('nome').value||'').trim(),email:usuarioAtual.email})});
       const data=await r.json();
       if(r.ok&&data.invoiceUrl){window.location.href=data.invoiceUrl;return;}
       av.style.color='#ff9b9b';av.textContent=data.erro||'Não consegui gerar o pagamento. Tente de novo.';
-    }catch(e){av.style.color='#ff9b9b';av.textContent='Erro de conexão. Tente de novo.';}
+      c.disabled=false;c.textContent=txt;
+    }catch(e){av.style.color='#ff9b9b';av.textContent='Erro de conexão. Tente de novo.';c.disabled=false;c.textContent=txt;}
   };
 
   /* ---- TABS ---- */
