@@ -33,12 +33,15 @@
   input,textarea{width:100%;padding:13px 14px;border-radius:11px;border:1px solid var(--card-borda);background:var(--campo);color:var(--claro);font-size:15px;outline:none;transition:.15s;resize:none;}
   input:focus,textarea:focus{border-color:var(--ciano);box-shadow:0 0 0 3px rgba(0,212,255,.15);}
   .verSenha{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#8fa6c4;cursor:pointer;font-size:12px;font-weight:600;}
+  .linhaEsqueci{text-align:right;margin-top:8px;}
+  .linkEsqueci{background:none;border:none;color:var(--ciano);cursor:pointer;font-size:13px;font-weight:600;padding:0;text-decoration:underline;}
   .btn{width:100%;padding:14px;border:none;border-radius:11px;cursor:pointer;background:linear-gradient(135deg,var(--ciano),var(--azul));color:#04121f;font-size:15px;font-weight:700;letter-spacing:.3px;transition:.15s;}
   .btn:hover{filter:brightness(1.07);}
   .btn:disabled{opacity:.6;cursor:default;}
   .btn.secundario{background:transparent;border:1px solid var(--card-borda);color:#c7d6ea;}
   .btn.secundario:hover{border-color:var(--ciano);color:var(--ciano);filter:none;}
   .aviso{margin-top:14px;padding:12px;border-radius:10px;font-size:13.5px;display:none;text-align:center;}
+  .aviso.ok{display:block;background:rgba(46,204,113,.12);color:#8ff0b5;border:1px solid rgba(46,204,113,.35);}
   .aviso.erro{display:block;background:rgba(255,80,80,.12);color:#ff9a9a;border:1px solid rgba(255,80,80,.3);}
   .aviso.ok{display:block;background:rgba(0,212,255,.12);color:var(--ciano);border:1px solid rgba(0,212,255,.3);}
   .dica{font-size:12px;color:#7f95b3;text-align:center;margin-top:14px;line-height:1.5;}
@@ -136,6 +139,7 @@
       </div>
       <div class="campo"><label for="email">E-mail</label><input id="email" type="email" placeholder="voce@email.com" autocomplete="email"></div>
       <div class="campo"><label for="senha">Senha</label><input id="senha" type="password" placeholder="mínimo 6 caracteres" autocomplete="current-password"><button type="button" class="verSenha" onclick="verSenha()">mostrar</button></div>
+      <div id="linhaEsqueci" class="linhaEsqueci"><button type="button" id="btnEsqueci" class="linkEsqueci" onclick="esqueciSenha()">Esqueci minha senha</button></div>
       <button id="btnAcao" class="btn" onclick="acao()">Entrar</button>
       <div id="aviso" class="aviso"></div>
       <div class="dica" id="dica"></div>
@@ -234,7 +238,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -260,11 +264,23 @@
   const aviso=el('aviso');
   function limparAviso(){aviso.className='aviso';aviso.textContent='';}
   function erroAcesso(t){aviso.className='aviso erro';aviso.textContent=t;}
-  window.trocarAba=function(n){modo=n;el('abaEntrar').classList.toggle('ativa',n==='entrar');el('abaCriar').classList.toggle('ativa',n==='criar');el('btnAcao').textContent=n==='entrar'?'Entrar':'Criar conta';el('dica').textContent=n==='criar'?'Vai criar uma conta de teste. Use um e-mail seu e uma senha simples.':'';limparAviso();};
+  function avisoOk(t){aviso.className='aviso ok';aviso.textContent=t;}
+  window.trocarAba=function(n){modo=n;el('abaEntrar').classList.toggle('ativa',n==='entrar');el('abaCriar').classList.toggle('ativa',n==='criar');el('btnAcao').textContent=n==='entrar'?'Entrar':'Criar conta';el('dica').textContent=n==='criar'?'Vai criar uma conta de teste. Use um e-mail seu e uma senha simples.':'';var le=el('linhaEsqueci');if(le)le.style.display=n==='entrar'?'block':'none';limparAviso();};
   window.verSenha=function(){const s=el('senha'),b=document.querySelector('.verSenha');if(s.type==='password'){s.type='text';b.textContent='ocultar';}else{s.type='password';b.textContent='mostrar';}};
   function msgErro(c){const m={'auth/invalid-email':'E-mail inválido.','auth/missing-password':'Digite uma senha.','auth/weak-password':'A senha precisa ter pelo menos 6 caracteres.','auth/email-already-in-use':'Esse e-mail já tem conta. Tente "Entrar".','auth/invalid-credential':'E-mail ou senha incorretos.','auth/user-not-found':'Não encontrei conta com esse e-mail.','auth/wrong-password':'Senha incorreta.','auth/too-many-requests':'Muitas tentativas. Espere um pouco.','auth/network-request-failed':'Sem conexão. Confira a internet.'};return m[c]||('Erro: '+c);}
   window.acao=async function(){const email=el('email').value.trim(),senha=el('senha').value,btn=el('btnAcao');limparAviso();if(!email){erroAcesso('Digite seu e-mail.');return;}if(!senha){erroAcesso('Digite uma senha.');return;}btn.disabled=true;const t=btn.textContent;btn.textContent='Aguarde...';try{if(modo==='criar'){await createUserWithEmailAndPassword(auth,email,senha);try{const tk=await auth.currentUser.getIdToken();await fetch(ROBO+'/api/ativar-trial',{method:'POST',headers:{'Authorization':'Bearer '+tk}});}catch(_){}}else await signInWithEmailAndPassword(auth,email,senha);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.textContent=t;}};
   window.sair=async function(){await signOut(auth);};
+  window.esqueciSenha=async function(){
+    const email=el('email').value.trim();limparAviso();
+    if(!email){erroAcesso('Digite seu e-mail no campo acima e clique aqui de novo — eu envio o link de recuperação pra ele.');return;}
+    const btn=el('btnEsqueci');if(btn)btn.disabled=true;
+    avisoOk('Enviando o link de recuperação...');
+    try{
+      await sendPasswordResetEmail(auth,email);
+      avisoOk('Pronto! Enviei um link para '+email+'. Olhe a caixa de entrada (e o spam) — o link abre uma página segura pra criar uma senha nova.');
+    }catch(e){erroAcesso(msgErro(e.code));}
+    if(btn)btn.disabled=false;
+  };
 
   let planoPainel='basico';
   async function carregarPlanoPainel(uid){
