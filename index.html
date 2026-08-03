@@ -13,12 +13,8 @@
   :root{--ciano:#00D4FF;--azul:#0066FF;--escuro:#0D1B2A;--claro:#F2F5F9;--card:#13263d;--card-borda:#223a5c;--campo:#0d1c30;}
   *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
   body{min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%, #163155 0%, var(--escuro) 55%);color:var(--claro);display:flex;align-items:center;justify-content:center;padding:20px;}
-  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
-    radial-gradient(520px 520px at -8% -6%, rgba(0,102,255,.22), transparent 62%),
-    radial-gradient(460px 460px at 108% 6%, rgba(0,212,255,.15), transparent 60%),
-    radial-gradient(760px 520px at 50% 120%, rgba(0,102,255,.18), transparent 60%),
-    repeating-linear-gradient(0deg, transparent 0 43px, rgba(120,180,255,.05) 43px 44px),
-    repeating-linear-gradient(90deg, transparent 0 43px, rgba(120,180,255,.05) 43px 44px);}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(rgba(6,14,26,.22), rgba(6,14,26,.38)), url('fundo_para_o_site.png') center center / cover no-repeat;}
   .box{width:100%;max-width:440px;transition:max-width .2s;}
   .box.largo{max-width:660px;}
   .marca{display:flex;align-items:center;justify-content:center;margin-bottom:22px;}
@@ -124,7 +120,7 @@
 <div class="box" id="box">
 
   <div class="marca">
-    <img src="logo_fundo_escuro.png" class="logoMarca" alt="moviki — o mapa inteligente dos negócios em movimento" onerror="this.style.display='none';var f=document.getElementById('logoFb');if(f)f.style.display='block'">
+    <img src="logo_sem_fundo.png" class="logoMarca" alt="moviki — o mapa inteligente dos negócios em movimento" onerror="this.style.display='none';var f=document.getElementById('logoFb');if(f)f.style.display='block'">
     <div id="logoFb" class="nome" style="display:none">movi<b>ki</b></div>
   </div>
 
