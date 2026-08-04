@@ -15,9 +15,13 @@
 <meta name="theme-color" content="#0D1B2A">
 <style>
   :root{--ciano:#00D4FF;--azul:#0066FF;--escuro:#0D1B2A;--claro:#F2F5F9;--card:#13263d;--card-borda:#223a5c;--campo:#0d1c30;}
-  .bannerVerif{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:rgba(255,193,64,.12);border:1px solid rgba(255,193,64,.4);color:#ffe0a3;border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:13.5px;}
+  .bannerVerif{background:rgba(255,193,64,.12);border:1px solid rgba(255,193,64,.4);color:#ffe0a3;border-radius:10px;padding:13px 15px;margin-bottom:14px;font-size:14px;}
   .bannerVerif.ok{background:rgba(46,204,113,.12);border-color:rgba(46,204,113,.4);color:#8ff0b5;}
-  .bannerVerif button{background:none;border:1px solid currentColor;color:inherit;border-radius:8px;padding:5px 12px;font-family:inherit;font-weight:600;font-size:12.5px;cursor:pointer;white-space:nowrap;}
+  .bvTexto{margin-bottom:11px;line-height:1.5;}
+  .bvAcoes{display:flex;gap:10px;flex-wrap:wrap;}
+  .bannerVerif button{border:none;border-radius:8px;padding:10px 16px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;}
+  #bvJa{background:var(--ciano);color:#04121f;}
+  .bvSec{background:none;border:1px solid currentColor!important;color:inherit;font-weight:600!important;}
   *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
   body{min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%, #163155 0%, var(--escuro) 55%);color:var(--claro);display:flex;align-items:center;justify-content:center;padding:20px;}
   body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
@@ -161,8 +165,11 @@
       </div>
 
       <div id="bannerVerif" class="bannerVerif escondido">
-        <span>📧 Confirme seu e-mail pra proteger sua conta. Enviamos um link para <b id="bvEmail"></b>.</span>
-        <button type="button" id="bvBtn" onclick="reenviarVerif()">Reenviar</button>
+        <div class="bvTexto" id="bvTexto"></div>
+        <div class="bvAcoes" id="bvAcoes">
+          <button type="button" id="bvJa" onclick="jaConfirmei()">Já confirmei</button>
+          <button type="button" id="bvBtn" class="bvSec" onclick="reenviarVerif()">Não recebi — enviar de novo</button>
+        </div>
       </div>
 
       <div class="tabs">
@@ -274,6 +281,7 @@
     });
   } catch (e) { console.error('App Check:', e); }
   const auth = getAuth(app);
+  auth.languageCode = 'pt-BR';  // e-mails e páginas do Firebase em português do Brasil
   const db = getFirestore(app);
   const el = id => document.getElementById(id);
   let modo='entrar', usuarioAtual=null, statusAtual='fechado', coords=null, slugSalvo='';
@@ -295,10 +303,24 @@
     const b=el('bvBtn');if(b)b.disabled=true;
     try{
       await sendEmailVerification(auth.currentUser);
-      const bv=el('bannerVerif');bv.classList.add('ok');
-      bv.querySelector('span').innerHTML='✅ Reenviei o link para <b>'+auth.currentUser.email+'</b>. Confira a caixa de entrada e o spam.';
-    }catch(e){}
-    if(b)setTimeout(function(){b.disabled=false;},4000);
+      el('bvTexto').innerHTML='📨 Reenviei o link para <b>'+auth.currentUser.email+'</b>. Abra seu e-mail e clique nele para confirmar. (Veja o spam também.)';
+    }catch(e){ el('bvTexto').textContent='Não consegui reenviar agora. Tente de novo em instantes.'; }
+    if(b)setTimeout(function(){b.disabled=false;},5000);
+  };
+  window.jaConfirmei=async function(){
+    const j=el('bvJa');if(j)j.disabled=true;
+    try{
+      await auth.currentUser.reload();
+      if(auth.currentUser.emailVerified){
+        const bv=el('bannerVerif');bv.classList.add('ok');
+        el('bvTexto').innerHTML='✅ <b>E-mail confirmado!</b> Tudo certo, obrigado.';
+        el('bvAcoes').style.display='none';
+        setTimeout(function(){bv.classList.add('escondido');},2500);
+      }else{
+        el('bvTexto').innerHTML='⚠️ Ainda não confirmado. Abra o e-mail que enviamos e clique no link primeiro. Depois toque em "Já confirmei" de novo.';
+        if(j)j.disabled=false;
+      }
+    }catch(e){ if(j)j.disabled=false; }
   };
   window.esqueciSenha=async function(){
     const email=el('email').value.trim();limparAviso();
@@ -484,7 +506,11 @@
       el('oExEmail').textContent=user.email;
       var _bv=el('bannerVerif');
       if(user.emailVerified){_bv.classList.add('escondido');}
-      else{el('bvEmail').textContent=user.email;_bv.classList.remove('ok');_bv.classList.remove('escondido');}
+      else{
+        el('bvTexto').innerHTML='⚠️ <b>Falta confirmar seu e-mail.</b> Enviamos um link para <b>'+user.email+'</b>. Abra seu e-mail e clique no link para ativar sua conta. Não achou? Veja a caixa de spam.';
+        el('bvAcoes').style.display='flex';
+        _bv.classList.remove('ok');_bv.classList.remove('escondido');
+      }
       coords=null;slugSalvo='';el('linkPronto').classList.add('escondido');
       el('listaCategorias').innerHTML='';el('listaPromos').innerHTML='';el('listaEventos').innerHTML='';
       el('gpsInfo').innerHTML='📍 Localização ainda não definida.';
