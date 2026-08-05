@@ -148,6 +148,66 @@
   .mpBtnConf{display:block;width:100%;margin-top:12px;padding:13px;border-radius:10px;border:none;background:#00D4FF;color:#0D1B2A;font-size:15px;font-weight:700;cursor:pointer}
   .mpBtnConf:hover{filter:brightness(1.06)}
   .mpBtnConf:disabled{background:#20364d;color:#6b7f96;cursor:not-allowed}
+
+  /* ===== Painel em grade (estilo app) ===== */
+  #painel .appTopo{display:flex;align-items:center;gap:11px;margin:-6px -4px 18px;padding:12px 14px;border-radius:14px;
+    background:linear-gradient(120deg,rgba(0,102,255,.22),rgba(0,212,255,.14));border:1px solid var(--card-borda);}
+  #painel .appLogo{width:38px;height:38px;border-radius:10px;flex:0 0 auto;background:#fff2;padding:3px;}
+  #painel .appTitWrap{flex:1;min-width:0;}
+  #painel .appTit{font-weight:700;font-size:16px;line-height:1.1;}
+  #painel .appSub{font-size:11px;color:#8fa6c4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #painel .appSub b{color:#b9cbe4;font-weight:500;}
+  #painel .appOnline{font-size:11px;font-weight:700;color:#43e08a;flex:0 0 auto;}
+  #painel .appSair{flex:0 0 auto;background:rgba(255,255,255,.07);border:1px solid var(--card-borda);color:#cfe0f5;
+    font-family:inherit;font-weight:600;font-size:12.5px;padding:7px 12px;border-radius:9px;cursor:pointer;}
+  #painel .appSair:hover{background:rgba(255,255,255,.13);}
+
+  .olaLinha{font-size:17px;font-weight:700;margin:2px 2px 14px;}
+  .olaLinha .olaLeve{font-weight:500;font-size:13.5px;color:#8fa6c4;display:block;margin-top:2px;}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px;}
+  .gcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
+    background:var(--card);border:1px solid var(--card-borda);border-radius:16px;padding:16px 6px 14px;
+    cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s;position:relative;min-height:104px;}
+  .gcard:hover{transform:translateY(-2px);border-color:var(--ciano);box-shadow:0 10px 26px rgba(0,0,0,.35);}
+  .gcard:active{transform:translateY(0);}
+  .gcIcon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;}
+  .gcLabel{font-size:13px;font-weight:600;color:#e6eefb;text-align:center;line-height:1.15;}
+  .i-perfil{background:rgba(0,102,255,.16);}
+  .i-card{background:rgba(0,212,255,.16);}
+  .i-promo{background:rgba(46,204,113,.16);}
+  .i-eve{background:rgba(155,110,255,.18);}
+  .i-loc{background:rgba(255,99,132,.16);}
+  .i-plano{background:rgba(255,193,64,.18);}
+  .i-pag{background:rgba(0,212,255,.16);}
+  .gcard.travado .gcLabel{color:#7f95b3;}
+  .gcard.travado .gcIcon{filter:grayscale(.7);opacity:.75;}
+  .gcard.travado::after{content:"🔒";position:absolute;top:8px;right:9px;font-size:13px;opacity:.9;}
+
+  #editor .voltar{background:rgba(255,255,255,.06);border:1px solid var(--card-borda);color:var(--ciano);
+    font-family:inherit;font-weight:600;font-size:14px;padding:9px 14px;border-radius:10px;cursor:pointer;margin-bottom:4px;}
+  #editor .voltar:hover{background:rgba(0,212,255,.1);}
+  .editorTit{font-size:20px;font-weight:700;margin:12px 2px 16px;}
+  @media(max-width:380px){.grid{gap:9px}.gcIcon{width:46px;height:46px;font-size:23px}.gcLabel{font-size:12px}}
+
+  .statusHome{background:var(--card);border:1px solid var(--card-borda);border-radius:14px;padding:13px 15px;margin:0 2px 16px;}
+  .statusHome .shLabel{display:block;font-size:13px;color:#b9cbe4;margin-bottom:9px;font-weight:600;}
+  .statusHome .shDica{display:block;font-size:11.5px;color:#8fa6c4;margin-top:9px;}
+  .statusHome .shDica b{color:var(--ciano);}
+  .i-wpp{background:rgba(37,211,102,.18);}
+  .i-aval{background:rgba(255,193,64,.18);}
+  .dicaBox{background:rgba(0,212,255,.08);border:1px solid var(--card-borda);border-radius:11px;padding:12px 14px;font-size:13px;color:#b9cbe4;line-height:1.5;margin-top:4px;}
+  .dicaBox b{color:#e6eefb;}
+  .avalResumo{background:var(--card);border:1px solid var(--card-borda);border-radius:14px;padding:18px;text-align:center;font-size:14px;color:#b9cbe4;line-height:1.5;}
+  .avalNota{display:flex;align-items:center;justify-content:center;gap:10px;}
+  .avalNota b{font-size:34px;color:#fff;}
+  .avalEst{color:#ffc340;letter-spacing:2px;font-size:18px;}
+  .avalQtd{font-size:12.5px;color:#8fa6c4;margin-top:4px;}
+  .avalLista{margin-top:14px;display:flex;flex-direction:column;gap:10px;}
+  .avalItem{background:var(--campo);border:1px solid var(--card-borda);border-radius:11px;padding:11px 13px;}
+  .avalTopo{font-size:13.5px;color:#e6eefb;}
+  .avalTopo .avalEst{font-size:14px;}
+  .avalTxt{font-size:13px;color:#b9cbe4;margin-top:5px;line-height:1.45;}
 </style>
 </head>
 <body>
@@ -177,10 +237,13 @@
 
     <!-- PAINEL -->
     <div id="painel" class="painel">
-      <div class="cabPainel">
-        <div class="ola">Conectado como:<b id="oExEmail"></b></div>
-        <button class="sairMini" onclick="abrirPlano()">⭐ Meu plano</button>
-        <button class="sairMini" onclick="sair()">Sair</button>
+      <div class="appTopo">
+        <img src="favicon512.png" class="appLogo" alt="Moviki" onerror="this.style.visibility='hidden'">
+        <div class="appTitWrap">
+          <div class="appTit">Painel do Negócio</div>
+          <div class="appSub"><b id="oExEmail"></b></div>
+        </div>
+        <button type="button" class="appSair" onclick="sair()">Sair</button>
       </div>
 
       <div id="bannerVerif" class="bannerVerif escondido">
@@ -191,7 +254,17 @@
         </div>
       </div>
 
-      <div id="onboarding" class="onb escondido">
+      <div id="grade">
+        <div class="olaLinha">Olá! 👋 <span class="olaLeve">O que você quer fazer?</span></div>
+        <div class="statusHome">
+          <span class="shLabel">Seu negócio está agora:</span>
+          <div class="statusLinha">
+            <button id="btnAberto" class="statusBtn" onclick="setStatus('aberto')">🟢 Aberto</button>
+            <button id="btnFechado" class="statusBtn" onclick="setStatus('fechado')">🔴 Fechado</button>
+          </div>
+          <span class="shDica">Lembre de tocar em <b>Salvar tudo</b> pra valer no seu link.</span>
+        </div>
+        <div id="onboarding" class="onb escondido">
         <div class="onbTop">
           <div class="onbTit">👋 Bem-vindo ao Moviki!</div>
           <button type="button" class="onbOcultar" onclick="ocultarOnboarding()">ocultar</button>
@@ -209,16 +282,29 @@
         </button>
         <div class="onbFinal" id="onbFinal"></div>
       </div>
+        <div class="grid">
+          <button type="button" class="gcard" onclick="irSecao('perfil')"><span class="gcIcon i-perfil">👤</span><span class="gcLabel">Perfil</span></button>
+          <button type="button" class="gcard" id="gc-cardapio" onclick="irSecao('cardapio')"><span class="gcIcon i-card">🍽️</span><span class="gcLabel">Cardápio</span></button>
+          <button type="button" class="gcard" id="gc-promocoes" onclick="irSecao('promocoes')"><span class="gcIcon i-promo">🏷️</span><span class="gcLabel">Promoções</span></button>
+          <button type="button" class="gcard" id="gc-eventos" onclick="irSecao('eventos')"><span class="gcIcon i-eve">📅</span><span class="gcLabel">Eventos</span></button>
+          <button type="button" class="gcard" onclick="irSecao('local')"><span class="gcIcon i-loc">📍</span><span class="gcLabel">Localização</span></button>
+          <button type="button" class="gcard" onclick="irSecao('whatsapp')"><span class="gcIcon i-wpp">💬</span><span class="gcLabel">WhatsApp</span></button>
+          <button type="button" class="gcard" onclick="irSecao('avaliacoes')"><span class="gcIcon i-aval">⭐</span><span class="gcLabel">Avaliações</span></button>
+          <button type="button" class="gcard" onclick="abrirPlano()"><span class="gcIcon i-plano">💳</span><span class="gcLabel">Meu Plano</span></button>
+          <button type="button" class="gcard" onclick="verMinhaPagina()"><span class="gcIcon i-pag">🌐</span><span class="gcLabel">Minha Página</span></button>
+        </div>
+      </div>
 
-      <div class="tabs">
+      <div class="tabs" style="display:none">
         <button class="tab ativa" data-tab="perfil" onclick="abrirTab('perfil')">Perfil</button>
         <button class="tab" data-tab="cardapio" onclick="abrirTab('cardapio')">Cardápio</button>
         <button class="tab" data-tab="promocoes" onclick="abrirTab('promocoes')">Promoções</button>
         <button class="tab" data-tab="eventos" onclick="abrirTab('eventos')">Eventos</button>
         <button class="tab" data-tab="local" onclick="abrirTab('local')">Localização</button>
+        <button class="tab" data-tab="whatsapp" onclick="abrirTab('whatsapp')">WhatsApp</button>
+        <button class="tab" data-tab="avaliacoes" onclick="abrirTab('avaliacoes')">Avaliações</button>
       </div>
 
-      <!-- Perfil -->
       <div id="avisoPlano" class="avisoPlano escondido" onclick="abrirPlano()" style="cursor:pointer">🔒 <b>Cardápio</b>, <b>Promoções</b> e <b>Eventos</b> são do plano <b>Pró</b>. <u>Clique aqui pra assinar</u>.</div>
       <div id="modalPlano" class="modalPlano escondido">
         <div class="mpCaixa">
@@ -249,12 +335,14 @@
           <div id="mpAviso" class="mpAviso"></div>
         </div>
       </div>
-      <div class="tabConteudo" id="tab-perfil">
+
+      <div id="editor" class="escondido">
+        <button type="button" class="voltar" onclick="voltarHome()">‹ Voltar ao início</button>
+        <h2 class="editorTit" id="editorTit">Perfil</h2>
+        <div class="tabConteudo" id="tab-perfil">
         <div class="campo"><label for="nome">Nome do negócio</label><input id="nome" type="text" placeholder="Ex.: Caldeirão Nordestino" oninput="atualizarOnboarding(false)"></div>
         <div class="campo"><label for="apelido">Seu link no Moviki</label><div class="linkCampo"><span class="pref">moviki.com.br/</span><input id="apelido" type="text" placeholder="caldeirao" autocomplete="off" oninput="atualizarOnboarding(false)"></div></div>
         <div id="linkPronto" class="linkPronto escondido"><div class="rot">✅ Link pra divulgar (bio do Instagram, WhatsApp...):</div><div class="linkRow"><a id="linkPublico" href="#" target="_blank" rel="noopener"></a><button onclick="copiarLink()" id="btnCopiar">Copiar</button></div></div>
-        <label>Status agora</label>
-        <div class="statusLinha"><button id="btnAberto" class="statusBtn" onclick="setStatus('aberto')">🟢 Aberto</button><button id="btnFechado" class="statusBtn" onclick="setStatus('fechado')">🔴 Fechado</button></div>
         <div class="campo"><label for="recado">Recado do dia (opcional)</label><textarea id="recado" rows="2" placeholder="Ex.: Hoje tem caldo de feijão!"></textarea></div>
       </div>
 
@@ -285,9 +373,25 @@
         <button class="btn secundario" onclick="pegarLocalizacao()">📍 Atualizar minha localização</button>
       </div>
 
-      <div style="height:8px;"></div>
+      <!-- WhatsApp -->
+      <div class="tabConteudo escondido" id="tab-whatsapp">
+        <div class="campo"><label for="whatsapp">Seu WhatsApp (com DDD)</label>
+          <input id="whatsapp" type="tel" inputmode="numeric" placeholder="Ex.: 81 99999-9999">
+        </div>
+        <div class="dicaBox">💬 Esse número vira o botão <b>“Chamar no WhatsApp”</b> na sua página pública. Digite só números com o DDD. Deixe em branco pra não mostrar o botão.</div>
+      </div>
+
+      <!-- Avaliações -->
+      <div class="tabConteudo escondido" id="tab-avaliacoes">
+        <div id="avalResumo" class="avalResumo">Carregando...</div>
+        <div id="avalLista" class="avalLista"></div>
+      </div>
+      </div>
+
+      <div style="height:10px;"></div>
       <button id="btnSalvar" class="btn" onclick="salvar()">Salvar tudo</button>
       <div id="avisoP" class="aviso"></div>
+    </div>
     </div>
 
   </div>
@@ -298,7 +402,7 @@
   import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, sendEmailVerification }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, serverTimestamp }
+  import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, getDocs }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -451,6 +555,22 @@
   function okP(t){avisoP.className='aviso ok';avisoP.textContent=t;}
   function erroP(t){avisoP.className='aviso erro';avisoP.textContent=t;}
   window.setStatus=function(s){statusAtual=s;el('btnAberto').className='statusBtn'+(s==='aberto'?' aberto':'');el('btnFechado').className='statusBtn'+(s==='fechado'?' fechado':'');};
+  window.carregarAvaliacoesPainel=async function(){
+    const resumo=el('avalResumo'),lista=el('avalLista');
+    if(!usuarioAtual||!resumo)return;
+    resumo.innerHTML='Carregando...';if(lista)lista.innerHTML='';
+    try{
+      const qs=await getDocs(collection(db,'negocios',usuarioAtual.uid,'avaliacoes'));
+      let n=0,soma=0;const itens=[];
+      qs.forEach(dd=>{const a=dd.data();const r=Number(a.nota||0);if(r>=1&&r<=5){n++;soma+=r;itens.push(a);}});
+      if(n===0){resumo.innerHTML='⭐ Você ainda não recebeu avaliações.<br><span class="avalQtd">Divulgue seu link e peça pros clientes avaliarem.</span>';return;}
+      const media=soma/n,cheias=Math.round(media);
+      const est='★★★★★'.slice(0,cheias)+'☆☆☆☆☆'.slice(0,5-cheias);
+      resumo.innerHTML='<div class="avalNota"><b>'+media.toFixed(1).replace('.',',')+'</b><span class="avalEst">'+est+'</span></div><div class="avalQtd">'+n+' avaliação'+(n>1?'ões':'')+'</div>';
+      itens.sort((a,b)=>((b.criadoEm&&b.criadoEm.seconds||0)-(a.criadoEm&&a.criadoEm.seconds||0)));
+      lista.innerHTML=itens.slice(0,50).map(a=>{const r=Number(a.nota||0);const e='★★★★★'.slice(0,r)+'☆☆☆☆☆'.slice(0,5-r);const nm=(a.nome||'Cliente').toString().slice(0,40).replace(/[<>]/g,'');const tx=(a.comentario||'').toString().slice(0,300).replace(/[<>]/g,'');return '<div class="avalItem"><div class="avalTopo"><span class="avalEst">'+e+'</span> <b>'+nm+'</b></div>'+(tx?'<div class="avalTxt">'+tx+'</div>':'')+'</div>';}).join('');
+    }catch(e){resumo.innerHTML='⭐ As avaliações ainda não estão ativadas no servidor. Me avise que eu ativo (regras do Firebase).';}
+  };
   window.pegarLocalizacao=function(){limparAvisoP();if(!navigator.geolocation){erroP('Seu aparelho não tem GPS no navegador.');return;}el('gpsInfo').innerHTML='📍 Pegando localização...';navigator.geolocation.getCurrentPosition((pos)=>{coords={lat:pos.coords.latitude,lng:pos.coords.longitude};el('gpsInfo').innerHTML='📍 <b>Localização capturada!</b><br>'+coords.lat.toFixed(5)+', '+coords.lng.toFixed(5)+' <span style="color:#7f95b3">(lembre de Salvar)</span>';atualizarOnboarding(false);},(err)=>{if(err.code===1)erroP('Você bloqueou a localização. Libere nas permissões do navegador.');else erroP('Não consegui pegar a localização.');el('gpsInfo').innerHTML='📍 Localização ainda não definida.';},{enableHighAccuracy:true,timeout:10000});};
 
   /* ---- CARDÁPIO (categorias -> produtos) ---- */
@@ -522,7 +642,7 @@
     btn.disabled=true;const t=btn.textContent;btn.textContent='Salvando...';
     try{
       if(slug){const ref=doc(db,'slugs',slug);const snap=await getDoc(ref);if(snap.exists()&&snap.data().uid!==usuarioAtual.uid){abrirTab('perfil');erroP('O apelido "'+slug+'" já está em uso. Escolha outro.');btn.disabled=false;btn.textContent=t;return;}if(!snap.exists()){await setDoc(ref,{uid:usuarioAtual.uid});}el('apelido').value=slug;}
-      const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),atualizadoEm:serverTimestamp()};
+      const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),whatsapp:(el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):''),atualizadoEm:serverTimestamp()};
       if(coords){dados.lat=coords.lat;dados.lng=coords.lng;}
       if(slug){dados.slug=slug;}
       await setDoc(doc(db,'negocios',usuarioAtual.uid),dados,{merge:true});
@@ -564,7 +684,7 @@
       const snap=await getDoc(doc(db,'negocios',uid));
       if(snap.exists()){
         const d=snap.data();
-        el('nome').value=d.nome||'';el('recado').value=d.recado||'';el('apelido').value=d.slug||'';
+        el('nome').value=d.nome||'';el('recado').value=d.recado||'';el('apelido').value=d.slug||'';if(el('whatsapp'))el('whatsapp').value=d.whatsapp||'';
         setStatus(d.status||'fechado');
         if(d.slug) mostrarLink(d.slug);
         el('listaCategorias').innerHTML='';(d.cardapio||[]).forEach(c=>adicionarCategoria(c.categoria||'',c.produtos||[]));vazioCat();
@@ -601,6 +721,72 @@
       el('email').value='';el('senha').value='';el('btnAcao').disabled=false;trocarAba('entrar');
     }
   });
+</script>
+<script>
+(function(){
+  var TIT={perfil:'Perfil',cardapio:'Cardápio',promocoes:'Promoções',eventos:'Eventos',local:'Localização',whatsapp:'WhatsApp',avaliacoes:'Avaliações'};
+  function $(id){return document.getElementById(id);}
+  function mostrarEditor(sec){
+    var g=$('grade'),e=$('editor'),t=$('editorTit');
+    if(g)g.classList.add('escondido');
+    if(e)e.classList.remove('escondido');
+    if(t)t.textContent=TIT[sec]||'';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  window.voltarHome=function(){
+    var g=$('grade'),e=$('editor');
+    if(e)e.classList.add('escondido');
+    if(g)g.classList.remove('escondido');
+    if(typeof window.atualizarOnboarding==='function'){try{window.atualizarOnboarding(false);}catch(x){}}
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  window.irSecao=function(sec){
+    var tab=document.querySelector('.tab[data-tab="'+sec+'"]');
+    if(tab&&tab.classList.contains('travada')){ if(window.abrirPlano)window.abrirPlano(); return; }
+    if(window.abrirTab){ window.abrirTab(sec); }        // wrapped below -> shows editor
+    else { mostrarEditor(sec); }
+    if(sec==='avaliacoes' && window.carregarAvaliacoesPainel){ setTimeout(window.carregarAvaliacoesPainel,60); }
+  };
+  window.verMinhaPagina=function(){
+    var a=$('linkPublico'); var href=a&&a.getAttribute('href');
+    if(href&&href!=='#'&&href.indexOf('http')===0){ window.open(href,'_blank','noopener'); }
+    else { window.irSecao('perfil'); }
+  };
+  function syncLocks(){
+    ['cardapio','promocoes','eventos'].forEach(function(t){
+      var tab=document.querySelector('.tab[data-tab="'+t+'"]'), card=$('gc-'+t);
+      if(tab&&card) card.classList.toggle('travado', tab.classList.contains('travada'));
+    });
+  }
+  var tries=0;
+  var iv=setInterval(function(){
+    tries++;
+    if(typeof window.abrirTab==='function'){
+      clearInterval(iv);
+      // wrap abrirTab: after it shows a section, reveal the editor
+      var _orig=window.abrirTab;
+      window.abrirTab=function(nome){
+        _orig(nome);
+        var alvo=document.getElementById('tab-'+nome);
+        if(alvo && !alvo.classList.contains('escondido')){ mostrarEditor(nome); }
+      };
+      // observe plan-lock changes -> mirror onto cards
+      ['cardapio','promocoes','eventos'].forEach(function(t){
+        var tab=document.querySelector('.tab[data-tab="'+t+'"]');
+        if(tab && window.MutationObserver){ new MutationObserver(syncLocks).observe(tab,{attributes:true,attributeFilter:['class']}); }
+      });
+      syncLocks(); setTimeout(syncLocks,1200); setTimeout(syncLocks,2500);
+      // when painel becomes visible (login), force HOME (grid), overriding boot's abrirTab('perfil')
+      var painel=$('painel');
+      if(painel && window.MutationObserver){
+        new MutationObserver(function(){
+          if(painel.style.display==='block'){ setTimeout(window.voltarHome,0); }
+        }).observe(painel,{attributes:true,attributeFilter:['style']});
+      }
+    }
+    if(tries>200) clearInterval(iv);
+  },25);
+})();
 </script>
 </body>
 </html>
