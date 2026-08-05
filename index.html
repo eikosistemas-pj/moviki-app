@@ -62,6 +62,25 @@
   .cabPainel .ola b{color:var(--claro);display:block;font-size:14px;margin-top:2px;word-break:break-all;}
   .sairMini{background:none;border:1px solid var(--card-borda);color:#8fa6c4;font-size:12px;padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;}
   .sairMini:hover{border-color:#ff8080;color:#ff9a9a;}
+  /* Onboarding — primeiros passos do lojista novo */
+  .onb{background:linear-gradient(135deg,rgba(0,212,255,.10),rgba(0,102,255,.10));border:1px solid rgba(0,212,255,.4);border-radius:14px;padding:16px 16px 8px;margin-bottom:18px;}
+  .onbTop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .onbTit{font-size:16px;font-weight:600;color:#fff;}
+  .onbSub{font-size:12.5px;color:#9fc7e6;margin:2px 0 12px;line-height:1.5;}
+  .onbOcultar{background:none;border:none;color:#8fa6c4;font-size:12px;cursor:pointer;text-decoration:underline;flex-shrink:0;padding:2px;font-family:inherit;}
+  .onbBarra{height:6px;border-radius:6px;background:var(--campo);overflow:hidden;margin:0 2px 14px;}
+  .onbBarra i{display:block;height:100%;background:linear-gradient(90deg,var(--ciano),var(--azul));width:0;transition:width .3s;}
+  .onbPasso{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:var(--campo);border:1px solid var(--card-borda);border-radius:11px;padding:11px 13px;margin-bottom:9px;cursor:pointer;transition:.15s;color:var(--claro);font-family:inherit;}
+  .onbPasso:hover{border-color:var(--ciano);}
+  .onbPasso .mark{flex:0 0 auto;width:24px;height:24px;border-radius:50%;border:2px solid var(--card-borda);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#8fa6c4;}
+  .onbPasso .txt{flex:1;font-size:14px;font-weight:500;}
+  .onbPasso .seta{color:#8fa6c4;font-size:18px;flex-shrink:0;line-height:1;}
+  .onbPasso.feito{opacity:.7;}
+  .onbPasso.feito .mark{background:var(--ciano);border-color:var(--ciano);color:#04121f;}
+  .onbPasso.feito .txt{text-decoration:line-through;color:#8fa6c4;}
+  .onbPasso.feito .seta{display:none;}
+  .onbFinal{font-size:13px;color:#8ff0b5;line-height:1.5;margin:2px 2px 6px;}
+  .onbFinal b{color:#c7ffe0;}
   /* Abas do painel */
   .tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:20px;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
   .tab{flex:0 0 auto;border:1px solid var(--card-borda);background:var(--campo);color:#8fa6c4;padding:9px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
@@ -172,6 +191,25 @@
         </div>
       </div>
 
+      <div id="onboarding" class="onb escondido">
+        <div class="onbTop">
+          <div class="onbTit">👋 Bem-vindo ao Moviki!</div>
+          <button type="button" class="onbOcultar" onclick="ocultarOnboarding()">ocultar</button>
+        </div>
+        <div class="onbSub">Deixe seu negócio no ar em 3 passos rápidos. Toque em cada passo pra preencher.</div>
+        <div class="onbBarra"><i id="onbProgresso"></i></div>
+        <button type="button" class="onbPasso" id="onbNome" onclick="irPasso('nome')">
+          <span class="mark">1</span><span class="txt">Dê um nome ao seu negócio</span><span class="seta">›</span>
+        </button>
+        <button type="button" class="onbPasso" id="onbLink" onclick="irPasso('link')">
+          <span class="mark">2</span><span class="txt">Escolha seu link (moviki.com.br/...)</span><span class="seta">›</span>
+        </button>
+        <button type="button" class="onbPasso" id="onbLocal" onclick="irPasso('local')">
+          <span class="mark">3</span><span class="txt">Marque a localização do seu ponto</span><span class="seta">›</span>
+        </button>
+        <div class="onbFinal" id="onbFinal"></div>
+      </div>
+
       <div class="tabs">
         <button class="tab ativa" data-tab="perfil" onclick="abrirTab('perfil')">Perfil</button>
         <button class="tab" data-tab="cardapio" onclick="abrirTab('cardapio')">Cardápio</button>
@@ -212,8 +250,8 @@
         </div>
       </div>
       <div class="tabConteudo" id="tab-perfil">
-        <div class="campo"><label for="nome">Nome do negócio</label><input id="nome" type="text" placeholder="Ex.: Caldeirão Nordestino"></div>
-        <div class="campo"><label for="apelido">Seu link no Moviki</label><div class="linkCampo"><span class="pref">moviki.com.br/</span><input id="apelido" type="text" placeholder="caldeirao" autocomplete="off"></div></div>
+        <div class="campo"><label for="nome">Nome do negócio</label><input id="nome" type="text" placeholder="Ex.: Caldeirão Nordestino" oninput="atualizarOnboarding(false)"></div>
+        <div class="campo"><label for="apelido">Seu link no Moviki</label><div class="linkCampo"><span class="pref">moviki.com.br/</span><input id="apelido" type="text" placeholder="caldeirao" autocomplete="off" oninput="atualizarOnboarding(false)"></div></div>
         <div id="linkPronto" class="linkPronto escondido"><div class="rot">✅ Link pra divulgar (bio do Instagram, WhatsApp...):</div><div class="linkRow"><a id="linkPublico" href="#" target="_blank" rel="noopener"></a><button onclick="copiarLink()" id="btnCopiar">Copiar</button></div></div>
         <label>Status agora</label>
         <div class="statusLinha"><button id="btnAberto" class="statusBtn" onclick="setStatus('aberto')">🟢 Aberto</button><button id="btnFechado" class="statusBtn" onclick="setStatus('fechado')">🔴 Fechado</button></div>
@@ -286,6 +324,17 @@
   const el = id => document.getElementById(id);
   let modo='entrar', usuarioAtual=null, statusAtual='fechado', coords=null, slugSalvo='';
   const ROBO='https://moviki-robo.vercel.app';
+  // Garante o trial de 30 dias (Pró). Idempotente: o robô só concede 1x por conta.
+  // Retorna o JSON do robô se deu certo (ou já existia), ou null se falhou.
+  async function garantirTrial(){
+    try{
+      if(!auth.currentUser)return null;
+      const tk=await auth.currentUser.getIdToken();
+      const r=await fetch(ROBO+'/api/ativar-trial',{method:'POST',headers:{'Authorization':'Bearer '+tk}});
+      const j=await r.json().catch(()=>({}));
+      return r.ok?j:null;
+    }catch(e){return null;}
+  }
   let dadosAssinatura=null;
   const RESERVADOS=['index','mapa','404','assets','www','painel','login','moviki'];
 
@@ -297,7 +346,7 @@
   window.trocarAba=function(n){modo=n;el('abaEntrar').classList.toggle('ativa',n==='entrar');el('abaCriar').classList.toggle('ativa',n==='criar');el('btnAcao').textContent=n==='entrar'?'Entrar':'Criar conta';el('dica').textContent=n==='criar'?'Vai criar uma conta de teste. Use um e-mail seu e uma senha simples.':'';var le=el('linhaEsqueci');if(le)le.style.display=n==='entrar'?'block':'none';limparAviso();};
   window.verSenha=function(){const s=el('senha'),b=document.querySelector('.verSenha');if(s.type==='password'){s.type='text';b.textContent='ocultar';}else{s.type='password';b.textContent='mostrar';}};
   function msgErro(c){const m={'auth/invalid-email':'E-mail inválido.','auth/missing-password':'Digite uma senha.','auth/weak-password':'A senha precisa ter pelo menos 6 caracteres.','auth/email-already-in-use':'Esse e-mail já tem conta. Tente "Entrar".','auth/invalid-credential':'E-mail ou senha incorretos.','auth/user-not-found':'Não encontrei conta com esse e-mail.','auth/wrong-password':'Senha incorreta.','auth/too-many-requests':'Muitas tentativas. Espere um pouco.','auth/network-request-failed':'Sem conexão. Confira a internet.'};return m[c]||('Erro: '+c);}
-  window.acao=async function(){const email=el('email').value.trim(),senha=el('senha').value,btn=el('btnAcao');limparAviso();if(!email){erroAcesso('Digite seu e-mail.');return;}if(!senha){erroAcesso('Digite uma senha.');return;}btn.disabled=true;const t=btn.textContent;btn.textContent='Aguarde...';try{if(modo==='criar'){await createUserWithEmailAndPassword(auth,email,senha);try{await sendEmailVerification(auth.currentUser);}catch(_){}try{const tk=await auth.currentUser.getIdToken();await fetch(ROBO+'/api/ativar-trial',{method:'POST',headers:{'Authorization':'Bearer '+tk}});}catch(_){}}else await signInWithEmailAndPassword(auth,email,senha);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.textContent=t;}};
+  window.acao=async function(){const email=el('email').value.trim(),senha=el('senha').value,btn=el('btnAcao');limparAviso();if(!email){erroAcesso('Digite seu e-mail.');return;}if(!senha){erroAcesso('Digite uma senha.');return;}btn.disabled=true;const t=btn.textContent;btn.textContent='Aguarde...';try{if(modo==='criar'){await createUserWithEmailAndPassword(auth,email,senha);try{await sendEmailVerification(auth.currentUser);}catch(_){}garantirTrial();}else await signInWithEmailAndPassword(auth,email,senha);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.textContent=t;}};
   window.sair=async function(){await signOut(auth);};
   window.reenviarVerif=async function(){
     const b=el('bvBtn');if(b)b.disabled=true;
@@ -402,7 +451,7 @@
   function okP(t){avisoP.className='aviso ok';avisoP.textContent=t;}
   function erroP(t){avisoP.className='aviso erro';avisoP.textContent=t;}
   window.setStatus=function(s){statusAtual=s;el('btnAberto').className='statusBtn'+(s==='aberto'?' aberto':'');el('btnFechado').className='statusBtn'+(s==='fechado'?' fechado':'');};
-  window.pegarLocalizacao=function(){limparAvisoP();if(!navigator.geolocation){erroP('Seu aparelho não tem GPS no navegador.');return;}el('gpsInfo').innerHTML='📍 Pegando localização...';navigator.geolocation.getCurrentPosition((pos)=>{coords={lat:pos.coords.latitude,lng:pos.coords.longitude};el('gpsInfo').innerHTML='📍 <b>Localização capturada!</b><br>'+coords.lat.toFixed(5)+', '+coords.lng.toFixed(5)+' <span style="color:#7f95b3">(lembre de Salvar)</span>';},(err)=>{if(err.code===1)erroP('Você bloqueou a localização. Libere nas permissões do navegador.');else erroP('Não consegui pegar a localização.');el('gpsInfo').innerHTML='📍 Localização ainda não definida.';},{enableHighAccuracy:true,timeout:10000});};
+  window.pegarLocalizacao=function(){limparAvisoP();if(!navigator.geolocation){erroP('Seu aparelho não tem GPS no navegador.');return;}el('gpsInfo').innerHTML='📍 Pegando localização...';navigator.geolocation.getCurrentPosition((pos)=>{coords={lat:pos.coords.latitude,lng:pos.coords.longitude};el('gpsInfo').innerHTML='📍 <b>Localização capturada!</b><br>'+coords.lat.toFixed(5)+', '+coords.lng.toFixed(5)+' <span style="color:#7f95b3">(lembre de Salvar)</span>';atualizarOnboarding(false);},(err)=>{if(err.code===1)erroP('Você bloqueou a localização. Libere nas permissões do navegador.');else erroP('Não consegui pegar a localização.');el('gpsInfo').innerHTML='📍 Localização ainda não definida.';},{enableHighAccuracy:true,timeout:10000});};
 
   /* ---- CARDÁPIO (categorias -> produtos) ---- */
   function vazioCat(){el('vazioCat').classList.toggle('escondido',el('listaCategorias').children.length>0);}
@@ -479,8 +528,35 @@
       await setDoc(doc(db,'negocios',usuarioAtual.uid),dados,{merge:true});
       okP('✅ Tudo salvo!');
       if(slug) mostrarLink(slug);
+      onbSalvo=true;atualizarOnboarding(false);
     }catch(e){erroP('Não consegui salvar: '+(e.code||e.message));}
     btn.disabled=false;btn.textContent=t;
+  };
+
+  /* ---- ONBOARDING (primeiros passos do lojista novo) ---- */
+  let onbOculto=false, onbSalvo=false;
+  window.ocultarOnboarding=function(){onbOculto=true;const b=el('onboarding');if(b)b.classList.add('escondido');};
+  window.irPasso=function(qual){
+    abrirTab(qual==='local'?'local':'perfil');
+    setTimeout(function(){
+      if(qual==='nome'){const n=el('nome');n.focus();n.scrollIntoView({behavior:'smooth',block:'center'});}
+      else if(qual==='link'){const a=el('apelido');a.focus();a.scrollIntoView({behavior:'smooth',block:'center'});}
+      else{const t=el('tab-local');if(t)t.scrollIntoView({behavior:'smooth',block:'center'});}
+    },70);
+  };
+  function _marcaPasso(id,n,feito){const p=el(id);if(!p)return;p.classList.toggle('feito',feito);const m=p.querySelector('.mark');if(m)m.textContent=feito?'✓':n;}
+  window.atualizarOnboarding=function(inicial){
+    const box=el('onboarding');if(!box)return;
+    const temNome=!!el('nome').value.trim();
+    const temLink=!!(el('apelido').value.trim()||slugSalvo);
+    const temLocal=!!coords;
+    _marcaPasso('onbNome','1',temNome);_marcaPasso('onbLink','2',temLink);_marcaPasso('onbLocal','3',temLocal);
+    const feitos=(temNome?1:0)+(temLink?1:0)+(temLocal?1:0);
+    const barra=el('onbProgresso');if(barra)barra.style.width=(feitos/3*100)+'%';
+    const fin=el('onbFinal');
+    if(fin)fin.innerHTML = feitos===3 ? '✅ Tudo pronto! Toque em <b>Salvar tudo</b> aqui embaixo e deixe como <b>Aberto</b> quando estiver funcionando.' : '';
+    const esconder = onbOculto || onbSalvo || (inicial && feitos===3);
+    box.classList.toggle('escondido', esconder);
   };
 
   async function carregarDados(uid){
@@ -511,12 +587,14 @@
         el('bvAcoes').style.display='flex';
         _bv.classList.remove('ok');_bv.classList.remove('escondido');
       }
-      coords=null;slugSalvo='';el('linkPronto').classList.add('escondido');
+      coords=null;slugSalvo='';onbOculto=false;onbSalvo=false;el('linkPronto').classList.add('escondido');
       el('listaCategorias').innerHTML='';el('listaPromos').innerHTML='';el('listaEventos').innerHTML='';
       el('gpsInfo').innerHTML='📍 Localização ainda não definida.';
       abrirTab('perfil');
       await carregarDados(user.uid);
+      atualizarOnboarding(true);
       await carregarPlanoPainel(user.uid);
+      if(!dadosAssinatura){ const _t=await garantirTrial(); if(_t){ await carregarPlanoPainel(user.uid); } }
       aplicarPlanoNasAbas();
     }else{
       el('painel').style.display='none';el('formArea').style.display='block';el('box').classList.remove('largo');
