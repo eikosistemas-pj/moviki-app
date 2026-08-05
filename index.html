@@ -642,7 +642,7 @@
     btn.disabled=true;const t=btn.textContent;btn.textContent='Salvando...';
     try{
       if(slug){const ref=doc(db,'slugs',slug);const snap=await getDoc(ref);if(snap.exists()&&snap.data().uid!==usuarioAtual.uid){abrirTab('perfil');erroP('O apelido "'+slug+'" já está em uso. Escolha outro.');btn.disabled=false;btn.textContent=t;return;}if(!snap.exists()){await setDoc(ref,{uid:usuarioAtual.uid});}el('apelido').value=slug;}
-      const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),whatsapp:(el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):''),atualizadoEm:serverTimestamp()};
+      const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
       if(coords){dados.lat=coords.lat;dados.lng=coords.lng;}
       if(slug){dados.slug=slug;}
       await setDoc(doc(db,'negocios',usuarioAtual.uid),dados,{merge:true});
