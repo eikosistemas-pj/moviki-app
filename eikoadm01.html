@@ -11,17 +11,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{--ciano:#00D4FF;--azul:#0066FF;--claro:#F2F5F9;--suave:#9fb2c6;--card:rgba(15,28,44,.66);--borda:rgba(0,212,255,.16);--campo:rgba(9,20,32,.9)}
+  :root{--ciano:#00D4FF;--azul:#0066FF;--claro:#F2F5F9;--suave:#9fb2c6;--card:rgba(15,28,44,.66);--borda:rgba(0,212,255,.16);--campo:rgba(9,20,32,.9);--verde:#25e39b}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Poppins',system-ui,-apple-system,sans-serif;background:#050b14;color:var(--claro);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
-  .wrap{max-width:640px;margin:0 auto;padding:22px 18px 60px}
-  .marca{text-align:center;padding:14px 0 6px}
-  .marca img{height:34px}
-  .marca .txt{font-weight:800;font-size:24px}
-  .marca .txt b{color:var(--ciano)}
+  body{font-family:'Poppins',system-ui,-apple-system,sans-serif;background:#050b14;color:var(--claro);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh}
+  .wrap{max-width:920px;margin:0 auto;padding:20px 16px 60px}
+  .marca{text-align:center;padding:14px 0 4px}
+  .marca img{height:32px}
+  .marca .txt{font-weight:800;font-size:23px}.marca .txt b{color:var(--ciano)}
   .slogan{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--suave);font-weight:600;text-align:center;margin-bottom:14px}
   .escondido{display:none!important}
-  /* login */
+  /* login/restrito */
   .box{background:var(--card);border:1px solid var(--borda);border-radius:18px;padding:24px 20px;max-width:420px;margin:20px auto}
   .box h2{font-size:19px;font-weight:700;margin-bottom:4px;text-align:center}
   .box p.sub{font-size:13px;color:var(--suave);text-align:center;margin-bottom:16px}
@@ -30,46 +29,73 @@
   .btn{width:100%;background:linear-gradient(135deg,var(--ciano),var(--azul));color:#04121f;border:none;border-radius:11px;padding:13px;font-family:inherit;font-weight:700;font-size:15px;cursor:pointer;margin-top:16px}
   .btn:disabled{opacity:.6}
   .aviso{text-align:center;font-size:13px;color:#ff9a9a;margin-top:10px;min-height:16px}
-  .link{background:none;border:none;color:var(--ciano);font-family:inherit;font-size:13px;cursor:pointer;text-decoration:underline}
-  /* header dono */
-  .cab{display:flex;align-items:center;gap:11px;background:linear-gradient(120deg,rgba(0,102,255,.22),rgba(0,212,255,.14));border:1px solid var(--borda);border-radius:14px;padding:13px 15px;margin-bottom:18px}
+  /* header */
+  .cab{display:flex;align-items:center;gap:11px;background:linear-gradient(120deg,rgba(0,102,255,.22),rgba(0,212,255,.14));border:1px solid var(--borda);border-radius:14px;padding:13px 16px;margin-bottom:16px}
   .cab .ic{font-size:24px}
-  .cab .info{flex:1;min-width:0}
-  .cab .info b{display:block;font-size:16px}
-  .cab .info span{font-size:11.5px;color:#8fa6c4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+  .cab .info{flex:1;min-width:0}.cab .info b{display:block;font-size:16px}.cab .info span{font-size:11.5px;color:#8fa6c4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
   .cab .sair{background:rgba(255,255,255,.07);border:1px solid var(--borda);color:#cfe0f5;font-family:inherit;font-weight:600;font-size:12.5px;padding:8px 13px;border-radius:9px;cursor:pointer}
-  h1sec,.secTit{display:block;font-size:14px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--suave);margin:6px 2px 12px}
+  /* KPIs */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+  .kpi{background:var(--card);border:1px solid var(--borda);border-radius:14px;padding:15px 14px}
+  .kpi .n{font-size:26px;font-weight:800;line-height:1.1}
+  .kpi .l{font-size:11.5px;color:var(--suave);text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
+  .kpi.c1 .n{color:var(--ciano)}.kpi.c2 .n{color:var(--verde)}.kpi.c3 .n{color:#ffc340}.kpi.c4 .n{color:#fff}
+  /* module grid */
+  .secTit{font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--suave);margin:4px 2px 12px}
+  .dgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+  .dcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--card);border:1px solid var(--borda);border-radius:16px;padding:20px 10px;cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s;min-height:120px;position:relative}
+  .dcard:hover{transform:translateY(-2px);border-color:var(--ciano);box-shadow:0 10px 26px rgba(0,0,0,.35)}
+  .dcard .dic{width:54px;height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:27px}
+  .dcard .dl{font-size:14px;font-weight:600;text-align:center}
+  .dcard .ds{font-size:11px;color:var(--suave);text-align:center}
+  .i-com{background:rgba(0,212,255,.16)}.i-par{background:rgba(37,227,155,.16)}.i-usr{background:rgba(0,102,255,.18)}.i-rel{background:rgba(255,193,64,.18)}.i-cms{background:rgba(155,110,255,.18)}.i-pag{background:rgba(0,212,255,.16)}
+  .dcard.breve{opacity:.7;cursor:default}.dcard.breve:hover{transform:none;border-color:var(--borda);box-shadow:none}
+  .tagbreve{position:absolute;top:9px;right:10px;font-size:9.5px;font-weight:700;letter-spacing:.06em;color:#8fa6c4;background:rgba(255,255,255,.06);padding:3px 7px;border-radius:999px}
+  /* sections */
+  .voltar{background:rgba(255,255,255,.06);border:1px solid var(--borda);color:var(--ciano);font-family:inherit;font-weight:600;font-size:14px;padding:9px 14px;border-radius:10px;cursor:pointer;margin-bottom:6px}
+  .telaTit{font-size:21px;font-weight:800;margin:12px 2px 16px}
   /* convites */
   .convBloco{background:var(--card);border:1px solid var(--borda);border-radius:15px;padding:15px;margin-bottom:14px}
   .convTopo{display:flex;align-items:center;gap:12px;margin-bottom:12px}
   .convIc{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex:0 0 auto}
-  .i-com{background:rgba(0,212,255,.16)}
-  .i-par{background:rgba(37,227,155,.16)}
-  .convTxt b{display:block;font-size:15px;color:#eaf2fd}
-  .convTxt span{font-size:12.5px;color:#8fa6c4}
+  .convTxt b{display:block;font-size:15px;color:#eaf2fd}.convTxt span{font-size:12.5px;color:#8fa6c4}
   .convLink{display:flex;gap:8px;margin-bottom:11px}
   .convLink input{flex:1;min-width:0;font-size:12.5px;padding:10px 12px}
   .convCopy{flex:0 0 auto;background:rgba(255,255,255,.07);border:1px solid var(--borda);color:#cfe0f5;font-family:inherit;font-weight:600;font-size:12.5px;padding:0 13px;border-radius:9px;cursor:pointer}
   .convAcoes{display:flex;gap:9px;flex-wrap:wrap}
   .convBtn{flex:1;min-width:150px;border:none;font-family:inherit;font-weight:700;font-size:13.5px;padding:12px;border-radius:11px;cursor:pointer;color:#fff}
-  .convBtn.wpp{background:linear-gradient(135deg,#25D366,#128C4B)}
-  .convBtn.insta{background:linear-gradient(135deg,#E1306C,#C13584)}
+  .convBtn.wpp{background:linear-gradient(135deg,#25D366,#128C4B)}.convBtn.insta{background:linear-gradient(135deg,#E1306C,#C13584)}
   .convBtn:disabled{opacity:.7}
-  .convDica{background:var(--campo);border:1px solid var(--borda);border-radius:11px;padding:13px 14px;font-size:12.5px;color:#b9cbe4;line-height:1.5;margin-bottom:22px}
+  .convDica{background:var(--campo);border:1px solid var(--borda);border-radius:11px;padding:13px 14px;font-size:12.5px;color:#b9cbe4;line-height:1.5}
   .convDica b{color:#e6eefb}
   .convIgOpen{display:inline-block;margin-top:9px;background:rgba(225,48,108,.16);border:1px solid rgba(225,48,108,.4);color:#ff9ec2;font-family:inherit;font-weight:600;font-size:12.5px;padding:8px 13px;border-radius:9px;cursor:pointer}
-  /* em breve */
-  .breveGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .breve{background:var(--card);border:1px dashed var(--borda);border-radius:14px;padding:16px;text-align:center;opacity:.7}
-  .breve .bi{font-size:24px}
-  .breve b{display:block;font-size:14px;margin-top:6px}
-  .breve span{font-size:11px;color:var(--suave);display:block;margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
+  /* tabela usuários */
+  .tblWrap{overflow-x:auto;background:var(--card);border:1px solid var(--borda);border-radius:14px}
+  table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+  th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--suave);padding:12px 14px;border-bottom:1px solid var(--borda);white-space:nowrap}
+  td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.04);color:#dbe7f5}
+  tr:last-child td{border-bottom:none}
+  td a{color:var(--ciano);text-decoration:none}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+  .b-basico{background:rgba(159,178,198,.16);color:#c2cfdd}.b-pro{background:rgba(0,212,255,.16);color:var(--ciano)}.b-premium{background:rgba(155,110,255,.18);color:#c9b6ff}.b-enterprise{background:rgba(255,193,64,.18);color:#ffc340}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}.dot.on{background:var(--verde)}.dot.off{background:#ff6b6b}
+  .vazio{padding:26px;text-align:center;color:var(--suave);font-size:14px}
+  /* relatórios */
+  .relGrid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:16px}
+  .relCard{background:var(--card);border:1px solid var(--borda);border-radius:14px;padding:16px}
+  .relCard h4{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--suave);margin-bottom:12px;font-weight:700}
+  .relRow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:14px;border-bottom:1px solid rgba(255,255,255,.04)}
+  .relRow:last-child{border-bottom:none}
+  .relRow b{font-weight:700}
+  .relCaveat{font-size:11.5px;color:var(--suave);margin-top:10px}
+  @media(max-width:640px){.kpis{grid-template-columns:1fr 1fr}.dgrid{grid-template-columns:1fr 1fr}.relGrid{grid-template-columns:1fr}}
+  @media(max-width:380px){.dgrid{gap:9px}.dcard .dic{width:46px;height:46px;font-size:23px}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="marca">
-    <img src="favicon512.png" alt="Moviki" onerror="this.style.display='none';document.getElementById('mt').style.display='inline'">
+    <img src="favicon512.png" alt="Moviki" onerror="this.style.display='none';var t=document.getElementById('mt');if(t)t.style.display='inline'">
     <span class="txt" id="mt" style="display:none">movi<b>ki</b></span>
   </div>
   <div class="slogan">Painel do Dono</div>
@@ -86,16 +112,15 @@
     <div class="aviso" id="avisoLogin"></div>
   </div>
 
-  <!-- ACESSO RESTRITO -->
+  <!-- RESTRITO -->
   <div id="restrito" class="box escondido">
     <h2>🔒 Acesso restrito</h2>
     <p class="sub">Este painel é do dono do Moviki.</p>
     <p style="text-align:center;font-size:13px;color:#cfe0f5">Você entrou como:<br><b id="restritoEmail" style="color:#fff"></b></p>
-    <div class="aviso" id="restritoDica" style="color:#8fa6c4"></div>
     <button class="btn" style="background:rgba(255,255,255,.08);color:#cfe0f5" onclick="sair()">Sair</button>
   </div>
 
-  <!-- PAINEL DO DONO -->
+  <!-- PAINEL -->
   <div id="painelDono" class="escondido">
     <div class="cab">
       <span class="ic">👑</span>
@@ -103,29 +128,73 @@
       <button class="sair" onclick="sair()">Sair</button>
     </div>
 
-    <div class="secTit">📨 Convites</div>
-    <div class="convBloco">
-      <div class="convTopo"><span class="convIc i-com">🛍️</span><div class="convTxt"><b>Convidar comerciante</b><span>Dono de negócio pra usar o Moviki</span></div></div>
-      <div class="convLink"><input id="linkCom" readonly value="https://moviki.com.br/comerciantes.html"><button class="convCopy" onclick="copiarLink('linkCom',this)">Copiar link</button></div>
-      <div class="convAcoes">
-        <button class="convBtn wpp" onclick="convidarWhats('com')">💬 Enviar pelo WhatsApp</button>
-        <button class="convBtn insta" onclick="copiarInsta('com',this)">📸 Copiar p/ Instagram</button>
+    <!-- HOME -->
+    <div id="inicio">
+      <div class="kpis">
+        <div class="kpi c1"><div class="n" id="kpiLojistas">—</div><div class="l">Lojistas</div></div>
+        <div class="kpi c2"><div class="n" id="kpiPro">—</div><div class="l">Pró ou +</div></div>
+        <div class="kpi c3"><div class="n" id="kpiAbertos">—</div><div class="l">Abertos agora</div></div>
+        <div class="kpi c4"><div class="n" id="kpiReceita">—</div><div class="l">Receita est./mês</div></div>
       </div>
-    </div>
-    <div class="convBloco">
-      <div class="convTopo"><span class="convIc i-par">🤝</span><div class="convTxt"><b>Convidar parceiro</b><span>Influenciador/afiliado pra indicar e ganhar</span></div></div>
-      <div class="convLink"><input id="linkPar" readonly value="https://moviki.com.br/parceiros.html"><button class="convCopy" onclick="copiarLink('linkPar',this)">Copiar link</button></div>
-      <div class="convAcoes">
-        <button class="convBtn wpp" onclick="convidarWhats('par')">💬 Enviar pelo WhatsApp</button>
-        <button class="convBtn insta" onclick="copiarInsta('par',this)">📸 Copiar p/ Instagram</button>
-      </div>
-    </div>
-    <div class="convDica">💡 No Instagram não dá pra abrir a conversa já com o texto — o botão <b>copia a mensagem pronta</b>. Aí é só abrir o Direct e colar. <button class="convIgOpen" onclick="abrirInstagram()">Abrir Instagram</button></div>
 
-    <div class="secTit">Em breve neste painel</div>
-    <div class="breveGrid">
-      <div class="breve"><div class="bi">💰</div><b>Comissões</b><span>Em breve</span></div>
-      <div class="breve"><div class="bi">📊</div><b>Relatórios</b><span>Em breve</span></div>
+      <div class="secTit">Menu</div>
+      <div class="dgrid">
+        <button type="button" class="dcard" onclick="irModulo('convComerciante')"><span class="dic i-com">🛍️</span><span class="dl">Convidar comerciante</span></button>
+        <button type="button" class="dcard" onclick="irModulo('convParceiro')"><span class="dic i-par">🤝</span><span class="dl">Convidar parceiro</span></button>
+        <button type="button" class="dcard" onclick="irModulo('usuarios')"><span class="dic i-usr">👥</span><span class="dl">Usuários</span></button>
+        <button type="button" class="dcard" onclick="irModulo('relatorios')"><span class="dic i-rel">📊</span><span class="dl">Relatórios</span></button>
+        <button type="button" class="dcard breve"><span class="tagbreve">EM BREVE</span><span class="dic i-cms">💰</span><span class="dl">Comissões</span><span class="ds">Afiliados / Pix</span></button>
+        <button type="button" class="dcard" onclick="verSite()"><span class="dic i-pag">🌐</span><span class="dl">Ver o site</span></button>
+      </div>
+    </div>
+
+    <!-- CONVIDAR COMERCIANTE -->
+    <div id="tela-convComerciante" class="escondido">
+      <button class="voltar" onclick="voltarInicio()">‹ Voltar</button>
+      <h2 class="telaTit">Convidar comerciante</h2>
+      <div class="convBloco">
+        <div class="convTopo"><span class="convIc i-com">🛍️</span><div class="convTxt"><b>Link do comerciante</b><span>Dono de negócio pra usar o Moviki</span></div></div>
+        <div class="convLink"><input id="linkCom" readonly value="https://moviki.com.br/comerciantes.html"><button class="convCopy" onclick="copiarLink('linkCom',this)">Copiar</button></div>
+        <div class="convAcoes">
+          <button class="convBtn wpp" onclick="convidarWhats('com')">💬 Enviar pelo WhatsApp</button>
+          <button class="convBtn insta" onclick="copiarInsta('com',this)">📸 Copiar p/ Instagram</button>
+        </div>
+      </div>
+      <div class="convDica">💡 No Instagram não dá pra abrir a conversa já com o texto — o botão <b>copia a mensagem pronta</b>. Aí é só abrir o Direct e colar. <button class="convIgOpen" onclick="abrirInstagram()">Abrir Instagram</button></div>
+    </div>
+
+    <!-- CONVIDAR PARCEIRO -->
+    <div id="tela-convParceiro" class="escondido">
+      <button class="voltar" onclick="voltarInicio()">‹ Voltar</button>
+      <h2 class="telaTit">Convidar parceiro</h2>
+      <div class="convBloco">
+        <div class="convTopo"><span class="convIc i-par">🤝</span><div class="convTxt"><b>Link do parceiro</b><span>Influenciador/afiliado pra indicar e ganhar</span></div></div>
+        <div class="convLink"><input id="linkPar" readonly value="https://moviki.com.br/parceiros.html"><button class="convCopy" onclick="copiarLink('linkPar',this)">Copiar</button></div>
+        <div class="convAcoes">
+          <button class="convBtn wpp" onclick="convidarWhats('par')">💬 Enviar pelo WhatsApp</button>
+          <button class="convBtn insta" onclick="copiarInsta('par',this)">📸 Copiar p/ Instagram</button>
+        </div>
+      </div>
+      <div class="convDica">💡 Mesma coisa aqui: pro Instagram, o botão copia a mensagem pronta e você cola no Direct. <button class="convIgOpen" onclick="abrirInstagram()">Abrir Instagram</button></div>
+    </div>
+
+    <!-- USUÁRIOS -->
+    <div id="tela-usuarios" class="escondido">
+      <button class="voltar" onclick="voltarInicio()">‹ Voltar</button>
+      <h2 class="telaTit">Usuários <span id="usrCount" style="font-size:14px;color:var(--suave);font-weight:500"></span></h2>
+      <div class="tblWrap">
+        <table>
+          <thead><tr><th>Negócio</th><th>Plano</th><th>Status</th><th>Link</th><th>Atualizado</th></tr></thead>
+          <tbody id="usrBody"><tr><td colspan="5" class="vazio">Carregando…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- RELATÓRIOS -->
+    <div id="tela-relatorios" class="escondido">
+      <button class="voltar" onclick="voltarInicio()">‹ Voltar</button>
+      <h2 class="telaTit">Relatórios</h2>
+      <div id="relBox"><div class="vazio">Carregando…</div></div>
     </div>
   </div>
 </div>
@@ -133,11 +202,9 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  /* ============================================================
-     >>> COLOQUE AQUI O(S) E-MAIL(S) DE DONO (o que você usa pra logar) <<<
-     Pode ter mais de um, separados por vírgula. Ex.: ["paulo@moviki.com.br","socio@moviki.com.br"]
-  ============================================================ */
+  /* ====== E-MAIL(S) DE DONO (quem loga aqui) ====== */
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
   const firebaseConfig = {
@@ -150,38 +217,120 @@
   };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app);
   const el = id => document.getElementById(id);
   const mostra = id => { ['login','restrito','painelDono'].forEach(x=>el(x).classList.add('escondido')); el(id).classList.remove('escondido'); };
 
+  const PLANOS = { basico:{n:'Básico',p:0,c:'b-basico'}, pro:{n:'Pró',p:37.90,c:'b-pro'}, premium:{n:'Premium',p:49.90,c:'b-premium'}, enterprise:{n:'Enterprise',p:99.90,c:'b-enterprise'} };
+  const normPlano = v => { v=(v||'').toString().toLowerCase().trim(); return PLANOS[v]?v:'basico'; };
+  const brl = n => 'R$ '+n.toFixed(2).replace('.',',');
+  const dataBR = ts => { try{ const s=ts&&ts.seconds; if(!s)return '—'; const d=new Date(s*1000); return d.toLocaleDateString('pt-BR'); }catch(e){return '—';} };
+
   window.entrar = async () => {
-    const b=el('btnEntrar'), av=el('avisoLogin');
-    av.textContent=''; b.disabled=true; const t=b.textContent; b.textContent='Entrando...';
-    try{
-      await signInWithEmailAndPassword(auth, el('email').value.trim(), el('senha').value);
-    }catch(e){
-      av.textContent = 'E-mail ou senha incorretos.';
-    }
+    const b=el('btnEntrar'), av=el('avisoLogin'); av.textContent=''; b.disabled=true; const t=b.textContent; b.textContent='Entrando...';
+    try{ await signInWithEmailAndPassword(auth, el('email').value.trim(), el('senha').value); }
+    catch(e){ av.textContent='E-mail ou senha incorretos.'; }
     b.disabled=false; b.textContent=t;
   };
   window.sair = () => signOut(auth);
 
   onAuthStateChanged(auth, user => {
     if(!user){ mostra('login'); return; }
-    const email = (user.email||'').toLowerCase();
-    const lista = ADMIN_EMAILS.map(e=>e.toLowerCase());
-    if(lista.includes(email)){
-      el('donoEmail').textContent = user.email;
-      mostra('painelDono');
-    } else {
-      el('restritoEmail').textContent = user.email;
-      if(lista.includes('seu_email_admin@exemplo.com')){
-        el('restritoDica').textContent = 'Configure o e-mail de dono no arquivo eikoadm01.html (campo ADMIN_EMAILS).';
-      }
-      mostra('restrito');
-    }
+    const email=(user.email||'').toLowerCase();
+    if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email)){
+      el('donoEmail').textContent=user.email; voltarInicio(); mostra('painelDono'); carregarDashboard();
+    } else { el('restritoEmail').textContent=user.email; mostra('restrito'); }
   });
 
-  /* ---- Convites (mesmas mensagens do material) ---- */
+  /* ====== navegação módulos ====== */
+  window.irModulo = id => {
+    el('inicio').classList.add('escondido');
+    ['convComerciante','convParceiro','usuarios','relatorios'].forEach(x=>{ const t=el('tela-'+x); if(t)t.classList.add('escondido'); });
+    const alvo=el('tela-'+id); if(alvo)alvo.classList.remove('escondido');
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  window.voltarInicio = () => {
+    ['convComerciante','convParceiro','usuarios','relatorios'].forEach(x=>{ const t=el('tela-'+x); if(t)t.classList.add('escondido'); });
+    el('inicio').classList.remove('escondido');
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  window.verSite = () => window.open('https://moviki.com.br','_blank');
+
+  /* ====== dados (Firestore) ====== */
+  async function carregarDashboard(){
+    let negocios=[], planos={};
+    try{
+      const ns=await getDocs(collection(db,'negocios'));
+      ns.forEach(d=>negocios.push(Object.assign({uid:d.id}, d.data())));
+    }catch(e){ negocios=null; }
+    try{
+      const as=await getDocs(collection(db,'assinaturas'));
+      as.forEach(d=>{ planos[d.id]=normPlano((d.data()||{}).plano); });
+    }catch(e){ planos={}; }
+
+    if(negocios===null){
+      ['kpiLojistas','kpiPro','kpiAbertos','kpiReceita'].forEach(id=>el(id).textContent='—');
+      el('usrBody').innerHTML='<tr><td colspan="5" class="vazio">Não foi possível carregar agora.</td></tr>';
+      el('relBox').innerHTML='<div class="vazio">Não foi possível carregar agora.</div>';
+      return;
+    }
+
+    // KPIs
+    const total=negocios.length;
+    let proMais=0, abertos=0, receita=0;
+    const cont={basico:0,pro:0,premium:0,enterprise:0};
+    let comWpp=0, comLink=0;
+    negocios.forEach(n=>{
+      const pl=planos[n.uid]||'basico'; cont[pl]++;
+      if(pl!=='basico'){ proMais++; receita+=PLANOS[pl].p; }
+      if((n.status||'')==='aberto') abertos++;
+      if((n.whatsapp||'').toString().replace(/\D/g,'').length>=10) comWpp++;
+      if(n.slug) comLink++;
+    });
+    el('kpiLojistas').textContent=total;
+    el('kpiPro').textContent=proMais;
+    el('kpiAbertos').textContent=abertos;
+    el('kpiReceita').textContent=brl(receita);
+
+    // Usuários (mais recentes primeiro)
+    negocios.sort((a,b)=>((b.atualizadoEm&&b.atualizadoEm.seconds||0)-(a.atualizadoEm&&a.atualizadoEm.seconds||0)));
+    el('usrCount').textContent='· '+total;
+    if(total===0){ el('usrBody').innerHTML='<tr><td colspan="5" class="vazio">Nenhum lojista cadastrado ainda.</td></tr>'; }
+    else{
+      el('usrBody').innerHTML = negocios.map(n=>{
+        const pl=planos[n.uid]||'basico'; const P=PLANOS[pl];
+        const nome=(n.nome||'(sem nome)').toString().slice(0,40).replace(/[<>]/g,'');
+        const aberto=(n.status||'')==='aberto';
+        const link = n.slug ? '<a href="https://moviki.com.br/'+encodeURIComponent(n.slug)+'" target="_blank" rel="noopener">/'+n.slug.toString().replace(/[<>]/g,'')+'</a>' : '<span style="color:#8fa6c4">—</span>';
+        return '<tr><td>'+nome+'</td><td><span class="badge '+P.c+'">'+P.n+'</span></td>'+
+               '<td><span class="dot '+(aberto?'on':'off')+'"></span>'+(aberto?'Aberto':'Fechado')+'</td>'+
+               '<td>'+link+'</td><td>'+dataBR(n.atualizadoEm)+'</td></tr>';
+      }).join('');
+    }
+
+    // Relatórios
+    el('relBox').innerHTML =
+      '<div class="relGrid">'+
+        '<div class="relCard"><h4>Lojistas por plano</h4>'+
+          '<div class="relRow"><span>Básico (grátis)</span><b>'+cont.basico+'</b></div>'+
+          '<div class="relRow"><span>Pró</span><b>'+cont.pro+'</b></div>'+
+          '<div class="relRow"><span>Premium</span><b>'+cont.premium+'</b></div>'+
+          '<div class="relRow"><span>Enterprise</span><b>'+cont.enterprise+'</b></div>'+
+        '</div>'+
+        '<div class="relCard"><h4>Resumo</h4>'+
+          '<div class="relRow"><span>Total de lojistas</span><b>'+total+'</b></div>'+
+          '<div class="relRow"><span>Abertos agora</span><b>'+abertos+'</b></div>'+
+          '<div class="relRow"><span>Com link no ar</span><b>'+comLink+'</b></div>'+
+          '<div class="relRow"><span>Com WhatsApp</span><b>'+comWpp+'</b></div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="relCard"><h4>Receita estimada por mês</h4>'+
+        '<div class="relRow"><span>Somando os planos pagos</span><b style="color:var(--verde);font-size:18px">'+brl(receita)+'</b></div>'+
+        '<div class="relCaveat">É uma estimativa: conta todo mundo em Pró/Premium/Enterprise, inclusive quem ainda está nos 30 dias grátis (que não paga ainda). O valor real de caixa vem do provedor de pagamento.</div>'+
+      '</div>';
+  }
+
+  /* ====== convites ====== */
   const LINK = { com:'https://moviki.com.br/comerciantes.html', par:'https://moviki.com.br/parceiros.html' };
   const MSG_WPP = {
     com:'Opa! 👋 Isso pode te ajudar a vender mais: o *Moviki* coloca seu negócio no mapa em tempo real, com um link só seu (cardápio, promoções, WhatsApp) e *sem cobrar comissão por venda*. Dá pra testar *30 dias grátis*, sem cartão. Olha aqui 👉 ',
