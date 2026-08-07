@@ -208,6 +208,13 @@
   .avalTopo{font-size:13.5px;color:#e6eefb;}
   .avalTopo .avalEst{font-size:14px;}
   .avalTxt{font-size:13px;color:#b9cbe4;margin-top:5px;line-height:1.45;}
+
+  .mpPlano.mpEnt{flex-basis:100%;border-color:rgba(255,193,64,.4)}
+  .mpEnt .mpNome{color:#ffc340}
+  .mpEntLinha{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:4px}
+  .mpEntPreco{font-size:20px;font-weight:800;color:#ffc340}
+  .mpEntPreco small{font-size:12px;color:#9fb3c8;font-weight:500}
+  .mpBtnEnt{width:auto!important;margin:0!important;background:linear-gradient(135deg,#25D366,#128C4B)!important;color:#fff!important;padding:11px 18px!important;font-weight:700}
 </style>
 </head>
 <body>
@@ -328,6 +335,14 @@
               <button class="mpBtn" onclick="selecionarPlano('premium','mensal',this)">Mensal · R$ 49,90</button>
               <button class="mpBtn" onclick="selecionarPlano('premium','trimestral',this)">Trimestral · R$ 134,90</button>
               <button class="mpBtn" onclick="selecionarPlano('premium','anual',this)">Anual · R$ 499,00 <span class="mpTag">2 meses grátis</span></button>
+            </div>
+            <div class="mpPlano mpEnt">
+              <div class="mpNome">Enterprise</div>
+              <div class="mpDesc">Tudo do Premium + <b>vários pontos</b> num cadastro só · relatórios consolidados · suporte prioritário</div>
+              <div class="mpEntLinha">
+                <span class="mpEntPreco">R$ 99,90<small>/mês</small></span>
+                <button class="mpBtn mpBtnEnt" onclick="falarEnterprise()">💬 Falar com a gente</button>
+              </div>
             </div>
           </div>
           <div id="mpSelInfo" class="mpSelInfo escondido"></div>
@@ -508,7 +523,7 @@
     if(planoPainel==='pro'||planoPainel==='premium'){
       let ate='';if(dadosAssinatura&&dadosAssinatura.vence_em){ate=' até '+new Date(dadosAssinatura.vence_em.toMillis()).toLocaleDateString('pt-BR');}
       s.innerHTML='✅ Seu plano atual: <b>'+(planoPainel==='premium'?'Premium':'Pró')+'</b>'+ate+'.';
-    }else{s.innerHTML='Seu plano atual: <b>Básico</b> (grátis). Escolha Pró ou Premium pra liberar mais recursos.';}
+    }else{s.innerHTML='Seu plano atual: <b>Básico</b> (grátis). Escolha Pró ou Premium — ou fale com a gente pro Enterprise (vários pontos).';}
   }
   let planoSel=null,periodoSel=null;
   const _precoLabel={pro:{mensal:'Mensal · R$ 37,90',trimestral:'Trimestral · R$ 99,90',anual:'Anual · R$ 379,00'},premium:{mensal:'Mensal · R$ 49,90',trimestral:'Trimestral · R$ 134,90',anual:'Anual · R$ 499,00'}};
@@ -788,5 +803,6 @@
   },25);
 })();
 </script>
+<script>window.falarEnterprise=function(){window.open('https://wa.me/554120186848?text='+encodeURIComponent('Olá! Tenho interesse no plano Enterprise do Moviki (vários pontos). Pode me explicar como funciona?'),'_blank');};</script>
 </body>
 </html>
