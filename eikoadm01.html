@@ -123,6 +123,20 @@
     .relGrid{grid-template-columns:1fr}
     .conteudo{padding:18px}
   }
+
+  /* ===== login/restrito em AZUL ESCURO (só estas telas; o painel interno continua claro) ===== */
+  #login.centro, #restrito.centro{background:linear-gradient(160deg,#0b2038 0%,#0e2d54 60%,#0a1c34 100%)}
+  .centro .box{background:rgba(13,30,54,.72);border:1px solid rgba(255,255,255,.12);box-shadow:0 24px 60px rgba(0,0,0,.45);backdrop-filter:blur(8px)}
+  .centro .box .logo{height:42px}
+  .centro .box h2{color:#fff}
+  .centro .box p.sub{color:#9fb3c8}
+  .centro label{color:#cfe0f5}
+  .centro input{background:rgba(6,15,26,.75);border:1px solid rgba(255,255,255,.14);color:#F2F5F9}
+  .centro input::placeholder{color:#6b7f96}
+  .centro input:focus{border-color:#0aa2c8}
+  .centro #restritoEmail{color:#fff}
+  .centro .box p{color:#cfe0f5}
+  .centro .btn.cinza{background:rgba(255,255,255,.1);color:#cfe0f5}
 </style>
 </head>
 <body>
