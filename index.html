@@ -456,6 +456,18 @@
   }
   let dadosAssinatura=null;
   const RESERVADOS=['index','mapa','404','assets','www','painel','login','moviki'];
+  // Rastreio do Programa de Parceiros: captura ?ref da URL (limpo) e guarda no navegador.
+  let refParceiro='';
+  try{
+    const r=(new URLSearchParams(location.search).get('ref')||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,40);
+    if(r.length>=3){ refParceiro=r; try{localStorage.setItem('moviki_ref',r);}catch(_){}}
+    else { try{refParceiro=(localStorage.getItem('moviki_ref')||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,40);}catch(_){} }
+  }catch(e){}
+  // Grava, 1x, de qual parceiro veio este lojista (só no cadastro; a regra do Firestore impede alterar depois).
+  async function registrarIndicacao(uid){
+    if(!uid || refParceiro.length<3) return;
+    try{ await setDoc(doc(db,'indicacoes',uid),{ref:refParceiro,criadoEm:serverTimestamp()}); }catch(e){}
+  }
 
   /* ---- ACESSO ---- */
   const aviso=el('aviso');
@@ -465,7 +477,7 @@
   window.trocarAba=function(n){modo=n;el('abaEntrar').classList.toggle('ativa',n==='entrar');el('abaCriar').classList.toggle('ativa',n==='criar');el('btnAcao').textContent=n==='entrar'?'Entrar':'Criar conta';el('dica').textContent=n==='criar'?'Vai criar uma conta de teste. Use um e-mail seu e uma senha simples.':'';var le=el('linhaEsqueci');if(le)le.style.display=n==='entrar'?'block':'none';limparAviso();};
   window.verSenha=function(){const s=el('senha'),b=document.querySelector('.verSenha');if(s.type==='password'){s.type='text';b.textContent='ocultar';}else{s.type='password';b.textContent='mostrar';}};
   function msgErro(c){const m={'auth/invalid-email':'E-mail inválido.','auth/missing-password':'Digite uma senha.','auth/weak-password':'A senha precisa ter pelo menos 6 caracteres.','auth/email-already-in-use':'Esse e-mail já tem conta. Tente "Entrar".','auth/invalid-credential':'E-mail ou senha incorretos.','auth/user-not-found':'Não encontrei conta com esse e-mail.','auth/wrong-password':'Senha incorreta.','auth/too-many-requests':'Muitas tentativas. Espere um pouco.','auth/network-request-failed':'Sem conexão. Confira a internet.'};return m[c]||('Erro: '+c);}
-  window.acao=async function(){const email=el('email').value.trim(),senha=el('senha').value,btn=el('btnAcao');limparAviso();if(!email){erroAcesso('Digite seu e-mail.');return;}if(!senha){erroAcesso('Digite uma senha.');return;}btn.disabled=true;const t=btn.textContent;btn.textContent='Aguarde...';try{if(modo==='criar'){await createUserWithEmailAndPassword(auth,email,senha);try{await sendEmailVerification(auth.currentUser);}catch(_){}garantirTrial();}else await signInWithEmailAndPassword(auth,email,senha);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.textContent=t;}};
+  window.acao=async function(){const email=el('email').value.trim(),senha=el('senha').value,btn=el('btnAcao');limparAviso();if(!email){erroAcesso('Digite seu e-mail.');return;}if(!senha){erroAcesso('Digite uma senha.');return;}btn.disabled=true;const t=btn.textContent;btn.textContent='Aguarde...';try{if(modo==='criar'){await createUserWithEmailAndPassword(auth,email,senha);try{await sendEmailVerification(auth.currentUser);}catch(_){}try{await registrarIndicacao(auth.currentUser.uid);}catch(_){}garantirTrial();}else await signInWithEmailAndPassword(auth,email,senha);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.textContent=t;}};
   window.sair=async function(){await signOut(auth);};
   window.reenviarVerif=async function(){
     const b=el('bvBtn');if(b)b.disabled=true;
