@@ -109,6 +109,13 @@
   const el = id => document.getElementById(id);
   const limpaSlug = s => (s||'').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_-]/g,'').slice(0,40);
 
+  // Upline dos níveis 2/3: quem indicou ESTE parceiro (slug do parceiro que o trouxe).
+  // Chega pela URL (?ref=<slug>), gerada pelo link /pp/<slug>. Usamos SÓ o valor da
+  // URL (sem guardar em cache) pra nunca atribuir por engano um upline antigo a outra
+  // pessoa que use o mesmo navegador depois.
+  const _r = limpaSlug(new URLSearchParams(location.search).get('ref'));
+  const refUpline = (_r.length >= 3) ? _r : '';
+
   let slugOk=false, checando=false, ultimo='';
   const slugInput=el('slug');
   slugInput.addEventListener('input', ()=>{
@@ -160,12 +167,15 @@
       await setDoc(doc(db,'parceiro_slugs',slug), { uid });
 
       // 4) grava o cadastro do parceiro (pendente, com aceite)
-      await setDoc(doc(db,'parceiros',uid), {
+      const dadosParceiro = {
         nome, email, pix, slug,
         status: 'pendente',
         aceite: { versao: '1.0', em: serverTimestamp() },
         criadoEm: serverTimestamp()
-      });
+      };
+      // níveis 2/3: registra quem indicou este parceiro (se houver e não for ele mesmo)
+      if (refUpline && refUpline !== slug) dadosParceiro.indicadoPor = refUpline;
+      await setDoc(doc(db,'parceiros',uid), dadosParceiro);
 
       try{ await sendEmailVerification(cred.user); }catch(_){}
 
