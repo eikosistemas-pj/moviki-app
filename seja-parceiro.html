@@ -169,6 +169,16 @@
 
       try{ await sendEmailVerification(cred.user); }catch(_){}
 
+      // 5) avisa o dono na hora, no Telegram (fire-and-forget: NUNCA trava o cadastro)
+      try{
+        const idToken = await cred.user.getIdToken();
+        fetch('https://moviki-robo.vercel.app/api/novo-parceiro', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ idToken, uid })
+        }).catch(function(){});
+      }catch(_){}
+
       el('form').style.display='none';
       el('sucesso').style.display='block';
       window.scrollTo({top:0,behavior:'smooth'});
