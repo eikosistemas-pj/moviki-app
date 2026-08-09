@@ -137,6 +137,23 @@
   .centro #restritoEmail{color:#fff}
   .centro .box p{color:#cfe0f5}
   .centro .btn.cinza{background:rgba(255,255,255,.1);color:#cfe0f5}
+  .pcard{background:var(--card);border:1px solid var(--borda);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(20,40,80,.04);max-width:720px}
+  .pchead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .pchead b{font-size:16px}
+  .pcdata{font-size:12px;color:var(--suave)}
+  .pcinfo{display:grid;gap:7px;font-size:13.5px;margin-bottom:14px}
+  .pcinfo .pk{display:inline-block;min-width:58px;color:var(--suave);font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin-right:6px}
+  .pcinfo code{background:#eef2f7;padding:2px 8px;border-radius:6px;font-size:12.5px;word-break:break-all}
+  .pcopy{background:none;border:1px solid var(--borda);color:#33465c;font-family:inherit;font-size:11px;padding:3px 9px;border-radius:7px;cursor:pointer}
+  .pcacoes{display:flex;gap:9px;flex-wrap:wrap}
+  .pb{border:none;font-family:inherit;font-weight:700;font-size:13.5px;padding:9px 16px;border-radius:10px;cursor:pointer;color:#fff}
+  .pb.aprov{background:linear-gradient(135deg,#16a34a,#15803d)}
+  .pb.recus{background:#fff;color:#dc2626;border:1px solid #f3c0c0}
+  .pb.susp{background:#fff;color:#d97706;border:1px solid #f3ddb0}
+  .s-pend{background:#fff2dd;color:#d97706}
+  .s-aprov{background:#e6f7ee;color:#16a34a}
+  .s-recus{background:#fdeaea;color:#dc2626}
+  .s-susp{background:#eef2f7;color:#64748b}
 </style>
 </head>
 <body>
@@ -178,6 +195,7 @@
       <button class="navItem" data-pg="convComerciante" onclick="abrir('convComerciante')"><span class="ic">🛍️</span>Convidar comerciante</button>
       <button class="navItem" data-pg="convParceiro" onclick="abrir('convParceiro')"><span class="ic">🤝</span>Convidar parceiro</button>
       <button class="navItem" data-pg="usuarios" onclick="abrir('usuarios')"><span class="ic">👥</span>Usuários</button>
+      <button class="navItem" data-pg="parceiros" onclick="abrir('parceiros')"><span class="ic">📋</span>Parceiros<span class="bad" id="badgeParceiros" style="display:none"></span></button>
       <button class="navItem" data-pg="relatorios" onclick="abrir('relatorios')"><span class="ic">📈</span>Relatórios</button>
       <button class="navItem" data-pg="comissoes" onclick="abrir('comissoes')"><span class="ic">💰</span>Comissões<span class="bad">EM BREVE</span></button>
       <button class="navItem" onclick="verSite()"><span class="ic">🌐</span>Ver o site</button>
@@ -244,6 +262,11 @@
         </div>
       </section>
 
+      <!-- PARCEIROS -->
+      <section id="pg-parceiros" class="pagina escondido">
+        <div id="parcBox"><div class="vazio">Carregando…</div></div>
+      </section>
+
       <!-- RELATÓRIOS -->
       <section id="pg-relatorios" class="pagina escondido">
         <div id="relBox"><div class="vazio">Carregando…</div></div>
@@ -265,7 +288,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -281,7 +304,7 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
   const el = id => document.getElementById(id);
-  const TITULOS = { inicio:'Início', convComerciante:'Convidar comerciante', convParceiro:'Convidar parceiro', usuarios:'Usuários', relatorios:'Relatórios', comissoes:'Comissões' };
+  const TITULOS = { inicio:'Início', convComerciante:'Convidar comerciante', convParceiro:'Convidar parceiro', usuarios:'Usuários', parceiros:'Parceiros', relatorios:'Relatórios', comissoes:'Comissões' };
 
   const PLANOS = { basico:{n:'Básico',p:0,c:'b-basico'}, pro:{n:'Pró',p:37.90,c:'b-pro'}, premium:{n:'Premium',p:49.90,c:'b-premium'}, enterprise:{n:'Enterprise',p:99.90,c:'b-enterprise'} };
   const normPlano = v => { v=(v||'').toString().toLowerCase().trim(); return PLANOS[v]?v:'basico'; };
@@ -301,7 +324,7 @@
     if(!user){ mostrarTela('login'); return; }
     const email=(user.email||'').toLowerCase();
     if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email)){
-      el('donoEmail').textContent=user.email; abrir('inicio'); mostrarTela('app'); carregarDashboard();
+      el('donoEmail').textContent=user.email; abrir('inicio'); mostrarTela('app'); carregarDashboard(); carregarParceiros();
     } else { el('restritoEmail').textContent=user.email; mostrarTela('restrito'); }
   });
 
@@ -369,6 +392,41 @@
         '<div class="relCaveat">É uma estimativa: conta todo mundo em Pró/Premium/Enterprise, inclusive quem ainda está nos 30 dias grátis (que não paga ainda). O valor real de caixa vem do provedor de pagamento.</div>'+
       '</div>';
   }
+
+  /* ===== parceiros (aprovação) ===== */
+  let parceirosMap={};
+  const STAT={pendente:{n:'Pendente',c:'s-pend'},aprovado:{n:'Aprovado',c:'s-aprov'},recusado:{n:'Recusado',c:'s-recus'},suspenso:{n:'Suspenso',c:'s-susp'}};
+  const escP=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  async function carregarParceiros(){
+    let arr=[];
+    try{ const s=await getDocs(collection(db,'parceiros')); s.forEach(d=>arr.push(Object.assign({uid:d.id},d.data()))); }
+    catch(e){ el('parcBox').innerHTML='<div class="vazio">Não foi possível carregar os parceiros agora.</div>'; return; }
+    parceirosMap={}; arr.forEach(p=>parceirosMap[p.uid]=p);
+    const ordem={pendente:0,aprovado:1,suspenso:2,recusado:3};
+    arr.sort((a,b)=>(((ordem[a.status]==null?9:ordem[a.status])-(ordem[b.status]==null?9:ordem[b.status]))||((b.criadoEm&&b.criadoEm.seconds||0)-(a.criadoEm&&a.criadoEm.seconds||0))));
+    const pend=arr.filter(p=>p.status==='pendente').length;
+    const bd=el('badgeParceiros'); if(bd){ if(pend>0){bd.textContent=pend;bd.style.display='';}else bd.style.display='none'; }
+    if(!arr.length){ el('parcBox').innerHTML='<div class="vazio">Nenhum parceiro cadastrado ainda.</div>'; return; }
+    el('parcBox').innerHTML=arr.map(p=>{
+      const st=STAT[p.status]||{n:(p.status||'—'),c:'s-pend'};
+      let acoes='';
+      if(p.status==='pendente') acoes='<button class="pb aprov" onclick="aprovarParceiro(\''+p.uid+'\')">✓ Aprovar</button><button class="pb recus" onclick="recusarParceiro(\''+p.uid+'\')">Recusar</button>';
+      else if(p.status==='aprovado') acoes='<button class="pb susp" onclick="suspenderParceiro(\''+p.uid+'\')">Suspender</button>';
+      else acoes='<button class="pb aprov" onclick="aprovarParceiro(\''+p.uid+'\')">✓ Reativar</button>';
+      let dt='—'; try{ const sec=p.criadoEm&&p.criadoEm.seconds; if(sec) dt=new Date(sec*1000).toLocaleDateString('pt-BR'); }catch(e){}
+      const slug=escP(p.slug||'');
+      return '<div class="pcard"><div class="pchead"><div><b>'+escP(p.nome||'(sem nome)')+'</b> <span class="badge '+st.c+'">'+st.n+'</span></div><span class="pcdata">'+dt+'</span></div>'+
+        '<div class="pcinfo">'+
+          '<div><span class="pk">E-mail</span>'+escP(p.email||'—')+'</div>'+
+          '<div><span class="pk">Link</span><a href="https://moviki.com.br/p/'+encodeURIComponent(p.slug||'')+'" target="_blank" rel="noopener">/p/'+slug+'</a></div>'+
+          '<div><span class="pk">Pix</span><code>'+escP(p.pix||'—')+'</code> <button class="pcopy" onclick="copiarPixParc(\''+p.uid+'\',this)">copiar</button></div>'+
+        '</div><div class="pcacoes">'+acoes+'</div></div>';
+    }).join('');
+  }
+  window.aprovarParceiro=async uid=>{ try{ await updateDoc(doc(db,'parceiros',uid),{status:'aprovado'}); await carregarParceiros(); }catch(e){ alert('Não foi possível aprovar agora. Tente de novo.'); } };
+  window.recusarParceiro=async uid=>{ if(!confirm('Recusar este parceiro?'))return; try{ await updateDoc(doc(db,'parceiros',uid),{status:'recusado'}); await carregarParceiros(); }catch(e){ alert('Não foi possível agora.'); } };
+  window.suspenderParceiro=async uid=>{ if(!confirm('Suspender este parceiro?'))return; try{ await updateDoc(doc(db,'parceiros',uid),{status:'suspenso'}); await carregarParceiros(); }catch(e){ alert('Não foi possível agora.'); } };
+  window.copiarPixParc=(uid,btn)=>{ const p=parceirosMap[uid]; if(!p)return; copiar(p.pix||''); feedback(btn,'✓ copiado'); };
 
   /* convites */
   const LINK = { com:'https://moviki.com.br/comerciantes.html', par:'https://moviki.com.br/parceiros.html' };
