@@ -420,7 +420,24 @@
         '</div><div class="pcacoes">'+acoes+'</div></div>';
     }).join('');
   }
-  window.aprovarParceiro=async uid=>{ try{ await updateDoc(doc(db,'parceiros',uid),{status:'aprovado'}); await carregarParceiros(); }catch(e){ alert('Não foi possível aprovar agora. Tente de novo.'); } };
+  window.aprovarParceiro=async uid=>{
+    const antes=((parceirosMap[uid]||{}).status)||'';
+    try{
+      await updateDoc(doc(db,'parceiros',uid),{status:'aprovado'});
+      await carregarParceiros();
+      if(antes==='pendente') enviarBoasVindas(uid); // só na 1ª aprovação, não em reativação
+    }catch(e){ alert('Não foi possível aprovar agora. Tente de novo.'); }
+  };
+  // dispara o e-mail de boas-vindas pelo robô (seguro: valida admin no servidor). Fire-and-forget: se falhar, a aprovação já foi feita.
+  async function enviarBoasVindas(uid){
+    try{
+      const idToken=await auth.currentUser.getIdToken();
+      await fetch('https://moviki-robo.vercel.app/api/parceiro-aprovado',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ idToken, uid })
+      });
+    }catch(e){ /* e-mail é secundário; não trava a aprovação */ }
+  }
   window.recusarParceiro=async uid=>{ if(!confirm('Recusar este parceiro?'))return; try{ await updateDoc(doc(db,'parceiros',uid),{status:'recusado'}); await carregarParceiros(); }catch(e){ alert('Não foi possível agora.'); } };
   window.suspenderParceiro=async uid=>{ if(!confirm('Suspender este parceiro?'))return; try{ await updateDoc(doc(db,'parceiros',uid),{status:'suspenso'}); await carregarParceiros(); }catch(e){ alert('Não foi possível agora.'); } };
   window.copiarPixParc=(uid,btn)=>{ const p=parceirosMap[uid]; if(!p)return; copiar(p.pix||''); feedback(btn,'✓ copiado'); };
