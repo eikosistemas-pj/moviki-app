@@ -109,13 +109,19 @@
     <div class="card" id="cardKpi">
       <div class="titulo">Cadastros trazidos pelo seu link</div>
       <div class="kpi"><span class="n" id="kpiN">0</span><span class="t">negócios cadastrados pelo seu link</span></div>
-      <div class="status-nota">As comissões dos que virarem assinantes aparecem em “Comissões” em breve.</div>
+      <div class="status-nota">Cada um que assinar pelo seu link vira comissão recorrente pra você, logo abaixo.</div>
     </div>
 
-    <!-- comissões (em breve) -->
-    <div class="card soon">
-      <div class="titulo">Comissões <span class="tag">em breve</span></div>
-      <div class="status-nota">Aqui você vai acompanhar quanto já ganhou e solicitar o saque via Pix.</div>
+    <!-- comissões -->
+    <div class="card hide" id="cardComissao">
+      <div class="titulo">Comissões</div>
+      <div class="kpi"><span class="n" id="cReceber">R$ 0,00</span><span class="t">disponível pra saque</span></div>
+      <div class="dado" style="margin-top:8px"><span class="k">Total já ganho</span><span class="v" id="cTotal">R$ 0,00</span></div>
+      <div class="dado"><span class="k">Já pago a você</span><span class="v" id="cPago">R$ 0,00</span></div>
+      <div class="dado"><span class="k">Indicados que assinaram</span><span class="v" id="cPagantes">0</span></div>
+      <button class="btn" id="btnSaque" disabled>Solicitar saque via Pix</button>
+      <div class="status-nota" id="saqueNota">Saque mínimo de R$ 20,00. O pagamento cai na sua chave Pix cadastrada.</div>
+      <div class="aviso" id="avisoSaque"></div>
     </div>
 
     <!-- meus dados -->
@@ -143,7 +149,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, updateDoc, addDoc, collection, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -162,6 +168,8 @@
   const esc = s => (s==null?'':String(s)).replace(/[<>&"]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
 
   let MEU={};
+  let COM={ aReceber:0 }, saquePendente=false;
+  const brl = n => 'R$ ' + (Number(n)||0).toFixed(2).replace('.',',');
 
   function telas(qual){ ['carregando','login','semcadastro','painel'].forEach(t=> t===qual?show(t):hide(t)); }
 
@@ -174,7 +182,8 @@
       MEU = Object.assign({ uid:user.uid, email:user.email }, snap.data());
       render();
       telas('painel');
-      contarIndicacoes(); // não bloqueia
+      contarIndicacoes();   // não bloqueia
+      carregarComissoes();  // não bloqueia
     }catch(e){
       telas('login'); el('avisoLogin').textContent='Não foi possível carregar seus dados. Tente entrar de novo.';
     }
@@ -205,9 +214,9 @@
     };
     el('statusNota').textContent = notas[status] || '';
 
-    // link e KPI só fazem sentido quando aprovado
-    if(status==='aprovado'){ show('cardLink'); show('cardKpi'); }
-    else { hide('cardLink'); hide('cardKpi'); }
+    // link, KPI e comissões só fazem sentido quando aprovado
+    if(status==='aprovado'){ show('cardLink'); show('cardKpi'); show('cardComissao'); }
+    else { hide('cardLink'); hide('cardKpi'); hide('cardComissao'); }
   }
 
   async function contarIndicacoes(){
@@ -217,6 +226,70 @@
       const r = await getDocs(q);
       el('kpiN').textContent = r.size;
     }catch(e){ hide('cardKpi'); }
+  }
+
+  // Extrato de comissões: soma tudo que é do parceiro e não foi estornado.
+  async function carregarComissoes(){
+    if(MEU.status!=='aprovado'){ return; }
+    try{
+      const q = query(collection(db,'comissoes'), where('parceiroUid','==', MEU.uid));
+      const r = await getDocs(q);
+      let total=0, pago=0, receber=0; const lojistas=new Set();
+      r.forEach(d=>{
+        const c=d.data(); if(c.estornada) return;
+        const v=Number(c.valor)||0; total+=v;
+        if(c.pago) pago+=v; else receber+=v;
+        if(c.nivel===1 && c.lojistaUid) lojistas.add(c.lojistaUid);
+      });
+      COM.aReceber = Math.round(receber*100)/100;
+      el('cReceber').textContent = brl(receber);
+      el('cTotal').textContent   = brl(total);
+      el('cPago').textContent    = brl(pago);
+      el('cPagantes').textContent= String(lojistas.size);
+
+      // já existe um pedido de saque em aberto?
+      try{
+        const qs = query(collection(db,'saques'), where('parceiroUid','==', MEU.uid), where('status','==','solicitado'));
+        const rs = await getDocs(qs);
+        saquePendente = rs.size>0;
+      }catch(_){ saquePendente=false; }
+      atualizarBotaoSaque();
+    }catch(e){ hide('cardComissao'); }
+  }
+
+  function atualizarBotaoSaque(){
+    const b=el('btnSaque'), nota=el('saqueNota');
+    if(saquePendente){
+      b.disabled=true; b.textContent='Saque solicitado ✓';
+      nota.textContent='Você tem um saque em análise. Assim que for pago, aparece aqui.';
+    } else if(COM.aReceber < 20){
+      b.disabled=true; b.textContent='Solicitar saque via Pix';
+      nota.textContent='Saque mínimo de R$ 20,00. Continue divulgando para acumular.';
+    } else {
+      b.disabled=false; b.textContent='Solicitar saque via Pix';
+      nota.textContent='Você pode sacar '+ brl(COM.aReceber) +' na sua chave Pix cadastrada.';
+    }
+  }
+
+  async function solicitarSaque(){
+    el('avisoSaque').className='aviso';
+    if(saquePendente || COM.aReceber < 20) return;
+    if(!MEU.pix || MEU.pix.length<3){ el('avisoSaque').textContent='Cadastre sua chave Pix em “Meus dados” antes de sacar.'; return; }
+    const b=el('btnSaque'); b.disabled=true; b.textContent='Enviando…';
+    try{
+      await addDoc(collection(db,'saques'), {
+        parceiroUid: MEU.uid,
+        valorSolicitado: COM.aReceber,
+        status: 'solicitado',
+        pedidoEm: serverTimestamp()
+      });
+      saquePendente=true; atualizarBotaoSaque();
+      el('avisoSaque').className='aviso ok';
+      el('avisoSaque').textContent='Saque solicitado! O pagamento é feito no seu Pix em até 5 dias úteis.';
+    }catch(e){
+      b.disabled=false; b.textContent='Solicitar saque via Pix';
+      el('avisoSaque').textContent='Não foi possível solicitar agora. Tente de novo.';
+    }
   }
 
   // ---- login ----
@@ -248,6 +321,7 @@
 
   el('sair').onclick = ()=> signOut(auth);
   el('sair2').onclick = ()=> signOut(auth);
+  el('btnSaque').onclick = solicitarSaque;
 
   // ---- link: copiar / compartilhar ----
   function urlCompleta(){ return 'https://moviki.com.br/p/' + (MEU.slug||''); }
