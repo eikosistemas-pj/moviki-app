@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com; connect-src 'self' https://*.googleapis.com https://www.google.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki-robo.vercel.app; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="robots" content="noindex,nofollow">
@@ -197,7 +197,7 @@
       <button class="navItem" data-pg="usuarios" onclick="abrir('usuarios')"><span class="ic">👥</span>Usuários</button>
       <button class="navItem" data-pg="parceiros" onclick="abrir('parceiros')"><span class="ic">📋</span>Parceiros<span class="bad" id="badgeParceiros" style="display:none"></span></button>
       <button class="navItem" data-pg="relatorios" onclick="abrir('relatorios')"><span class="ic">📈</span>Relatórios</button>
-      <button class="navItem" data-pg="comissoes" onclick="abrir('comissoes')"><span class="ic">💰</span>Comissões<span class="bad">EM BREVE</span></button>
+      <button class="navItem" data-pg="comissoes" onclick="abrir('comissoes')"><span class="ic">💰</span>Comissões<span class="bad" id="badgeComissoes" style="display:none"></span></button>
       <button class="navItem" onclick="verSite()"><span class="ic">🌐</span>Ver o site</button>
     </nav>
     <div class="sbBaixo">
@@ -274,11 +274,7 @@
 
       <!-- COMISSÕES -->
       <section id="pg-comissoes" class="pagina escondido">
-        <div class="painelBox emBreve">
-          <div class="big">💰</div>
-          <h3>Comissões — em breve</h3>
-          <p>Este módulo depende do sistema de afiliados (rastrear quem indicou quem), que é o próximo grande passo da construção. Quando ele estiver pronto, aqui você verá suas indicações e o que pagar no Pix.</p>
-        </div>
+        <div id="comBox"><div class="vazio">Carregando…</div></div>
       </section>
 
     </div>
@@ -324,7 +320,7 @@
     if(!user){ mostrarTela('login'); return; }
     const email=(user.email||'').toLowerCase();
     if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email)){
-      el('donoEmail').textContent=user.email; abrir('inicio'); mostrarTela('app'); carregarDashboard(); carregarParceiros();
+      el('donoEmail').textContent=user.email; abrir('inicio'); mostrarTela('app'); carregarDashboard(); carregarParceiros(); carregarComissoes();
     } else { el('restritoEmail').textContent=user.email; mostrarTela('restrito'); }
   });
 
@@ -333,6 +329,7 @@
     const alvo=el('pg-'+pg); if(alvo)alvo.classList.remove('escondido');
     document.querySelectorAll('.navItem').forEach(n=>n.classList.toggle('ativo', n.dataset.pg===pg));
     el('pageTitle').textContent = TITULOS[pg]||'';
+    if(pg==='comissoes') carregarComissoes();
     const c=document.querySelector('.conteudo'); if(c)c.scrollTop=0; window.scrollTo({top:0,behavior:'smooth'});
   };
   window.verSite = () => window.open('https://moviki.com.br','_blank');
@@ -427,6 +424,86 @@
   window.recusarParceiro=async uid=>{ if(!confirm('Recusar este parceiro?'))return; try{ await updateDoc(doc(db,'parceiros',uid),{status:'recusado'}); await carregarParceiros(); }catch(e){ alert('Não foi possível agora.'); } };
   window.suspenderParceiro=async uid=>{ if(!confirm('Suspender este parceiro?'))return; try{ await updateDoc(doc(db,'parceiros',uid),{status:'suspenso'}); await carregarParceiros(); }catch(e){ alert('Não foi possível agora.'); } };
   window.copiarPixParc=(uid,btn)=>{ const p=parceirosMap[uid]; if(!p)return; copiar(p.pix||''); feedback(btn,'✓ copiado'); };
+
+  /* ===== comissões / saques ===== */
+  let saquePix={};
+  async function carregarComissoes(){
+    const box=el('comBox'); if(!box) return;
+    box.innerHTML='<div class="vazio">Carregando…</div>';
+    let comissoes=[], saques=[], pmap={}; saquePix={};
+    try{
+      const [cs, ss, ps] = await Promise.all([
+        getDocs(collection(db,'comissoes')),
+        getDocs(collection(db,'saques')),
+        getDocs(collection(db,'parceiros')),
+      ]);
+      cs.forEach(d=>comissoes.push(d.data()));
+      ss.forEach(d=>saques.push(Object.assign({id:d.id}, d.data())));
+      ps.forEach(d=>{ pmap[d.id]=d.data(); });
+    }catch(e){ box.innerHTML='<div class="vazio">Não foi possível carregar as comissões agora.</div>'; return; }
+
+    // resumo por parceiro (ignora estornadas)
+    const resumo={};
+    comissoes.forEach(c=>{ if(c.estornada) return; const u=c.parceiroUid; if(!u) return;
+      const r=resumo[u]||(resumo[u]={receber:0,pago:0,total:0});
+      const v=Number(c.valor)||0; r.total+=v; if(c.pago) r.pago+=v; else r.receber+=v; });
+
+    const pend=saques.filter(s=>s.status==='solicitado')
+      .sort((a,b)=>((a.pedidoEm&&a.pedidoEm.seconds||0)-(b.pedidoEm&&b.pedidoEm.seconds||0)));
+    const bdg=el('badgeComissoes'); if(bdg){ if(pend.length){bdg.textContent=pend.length;bdg.style.display='';}else bdg.style.display='none'; }
+
+    let html='<h3 style="font-size:15px;margin:2px 0 12px">Pedidos de saque</h3>';
+    if(!pend.length){ html+='<div class="vazio">Nenhum saque solicitado no momento.</div>'; }
+    else{
+      html+=pend.map(s=>{
+        const p=pmap[s.parceiroUid]||{}; saquePix[s.id]=p.pix||'';
+        const nome=escP(p.nome||'(parceiro)'), pix=escP(p.pix||'—'), val=brl(Number(s.valorSolicitado)||0);
+        let dt='—'; try{ const sec=s.pedidoEm&&s.pedidoEm.seconds; if(sec) dt=new Date(sec*1000).toLocaleDateString('pt-BR'); }catch(e){}
+        return '<div class="pcard"><div class="pchead"><div><b>'+nome+'</b> <span class="badge s-pend">Saque pedido</span></div><span class="pcdata">'+dt+'</span></div>'+
+          '<div class="pcinfo">'+
+            '<div><span class="pk">Valor</span><b>'+val+'</b></div>'+
+            '<div><span class="pk">Pix</span><code>'+pix+'</code> <button class="pcopy" onclick="copiarPixSaque(\''+s.id+'\',this)">copiar</button></div>'+
+          '</div>'+
+          '<div class="pcinfo"><div style="flex:1 1 100%"><span class="pk">Comprovante (opcional)</span><input id="comp_'+s.id+'" type="text" placeholder="ID ou observação do Pix" style="width:100%;margin-top:4px;padding:9px 11px;border:1px solid #cbd5e1;border-radius:8px;font-family:inherit;font-size:13px"></div></div>'+
+          '<div class="pcacoes"><button class="pb aprov" onclick="marcarPago(\''+s.id+'\',this)">✓ Marcar como pago</button></div>'+
+          '<div id="msg_'+s.id+'" style="font-size:12.5px;margin-top:8px"></div>'+
+        '</div>';
+      }).join('');
+    }
+
+    const linhas=Object.keys(resumo).map(u=>({r:resumo[u],nome:(pmap[u]&&pmap[u].nome)||'(parceiro)'}))
+      .filter(x=>x.r.total>0).sort((a,b)=>b.r.receber-a.r.receber);
+    html+='<h3 style="font-size:15px;margin:22px 0 12px">Comissões por parceiro</h3>';
+    if(!linhas.length){ html+='<div class="vazio">Nenhuma comissão ainda. Aparece aqui quando um indicado pagar.</div>'; }
+    else{
+      html+='<div class="pcard" style="padding:6px 14px">'+
+        '<div style="display:flex;justify-content:space-between;font-size:12px;color:#64748b;padding:8px 0;border-bottom:1px solid #e2e8f0"><span style="flex:1">Parceiro</span><span style="width:104px;text-align:right">A receber</span><span style="width:104px;text-align:right">Já pago</span></div>'+
+        linhas.map(x=>'<div style="display:flex;justify-content:space-between;font-size:14px;padding:10px 0;border-bottom:1px solid #f1f5f9"><span style="flex:1">'+escP(x.nome)+'</span><span style="width:104px;text-align:right;font-weight:700;color:#0d9488">'+brl(x.r.receber)+'</span><span style="width:104px;text-align:right;color:#64748b">'+brl(x.r.pago)+'</span></div>').join('')+
+      '</div>';
+    }
+    box.innerHTML=html;
+  }
+  window.copiarPixSaque=(id,btn)=>{ copiar(saquePix[id]||''); feedback(btn,'✓ copiado'); };
+  window.marcarPago=async (saqueId,btn)=>{
+    if(!confirm('Confirmar que você JÁ fez o Pix para este parceiro?')) return;
+    const msg=el('msg_'+saqueId); if(msg){ msg.style.color='#64748b'; msg.textContent='Processando…'; }
+    btn.disabled=true; const t=btn.textContent; btn.textContent='Processando…';
+    try{
+      const comp=((el('comp_'+saqueId)&&el('comp_'+saqueId).value)||'').trim();
+      const idToken=await auth.currentUser.getIdToken();
+      const r=await fetch('https://moviki-robo.vercel.app/api/pagar-saque',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ idToken, saqueId, comprovante:comp })
+      });
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok || !j.ok){ throw new Error(j.erro||'falhou'); }
+      if(msg){ msg.style.color='#0d9488'; msg.textContent='Pago! '+brl(Number(j.valorPago)||0)+' quitado.'; }
+      setTimeout(carregarComissoes, 900);
+    }catch(e){
+      btn.disabled=false; btn.textContent=t;
+      if(msg){ msg.style.color='#dc2626'; msg.textContent='Não deu certo: '+(e.message||'tente de novo')+'.'; }
+    }
+  };
 
   /* convites */
   const LINK = { com:'https://moviki.com.br/comerciantes.html', par:'https://moviki.com.br/parceiros.html' };
