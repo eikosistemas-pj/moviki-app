@@ -105,6 +105,16 @@
       <div class="aviso ok" id="avisoLink"></div>
     </div>
 
+    <!-- LINK: indicar outro parceiro (níveis 2/3) -->
+    <div class="card" id="cardLinkParc">
+      <div class="titulo">Indicar outro parceiro</div>
+      <div class="status-nota" style="margin-bottom:12px">Chame alguém pra ser parceiro também. Se a pessoa se cadastrar pelo seu link, você ganha um bônus quando os indicados dela assinarem.</div>
+      <div class="linkbox" id="meuLinkParc">moviki.com.br/pp/…</div>
+      <button class="btn" id="btnCopiarP">Copiar link</button>
+      <button class="btn wpp" id="btnWppP">Compartilhar no WhatsApp</button>
+      <div class="aviso ok" id="avisoLinkP"></div>
+    </div>
+
     <!-- KPI indicações -->
     <div class="card" id="cardKpi">
       <div class="titulo">Cadastros trazidos pelo seu link</div>
@@ -200,6 +210,7 @@
 
     const link = 'moviki.com.br/p/' + slug;
     el('meuLink').textContent = link;
+    el('meuLinkParc').textContent = 'moviki.com.br/pp/' + slug;
 
     const badge = el('badge');
     badge.className = 'badge ' + status;
@@ -215,8 +226,8 @@
     el('statusNota').textContent = notas[status] || '';
 
     // link, KPI e comissões só fazem sentido quando aprovado
-    if(status==='aprovado'){ show('cardLink'); show('cardKpi'); show('cardComissao'); }
-    else { hide('cardLink'); hide('cardKpi'); hide('cardComissao'); }
+    if(status==='aprovado'){ show('cardLink'); show('cardLinkParc'); show('cardKpi'); show('cardComissao'); }
+    else { hide('cardLink'); hide('cardLinkParc'); hide('cardKpi'); hide('cardComissao'); }
   }
 
   async function contarIndicacoes(){
@@ -337,6 +348,17 @@
     const dados={ title:'Moviki', text:'Coloque seu negócio no mapa com o Moviki', url:urlCompleta() };
     if(navigator.share){ try{ await navigator.share(dados); }catch(_){} }
     else { try{ await navigator.clipboard.writeText(urlCompleta()); el('avisoLink').textContent='Link copiado!'; setTimeout(()=>el('avisoLink').textContent='',2500);}catch(_){}}
+  };
+
+  // ---- link de indicar OUTRO parceiro (upline níveis 2/3) ----
+  function urlParceiro(){ return 'https://moviki.com.br/pp/' + (MEU.slug||''); }
+  el('btnCopiarP').onclick = async ()=>{
+    try{ await navigator.clipboard.writeText(urlParceiro()); el('avisoLinkP').textContent='Link copiado!'; setTimeout(()=>el('avisoLinkP').textContent='',2500); }
+    catch(_){ el('avisoLinkP').textContent = urlParceiro(); }
+  };
+  el('btnWppP').onclick = ()=>{
+    const txt = 'Vem ser parceiro do Moviki comigo e ganhe comissão indicando negócios 👉 ' + urlParceiro();
+    window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank', 'noopener');
   };
 
   // ---- editar nome / pix ----
