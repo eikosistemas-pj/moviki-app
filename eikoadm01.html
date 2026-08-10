@@ -408,7 +408,7 @@
       const st=STAT[p.status]||{n:(p.status||'—'),c:'s-pend'};
       let acoes='';
       if(p.status==='pendente') acoes='<button class="pb aprov" onclick="aprovarParceiro(\''+p.uid+'\')">✓ Aprovar</button><button class="pb recus" onclick="recusarParceiro(\''+p.uid+'\')">Recusar</button>';
-      else if(p.status==='aprovado') acoes='<button class="pb susp" onclick="suspenderParceiro(\''+p.uid+'\')">Suspender</button>';
+      else if(p.status==='aprovado') acoes='<button class="pb aprov" style="background:linear-gradient(135deg,#0066FF,#0aa2c8)" onclick="reenviarBoasVindas(\''+p.uid+'\',this)">✉️ Reenviar boas-vindas</button><button class="pb susp" onclick="suspenderParceiro(\''+p.uid+'\')">Suspender</button>';
       else acoes='<button class="pb aprov" onclick="aprovarParceiro(\''+p.uid+'\')">✓ Reativar</button>';
       let dt='—'; try{ const sec=p.criadoEm&&p.criadoEm.seconds; if(sec) dt=new Date(sec*1000).toLocaleDateString('pt-BR'); }catch(e){}
       const slug=escP(p.slug||'');
@@ -417,7 +417,7 @@
           '<div><span class="pk">E-mail</span>'+escP(p.email||'—')+'</div>'+
           '<div><span class="pk">Link</span><a href="https://moviki.com.br/p/'+encodeURIComponent(p.slug||'')+'" target="_blank" rel="noopener">/p/'+slug+'</a></div>'+
           '<div><span class="pk">Pix</span><code>'+escP(p.pix||'—')+'</code> <button class="pcopy" onclick="copiarPixParc(\''+p.uid+'\',this)">copiar</button></div>'+
-        '</div><div class="pcacoes">'+acoes+'</div></div>';
+        '</div><div class="pcacoes">'+acoes+'</div><div id="bv_'+p.uid+'" style="font-size:12.5px;margin-top:8px"></div></div>';
     }).join('');
   }
   window.aprovarParceiro=async uid=>{
@@ -428,6 +428,36 @@
       if(antes==='pendente') enviarBoasVindas(uid); // só na 1ª aprovação, não em reativação
     }catch(e){ alert('Não foi possível aprovar agora. Tente de novo.'); }
   };
+  // reenvio MANUAL com feedback na tela (mostra sucesso ou o motivo exato do erro)
+  window.reenviarBoasVindas=async(uid,btn)=>{
+    const msg=el('bv_'+uid);
+    btn.disabled=true; const t=btn.textContent; btn.textContent='Enviando…';
+    if(msg){ msg.style.color='#64748b'; msg.textContent='Enviando…'; }
+    try{
+      const idToken=await auth.currentUser.getIdToken();
+      const r=await fetch('https://moviki-robo.vercel.app/api/parceiro-aprovado',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ idToken, uid, forcar:true })
+      });
+      const j=await r.json().catch(()=>({}));
+      if(r.ok && j.ok){
+        if(msg){ msg.style.color='#0d9488'; msg.textContent='E-mail de boas-vindas enviado ✓'; }
+      } else {
+        let m='Não deu certo. Tente de novo.';
+        if(j.motivo==='sem_config')      m='Falta a chave do provedor de e-mail (RESEND_API_KEY) nas variáveis do Vercel (projeto moviki-robo).';
+        else if(r.status===404)          m='Endpoint não encontrado — confira se parceiro-aprovado.js está na pasta "api" do repo moviki-robo.';
+        else if(r.status===502)          m='O provedor de e-mail recusou o envio — provável domínio ainda não verificado (ou o remetente não bate com o domínio verificado).';
+        else if(r.status===403)          m='Sem permissão: seu usuário não está na coleção admins do banco.';
+        else if(r.status===401)          m='Sessão expirada — saia e entre de novo.';
+        else if(j.erro)                  m='Erro: '+j.erro+'.';
+        if(msg){ msg.style.color='#dc2626'; msg.textContent=m; }
+      }
+    }catch(e){
+      if(msg){ msg.style.color='#dc2626'; msg.textContent='Não foi possível falar com o servidor (verifique a conexão).'; }
+    }
+    btn.disabled=false; btn.textContent=t;
+  };
+
   // dispara o e-mail de boas-vindas pelo robô (seguro: valida admin no servidor). Fire-and-forget: se falhar, a aprovação já foi feita.
   async function enviarBoasVindas(uid){
     try{
