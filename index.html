@@ -15,6 +15,17 @@
 <meta name="theme-color" content="#0D1B2A">
 <style>
   :root{--ciano:#00D4FF;--azul:#0066FF;--escuro:#0D1B2A;--claro:#F2F5F9;--card:#13263d;--card-borda:#223a5c;--campo:#0d1c30;}
+  .bannerTrial{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(0,102,255,.18),rgba(0,212,255,.12));border:1px solid rgba(0,212,255,.45);border-radius:12px;padding:13px 15px;margin-bottom:14px;flex-wrap:wrap;}
+  .bannerTrial.urgente{background:rgba(255,159,64,.14);border-color:rgba(255,159,64,.55);}
+  .bannerTrial.fim{background:rgba(231,76,60,.15);border-color:rgba(231,76,60,.55);}
+  .bannerTrial.escondido{display:none;}
+  .bannerTrial .btTexto{flex:1;min-width:180px;}
+  .bannerTrial .btTitulo{font-weight:700;font-size:15px;color:#eaf6ff;margin-bottom:3px;}
+  .bannerTrial.urgente .btTitulo{color:#ffe0b3;}
+  .bannerTrial.fim .btTitulo{color:#ffcaca;}
+  .bannerTrial .btSub{font-size:13px;line-height:1.45;color:#b9cbe0;}
+  .bannerTrial .btBtn{flex-shrink:0;background:linear-gradient(135deg,var(--ciano),var(--azul));color:#001018;font-weight:700;border:none;border-radius:10px;padding:11px 18px;font-size:14px;cursor:pointer;font-family:inherit;}
+  .bannerTrial .btBtn:hover{filter:brightness(1.08);}
   .bannerVerif{background:rgba(255,193,64,.12);border:1px solid rgba(255,193,64,.4);color:#ffe0a3;border-radius:10px;padding:13px 15px;margin-bottom:14px;font-size:14px;}
   .bannerVerif.ok{background:rgba(46,204,113,.12);border-color:rgba(46,204,113,.4);color:#8ff0b5;}
   .bvTexto{margin-bottom:11px;line-height:1.5;}
@@ -289,6 +300,7 @@
         </button>
         <div class="onbFinal" id="onbFinal"></div>
       </div>
+        <div id="bannerTrial" class="bannerTrial escondido"></div>
         <div class="grid">
           <button type="button" class="gcard" onclick="irSecao('perfil')"><span class="gcIcon i-perfil">👤</span><span class="gcLabel">Perfil</span></button>
           <button type="button" class="gcard" id="gc-cardapio" onclick="irSecao('cardapio')"><span class="gcIcon i-card">🍽️</span><span class="gcLabel">Cardápio</span></button>
@@ -542,6 +554,27 @@
   function mostrarAvisoPlano(){const av=el('avisoPlano');if(!av)return;av.classList.remove('escondido');if(_avisoPlanoTimer)clearTimeout(_avisoPlanoTimer);_avisoPlanoTimer=setTimeout(()=>av.classList.add('escondido'),5000);}
   window.abrirPlano=function(){renderStatusPlano();el('modalPlano').classList.remove('escondido');};
   window.fecharPlano=function(){el('modalPlano').classList.add('escondido');};
+  function mostrarBannerTrial(){
+    const b=el('bannerTrial');if(!b)return;
+    const d=dadosAssinatura;
+    // Só aparece pra quem está em teste (trial). Quem paga (periodo mensal/anual) nunca vê.
+    if(!d||d.periodo!=='trial'||!d.vence_em){b.className='bannerTrial escondido';return;}
+    const dias=Math.ceil((d.vence_em.toMillis()-Date.now())/86400000);
+    if(dias>7){b.className='bannerTrial escondido';return;} // cedo demais, não incomoda
+    let urg='',titulo='',txt='';
+    if(dias<=0){
+      urg='fim';titulo='⛔ Seu teste grátis acabou';
+      txt='Reative agora pra voltar com seu cardápio, promoções e eventos no ar — e no Premium sua logo aparece no mapa.';
+    }else if(dias<=2){
+      urg='urgente';titulo='⏳ Seu teste grátis acaba em '+dias+(dias===1?' dia':' dias');
+      txt='Assine pra não perder seu cardápio, promoções e eventos. No Premium, sua logo ainda aparece no mapa.';
+    }else{
+      titulo='⏳ Seu teste grátis acaba em '+dias+' dias';
+      txt='Continue com o Moviki e mantenha tudo no ar. No Premium, sua logo aparece no mapa e você ganha destaque.';
+    }
+    b.className='bannerTrial'+(urg?(' '+urg):'');
+    b.innerHTML='<div class="btTexto"><div class="btTitulo">'+titulo+'</div><div class="btSub">'+txt+'</div></div><button type="button" class="btBtn" onclick="abrirPlano()">Assinar agora</button>';
+  }
   function renderStatusPlano(){
     const s=el('mpStatus');if(!s)return;
     if(planoPainel==='pro'||planoPainel==='premium'){
@@ -793,6 +826,7 @@
       await carregarPlanoPainel(user.uid);
       if(!dadosAssinatura){ const _t=await garantirTrial(); if(_t){ await carregarPlanoPainel(user.uid); } }
       aplicarPlanoNasAbas();
+      mostrarBannerTrial();
     }else{
       el('painel').style.display='none';el('formArea').style.display='block';el('box').classList.remove('largo');
       el('email').value='';el('senha').value='';el('btnAcao').disabled=false;trocarAba('entrar');
