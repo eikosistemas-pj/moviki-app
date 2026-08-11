@@ -386,13 +386,17 @@
       <div class="tabConteudo escondido" id="tab-local">
         <div class="gps" id="gpsInfo">📍 Localização ainda não definida.</div>
         <button class="btn secundario" onclick="pegarLocalizacao()">📍 Atualizar minha localização</button>
-        <div class="logoCard" style="margin-top:14px;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px">
-          <label style="font-weight:600;display:block;margin-bottom:4px">🖼️ Logo no mapa</label>
-          <p style="font-size:13px;color:#9fb3d0;margin:0 0 10px;line-height:1.4">Sua logo aparece dentro do seu pino no mapa. <b>Disponível no plano Premium.</b></p>
-          <div id="logoPreview" style="margin-bottom:10px"></div>
-          <input id="logoInput" type="file" accept="image/*" style="display:none" onchange="enviarLogo(this)">
-          <button type="button" class="btn secundario" onclick="document.getElementById('logoInput').click()">📤 Escolher logo</button>
-          <div id="logoMsg" style="font-size:13px;margin-top:8px"></div>
+        <div class="logoCard" style="margin-top:14px;border:1px solid rgba(0,212,255,.35);border-radius:12px;padding:16px;background:rgba(0,102,255,.08)">
+          <label style="font-weight:700;display:block;margin-bottom:6px;font-size:15px">🖼️ Destaque seu ponto com a sua logo no mapa</label>
+          <p style="font-size:13.5px;color:#cfe0f5;margin:0 0 10px;line-height:1.5">No meio de vários pinos iguais, o <b>seu aparece com a sua marca</b> — as pessoas reconhecem seu negócio de longe, param o olhar no seu ponto e clicam mais. É a diferença entre passar batido e ser <b>notado</b>.</p>
+          <p style="font-size:13px;color:#9fb3d0;margin:0 0 12px;line-height:1.4">✨ A logo no mapa é um recurso do plano <b>Premium</b>. Assine e ative agora — ou já deixe sua logo pronta aqui embaixo pra ela entrar no ar assim que você assinar.</p>
+          <button type="button" class="btn" style="width:100%;margin-bottom:12px" onclick="abrirPlano()">✨ Quero minha logo no mapa — ver o Premium</button>
+          <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
+            <div id="logoPreview" style="margin-bottom:10px"></div>
+            <input id="logoInput" type="file" accept="image/*" style="display:none" onchange="enviarLogo(this)">
+            <button type="button" class="btn secundario" onclick="document.getElementById('logoInput').click()">📤 Escolher / enviar minha logo</button>
+            <div id="logoMsg" style="font-size:13px;margin-top:8px"></div>
+          </div>
         </div>
       </div>
 
