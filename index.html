@@ -120,9 +120,20 @@
   .catCab{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
   .catCab .cat-nome{font-weight:600;}
   .rmv{background:none;border:none;color:#ff8080;font-size:18px;cursor:pointer;padding:0 4px;flex-shrink:0;line-height:1;}
-  .prodRow{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
-  .prodRow .p-nome{flex:1;padding:10px 12px;font-size:14px;}
-  .prodRow .p-preco{width:88px;flex-shrink:0;padding:10px 10px;font-size:14px;}
+  .prodRow{background:rgba(255,255,255,.02);border:1px solid var(--card-borda);border-radius:10px;padding:9px 9px 10px;margin-bottom:9px;}
+  .prodLinha{display:flex;gap:8px;align-items:center;}
+  .prodLinha .p-nome{flex:1;padding:10px 12px;font-size:14px;}
+  .prodLinha .p-preco{width:88px;flex-shrink:0;padding:10px 10px;font-size:14px;}
+  .prodGaleria{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:9px;}
+  .fSlot{width:56px;height:56px;border-radius:9px;position:relative;flex-shrink:0;}
+  .fSlot img{width:100%;height:100%;object-fit:cover;border-radius:9px;border:1px solid #2b405a;display:block;}
+  .fSlot .rmF{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:#e74c3c;color:#fff;border:2px solid var(--campo);font-size:11px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .fAdd{width:56px;height:56px;border-radius:9px;border:1.5px dashed #3a557a;background:none;color:#8fa6c4;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;flex-shrink:0;font-family:inherit;}
+  .fAdd:disabled{opacity:.55;cursor:default;}
+  .fHint{font-size:11.5px;color:#7f95b3;width:100%;}
+  .notaFotos{background:rgba(255,195,64,.10);border:1px solid rgba(255,195,64,.42);color:#ffe6b3;padding:9px 12px;border-radius:9px;margin:0 2px 12px;font-size:13px;line-height:1.5;}
+  .notaFotos b{color:#ffd479;}
+  .notaFotos button{margin-top:8px;background:linear-gradient(135deg,var(--ciano),var(--azul));color:#04121f;border:none;border-radius:8px;padding:7px 14px;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
   .acabLbl{display:flex;align-items:center;gap:5px;font-size:12px;color:#c7d6ea;white-space:nowrap;cursor:pointer;}
   .acabLbl input{width:auto;}
   .addProd{background:none;border:1px dashed var(--card-borda);color:#8fa6c4;border-radius:8px;padding:8px;font-size:12px;font-weight:600;cursor:pointer;width:100%;margin-top:4px;}
@@ -375,6 +386,7 @@
 
       <!-- Cardápio -->
       <div class="tabConteudo escondido" id="tab-cardapio">
+        <div id="notaFotos" class="notaFotos"></div>
         <div class="secTitulo"><label>Categorias e produtos</label><button class="addBtn" onclick="adicionarCategoria()">+ Categoria</button></div>
         <div id="listaCategorias"></div>
         <div id="vazioCat" class="vazioCard">Nenhuma categoria ainda. Crie uma (ex.: Caldos, Lanches, Bebidas).</div>
@@ -549,6 +561,7 @@
     const libera=planoPainel==='pro'||planoPainel==='premium';
     ['cardapio','promocoes','eventos'].forEach(t=>{const b=document.querySelector('.tab[data-tab="'+t+'"]');if(b)b.classList.toggle('travada',!libera);});
     if(libera){const av=el('avisoPlano');if(av)av.classList.add('escondido');}
+    atualizarNotaFotos();
   }
   let _avisoPlanoTimer=null;
   function mostrarAvisoPlano(){const av=el('avisoPlano');if(!av)return;av.classList.remove('escondido');if(_avisoPlanoTimer)clearTimeout(_avisoPlanoTimer);_avisoPlanoTimer=setTimeout(()=>av.classList.add('escondido'),5000);}
@@ -685,12 +698,84 @@
 
   /* ---- CARDÁPIO (categorias -> produtos) ---- */
   function vazioCat(){el('vazioCat').classList.toggle('escondido',el('listaCategorias').children.length>0);}
-  function novaProdRow(catBloco,nome='',preco='',acabando=false){
+  function novaProdRow(catBloco,nome='',preco='',acabando=false,fotos=[]){
     const r=document.createElement('div');r.className='prodRow';
-    r.innerHTML='<input class="p-nome" type="text" placeholder="Produto"><input class="p-preco" type="text" placeholder="R$"><label class="acabLbl"><input type="checkbox" class="p-acab"> acabando</label><button class="rmv">✕</button>';
+    r._fotos=Array.isArray(fotos)?fotos.filter(Boolean).slice(0,3):[];
+    r.innerHTML='<div class="prodLinha"><input class="p-nome" type="text" placeholder="Produto"><input class="p-preco" type="text" placeholder="R$"><label class="acabLbl"><input type="checkbox" class="p-acab"> acabando</label><button class="rmv" type="button">✕</button></div><div class="prodGaleria"></div>';
     r.querySelector('.p-nome').value=nome;r.querySelector('.p-preco').value=preco;r.querySelector('.p-acab').checked=!!acabando;
     r.querySelector('.rmv').onclick=()=>r.remove();
+    renderFotos(r);
     catBloco.querySelector('.listaProdutos').appendChild(r);
+  }
+  function renderFotos(r){
+    const g=r.querySelector('.prodGaleria'); if(!g)return;
+    g.innerHTML='';
+    (r._fotos||[]).forEach((url,i)=>{
+      const s=document.createElement('div');s.className='fSlot';
+      const im=document.createElement('img');im.src=url;im.alt='foto do produto';
+      const rm=document.createElement('button');rm.type='button';rm.className='rmF';rm.title='Remover';rm.textContent='✕';
+      rm.onclick=()=>{r._fotos.splice(i,1);renderFotos(r);};
+      s.appendChild(im);s.appendChild(rm);g.appendChild(s);
+    });
+    if((r._fotos||[]).length<3){
+      const add=document.createElement('button');add.type='button';add.className='fAdd';
+      add.innerHTML='<span style="font-size:17px;line-height:1">＋</span><span>Foto</span>';
+      add.onclick=()=>escolherFoto(r,add);
+      g.appendChild(add);
+    }
+    const hint=document.createElement('div');hint.className='fHint';
+    hint.textContent=(r._fotos&&r._fotos.length)?(r._fotos.length+' de 3 fotos'):'Até 3 fotos por produto';
+    g.appendChild(hint);
+  }
+  function escolherFoto(r,addBtn){
+    const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+    inp.onchange=async function(){
+      const file=inp.files&&inp.files[0]; if(!file)return;
+      if(!/^image\//.test(file.type)){toast('Escolha um arquivo de imagem.',true);return;}
+      if(addBtn){addBtn.disabled=true;addBtn.innerHTML='<span style="font-size:10.5px">Enviando…</span>';}
+      try{
+        const dataUrl=await comprimirQuadrado(file,720);
+        const idToken=await usuarioAtual.getIdToken();
+        const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
+        const j=await resp.json().catch(function(){return {};});
+        if(resp.ok&&j.ok&&j.url){ r._fotos.push(j.url); renderFotos(r); toast('Foto adicionada. Não esqueça de Salvar.'); }
+        else{ var m='Não deu certo. Tente de novo.'; if(j&&j.motivo==='sem_config')m='Config de imagem pendente no servidor.'; else if(resp.status===413)m='Imagem muito grande. Tente outra.'; else if(resp.status===401)m='Sessão expirada — saia e entre de novo.'; toast(m,true); renderFotos(r); }
+      }catch(e){ toast('Falha ao enviar a foto. Confira a conexão.',true); renderFotos(r); }
+    };
+    inp.click();
+  }
+  function comprimirQuadrado(file,size){
+    return new Promise(function(resolve,reject){
+      var img=new Image(), rd=new FileReader();
+      rd.onload=function(){ img.onload=function(){
+        var s=size||720, cv=document.createElement('canvas'); cv.width=s; cv.height=s;
+        var ctx=cv.getContext('2d');
+        var m=Math.min(img.width,img.height), sx=(img.width-m)/2, sy=(img.height-m)/2;
+        ctx.drawImage(img,sx,sy,m,m,0,0,s,s);
+        resolve(cv.toDataURL('image/jpeg',0.82));
+      }; img.onerror=function(){reject(new Error('img'));}; img.src=rd.result; };
+      rd.onerror=function(){reject(new Error('read'));}; rd.readAsDataURL(file);
+    });
+  }
+  function toast(msg,erro){
+    var t=document.getElementById('mvToast');
+    if(!t){t=document.createElement('div');t.id='mvToast';t.style.cssText='position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:99999;max-width:88%;padding:12px 18px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;transition:opacity .2s;pointer-events:none;text-align:center;';document.body.appendChild(t);}
+    t.style.background=erro?'#e74c3c':'#1f8f5f';t.style.color='#fff';t.textContent=msg;
+    t.style.opacity='1'; clearTimeout(t._h); t._h=setTimeout(function(){t.style.opacity='0';},2800);
+  }
+  function estadoFotos(){
+    const d=dadosAssinatura; if(!d)return 'bloqueado';
+    const ativo=d.ativo===true&&(!d.vence_em||d.vence_em.toMillis()>Date.now());
+    if(ativo&&(d.plano==='premium'||d.plano==='enterprise'))return 'premium';
+    if(ativo&&d.periodo==='trial')return 'trial';
+    return 'bloqueado';
+  }
+  function atualizarNotaFotos(){
+    const n=el('notaFotos'); if(!n)return;
+    const e=estadoFotos();
+    if(e==='premium'){ n.innerHTML='📸 <b>Fotos ativas.</b> As fotos dos seus produtos aparecem no seu site pra quem visita — capriche pra dar água na boca.'; }
+    else if(e==='trial'){ n.innerHTML='📸 <b>No teste grátis suas fotos já aparecem no site!</b> Aproveite pra caprichar nas fotos dos produtos. Pra elas continuarem aparecendo quando o teste acabar, assine o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
+    else { n.innerHTML='📸 <b>Fotos são um recurso do Premium.</b> Pode adicionar as fotos agora — elas passam a aparecer no seu site assim que você assinar o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
   }
   window.adicionarCategoria=function(nome='',produtos=[]){
     const b=document.createElement('div');b.className='catBloco';
@@ -699,7 +784,7 @@
     b.querySelector('.rmv').onclick=()=>{b.remove();vazioCat();};
     b.querySelector('.addProd').onclick=()=>novaProdRow(b);
     el('listaCategorias').appendChild(b);
-    (produtos&&produtos.length?produtos:[{}]).forEach(p=>novaProdRow(b,p.nome||'',p.preco||'',p.acabando));
+    (produtos&&produtos.length?produtos:[{}]).forEach(p=>novaProdRow(b,p.nome||'',p.preco||'',p.acabando,p.fotos||[]));
     vazioCat();
   };
   function lerCardapio(){
@@ -707,7 +792,7 @@
     el('listaCategorias').querySelectorAll('.catBloco').forEach(b=>{
       const nome=b.querySelector('.cat-nome').value.trim();if(!nome)return;
       const produtos=[];
-      b.querySelectorAll('.prodRow').forEach(r=>{const pn=r.querySelector('.p-nome').value.trim();if(!pn)return;produtos.push({nome:pn,preco:r.querySelector('.p-preco').value.trim(),acabando:r.querySelector('.p-acab').checked});});
+      b.querySelectorAll('.prodRow').forEach(r=>{const pn=r.querySelector('.p-nome').value.trim();if(!pn)return;const it={nome:pn,preco:r.querySelector('.p-preco').value.trim(),acabando:r.querySelector('.p-acab').checked};if(r._fotos&&r._fotos.length)it.fotos=r._fotos.slice(0,3);produtos.push(it);});
       cats.push({categoria:nome,produtos});
     });
     return cats;
