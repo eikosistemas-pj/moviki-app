@@ -62,6 +62,8 @@
   .btn:disabled{opacity:.6;cursor:default;}
   .btn.secundario{background:transparent;border:1px solid var(--card-borda);color:#c7d6ea;}
   .btn.secundario:hover{border-color:var(--ciano);color:var(--ciano);filter:none;}
+  .btn.btnUpload{background:rgba(255,138,61,.16);border:1.5px solid #ff8a3d;color:#ffb37a;}
+  .btn.btnUpload:hover{background:rgba(255,138,61,.28);filter:none;border-color:#ffa15c;}
   .aviso{margin-top:14px;padding:12px;border-radius:10px;font-size:13.5px;display:none;text-align:center;}
   .aviso.ok{display:block;background:rgba(46,204,113,.12);color:#8ff0b5;border:1px solid rgba(46,204,113,.35);}
   .aviso.erro{display:block;background:rgba(255,80,80,.12);color:#ff9a9a;border:1px solid rgba(255,80,80,.3);}
@@ -130,7 +132,8 @@
   .fSlot{width:56px;height:56px;border-radius:9px;position:relative;flex-shrink:0;}
   .fSlot img{width:100%;height:100%;object-fit:cover;border-radius:9px;border:1px solid #2b405a;display:block;}
   .fSlot .rmF{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:#e74c3c;color:#fff;border:2px solid var(--campo);font-size:11px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
-  .fAdd{width:56px;height:56px;border-radius:9px;border:1.5px dashed #3a557a;background:none;color:#8fa6c4;font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;flex-shrink:0;font-family:inherit;}
+  .fAdd{width:56px;height:56px;border-radius:9px;border:1.5px solid #ff8a3d;background:rgba(255,138,61,.16);color:#ffb37a;font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;flex-shrink:0;font-family:inherit;}
+  .fAdd:hover{background:rgba(255,138,61,.28);border-color:#ffa15c;}
   .fAdd:disabled{opacity:.55;cursor:default;}
   .fHint{font-size:11.5px;color:#7f95b3;width:100%;}
   .notaFotos{background:rgba(255,195,64,.10);border:1px solid rgba(255,195,64,.42);color:#ffe6b3;padding:9px 12px;border-radius:9px;margin:0 2px 12px;font-size:13px;line-height:1.5;}
@@ -208,9 +211,17 @@
   .gcard.travado .gcIcon{filter:grayscale(.7);opacity:.75;}
   .gcard.travado::after{content:"🔒";position:absolute;top:8px;right:9px;font-size:13px;opacity:.9;}
 
-  #editor .voltar{background:rgba(255,255,255,.06);border:1px solid var(--card-borda);color:var(--ciano);
-    font-family:inherit;font-weight:600;font-size:14px;padding:9px 14px;border-radius:10px;cursor:pointer;margin-bottom:4px;}
-  #editor .voltar:hover{background:rgba(0,212,255,.1);}
+  #editor .voltar{background:rgba(255,159,64,.16);border:1px solid rgba(255,159,64,.6);color:#ffca8a;
+    font-family:inherit;font-weight:700;font-size:14px;padding:10px 16px;border-radius:10px;cursor:pointer;margin-bottom:4px;}
+  #editor .voltar:hover{background:rgba(255,159,64,.28);}
+  #editor .voltarFim{width:100%;margin:14px 0 4px;}
+  .catCapa{margin:2px 0 10px;}
+  .capaLbl{font-size:11.5px;color:#8fa6c4;margin-bottom:6px;}
+  .capaSlot{position:relative;width:100%;max-width:240px;aspect-ratio:16/9;border-radius:9px;}
+  .capaSlot img{width:100%;height:100%;object-fit:cover;border-radius:9px;border:1px solid #2b405a;display:block;}
+  .capaSlot .rmF{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:#e74c3c;color:#fff;border:2px solid var(--campo);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .capaAdd{width:100%;max-width:240px;aspect-ratio:16/9;border-radius:9px;border:1.5px solid #ff8a3d;background:rgba(255,138,61,.14);color:#ffb37a;font-weight:700;font-size:12.5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:inherit;}
+  .capaAdd:hover{background:rgba(255,138,61,.26);}
   .editorTit{font-size:20px;font-weight:700;margin:12px 2px 16px;}
   @media(max-width:380px){.grid{gap:9px}.gcIcon{width:46px;height:46px;font-size:23px}.gcLabel{font-size:12px}}
 
@@ -420,7 +431,7 @@
           <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
             <div id="logoPreview" style="margin-bottom:10px"></div>
             <input id="logoInput" type="file" accept="image/*" style="display:none" onchange="enviarLogo(this)">
-            <button type="button" class="btn secundario" onclick="document.getElementById('logoInput').click()">📤 Escolher / enviar minha logo</button>
+            <button type="button" class="btn btnUpload" onclick="document.getElementById('logoInput').click()">📤 Escolher / enviar minha logo</button>
             <div id="logoMsg" style="font-size:13px;margin-top:8px"></div>
           </div>
         </div>
@@ -443,6 +454,7 @@
 
       <div style="height:10px;"></div>
       <button id="btnSalvar" class="btn" onclick="salvar()">Salvar tudo</button>
+      <button type="button" class="voltar voltarFim" onclick="voltarHome()">‹ Voltar ao início</button>
       <div id="avisoP" class="aviso"></div>
     </div>
     </div>
@@ -779,23 +791,60 @@
     else if(e==='trial'){ n.innerHTML='📸 <b>No teste grátis suas fotos já aparecem no site!</b> Aproveite pra caprichar nas fotos dos produtos. Pra elas continuarem aparecendo quando o teste acabar, assine o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
     else { n.innerHTML='📸 <b>Fotos são um recurso do Premium.</b> Pode adicionar as fotos agora — elas passam a aparecer no seu site assim que você assinar o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
   }
-  window.adicionarCategoria=function(nome='',produtos=[]){
+  window.adicionarCategoria=function(nome='',produtos=[],capa=''){
     const b=document.createElement('div');b.className='catBloco';
-    b.innerHTML='<div class="catCab"><input class="cat-nome" type="text" placeholder="Nome da categoria (ex.: Caldos)"><button class="rmv" title="Remover categoria">✕</button></div><div class="listaProdutos"></div><button class="addProd">+ Produto</button>';
+    b._capa=fotoUrlOk(capa)?capa:'';
+    b.innerHTML='<div class="catCab"><input class="cat-nome" type="text" placeholder="Nome da categoria (ex.: Caldos)"><button class="rmv" title="Remover categoria">✕</button></div><div class="catCapa"></div><div class="listaProdutos"></div><button class="addProd">+ Produto</button>';
     b.querySelector('.cat-nome').value=nome;
     b.querySelector('.rmv').onclick=()=>{b.remove();vazioCat();};
     b.querySelector('.addProd').onclick=()=>novaProdRow(b);
     el('listaCategorias').appendChild(b);
+    renderCapaCat(b);
     (produtos&&produtos.length?produtos:[{}]).forEach(p=>novaProdRow(b,p.nome||'',p.preco||'',p.acabando,p.fotos||[]));
     vazioCat();
   };
+  function fotoUrlOk(u){return typeof u==='string'&&/^https:\/\/[a-z0-9.-]*ibb\.co\//i.test(u);}
+  function renderCapaCat(b){
+    const g=b.querySelector('.catCapa'); if(!g)return;
+    g.innerHTML='';
+    const lbl=document.createElement('div');lbl.className='capaLbl';lbl.textContent='Foto de capa da categoria (aparece na grade do cardápio):';g.appendChild(lbl);
+    if(b._capa){
+      const sl=document.createElement('div');sl.className='capaSlot';
+      const im=document.createElement('img');im.src=b._capa;im.alt='capa';
+      const rm=document.createElement('button');rm.type='button';rm.className='rmF';rm.title='Remover capa';rm.textContent='✕';
+      rm.onclick=()=>{b._capa='';renderCapaCat(b);};
+      sl.appendChild(im);sl.appendChild(rm);g.appendChild(sl);
+    } else {
+      const add=document.createElement('button');add.type='button';add.className='capaAdd';
+      add.innerHTML='<span style="font-size:16px;line-height:1">＋</span><span>Foto de capa</span>';
+      add.onclick=()=>escolherCapaCat(b,add);
+      g.appendChild(add);
+    }
+  }
+  function escolherCapaCat(b,addBtn){
+    const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+    inp.onchange=async function(){
+      const file=inp.files&&inp.files[0]; if(!file)return;
+      if(!/^image\//.test(file.type)){toast('Escolha uma imagem.',true);return;}
+      if(addBtn){addBtn.disabled=true;addBtn.innerHTML='<span style="font-size:12px">Enviando…</span>';}
+      try{
+        const dataUrl=await comprimirQuadrado(file,720);
+        const idToken=await usuarioAtual.getIdToken();
+        const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
+        const j=await resp.json().catch(function(){return {};});
+        if(resp.ok&&j.ok&&j.url){ b._capa=j.url; renderCapaCat(b); toast('Capa adicionada. Não esqueça de Salvar.'); }
+        else{ toast('Não deu certo. Tente de novo.',true); renderCapaCat(b); }
+      }catch(e){ toast('Falha ao enviar. Confira a conexão.',true); renderCapaCat(b); }
+    };
+    inp.click();
+  }
   function lerCardapio(){
     const cats=[];
     el('listaCategorias').querySelectorAll('.catBloco').forEach(b=>{
       const nome=b.querySelector('.cat-nome').value.trim();if(!nome)return;
       const produtos=[];
       b.querySelectorAll('.prodRow').forEach(r=>{const pn=r.querySelector('.p-nome').value.trim();if(!pn)return;const it={nome:pn,preco:r.querySelector('.p-preco').value.trim(),acabando:r.querySelector('.p-acab').checked};if(r._fotos&&r._fotos.length)it.fotos=r._fotos.slice(0,3);produtos.push(it);});
-      cats.push({categoria:nome,produtos});
+      const catObj={categoria:nome,produtos};if(b._capa)catObj.capa=b._capa;cats.push(catObj);
     });
     return cats;
   }
@@ -884,7 +933,7 @@
         el('nome').value=d.nome||'';el('recado').value=d.recado||'';el('apelido').value=d.slug||'';if(el('whatsapp'))el('whatsapp').value=d.whatsapp||'';
         setStatus(d.status||'fechado');
         if(d.slug) mostrarLink(d.slug);
-        el('listaCategorias').innerHTML='';(d.cardapio||[]).forEach(c=>adicionarCategoria(c.categoria||'',c.produtos||[]));vazioCat();
+        el('listaCategorias').innerHTML='';(d.cardapio||[]).forEach(c=>adicionarCategoria(c.categoria||'',c.produtos||[],c.capa||''));vazioCat();
         el('listaPromos').innerHTML='';(d.promocoes||[]).forEach(p=>adicionarPromo(p.titulo||'',p.detalhe||''));vazioPromo();
         el('listaEventos').innerHTML='';(d.eventos||[]).forEach(e2=>adicionarEvento(e2.titulo||'',e2.quando||'',e2.detalhe||''));vazioEvento();
         if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}mostrarLogoPreview(d.markerLogo||'');
