@@ -214,7 +214,7 @@
   #editor .voltar{background:rgba(255,159,64,.16);border:1px solid rgba(255,159,64,.6);color:#ffca8a;
     font-family:inherit;font-weight:700;font-size:14px;padding:10px 16px;border-radius:10px;cursor:pointer;margin-bottom:4px;}
   #editor .voltar:hover{background:rgba(255,159,64,.28);}
-  #editor .voltarFim{width:100%;margin:14px 0 4px;}
+  #editor .voltarFim{display:block;width:auto;margin:16px auto 6px;}
   .catCapa{margin:2px 0 10px;}
   .capaLbl{font-size:11.5px;color:#8fa6c4;margin-bottom:6px;}
   .capaSlot{position:relative;width:100%;max-width:240px;aspect-ratio:16/9;border-radius:9px;}
@@ -748,7 +748,7 @@
       if(!/^image\//.test(file.type)){toast('Escolha um arquivo de imagem.',true);return;}
       if(addBtn){addBtn.disabled=true;addBtn.innerHTML='<span style="font-size:10.5px">Enviando…</span>';}
       try{
-        const dataUrl=await comprimirQuadrado(file,720);
+        const dataUrl=await comprimirQuadrado(file,640);
         const idToken=await usuarioAtual.getIdToken();
         const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
         const j=await resp.json().catch(function(){return {};});
@@ -762,11 +762,11 @@
     return new Promise(function(resolve,reject){
       var img=new Image(), rd=new FileReader();
       rd.onload=function(){ img.onload=function(){
-        var s=size||720, cv=document.createElement('canvas'); cv.width=s; cv.height=s;
+        var s=size||640, cv=document.createElement('canvas'); cv.width=s; cv.height=s;
         var ctx=cv.getContext('2d');
         var m=Math.min(img.width,img.height), sx=(img.width-m)/2, sy=(img.height-m)/2;
         ctx.drawImage(img,sx,sy,m,m,0,0,s,s);
-        resolve(cv.toDataURL('image/jpeg',0.82));
+        resolve(cv.toDataURL('image/jpeg',0.72));
       }; img.onerror=function(){reject(new Error('img'));}; img.src=rd.result; };
       rd.onerror=function(){reject(new Error('read'));}; rd.readAsDataURL(file);
     });
@@ -791,9 +791,20 @@
     else if(e==='trial'){ n.innerHTML='📸 <b>No teste grátis suas fotos já aparecem no site!</b> Aproveite pra caprichar nas fotos dos produtos. Pra elas continuarem aparecendo quando o teste acabar, assine o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
     else { n.innerHTML='📸 <b>Fotos são um recurso do Premium.</b> Pode adicionar as fotos agora — elas passam a aparecer no seu site assim que você assinar o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
   }
+  const CORES_CAT=[
+    {b:'#00d4ff',g:'rgba(0,212,255,.10)'},
+    {b:'#ff8a3d',g:'rgba(255,138,61,.10)'},
+    {b:'#42d392',g:'rgba(66,211,146,.10)'},
+    {b:'#b57bff',g:'rgba(181,123,255,.10)'},
+    {b:'#ff6b9d',g:'rgba(255,107,157,.10)'},
+    {b:'#ffd166',g:'rgba(255,209,102,.10)'}
+  ];
   window.adicionarCategoria=function(nome='',produtos=[],capa=''){
     const b=document.createElement('div');b.className='catBloco';
     b._capa=fotoUrlOk(capa)?capa:'';
+    const _c=CORES_CAT[el('listaCategorias').children.length%CORES_CAT.length];
+    b.style.borderLeft='4px solid '+_c.b;
+    b.style.background='linear-gradient(100deg,'+_c.g+',rgba(255,255,255,.02) 55%)';
     b.innerHTML='<div class="catCab"><input class="cat-nome" type="text" placeholder="Nome da categoria (ex.: Caldos)"><button class="rmv" title="Remover categoria">✕</button></div><div class="catCapa"></div><div class="listaProdutos"></div><button class="addProd">+ Produto</button>';
     b.querySelector('.cat-nome').value=nome;
     b.querySelector('.rmv').onclick=()=>{b.remove();vazioCat();};
@@ -828,7 +839,7 @@
       if(!/^image\//.test(file.type)){toast('Escolha uma imagem.',true);return;}
       if(addBtn){addBtn.disabled=true;addBtn.innerHTML='<span style="font-size:12px">Enviando…</span>';}
       try{
-        const dataUrl=await comprimirQuadrado(file,720);
+        const dataUrl=await comprimirQuadrado(file,640);
         const idToken=await usuarioAtual.getIdToken();
         const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
         const j=await resp.json().catch(function(){return {};});
