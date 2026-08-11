@@ -120,10 +120,12 @@
   .catCab{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
   .catCab .cat-nome{font-weight:600;}
   .rmv{background:none;border:none;color:#ff8080;font-size:18px;cursor:pointer;padding:0 4px;flex-shrink:0;line-height:1;}
-  .prodRow{background:rgba(255,255,255,.02);border:1px solid var(--card-borda);border-radius:10px;padding:9px 9px 10px;margin-bottom:9px;}
-  .prodLinha{display:flex;gap:8px;align-items:center;}
-  .prodLinha .p-nome{flex:1;padding:10px 12px;font-size:14px;}
-  .prodLinha .p-preco{width:88px;flex-shrink:0;padding:10px 10px;font-size:14px;}
+  .prodRow{background:rgba(255,255,255,.03);border:1px solid var(--card-borda);border-radius:12px;padding:13px;margin-bottom:12px;}
+  .prodRow .p-nome{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;margin-bottom:10px;}
+  .prodLinha2{display:flex;gap:10px;align-items:center;}
+  .prodLinha2 .p-preco{width:130px;flex-shrink:0;padding:11px 13px;font-size:14px;}
+  .prodLinha2 .acabLbl{flex:1;}
+  .prodLinha2 .rmv{margin-left:auto;}
   .prodGaleria{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:9px;}
   .fSlot{width:56px;height:56px;border-radius:9px;position:relative;flex-shrink:0;}
   .fSlot img{width:100%;height:100%;object-fit:cover;border-radius:9px;border:1px solid #2b405a;display:block;}
@@ -701,7 +703,7 @@
   function novaProdRow(catBloco,nome='',preco='',acabando=false,fotos=[]){
     const r=document.createElement('div');r.className='prodRow';
     r._fotos=Array.isArray(fotos)?fotos.filter(Boolean).slice(0,3):[];
-    r.innerHTML='<div class="prodLinha"><input class="p-nome" type="text" placeholder="Produto"><input class="p-preco" type="text" placeholder="R$"><label class="acabLbl"><input type="checkbox" class="p-acab"> acabando</label><button class="rmv" type="button">✕</button></div><div class="prodGaleria"></div>';
+    r.innerHTML='<input class="p-nome" type="text" placeholder="Nome do produto"><div class="prodLinha2"><input class="p-preco" type="text" placeholder="R$ 0,00"><label class="acabLbl"><input type="checkbox" class="p-acab"> acabando</label><button class="rmv" type="button" title="Remover produto">✕</button></div><div class="prodGaleria"></div>';
     r.querySelector('.p-nome').value=nome;r.querySelector('.p-preco').value=preco;r.querySelector('.p-acab').checked=!!acabando;
     r.querySelector('.rmv').onclick=()=>r.remove();
     renderFotos(r);
