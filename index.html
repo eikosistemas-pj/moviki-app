@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com; connect-src 'self' https://*.googleapis.com https://moviki-robo.vercel.app https://www.google.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://i.ibb.co https://*.ibb.co; connect-src 'self' https://*.googleapis.com https://moviki-robo.vercel.app https://www.google.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 
@@ -386,6 +386,14 @@
       <div class="tabConteudo escondido" id="tab-local">
         <div class="gps" id="gpsInfo">📍 Localização ainda não definida.</div>
         <button class="btn secundario" onclick="pegarLocalizacao()">📍 Atualizar minha localização</button>
+        <div class="logoCard" style="margin-top:14px;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px">
+          <label style="font-weight:600;display:block;margin-bottom:4px">🖼️ Logo no mapa</label>
+          <p style="font-size:13px;color:#9fb3d0;margin:0 0 10px;line-height:1.4">Sua logo aparece dentro do seu pino no mapa. <b>Disponível no plano Premium.</b></p>
+          <div id="logoPreview" style="margin-bottom:10px"></div>
+          <input id="logoInput" type="file" accept="image/*" style="display:none" onchange="enviarLogo(this)">
+          <button type="button" class="btn secundario" onclick="el('logoInput').click()">📤 Escolher logo</button>
+          <div id="logoMsg" style="font-size:13px;margin-top:8px"></div>
+        </div>
       </div>
 
       <!-- WhatsApp -->
@@ -598,6 +606,44 @@
       lista.innerHTML=itens.slice(0,50).map(a=>{const r=Number(a.nota||0);const e='★★★★★'.slice(0,r)+'☆☆☆☆☆'.slice(0,5-r);const nm=(a.nome||'Cliente').toString().slice(0,40).replace(/[<>]/g,'');const tx=(a.comentario||'').toString().slice(0,300).replace(/[<>]/g,'');return '<div class="avalItem"><div class="avalTopo"><span class="avalEst">'+e+'</span> <b>'+nm+'</b></div>'+(tx?'<div class="avalTxt">'+tx+'</div>':'')+'</div>';}).join('');
     }catch(e){resumo.innerHTML='⭐ As avaliações ainda não estão ativadas no servidor. Me avise que eu ativo (regras do Firebase).';}
   };
+  function mostrarLogoPreview(url){
+    var p=el('logoPreview'); if(!p)return;
+    p.innerHTML = url ? '<img src="'+url+'" alt="logo" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #00D4FF">' : '<span style="font-size:13px;color:#7f95b3">Nenhuma logo enviada ainda.</span>';
+  }
+  function comprimirImagem(file){
+    return new Promise(function(resolve,reject){
+      var img=new Image(), rd=new FileReader();
+      rd.onload=function(){ img.onload=function(){
+        var size=256, cv=document.createElement('canvas'); cv.width=size; cv.height=size;
+        var ctx=cv.getContext('2d');
+        var m=Math.min(img.width,img.height), sx=(img.width-m)/2, sy=(img.height-m)/2;
+        ctx.drawImage(img,sx,sy,m,m,0,0,size,size);
+        resolve(cv.toDataURL('image/jpeg',0.85));
+      }; img.onerror=function(){reject(new Error('img'));}; img.src=rd.result; };
+      rd.onerror=function(){reject(new Error('read'));}; rd.readAsDataURL(file);
+    });
+  }
+  window.enviarLogo=async function(input){
+    var file=input.files&&input.files[0]; if(!file)return;
+    var msg=el('logoMsg');
+    if(!/^image\//.test(file.type)){ if(msg){msg.style.color='#ff6b6b';msg.textContent='Escolha um arquivo de imagem.';} input.value=''; return; }
+    if(msg){msg.style.color='#9fb3d0';msg.textContent='Enviando logo...';}
+    try{
+      var dataUrl=await comprimirImagem(file);
+      var idToken=await usuarioAtual.getIdToken();
+      var r=await fetch('https://moviki-robo.vercel.app/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl})});
+      var j=await r.json().catch(function(){return {};});
+      if(r.ok&&j.ok&&j.url){ mostrarLogoPreview(j.url); if(msg){msg.style.color='#3ddc97';msg.textContent='Logo salva! \u2713 Aparece no seu pino no plano Premium.';} }
+      else{
+        var m='Não deu certo. Tente de novo.';
+        if(j.motivo==='sem_config') m='Configuração de imagem pendente no servidor.';
+        else if(r.status===413) m='Imagem muito grande. Tente uma menor.';
+        else if(r.status===401) m='Sessão expirada — saia e entre de novo.';
+        if(msg){msg.style.color='#ff6b6b';msg.textContent=m;}
+      }
+    }catch(e){ if(msg){msg.style.color='#ff6b6b';msg.textContent='Falha ao enviar. Verifique a conexão.';} }
+    input.value='';
+  };
   window.pegarLocalizacao=function(){limparAvisoP();if(!navigator.geolocation){erroP('Seu aparelho não tem GPS no navegador.');return;}el('gpsInfo').innerHTML='📍 Pegando localização...';navigator.geolocation.getCurrentPosition((pos)=>{coords={lat:pos.coords.latitude,lng:pos.coords.longitude};el('gpsInfo').innerHTML='📍 <b>Localização capturada!</b><br>'+coords.lat.toFixed(5)+', '+coords.lng.toFixed(5)+' <span style="color:#7f95b3">(lembre de Salvar)</span>';atualizarOnboarding(false);},(err)=>{if(err.code===1)erroP('Você bloqueou a localização. Libere nas permissões do navegador.');else erroP('Não consegui pegar a localização.');el('gpsInfo').innerHTML='📍 Localização ainda não definida.';},{enableHighAccuracy:true,timeout:10000});};
 
   /* ---- CARDÁPIO (categorias -> produtos) ---- */
@@ -717,8 +763,8 @@
         el('listaCategorias').innerHTML='';(d.cardapio||[]).forEach(c=>adicionarCategoria(c.categoria||'',c.produtos||[]));vazioCat();
         el('listaPromos').innerHTML='';(d.promocoes||[]).forEach(p=>adicionarPromo(p.titulo||'',p.detalhe||''));vazioPromo();
         el('listaEventos').innerHTML='';(d.eventos||[]).forEach(e2=>adicionarEvento(e2.titulo||'',e2.quando||'',e2.detalhe||''));vazioEvento();
-        if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}
-      }else{setStatus('fechado');vazioCat();vazioPromo();vazioEvento();}
+        if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}mostrarLogoPreview(d.markerLogo||'');
+      }else{setStatus('fechado');vazioCat();vazioPromo();vazioEvento();mostrarLogoPreview('');}
     }catch(e){setStatus('fechado');vazioCat();vazioPromo();vazioEvento();}
   }
 
