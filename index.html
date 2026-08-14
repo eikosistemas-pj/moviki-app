@@ -814,7 +814,7 @@
     (produtos&&produtos.length?produtos:[{}]).forEach(p=>novaProdRow(b,p.nome||'',p.preco||'',p.acabando,p.fotos||[]));
     vazioCat();
   };
-  function fotoUrlOk(u){return typeof u==='string'&&/^https:\/\/[a-z0-9.-]*ibb\.co\//i.test(u);}
+  function fotoUrlOk(u){return typeof u==='string'&&/^https:\/\/[a-z0-9.-]*(ibb\.co|firebasestorage\.googleapis\.com|firebasestorage\.app)\//i.test(u);}
   function renderCapaCat(b){
     const g=b.querySelector('.catCapa'); if(!g)return;
     g.innerHTML='';
