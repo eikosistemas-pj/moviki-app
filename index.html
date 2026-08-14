@@ -776,6 +776,7 @@
       rd.onerror=function(){reject(new Error('read'));}; rd.readAsDataURL(file);
     });
   }
+  function comprimirProporcional(file,maxLado){    return new Promise(function(resolve,reject){      var img=new Image(), rd=new FileReader();      rd.onload=function(){ img.onload=function(){        var M=maxLado||1080, w=img.width, h=img.height;        if(w>=h){ if(w>M){ h=Math.round(h*M/w); w=M; } }        else { if(h>M){ w=Math.round(w*M/h); h=M; } }        var cv=document.createElement('canvas'); cv.width=w; cv.height=h;        var ctx=cv.getContext('2d');        ctx.drawImage(img,0,0,w,h);        resolve(cv.toDataURL('image/jpeg',0.75));      }; img.onerror=function(){reject(new Error('img'));}; img.src=rd.result; };      rd.onerror=function(){reject(new Error('read'));}; rd.readAsDataURL(file);    });  }
   function toast(msg,erro){
     var t=document.getElementById('mvToast');
     if(!t){t=document.createElement('div');t.id='mvToast';t.style.cssText='position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:99999;max-width:88%;padding:12px 18px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;transition:opacity .2s;pointer-events:none;text-align:center;';document.body.appendChild(t);}
@@ -900,7 +901,7 @@
       if(!/^image\//.test(file.type)){toast('Escolha uma imagem.',true);return;}
       if(addBtn){addBtn.disabled=true;addBtn.innerHTML='<span style="font-size:12px">Enviando…</span>';}
       try{
-        const dataUrl=await comprimirQuadrado(file,640);
+        const dataUrl=await comprimirProporcional(file,1080);
         const idToken=await usuarioAtual.getIdToken();
         const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
         const j=await resp.json().catch(function(){return {};});
@@ -946,7 +947,7 @@
       if(!/^image\//.test(file.type)){toast('Escolha uma imagem.',true);return;}
       if(addBtn){addBtn.disabled=true;addBtn.innerHTML='<span style="font-size:12px">Enviando…</span>';}
       try{
-        const dataUrl=await comprimirQuadrado(file,640);
+        const dataUrl=await comprimirProporcional(file,1080);
         const idToken=await usuarioAtual.getIdToken();
         const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
         const j=await resp.json().catch(function(){return {};});
