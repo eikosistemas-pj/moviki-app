@@ -396,7 +396,6 @@
         <div class="campo"><label for="nome">Nome do negócio</label><input id="nome" type="text" placeholder="Ex.: Caldeirão Nordestino" oninput="atualizarOnboarding(false)"></div>
         <div class="campo"><label for="apelido">Seu link no Moviki</label><div class="linkCampo"><span class="pref">moviki.com.br/</span><input id="apelido" type="text" placeholder="caldeirao" autocomplete="off" oninput="atualizarOnboarding(false)"></div></div>
         <div id="linkPronto" class="linkPronto escondido"><div class="rot">✅ Link pra divulgar (bio do Instagram, WhatsApp...):</div><div class="linkRow"><a id="linkPublico" href="#" target="_blank" rel="noopener"></a><button onclick="copiarLink()" id="btnCopiar">Copiar</button></div></div>
-        <div class="campo"><label for="recado">Recado do dia (opcional)</label><textarea id="recado" rows="2" placeholder="Ex.: Hoje tem caldo de feijão!"></textarea></div>
       </div>
 
       <!-- Cardápio -->
@@ -985,7 +984,7 @@
     btn.disabled=true;const t=btn.textContent;btn.textContent='Salvando...';
     try{
       if(slug){const ref=doc(db,'slugs',slug);const snap=await getDoc(ref);if(snap.exists()&&snap.data().uid!==usuarioAtual.uid){abrirTab('perfil');erroP('O apelido "'+slug+'" já está em uso. Escolha outro.');btn.disabled=false;btn.textContent=t;return;}if(!snap.exists()){await setDoc(ref,{uid:usuarioAtual.uid});}el('apelido').value=slug;}
-      const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
+      const dados={nome,status:statusAtual,cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
       if(coords){dados.lat=coords.lat;dados.lng=coords.lng;}
       if(slug){dados.slug=slug;}
       await setDoc(doc(db,'negocios',usuarioAtual.uid),dados,{merge:true});
@@ -1027,7 +1026,7 @@
       const snap=await getDoc(doc(db,'negocios',uid));
       if(snap.exists()){
         const d=snap.data();
-        el('nome').value=d.nome||'';el('recado').value=d.recado||'';el('apelido').value=d.slug||'';if(el('whatsapp'))el('whatsapp').value=d.whatsapp||'';
+        el('nome').value=d.nome||'';el('apelido').value=d.slug||'';if(el('whatsapp'))el('whatsapp').value=d.whatsapp||'';
         setStatus(d.status||'fechado');
         if(d.slug) mostrarLink(d.slug);
         el('listaCategorias').innerHTML='';(d.cardapio||[]).forEach(c=>adicionarCategoria(c.categoria||'',c.produtos||[],c.capa||''));vazioCat();
