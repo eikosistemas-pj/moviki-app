@@ -769,7 +769,7 @@
       g.appendChild(add);
     }
     const hint=document.createElement('div');hint.className='fHint';
-    hint.textContent=(r._fotos&&r._fotos.length)?(r._fotos.length+' de 3 fotos'):'Até 3 fotos por produto';
+    hint.textContent=(r._fotos&&r._fotos.length)?(r._fotos.length+' de 3 fotos'):'📷 Toque no ＋ e ponha a foto do seu produto aqui (até 3)';
     g.appendChild(hint);
   }
   function escolherFoto(r,addBtn){
@@ -859,7 +859,7 @@
       sl.appendChild(im);sl.appendChild(rm);g.appendChild(sl);
     } else {
       const add=document.createElement('button');add.type='button';add.className='capaAdd';
-      add.innerHTML='<span style="font-size:16px;line-height:1">＋</span><span>Foto de capa</span>';
+      add.innerHTML='<span style=\"font-size:18px;line-height:1\">＋</span><span>Imagem de capa da categoria aqui</span>';
       add.onclick=()=>escolherCapaCat(b,add);
       g.appendChild(add);
     }
@@ -915,7 +915,7 @@
       sl.appendChild(im);sl.appendChild(rm);g.appendChild(sl);
     } else {
       const add=document.createElement('button');add.type='button';add.className='capaAdd';
-      add.innerHTML='<span style="font-size:16px;line-height:1">＋</span><span>Foto de capa</span>';
+      add.innerHTML='<span style=\"font-size:18px;line-height:1\">＋</span><span>Imagem da promoção aqui</span>';
       add.onclick=()=>escolherCapaPromo(r,add);
       g.appendChild(add);
     }
@@ -961,7 +961,7 @@
       sl.appendChild(im);sl.appendChild(rm);g.appendChild(sl);
     } else {
       const add=document.createElement('button');add.type='button';add.className='capaAdd';
-      add.innerHTML='<span style="font-size:16px;line-height:1">＋</span><span>Foto de capa</span>';
+      add.innerHTML='<span style=\"font-size:18px;line-height:1\">＋</span><span>Imagem do evento aqui</span>';
       add.onclick=()=>escolherCapaEvento(r,add);
       g.appendChild(add);
     }
@@ -1013,8 +1013,8 @@
   };
 
   /* ---- ONBOARDING (primeiros passos do lojista novo) ---- */
-  let onbOculto=false, onbSalvo=false;
-  window.ocultarOnboarding=function(){onbOculto=true;const b=el('onboarding');if(b)b.classList.add('escondido');};
+  let onbOculto=false, onbSalvo=false, onbDone=false;
+  window.ocultarOnboarding=function(){onbOculto=true;onbDone=true;try{if(usuarioAtual&&usuarioAtual.uid)localStorage.setItem('moviki_onb_'+usuarioAtual.uid,'1');}catch(_){}const b=el('onboarding');if(b)b.classList.add('escondido');};
   window.irPasso=function(qual){
     abrirTab(qual==='local'?'local':'perfil');
     setTimeout(function(){
@@ -1034,7 +1034,8 @@
     const barra=el('onbProgresso');if(barra)barra.style.width=(feitos/3*100)+'%';
     const fin=el('onbFinal');
     if(fin)fin.innerHTML = feitos===3 ? '✅ Tudo pronto! Toque em <b>Salvar tudo</b> aqui embaixo e deixe como <b>Aberto</b> quando estiver funcionando.' : '';
-    const esconder = onbOculto || onbSalvo || (inicial && feitos===3);
+    if(feitos===3){onbDone=true;try{if(usuarioAtual&&usuarioAtual.uid)localStorage.setItem('moviki_onb_'+usuarioAtual.uid,'1');}catch(_){}}
+    const esconder = onbOculto || onbSalvo || onbDone;
     box.classList.toggle('escondido', esconder);
   };
 
@@ -1049,7 +1050,7 @@
         el('listaCategorias').innerHTML='';(d.cardapio||[]).forEach(c=>adicionarCategoria(c.categoria||'',c.produtos||[],c.capa||''));vazioCat();
         el('listaPromos').innerHTML='';(d.promocoes||[]).forEach(p=>adicionarPromo(p.titulo||'',p.detalhe||'',p.capa||''));vazioPromo();
         el('listaEventos').innerHTML='';(d.eventos||[]).forEach(e2=>adicionarEvento(e2.titulo||'',e2.quando||'',e2.detalhe||'',e2.capa||''));vazioEvento();
-        if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}mostrarLogoPreview(d.markerLogo||'');
+        if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}mostrarLogoPreview(d.markerLogo||'');if(d.nome&&d.slug&&d.lat!=null&&d.lng!=null){onbDone=true;try{localStorage.setItem('moviki_onb_'+uid,'1');}catch(_){}}
       }else{setStatus('fechado');vazioCat();vazioPromo();vazioEvento();mostrarLogoPreview('');}
     }catch(e){setStatus('fechado');vazioCat();vazioPromo();vazioEvento();}
   }
@@ -1066,7 +1067,7 @@
         el('bvAcoes').style.display='flex';
         _bv.classList.remove('ok');_bv.classList.remove('escondido');
       }
-      coords=null;slugSalvo='';onbOculto=false;onbSalvo=false;el('linkPronto').classList.add('escondido');
+      coords=null;slugSalvo='';onbOculto=false;onbSalvo=false;onbDone=false;try{if(user&&localStorage.getItem('moviki_onb_'+user.uid))onbDone=true;}catch(_){}el('linkPronto').classList.add('escondido');
       el('listaCategorias').innerHTML='';el('listaPromos').innerHTML='';el('listaEventos').innerHTML='';
       el('gpsInfo').innerHTML='📍 Localização ainda não definida.';
       abrirTab('perfil');
