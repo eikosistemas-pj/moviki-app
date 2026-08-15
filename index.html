@@ -369,7 +369,7 @@
             <input id="ptNome" type="text" maxlength="80" placeholder="Nome do ponto (ex: Carrinho Bairro Central)" style="width:100%;box-sizing:border-box;margin-bottom:8px;padding:11px;border-radius:10px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:15px">
             <input id="ptSlug" type="text" maxlength="40" placeholder="apelido-do-ponto" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:15px" oninput="ptPrevSlug()">
             <div style="font-size:12px;color:#7f95b3;margin:5px 2px 8px">O link ficará: moviki.com.br/<span id="ptSlugTxt">apelido</span></div>
-            <div style="display:flex;gap:6px;margin-bottom:6px"><input id="ptEndereco" type="text" maxlength="200" placeholder="Endereço do ponto (rua, número, bairro, cidade)" style="flex:1;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:14px"><button type="button" class="idxBtn" style="margin:0;padding:11px 14px;background:rgba(0,212,255,.14);border:1px solid var(--ciano);color:var(--ciano);white-space:nowrap" onclick="ptBuscarEndereco()">Buscar</button></div><div style="text-align:center;font-size:12px;color:#7f95b3" >— ou —</div><div id="ptGps" style="font-size:13px;color:#7f95b3;margin-bottom:6px">📍 Localização ainda não definida.</div>
+            <input id="ptEndereco" type="text" maxlength="200" placeholder="Endereço do ponto (rua, número, bairro, cidade)" style="width:100%;box-sizing:border-box;margin-bottom:6px;padding:11px;border-radius:10px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:14px"><button type="button" class="idxBtn" style="width:100%;margin:0 0 6px;padding:11px;background:rgba(0,212,255,.14);border:1px solid var(--ciano);color:var(--ciano)" onclick="ptBuscarEndereco()">🔎 Buscar pelo endereço</button><div style="text-align:center;font-size:12px;color:#7f95b3" >— ou —</div><div id="ptGps" style="font-size:13px;color:#7f95b3;margin-bottom:6px">📍 Localização ainda não definida.</div>
             <button type="button" class="idxBtn" style="background:rgba(255,159,64,.14);border:1px solid #ff9f40;color:#ffcf9a" onclick="ptPegarGps()">📍 Usar minha localização atual</button>
             <div id="ptAviso" style="font-size:13px;margin:6px 2px;min-height:16px"></div>
             <button type="button" id="ptSalvarBtn" class="idxBtn prim" onclick="ptSalvar()">Salvar ponto</button>
@@ -725,7 +725,7 @@
     if(!pontos.length){lista.innerHTML='<div style="font-size:13.5px;color:#7f95b3;padding:8px 2px">Você ainda não tem pontos além do principal. Toque em “Adicionar ponto”.</div>';return;}
     lista.innerHTML=pontos.map(function(p){
       return '<div style="border:1px solid var(--card-borda);border-radius:12px;padding:11px 12px;margin-bottom:8px">'+
-        '<div style="font-weight:700;color:#e6eefb">'+ptEsc(p.nome||'Ponto')+(p.ativo?'':' <span style=\'font-size:11px;color:#ffcf9a\'>(inativo)</span>')+'</div>'+
+        '<div style="font-weight:700;color:#e6eefb">'+ptEsc(p.nome||'Ponto')+(p.ativo?'':(p.cobranca?' <span style=\'font-size:11px;color:#ffcf9a\'>(aguardando pagamento)</span>':' <span style=\'font-size:11px;color:#ffcf9a\'>(inativo)</span>'))+'</div>'+
         '<div style="color:var(--ciano);font-size:12.5px;word-break:break-all;margin-top:2px">moviki.com.br/'+ptEsc(p.slug)+'</div>'+
         '<div style="display:flex;gap:8px;margin-top:8px">'+
           '<button type="button" class="idxBtn" style="flex:1;margin:0;padding:8px;background:rgba(0,212,255,.12);border:1px solid var(--ciano);color:var(--ciano)" onclick="ptEditar(\''+p.id+'\')">Editar</button>'+
@@ -749,8 +749,10 @@
       var payload=ptEditId?{idToken:idToken,acao:'editar',pid:ptEditId,nome:nome,lat:ptCoords.lat,lng:ptCoords.lng}:{idToken:idToken,acao:'criar',nome:nome,slug:slug,lat:ptCoords.lat,lng:ptCoords.lng};
       var r=await fetch(ROBO+'/api/pontos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
       var j=await r.json().catch(function(){return{};});
-      if(r.ok&&j.ok){ptCancelar();ptCarregar();}
-      else if(j&&j.motivo==='precisa_cobranca'){av.style.color='#ffcf9a';av.textContent='Esse é um ponto extra (R$ 19,90/mês). A ativação com pagamento entra em breve.';}
+      if(r.ok&&j.ok){
+        if(j.invoiceUrl){try{window.open(j.invoiceUrl,'_blank');}catch(_){}av.style.color='#ffcf9a';av.innerHTML='Ponto criado! É um ponto extra (R$ 19,90/mês) — abrimos o pagamento em outra aba. Ele fica ativo assim que o pagamento confirmar.';ptCarregar();}
+        else{ptCancelar();ptCarregar();}
+      }
       else if(j&&j.motivo==='apelido_em_uso'){av.textContent='Esse apelido já está em uso. Tente outro.';}
       else{av.textContent=(j&&j.erro)||'Não consegui salvar agora.';}
     }catch(e){av.textContent='Não consegui salvar agora.';}
