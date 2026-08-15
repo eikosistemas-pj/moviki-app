@@ -198,6 +198,7 @@
       <button class="navItem" data-pg="parceiros" onclick="abrir('parceiros')"><span class="ic">📋</span>Parceiros<span class="bad" id="badgeParceiros" style="display:none"></span></button>
       <button class="navItem" data-pg="relatorios" onclick="abrir('relatorios')"><span class="ic">📈</span>Relatórios</button>
       <button class="navItem" data-pg="comissoes" onclick="abrir('comissoes')"><span class="ic">💰</span>Comissões<span class="bad" id="badgeComissoes" style="display:none"></span></button>
+      <button class="navItem" data-pg="exclusoes" onclick="abrir('exclusoes')"><span class="ic">🗑️</span>Exclusões<span class="bad" id="badgeExclusoes" style="display:none"></span></button>
       <button class="navItem" onclick="verSite()"><span class="ic">🌐</span>Ver o site</button>
     </nav>
     <div class="sbBaixo">
@@ -277,6 +278,10 @@
         <div id="comBox"><div class="vazio">Carregando…</div></div>
       </section>
 
+      <section id="pg-exclusoes" class="pagina escondido">
+        <div id="excBox"><div class="vazio">Carregando…</div></div>
+      </section>
+
     </div>
   </div>
 </div>
@@ -300,7 +305,7 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
   const el = id => document.getElementById(id);
-  const TITULOS = { inicio:'Início', convComerciante:'Convidar comerciante', convParceiro:'Convidar parceiro', usuarios:'Usuários', parceiros:'Parceiros', relatorios:'Relatórios', comissoes:'Comissões' };
+  const TITULOS = { inicio:'Início', convComerciante:'Convidar comerciante', convParceiro:'Convidar parceiro', usuarios:'Usuários', parceiros:'Parceiros', relatorios:'Relatórios', comissoes:'Comissões', exclusoes:'Exclusões de conta' };
 
   const PLANOS = { basico:{n:'Básico',p:0,c:'b-basico'}, pro:{n:'Pró',p:37.90,c:'b-pro'}, premium:{n:'Premium',p:49.90,c:'b-premium'}, enterprise:{n:'Enterprise',p:99.90,c:'b-enterprise'} };
   const normPlano = v => { v=(v||'').toString().toLowerCase().trim(); return PLANOS[v]?v:'basico'; };
@@ -320,7 +325,7 @@
     if(!user){ mostrarTela('login'); return; }
     const email=(user.email||'').toLowerCase();
     if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email)){
-      el('donoEmail').textContent=user.email; abrir('inicio'); mostrarTela('app'); carregarDashboard(); carregarParceiros(); carregarComissoes();
+      el('donoEmail').textContent=user.email; abrir('inicio'); mostrarTela('app'); carregarDashboard(); carregarParceiros(); carregarComissoes(); carregarExclusoes();
     } else { el('restritoEmail').textContent=user.email; mostrarTela('restrito'); }
   });
 
@@ -330,9 +335,47 @@
     document.querySelectorAll('.navItem').forEach(n=>n.classList.toggle('ativo', n.dataset.pg===pg));
     el('pageTitle').textContent = TITULOS[pg]||'';
     if(pg==='comissoes') carregarComissoes();
+    if(pg==='exclusoes') carregarExclusoes();
     const c=document.querySelector('.conteudo'); if(c)c.scrollTop=0; window.scrollTo({top:0,behavior:'smooth'});
   };
   window.verSite = () => window.open('https://moviki.com.br','_blank');
+
+  async function carregarExclusoes(){
+    const box=el('excBox');
+    let itens=[];
+    try{
+      const idToken=await auth.currentUser.getIdToken();
+      const r=await fetch('https://moviki-robo.vercel.app/api/exclusoes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken,action:'listar'})});
+      const j=await r.json().catch(()=>({}));
+      if(r.ok&&j.ok){ itens=j.itens||[]; } else { if(box)box.innerHTML='<div class="vazio">Não consegui carregar agora.</div>'; atualizarBadgeExc(0); return; }
+    }catch(e){ if(box)box.innerHTML='<div class="vazio">Não consegui carregar agora.</div>'; atualizarBadgeExc(0); return; }
+    atualizarBadgeExc(itens.length);
+    if(!box) return;
+    if(!itens.length){ box.innerHTML='<div class="vazio">Nenhum pedido de exclusão no momento.</div>'; return; }
+    box.innerHTML='<p style="font-size:13.5px;color:#64748b;margin:0 0 14px">Pedidos feitos pelos lojistas dentro do app. Ao confirmar, a conta, os dados e a assinatura são removidos <b>definitivamente</b>.</p>'+
+      itens.map(x=>{
+        const nome=escP(x.nome||'(sem nome)'), email=escP(x.email||'—');
+        let dt='—'; try{ if(x.solicitadoEm) dt=new Date(x.solicitadoEm).toLocaleDateString('pt-BR'); }catch(e){}
+        return '<div class="pcard"><div class="pchead"><div><b>'+nome+'</b> <span class="badge s-pend">Exclusão pedida</span></div><span class="pcdata">'+dt+'</span></div>'+
+          '<div class="pcinfo"><div><span class="pk">E-mail</span>'+email+'</div></div>'+
+          '<div class="pcacoes"><button class="pb recus" onclick="confirmarExclusaoConta(\''+x.uid+'\',this)">🗑️ Confirmar exclusão</button></div>'+
+          '<div id="excmsg_'+x.uid+'" style="font-size:12.5px;margin-top:8px"></div>'+
+        '</div>';
+      }).join('');
+  }
+  function atualizarBadgeExc(n){ const bd=el('badgeExclusoes'); if(bd){ if(n>0){bd.textContent=n;bd.style.display='';}else bd.style.display='none'; } }
+  window.confirmarExclusaoConta=async (uid,btn)=>{
+    if(!confirm('EXCLUIR esta conta definitivamente?\n\nIsto apaga o negócio, os dados e cancela a assinatura. Não dá pra desfazer.')) return;
+    const msg=el('excmsg_'+uid); if(msg){ msg.style.color='#64748b'; msg.textContent='Excluindo…'; }
+    btn.disabled=true; const t=btn.textContent; btn.textContent='Excluindo…';
+    try{
+      const idToken=await auth.currentUser.getIdToken();
+      const r=await fetch('https://moviki-robo.vercel.app/api/exclusoes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken,action:'excluir',uid})});
+      const j=await r.json().catch(()=>({}));
+      if(r.ok&&j.ok){ if(msg){ msg.style.color='#0d9488'; const rz=j.resumo||{}; msg.textContent='✓ Conta excluída'+(rz.assinaturaCancelada?' · assinatura cancelada':'')+'.'; } setTimeout(carregarExclusoes,1000); }
+      else{ btn.disabled=false; btn.textContent=t; let m='Não consegui excluir agora.'; if(r.status===403)m='Sem permissão (seu e-mail precisa estar em admins).'; if(msg){ msg.style.color='#dc2626'; msg.textContent=m; } }
+    }catch(e){ btn.disabled=false; btn.textContent=t; if(msg){ msg.style.color='#dc2626'; msg.textContent='Erro de conexão. Tente de novo.'; } }
+  };
 
   async function carregarDashboard(){
     let negocios=[], planos={};
