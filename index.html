@@ -321,6 +321,7 @@
         <button type="button" onclick="fecharMenu();irSecao('perfil')">👤 Perfil do negócio</button>
         <button type="button" onclick="fecharMenu();abrirPlano()">💳 Meu Plano</button>
         <button type="button" onclick="fecharMenu();verMinhaPagina()">🌐 Minha Página</button>
+        <button type="button" id="drawerPontos" style="display:none" onclick="fecharMenu();abrirPontos()">📍 Meus pontos</button>
 
         <div class="drawerSec">Crescer</div>
         <button type="button" onclick="abrirIndica()">💰 Indique e ganhe</button>
@@ -355,6 +356,25 @@
             Convidar pelo WhatsApp
           </button>
           <p class="idxNota">Ao virar parceiro você recebe um link exclusivo que registra quem você indicou. Comissões liberadas via Pix a partir de R$ 20.</p>
+        </div>
+      </div>
+      <div id="modalPontos" class="modalPlano escondido" onclick="if(event.target===this)fecharPontos()">
+        <div class="mpCaixa" style="max-width:480px">
+          <button type="button" class="mpFechar" onclick="fecharPontos()" aria-label="Fechar">✕</button>
+          <div class="mpHead"><h2 class="mpTitulo">📍 Meus pontos</h2></div>
+          <p class="idxLead">Cada ponto é uma unidade sua no mapa (carrinho, food truck, quiosque…), com localização e link próprios. O plano Enterprise inclui até <b id="ptInclusos">3</b> pontos, contando o seu negócio principal.</p>
+          <div id="ptLista">Carregando…</div>
+          <button type="button" id="ptAddBtn" class="idxBtn prim" onclick="ptNovo()">+ Adicionar ponto</button>
+          <div id="ptForm" style="display:none;margin-top:12px;border-top:1px solid var(--card-borda);padding-top:12px">
+            <input id="ptNome" type="text" maxlength="80" placeholder="Nome do ponto (ex: Carrinho Boa Viagem)" style="width:100%;box-sizing:border-box;margin-bottom:8px;padding:11px;border-radius:10px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:15px">
+            <input id="ptSlug" type="text" maxlength="40" placeholder="apelido-do-ponto" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:15px" oninput="ptPrevSlug()">
+            <div style="font-size:12px;color:#7f95b3;margin:5px 2px 8px">O link ficará: moviki.com.br/<span id="ptSlugTxt">apelido</span></div>
+            <div id="ptGps" style="font-size:13px;color:#7f95b3;margin-bottom:6px">📍 Localização ainda não definida.</div>
+            <button type="button" class="idxBtn" style="background:rgba(255,159,64,.14);border:1px solid #ff9f40;color:#ffcf9a" onclick="ptPegarGps()">📍 Usar minha localização atual</button>
+            <div id="ptAviso" style="font-size:13px;margin:6px 2px;min-height:16px"></div>
+            <button type="button" id="ptSalvarBtn" class="idxBtn prim" onclick="ptSalvar()">Salvar ponto</button>
+            <button type="button" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5" onclick="ptCancelar()">Cancelar</button>
+          </div>
         </div>
       </div>
       <div id="modalExcluir" class="modalPlano escondido" onclick="if(event.target===this)fecharExcluir()">
@@ -671,7 +691,7 @@
     catch(e){planoPainel='basico';dadosAssinatura=null;}
   }
   function aplicarPlanoNasAbas(){
-    const libera=planoPainel==='pro'||planoPainel==='premium';
+    const libera=planoPainel==='pro'||planoPainel==='premium';if(window.ptAtualizarDrawer)ptAtualizarDrawer();
     ['cardapio','promocoes','eventos'].forEach(t=>{const b=document.querySelector('.tab[data-tab="'+t+'"]');if(b)b.classList.toggle('travada',!libera);});
     if(libera){const av=el('avisoPlano');if(av)av.classList.add('escondido');}
     atualizarNotaFotos();
@@ -1185,6 +1205,72 @@
   window.fecharMenu=function(){var d=$('drawer'),o=$('drawerOv');if(d)d.classList.remove('on');if(o)o.classList.remove('on');};
   window.abrirIndica=function(){fecharMenu();var m=$('modalIndica');if(m)m.classList.remove('escondido');};
   window.fecharIndica=function(){var m=$('modalIndica');if(m)m.classList.add('escondido');};
+  /* ---- Meus pontos (multi-ponto Enterprise) ---- */
+  var ptListaCache=[], ptCoords=null, ptEditId=null;
+  function ptEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function ptLimpaSlug(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,40);}
+  function ehEnterprisePainel(){return !!(dadosAssinatura&&dadosAssinatura.ativo===true&&dadosAssinatura.plano==='enterprise'&&(!dadosAssinatura.vence_em||dadosAssinatura.vence_em.toMillis()>Date.now()));}
+  window.ptAtualizarDrawer=function(){var b=el('drawerPontos');if(b)b.style.display=ehEnterprisePainel()?'flex':'none';};
+  window.abrirPontos=function(){if(window.fecharMenu)fecharMenu();var m=el('modalPontos');if(!m)return;m.classList.remove('escondido');ptCancelar();ptCarregar();};
+  window.fecharPontos=function(){var m=el('modalPontos');if(m)m.classList.add('escondido');};
+  window.ptPrevSlug=function(){var t=el('ptSlugTxt');if(t)t.textContent=ptLimpaSlug(el('ptSlug').value)||'apelido';};
+  async function ptCarregar(){
+    var lista=el('ptLista');lista.textContent='Carregando…';
+    try{
+      var idToken=await usuarioAtual.getIdToken();
+      var r=await fetch(ROBO+'/api/pontos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'listar'})});
+      var j=await r.json().catch(function(){return{};});
+      if(!r.ok||!j.ok){lista.textContent=(j&&j.erro)||'Não consegui carregar seus pontos.';return;}
+      if(j.inclusos){var pi=el('ptInclusos');if(pi)pi.textContent=j.inclusos;}
+      ptListaCache=j.pontos||[];
+      ptRender(ptListaCache);
+    }catch(e){lista.textContent='Não consegui carregar seus pontos.';}
+  }
+  function ptRender(pontos){
+    var lista=el('ptLista');
+    if(!pontos.length){lista.innerHTML='<div style="font-size:13.5px;color:#7f95b3;padding:8px 2px">Você ainda não tem pontos além do principal. Toque em “Adicionar ponto”.</div>';return;}
+    lista.innerHTML=pontos.map(function(p){
+      return '<div style="border:1px solid var(--card-borda);border-radius:12px;padding:11px 12px;margin-bottom:8px">'+
+        '<div style="font-weight:700;color:#e6eefb">'+ptEsc(p.nome||'Ponto')+(p.ativo?'':' <span style=\'font-size:11px;color:#ffcf9a\'>(inativo)</span>')+'</div>'+
+        '<div style="color:var(--ciano);font-size:12.5px;word-break:break-all;margin-top:2px">moviki.com.br/'+ptEsc(p.slug)+'</div>'+
+        '<div style="display:flex;gap:8px;margin-top:8px">'+
+          '<button type="button" class="idxBtn" style="flex:1;margin:0;padding:8px;background:rgba(0,212,255,.12);border:1px solid var(--ciano);color:var(--ciano)" onclick="ptEditar(\''+p.id+'\')">Editar</button>'+
+          '<button type="button" class="idxBtn" style="flex:1;margin:0;padding:8px;background:transparent;border:1px solid #c66;color:#ff9b9b" onclick="ptRemover(\''+p.id+'\',\''+ptEsc(p.nome||'')+'\')">Remover</button>'+
+        '</div></div>';
+    }).join('');
+  }
+  window.ptNovo=function(){ptEditId=null;el('ptNome').value='';el('ptSlug').value='';el('ptSlug').disabled=false;el('ptSlug').style.opacity='1';var t=el('ptSlugTxt');if(t)t.textContent='apelido';ptCoords=null;el('ptGps').innerHTML='📍 Localização ainda não definida.';el('ptAviso').textContent='';el('ptSalvarBtn').textContent='Salvar ponto';el('ptForm').style.display='block';el('ptAddBtn').style.display='none';};
+  window.ptCancelar=function(){var f=el('ptForm');if(f)f.style.display='none';var a=el('ptAddBtn');if(a)a.style.display='block';var av=el('ptAviso');if(av)av.textContent='';ptEditId=null;};
+  window.ptEditar=function(id){var p=ptListaCache.find(function(x){return x.id===id;});if(!p)return;ptEditId=id;el('ptNome').value=p.nome||'';el('ptSlug').value=p.slug||'';el('ptSlug').disabled=true;el('ptSlug').style.opacity='.6';var t=el('ptSlugTxt');if(t)t.textContent=p.slug||'apelido';ptCoords=(typeof p.lat==='number'&&typeof p.lng==='number')?{lat:p.lat,lng:p.lng}:null;el('ptGps').innerHTML=ptCoords?'📍 <b>Localização salva.</b> Toque abaixo pra atualizar.':'📍 Localização ainda não definida.';el('ptAviso').textContent='';el('ptSalvarBtn').textContent='Salvar alterações';el('ptForm').style.display='block';el('ptAddBtn').style.display='none';};
+  window.ptPegarGps=function(){var g=el('ptGps');if(!navigator.geolocation){g.textContent='Seu aparelho não tem GPS no navegador.';return;}g.innerHTML='📍 Pegando localização...';navigator.geolocation.getCurrentPosition(function(pos){ptCoords={lat:pos.coords.latitude,lng:pos.coords.longitude};g.innerHTML='📍 <b>Localização capturada!</b> '+ptCoords.lat.toFixed(5)+', '+ptCoords.lng.toFixed(5);},function(err){g.textContent=err.code===1?'Você bloqueou a localização. Libere nas permissões do navegador.':'Não consegui pegar a localização.';},{enableHighAccuracy:true,timeout:10000});};
+  window.ptSalvar=async function(){
+    var av=el('ptAviso');av.style.color='#ff9b9b';
+    var nome=el('ptNome').value.trim();var slug=ptLimpaSlug(el('ptSlug').value);
+    if(!nome){av.textContent='Dê um nome ao ponto.';return;}
+    if(!ptEditId&&slug.length<3){av.textContent='O apelido precisa de ao menos 3 letras.';return;}
+    if(!ptCoords){av.textContent='Toque em “Usar minha localização atual”.';return;}
+    var btn=el('ptSalvarBtn');btn.disabled=true;var t=btn.textContent;btn.textContent='Salvando...';
+    try{
+      var idToken=await usuarioAtual.getIdToken();
+      var payload=ptEditId?{idToken:idToken,acao:'editar',pid:ptEditId,nome:nome,lat:ptCoords.lat,lng:ptCoords.lng}:{idToken:idToken,acao:'criar',nome:nome,slug:slug,lat:ptCoords.lat,lng:ptCoords.lng};
+      var r=await fetch(ROBO+'/api/pontos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      var j=await r.json().catch(function(){return{};});
+      if(r.ok&&j.ok){ptCancelar();ptCarregar();}
+      else if(j&&j.motivo==='precisa_cobranca'){av.style.color='#ffcf9a';av.textContent='Esse é um ponto extra (R$ 19,90/mês). A ativação com pagamento entra em breve.';}
+      else if(j&&j.motivo==='apelido_em_uso'){av.textContent='Esse apelido já está em uso. Tente outro.';}
+      else{av.textContent=(j&&j.erro)||'Não consegui salvar agora.';}
+    }catch(e){av.textContent='Não consegui salvar agora.';}
+    btn.disabled=false;btn.textContent=t;
+  };
+  window.ptRemover=async function(id,nome){
+    if(!confirm('Remover o ponto “'+(nome||'')+'”? O link dele sai do ar.'))return;
+    try{
+      var idToken=await usuarioAtual.getIdToken();
+      var r=await fetch(ROBO+'/api/pontos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'remover',pid:id})});
+      var j=await r.json().catch(function(){return{};});
+      if(r.ok&&j.ok){ptCarregar();}else{alert((j&&j.erro)||'Não consegui remover agora.');}
+    }catch(e){alert('Não consegui remover agora.');}
+  };
   window.compartilharConviteWhats=function(){
     var msg='Olá! Tudo bem? 😊 Quero te apresentar o *Moviki* — o mapa inteligente que coloca o seu negócio no ar pra os clientes te encontrarem na hora. Você monta uma página só sua com cardápio, promoções, localização e avaliações. Vale muito a pena dar uma olhada: https://moviki.com.br/comerciantes.html';
     window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank','noopener');
