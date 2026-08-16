@@ -728,6 +728,10 @@
         '<div style="font-weight:700;color:#e6eefb">'+ptEsc(p.nome||'Ponto')+(p.ativo?'':(p.cobranca?' <span style=\'font-size:11px;color:#ffcf9a\'>(aguardando pagamento)</span>':' <span style=\'font-size:11px;color:#ffcf9a\'>(inativo)</span>'))+'</div>'+
         '<div style="color:var(--ciano);font-size:12.5px;word-break:break-all;margin-top:2px">moviki.com.br/'+ptEsc(p.slug)+'</div>'+
         '<div style="display:flex;gap:8px;margin-top:8px">'+
+          '<button type="button" class="idxBtn" style="flex:1;margin:0;padding:8px;background:rgba(0,212,255,.12);border:1px solid var(--ciano);color:var(--ciano)" onclick="ptCopiar(\''+ptEsc(p.slug)+'\')">📋 Copiar link</button>'+
+          '<button type="button" class="idxBtn" style="flex:1;margin:0;padding:8px;background:rgba(37,211,102,.14);border:1px solid #25D366;color:#7ee6a0" onclick="ptWpp(\''+ptEsc(p.slug)+'\')">WhatsApp</button>'+
+        '</div>'+
+        '<div style="display:flex;gap:8px;margin-top:8px">'+
           '<button type="button" class="idxBtn" style="flex:1;margin:0;padding:8px;background:rgba(0,212,255,.12);border:1px solid var(--ciano);color:var(--ciano)" onclick="ptEditar(\''+p.id+'\')">Editar</button>'+
           '<button type="button" class="idxBtn" style="flex:1;margin:0;padding:8px;background:transparent;border:1px solid #c66;color:#ff9b9b" onclick="ptRemover(\''+p.id+'\',\''+ptEsc(p.nome||'')+'\')">Remover</button>'+
         '</div></div>';
@@ -758,6 +762,8 @@
     }catch(e){av.textContent='Não consegui salvar agora.';}
     btn.disabled=false;btn.textContent=t;
   };
+  window.ptCopiar=function(slug){var link='https://moviki.com.br/'+slug;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(function(){alert('Link copiado!');},function(){prompt('Copie o link:',link);});}else{prompt('Copie o link:',link);}};
+  window.ptWpp=function(slug){var link='https://moviki.com.br/'+slug;window.open('https://wa.me/?text='+encodeURIComponent('Achou meu ponto no Moviki? Acesse: '+link),'_blank');};
   window.ptRemover=async function(id,nome){
     if(!confirm('Remover o ponto “'+(nome||'')+'”? O link dele sai do ar.'))return;
     try{
