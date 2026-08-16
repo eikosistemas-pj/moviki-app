@@ -796,7 +796,7 @@
     const s=el('mpStatus');if(!s)return;
     if(planoPainel==='pro'||planoPainel==='premium'||planoPainel==='enterprise'){
       let ate='';if(dadosAssinatura&&dadosAssinatura.vence_em){ate=' até '+new Date(dadosAssinatura.vence_em.toMillis()).toLocaleDateString('pt-BR');}
-      s.innerHTML='✅ Seu plano atual: <b>'+(planoPainel==='enterprise'?'Enterprise':planoPainel==='premium'?'Premium':'Pró')+'</b>'+ate+'.';
+      s.innerHTML='✅ Seu plano atual: <b>'+(planoPainel==='enterprise'?'Enterprise':planoPainel==='premium'?'Premium':'Pró')+'</b>'+ate+'. <span style=\'color:#8fd8a0\'>Renova automaticamente — você não precisa reassinar.</span>';
     }else{s.innerHTML='Seu plano atual: <b>Básico</b> (grátis). Escolha Pró ou Premium — ou fale com a gente pro Enterprise (vários pontos).';}
   }
   let planoSel=null,periodoSel=null;
@@ -824,7 +824,7 @@
       const r=await fetch(ROBO+'/api/criar-assinatura',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({plano:planoSel,periodo:periodoSel,cpfCnpj:cpf,nome:(el('nome').value||'').trim(),email:usuarioAtual.email})});
       const data=await r.json();
       if(r.ok&&data.invoiceUrl){window.location.href=data.invoiceUrl;return;}
-      av.style.color='#ff9b9b';av.textContent=data.erro||'Não consegui gerar o pagamento. Tente de novo.';
+      if(data&&data.motivo==='ja_ativo'){av.style.color='#8fd8a0';av.textContent=data.erro||'Você já tem um plano ativo — ele renova sozinho.';}else{av.style.color='#ff9b9b';av.textContent=data.erro||'Não consegui gerar o pagamento. Tente de novo.';}
       c.disabled=false;c.textContent=txt;
     }catch(e){av.style.color='#ff9b9b';av.textContent='Erro de conexão. Tente de novo.';c.disabled=false;c.textContent=txt;}
   };
