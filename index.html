@@ -494,10 +494,7 @@
             <div class="mpPlano mpEnt">
               <div class="mpNome">Enterprise</div>
               <div class="mpDesc">Tudo do Premium + <b>vários pontos</b> num cadastro só · relatórios consolidados · suporte prioritário</div>
-              <div class="mpEntLinha">
-                <span class="mpEntPreco">R$ 99,90<small>/mês</small></span>
-                <button class="mpBtn mpBtnEnt" onclick="selecionarPlano('enterprise','mensal',this)">Assinar · R$ 99,90/mês</button>
-              </div>
+              <div id="mpEntAcao" class="mpEntLinha"></div>
             </div>
           </div>
           <div id="mpSelInfo" class="mpSelInfo escondido"></div>
@@ -698,7 +695,17 @@
   }
   let _avisoPlanoTimer=null;
   function mostrarAvisoPlano(){const av=el('avisoPlano');if(!av)return;av.classList.remove('escondido');if(_avisoPlanoTimer)clearTimeout(_avisoPlanoTimer);_avisoPlanoTimer=setTimeout(()=>av.classList.add('escondido'),5000);}
-  window.abrirPlano=function(){renderStatusPlano();el('modalPlano').classList.remove('escondido');};
+  window.abrirPlano=function(){renderStatusPlano();renderCardEnterprise();el('modalPlano').classList.remove('escondido');};
+  function renderCardEnterprise(){
+    var box=el('mpEntAcao'); if(!box)return;
+    if(ehEnterprisePainel()){
+      box.innerHTML='<span style="color:#8fd8a0;font-weight:700;font-size:14px">✓ Você é Enterprise</span>'+
+        '<button class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important" onclick="fecharPlano();abrirPontos()">⚙️ Gerenciar meus pontos</button>';
+    }else{
+      box.innerHTML='<span style="color:#9fb3c8;font-size:13px">Vários pontos, relatórios e mais</span>'+
+        '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
+    }
+  }
   /* ---- Meus pontos (multi-ponto Enterprise) ---- */
   var ptListaCache=[], ptCoords=null, ptEditId=null;
   function ptEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -1258,6 +1265,7 @@
       if(!dadosAssinatura){ const _t=await garantirTrial(); if(_t){ await carregarPlanoPainel(user.uid); } }
       aplicarPlanoNasAbas();
       mostrarBannerTrial();
+      try{ if(new URLSearchParams(location.search).get('plano')==='enterprise' && !ehEnterprisePainel()){ abrirPlano(); setTimeout(function(){ try{selecionarPlano('enterprise','mensal',null);}catch(_){}} ,150); } }catch(_){}
     }else{
       el('painel').style.display='none';el('formArea').style.display='block';el('box').classList.remove('largo');
       el('email').value='';el('senha').value='';el('btnAcao').disabled=false;trocarAba('entrar');
