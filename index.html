@@ -136,6 +136,14 @@
   .fAdd:hover{background:rgba(255,138,61,.28);border-color:#ffa15c;}
   .fAdd:disabled{opacity:.55;cursor:default;}
   .fHint{font-size:11.5px;color:#7f95b3;width:100%;}
+  .galGrade{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px;}
+  .galCel{position:relative;aspect-ratio:1/1;border-radius:11px;overflow:hidden;border:1px solid #2b405a;background:#0b1728;}
+  .galCel img{width:100%;height:100%;object-fit:cover;display:block;}
+  .galCel .rmF{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:#e74c3c;color:#fff;border:2px solid rgba(0,0,0,.35);font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:2;}
+  .galAdd{aspect-ratio:1/1;border-radius:11px;border:1.5px dashed #ff8a3d;background:rgba(255,138,61,.14);color:#ffb37a;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-family:inherit;}
+  .galAdd span.mais{font-size:26px;line-height:1;}
+  .galAdd:hover{background:rgba(255,138,61,.24);border-color:#ffa15c;}
+  .galAdd:disabled{opacity:.55;cursor:default;}
   .notaFotos{background:rgba(255,195,64,.10);border:1px solid rgba(255,195,64,.42);color:#ffe6b3;padding:9px 12px;border-radius:9px;margin:0 2px 12px;font-size:13px;line-height:1.5;}
   .notaFotos b{color:#ffd479;}
   .notaFotos button{margin-top:8px;background:linear-gradient(135deg,var(--ciano),var(--azul));color:#04121f;border:none;border-radius:8px;padding:7px 14px;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
@@ -463,6 +471,7 @@
           <button type="button" class="gcard" id="gc-cardapio" onclick="irSecao('cardapio')"><img class="gcImg" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Cardápio</span></button>
           <button type="button" class="gcard" id="gc-promocoes" onclick="irSecao('promocoes')"><img class="gcImg" src="icones/promocoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Promoções</span></button>
           <button type="button" class="gcard" id="gc-eventos" onclick="irSecao('eventos')"><img class="gcImg" src="icones/eventos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Eventos</span></button>
+          <button type="button" class="gcard" id="gc-fotos" onclick="irSecao('fotos')"><img class="gcImg" src="icones/fotos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Fotos</span></button>
           <button type="button" class="gcard" onclick="irSecao('local')"><img class="gcImg" src="icones/localizacao.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Localização</span></button>
           <button type="button" class="gcard" onclick="irSecao('whatsapp')"><img class="gcImg" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">WhatsApp</span></button>
           <button type="button" class="gcard" onclick="irSecao('avaliacoes')"><img class="gcImg" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Avaliações</span></button>
@@ -477,6 +486,7 @@
         <button class="tab" data-tab="cardapio" onclick="abrirTab('cardapio')">Cardápio</button>
         <button class="tab" data-tab="promocoes" onclick="abrirTab('promocoes')">Promoções</button>
         <button class="tab" data-tab="eventos" onclick="abrirTab('eventos')">Eventos</button>
+        <button class="tab" data-tab="fotos" onclick="abrirTab('fotos')">Fotos</button>
         <button class="tab" data-tab="local" onclick="abrirTab('local')">Localização</button>
         <button class="tab" data-tab="whatsapp" onclick="abrirTab('whatsapp')">WhatsApp</button>
         <button class="tab" data-tab="avaliacoes" onclick="abrirTab('avaliacoes')">Avaliações</button>
@@ -570,6 +580,14 @@
         <div class="secTitulo"><label>Eventos</label><button class="addBtn" onclick="adicionarEvento()">+ Evento</button></div>
         <div id="listaEventos"></div>
         <div id="vazioEvento" class="vazioCard">Nenhum evento ainda.</div>
+      </div>
+
+      <!-- Fotos (galeria do negócio) -->
+      <div class="tabConteudo escondido" id="tab-fotos">
+        <div id="notaGaleria" class="notaFotos"></div>
+        <div class="secTitulo"><label>Galeria do negócio</label><span id="galContador" style="font-size:12.5px;color:#8fa6c4"></span></div>
+        <p style="font-size:13px;color:#9fb3d0;margin:0 0 12px;line-height:1.5">Mostre seu ambiente, sua equipe, seus pratos, seu ponto. Essas fotos aparecem numa aba <b>Fotos</b> na sua página pública. Até <b>10</b> fotos.</p>
+        <div id="galGrade" class="galGrade"></div>
       </div>
 
       <!-- Local -->
@@ -730,6 +748,7 @@
     ['cardapio','promocoes','eventos'].forEach(t=>{const b=document.querySelector('.tab[data-tab="'+t+'"]');if(b)b.classList.toggle('travada',!libera);});
     if(libera){const av=el('avisoPlano');if(av)av.classList.add('escondido');}
     atualizarNotaFotos();
+    atualizarNotaGaleria();
   }
   let _avisoPlanoTimer=null;
   function mostrarAvisoPlano(){const av=el('avisoPlano');if(!av)return;av.classList.remove('escondido');if(_avisoPlanoTimer)clearTimeout(_avisoPlanoTimer);_avisoPlanoTimer=setTimeout(()=>av.classList.add('escondido'),5000);}
@@ -1105,6 +1124,51 @@
     else if(e==='trial'){ n.innerHTML='📸 <b>No teste grátis suas fotos já aparecem no site!</b> Aproveite pra caprichar nas fotos dos produtos. Pra elas continuarem aparecendo quando o teste acabar, assine o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
     else { n.innerHTML='📸 <b>Fotos são um recurso do Premium.</b> Pode adicionar as fotos agora — elas passam a aparecer no seu site assim que você assinar o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
   }
+
+  /* ---- GALERIA DO NEGÓCIO (aba Fotos) ---- */
+  const GAL_MAX=10;
+  let _galeria=[];
+  function galSet(arr){_galeria=(arr||[]).filter(fotoUrlOk).slice(0,GAL_MAX);renderGaleria();}
+  function lerGaleria(){return _galeria.slice();}
+  function atualizarNotaGaleria(){
+    const n=el('notaGaleria'); if(!n)return;
+    const e=estadoFotos();
+    if(e==='premium'){ n.innerHTML='📸 <b>Galeria ativa.</b> Suas fotos aparecem numa aba <b>Fotos</b> na sua página pública.'; }
+    else if(e==='trial'){ n.innerHTML='📸 <b>No teste grátis sua galeria já aparece no site!</b> Capriche nas fotos. Pra continuarem no ar depois do teste, assine o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
+    else { n.innerHTML='📸 <b>A galeria é um recurso do Premium.</b> Pode adicionar as fotos agora — elas passam a aparecer no site assim que você assinar o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
+  }
+  function renderGaleria(){
+    const g=el('galGrade'); if(!g)return;
+    atualizarNotaGaleria();
+    const c=el('galContador'); if(c)c.textContent=_galeria.length+' / '+GAL_MAX;
+    let h='';
+    _galeria.forEach(function(u,i){
+      h+='<div class="galCel"><img src="'+u+'" alt="foto" loading="lazy"><button type="button" class="rmF" title="Remover" onclick="removerFotoGaleria('+i+')">✕</button></div>';
+    });
+    if(_galeria.length<GAL_MAX){
+      h+='<button type="button" class="galAdd" id="galAddBtn" onclick="escolherFotoGaleria()"><span class="mais">＋</span><span>Adicionar foto</span></button>';
+    }
+    g.innerHTML=h;
+  }
+  window.removerFotoGaleria=function(i){ _galeria.splice(i,1); renderGaleria(); toast('Foto removida. Não esqueça de Salvar.'); };
+  window.escolherFotoGaleria=function(){
+    if(_galeria.length>=GAL_MAX){toast('Você já atingiu o limite de '+GAL_MAX+' fotos.',true);return;}
+    const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+    inp.onchange=async function(){
+      const file=inp.files&&inp.files[0]; if(!file)return;
+      if(!/^image\//.test(file.type)){toast('Escolha uma imagem.',true);return;}
+      const add=el('galAddBtn'); if(add){add.disabled=true;add.innerHTML='<span style="font-size:12px">Enviando…</span>';}
+      try{
+        const dataUrl=await comprimirProporcional(file,1080);
+        const idToken=await usuarioAtual.getIdToken();
+        const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
+        const j=await resp.json().catch(function(){return {};});
+        if(resp.ok&&j.ok&&j.url){ _galeria.push(j.url); renderGaleria(); toast('Foto adicionada. Não esqueça de Salvar.'); }
+        else{ toast('Não deu certo. Tente de novo.',true); renderGaleria(); }
+      }catch(e){ toast('Falha ao enviar. Confira a conexão.',true); renderGaleria(); }
+    };
+    inp.click();
+  };
   const CORES_CAT=[
     {b:'#00d4ff',g:'rgba(0,212,255,.10)'},
     {b:'#ff8a3d',g:'rgba(255,138,61,.10)'},
@@ -1283,7 +1347,7 @@
     btn.disabled=true;const t=btn.textContent;btn.textContent='Salvando...';
     try{
       if(slug){const ref=doc(db,'slugs',slug);const snap=await getDoc(ref);if(snap.exists()&&snap.data().uid!==usuarioAtual.uid){abrirTab('perfil');erroP('O apelido "'+slug+'" já está em uso. Escolha outro.');btn.disabled=false;btn.textContent=t;return;}if(!snap.exists()){await setDoc(ref,{uid:usuarioAtual.uid});}el('apelido').value=slug;}
-      const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
+      const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),fotos:lerGaleria(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
       var _cor=el('corInput')?el('corInput').value:'';if(/^#[0-9a-fA-F]{6}$/.test(_cor))dados.cor=_cor;dados.whiteLabel=el('wlToggle')?!!el('wlToggle').checked:false;
       if(coords){dados.lat=coords.lat;dados.lng=coords.lng;}
       if(slug){dados.slug=slug;}
@@ -1334,8 +1398,9 @@
         el('listaCategorias').innerHTML='';(d.cardapio||[]).forEach(c=>adicionarCategoria(c.categoria||'',c.produtos||[],c.capa||''));vazioCat();
         el('listaPromos').innerHTML='';(d.promocoes||[]).forEach(p=>adicionarPromo(p.titulo||'',p.detalhe||'',p.capa||''));vazioPromo();
         el('listaEventos').innerHTML='';(d.eventos||[]).forEach(e2=>adicionarEvento(e2.titulo||'',e2.quando||'',e2.detalhe||'',e2.capa||''));vazioEvento();
+        galSet(d.fotos||[]);
         if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}mostrarLogoPreview(d.markerLogo||'');if(d.nome&&d.slug&&d.lat!=null&&d.lng!=null){onbDone=true;try{localStorage.setItem('moviki_onb_'+uid,'1');}catch(_){}}
-      }else{setStatus('fechado');vazioCat();vazioPromo();vazioEvento();mostrarLogoPreview('');}
+      }else{setStatus('fechado');vazioCat();vazioPromo();vazioEvento();galSet([]);mostrarLogoPreview('');}
     }catch(e){setStatus('fechado');vazioCat();vazioPromo();vazioEvento();}
   }
 
@@ -1352,7 +1417,7 @@
         _bv.classList.remove('ok');_bv.classList.remove('escondido');
       }
       coords=null;slugSalvo='';onbOculto=false;onbSalvo=false;onbDone=false;try{if(user&&localStorage.getItem('moviki_onb_'+user.uid))onbDone=true;}catch(_){}el('linkPronto').classList.add('escondido');
-      el('listaCategorias').innerHTML='';el('listaPromos').innerHTML='';el('listaEventos').innerHTML='';
+      el('listaCategorias').innerHTML='';el('listaPromos').innerHTML='';el('listaEventos').innerHTML='';galSet([]);
       el('gpsInfo').innerHTML='📍 Localização ainda não definida.';
       abrirTab('perfil');
       await carregarDados(user.uid);
