@@ -256,6 +256,16 @@
   .mpEntLinha{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:4px}
   .mpEntPreco{font-size:20px;font-weight:800;color:#ffc340}
   .mpEntPreco small{font-size:12px;color:#9fb3c8;font-weight:500}
+  /* seleção de plano: destaque do card + info + botão pulsante */
+  .mpPlano.selCard{border-color:var(--ciano);box-shadow:0 0 0 2px rgba(0,212,255,.55)}
+  .mpPlano.selCard.selCardEnt{border-color:#ffc340;box-shadow:0 0 0 2px rgba(255,193,64,.6),0 0 24px rgba(255,193,64,.28);background:rgba(255,193,64,.06)}
+  .mpSelInfo.selEnt{color:#ffe08a;background:rgba(255,193,64,.15);border-color:rgba(255,193,64,.6)}
+  .mpSelInfo.selEnt b{color:#ffc340}
+  .mpBtnConf{--pulseColor:rgba(0,212,255,.5)}
+  .mpBtnConf.entMode{background:#ffc340;color:#3d2b00}
+  .mpBtnConf.entMode{--pulseColor:rgba(255,193,64,.6)}
+  @keyframes mpPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 var(--pulseColor)}50%{transform:scale(1.03);box-shadow:0 0 20px 5px var(--pulseColor)}}
+  .mpBtnConf.pulsar:not(:disabled){animation:mpPulse 1.15s ease-in-out infinite}
   .mpBtnEnt{width:auto!important;margin:0!important;background:linear-gradient(135deg,#25D366,#128C4B)!important;color:#fff!important;padding:11px 18px!important;font-weight:700}
   .appMenu{flex:0 0 auto;background:none;border:none;color:var(--ciano);cursor:pointer;padding:2px 4px 2px 0;display:flex;align-items:center;}
   .appMenu svg{width:24px;height:24px;}
@@ -893,11 +903,20 @@
     planoSel=plano;periodoSel=periodo;
     document.querySelectorAll('.mpBtn').forEach(b=>b.classList.remove('sel'));
     if(btn)btn.classList.add('sel');
+    // destaca o CARD escolhido (Enterprise em dourado)
+    document.querySelectorAll('.mpPlano').forEach(c=>c.classList.remove('selCard','selCardEnt'));
+    var card = (plano==='enterprise') ? document.querySelector('.mpEnt') : (btn?btn.closest('.mpPlano'):null);
+    if(card){ card.classList.add('selCard'); if(plano==='enterprise') card.classList.add('selCardEnt'); }
     const nome=plano==='enterprise'?'Enterprise':plano==='premium'?'Premium':'Pró';
     const info=el('mpSelInfo');info.classList.remove('escondido');
+    info.classList.toggle('selEnt', plano==='enterprise');
     info.innerHTML='Selecionado: <b>'+nome+'</b> · '+_precoLabel[plano][periodo];
-    el('mpConfirmar').disabled=false;
+    var cf=el('mpConfirmar'); cf.disabled=false;
+    cf.classList.add('pulsar');
+    cf.classList.toggle('entMode', plano==='enterprise');
     el('mpAviso').textContent='';
+    // rola até o botão pra ele ver que é o próximo passo
+    try{ cf.scrollIntoView({behavior:'smooth',block:'nearest'}); }catch(_){}
   };
   window.confirmarPlano=async function(){
     const av=el('mpAviso');av.style.color='#9fb3c8';av.textContent='';

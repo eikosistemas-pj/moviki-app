@@ -45,6 +45,7 @@
   .nav{flex:1;padding:12px 10px;overflow-y:auto}
   .navItem{display:flex;align-items:center;gap:11px;width:100%;background:none;border:none;color:#b9cbe4;font-family:inherit;font-size:14px;font-weight:500;text-align:left;padding:11px 13px;border-radius:10px;cursor:pointer;margin-bottom:3px}
   .navItem .ic{font-size:18px;width:22px;text-align:center;flex:0 0 auto}
+  .navItem .ic .icImg{width:21px;height:21px;object-fit:contain;border-radius:5px;display:block;margin:0 auto}
   .navItem:hover{background:rgba(255,255,255,.06);color:#fff}
   .navItem.ativo{background:rgba(10,162,200,.18);color:#fff;box-shadow:inset 3px 0 0 var(--ciano)}
   .navItem .bad{margin-left:auto;font-size:9.5px;font-weight:700;color:#7f9bc0;background:rgba(255,255,255,.07);padding:2px 6px;border-radius:999px;letter-spacing:.05em}
@@ -191,18 +192,18 @@
       <div class="t">Moviki<small>Painel do Dono</small></div>
     </div>
     <nav class="nav">
-      <button class="navItem ativo" data-pg="inicio" onclick="abrir('inicio')"><span class="ic">📊</span>Início</button>
-      <button class="navItem" data-pg="convComerciante" onclick="abrir('convComerciante')"><span class="ic">🛍️</span>Convidar comerciante</button>
-      <button class="navItem" data-pg="convParceiro" onclick="abrir('convParceiro')"><span class="ic">🤝</span>Convidar parceiro</button>
-      <button class="navItem" data-pg="usuarios" onclick="abrir('usuarios')"><span class="ic">👥</span>Usuários</button>
-      <button class="navItem" data-pg="parceiros" onclick="abrir('parceiros')"><span class="ic">📋</span>Parceiros<span class="bad" id="badgeParceiros" style="display:none"></span></button>
-      <button class="navItem" data-pg="relatorios" onclick="abrir('relatorios')"><span class="ic">📈</span>Relatórios</button>
-      <button class="navItem" data-pg="comissoes" onclick="abrir('comissoes')"><span class="ic">💰</span>Comissões<span class="bad" id="badgeComissoes" style="display:none"></span></button>
-      <button class="navItem" data-pg="exclusoes" onclick="abrir('exclusoes')"><span class="ic">🗑️</span>Exclusões<span class="bad" id="badgeExclusoes" style="display:none"></span></button>
-      <button class="navItem" onclick="verSite()"><span class="ic">🌐</span>Ver o site</button>
+      <button class="navItem ativo" data-pg="inicio" onclick="abrir('inicio')"><span class="ic"><img class="icImg" src="icones/inicio.png" alt="" onerror="this.replaceWith(document.createTextNode('📊'))"></span>Início</button>
+      <button class="navItem" data-pg="convComerciante" onclick="abrir('convComerciante')"><span class="ic"><img class="icImg" src="icones/convidar-comerciante.png" alt="" onerror="this.replaceWith(document.createTextNode('🛍️'))"></span>Convidar comerciante</button>
+      <button class="navItem" data-pg="convParceiro" onclick="abrir('convParceiro')"><span class="ic"><img class="icImg" src="icones/convidar-parceiro.png" alt="" onerror="this.replaceWith(document.createTextNode('🤝'))"></span>Convidar parceiro</button>
+      <button class="navItem" data-pg="usuarios" onclick="abrir('usuarios')"><span class="ic"><img class="icImg" src="icones/usuarios.png" alt="" onerror="this.replaceWith(document.createTextNode('👥'))"></span>Usuários</button>
+      <button class="navItem" data-pg="parceiros" onclick="abrir('parceiros')"><span class="ic"><img class="icImg" src="icones/parceiros.png" alt="" onerror="this.replaceWith(document.createTextNode('📋'))"></span>Parceiros<span class="bad" id="badgeParceiros" style="display:none"></span></button>
+      <button class="navItem" data-pg="relatorios" onclick="abrir('relatorios')"><span class="ic"><img class="icImg" src="icones/relatorios.png" alt="" onerror="this.replaceWith(document.createTextNode('📈'))"></span>Relatórios</button>
+      <button class="navItem" data-pg="comissoes" onclick="abrir('comissoes')"><span class="ic"><img class="icImg" src="icones/comissoes.png" alt="" onerror="this.replaceWith(document.createTextNode('💰'))"></span>Comissões<span class="bad" id="badgeComissoes" style="display:none"></span></button>
+      <button class="navItem" data-pg="exclusoes" onclick="abrir('exclusoes')"><span class="ic"><img class="icImg" src="icones/exclusoes.png" alt="" onerror="this.replaceWith(document.createTextNode('🗑️'))"></span>Exclusões<span class="bad" id="badgeExclusoes" style="display:none"></span></button>
+      <button class="navItem" onclick="verSite()"><span class="ic"><img class="icImg" src="icones/ver-site.png" alt="" onerror="this.replaceWith(document.createTextNode('🌐'))"></span>Ver o site</button>
     </nav>
     <div class="sbBaixo">
-      <button class="navItem" onclick="sair()"><span class="ic">↩️</span>Sair</button>
+      <button class="navItem" onclick="sair()"><span class="ic"><img class="icImg" src="icones/sair.png" alt="" onerror="this.replaceWith(document.createTextNode('↩️'))"></span>Sair</button>
     </div>
   </aside>
 
