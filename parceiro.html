@@ -126,11 +126,12 @@
     <div class="card hide" id="cardComissao">
       <div class="titulo">Comissões</div>
       <div class="kpi"><span class="n" id="cReceber">R$ 0,00</span><span class="t">disponível pra saque</span></div>
+      <div class="dado" id="rowRetido" style="display:none;margin-top:8px"><span class="k">A liberar em breve</span><span class="v" id="cRetido">R$ 0,00</span></div>
       <div class="dado" style="margin-top:8px"><span class="k">Total já ganho</span><span class="v" id="cTotal">R$ 0,00</span></div>
       <div class="dado"><span class="k">Já pago a você</span><span class="v" id="cPago">R$ 0,00</span></div>
       <div class="dado"><span class="k">Indicados que assinaram</span><span class="v" id="cPagantes">0</span></div>
       <button class="btn" id="btnSaque" disabled>Solicitar saque via Pix</button>
-      <div class="status-nota" id="saqueNota">Saque mínimo de R$ 20,00. O pagamento cai na sua chave Pix cadastrada.</div>
+      <div class="status-nota" id="saqueNota">Saque mínimo de R$ 20,00. O pagamento cai na sua chave Pix cadastrada. Comissões recentes ficam alguns dias em análise antes de liberar.</div>
       <div class="aviso" id="avisoSaque"></div>
     </div>
 
@@ -245,11 +246,18 @@
     try{
       const q = query(collection(db,'comissoes'), where('parceiroUid','==', MEU.uid));
       const r = await getDocs(q);
-      let total=0, pago=0, receber=0; const lojistas=new Set();
+      let total=0, pago=0, receber=0, retido=0; const lojistas=new Set();
+      const agora = Date.now();
       r.forEach(d=>{
         const c=d.data(); if(c.estornada) return;
         const v=Number(c.valor)||0; total+=v;
-        if(c.pago) pago+=v; else receber+=v;
+        if(c.pago){ pago+=v; }
+        else {
+          // liberaEm ausente (comissão antiga) = já liberada; senão só entra no disponível após a data
+          let libMs=0;
+          if(c.liberaEm){ libMs = (typeof c.liberaEm.toMillis==='function') ? c.liberaEm.toMillis() : (c.liberaEm.seconds ? c.liberaEm.seconds*1000 : 0); }
+          if(libMs && libMs > agora) retido+=v; else receber+=v;
+        }
         if(c.nivel===1 && c.lojistaUid) lojistas.add(c.lojistaUid);
       });
       COM.aReceber = Math.round(receber*100)/100;
@@ -257,6 +265,9 @@
       el('cTotal').textContent   = brl(total);
       el('cPago').textContent    = brl(pago);
       el('cPagantes').textContent= String(lojistas.size);
+      var _rr=el('rowRetido'); var _cr=el('cRetido');
+      if(_cr) _cr.textContent = brl(retido);
+      if(_rr) _rr.style.display = retido>0 ? 'flex' : 'none';
 
       // já existe um pedido de saque em aberto?
       try{
