@@ -363,6 +363,7 @@
           <button type="button" class="mpFechar" onclick="fecharPontos()" aria-label="Fechar">✕</button>
           <div class="mpHead"><h2 class="mpTitulo">📍 Meus pontos</h2></div>
           <p class="idxLead">Cada ponto é uma unidade sua no mapa (carrinho, food truck, quiosque…), com localização e link próprios. O plano Enterprise inclui até <b id="ptInclusos">3</b> pontos, contando o seu negócio principal.</p>
+          <div id="ptResumo"></div>
           <div id="ptLista">Carregando…</div>
           <button type="button" id="ptAddBtn" class="idxBtn prim" onclick="ptNovo()">+ Adicionar ponto</button>
           <div id="ptForm" style="display:none;margin-top:12px;border-top:1px solid var(--card-borda);padding-top:12px">
@@ -735,6 +736,7 @@
       if(j.inclusos){var pi=el('ptInclusos');if(pi)pi.textContent=j.inclusos;}
       ptListaCache=j.pontos||[];
       ptRender(ptListaCache);
+      ptRenderResumo(ptListaCache,j.inclusos);
     }catch(e){lista.textContent='Não consegui carregar seus pontos.';}
   }
   function ptRender(pontos){
@@ -753,6 +755,42 @@
           '<button type="button" class="idxBtn" style="flex:1;margin:0;padding:8px;background:transparent;border:1px solid #c66;color:#ff9b9b" onclick="ptRemover(\''+p.id+'\',\''+ptEsc(p.nome||'')+'\')">Remover</button>'+
         '</div></div>';
     }).join('');
+  }
+  function ptFmtBRL(v){return 'R$ '+(Number(v)||0).toFixed(2).replace('.',',');}
+  function ptRenderResumo(pontos,inclusos){
+    var box=el('ptResumo');if(!box)return;
+    pontos=pontos||[];
+    var BASE=99.90,EXTRA=19.90;
+    var incl=Number(inclusos)||3;                 // pontos inclusos no plano (contando o principal)
+    var freeExtras=Math.max(0,incl-1);            // extras grátis (principal já é 1)
+    var totalExtras=pontos.length;
+    var totalPontos=1+totalExtras;                // principal + extras
+    var aguardando=pontos.filter(function(p){return !p.ativo;}).length;
+    var extrasPagosAtivos=pontos.filter(function(p){return p.ativo&&p.cobranca;}).length;
+    var restamGratis=Math.max(0,freeExtras-totalExtras);
+    var mensal=BASE+extrasPagosAtivos*EXTRA;
+    var linhas=''+
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">'+
+        '<div style="flex:1;min-width:90px;background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:10px 12px">'+
+          '<div style="font-size:22px;font-weight:800;color:var(--ciano);line-height:1">'+totalPontos+'</div>'+
+          '<div style="font-size:11.5px;color:#9fb3c8;margin-top:3px">pontos no mapa</div>'+
+        '</div>'+
+        '<div style="flex:1;min-width:90px;background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:10px 12px">'+
+          '<div style="font-size:22px;font-weight:800;color:#7ee6a0;line-height:1">'+(1+pontos.filter(function(p){return p.ativo;}).length)+'</div>'+
+          '<div style="font-size:11.5px;color:#9fb3c8;margin-top:3px">ativos agora</div>'+
+        '</div>'+
+        (aguardando>0?'<div style="flex:1;min-width:90px;background:#0b1728;border:1px solid #ff9f40;border-radius:12px;padding:10px 12px">'+
+          '<div style="font-size:22px;font-weight:800;color:#ffcf9a;line-height:1">'+aguardando+'</div>'+
+          '<div style="font-size:11.5px;color:#ffcf9a;margin-top:3px">aguardando pagamento</div>'+
+        '</div>':'')+
+      '</div>'+
+      '<div style="background:linear-gradient(135deg,rgba(0,102,255,.12),rgba(0,212,255,.10));border:1px solid var(--ciano);border-radius:12px;padding:11px 13px;margin-bottom:12px">'+
+        '<div style="font-size:12.5px;color:#9fb3c8;margin-bottom:4px">Cobrança mensal</div>'+
+        '<div style="font-size:19px;font-weight:800;color:#e6eefb">'+ptFmtBRL(mensal)+'<span style="font-size:12px;color:#7f95b3;font-weight:600">/mês</span></div>'+
+        '<div style="font-size:12px;color:#7f95b3;margin-top:4px">Plano Enterprise '+ptFmtBRL(BASE)+(extrasPagosAtivos>0?' + '+extrasPagosAtivos+' ponto'+(extrasPagosAtivos>1?'s':'')+' extra'+(extrasPagosAtivos>1?'s':'')+' × '+ptFmtBRL(EXTRA):'')+'</div>'+
+        (restamGratis>0?'<div style="font-size:12px;color:#7ee6a0;margin-top:5px">✓ Você ainda pode adicionar '+restamGratis+' ponto'+(restamGratis>1?'s':'')+' sem custo extra.</div>':'')+
+      '</div>';
+    box.innerHTML=linhas;
   }
   window.ptNovo=function(){ptEditId=null;el('ptNome').value='';el('ptSlug').value='';if(el('ptEndereco'))el('ptEndereco').value='';if(el('ptSug')){el('ptSug').style.display='none';el('ptSug').innerHTML='';}ptResetHorario();setTimeout(function(){var f=el('ptForm');if(f&&f.scrollIntoView)f.scrollIntoView({behavior:'smooth',block:'center'});},60);el('ptSlug').disabled=false;el('ptSlug').style.opacity='1';var t=el('ptSlugTxt');if(t)t.textContent='apelido';ptCoords=null;el('ptGps').innerHTML='📍 Localização ainda não definida.';el('ptAviso').textContent='';el('ptSalvarBtn').textContent='Salvar ponto';el('ptForm').style.display='block';el('ptAddBtn').style.display='none';};
   window.ptCancelar=function(){var f=el('ptForm');if(f)f.style.display='none';var a=el('ptAddBtn');if(a)a.style.display='block';var av=el('ptAviso');if(av)av.textContent='';ptEditId=null;};
