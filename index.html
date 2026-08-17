@@ -199,6 +199,8 @@
   .gcard:hover{transform:translateY(-2px);border-color:var(--ciano);box-shadow:0 10px 26px rgba(0,0,0,.35);}
   .gcard:active{transform:translateY(0);}
   .gcIcon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;}
+  .gcImg{width:58px;height:58px;object-fit:cover;border-radius:15px;display:block;box-shadow:0 3px 10px rgba(0,0,0,.30);}
+  .gcard.travado .gcImg{filter:grayscale(.7);opacity:.6;}
   .gcLabel{font-size:13px;font-weight:600;color:#e6eefb;text-align:center;line-height:1.15;}
   .i-perfil{background:rgba(0,102,255,.16);}
   .i-card{background:rgba(0,212,255,.16);}
@@ -272,6 +274,7 @@
   .drawerRedes a{flex:1;display:flex;align-items:center;justify-content:center;padding:11px 0;border-radius:11px;border:1px solid var(--card-borda);color:#cfe0f5;background:rgba(255,255,255,.02);}
   .drawerRedes a:hover{background:rgba(0,212,255,.12);color:var(--ciano);border-color:var(--ciano);}
   .drawerRedes svg{width:20px;height:20px;}
+  .drawer .diImg{width:22px;height:22px;object-fit:contain;border-radius:6px;flex:0 0 auto;}
   .drawerNota{margin-top:12px;font-size:11.5px;color:#7f95b3;padding:12px 10px 2px;border-top:1px solid var(--card-borda);text-align:center;}
   .idxLead{color:#dbe9ff;font-size:14.5px;line-height:1.55;margin:2px 0 14px;}
   .idxLead b{color:var(--ciano);}
@@ -318,14 +321,14 @@
         <button type="button" class="drawerX" onclick="fecharMenu()" aria-label="Fechar">✕</button>
         <div class="drawerTit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Menu</div>
         <div class="drawerSec">Minha conta</div>
-        <button type="button" onclick="fecharMenu();irSecao('perfil')">👤 Perfil do negócio</button>
-        <button type="button" onclick="fecharMenu();abrirPlano()">💳 Meu Plano</button>
-        <button type="button" onclick="fecharMenu();verMinhaPagina()">🌐 Minha Página</button>
-        <button type="button" id="drawerPontos" style="display:none" onclick="fecharMenu();abrirPontos()">📍 Meus pontos</button>
+        <button type="button" onclick="fecharMenu();irSecao('perfil')"><img class="diImg" src="icones/perfil.png" alt="" onerror="this.replaceWith(document.createTextNode('👤'))"> Perfil do negócio</button>
+        <button type="button" onclick="fecharMenu();abrirPlano()"><img class="diImg" src="icones/plano.png" alt="" onerror="this.replaceWith(document.createTextNode('💳'))"> Meu Plano</button>
+        <button type="button" onclick="fecharMenu();verMinhaPagina()"><img class="diImg" src="icones/pagina.png" alt="" onerror="this.replaceWith(document.createTextNode('🌐'))"> Minha Página</button>
+        <button type="button" id="drawerPontos" style="display:none" onclick="fecharMenu();abrirPontos()"><img class="diImg" src="icones/multipontos.png" alt="" onerror="this.replaceWith(document.createTextNode('📍'))"> Meus pontos</button>
 
         <div class="drawerSec">Crescer</div>
-        <button type="button" onclick="abrirIndica()">💰 Indique e ganhe</button>
-        <a href="https://g.page/r/CeZnw1wWHEgMEBM/review" target="_blank" rel="noopener">⭐ Avaliar o Moviki no Google</a>
+        <button type="button" onclick="abrirIndica()"><img class="diImg" src="icones/indicar.png" alt="" onerror="this.replaceWith(document.createTextNode('💰'))"> Indique e ganhe</button>
+        <a href="https://g.page/r/CeZnw1wWHEgMEBM/review" target="_blank" rel="noopener"><img class="diImg" src="icones/google.png" alt="" onerror="this.replaceWith(document.createTextNode('⭐'))"> Avaliar o Moviki no Google</a>
 
         <div class="drawerSec">Redes sociais</div>
         <div class="drawerRedes">
@@ -336,11 +339,11 @@
 
         <div class="drawerSec">Ajuda</div>
         <a href="https://wa.me/554120186848?text=Ol%C3%A1!%20Preciso%20de%20ajuda%20com%20o%20Moviki." target="_blank" rel="noopener">💬 Falar com o suporte</a>
-        <a href="https://moviki.com.br" target="_blank" rel="noopener">ℹ️ Sobre o Moviki</a>
-        <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener">📄 Termos de uso</a>
-        <a href="https://moviki.com.br/privacidade.html" target="_blank" rel="noopener">🔒 Políticas de privacidade</a>
+        <a href="https://moviki.com.br" target="_blank" rel="noopener"><img class="diImg" src="icones/sobre.png" alt="" onerror="this.replaceWith(document.createTextNode('ℹ️'))"> Sobre o Moviki</a>
+        <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener"><img class="diImg" src="icones/termos.png" alt="" onerror="this.replaceWith(document.createTextNode('📄'))"> Termos de uso</a>
+        <a href="https://moviki.com.br/privacidade.html" target="_blank" rel="noopener"><img class="diImg" src="icones/politicas.png" alt="" onerror="this.replaceWith(document.createTextNode('🔒'))"> Políticas de privacidade</a>
 
-        <button type="button" onclick="fecharMenu();sair()">🚪 Sair</button>
+        <button type="button" onclick="fecharMenu();sair()"><img class="diImg" src="icones/sair.png" alt="" onerror="this.replaceWith(document.createTextNode('🚪'))"> Sair</button>
         <button type="button" class="drawerDel" onclick="abrirExcluir()">Excluir minha conta</button>
         <div class="drawerNota">O mapa inteligente dos negócios em movimento.</div>
       </nav>
@@ -446,16 +449,16 @@
       </div>
         <div id="bannerTrial" class="bannerTrial escondido"></div>
         <div class="grid">
-          <button type="button" class="gcard" onclick="irSecao('perfil')"><span class="gcIcon i-perfil">👤</span><span class="gcLabel">Perfil</span></button>
-          <button type="button" class="gcard" id="gc-cardapio" onclick="irSecao('cardapio')"><span class="gcIcon i-card">🍽️</span><span class="gcLabel">Cardápio</span></button>
-          <button type="button" class="gcard" id="gc-promocoes" onclick="irSecao('promocoes')"><span class="gcIcon i-promo">🏷️</span><span class="gcLabel">Promoções</span></button>
-          <button type="button" class="gcard" id="gc-eventos" onclick="irSecao('eventos')"><span class="gcIcon i-eve">📅</span><span class="gcLabel">Eventos</span></button>
-          <button type="button" class="gcard" onclick="irSecao('local')"><span class="gcIcon i-loc">📍</span><span class="gcLabel">Localização</span></button>
-          <button type="button" class="gcard" onclick="irSecao('whatsapp')"><span class="gcIcon i-wpp">💬</span><span class="gcLabel">WhatsApp</span></button>
-          <button type="button" class="gcard" onclick="irSecao('avaliacoes')"><span class="gcIcon i-aval">⭐</span><span class="gcLabel">Avaliações</span></button>
-          <button type="button" class="gcard" onclick="abrirPlano()"><span class="gcIcon i-plano">💳</span><span class="gcLabel">Meu Plano</span></button>
-          <button type="button" class="gcard" onclick="verMinhaPagina()"><span class="gcIcon i-pag">🌐</span><span class="gcLabel">Minha Página</span></button>
-          <button type="button" class="gcard" id="gc-pontos" style="display:none" onclick="abrirPontos()"><span class="gcIcon i-loc">📍</span><span class="gcLabel">Meus pontos</span></button>
+          <button type="button" class="gcard" onclick="irSecao('perfil')"><img class="gcImg" src="icones/perfil.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Perfil</span></button>
+          <button type="button" class="gcard" id="gc-cardapio" onclick="irSecao('cardapio')"><img class="gcImg" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Cardápio</span></button>
+          <button type="button" class="gcard" id="gc-promocoes" onclick="irSecao('promocoes')"><img class="gcImg" src="icones/promocoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Promoções</span></button>
+          <button type="button" class="gcard" id="gc-eventos" onclick="irSecao('eventos')"><img class="gcImg" src="icones/eventos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Eventos</span></button>
+          <button type="button" class="gcard" onclick="irSecao('local')"><img class="gcImg" src="icones/localizacao.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Localização</span></button>
+          <button type="button" class="gcard" onclick="irSecao('whatsapp')"><img class="gcImg" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">WhatsApp</span></button>
+          <button type="button" class="gcard" onclick="irSecao('avaliacoes')"><img class="gcImg" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Avaliações</span></button>
+          <button type="button" class="gcard" onclick="abrirPlano()"><img class="gcImg" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meu Plano</span></button>
+          <button type="button" class="gcard" onclick="verMinhaPagina()"><img class="gcImg" src="icones/pagina.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Minha Página</span></button>
+          <button type="button" class="gcard" id="gc-pontos" style="display:none" onclick="abrirPontos()"><img class="gcImg" src="icones/multipontos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meus pontos</span></button>
         </div>
       </div>
 
