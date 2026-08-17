@@ -512,6 +512,28 @@
         <div class="campo"><label for="apelido">Seu link no Moviki</label><div class="linkCampo"><span class="pref">moviki.com.br/</span><input id="apelido" type="text" placeholder="caldeirao" autocomplete="off" oninput="atualizarOnboarding(false)"></div></div>
         <div id="linkPronto" class="linkPronto escondido"><div class="rot">✅ Link pra divulgar (bio do Instagram, WhatsApp...):</div><div class="linkRow"><a id="linkPublico" href="#" target="_blank" rel="noopener"></a><button onclick="copiarLink()" id="btnCopiar">Copiar</button></div></div>
         <div class="campo"><label for="recado">Recado do dia (opcional)</label><textarea id="recado" rows="2" placeholder="Ex.: Hoje tem caldo de feijão!"></textarea></div>
+        <div style="border:1px solid rgba(0,212,255,.25);border-radius:12px;padding:14px;background:rgba(0,102,255,.05);margin-top:4px">
+          <label style="font-weight:700;font-size:15px;display:block;margin-bottom:4px">🎨 Aparência da sua página</label>
+          <div style="font-size:13px;color:#9fb3d0;margin-bottom:10px">Escolha a cor da sua marca. Ela pinta os destaques da sua página pública e o seu pino no mapa. <span style="color:#7f95b3">(recurso do plano Premium ou superior)</span></div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <input id="corInput" type="color" value="#00D4FF" style="width:52px;height:40px;border:none;border-radius:10px;background:transparent;cursor:pointer;padding:0">
+            <div style="display:flex;gap:7px;flex-wrap:wrap">
+              <button type="button" title="Ciano" onclick="document.getElementById('corInput').value='#00D4FF'" style="width:28px;height:28px;border-radius:50%;border:2px solid #1c3457;background:#00D4FF;cursor:pointer"></button>
+              <button type="button" title="Laranja" onclick="document.getElementById('corInput').value='#FF6B35'" style="width:28px;height:28px;border-radius:50%;border:2px solid #1c3457;background:#FF6B35;cursor:pointer"></button>
+              <button type="button" title="Verde" onclick="document.getElementById('corInput').value='#22C55E'" style="width:28px;height:28px;border-radius:50%;border:2px solid #1c3457;background:#22C55E;cursor:pointer"></button>
+              <button type="button" title="Roxo" onclick="document.getElementById('corInput').value='#A855F7'" style="width:28px;height:28px;border-radius:50%;border:2px solid #1c3457;background:#A855F7;cursor:pointer"></button>
+              <button type="button" title="Vermelho" onclick="document.getElementById('corInput').value='#EF4444'" style="width:28px;height:28px;border-radius:50%;border:2px solid #1c3457;background:#EF4444;cursor:pointer"></button>
+              <button type="button" title="Dourado" onclick="document.getElementById('corInput').value='#F59E0B'" style="width:28px;height:28px;border-radius:50%;border:2px solid #1c3457;background:#F59E0B;cursor:pointer"></button>
+            </div>
+            <button type="button" class="btn secundario" style="margin:0;padding:8px 12px;font-size:13px" onclick="document.getElementById('corInput').value='#00D4FF'">Voltar ao padrão</button>
+          </div>
+          <div id="wlRow" style="display:none;border-top:1px solid rgba(255,255,255,.1);margin-top:12px;padding-top:12px">
+            <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer">
+              <input id="wlToggle" type="checkbox" style="margin-top:3px;width:18px;height:18px;accent-color:#00D4FF;cursor:pointer">
+              <span style="font-size:14px;color:#e6eefb"><b>Usar só a minha marca (white-label)</b><br><span style="font-size:12.5px;color:#9fb3d0">Esconde a logo e o slogan do Moviki na sua página pública e usa a sua logo no lugar. Precisa ter enviado sua logo na aba <b>Localização</b>. <span style="color:#7f95b3">(recurso Enterprise)</span></span></span>
+            </label>
+          </div>
+        </div>
       </div>
 
       <!-- Cardápio -->
@@ -690,6 +712,7 @@
   }
   function aplicarPlanoNasAbas(){
     const libera=planoPainel==='pro'||planoPainel==='premium'||planoPainel==='enterprise';if(window.ptAtualizarDrawer)ptAtualizarDrawer();
+    var _wl=el('wlRow');if(_wl)_wl.style.display=(planoPainel==='enterprise')?'block':'none';
     ['cardapio','promocoes','eventos'].forEach(t=>{const b=document.querySelector('.tab[data-tab="'+t+'"]');if(b)b.classList.toggle('travada',!libera);});
     if(libera){const av=el('avisoPlano');if(av)av.classList.add('escondido');}
     atualizarNotaFotos();
@@ -1238,6 +1261,7 @@
     try{
       if(slug){const ref=doc(db,'slugs',slug);const snap=await getDoc(ref);if(snap.exists()&&snap.data().uid!==usuarioAtual.uid){abrirTab('perfil');erroP('O apelido "'+slug+'" já está em uso. Escolha outro.');btn.disabled=false;btn.textContent=t;return;}if(!snap.exists()){await setDoc(ref,{uid:usuarioAtual.uid});}el('apelido').value=slug;}
       const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
+      var _cor=el('corInput')?el('corInput').value:'';if(/^#[0-9a-fA-F]{6}$/.test(_cor))dados.cor=_cor;dados.whiteLabel=el('wlToggle')?!!el('wlToggle').checked:false;
       if(coords){dados.lat=coords.lat;dados.lng=coords.lng;}
       if(slug){dados.slug=slug;}
       await setDoc(doc(db,'negocios',usuarioAtual.uid),dados,{merge:true});
@@ -1281,6 +1305,7 @@
       if(snap.exists()){
         const d=snap.data();
         el('nome').value=d.nome||'';el('recado').value=d.recado||'';el('apelido').value=d.slug||'';if(el('whatsapp'))el('whatsapp').value=d.whatsapp||'';
+        if(el('corInput'))el('corInput').value=(typeof d.cor==='string'&&/^#[0-9a-fA-F]{6}$/.test(d.cor))?d.cor:'#00D4FF';if(el('wlToggle'))el('wlToggle').checked=(d.whiteLabel===true);
         setStatus(d.status||'fechado');
         if(d.slug) mostrarLink(d.slug);
         el('listaCategorias').innerHTML='';(d.cardapio||[]).forEach(c=>adicionarCategoria(c.categoria||'',c.produtos||[],c.capa||''));vazioCat();
