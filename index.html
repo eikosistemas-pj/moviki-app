@@ -224,9 +224,17 @@
   .seloOuro::before{content:"★";font-size:11px;line-height:1;}
   #seloTopo{margin-top:5px;}
   #seloDrawer{margin:2px 6px 6px;}
-  .gcard.gcIndicar{border-color:#ff9f40;animation:pulseInd 1.6s ease-in-out infinite;}
-  @keyframes pulseInd{0%,100%{box-shadow:0 0 0 0 rgba(255,159,64,.55);}50%{box-shadow:0 0 0 7px rgba(255,159,64,0);}}
-  @media(prefers-reduced-motion:reduce){.gcard.gcIndicar{animation:none;border-color:#ff9f40;}}
+  .gcard.gcIndicar{border:2px solid #ff8a00;background:linear-gradient(160deg,rgba(255,138,0,.20),rgba(255,159,64,.06));box-shadow:0 0 14px rgba(255,138,0,.5);animation:pulseInd 1.5s ease-in-out infinite;}
+  .gcard.gcIndicar .gcLabel{color:#ffb060;font-weight:700;}
+  @keyframes pulseInd{0%,100%{box-shadow:0 0 10px rgba(255,138,0,.45),0 0 0 0 rgba(255,138,0,.55);}50%{box-shadow:0 0 22px rgba(255,138,0,.9),0 0 0 6px rgba(255,138,0,0);}}
+  @media(prefers-reduced-motion:reduce){.gcard.gcIndicar{animation:none;}}
+  .pcTab{margin:6px 0 12px;}
+  .pcTabTit{font-size:12px;font-weight:700;color:#9fb3c8;margin:0 2px 6px;text-transform:uppercase;letter-spacing:.04em;}
+  .pcTabela{width:100%;border-collapse:collapse;font-size:13.5px;}
+  .pcTabela td{padding:8px 10px;border:1px solid var(--card-borda);}
+  .pcTabela td:first-child{color:#e6eefb;}
+  .pcTabela td b{color:var(--ciano);}
+  .pcTabela td:last-child{color:#9fb3c8;text-align:right;}
   .pcKpis{display:flex;gap:10px;margin:12px 0 8px;}
   .pcKpi{flex:1;background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:12px 10px;text-align:center;}
   .pcKpi .n{display:block;font-size:20px;font-weight:800;color:var(--ciano);line-height:1.1;}
@@ -412,6 +420,14 @@
           <div class="pcLinhas">
             <div class="pcLinha" id="pcRowRetido" style="display:none"><span>A liberar (em análise)</span><b id="pcRetido">R$ 0,00</b></div>
             <div class="pcLinha"><span>Já pago a você</span><b id="pcPago">R$ 0,00</b></div>
+          </div>
+          <div class="pcTab">
+            <div class="pcTabTit">Como você ganha</div>
+            <table class="pcTabela">
+              <tr><td>Indicação direta</td><td><b>15%</b></td><td>todo mês</td></tr>
+              <tr><td>2º nível</td><td><b>7,5%</b></td><td>1º mês</td></tr>
+              <tr><td>3º nível</td><td><b>5%</b></td><td>1º mês</td></tr>
+            </table>
           </div>
           <a href="parceiro.html" target="_blank" rel="noopener" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5">Abrir meu painel completo</a>
           <a href="https://moviki.com.br/parceiros-ganhos.html" target="_blank" rel="noopener" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5">Entenda como ganhar mais</a>
