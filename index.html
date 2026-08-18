@@ -235,6 +235,12 @@
   .pcTabela td:first-child{color:#e6eefb;}
   .pcTabela td b{color:var(--ciano);}
   .pcTabela td:last-child{color:#9fb3c8;text-align:right;}
+  .candLbl{display:block;font-size:12.5px;color:#9fb3c8;font-weight:600;margin:10px 2px 5px;}
+  .candInp{width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:15px;}
+  .candDica{font-size:12px;color:#7f95b3;margin:5px 2px;}
+  .candAviso{font-size:13px;color:#ff9b9b;margin:6px 2px;min-height:16px;}
+  .candCheck{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#cfe0f5;margin:12px 2px;line-height:1.4;}
+  .candCheck a{color:var(--ciano);}
   .pcKpis{display:flex;gap:10px;margin:12px 0 8px;}
   .pcKpi{flex:1;background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:12px 10px;text-align:center;}
   .pcKpi .n{display:block;font-size:20px;font-weight:800;color:var(--ciano);line-height:1.1;}
@@ -390,16 +396,34 @@
       </nav>
 
       <div id="modalIndica" class="modalPlano escondido" onclick="if(event.target===this)fecharIndica()">
-        <div class="mpCaixa" style="max-width:440px">
+        <div class="mpCaixa" style="max-width:460px">
           <button type="button" class="mpFechar" onclick="fecharIndica()" aria-label="Fechar">✕</button>
-          <div class="mpHead"><h2 class="mpTitulo">💰 Indique e ganhe</h2></div>
-          <p class="idxLead">Ganhe <b>15% todo mês</b> de cada negócio que você indicar e que assinar o Moviki. É renda recorrente: enquanto o indicado pagar, você recebe.</p>
-          <a href="https://app.moviki.com.br/seja-parceiro.html" target="_blank" rel="noopener" class="idxBtn prim">Quero ser parceiro e receber meu link</a>
-          <button type="button" class="idxBtn wa" onclick="compartilharConviteWhats()">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2zm5.9 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.8-.6-3.1-1.3-5.1-4.5-5.3-4.7-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.3.3c-.2.2-.3.4-.1.7.2.3.9 1.4 1.9 2.3 1.3 1.1 2.3 1.5 2.6 1.6.3.1.5.1.7-.1l.9-1c.2-.3.4-.2.7-.1l2 .9c.3.2.5.3.6.4.1.3.1.7-.1 1.3z"/></svg>
-            Convidar pelo WhatsApp
-          </button>
-          <p class="idxNota">Ao virar parceiro você recebe um link exclusivo que registra quem você indicou. Comissões liberadas via Pix a partir de R$ 20.</p>
+          <div id="candForm">
+            <div class="mpHead"><h2 class="mpTitulo">💰 Seja parceiro e ganhe</h2></div>
+            <p class="idxLead">Indique negócios pro Moviki e ganhe <b>15% todo mês</b> de cada um que assinar pelo seu link. É grátis, e você recebe no seu Pix.</p>
+            <table class="pcTabela" style="margin:2px 0 12px">
+              <tr><td>Indicação direta</td><td><b>15%</b></td><td>todo mês</td></tr>
+              <tr><td>2º nível</td><td><b>7,5%</b></td><td>1º mês</td></tr>
+              <tr><td>3º nível</td><td><b>5%</b></td><td>1º mês</td></tr>
+            </table>
+            <label class="candLbl">Seu nome</label>
+            <input id="candNome" class="candInp" type="text" maxlength="80" placeholder="Nome completo">
+            <label class="candLbl">Escolha seu apelido (vira seu link)</label>
+            <input id="candSlug" class="candInp" type="text" maxlength="40" placeholder="seunome" oninput="candPrevSlug()">
+            <div class="candDica">Seu link: moviki.com.br/p/<span id="candSlugTxt">seunome</span></div>
+            <label class="candLbl">Sua chave Pix (pra receber)</label>
+            <input id="candPix" class="candInp" type="text" maxlength="140" placeholder="CPF, e-mail, telefone ou chave aleatória">
+            <label class="candCheck"><input type="checkbox" id="candOk"> Li e concordo com o <a href="regulamento.html" target="_blank" rel="noopener">Regulamento do Programa de Parceiros</a>.</label>
+            <div id="candAviso" class="candAviso"></div>
+            <button type="button" id="candBtn" class="idxBtn prim" onclick="candEnviar()">Enviar meu pedido</button>
+            <p class="idxNota">Depois de enviar, seu pedido passa por uma análise rápida. Quando aprovado, seu link e seus ganhos aparecem aqui no painel.</p>
+          </div>
+          <div id="candPendente" style="display:none;text-align:center">
+            <div id="candPendIcon" style="font-size:40px;line-height:1;margin:6px 0 4px">⏳</div>
+            <h2 class="mpTitulo" id="candPendTit" style="margin:0 0 8px">Pedido em análise</h2>
+            <p class="idxLead" id="candPendTxt" style="margin-bottom:14px">Recebemos seu pedido pra ser parceiro! Assim que for aprovado, seu link e seus ganhos aparecem aqui no painel.</p>
+            <button type="button" class="idxBtn prim" onclick="fecharIndica()">Entendi</button>
+          </div>
         </div>
       </div>
       <div id="modalParceiro" class="modalPlano escondido" onclick="if(event.target===this)fecharParceiro()">
@@ -842,12 +866,13 @@
   var _pcBrl=function(n){return 'R$ '+(Number(n)||0).toFixed(2).replace('.',',');};
   var _pcMsg=function(link){return 'Oi! Tudo bem? 😊 Quero te mostrar o Moviki — um mapa que ajuda seus clientes a te encontrarem na hora. É grátis pra começar. Dá uma olhada pelo meu link: '+link;};
   async function carregarParceiroPainel(uid){
-    _parceiro=null; window._ehParceiro=false;
+    _parceiro=null; window._ehParceiro=false; window._statusParceiro=null;
     var card=el('gc-indicar'); if(card)card.style.display='none';
     try{
       var s=await getDoc(doc(db,'parceiros',uid));
       if(!s.exists())return;
       var p=s.data();
+      window._statusParceiro=p.status||null;
       if(p.status!=='aprovado'||!p.slug)return;
       _parceiro={uid:uid,slug:p.slug,nome:p.nome||''};
       window._ehParceiro=true;
@@ -887,6 +912,43 @@
     else{window.prompt('Copie e envie:',msg);}
   };
   window.pcCompartilharWhats=function(){if(!_parceiro)return;window.open('https://wa.me/?text='+encodeURIComponent(_pcMsg('https://moviki.com.br/p/'+_parceiro.slug)),'_blank');};
+
+  // ===== Candidatura a parceiro (a partir do próprio painel do lojista) =====
+  function limpaSlugParc(v){return (v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_-]/g,'').slice(0,40);}
+  window.candPrevSlug=function(){var t=el('candSlugTxt');if(t)t.textContent=limpaSlugParc(el('candSlug').value)||'seunome';};
+  window.prepararCandidatura=function(){
+    var st=window._statusParceiro, f=el('candForm'), pp=el('candPendente');
+    var ic=el('candPendIcon'), ti=el('candPendTit'), tx=el('candPendTxt');
+    if(st==='pendente'||st==='recusado'||st==='suspenso'){
+      if(f)f.style.display='none'; if(pp)pp.style.display='block';
+      if(st==='pendente'){ if(ic)ic.textContent='⏳'; if(ti)ti.textContent='Pedido em análise'; if(tx)tx.textContent='Recebemos seu pedido pra ser parceiro! Assim que for aprovado, seu link e seus ganhos aparecem aqui no painel.'; }
+      else if(st==='recusado'){ if(ic)ic.textContent='❌'; if(ti)ti.textContent='Pedido não aprovado'; if(tx)tx.textContent='Seu pedido de parceria não foi aprovado no momento. Se tiver dúvidas, fale com o suporte pelo menu.'; }
+      else { if(ic)ic.textContent='⏸️'; if(ti)ti.textContent='Parceria suspensa'; if(tx)tx.textContent='Sua parceria está suspensa no momento. Fale com o suporte pelo menu para regularizar.'; }
+    } else {
+      if(f)f.style.display='block'; if(pp)pp.style.display='none';
+      var nomeInp=el('candNome'); if(nomeInp&&!nomeInp.value){ var nn=el('nome'); if(nn&&nn.value)nomeInp.value=nn.value; }
+    }
+  };
+  window.candEnviar=async function(){
+    if(!usuarioAtual)return;
+    var nome=(el('candNome').value||'').trim(), slug=limpaSlugParc(el('candSlug').value), pix=(el('candPix').value||'').trim(), av=el('candAviso');
+    if(nome.length<2){av.textContent='Digite seu nome.';return;}
+    if(slug.length<3){av.textContent='Escolha um apelido com pelo menos 3 letras.';return;}
+    if(pix.length<3){av.textContent='Digite sua chave Pix.';return;}
+    if(!el('candOk').checked){av.textContent='Você precisa aceitar o regulamento.';return;}
+    var btn=el('candBtn'); btn.disabled=true; var t=btn.textContent; btn.textContent='Enviando...'; av.textContent='';
+    try{
+      var chk=await getDoc(doc(db,'parceiro_slugs',slug));
+      if(chk.exists()){ av.textContent='Esse apelido já está em uso. Escolha outro.'; btn.disabled=false; btn.textContent=t; return; }
+      await setDoc(doc(db,'parceiro_slugs',slug),{uid:usuarioAtual.uid});
+      await setDoc(doc(db,'parceiros',usuarioAtual.uid),{nome:nome,email:usuarioAtual.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.0',em:serverTimestamp()},criadoEm:serverTimestamp()});
+      try{ usuarioAtual.getIdToken().then(function(tk){ fetch(ROBO+'/api/novo-parceiro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:usuarioAtual.uid})}).catch(function(){}); }).catch(function(){}); }catch(_){}
+      window._statusParceiro='pendente';
+      var ic=el('candPendIcon'), ti=el('candPendTit'), tx=el('candPendTxt');
+      if(ic)ic.textContent='✅'; if(ti)ti.textContent='Pedido enviado!'; if(tx)tx.textContent='Recebemos seu pedido pra ser parceiro. Assim que for aprovado, seu link e seus ganhos aparecem aqui no painel. Você também recebe um e-mail.';
+      el('candForm').style.display='none'; el('candPendente').style.display='block';
+    }catch(e){ av.textContent='Não consegui enviar agora. Tente de novo em instantes.'; btn.disabled=false; btn.textContent=t; }
+  };
   window.abrirPontos=function(){if(window.fecharMenu)fecharMenu();var m=el('modalPontos');if(!m)return;m.classList.remove('escondido');ptInitHorario();ptCancelar();ptCarregar();};
   window.fecharPontos=function(){var m=el('modalPontos');if(m)m.classList.add('escondido');};
   window.ptPrevSlug=function(){var t=el('ptSlugTxt');if(t)t.textContent=ptLimpaSlug(el('ptSlug').value)||'apelido';};
@@ -1555,7 +1617,7 @@
   }
   window.abrirMenu=function(){var d=$('drawer'),o=$('drawerOv');if(d)d.classList.add('on');if(o)o.classList.add('on');};
   window.fecharMenu=function(){var d=$('drawer'),o=$('drawerOv');if(d)d.classList.remove('on');if(o)o.classList.remove('on');};
-  window.abrirIndica=function(){fecharMenu();if(window._ehParceiro&&window.abrirModalParceiro){window.abrirModalParceiro();return;}var m=$('modalIndica');if(m)m.classList.remove('escondido');};
+  window.abrirIndica=function(){fecharMenu();if(window._ehParceiro&&window.abrirModalParceiro){window.abrirModalParceiro();return;}if(window.prepararCandidatura)window.prepararCandidatura();var m=$('modalIndica');if(m)m.classList.remove('escondido');};
   window.fecharIndica=function(){var m=$('modalIndica');if(m)m.classList.add('escondido');};
   window.compartilharConviteWhats=function(){
     var msg='Olá! Tudo bem? 😊 Quero te apresentar o *Moviki* — o mapa inteligente que coloca o seu negócio no ar pra os clientes te encontrarem na hora. Você monta uma página só sua com cardápio, promoções, localização e avaliações. Vale muito a pena dar uma olhada: https://moviki.com.br/comerciantes.html';
