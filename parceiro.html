@@ -86,6 +86,7 @@
 
   <!-- PAINEL -->
   <div id="painel" class="hide">
+    <button class="btn sec hide" id="btnVoltarPainel" style="margin-top:0;margin-bottom:14px">← Voltar ao painel do meu negócio</button>
     <div class="card">
       <div class="topo">
         <div class="ola">Olá, <span id="pNome">parceiro</span> 👋</div>
@@ -193,6 +194,8 @@
       MEU = Object.assign({ uid:user.uid, email:user.email }, snap.data());
       render();
       telas('painel');
+      // lojista que virou parceiro (mesma conta) → oferece volta ao painel do negócio
+      try{ const nsnap = await getDoc(doc(db,'negocios',user.uid)); if(nsnap.exists()) show('btnVoltarPainel'); }catch(_){}
       contarIndicacoes();   // não bloqueia
       carregarComissoes();  // não bloqueia
     }catch(e){
@@ -342,6 +345,7 @@
   };
 
   el('sair').onclick = ()=> signOut(auth);
+  el('btnVoltarPainel').onclick = ()=> location.href='index.html';
   el('sair2').onclick = ()=> signOut(auth);
   el('btnSaque').onclick = solicitarSaque;
 
