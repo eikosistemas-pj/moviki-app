@@ -157,6 +157,21 @@
   .s-aprov{background:#e6f7ee;color:#16a34a}
   .s-recus{background:#fdeaea;color:#dc2626}
   .s-susp{background:#eef2f7;color:#64748b}
+
+  /* ===== config: aprovação automática de parceiros (switch laranja neon) ===== */
+  .cfgBox{background:var(--card);border:1px solid var(--borda);border-radius:14px;padding:18px 20px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 4px 14px rgba(20,40,80,.04);max-width:720px;flex-wrap:wrap}
+  .cfgTxt{flex:1 1 320px;min-width:220px}
+  .cfgTxt b{display:block;font-size:15px;margin-bottom:4px}
+  .cfgTxt span{font-size:12.5px;color:var(--suave);line-height:1.5;display:block;max-width:480px}
+  .cfgStatus{font-size:11.5px;font-weight:700;margin-top:8px;min-height:14px}
+  .switchNeon{position:relative;display:inline-block;width:54px;height:30px;flex:0 0 auto}
+  .switchNeon input{opacity:0;width:0;height:0;position:absolute}
+  .switchTrilho{position:absolute;inset:0;background:#e2e8f0;border-radius:999px;cursor:pointer;transition:.25s ease;border:1px solid #d8dee8}
+  .switchBola{position:absolute;left:3px;top:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:.25s ease;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .switchNeon input:checked + .switchTrilho{background:linear-gradient(135deg,#ff8a1e,#ff3d00);border-color:#ff7a1a;box-shadow:0 0 0 3px rgba(255,122,26,.22),0 0 16px rgba(255,90,0,.6)}
+  .switchNeon input:checked + .switchTrilho .switchBola{transform:translateX(24px)}
+  .switchNeon input:disabled + .switchTrilho{opacity:.55;cursor:not-allowed}
+  .switchNeon input:focus-visible + .switchTrilho{outline:2px solid #ff7a1a;outline-offset:2px}
 </style>
 </head>
 <body>
@@ -275,6 +290,17 @@
 
       <!-- PARCEIROS -->
       <section id="pg-parceiros" class="pagina escondido">
+        <div class="cfgBox" id="cfgAutoAprov">
+          <div class="cfgTxt">
+            <b>Aprovação automática de parceiros</b>
+            <span>Ativo: todo pedido de parceria já entra <b>aprovado</b> sozinho (o Telegram avisa mesmo assim). Desativado: cada pedido fica <b>pendente</b> até você aprovar aqui embaixo.</span>
+            <div class="cfgStatus" id="cfgAutoAprovStatus">Carregando…</div>
+          </div>
+          <label class="switchNeon">
+            <input type="checkbox" id="toggleAutoAprov" onchange="alternarAutoAprovacao(this)" disabled>
+            <span class="switchTrilho"><span class="switchBola"></span></span>
+          </label>
+        </div>
         <div id="parcBox"><div class="vazio">Carregando…</div></div>
       </section>
 
@@ -299,7 +325,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -360,7 +386,7 @@
     if(!user){ mostrarTela('login'); return; }
     const email=(user.email||'').toLowerCase();
     if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email)){
-      el('donoEmail').textContent=user.email; abrir('inicio'); mostrarTela('app'); carregarDashboard(); carregarParceiros(); carregarComissoes(); carregarExclusoes(); carregarMapaPontos();
+      el('donoEmail').textContent=user.email; abrir('inicio'); mostrarTela('app'); carregarDashboard(); carregarParceiros(); carregarComissoes(); carregarExclusoes(); carregarMapaPontos(); carregarConfigSistema();
     } else { el('restritoEmail').textContent=user.email; mostrarTela('restrito'); }
   });
 
@@ -371,6 +397,7 @@
     el('pageTitle').textContent = TITULOS[pg]||'';
     if(pg==='comissoes') carregarComissoes();
     if(pg==='exclusoes') carregarExclusoes();
+    if(pg==='parceiros') carregarConfigSistema();
     const c=document.querySelector('.conteudo'); if(c)c.scrollTop=0; window.scrollTo({top:0,behavior:'smooth'});
   };
   window.verSite = () => window.open('https://moviki.com.br','_blank');
@@ -549,6 +576,40 @@
   window.recusarParceiro=async uid=>{ if(!confirm('Recusar este parceiro?'))return; try{ await updateDoc(doc(db,'parceiros',uid),{status:'recusado'}); await carregarParceiros(); }catch(e){ alert('Não foi possível agora.'); } };
   window.suspenderParceiro=async uid=>{ if(!confirm('Suspender este parceiro?'))return; try{ await updateDoc(doc(db,'parceiros',uid),{status:'suspenso'}); await carregarParceiros(); }catch(e){ alert('Não foi possível agora.'); } };
   window.copiarPixParc=(uid,btn)=>{ const p=parceirosMap[uid]; if(!p)return; copiar(p.pix||''); feedback(btn,'✓ copiado'); };
+
+  /* ===== configuração: aprovação automática de parceiros ===== */
+  // Doc novo configuracoes/sistema (não existia antes). A regra de Security do Firestore
+  // precisa ser criada: só admin lê/escreve e hasOnly(['aprovacaoAutomaticaParceiros']).
+  let _autoAprovCarregando=false, _autoAprovAtual=false;
+  async function carregarConfigSistema(){
+    const chk=el('toggleAutoAprov'), st=el('cfgAutoAprovStatus');
+    if(!chk) return;
+    chk.disabled=true;
+    try{
+      const snap=await getDoc(doc(db,'configuracoes','sistema'));
+      _autoAprovAtual = snap.exists() ? (snap.data().aprovacaoAutomaticaParceiros===true) : false;
+      chk.checked=_autoAprovAtual;
+      chk.disabled=false;
+      if(st){ st.style.color='#64748b'; st.textContent = _autoAprovAtual ? 'Automático está ativo.' : 'Aprovação manual (padrão).'; }
+    }catch(e){
+      if(st){ st.style.color='#dc2626'; st.textContent='Não consegui carregar esta configuração agora (confira a regra do Firestore).'; }
+    }
+  }
+  window.alternarAutoAprovacao=async(input)=>{
+    if(_autoAprovCarregando) return;
+    const novo=input.checked, st=el('cfgAutoAprovStatus');
+    _autoAprovCarregando=true; input.disabled=true;
+    if(st){ st.style.color='#64748b'; st.textContent='Salvando…'; }
+    try{
+      await setDoc(doc(db,'configuracoes','sistema'), { aprovacaoAutomaticaParceiros: novo }, { merge:true });
+      _autoAprovAtual=novo;
+      if(st){ st.style.color='#0d9488'; st.textContent = novo ? 'Automático ativo — novos pedidos já entram aprovados.' : 'Aprovação manual — você aprova cada pedido.'; }
+    }catch(e){
+      input.checked=_autoAprovAtual; // reverte visualmente
+      if(st){ st.style.color='#dc2626'; st.textContent='Não salvou: sem permissão ou a regra do Firestore ainda não libera este campo.'; }
+    }
+    input.disabled=false; _autoAprovCarregando=false;
+  };
 
   /* ===== comissões / saques ===== */
   let saquePix={};
