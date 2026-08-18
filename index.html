@@ -220,6 +220,20 @@
   .gcard.travado .gcLabel{color:#7f95b3;}
   .gcard.travado .gcIcon{filter:grayscale(.7);opacity:.75;}
   .gcard.travado::after{content:"🔒";position:absolute;top:8px;right:9px;font-size:13px;opacity:.9;}
+  .seloOuro{align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#3a2a00;background:linear-gradient(135deg,#ffe08a,#ffcf4d 45%,#e8a900);border:1px solid #d99e00;border-radius:999px;padding:3px 10px;box-shadow:0 2px 8px rgba(224,168,0,.35);letter-spacing:.02em;}
+  .seloOuro::before{content:"★";font-size:11px;line-height:1;}
+  #seloTopo{margin-top:5px;}
+  #seloDrawer{margin:2px 6px 6px;}
+  .gcard.gcIndicar{border-color:#ff9f40;animation:pulseInd 1.6s ease-in-out infinite;}
+  @keyframes pulseInd{0%,100%{box-shadow:0 0 0 0 rgba(255,159,64,.55);}50%{box-shadow:0 0 0 7px rgba(255,159,64,0);}}
+  @media(prefers-reduced-motion:reduce){.gcard.gcIndicar{animation:none;border-color:#ff9f40;}}
+  .pcKpis{display:flex;gap:10px;margin:12px 0 8px;}
+  .pcKpi{flex:1;background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:12px 10px;text-align:center;}
+  .pcKpi .n{display:block;font-size:20px;font-weight:800;color:var(--ciano);line-height:1.1;}
+  .pcKpi .t{display:block;font-size:11.5px;color:#9fb3c8;margin-top:3px;}
+  .pcLinhas{margin:2px 0 10px;}
+  .pcLinha{display:flex;justify-content:space-between;align-items:center;padding:8px 2px;border-top:1px solid var(--card-borda);font-size:13.5px;color:#cfe0f5;}
+  .pcLinha b{color:#e6eefb;}
 
   #editor .voltar{background:rgba(255,159,64,.16);border:1px solid rgba(255,159,64,.6);color:#ffca8a;
     font-family:inherit;font-weight:700;font-size:14px;padding:10px 16px;border-radius:10px;cursor:pointer;margin-bottom:4px;}
@@ -341,6 +355,7 @@
         <div class="drawerSec">Minha conta</div>
         <button type="button" onclick="fecharMenu();irSecao('perfil')"><img class="diImg" src="icones/perfil.png" alt="" onerror="this.replaceWith(document.createTextNode('👤'))"> Perfil do negócio</button>
         <button type="button" onclick="fecharMenu();abrirPlano()"><img class="diImg" src="icones/plano.png" alt="" onerror="this.replaceWith(document.createTextNode('💳'))"> Meu Plano</button>
+        <div id="seloDrawer" class="seloOuro" style="display:none">Cliente Enterprise</div>
         <button type="button" onclick="fecharMenu();verMinhaPagina()"><img class="diImg" src="icones/pagina.png" alt="" onerror="this.replaceWith(document.createTextNode('🌐'))"> Minha Página</button>
         <button type="button" id="drawerPontos" style="display:none" onclick="fecharMenu();abrirPontos()"><img class="diImg" src="icones/multipontos.png" alt="" onerror="this.replaceWith(document.createTextNode('📍'))"> Meus pontos</button>
 
@@ -377,6 +392,30 @@
             Convidar pelo WhatsApp
           </button>
           <p class="idxNota">Ao virar parceiro você recebe um link exclusivo que registra quem você indicou. Comissões liberadas via Pix a partir de R$ 20.</p>
+        </div>
+      </div>
+      <div id="modalParceiro" class="modalPlano escondido" onclick="if(event.target===this)fecharParceiro()">
+        <div class="mpCaixa" style="max-width:460px">
+          <button type="button" class="mpFechar" onclick="fecharParceiro()" aria-label="Fechar">✕</button>
+          <div class="mpHead"><h2 class="mpTitulo">💰 Indicar agora</h2></div>
+          <p class="idxLead">Você é <b>parceiro Moviki</b>! Compartilhe seu link: cada negócio que assinar por ele vira <b>15% todo mês</b> pra você.</p>
+          <div style="background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:11px 13px;margin:4px 0 10px;font-size:14px;color:#e6eefb;word-break:break-all"><span id="pcLink">moviki.com.br/p/…</span></div>
+          <button type="button" class="idxBtn prim" onclick="pcCopiarLink(this)">📋 Copiar meu link</button>
+          <button type="button" class="idxBtn wa" onclick="pcCompartilharWhats()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2zm5.9 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.8-.6-3.1-1.3-5.1-4.5-5.3-4.7-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.3.3c-.2.2-.3.4-.1.7.2.3.9 1.4 1.9 2.3 1.3 1.1 2.3 1.5 2.6 1.6.3.1.5.1.7-.1l.9-1c.2-.3.4-.2.7-.1l2 .9c.3.2.5.3.6.4.1.3.1.7-.1 1.3z"/></svg>
+            Enviar pelo WhatsApp
+          </button>
+          <div class="pcKpis">
+            <div class="pcKpi"><span class="n" id="pcIndicados">0</span><span class="t">negócios indicados</span></div>
+            <div class="pcKpi"><span class="n" id="pcDisp">R$ 0,00</span><span class="t">disponível pra saque</span></div>
+          </div>
+          <div class="pcLinhas">
+            <div class="pcLinha" id="pcRowRetido" style="display:none"><span>A liberar (em análise)</span><b id="pcRetido">R$ 0,00</b></div>
+            <div class="pcLinha"><span>Já pago a você</span><b id="pcPago">R$ 0,00</b></div>
+          </div>
+          <a href="parceiro.html" target="_blank" rel="noopener" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5">Abrir meu painel completo</a>
+          <a href="https://moviki.com.br/parceiros-ganhos.html" target="_blank" rel="noopener" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5">Entenda como ganhar mais</a>
+          <p class="idxNota">Comissões liberadas via Pix a partir de R$ 20. O saque é feito no seu painel completo.</p>
         </div>
       </div>
       <div id="modalPontos" class="modalPlano escondido" onclick="if(event.target===this)fecharPontos()">
@@ -425,6 +464,7 @@
         <div class="appTitWrap">
           <div class="appTit">Painel do Negócio</div>
           <div class="appSub"><b id="oExEmail"></b></div>
+          <span id="seloTopo" class="seloOuro" style="display:none">Enterprise</span>
         </div>
         <button type="button" class="appSair" onclick="sair()">Sair</button>
       </div>
@@ -438,7 +478,7 @@
       </div>
 
       <div id="grade">
-        <div class="olaLinha">Olá! 👋 <span class="olaLeve">O que você quer fazer?</span></div>
+        <div class="olaLinha">Vamos colocar seu negócio no mapa hoje? 🚀 <span class="olaLeve">Atualize e apareça pros seus clientes.</span></div>
         <div class="statusHome">
           <span class="shLabel">Seu negócio está agora:</span>
           <div class="statusLinha">
@@ -478,6 +518,7 @@
           <button type="button" class="gcard" onclick="abrirPlano()"><img class="gcImg" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meu Plano</span></button>
           <button type="button" class="gcard" onclick="verMinhaPagina()"><img class="gcImg" src="icones/pagina.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Minha Página</span></button>
           <button type="button" class="gcard" id="gc-pontos" style="display:none" onclick="abrirPontos()"><img class="gcImg" src="icones/multipontos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meus pontos</span></button>
+          <button type="button" class="gcard gcIndicar" id="gc-indicar" style="display:none" onclick="abrirModalParceiro()"><img class="gcImg" src="icones/indicar.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Indicar agora</span></button>
         </div>
       </div>
 
@@ -638,7 +679,7 @@
   import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, sendEmailVerification }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, getDocs }
+  import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, getDocs, query, where }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -778,7 +819,58 @@
   function ptResetHorario(){ptInitHorario();ptDiasSel=[false,false,false,false,false,false,false];if(el('ptAbre'))el('ptAbre').value='09:00';if(el('ptFecha'))el('ptFecha').value='18:00';ptRenderDias();}
   function ptSetHorario(cfg){ptInitHorario();ptDiasSel=[false,false,false,false,false,false,false];if(cfg&&cfg.dias&&cfg.dias.forEach)cfg.dias.forEach(function(i){if(i>=0&&i<7)ptDiasSel[i]=true;});if(cfg&&cfg.abre&&el('ptAbre'))el('ptAbre').value=cfg.abre;if(cfg&&cfg.fecha&&el('ptFecha'))el('ptFecha').value=cfg.fecha;ptRenderDias();}
   function ehEnterprisePainel(){return !!(dadosAssinatura&&dadosAssinatura.ativo===true&&dadosAssinatura.plano==='enterprise'&&(!dadosAssinatura.vence_em||dadosAssinatura.vence_em.toMillis()>Date.now()));}
-  window.ptAtualizarDrawer=function(){var vis=ehEnterprisePainel();var b=el('drawerPontos');if(b)b.style.display=vis?'flex':'none';var g=el('gc-pontos');if(g)g.style.display=vis?'flex':'none';};
+  window.ptAtualizarDrawer=function(){var vis=ehEnterprisePainel();var b=el('drawerPontos');if(b)b.style.display=vis?'flex':'none';var g=el('gc-pontos');if(g)g.style.display=vis?'flex':'none';var st=el('seloTopo');if(st)st.style.display=vis?'inline-flex':'none';var sd=el('seloDrawer');if(sd)sd.style.display=vis?'inline-flex':'none';};
+
+  // ===== Programa de Parceiros — área "Indicar agora" no painel do lojista =====
+  var _parceiro=null; window._ehParceiro=false;
+  var _pcBrl=function(n){return 'R$ '+(Number(n)||0).toFixed(2).replace('.',',');};
+  var _pcMsg=function(link){return 'Oi! Tudo bem? 😊 Quero te mostrar o Moviki — um mapa que ajuda seus clientes a te encontrarem na hora. É grátis pra começar. Dá uma olhada pelo meu link: '+link;};
+  async function carregarParceiroPainel(uid){
+    _parceiro=null; window._ehParceiro=false;
+    var card=el('gc-indicar'); if(card)card.style.display='none';
+    try{
+      var s=await getDoc(doc(db,'parceiros',uid));
+      if(!s.exists())return;
+      var p=s.data();
+      if(p.status!=='aprovado'||!p.slug)return;
+      _parceiro={uid:uid,slug:p.slug,nome:p.nome||''};
+      window._ehParceiro=true;
+      if(card)card.style.display='flex';
+      var lk=el('pcLink'); if(lk)lk.textContent='moviki.com.br/p/'+p.slug;
+      contarIndicadosParceiro(); carregarComissaoParceiro();
+    }catch(e){}
+  }
+  async function contarIndicadosParceiro(){
+    if(!_parceiro)return;
+    try{
+      var q=query(collection(db,'indicacoes'),where('ref','==',_parceiro.slug));
+      var r=await getDocs(q);
+      var n=el('pcIndicados'); if(n)n.textContent=r.size;
+    }catch(e){}
+  }
+  async function carregarComissaoParceiro(){
+    if(!_parceiro)return;
+    try{
+      var q=query(collection(db,'comissoes'),where('parceiroUid','==',_parceiro.uid));
+      var r=await getDocs(q);
+      var pago=0,receber=0,retido=0,agora=Date.now();
+      r.forEach(function(d){var c=d.data();if(c.estornada)return;var v=Number(c.valor)||0;
+        if(c.pago){pago+=v;}else{var libMs=0;if(c.liberaEm){libMs=(typeof c.liberaEm.toMillis==='function')?c.liberaEm.toMillis():(c.liberaEm.seconds?c.liberaEm.seconds*1000:0);}if(libMs&&libMs>agora)retido+=v;else receber+=v;}});
+      var d1=el('pcDisp');if(d1)d1.textContent=_pcBrl(receber);
+      var pg=el('pcPago');if(pg)pg.textContent=_pcBrl(pago);
+      var rr=el('pcRowRetido'),rv=el('pcRetido');
+      if(rv)rv.textContent=_pcBrl(retido);
+      if(rr)rr.style.display=retido>0?'flex':'none';
+    }catch(e){}
+  }
+  window.abrirModalParceiro=function(){if(window.fecharMenu)fecharMenu();var m=el('modalParceiro');if(m)m.classList.remove('escondido');};
+  window.fecharParceiro=function(){var m=el('modalParceiro');if(m)m.classList.add('escondido');};
+  window.pcCopiarLink=function(btn){if(!_parceiro)return;var msg=_pcMsg('https://moviki.com.br/p/'+_parceiro.slug);
+    var ok=function(){if(btn&&btn.textContent){var t=btn.textContent;btn.textContent='✓ Link copiado!';setTimeout(function(){btn.textContent=t;},1800);}};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(ok).catch(function(){window.prompt('Copie e envie:',msg);});}
+    else{window.prompt('Copie e envie:',msg);}
+  };
+  window.pcCompartilharWhats=function(){if(!_parceiro)return;window.open('https://wa.me/?text='+encodeURIComponent(_pcMsg('https://moviki.com.br/p/'+_parceiro.slug)),'_blank');};
   window.abrirPontos=function(){if(window.fecharMenu)fecharMenu();var m=el('modalPontos');if(!m)return;m.classList.remove('escondido');ptInitHorario();ptCancelar();ptCarregar();};
   window.fecharPontos=function(){var m=el('modalPontos');if(m)m.classList.add('escondido');};
   window.ptPrevSlug=function(){var t=el('ptSlugTxt');if(t)t.textContent=ptLimpaSlug(el('ptSlug').value)||'apelido';};
@@ -1426,6 +1518,7 @@
       if(!dadosAssinatura){ const _t=await garantirTrial(); if(_t){ await carregarPlanoPainel(user.uid); } }
       aplicarPlanoNasAbas();
       mostrarBannerTrial();
+      carregarParceiroPainel(user.uid);
       try{ if(new URLSearchParams(location.search).get('plano')==='enterprise' && !ehEnterprisePainel()){ abrirPlano(); setTimeout(function(){ try{selecionarPlano('enterprise','mensal',null);}catch(_){}} ,150); } }catch(_){}
     }else{
       el('painel').style.display='none';el('formArea').style.display='block';el('box').classList.remove('largo');
@@ -1446,7 +1539,7 @@
   }
   window.abrirMenu=function(){var d=$('drawer'),o=$('drawerOv');if(d)d.classList.add('on');if(o)o.classList.add('on');};
   window.fecharMenu=function(){var d=$('drawer'),o=$('drawerOv');if(d)d.classList.remove('on');if(o)o.classList.remove('on');};
-  window.abrirIndica=function(){fecharMenu();var m=$('modalIndica');if(m)m.classList.remove('escondido');};
+  window.abrirIndica=function(){fecharMenu();if(window._ehParceiro&&window.abrirModalParceiro){window.abrirModalParceiro();return;}var m=$('modalIndica');if(m)m.classList.remove('escondido');};
   window.fecharIndica=function(){var m=$('modalIndica');if(m)m.classList.add('escondido');};
   window.compartilharConviteWhats=function(){
     var msg='Olá! Tudo bem? 😊 Quero te apresentar o *Moviki* — o mapa inteligente que coloca o seu negócio no ar pra os clientes te encontrarem na hora. Você monta uma página só sua com cardápio, promoções, localização e avaliações. Vale muito a pena dar uma olhada: https://moviki.com.br/comerciantes.html';
