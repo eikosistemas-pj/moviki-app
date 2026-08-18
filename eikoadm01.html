@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki-robo.vercel.app; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://unpkg.com https://*.tile.openstreetmap.org; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki-robo.vercel.app; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="robots" content="noindex,nofollow">
@@ -10,6 +10,8 @@
 <link rel="icon" href="favicon512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   :root{
     --azul:#0066FF; --ciano:#0aa2c8; --verde:#16a34a; --gold:#d97706;
@@ -222,6 +224,13 @@
           <div class="kpi k3"><div class="top"><div class="ic i3">🟢</div></div><div class="n" id="kpiAbertos">—</div><div class="l">Abertos agora</div></div>
           <div class="kpi k4"><div class="top"><div class="ic i4">💵</div></div><div class="n" id="kpiReceita">—</div><div class="l">Receita est./mês</div></div>
         </div>
+        <div class="painelBox" style="margin-bottom:22px">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+            <h3 style="margin:0">🗺️ Quem está online agora</h3>
+            <span id="mapaCont" style="font-size:13px;font-weight:600;color:var(--suave)">—</span>
+          </div>
+          <div id="admMapa" style="height:360px;border-radius:12px;overflow:hidden;border:1px solid var(--borda);background:#eaf0f6"></div>
+        </div>
         <div class="painelBox bemvindo">
           <h3>Bem-vindo, dono 👑</h3>
           <p>Use o menu à esquerda pra convidar comerciantes e parceiros, ver seus lojistas e acompanhar os números. Os indicadores acima atualizam sozinhos quando você entra.</p>
@@ -322,11 +331,36 @@
   window.sair = () => signOut(auth);
   const mostrarTela = id => { ['login','restrito','app'].forEach(x=>el(x).classList.add('escondido')); el(id).classList.remove('escondido'); };
 
+  // ===== Mapa "online agora" (pinos azuis) na tela Início =====
+  let _admMap=null, _admLayer=null;
+  async function carregarMapaPontos(){
+    const box=el('admMapa'); if(!box||typeof L==='undefined')return;
+    try{
+      if(!_admMap){
+        _admMap=L.map('admMapa',{scrollWheelZoom:false}).setView([-8.05,-34.9],11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(_admMap);
+      }
+      if(_admLayer)_admLayer.remove();
+      _admLayer=L.layerGroup().addTo(_admMap);
+      const pts=[]; let n=0;
+      try{ const ns=await getDocs(collection(db,'negocios'));
+        ns.forEach(d=>{ const b=d.data()||{}; if(b.status==='aberto'&&typeof b.lat==='number'&&typeof b.lng==='number'){ pts.push([b.lat,b.lng]); n++; } });
+      }catch(e){}
+      try{ const ps=await getDocs(collection(db,'pontos'));
+        ps.forEach(d=>{ const p=d.data()||{}; if(p.ativo===true&&typeof p.lat==='number'&&typeof p.lng==='number'){ pts.push([p.lat,p.lng]); n++; } });
+      }catch(e){}
+      pts.forEach(c=>{ L.circleMarker(c,{radius:7,color:'#0066FF',weight:2,fillColor:'#00A2FF',fillOpacity:.85}).addTo(_admLayer); });
+      const cont=el('mapaCont'); if(cont)cont.textContent=n+(n===1?' negócio online agora':' negócios online agora');
+      if(pts.length){ try{ _admMap.fitBounds(L.latLngBounds(pts).pad(0.2)); }catch(e){} }
+      setTimeout(()=>{ try{ _admMap.invalidateSize(); }catch(e){} },200);
+    }catch(e){}
+  }
+
   onAuthStateChanged(auth, user => {
     if(!user){ mostrarTela('login'); return; }
     const email=(user.email||'').toLowerCase();
     if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email)){
-      el('donoEmail').textContent=user.email; abrir('inicio'); mostrarTela('app'); carregarDashboard(); carregarParceiros(); carregarComissoes(); carregarExclusoes();
+      el('donoEmail').textContent=user.email; abrir('inicio'); mostrarTela('app'); carregarDashboard(); carregarParceiros(); carregarComissoes(); carregarExclusoes(); carregarMapaPontos();
     } else { el('restritoEmail').textContent=user.email; mostrarTela('restrito'); }
   });
 
