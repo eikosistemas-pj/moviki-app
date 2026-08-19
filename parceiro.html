@@ -97,6 +97,23 @@
   .mkSimRange{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:linear-gradient(90deg,#00D4FF,#25e39b);outline:none;cursor:pointer}
   .mkSimRange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #00D4FF;box-shadow:0 0 10px rgba(0,212,255,.8);cursor:pointer}
   .mkSimRange::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #00D4FF;box-shadow:0 0 10px rgba(0,212,255,.8);cursor:pointer}
+  .mkEqWrap{display:flex;flex-direction:column;width:100%;gap:0;margin:22px 0 4px}
+  .mkEqBloco{width:100%;box-sizing:border-box;border-radius:16px;padding:18px 20px;text-align:center;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:rgba(10,25,47,.6)}
+  .mkEqTitulo{display:block;font-size:.82rem;font-weight:800;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px}
+  .mkEqValor{display:block;font-size:1.9rem;font-weight:800;margin-top:6px;line-height:1.15}
+  .mkEqBloco--laranja{border:1px solid rgba(255,122,26,.4);box-shadow:0 0 18px rgba(255,90,0,.22);color:#ff9a3d}
+  .mkEqBloco--laranja .mkEqValor{color:#ffb37a;text-shadow:0 0 14px rgba(255,122,26,.55)}
+  .mkEqBloco--azul{border:1px solid rgba(0,212,255,.35);box-shadow:0 0 18px rgba(0,212,255,.18);color:#4fd8ff}
+  .mkEqBloco--azul .mkEqValor{color:#7fe8ff;text-shadow:0 0 14px rgba(0,212,255,.55)}
+  .mkEqBloco--verde{border:1px solid rgba(5,242,153,.35);box-shadow:0 0 18px rgba(5,242,153,.18);color:#3df0ac}
+  .mkEqBloco--verde .mkEqValor{color:#7cf6c6;text-shadow:0 0 14px rgba(5,242,153,.55)}
+  .mkEqBloco--vermelho{border:1px solid rgba(255,59,48,.5);box-shadow:0 0 26px rgba(255,59,48,.32);background:linear-gradient(160deg,rgba(46,10,10,.7),rgba(20,4,4,.85));padding:22px 20px 20px}
+  .mkEqBloco--vermelho .mkEqTitulo{color:#ff8a80;font-size:.88rem}
+  .mkEqBloco--vermelho .mkEqValor{color:#ff6b5c;font-size:2.3rem;text-shadow:0 0 20px rgba(255,59,48,.6)}
+  .mkEqLegenda{display:block;font-size:11.5px;color:#f2b8b0;opacity:.92;margin-top:12px;line-height:1.5;text-align:left}
+  .mkEqOp{text-align:center;font-weight:800;line-height:1;user-select:none}
+  .mkEqOp--mais{font-size:1.7rem;color:#5be3ff;margin:10px 0;text-shadow:0 0 12px rgba(0,212,255,.5)}
+  .mkEqOp--igual{font-size:2.4rem;color:#ffd15b;margin:14px 0;text-shadow:0 0 16px rgba(255,209,91,.6)}
   .balao-resultado{transition:transform .1s ease}
   .balao-resultado.mkPop{transform:scale(1.04)}
   @media(prefers-reduced-motion:reduce){.balao-resultado.mkPop{transform:none}.mkSimTab{transition:none}}
@@ -249,17 +266,26 @@
         <input type="range" min="0" max="100" value="2" id="slider3" class="mkSimRange" oninput="mkSimAtualizar()">
         <div class="mkSimSub">Bônus único no 1º pagamento de cada um.</div>
       </div>
-      <div class="simulador-resultados-container" style="display:flex; align-items:center; gap:12px; margin:25px 0;">
-        <div class="balao-resultado" id="balaoRecorrente" style="flex:1; background:rgba(10,25,47,0.6); backdrop-filter:blur(12px); border-radius:16px; padding:16px; text-align:center; border:1px solid rgba(0,242,254,0.3); box-shadow:0 0 15px rgba(0,242,254,0.1); color:#00f2fe;">
-          <span style="display:block; font-size:0.85rem; font-weight:700;">Comissão Mensal Recorrente</span>
-          <span style="display:block; font-size:0.65rem; color:#8892b0;">Ganhos da sua indicação direta</span>
-          <div id="valorRecorrente" style="font-size:1.4rem; font-weight:800; margin-top:10px;">R$ 0,00</div>
+      <div class="mkEqWrap">
+        <div class="mkEqBloco mkEqBloco--laranja balao-resultado" id="blocoFixo">
+          <span class="mkEqTitulo">Seu Ganho Fixo Mensal (Suas Indicações)</span>
+          <span class="mkEqValor" id="valorBloco1">R$ 0,00</span>
         </div>
-        <div style="font-size:1.8rem; font-weight:bold; color:#64ffda;">+</div>
-        <div class="balao-resultado" id="balaoUnico" style="flex:1; background:rgba(10,25,47,0.6); backdrop-filter:blur(12px); border-radius:16px; padding:16px; text-align:center; border:1px solid rgba(5,242,153,0.3); box-shadow:0 0 15px rgba(5,242,153,0.1); color:#05f299;">
-          <span style="display:block; font-size:0.85rem; font-weight:700;">Bônus Único (1º Mês)</span>
-          <span style="display:block; font-size:0.65rem; color:#8892b0;">Indicações indiretas acumuladas</span>
-          <div id="valorUnico" style="font-size:1.4rem; font-weight:800; margin-top:10px;">R$ 0,00</div>
+        <div class="mkEqOp mkEqOp--mais" aria-hidden="true">+</div>
+        <div class="mkEqBloco mkEqBloco--azul balao-resultado" id="blocoN2">
+          <span class="mkEqTitulo">Bônus de Equipe - Nível 2 (Apenas no 1º Mês)</span>
+          <span class="mkEqValor" id="valorBloco2">R$ 0,00</span>
+        </div>
+        <div class="mkEqOp mkEqOp--mais" aria-hidden="true">+</div>
+        <div class="mkEqBloco mkEqBloco--verde balao-resultado" id="blocoN3">
+          <span class="mkEqTitulo">Bônus de Equipe - Nível 3 (Apenas no 1º Mês)</span>
+          <span class="mkEqValor" id="valorBloco3">R$ 0,00</span>
+        </div>
+        <div class="mkEqOp mkEqOp--igual" aria-hidden="true">=</div>
+        <div class="mkEqBloco mkEqBloco--vermelho balao-resultado" id="blocoTotal">
+          <span class="mkEqTitulo">Previsão do Seu 1º Saque Total</span>
+          <span class="mkEqValor" id="valorBloco4">R$ 0,00</span>
+          <span class="mkEqLegenda">⚠️ Observação: Este valor maior representa o somatório do seu ganho fixo mais os bônus únicos da sua equipe no primeiro mês. A partir do segundo mês, os bônus únicos expiram e o seu saque mensal será estritamente o valor fixo exibido no primeiro bloco (Laranja).</span>
         </div>
       </div>
     </div>
@@ -587,18 +613,24 @@
 
     var planoAtivo = planos[mkPlanoAtual];
 
-    var totalRecorrente = q1 * (planoAtivo.valor * planoAtivo.p1);
-    var totalBarra2 = q1 * q2 * (planoAtivo.valor * planoAtivo.p2);
-    var totalBarra3 = q1 * q2 * q3 * (planoAtivo.valor * planoAtivo.p3);
-    var totalBonusUnico = totalBarra2 + totalBarra3;
+    var totalBloco1 = q1 * (planoAtivo.valor * planoAtivo.p1);
+    var totalBloco2 = q2 * (planoAtivo.valor * planoAtivo.p2);
+    var totalBloco3 = q3 * (planoAtivo.valor * planoAtivo.p3);
+    var totalBloco4 = totalBloco1 + totalBloco2 + totalBloco3;
 
-    var elRecorrente = document.getElementById('valorRecorrente');
-    var elUnico = document.getElementById('valorUnico');
-    if(elRecorrente) elRecorrente.textContent = mkFmtBRL(totalRecorrente);
-    if(elUnico) elUnico.textContent = mkFmtBRL(totalBonusUnico);
+    var elB1 = document.getElementById('valorBloco1');
+    var elB2 = document.getElementById('valorBloco2');
+    var elB3 = document.getElementById('valorBloco3');
+    var elB4 = document.getElementById('valorBloco4');
+    if(elB1) elB1.textContent = mkFmtBRL(totalBloco1);
+    if(elB2) elB2.textContent = mkFmtBRL(totalBloco2);
+    if(elB3) elB3.textContent = mkFmtBRL(totalBloco3);
+    if(elB4) elB4.textContent = mkFmtBRL(totalBloco4);
 
-    mkPopEfeito('balaoRecorrente');
-    mkPopEfeito('balaoUnico');
+    mkPopEfeito('blocoFixo');
+    mkPopEfeito('blocoN2');
+    mkPopEfeito('blocoN3');
+    mkPopEfeito('blocoTotal');
   };
 
   if(document.readyState==='loading'){
