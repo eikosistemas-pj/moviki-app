@@ -1001,7 +1001,12 @@
   function mostrarBannerParceiro(){
     var b=el('bannerParceiro'); if(!b) return;
     var st=window._statusParceiro;
-    if(st==='aprovado'){
+    if(st==='aprovado' && !ehPagante()){
+      // Aprovado no cadastro, mas a conta caiu (ou nunca saiu) do plano gratuito Básico — não é parceiro ativo.
+      // Nunca mostrar o verde de "Parceiro Oficial" aqui: isso confundiria alguém que não pode operar o programa ainda.
+      b.className='bannerTrial urgente';
+      b.innerHTML='<div class="btTexto"><div class="btTitulo">🟡 Parceria aprovada, mas pausada</div><div class="btSub">Você já foi aprovado como parceiro, mas seu link só ativa quando sua conta virar um plano pago. Assine pra liberar e começar a ganhar comissão.</div></div><button type="button" class="btBtn" onclick="abrirPlano()">Ver planos</button>';
+    } else if(st==='aprovado'){
       // Só avisa o status — o botão de ação já existe no card "Indicar agora" da grade, não duplica aqui.
       b.className='bannerTrial parceiro';
       b.innerHTML='<div class="btTexto"><div class="btTitulo">✅ Você é Parceiro Oficial</div><div class="btSub">Compartilhe seu link e ganhe 15% recorrente por cada negócio que assinar. Toque em "Indicar agora" na grade abaixo.</div></div>';
@@ -1038,7 +1043,12 @@
       if(rr)rr.style.display=retido>0?'flex':'none';
     }catch(e){}
   }
-  window.abrirModalParceiro=function(){if(window.fecharMenu)fecharMenu();var m=el('modalParceiro');if(m)m.classList.remove('escondido');};
+  window.abrirModalParceiro=function(){
+    if(window.fecharMenu)fecharMenu();
+    // Aprovado só de cadastro, mas sem plano pago: não libera o link real — manda pro mesmo aviso de upgrade da candidatura.
+    if(window._ehParceiro && !ehPagante()){ if(window.abrirCandTravado)window.abrirCandTravado(); return; }
+    var m=el('modalParceiro');if(m)m.classList.remove('escondido');
+  };
   window.fecharParceiro=function(){var m=el('modalParceiro');if(m)m.classList.add('escondido');};
   window.abrirCandTravado=function(){var m=el('modalCandTravado');if(m)m.classList.remove('escondido');};
   window.fecharCandTravado=function(){var m=el('modalCandTravado');if(m)m.classList.add('escondido');};
