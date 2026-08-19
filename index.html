@@ -26,6 +26,9 @@
   .bannerTrial .btSub{font-size:13px;line-height:1.45;color:#b9cbe0;}
   .bannerTrial .btBtn{flex-shrink:0;background:linear-gradient(135deg,var(--ciano),var(--azul));color:#001018;font-weight:700;border:none;border-radius:10px;padding:11px 18px;font-size:14px;cursor:pointer;font-family:inherit;}
   .bannerTrial .btBtn:hover{filter:brightness(1.08);}
+  .bannerTrial.parceiro{background:rgba(37,227,155,.14);border-color:rgba(37,227,155,.55);}
+  .bannerTrial.parceiro .btTitulo{color:#8ff0c9;}
+  .bannerTrial.parceiro .btBtn{background:linear-gradient(135deg,#25e39b,#0fb87f);color:#04121f;}
   .bannerVerif{background:rgba(255,193,64,.12);border:1px solid rgba(255,193,64,.4);color:#ffe0a3;border-radius:10px;padding:13px 15px;margin-bottom:14px;font-size:14px;}
   .bannerVerif.ok{background:rgba(46,204,113,.12);border-color:rgba(46,204,113,.4);color:#8ff0b5;}
   .bvTexto{margin-bottom:11px;line-height:1.5;}
@@ -520,6 +523,23 @@
           <button type="button" class="mkSimFechar" onclick="fecharParceiro()">✕ Fechar e voltar ao mapa</button>
         </div>
       </div>
+      <div id="modalCandTravado" class="modalPlano escondido" onclick="if(event.target===this)fecharCandTravado()">
+        <div class="mpCaixa" style="max-width:440px">
+          <button type="button" class="mpFechar" onclick="fecharCandTravado()" aria-label="Fechar">✕</button>
+          <div class="mpHead"><h2 class="mpTitulo">🔒 Vire parceiro Moviki</h2></div>
+          <p class="idxLead">Pra virar parceiro oficial e começar a ganhar comissão por indicação, sua assinatura precisa estar <b>ativa e paga</b> — assim garantimos que só quem realmente usa o Moviki ganha com ele.</p>
+          <div class="pcTab">
+            <div class="pcTabTit">Ao assinar um plano, você garante</div>
+            <div class="pcGanhos">
+              <div class="pcGanhoItem"><span class="pcGanhoPct">🚀</span><span class="pcGanhoTxt">Seu negócio completo no ar: cardápio, promoções, eventos e fotos sem interrupção.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct">💰</span><span class="pcGanhoTxt">Liberação pra virar parceiro e ganhar <b>15% recorrente</b> por cada negócio que você indicar.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct">📈</span><span class="pcGanhoTxt">Prioridade no mapa e nos recursos do seu plano, sem depender do teste grátis.</span></div>
+            </div>
+          </div>
+          <button type="button" class="idxBtn prim" onclick="fecharCandTravado();abrirPlano();">Ver planos e assinar</button>
+          <button type="button" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5" onclick="fecharCandTravado()">Agora não</button>
+        </div>
+      </div>
       <div id="modalPontos" class="modalPlano escondido" onclick="if(event.target===this)fecharPontos()">
         <div class="mpCaixa" style="max-width:480px">
           <button type="button" class="mpFechar" onclick="fecharPontos()" aria-label="Fechar">✕</button>
@@ -608,6 +628,7 @@
         <div class="onbFinal" id="onbFinal"></div>
       </div>
         <div id="bannerTrial" class="bannerTrial escondido"></div>
+        <div id="bannerParceiro" class="bannerTrial escondido"></div>
         <div class="grid">
           <button type="button" class="gcard" onclick="irSecao('perfil')"><img class="gcImg" src="icones/perfil.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Perfil</span></button>
           <button type="button" class="gcard" id="gc-cardapio" onclick="irSecao('cardapio')"><img class="gcImg" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Cardápio</span></button>
@@ -921,6 +942,8 @@
   function ptResetHorario(){ptInitHorario();ptDiasSel=[false,false,false,false,false,false,false];if(el('ptAbre'))el('ptAbre').value='09:00';if(el('ptFecha'))el('ptFecha').value='18:00';ptRenderDias();}
   function ptSetHorario(cfg){ptInitHorario();ptDiasSel=[false,false,false,false,false,false,false];if(cfg&&cfg.dias&&cfg.dias.forEach)cfg.dias.forEach(function(i){if(i>=0&&i<7)ptDiasSel[i]=true;});if(cfg&&cfg.abre&&el('ptAbre'))el('ptAbre').value=cfg.abre;if(cfg&&cfg.fecha&&el('ptFecha'))el('ptFecha').value=cfg.fecha;ptRenderDias();}
   function ehEnterprisePainel(){return !!(dadosAssinatura&&dadosAssinatura.ativo===true&&dadosAssinatura.plano==='enterprise'&&(!dadosAssinatura.vence_em||dadosAssinatura.vence_em.toMillis()>Date.now()));}
+  // Só é "pagante" quem tem assinatura ativa e período mensal/anual — trial e Básico grátis não contam.
+  function ehPagante(){const d=dadosAssinatura;return !!(d&&d.ativo===true&&d.periodo!=='trial'&&(!d.vence_em||d.vence_em.toMillis()>Date.now()));}
   window.ptAtualizarDrawer=function(){var vis=ehEnterprisePainel();var b=el('drawerPontos');if(b)b.style.display=vis?'flex':'none';var g=el('gc-pontos');if(g)g.style.display=vis?'flex':'none';var st=el('seloTopo');if(st)st.style.display=vis?'inline-flex':'none';var sd=el('seloDrawer');if(sd)sd.style.display=vis?'inline-flex':'none';};
 
   // ===== Programa de Parceiros — área "Indicar agora" no painel do lojista =====
@@ -929,12 +952,14 @@
   var _pcMsg=function(link){return 'Oi! Tudo bem? 😊 Quero te mostrar o Moviki — um mapa que ajuda seus clientes a te encontrarem na hora. É grátis pra começar. Dá uma olhada pelo meu link: '+link;};
   async function carregarParceiroPainel(uid){
     _parceiro=null; window._ehParceiro=false; window._statusParceiro=null;
+    mostrarBannerParceiro();
     var card=el('gc-indicar'); if(card)card.style.display='none';
     try{
       var s=await getDoc(doc(db,'parceiros',uid));
       if(!s.exists())return;
       var p=s.data();
       window._statusParceiro=p.status||null;
+      mostrarBannerParceiro();
       if(p.status!=='aprovado'||!p.slug)return;
       _parceiro={uid:uid,slug:p.slug,nome:p.nome||''};
       window._ehParceiro=true;
@@ -942,6 +967,23 @@
       var lk=el('pcLink'); if(lk)lk.textContent='moviki.com.br/p/'+p.slug;
       contarIndicadosParceiro(); carregarComissaoParceiro();
     }catch(e){}
+  }
+  // Balãozinho visível assim que o painel abre — não precisa clicar em "Indique e ganhe" pra saber que é parceiro.
+  function mostrarBannerParceiro(){
+    var b=el('bannerParceiro'); if(!b) return;
+    var st=window._statusParceiro;
+    if(st==='aprovado'){
+      b.className='bannerTrial parceiro';
+      b.innerHTML='<div class="btTexto"><div class="btTitulo">✅ Você é Parceiro Oficial</div><div class="btSub">Compartilhe seu link e ganhe 15% recorrente por cada negócio que assinar.</div></div><button type="button" class="btBtn" onclick="abrirModalParceiro()">Indicar agora</button>';
+    } else if(st==='pendente'){
+      b.className='bannerTrial urgente';
+      b.innerHTML='<div class="btTexto"><div class="btTitulo">⏳ Pedido de parceria em análise</div><div class="btSub">Assim que for aprovado, seu link de indicação aparece aqui.</div></div>';
+    } else if(st==='recusado'||st==='suspenso'){
+      b.className='bannerTrial fim';
+      b.innerHTML='<div class="btTexto"><div class="btTitulo">⏸️ Parceria '+(st==='recusado'?'não aprovada':'suspensa')+'</div><div class="btSub">Fale com o suporte pelo menu pra mais detalhes.</div></div>';
+    } else {
+      b.className='bannerTrial escondido';
+    }
   }
   async function contarIndicadosParceiro(){
     if(!_parceiro)return;
@@ -968,6 +1010,8 @@
   }
   window.abrirModalParceiro=function(){if(window.fecharMenu)fecharMenu();var m=el('modalParceiro');if(m)m.classList.remove('escondido');};
   window.fecharParceiro=function(){var m=el('modalParceiro');if(m)m.classList.add('escondido');};
+  window.abrirCandTravado=function(){var m=el('modalCandTravado');if(m)m.classList.remove('escondido');};
+  window.fecharCandTravado=function(){var m=el('modalCandTravado');if(m)m.classList.add('escondido');};
   window.pcCopiarLink=function(btn){if(!_parceiro)return;var msg=_pcMsg('https://moviki.com.br/p/'+_parceiro.slug);
     var ok=function(){if(btn&&btn.textContent){var t=btn.textContent;btn.textContent='✓ Link copiado!';setTimeout(function(){btn.textContent=t;},1800);}};
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(ok).catch(function(){window.prompt('Copie e envie:',msg);});}
@@ -993,6 +1037,7 @@
   };
   window.candEnviar=async function(){
     if(!usuarioAtual)return;
+    if(!ehPagante()){ abrirCandTravado(); return; }
     var nome=(el('candNome').value||'').trim(), slug=limpaSlugParc(el('candSlug').value), pix=(el('candPix').value||'').trim(), av=el('candAviso');
     if(nome.length<2){av.textContent='Digite seu nome.';return;}
     if(slug.length<3){av.textContent='Escolha um apelido com pelo menos 3 letras.';return;}
