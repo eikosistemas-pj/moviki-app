@@ -235,6 +235,12 @@
   .pcTabela td:first-child{color:#e6eefb;}
   .pcTabela td b{color:var(--ciano);}
   .pcTabela td:last-child{color:#9fb3c8;text-align:right;}
+  .pcBadgeOficial{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(37,227,155,.18),rgba(0,212,255,.12));border:1px solid #25e39b;color:#25e39b;font-size:12.5px;font-weight:800;padding:6px 12px;border-radius:999px;margin:-2px 0 12px;letter-spacing:.02em;}
+  .pcGanhos{margin:2px 0 12px;display:flex;flex-direction:column;gap:8px;}
+  .pcGanhoItem{display:flex;gap:10px;align-items:flex-start;background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:11px 12px;}
+  .pcGanhoPct{flex:0 0 auto;min-width:46px;text-align:center;background:rgba(0,212,255,.14);color:var(--ciano);font-weight:800;font-size:14px;border-radius:8px;padding:6px 4px;}
+  .pcGanhoTxt{font-size:13px;color:#cfe0f5;line-height:1.5;}
+  .pcGanhoTxt b{color:#e6eefb;}
   .candLbl{display:block;font-size:12.5px;color:#9fb3c8;font-weight:600;margin:10px 2px 5px;}
   .candInp{width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:15px;}
   .candDica{font-size:12px;color:#7f95b3;margin:5px 2px;}
@@ -401,11 +407,11 @@
           <div id="candForm">
             <div class="mpHead"><h2 class="mpTitulo">💰 Seja parceiro e ganhe</h2></div>
             <p class="idxLead">Indique negócios pro Moviki e ganhe <b>15% todo mês</b> de cada um que assinar pelo seu link. É grátis, e você recebe no seu Pix.</p>
-            <table class="pcTabela" style="margin:2px 0 12px">
-              <tr><td>Indicação direta</td><td><b>15%</b></td><td>todo mês</td></tr>
-              <tr><td>2º nível</td><td><b>7,5%</b></td><td>1º mês</td></tr>
-              <tr><td>3º nível</td><td><b>5%</b></td><td>1º mês</td></tr>
-            </table>
+            <div class="pcGanhos">
+              <div class="pcGanhoItem"><span class="pcGanhoPct">15%</span><span class="pcGanhoTxt">A pessoa que você indicar: você recebe uma comissão recorrente de <b>15%</b> todo mês enquanto ela pagar a assinatura.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct">7,5%</span><span class="pcGanhoTxt">A pessoa que você indicou indicar um amigo: você recebe um bônus único de <b>7,5%</b> no primeiro pagamento desse novo negócio.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct">5%</span><span class="pcGanhoTxt">A indicação do amigo indicar outra pessoa: você recebe um bônus único de <b>5%</b> no primeiro pagamento dela.</span></div>
+            </div>
             <label class="candLbl">Seu nome</label>
             <input id="candNome" class="candInp" type="text" maxlength="80" placeholder="Nome completo">
             <label class="candLbl">Escolha seu apelido (vira seu link)</label>
@@ -430,6 +436,7 @@
         <div class="mpCaixa" style="max-width:460px">
           <button type="button" class="mpFechar" onclick="fecharParceiro()" aria-label="Fechar">✕</button>
           <div class="mpHead"><h2 class="mpTitulo">💰 Indicar agora</h2></div>
+          <div class="pcBadgeOficial">✅ Parceiro Oficial</div>
           <p class="idxLead">Você é <b>parceiro Moviki</b>! Compartilhe seu link: cada negócio que assinar por ele vira <b>15% todo mês</b> pra você.</p>
           <div style="background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:11px 13px;margin:4px 0 10px;font-size:14px;color:#e6eefb;word-break:break-all"><span id="pcLink">moviki.com.br/p/…</span></div>
           <button type="button" class="idxBtn prim" onclick="pcCopiarLink(this)">📋 Copiar meu link</button>
@@ -447,11 +454,11 @@
           </div>
           <div class="pcTab">
             <div class="pcTabTit">Como você ganha</div>
-            <table class="pcTabela">
-              <tr><td>Indicação direta</td><td><b>15%</b></td><td>todo mês</td></tr>
-              <tr><td>2º nível</td><td><b>7,5%</b></td><td>1º mês</td></tr>
-              <tr><td>3º nível</td><td><b>5%</b></td><td>1º mês</td></tr>
-            </table>
+            <div class="pcGanhos">
+              <div class="pcGanhoItem"><span class="pcGanhoPct">15%</span><span class="pcGanhoTxt">A pessoa que você indicar: você recebe uma comissão recorrente de <b>15%</b> todo mês enquanto ela pagar a assinatura.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct">7,5%</span><span class="pcGanhoTxt">A pessoa que você indicou indicar um amigo: você recebe um bônus único de <b>7,5%</b> no primeiro pagamento desse novo negócio.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct">5%</span><span class="pcGanhoTxt">A indicação do amigo indicar outra pessoa: você recebe um bônus único de <b>5%</b> no primeiro pagamento dela.</span></div>
+            </div>
           </div>
           <a href="parceiro.html" target="_blank" rel="noopener" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5">Abrir meu painel completo</a>
           <a href="https://moviki.com.br/parceiros-ganhos.html" target="_blank" rel="noopener" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5">Entenda como ganhar mais</a>

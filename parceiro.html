@@ -35,6 +35,9 @@
   .topo{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:2px}
   .ola{font-size:19px;font-weight:800}
   .sair{background:none;border:1px solid rgba(255,255,255,.2);color:#cfe0f5;border-radius:9px;padding:7px 12px;font-family:inherit;font-size:12.5px;cursor:pointer;flex:0 0 auto}
+  .topoAcoes{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;flex:0 0 auto}
+  .voltarMapa{display:inline-flex;align-items:center;gap:5px;background:rgba(0,212,255,.12);border:1px solid var(--ciano);color:var(--ciano);border-radius:9px;padding:7px 12px;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap}
+  .voltarMapa:hover{background:rgba(0,212,255,.22)}
   .badge{display:inline-block;font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px;margin-top:8px}
   .badge.pendente{background:rgba(255,207,107,.14);color:var(--amber);border:1px solid rgba(255,207,107,.4)}
   .badge.aprovado{background:rgba(37,227,155,.14);color:var(--verde);border:1px solid rgba(37,227,155,.4)}
@@ -86,11 +89,13 @@
 
   <!-- PAINEL -->
   <div id="painel" class="hide">
-    <button class="btn sec hide" id="btnVoltarPainel" style="margin-top:0;margin-bottom:14px">← Voltar ao painel do meu negócio</button>
     <div class="card">
       <div class="topo">
         <div class="ola">Olá, <span id="pNome">parceiro</span> 👋</div>
-        <button class="sair" id="sair">Sair</button>
+        <div class="topoAcoes">
+          <a class="voltarMapa hide" id="btnVoltarPainel" href="index.html">🗺️ Voltar ao Mapa</a>
+          <button class="sair" id="sair">Sair</button>
+        </div>
       </div>
       <div id="badge" class="badge pendente">Em análise ⏳</div>
       <div class="status-nota" id="statusNota"></div>
@@ -195,7 +200,9 @@
       render();
       telas('painel');
       // lojista que virou parceiro (mesma conta) → oferece volta ao painel do negócio
-      try{ const nsnap = await getDoc(doc(db,'negocios',user.uid)); if(nsnap.exists()) show('btnVoltarPainel'); }catch(_){}
+      // fallback: se a checagem falhar, mostra o botão assim mesmo — melhor um link
+      // a mais do que deixar o lojista preso sem volta pro painel principal.
+      try{ const nsnap = await getDoc(doc(db,'negocios',user.uid)); if(nsnap.exists()) show('btnVoltarPainel'); }catch(_){ show('btnVoltarPainel'); }
       contarIndicacoes();   // não bloqueia
       carregarComissoes();  // não bloqueia
     }catch(e){
@@ -345,7 +352,6 @@
   };
 
   el('sair').onclick = ()=> signOut(auth);
-  el('btnVoltarPainel').onclick = ()=> location.href='index.html';
   el('sair2').onclick = ()=> signOut(auth);
   el('btnSaque').onclick = solicitarSaque;
 
