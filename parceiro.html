@@ -1,94 +1,458 @@
-<!-- ============================================================
-     MOVIKI-APP / parceiro.html — REFATORAÇÃO CIRÚRGICA (UI RE-SKIN)
-     Nenhuma variável, ID de script, chamada Firebase/Firestore ou
-     lógica de negócio foi alterada. Apenas HTML/CSS/JS de interface.
-     O botão "🗺️ Voltar ao Mapa" já existe, já é funcional (href para
-     index.html) e já é fail-open — não precisa de nenhuma mudança.
-     Quebra de linha: LF.
-============================================================ -->
-
-<!-- ============================================================
-1) LOCALIZAR "</style>" (fecha o <style> já existente no <head>)
-   e COLAR este segundo bloco <style> logo depois dele, antes de
-   "</head>":
-============================================================ -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com; connect-src 'self' https://*.googleapis.com https://www.google.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
+<title>Painel do Parceiro · Moviki</title>
+<link rel="icon" href="favicon512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ===== SIMULADOR DE GANHOS INTERATIVO — componente isolado ===== */
-.mkSim{position:relative;margin:0 0 14px;padding:20px 18px 22px;border-radius:18px;background:linear-gradient(160deg,rgba(13,27,48,.55),rgba(6,14,26,.75));border:1px solid rgba(0,212,255,.28);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 18px 40px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.05);overflow:hidden}
-.mkSim::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:18px;background:radial-gradient(420px 120px at 15% -10%,rgba(0,212,255,.18),transparent 70%)}
-.mkSimTitulo{font-size:13px;font-weight:800;color:#8fe9ff;text-transform:uppercase;letter-spacing:.05em;margin:0 0 12px}
-.mkSimTabs{display:flex;gap:8px;margin-bottom:16px}
-.mkSimTab{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:9px 6px;color:#b9c9dd;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;text-align:center;display:flex;flex-direction:column;gap:2px;transition:all .18s ease}
-.mkSimTab .mkSimTabPreco{font-size:11px;font-weight:600;color:#7f95b3}
-.mkSimTab.active{border-color:#00D4FF;color:#eaffff;background:rgba(0,212,255,.12);box-shadow:0 0 0 1px rgba(0,212,255,.5),0 0 18px rgba(0,212,255,.55)}
-.mkSimTab.active .mkSimTabPreco{color:#8fe9ff}
-.mkSimGrupo{margin-bottom:16px}
-.mkSimLabel{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:#dbe9ff;font-weight:600;margin-bottom:8px;line-height:1.4}
-.mkSimValor{color:#25e39b;font-weight:800;flex:0 0 auto}
-.mkSimSub{font-size:11.5px;color:#7f95b3;margin-top:6px}
-.mkSimRange{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:linear-gradient(90deg,#00D4FF,#25e39b);outline:none;cursor:pointer}
-.mkSimRange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #00D4FF;box-shadow:0 0 10px rgba(0,212,255,.8);cursor:pointer}
-.mkSimRange::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #00D4FF;box-shadow:0 0 10px rgba(0,212,255,.8);cursor:pointer}
-.mkSimVisor{margin-top:6px;padding:16px 14px;border-radius:14px;text-align:center;background:rgba(0,0,0,.35);border:1px solid rgba(37,227,155,.4)}
-.mkSimVisorLabel{display:block;font-size:13px;color:#9fb3c8;font-weight:600;letter-spacing:.02em}
-.mkSimVisorValor{display:block;margin-top:4px;font-size:30px;font-weight:800;color:#25e39b;text-shadow:0 0 14px rgba(37,227,155,.75)}
-.mkSimVisorValor.mkSimPop{animation:mkSimPopAnim .32s ease}
-@keyframes mkSimPopAnim{0%{transform:scale(1)}35%{transform:scale(1.18);text-shadow:0 0 22px rgba(37,227,155,1)}100%{transform:scale(1)}}
-@media(prefers-reduced-motion:reduce){.mkSimVisorValor.mkSimPop{animation:none}.mkSimTab{transition:none}}
+  :root{--ciano:#00D4FF;--azul:#0066FF;--verde:#25e39b;--amber:#ffcf6b;--vermelho:#ff9a9a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Poppins',system-ui,sans-serif;background:linear-gradient(160deg,#0b2038 0%,#0e2d54 55%,#0a1c34 100%);color:#F2F5F9;min-height:100vh;padding:26px 16px 60px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:480px;margin:0 auto}
+  .marca{text-align:center;margin-bottom:14px}
+  .marca img{height:34px}
+  .card{background:rgba(13,30,54,.72);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:24px 22px;box-shadow:0 24px 60px rgba(0,0,0,.45);backdrop-filter:blur(8px);margin-bottom:14px}
+  h1{font-size:22px;font-weight:800;text-align:center}
+  .sub{font-size:13.5px;color:#9fb3c8;text-align:center;margin:5px 0 18px}
+  label{display:block;font-size:13px;font-weight:600;color:#cfe0f5;margin:14px 0 6px}
+  input{width:100%;background:rgba(6,15,26,.75);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:12px 14px;color:#F2F5F9;font-family:inherit;font-size:14px}
+  input:focus{outline:none;border-color:var(--ciano)}
+  input::placeholder{color:#6b7f96}
+  .btn{width:100%;background:linear-gradient(135deg,var(--ciano),var(--azul));color:#04121f;border:none;border-radius:12px;padding:14px;font-family:inherit;font-weight:800;font-size:15px;cursor:pointer;margin-top:18px}
+  .btn:disabled{opacity:.55;cursor:not-allowed}
+  .btn.sec{background:transparent;border:1px solid rgba(255,255,255,.22);color:#dfeaf7;font-weight:600;margin-top:10px}
+  .btn.wpp{background:linear-gradient(135deg,#25e39b,#0fb87f);color:#04121f}
+  .aviso{text-align:center;font-size:13px;color:var(--vermelho);margin-top:12px;min-height:16px;line-height:1.45}
+  .aviso.ok{color:var(--verde)}
+  .link-min{text-align:center;font-size:13px;margin-top:14px}
+  .link-min a{color:var(--ciano)}
+  /* painel */
+  .topo{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:2px}
+  .ola{font-size:19px;font-weight:800}
+  .sair{background:none;border:1px solid rgba(255,255,255,.2);color:#cfe0f5;border-radius:9px;padding:7px 12px;font-family:inherit;font-size:12.5px;cursor:pointer;flex:0 0 auto}
+  .topoAcoes{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;flex:0 0 auto}
+  .voltarMapa{display:inline-flex;align-items:center;gap:5px;background:rgba(0,212,255,.12);border:1px solid var(--ciano);color:var(--ciano);border-radius:9px;padding:7px 12px;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap}
+  .voltarMapa:hover{background:rgba(0,212,255,.22)}
+  .badge{display:inline-block;font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px;margin-top:8px}
+  .badge.pendente{background:rgba(255,207,107,.14);color:var(--amber);border:1px solid rgba(255,207,107,.4)}
+  .badge.aprovado{background:rgba(37,227,155,.14);color:var(--verde);border:1px solid rgba(37,227,155,.4)}
+  .badge.recusado,.badge.suspenso{background:rgba(255,154,154,.12);color:var(--vermelho);border:1px solid rgba(255,154,154,.4)}
+  .status-nota{font-size:13px;color:#9fb3c8;margin-top:10px;line-height:1.55}
+  .titulo{font-size:13px;font-weight:700;color:#cfe0f5;text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}
+  .linkbox{background:rgba(0,212,255,.08);border:1px dashed rgba(0,212,255,.5);border-radius:12px;padding:14px;text-align:center;font-size:15px;font-weight:700;color:#eaffff;word-break:break-all}
+  .kpi{display:flex;align-items:baseline;gap:8px}
+  .kpi .n{font-size:34px;font-weight:800;color:var(--ciano)}
+  .kpi .t{font-size:13px;color:#9fb3c8}
+  .dado{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+  .dado:last-child{border-bottom:none}
+  .dado .k{color:#9fb3c8}
+  .dado .v{color:#F2F5F9;font-weight:600;text-align:right;word-break:break-all}
+  .soon{opacity:.65}
+  .soon .tag{font-size:11px;background:rgba(255,255,255,.1);padding:3px 8px;border-radius:6px;color:#cfe0f5;margin-left:8px}
+  .hide{display:none!important}
+
+  /* ===== SIMULADOR DE GANHOS INTERATIVO — componente isolado ===== */
+  .mkSim{position:relative;margin:0 0 14px;padding:20px 18px 22px;border-radius:18px;background:linear-gradient(160deg,rgba(13,27,48,.55),rgba(6,14,26,.75));border:1px solid rgba(0,212,255,.28);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 18px 40px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.05);overflow:hidden}
+  .mkSim::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:18px;background:radial-gradient(420px 120px at 15% -10%,rgba(0,212,255,.18),transparent 70%)}
+  .mkSimTitulo{font-size:13px;font-weight:800;color:#8fe9ff;text-transform:uppercase;letter-spacing:.05em;margin:0 0 12px}
+  .mkSimTabs{display:flex;gap:8px;margin-bottom:16px}
+  .mkSimTab{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:9px 6px;color:#b9c9dd;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;text-align:center;display:flex;flex-direction:column;gap:2px;transition:all .18s ease}
+  .mkSimTab .mkSimTabPreco{font-size:11px;font-weight:600;color:#7f95b3}
+  .mkSimTab.active{border-color:#00D4FF;color:#eaffff;background:rgba(0,212,255,.12);box-shadow:0 0 0 1px rgba(0,212,255,.5),0 0 18px rgba(0,212,255,.55)}
+  .mkSimTab.active .mkSimTabPreco{color:#8fe9ff}
+  .mkSimGrupo{margin-bottom:16px}
+  .mkSimLabel{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:#dbe9ff;font-weight:600;margin-bottom:8px;line-height:1.4}
+  .mkSimValor{color:#25e39b;font-weight:800;flex:0 0 auto}
+  .mkSimSub{font-size:11.5px;color:#7f95b3;margin-top:6px}
+  .mkSimRange{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:linear-gradient(90deg,#00D4FF,#25e39b);outline:none;cursor:pointer}
+  .mkSimRange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #00D4FF;box-shadow:0 0 10px rgba(0,212,255,.8);cursor:pointer}
+  .mkSimRange::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #00D4FF;box-shadow:0 0 10px rgba(0,212,255,.8);cursor:pointer}
+  .mkSimVisor{margin-top:6px;padding:16px 14px;border-radius:14px;text-align:center;background:rgba(0,0,0,.35);border:1px solid rgba(37,227,155,.4)}
+  .mkSimVisorLabel{display:block;font-size:13px;color:#9fb3c8;font-weight:600;letter-spacing:.02em}
+  .mkSimVisorValor{display:block;margin-top:4px;font-size:30px;font-weight:800;color:#25e39b;text-shadow:0 0 14px rgba(37,227,155,.75)}
+  .mkSimVisorValor.mkSimPop{animation:mkSimPopAnim .32s ease}
+  @keyframes mkSimPopAnim{0%{transform:scale(1)}35%{transform:scale(1.18);text-shadow:0 0 22px rgba(37,227,155,1)}100%{transform:scale(1)}}
+  @media(prefers-reduced-motion:reduce){.mkSimVisorValor.mkSimPop{animation:none}.mkSimTab{transition:none}}
 </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="marca"><img src="logo.png" alt="Moviki" onerror="this.outerHTML='<span style=&quot;font-weight:800;font-size:24px&quot;>movi<span style=&quot;color:#00D4FF&quot;>ki</span></span>'"></div>
 
-<!-- ============================================================
-2) LOCALIZAR este trecho exato no <body> (card de Comissões,
-   seguido do comentário "<!-- meus dados -->"):
-============================================================ -->
+  <!-- carregando -->
+  <div id="carregando" class="card" style="text-align:center;color:#9fb3c8">Carregando…</div>
 
-<!-- ----- TRECHO ORIGINAL (LOCALIZAR — NÃO MEXER NELE) ----- -->
-<!--
+  <!-- LOGIN -->
+  <div id="login" class="card hide">
+    <h1>Painel do Parceiro</h1>
+    <p class="sub">Entre com o e-mail e a senha do seu cadastro.</p>
+    <label for="email">E-mail</label>
+    <input id="email" type="email" placeholder="voce@email.com" autocomplete="email">
+    <label for="senha">Senha</label>
+    <input id="senha" type="password" placeholder="sua senha" autocomplete="current-password">
+    <button class="btn" id="btnEntrar">Entrar</button>
+    <div class="aviso" id="avisoLogin"></div>
+    <div class="link-min"><a href="#" id="esqueci">Esqueci minha senha</a></div>
+    <div class="link-min" style="margin-top:6px;color:#7f9bc0">Ainda não é parceiro? <a href="seja-parceiro.html">Cadastre-se</a></div>
+  </div>
+
+  <!-- SEM CADASTRO (conta existe mas não é parceiro) -->
+  <div id="semcadastro" class="card hide" style="text-align:center">
+    <div style="font-size:44px">🤔</div>
+    <h1 style="margin-top:6px">Cadastro não encontrado</h1>
+    <p class="sub">Esta conta não tem um cadastro de parceiro. Faça seu cadastro para começar.</p>
+    <a class="btn" href="seja-parceiro.html" style="display:block;text-align:center;text-decoration:none">Fazer meu cadastro</a>
+    <button class="btn sec" id="sair2">Sair</button>
+  </div>
+
+  <!-- PAINEL -->
+  <div id="painel" class="hide">
+    <div class="card">
+      <div class="topo">
+        <div class="ola">Olá, <span id="pNome">parceiro</span> 👋</div>
+        <div class="topoAcoes">
+          <a class="voltarMapa hide" id="btnVoltarPainel" href="index.html">🗺️ Voltar ao Mapa</a>
+          <button class="sair" id="sair">Sair</button>
+        </div>
+      </div>
+      <div id="badge" class="badge pendente">Em análise ⏳</div>
+      <div class="status-nota" id="statusNota"></div>
+    </div>
+
+    <!-- LINK (aprovado) -->
+    <div class="card" id="cardLink">
+      <div class="titulo">Seu link de indicação</div>
+      <div class="linkbox" id="meuLink">moviki.com.br/p/…</div>
+      <button class="btn" id="btnCopiar">Copiar link</button>
+      <button class="btn wpp" id="btnWpp">Compartilhar no WhatsApp</button>
+      <button class="btn sec" id="btnShare">Compartilhar…</button>
+      <div class="aviso ok" id="avisoLink"></div>
+    </div>
+
+    <!-- LINK: indicar outro parceiro (níveis 2/3) -->
+    <div class="card" id="cardLinkParc">
+      <div class="titulo">Indicar outro parceiro</div>
+      <div class="status-nota" style="margin-bottom:12px">Chame alguém pra ser parceiro também. Se a pessoa se cadastrar pelo seu link, você ganha um bônus quando os indicados dela assinarem.</div>
+      <div class="linkbox" id="meuLinkParc">moviki.com.br/pp/…</div>
+      <button class="btn" id="btnCopiarP">Copiar link</button>
+      <button class="btn wpp" id="btnWppP">Compartilhar no WhatsApp</button>
+      <div class="aviso ok" id="avisoLinkP"></div>
+    </div>
+
+    <!-- KPI indicações -->
+    <div class="card" id="cardKpi">
+      <div class="titulo">Cadastros trazidos pelo seu link</div>
+      <div class="kpi"><span class="n" id="kpiN">0</span><span class="t">negócios cadastrados pelo seu link</span></div>
+      <div class="status-nota">Cada um que assinar pelo seu link vira comissão recorrente pra você, logo abaixo.</div>
+    </div>
+
     <!-- comissões -->
     <div class="card hide" id="cardComissao">
-      ...
+      <div class="titulo">Comissões</div>
+      <div class="kpi"><span class="n" id="cReceber">R$ 0,00</span><span class="t">disponível pra saque</span></div>
+      <div class="dado" id="rowRetido" style="display:none;margin-top:8px"><span class="k">A liberar em breve</span><span class="v" id="cRetido">R$ 0,00</span></div>
+      <div class="dado" style="margin-top:8px"><span class="k">Total já ganho</span><span class="v" id="cTotal">R$ 0,00</span></div>
+      <div class="dado"><span class="k">Já pago a você</span><span class="v" id="cPago">R$ 0,00</span></div>
+      <div class="dado"><span class="k">Indicados que assinaram</span><span class="v" id="cPagantes">0</span></div>
+      <button class="btn" id="btnSaque" disabled>Solicitar saque via Pix</button>
+      <div class="status-nota" id="saqueNota">Saque mínimo de R$ 20,00. O pagamento cai na sua chave Pix cadastrada. Comissões recentes ficam alguns dias em análise antes de liberar.</div>
       <div class="aviso" id="avisoSaque"></div>
     </div>
 
-    <!-- meus dados -->
--->
+    <!-- SIMULADOR DE GANHOS INTERATIVO -->
+    <div class="mkSim" id="mkSim">
+      <div class="mkSimTitulo">🚀 Simule seus ganhos</div>
+      <div class="mkSimTabs">
+        <button type="button" class="mkSimTab active" onclick="mkSimSelecionarPlano('pro',this)">Pró<span class="mkSimTabPreco">R$ 37,90</span></button>
+        <button type="button" class="mkSimTab" onclick="mkSimSelecionarPlano('premium',this)">Premium<span class="mkSimTabPreco">R$ 49,90</span></button>
+        <button type="button" class="mkSimTab" onclick="mkSimSelecionarPlano('enterprise',this)">Enterprise<span class="mkSimTabPreco">R$ 99,90</span></button>
+      </div>
+      <div class="mkSimGrupo">
+        <div class="mkSimLabel"><span>Quantos negócios você vai indicar direto?</span><span class="mkSimValor" id="mkValor1">3</span></div>
+        <input type="range" min="0" max="100" value="3" id="mkSlider1" class="mkSimRange" oninput="mkSimAtualizar()">
+        <div class="mkSimSub">Ganho recorrente todo mês enquanto o negócio ficar ativo.</div>
+      </div>
+      <div class="mkSimGrupo">
+        <div class="mkSimLabel"><span>Se cada um deles indicar quantos amigos?</span><span class="mkSimValor" id="mkValor2">2</span></div>
+        <input type="range" min="0" max="100" value="2" id="mkSlider2" class="mkSimRange" oninput="mkSimAtualizar()">
+        <div class="mkSimSub">Bônus único no 1º pagamento de cada um.</div>
+      </div>
+      <div class="mkSimGrupo">
+        <div class="mkSimLabel"><span>E se os amigos deles trouxerem quantas pessoas?</span><span class="mkSimValor" id="mkValor3">2</span></div>
+        <input type="range" min="0" max="100" value="2" id="mkSlider3" class="mkSimRange" oninput="mkSimAtualizar()">
+        <div class="mkSimSub">Bônus único no 1º pagamento de cada um.</div>
+      </div>
+      <div class="mkSimVisor">
+        <span class="mkSimVisorLabel">Sua Projeção de Ganhos</span>
+        <span class="mkSimVisorValor" id="mkVisorValor">R$ 0,00</span>
+      </div>
+    </div>
 
-<!-- ----- COLAR O CARD NOVO ENTRE O "</div>" DO cardComissao
-     E O COMENTÁRIO "<!-- meus dados -->" ----- -->
-<div class="mkSim" id="mkSim">
-  <div class="mkSimTitulo">🚀 Simule seus ganhos</div>
-  <div class="mkSimTabs">
-    <button type="button" class="mkSimTab active" onclick="mkSimSelecionarPlano('pro',this)">Pró<span class="mkSimTabPreco">R$ 37,90</span></button>
-    <button type="button" class="mkSimTab" onclick="mkSimSelecionarPlano('premium',this)">Premium<span class="mkSimTabPreco">R$ 49,90</span></button>
-    <button type="button" class="mkSimTab" onclick="mkSimSelecionarPlano('enterprise',this)">Enterprise<span class="mkSimTabPreco">R$ 99,90</span></button>
-  </div>
-  <div class="mkSimGrupo">
-    <div class="mkSimLabel"><span>Quantos negócios você vai indicar direto?</span><span class="mkSimValor" id="mkValor1">3</span></div>
-    <input type="range" min="0" max="100" value="3" id="mkSlider1" class="mkSimRange" oninput="mkSimAtualizar()">
-    <div class="mkSimSub">Ganho recorrente todo mês enquanto o negócio ficar ativo.</div>
-  </div>
-  <div class="mkSimGrupo">
-    <div class="mkSimLabel"><span>Se cada um deles indicar quantos amigos?</span><span class="mkSimValor" id="mkValor2">2</span></div>
-    <input type="range" min="0" max="100" value="2" id="mkSlider2" class="mkSimRange" oninput="mkSimAtualizar()">
-    <div class="mkSimSub">Bônus único no 1º pagamento de cada um.</div>
-  </div>
-  <div class="mkSimGrupo">
-    <div class="mkSimLabel"><span>E se os amigos deles trouxerem quantas pessoas?</span><span class="mkSimValor" id="mkValor3">2</span></div>
-    <input type="range" min="0" max="100" value="2" id="mkSlider3" class="mkSimRange" oninput="mkSimAtualizar()">
-    <div class="mkSimSub">Bônus único no 1º pagamento de cada um.</div>
-  </div>
-  <div class="mkSimVisor">
-    <span class="mkSimVisorLabel">Sua Projeção de Ganhos</span>
-    <span class="mkSimVisorValor" id="mkVisorValor">R$ 0,00</span>
+    <!-- meus dados -->
+    <div class="card">
+      <div class="titulo">Meus dados</div>
+      <div id="dadosView">
+        <div class="dado"><span class="k">Nome</span><span class="v" id="vNome">—</span></div>
+        <div class="dado"><span class="k">E-mail</span><span class="v" id="vEmail">—</span></div>
+        <div class="dado"><span class="k">Chave Pix</span><span class="v" id="vPix">—</span></div>
+        <button class="btn sec" id="btnEditar">Editar nome / Pix</button>
+      </div>
+      <div id="dadosEdit" class="hide">
+        <label for="eNome">Nome completo</label>
+        <input id="eNome" type="text" maxlength="80">
+        <label for="ePix">Chave Pix (onde você recebe)</label>
+        <input id="ePix" type="text" maxlength="140" placeholder="CPF, e-mail, telefone ou chave aleatória">
+        <button class="btn" id="btnSalvar">Salvar</button>
+        <button class="btn sec" id="btnCancelar">Cancelar</button>
+        <div class="aviso" id="avisoDados"></div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ============================================================
-3) LOCALIZAR "</body>" e COLAR este bloco imediatamente ANTES dele
-   (depois do </script> do módulo Firebase já existente). Escopo
-   isolado — não usa nem declara nenhuma variável do módulo Firebase
-   (auth, db, MEU, COM, el, esc, etc.):
-============================================================ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, updateDoc, addDoc, collection, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
+    authDomain: "moviki-app.firebaseapp.com",
+    projectId: "moviki-app",
+    storageBucket: "moviki-app.firebasestorage.app",
+    messagingSenderId: "451920150738",
+    appId: "1:451920150738:web:be458392064c964c792d0b"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const el = id => document.getElementById(id);
+  const show = id => el(id).classList.remove('hide');
+  const hide = id => el(id).classList.add('hide');
+  const esc = s => (s==null?'':String(s)).replace(/[<>&"]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+
+  let MEU={};
+  let COM={ aReceber:0 }, saquePendente=false;
+  const brl = n => 'R$ ' + (Number(n)||0).toFixed(2).replace('.',',');
+
+  function telas(qual){ ['carregando','login','semcadastro','painel'].forEach(t=> t===qual?show(t):hide(t)); }
+
+  onAuthStateChanged(auth, async (user)=>{
+    if(!user){ telas('login'); return; }
+    telas('carregando');
+    try{
+      const snap = await getDoc(doc(db,'parceiros',user.uid));
+      if(!snap.exists()){ telas('semcadastro'); return; }
+      MEU = Object.assign({ uid:user.uid, email:user.email }, snap.data());
+      render();
+      telas('painel');
+      // lojista que virou parceiro (mesma conta) → oferece volta ao painel do negócio
+      // fallback: se a checagem falhar, mostra o botão assim mesmo — melhor um link
+      // a mais do que deixar o lojista preso sem volta pro painel principal.
+      try{ const nsnap = await getDoc(doc(db,'negocios',user.uid)); if(nsnap.exists()) show('btnVoltarPainel'); }catch(_){ show('btnVoltarPainel'); }
+      contarIndicacoes();   // não bloqueia
+      carregarComissoes();  // não bloqueia
+    }catch(e){
+      telas('login'); el('avisoLogin').textContent='Não foi possível carregar seus dados. Tente entrar de novo.';
+    }
+  });
+
+  function render(){
+    const nome = MEU.nome || 'parceiro';
+    const slug = MEU.slug || '';
+    const status = MEU.status || 'pendente';
+    el('pNome').textContent = nome;
+    el('vNome').textContent = nome;
+    el('vEmail').textContent = MEU.email || '—';
+    el('vPix').textContent = MEU.pix || '—';
+
+    const link = 'moviki.com.br/p/' + slug;
+    el('meuLink').textContent = link;
+    el('meuLinkParc').textContent = 'moviki.com.br/pp/' + slug;
+
+    const badge = el('badge');
+    badge.className = 'badge ' + status;
+    const rot = {pendente:'Em análise ⏳', aprovado:'Aprovado ✅', recusado:'Não aprovado', suspenso:'Suspenso'};
+    badge.textContent = rot[status] || status;
+
+    const notas = {
+      pendente:'Recebemos seu cadastro e ele está em análise. Assim que for aprovado, seu link é ativado e você já pode divulgar.',
+      aprovado:'Tudo certo! Divulgue seu link abaixo. A cada negócio que assinar por ele, você ganha comissão recorrente.',
+      recusado:'Seu cadastro não foi aprovado no momento. Se tiver dúvidas, fale com a gente pelo site.',
+      suspenso:'Seu acesso está suspenso no momento. Fale com a gente pelo site para regularizar.'
+    };
+    el('statusNota').textContent = notas[status] || '';
+
+    // link, KPI e comissões só fazem sentido quando aprovado
+    if(status==='aprovado'){ show('cardLink'); show('cardLinkParc'); show('cardKpi'); show('cardComissao'); }
+    else { hide('cardLink'); hide('cardLinkParc'); hide('cardKpi'); hide('cardComissao'); }
+  }
+
+  async function contarIndicacoes(){
+    if(MEU.status!=='aprovado' || !MEU.slug) return;
+    try{
+      const q = query(collection(db,'indicacoes'), where('ref','==', MEU.slug));
+      const r = await getDocs(q);
+      el('kpiN').textContent = r.size;
+    }catch(e){ hide('cardKpi'); }
+  }
+
+  // Extrato de comissões: soma tudo que é do parceiro e não foi estornado.
+  async function carregarComissoes(){
+    if(MEU.status!=='aprovado'){ return; }
+    try{
+      const q = query(collection(db,'comissoes'), where('parceiroUid','==', MEU.uid));
+      const r = await getDocs(q);
+      let total=0, pago=0, receber=0, retido=0; const lojistas=new Set();
+      const agora = Date.now();
+      r.forEach(d=>{
+        const c=d.data(); if(c.estornada) return;
+        const v=Number(c.valor)||0; total+=v;
+        if(c.pago){ pago+=v; }
+        else {
+          // liberaEm ausente (comissão antiga) = já liberada; senão só entra no disponível após a data
+          let libMs=0;
+          if(c.liberaEm){ libMs = (typeof c.liberaEm.toMillis==='function') ? c.liberaEm.toMillis() : (c.liberaEm.seconds ? c.liberaEm.seconds*1000 : 0); }
+          if(libMs && libMs > agora) retido+=v; else receber+=v;
+        }
+        if(c.nivel===1 && c.lojistaUid) lojistas.add(c.lojistaUid);
+      });
+      COM.aReceber = Math.round(receber*100)/100;
+      el('cReceber').textContent = brl(receber);
+      el('cTotal').textContent   = brl(total);
+      el('cPago').textContent    = brl(pago);
+      el('cPagantes').textContent= String(lojistas.size);
+      var _rr=el('rowRetido'); var _cr=el('cRetido');
+      if(_cr) _cr.textContent = brl(retido);
+      if(_rr) _rr.style.display = retido>0 ? 'flex' : 'none';
+
+      // já existe um pedido de saque em aberto?
+      try{
+        const qs = query(collection(db,'saques'), where('parceiroUid','==', MEU.uid), where('status','==','solicitado'));
+        const rs = await getDocs(qs);
+        saquePendente = rs.size>0;
+      }catch(_){ saquePendente=false; }
+      atualizarBotaoSaque();
+    }catch(e){ hide('cardComissao'); }
+  }
+
+  function atualizarBotaoSaque(){
+    const b=el('btnSaque'), nota=el('saqueNota');
+    if(saquePendente){
+      b.disabled=true; b.textContent='Saque solicitado ✓';
+      nota.textContent='Você tem um saque em análise. Assim que for pago, aparece aqui.';
+    } else if(COM.aReceber < 20){
+      b.disabled=true; b.textContent='Solicitar saque via Pix';
+      nota.textContent='Saque mínimo de R$ 20,00. Continue divulgando para acumular.';
+    } else {
+      b.disabled=false; b.textContent='Solicitar saque via Pix';
+      nota.textContent='Você pode sacar '+ brl(COM.aReceber) +' na sua chave Pix cadastrada.';
+    }
+  }
+
+  async function solicitarSaque(){
+    el('avisoSaque').className='aviso';
+    if(saquePendente || COM.aReceber < 20) return;
+    if(!MEU.pix || MEU.pix.length<3){ el('avisoSaque').textContent='Cadastre sua chave Pix em "Meus dados" antes de sacar.'; return; }
+    const b=el('btnSaque'); b.disabled=true; b.textContent='Enviando…';
+    try{
+      await addDoc(collection(db,'saques'), {
+        parceiroUid: MEU.uid,
+        valorSolicitado: COM.aReceber,
+        status: 'solicitado',
+        pedidoEm: serverTimestamp()
+      });
+      saquePendente=true; atualizarBotaoSaque();
+      el('avisoSaque').className='aviso ok';
+      el('avisoSaque').textContent='Saque solicitado! O pagamento é feito no seu Pix em até 5 dias úteis.';
+    }catch(e){
+      b.disabled=false; b.textContent='Solicitar saque via Pix';
+      el('avisoSaque').textContent='Não foi possível solicitar agora. Tente de novo.';
+    }
+  }
+
+  // ---- login ----
+  el('btnEntrar').onclick = async ()=>{
+    const email=(el('email').value||'').trim();
+    const senha=el('senha').value||'';
+    el('avisoLogin').textContent='';
+    if(!email||!senha){ el('avisoLogin').textContent='Preencha e-mail e senha.'; return; }
+    const b=el('btnEntrar'); b.disabled=true; b.textContent='Entrando…';
+    try{ await signInWithEmailAndPassword(auth, email, senha); }
+    catch(e){
+      const c=(e&&e.code)||'';
+      if(c==='auth/invalid-credential'||c==='auth/wrong-password'||c==='auth/user-not-found') el('avisoLogin').textContent='E-mail ou senha incorretos.';
+      else if(c==='auth/invalid-email') el('avisoLogin').textContent='E-mail inválido.';
+      else if(c==='auth/too-many-requests') el('avisoLogin').textContent='Muitas tentativas. Aguarde um pouco e tente de novo.';
+      else el('avisoLogin').textContent='Não foi possível entrar. Tente de novo.';
+      b.disabled=false; b.textContent='Entrar';
+    }
+  };
+  el('senha').addEventListener('keydown', e=>{ if(e.key==='Enter') el('btnEntrar').click(); });
+
+  el('esqueci').onclick = async (e)=>{
+    e.preventDefault();
+    const email=(el('email').value||'').trim();
+    if(!email){ el('avisoLogin').textContent='Digite seu e-mail acima e clique de novo em "Esqueci minha senha".'; return; }
+    try{ await sendPasswordResetEmail(auth, email); el('avisoLogin').className='aviso ok'; el('avisoLogin').textContent='Enviamos um link de redefinição para seu e-mail.'; }
+    catch(_){ el('avisoLogin').className='aviso'; el('avisoLogin').textContent='Não foi possível enviar agora. Confira o e-mail e tente de novo.'; }
+  };
+
+  el('sair').onclick = ()=> signOut(auth);
+  el('sair2').onclick = ()=> signOut(auth);
+  el('btnSaque').onclick = solicitarSaque;
+
+  // ---- link: copiar / compartilhar ----
+  function urlCompleta(){ return 'https://moviki.com.br/p/' + (MEU.slug||''); }
+  el('btnCopiar').onclick = async ()=>{
+    try{ await navigator.clipboard.writeText(urlCompleta()); el('avisoLink').textContent='Link copiado!'; setTimeout(()=>el('avisoLink').textContent='',2500); }
+    catch(_){ el('avisoLink').textContent = urlCompleta(); }
+  };
+  el('btnWpp').onclick = ()=>{
+    const txt = 'Coloque seu negócio no mapa com o Moviki 👉 ' + urlCompleta();
+    window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank', 'noopener');
+  };
+  el('btnShare').onclick = async ()=>{
+    const dados={ title:'Moviki', text:'Coloque seu negócio no mapa com o Moviki', url:urlCompleta() };
+    if(navigator.share){ try{ await navigator.share(dados); }catch(_){} }
+    else { try{ await navigator.clipboard.writeText(urlCompleta()); el('avisoLink').textContent='Link copiado!'; setTimeout(()=>el('avisoLink').textContent='',2500);}catch(_){}}
+  };
+
+  // ---- link de indicar OUTRO parceiro (upline níveis 2/3) ----
+  function urlParceiro(){ return 'https://moviki.com.br/pp/' + (MEU.slug||''); }
+  el('btnCopiarP').onclick = async ()=>{
+    try{ await navigator.clipboard.writeText(urlParceiro()); el('avisoLinkP').textContent='Link copiado!'; setTimeout(()=>el('avisoLinkP').textContent='',2500); }
+    catch(_){ el('avisoLinkP').textContent = urlParceiro(); }
+  };
+  el('btnWppP').onclick = ()=>{
+    const txt = 'Vem ser parceiro do Moviki comigo e ganhe comissão indicando negócios 👉 ' + urlParceiro();
+    window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank', 'noopener');
+  };
+
+  // ---- editar nome / pix ----
+  el('btnEditar').onclick = ()=>{ el('eNome').value=MEU.nome||''; el('ePix').value=MEU.pix||''; el('avisoDados').textContent=''; hide('dadosView'); show('dadosEdit'); };
+  el('btnCancelar').onclick = ()=>{ show('dadosView'); hide('dadosEdit'); };
+  el('btnSalvar').onclick = async ()=>{
+    const nome=(el('eNome').value||'').trim();
+    const pix=(el('ePix').value||'').trim();
+    el('avisoDados').className='aviso';
+    if(nome.length<2){ el('avisoDados').textContent='Digite seu nome.'; return; }
+    if(pix.length<3){ el('avisoDados').textContent='Digite uma chave Pix válida.'; return; }
+    const b=el('btnSalvar'); b.disabled=true; b.textContent='Salvando…';
+    try{
+      await updateDoc(doc(db,'parceiros',MEU.uid), { nome, pix });
+      MEU.nome=nome; MEU.pix=pix; render();
+      show('dadosView'); hide('dadosEdit');
+    }catch(e){ el('avisoDados').textContent='Não foi possível salvar agora. Tente de novo.'; }
+    b.disabled=false; b.textContent='Salvar';
+  };
+</script>
+
 <script>
 (function(){
   var MK_PLANOS = {
@@ -145,3 +509,5 @@
   }
 })();
 </script>
+</body>
+</html>
