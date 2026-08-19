@@ -251,6 +251,21 @@
   .pcGanhoPct{flex:0 0 auto;min-width:46px;text-align:center;background:rgba(0,212,255,.14);color:var(--ciano);font-weight:800;font-size:14px;border-radius:8px;padding:6px 4px;}
   .pcGanhoTxt{font-size:13px;color:#cfe0f5;line-height:1.5;}
   .pcGanhoTxt b{color:#e6eefb;}
+  /* ===== Botão "Conheça o Moviki" — fica no painel do parceiro enquanto aguarda aprovação e continua ali depois, avisando de novidades do programa ===== */
+  .mkConhecaBtn{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;padding:12px 16px;border-radius:11px;border:1px solid rgba(0,212,255,.5);background:linear-gradient(135deg,rgba(0,212,255,.16),rgba(0,102,255,.1));color:#eaffff;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;}
+  .mkConhecaBtn:hover{filter:brightness(1.1);}
+  .mkConhecaDot{position:absolute;top:-5px;right:-5px;width:14px;height:14px;border-radius:50%;background:#ff5a5a;border:2px solid #0D1B2A;animation:mkPulso 1.6s infinite;}
+  .mkConhecaDot.escondido{display:none;}
+  @keyframes mkPulso{0%{box-shadow:0 0 0 0 rgba(255,90,90,.65);}70%{box-shadow:0 0 0 9px rgba(255,90,90,0);}100%{box-shadow:0 0 0 0 rgba(255,90,90,0);}}
+  .mkcSecao{margin-bottom:16px;}
+  .mkcTit{font-size:14px;font-weight:800;color:#8fe9ff;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
+  .mkcTxt{font-size:14px;color:#cfe0f5;line-height:1.6;}
+  .mkcLista{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;}
+  .mkcLista li{display:flex;gap:9px;align-items:flex-start;background:#0b1728;border:1px solid var(--card-borda);border-radius:11px;padding:10px 12px;font-size:13.5px;color:#dbe9ff;line-height:1.5;}
+  .mkcLista li span{flex:0 0 auto;font-size:17px;line-height:1.3;}
+  .mkcNovidade{background:rgba(37,227,155,.1);border:1px solid rgba(37,227,155,.4);border-radius:12px;padding:12px 14px;margin-bottom:8px;}
+  .mkcNovidadeData{font-size:11px;font-weight:700;color:#8ff0c9;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+  .mkcNovidadeTxt{font-size:13.5px;color:#e6eefb;line-height:1.5;}
   .candLbl{display:block;font-size:12.5px;color:#9fb3c8;font-weight:600;margin:10px 2px 5px;}
   .candInp{width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:15px;}
   .candDica{font-size:12px;color:#7f95b3;margin:5px 2px;}
@@ -403,6 +418,8 @@
   .qzCard.qzSel{border-color:var(--ciano);background:linear-gradient(150deg,rgba(0,212,255,.16),rgba(0,102,255,.08));box-shadow:0 0 0 2px rgba(0,212,255,.55),0 14px 30px rgba(0,0,0,.35),0 0 26px rgba(0,212,255,.4);}
   .qzCardGrande{padding:20px 18px;}
   .qIcon{font-size:26px;flex:0 0 auto;line-height:1;}
+  .qIcon3d{width:42px;height:42px;flex:0 0 auto;object-fit:contain;border-radius:11px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35));}
+  .qzCardGrande .qIcon3d{width:52px;height:52px;border-radius:14px;}
   .qTxt{font-size:15px;font-weight:600;line-height:1.3;}
   .qzBtnPrim{width:100%;padding:15px;border:none;border-radius:13px;cursor:pointer;font-family:inherit;font-size:15.5px;font-weight:700;letter-spacing:.2px;color:#04121f;
     background:linear-gradient(135deg,var(--ciano),var(--azul));box-shadow:0 10px 24px rgba(0,102,255,.35),0 0 0 1px rgba(0,212,255,.25) inset;
@@ -615,6 +632,44 @@
           </div>
           <button type="button" class="idxBtn prim" onclick="fecharCandTravado();abrirPlano();">Ver planos e assinar</button>
           <button type="button" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5" onclick="fecharCandTravado()">Agora não</button>
+        </div>
+      </div>
+      <div id="modalConheca" class="modalPlano escondido" onclick="if(event.target===this)fecharConheca()">
+        <div class="mpCaixa" style="max-width:520px">
+          <button type="button" class="mpFechar" onclick="fecharConheca()" aria-label="Fechar">✕</button>
+          <div class="mpHead"><h2 class="mpTitulo">🚀 Conheça o Moviki</h2></div>
+          <p class="idxLead">O mapa inteligente dos negócios em movimento — foodtrucks, feirantes, ambulantes e carrinhos aparecem em tempo real pra quem está por perto procurando exatamente o que eles vendem.</p>
+
+          <div class="mkcSecao">
+            <div class="mkcTit">Por que isso funciona</div>
+            <p class="mkcTxt">Negócio itinerante vive de local: o cliente só compra se souber onde você está agora. O Moviki resolve isso — o negócio atualiza a localização, e quem está perto encontra na hora, sem depender de rede social ou boca a boca. É um mercado gigante e ainda mal atendido, o que deixa a indicação mais fácil de vender.</p>
+          </div>
+
+          <div class="mkcSecao">
+            <div class="mkcTit">Como você ganha (3 níveis)</div>
+            <div class="pcGanhos">
+              <div class="pcGanhoItem"><span class="pcGanhoPct">15%</span><span class="pcGanhoTxt">Todo negócio que assinar pelo seu link: comissão recorrente de <b>15%</b> todo mês, enquanto ele continuar pagando.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct">7,5%</span><span class="pcGanhoTxt">Quem você indicou, indicar outro negócio: bônus único de <b>7,5%</b> no primeiro pagamento.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct">5%</span><span class="pcGanhoTxt">Essa indicação em cadeia continuar: bônus único de <b>5%</b> no primeiro pagamento do terceiro nível.</span></div>
+            </div>
+          </div>
+
+          <div class="mkcSecao">
+            <div class="mkcTit">Dicas de quem indica bem</div>
+            <ul class="mkcLista">
+              <li><span>🎯</span>Comece pela sua própria rede: feirantes, foodtrucks e ambulantes que você já conhece pessoalmente convertem mais rápido.</li>
+              <li><span>📍</span>Mostre o mapa funcionando ao vivo — é o argumento mais forte, mais forte que qualquer explicação.</li>
+              <li><span>🤝</span>Associações e cooperativas de feirantes multiplicam o alcance: uma conversa pode render várias indicações de uma vez.</li>
+              <li><span>🔁</span>Depois que a pessoa assina, incentive ela a indicar também — é aí que entram os bônus de 2º e 3º nível.</li>
+            </ul>
+          </div>
+
+          <div class="mkcSecao">
+            <div class="mkcTit">📣 Novidades do programa de parceiros</div>
+            <div id="mkcNovidades"><div class="mkcNovidade"><div class="mkcNovidadeData">19/08/2026</div><div class="mkcNovidadeTxt">Programa de parceiros no ar, com comissão em 3 níveis (15% / 7,5% / 5%) e aprovação em análise pra garantir qualidade nas indicações.</div></div></div>
+          </div>
+
+          <button type="button" class="idxBtn prim" onclick="fecharConheca()">Entendi, voltar</button>
         </div>
       </div>
       <div id="modalPontos" class="modalPlano escondido" onclick="if(event.target===this)fecharPontos()">
@@ -891,8 +946,8 @@
       <div class="qzMarca"><img src="logo.png" class="qzLogo" alt="Moviki" onerror="this.style.display='none'"></div>
       <h1 class="qzTitulo">Olá! Bem-vindo ao Moviki. O que vamos fazer hoje?</h1>
       <div class="qzGrid">
-        <button type="button" class="qzCard qzCardGrande" onclick="mqzIrA2()"><span class="qIcon">🚚</span><span class="qTxt">Colocar meu negócio no mapa</span></button>
-        <button type="button" class="qzCard qzCardGrande" onclick="mqzIrApresent()"><span class="qIcon">📢</span><span class="qTxt">Indicar negócios e ganhar comissões</span></button>
+        <button type="button" class="qzCard qzCardGrande" onclick="mqzIrA2()"><img class="qIcon3d" src="icones/qz-comerciante.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🚚'))"><span class="qTxt">Colocar meu negócio no mapa</span></button>
+        <button type="button" class="qzCard qzCardGrande" onclick="mqzIrApresent()"><img class="qIcon3d" src="icones/indicar.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('📢'))"><span class="qTxt">Indicar negócios e ganhar comissões</span></button>
       </div>
       <div class="qzRodape"><button type="button" class="qzLink" onclick="mqzIrLogin()">Já tenho uma conta — Entrar</button></div>
     </div>
@@ -913,11 +968,11 @@
     <div id="qzA2" class="qzTela" style="display:none">
       <h1 class="qzTitulo">Que tipo de empreendedor em movimento você é?</h1>
       <div class="qzGrid">
-        <button type="button" class="qzCard" onclick="mqzEscolherTipo('foodtruck',this)"><span class="qIcon">🍔</span><span class="qTxt">Hamburgueria / Food Truck</span></button>
-        <button type="button" class="qzCard" onclick="mqzEscolherTipo('pizzaria',this)"><span class="qIcon">🍕</span><span class="qTxt">Pizzaria</span></button>
-        <button type="button" class="qzCard" onclick="mqzEscolherTipo('lanches',this)"><span class="qIcon">🍢</span><span class="qTxt">Pastelaria / Lanches de Rua</span></button>
-        <button type="button" class="qzCard" onclick="mqzEscolherTipo('feira',this)"><span class="qIcon">🥬</span><span class="qTxt">Feirante / Hortifrúti</span></button>
-        <button type="button" class="qzCard" onclick="mqzEscolherTipo('itinerante',this)"><span class="qIcon">🍦</span><span class="qTxt">Carrinho Itinerante (Sorvete/Pipoca)</span></button>
+        <button type="button" class="qzCard" onclick="mqzEscolherTipo('foodtruck',this)"><img class="qIcon3d" src="icones/qz-foodtruck.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🍔'))"><span class="qTxt">Hamburgueria / Food Truck</span></button>
+        <button type="button" class="qzCard" onclick="mqzEscolherTipo('pizzaria',this)"><img class="qIcon3d" src="icones/qz-pizzaria.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🍕'))"><span class="qTxt">Pizzaria</span></button>
+        <button type="button" class="qzCard" onclick="mqzEscolherTipo('lanches',this)"><img class="qIcon3d" src="icones/qz-lanches.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🍢'))"><span class="qTxt">Pastelaria / Lanches de Rua</span></button>
+        <button type="button" class="qzCard" onclick="mqzEscolherTipo('feira',this)"><img class="qIcon3d" src="icones/qz-feira.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🥬'))"><span class="qTxt">Feirante / Hortifrúti</span></button>
+        <button type="button" class="qzCard" onclick="mqzEscolherTipo('itinerante',this)"><img class="qIcon3d" src="icones/qz-itinerante.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🍦'))"><span class="qTxt">Carrinho Itinerante (Sorvete/Pipoca)</span></button>
       </div>
       <button type="button" id="qzA2Avancar" class="qzBtnPrim" disabled onclick="mqzIrA3()">Avançar →</button>
     </div>
@@ -943,9 +998,9 @@
       <h1 class="qzTitulo">Onde você vai divulgar o seu link oficial do Moviki?</h1>
       <p class="qzSubtitulo">Pode marcar mais de uma opção.</p>
       <div class="qzGrid">
-        <button type="button" class="qzCard" onclick="mqzToggleCanal('instagram',this)"><span class="qIcon">📱</span><span class="qTxt">No meu Instagram / TikTok</span></button>
-        <button type="button" class="qzCard" onclick="mqzToggleCanal('whatsapp',this)"><span class="qIcon">👥</span><span class="qTxt">No meu WhatsApp para comerciantes locais</span></button>
-        <button type="button" class="qzCard" onclick="mqzToggleCanal('associacoes',this)"><span class="qIcon">🏛️</span><span class="qTxt">Em associações e cooperativas de feirantes</span></button>
+        <button type="button" class="qzCard" onclick="mqzToggleCanal('instagram',this)"><img class="qIcon3d" src="icones/qz-instagram.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('📱'))"><span class="qTxt">No meu Instagram / TikTok</span></button>
+        <button type="button" class="qzCard" onclick="mqzToggleCanal('whatsapp',this)"><img class="qIcon3d" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('👥'))"><span class="qTxt">No meu WhatsApp para comerciantes locais</span></button>
+        <button type="button" class="qzCard" onclick="mqzToggleCanal('associacoes',this)"><img class="qIcon3d" src="icones/qz-associacoes.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🏛️'))"><span class="qTxt">Em associações e cooperativas de feirantes</span></button>
       </div>
       <button type="button" id="qzB2Avancar" class="qzBtnPrim" disabled onclick="mqzIrB3()">Avançar →</button>
     </div>
@@ -1154,6 +1209,22 @@
       contarIndicadosParceiro(); carregarComissaoParceiro();
     }catch(e){}
   }
+  // ===== Botão "Conheça o Moviki" — fica no painel enquanto o parceiro aguarda aprovação e CONTINUA ali depois de
+  // aprovado, sempre com um ponto vermelho pulsando quando existe novidade não vista (comparando CONHECA_VERSAO com
+  // o que já foi visto, guardado no localStorage). Pra publicar uma novidade nova: bump em CONHECA_VERSAO aqui E
+  // adicionar um bloco em #mkcNovidades no HTML do #modalConheca — o ponto volta a pulsar sozinho pra quem já viu a anterior.
+  var CONHECA_VERSAO='2026-08-19';
+  function mkConhecaViu(){ try{ return localStorage.getItem('mkConheceuVersao')===CONHECA_VERSAO; }catch(e){ return true; } }
+  function mkConhecaBotaoHTML(){
+    return '<button type="button" class="mkConhecaBtn" onclick="abrirConheca()"><span class="mkConhecaDot'+(mkConhecaViu()?' escondido':'')+'"></span>🚀 Conheça o Moviki</button>';
+  }
+  window.abrirConheca=function(){
+    try{ localStorage.setItem('mkConheceuVersao',CONHECA_VERSAO); }catch(e){}
+    var d=document.querySelector('#bannerParceiro .mkConhecaDot'); if(d)d.classList.add('escondido');
+    var m=el('modalConheca'); if(m)m.classList.remove('escondido');
+  };
+  window.fecharConheca=function(){var m=el('modalConheca');if(m)m.classList.add('escondido');};
+
   // Balãozinho visível assim que o painel abre — não precisa clicar em "Indique e ganhe" pra saber que é parceiro.
   function mostrarBannerParceiro(){
     var b=el('bannerParceiro'); if(!b) return;
@@ -1162,14 +1233,14 @@
       // Aprovado no cadastro, mas a conta caiu (ou nunca saiu) do plano gratuito Básico — não é parceiro ativo.
       // Nunca mostrar o verde de "Parceiro Oficial" aqui: isso confundiria alguém que não pode operar o programa ainda.
       b.className='bannerTrial urgente';
-      b.innerHTML='<div class="btTexto"><div class="btTitulo">🟡 Parceria aprovada, mas pausada</div><div class="btSub">Você já foi aprovado como parceiro, mas seu link só ativa quando sua conta virar um plano pago. Assine pra liberar e começar a ganhar comissão.</div></div><button type="button" class="btBtn" onclick="abrirPlano()">Ver planos</button>';
+      b.innerHTML='<div class="btTexto"><div class="btTitulo">🟡 Parceria aprovada, mas pausada</div><div class="btSub">Você já foi aprovado como parceiro, mas seu link só ativa quando sua conta virar um plano pago. Assine pra liberar e começar a ganhar comissão.</div></div><button type="button" class="btBtn" onclick="abrirPlano()">Ver planos</button>'+mkConhecaBotaoHTML();
     } else if(st==='aprovado'){
       // Só avisa o status — o botão de ação já existe no card "Indicar agora" da grade, não duplica aqui.
       b.className='bannerTrial parceiro';
-      b.innerHTML='<div class="btTexto"><div class="btTitulo">✅ Você é Parceiro Oficial</div><div class="btSub">Compartilhe seu link e ganhe 15% recorrente por cada negócio que assinar. Toque em "Indicar agora" na grade abaixo.</div></div>';
+      b.innerHTML='<div class="btTexto"><div class="btTitulo">✅ Você é Parceiro Oficial</div><div class="btSub">Compartilhe seu link e ganhe 15% recorrente por cada negócio que assinar. Toque em "Indicar agora" na grade abaixo.</div></div>'+mkConhecaBotaoHTML();
     } else if(st==='pendente'){
       b.className='bannerTrial urgente';
-      b.innerHTML='<div class="btTexto"><div class="btTitulo">⏳ Pedido de parceria em análise</div><div class="btSub">Assim que for aprovado, seu link de indicação aparece aqui.</div></div>';
+      b.innerHTML='<div class="btTexto"><div class="btTitulo">⏳ Pedido de parceria em análise</div><div class="btSub">Assim que for aprovado, seu link de indicação aparece aqui.</div></div>'+mkConhecaBotaoHTML();
     } else if(st==='recusado'||st==='suspenso'){
       b.className='bannerTrial fim';
       b.innerHTML='<div class="btTexto"><div class="btTitulo">⏸️ Parceria '+(st==='recusado'?'não aprovada':'suspensa')+'</div><div class="btSub">Fale com o suporte pelo menu pra mais detalhes.</div></div>';
