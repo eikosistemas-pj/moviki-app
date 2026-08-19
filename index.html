@@ -1,206 +1,1690 @@
-<!-- ============================================================
-     MOVIKI-APP / index.html — REFATORAÇÃO CIRÚRGICA (UI RE-SKIN)
-     Nenhuma variável, ID de script, chamada Firebase/Firestore ou
-     lógica de negócio foi alterada. Apenas HTML/CSS/JS de interface.
-     Quebra de linha: LF.
-============================================================ -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app; connect-src 'self' https://*.googleapis.com https://moviki-robo.vercel.app https://www.google.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 
-<!-- ============================================================
-1) LOCALIZAR (dentro da tag <style> existente, pode colar logo
-   ANTES do fechamento "</style>" do <head>) e ACRESCENTAR este
-   bloco (não substitui nada, só soma classes novas):
-============================================================ -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moviki — Painel do Negócio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="favicon512.png">
+<link rel="apple-touch-icon" href="favicon512.png">
+<meta name="theme-color" content="#0D1B2A">
 <style>
-/* ===== SIMULADOR DE GANHOS INTERATIVO — componente isolado ===== */
-.mkSim{position:relative;margin:14px 0 4px;padding:20px 18px 22px;border-radius:18px;background:linear-gradient(160deg,rgba(13,27,48,.55),rgba(6,14,26,.75));border:1px solid rgba(0,212,255,.28);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 18px 40px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.05);overflow:hidden}
-.mkSim::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:18px;background:radial-gradient(420px 120px at 15% -10%,rgba(0,212,255,.18),transparent 70%)}
-.mkSimTitulo{font-size:13px;font-weight:800;color:#8fe9ff;text-transform:uppercase;letter-spacing:.05em;margin:0 0 12px}
-.mkSimTabs{display:flex;gap:8px;margin-bottom:16px}
-.mkSimTab{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:9px 6px;color:#b9c9dd;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;text-align:center;display:flex;flex-direction:column;gap:2px;transition:all .18s ease}
-.mkSimTab .mkSimTabPreco{font-size:11px;font-weight:600;color:#7f95b3}
-.mkSimTab.active{border-color:#00D4FF;color:#eaffff;background:rgba(0,212,255,.12);box-shadow:0 0 0 1px rgba(0,212,255,.5),0 0 18px rgba(0,212,255,.55)}
-.mkSimTab.active .mkSimTabPreco{color:#8fe9ff}
-.mkSimGrupo{margin-bottom:16px}
-.mkSimLabel{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:#dbe9ff;font-weight:600;margin-bottom:8px;line-height:1.4}
-.mkSimValor{color:#25e39b;font-weight:800;flex:0 0 auto}
-.mkSimSub{font-size:11.5px;color:#7f95b3;margin-top:6px}
-.mkSimRange{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:linear-gradient(90deg,#00D4FF,#25e39b);outline:none;cursor:pointer}
-.mkSimRange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #00D4FF;box-shadow:0 0 10px rgba(0,212,255,.8);cursor:pointer}
-.mkSimRange::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #00D4FF;box-shadow:0 0 10px rgba(0,212,255,.8);cursor:pointer}
-.mkSimVisor{margin-top:6px;padding:16px 14px;border-radius:14px;text-align:center;background:rgba(0,0,0,.35);border:1px solid rgba(37,227,155,.4)}
-.mkSimVisorLabel{display:block;font-size:13px;color:#9fb3c8;font-weight:600;letter-spacing:.02em}
-.mkSimVisorValor{display:block;margin-top:4px;font-size:30px;font-weight:800;color:#25e39b;text-shadow:0 0 14px rgba(37,227,155,.75)}
-.mkSimVisorValor.mkSimPop{animation:mkSimPopAnim .32s ease}
-@keyframes mkSimPopAnim{0%{transform:scale(1)}35%{transform:scale(1.18);text-shadow:0 0 22px rgba(37,227,155,1)}100%{transform:scale(1)}}
-.mkSimFechar{display:block;width:100%;margin-top:16px;padding:12px;border-radius:11px;background:transparent;border:1px solid rgba(255,255,255,.22);color:#cfe0f5;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
-.mkSimFechar:hover{background:rgba(255,255,255,.06)}
-@media(prefers-reduced-motion:reduce){.mkSimVisorValor.mkSimPop{animation:none}.mkSimTab{transition:none}}
+  :root{--ciano:#00D4FF;--azul:#0066FF;--escuro:#0D1B2A;--claro:#F2F5F9;--card:#13263d;--card-borda:#223a5c;--campo:#0d1c30;}
+  .bannerTrial{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(0,102,255,.18),rgba(0,212,255,.12));border:1px solid rgba(0,212,255,.45);border-radius:12px;padding:13px 15px;margin-bottom:14px;flex-wrap:wrap;}
+  .bannerTrial.urgente{background:rgba(255,159,64,.14);border-color:rgba(255,159,64,.55);}
+  .bannerTrial.fim{background:rgba(231,76,60,.15);border-color:rgba(231,76,60,.55);}
+  .bannerTrial.escondido{display:none;}
+  .bannerTrial .btTexto{flex:1;min-width:180px;}
+  .bannerTrial .btTitulo{font-weight:700;font-size:15px;color:#eaf6ff;margin-bottom:3px;}
+  .bannerTrial.urgente .btTitulo{color:#ffe0b3;}
+  .bannerTrial.fim .btTitulo{color:#ffcaca;}
+  .bannerTrial .btSub{font-size:13px;line-height:1.45;color:#b9cbe0;}
+  .bannerTrial .btBtn{flex-shrink:0;background:linear-gradient(135deg,var(--ciano),var(--azul));color:#001018;font-weight:700;border:none;border-radius:10px;padding:11px 18px;font-size:14px;cursor:pointer;font-family:inherit;}
+  .bannerTrial .btBtn:hover{filter:brightness(1.08);}
+  .bannerVerif{background:rgba(255,193,64,.12);border:1px solid rgba(255,193,64,.4);color:#ffe0a3;border-radius:10px;padding:13px 15px;margin-bottom:14px;font-size:14px;}
+  .bannerVerif.ok{background:rgba(46,204,113,.12);border-color:rgba(46,204,113,.4);color:#8ff0b5;}
+  .bvTexto{margin-bottom:11px;line-height:1.5;}
+  .bvAcoes{display:flex;gap:10px;flex-wrap:wrap;}
+  .bannerVerif button{border:none;border-radius:8px;padding:10px 16px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;}
+  #bvJa{background:var(--ciano);color:#04121f;}
+  .bvSec{background:none;border:1px solid currentColor!important;color:inherit;font-weight:600!important;}
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif;}
+  body{min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%, #163155 0%, var(--escuro) 55%);color:var(--claro);display:flex;align-items:center;justify-content:center;padding:20px;}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(rgba(6,14,26,.22), rgba(6,14,26,.38)), url('fundo.jpg') center center / cover no-repeat;}
+  .box{width:100%;max-width:440px;transition:max-width .2s;}
+  .box.largo{max-width:660px;}
+  .marca{display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+  .marca svg{width:38px;height:38px;}
+  .marca .logoMarca{width:100%;max-width:175px;height:auto;display:block;}
+  .marca .nome{font-size:30px;font-weight:700;letter-spacing:-1px;}
+  .marca .nome b{color:var(--ciano);}
+  .slogan{text-align:center;font-size:12px;color:#8fa6c4;letter-spacing:.5px;text-transform:uppercase;margin-bottom:24px;}
+  .slogan b{color:var(--ciano);font-weight:600;}
+  .card{background:var(--card);border:1px solid var(--card-borda);border-radius:18px;padding:26px 22px;box-shadow:0 20px 50px rgba(0,0,0,.35);}
+  .abas{display:flex;background:var(--campo);border-radius:12px;padding:4px;margin-bottom:22px;}
+  .abas button{flex:1;border:none;background:transparent;color:#8fa6c4;padding:10px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;}
+  .abas button.ativa{background:linear-gradient(135deg,var(--ciano),var(--azul));color:#04121f;}
+  label{display:block;font-size:13px;font-weight:500;margin:0 0 6px 2px;color:#c7d6ea;}
+  .campo{position:relative;margin-bottom:16px;}
+  input,textarea{width:100%;padding:13px 14px;border-radius:11px;border:1px solid var(--card-borda);background:var(--campo);color:var(--claro);font-size:15px;outline:none;transition:.15s;resize:none;}
+  input:focus,textarea:focus{border-color:var(--ciano);box-shadow:0 0 0 3px rgba(0,212,255,.15);}
+  .verSenha{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#8fa6c4;cursor:pointer;font-size:12px;font-weight:600;}
+  .linhaEsqueci{text-align:right;margin-top:8px;}
+  .linkEsqueci{background:none;border:none;color:var(--ciano);cursor:pointer;font-size:13px;font-weight:600;padding:0;text-decoration:underline;}
+  .btn{width:100%;padding:14px;border:none;border-radius:11px;cursor:pointer;background:linear-gradient(135deg,var(--ciano),var(--azul));color:#04121f;font-size:15px;font-weight:700;letter-spacing:.3px;transition:.15s;}
+  .btn:hover{filter:brightness(1.07);}
+  .btn:disabled{opacity:.6;cursor:default;}
+  .btn.secundario{background:transparent;border:1px solid var(--card-borda);color:#c7d6ea;}
+  .btn.secundario:hover{border-color:var(--ciano);color:var(--ciano);filter:none;}
+  .btn.btnUpload{background:rgba(255,138,61,.16);border:1.5px solid #ff8a3d;color:#ffb37a;}
+  .btn.btnUpload:hover{background:rgba(255,138,61,.28);filter:none;border-color:#ffa15c;}
+  .aviso{margin-top:14px;padding:12px;border-radius:10px;font-size:13.5px;display:none;text-align:center;}
+  .aviso.ok{display:block;background:rgba(46,204,113,.12);color:#8ff0b5;border:1px solid rgba(46,204,113,.35);}
+  .aviso.erro{display:block;background:rgba(255,80,80,.12);color:#ff9a9a;border:1px solid rgba(255,80,80,.3);}
+  .aviso.ok{display:block;background:rgba(0,212,255,.12);color:var(--ciano);border:1px solid rgba(0,212,255,.3);}
+  .dica{font-size:12px;color:#7f95b3;text-align:center;margin-top:14px;line-height:1.5;}
+  .painel{display:none;}
+  .cabPainel{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+  .cabPainel .ola{font-size:13px;color:#8fa6c4;}
+  .cabPainel .ola b{color:var(--claro);display:block;font-size:14px;margin-top:2px;word-break:break-all;}
+  .sairMini{background:none;border:1px solid var(--card-borda);color:#8fa6c4;font-size:12px;padding:6px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;}
+  .sairMini:hover{border-color:#ff8080;color:#ff9a9a;}
+  /* Onboarding — primeiros passos do lojista novo */
+  .onb{background:linear-gradient(135deg,rgba(0,212,255,.10),rgba(0,102,255,.10));border:1px solid rgba(0,212,255,.4);border-radius:14px;padding:16px 16px 8px;margin-bottom:18px;}
+  .onbTop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .onbTit{font-size:16px;font-weight:600;color:#fff;}
+  .onbSub{font-size:12.5px;color:#9fc7e6;margin:2px 0 12px;line-height:1.5;}
+  .onbOcultar{background:none;border:none;color:#8fa6c4;font-size:12px;cursor:pointer;text-decoration:underline;flex-shrink:0;padding:2px;font-family:inherit;}
+  .onbBarra{height:6px;border-radius:6px;background:var(--campo);overflow:hidden;margin:0 2px 14px;}
+  .onbBarra i{display:block;height:100%;background:linear-gradient(90deg,var(--ciano),var(--azul));width:0;transition:width .3s;}
+  .onbPasso{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:var(--campo);border:1px solid var(--card-borda);border-radius:11px;padding:11px 13px;margin-bottom:9px;cursor:pointer;transition:.15s;color:var(--claro);font-family:inherit;}
+  .onbPasso:hover{border-color:var(--ciano);}
+  .onbPasso .mark{flex:0 0 auto;width:24px;height:24px;border-radius:50%;border:2px solid var(--card-borda);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#8fa6c4;}
+  .onbPasso .txt{flex:1;font-size:14px;font-weight:500;}
+  .onbPasso .seta{color:#8fa6c4;font-size:18px;flex-shrink:0;line-height:1;}
+  .onbPasso.feito{opacity:.7;}
+  .onbPasso.feito .mark{background:var(--ciano);border-color:var(--ciano);color:#04121f;}
+  .onbPasso.feito .txt{text-decoration:line-through;color:#8fa6c4;}
+  .onbPasso.feito .seta{display:none;}
+  .onbFinal{font-size:13px;color:#8ff0b5;line-height:1.5;margin:2px 2px 6px;}
+  .onbFinal b{color:#c7ffe0;}
+  /* Abas do painel */
+  .tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:20px;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
+  .tab{flex:0 0 auto;border:1px solid var(--card-borda);background:var(--campo);color:#8fa6c4;padding:9px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
+  .tab.ativa{background:linear-gradient(135deg,var(--ciano),var(--azul));color:#04121f;border-color:transparent;}
+  .tabConteudo{margin-bottom:6px;}
+  .statusLinha{display:flex;gap:10px;margin-bottom:16px;}
+  .statusBtn{flex:1;padding:12px;border-radius:11px;border:1px solid var(--card-borda);background:var(--campo);color:#8fa6c4;font-weight:600;font-size:14px;cursor:pointer;transition:.15s;}
+  .statusBtn.aberto{background:rgba(0,212,255,.15);border-color:var(--ciano);color:var(--ciano);}
+  .statusBtn.fechado{background:rgba(255,120,120,.14);border-color:#ff8080;color:#ff9a9a;}
+  .gps{background:var(--campo);border:1px solid var(--card-borda);border-radius:11px;padding:14px;margin-bottom:16px;font-size:13px;color:#8fa6c4;}
+  .gps b{color:var(--claro);}
+  .linkCampo{display:flex;align-items:center;border:1px solid var(--card-borda);background:var(--campo);border-radius:11px;overflow:hidden;}
+  .linkCampo:focus-within{border-color:var(--ciano);box-shadow:0 0 0 3px rgba(0,212,255,.15);}
+  .linkCampo .pref{padding:13px 4px 13px 14px;color:#8fa6c4;font-size:15px;white-space:nowrap;}
+  .linkCampo input{border:none;background:transparent;box-shadow:none !important;padding-left:2px;}
+  .linkPronto{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);border-radius:11px;padding:14px;margin-bottom:16px;}
+  .linkPronto .rot{font-size:12px;color:#8fa6c4;margin-bottom:8px;}
+  .linkRow{display:flex;gap:8px;align-items:center;}
+  .linkRow a{flex:1;color:var(--ciano);font-weight:600;font-size:14px;text-decoration:none;word-break:break-all;}
+  .linkRow button{background:linear-gradient(135deg,var(--ciano),var(--azul));color:#04121f;border:none;border-radius:8px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;}
+  /* Blocos dinâmicos (categorias / produtos / promoções / eventos) */
+  .secTitulo{display:flex;justify-content:space-between;align-items:center;margin:2px 2px 12px;}
+  .secTitulo label{margin:0;font-size:14px;}
+  .addBtn{background:none;border:1px solid var(--ciano);color:var(--ciano);border-radius:8px;padding:7px 13px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;}
+  .catBloco{background:var(--campo);border:1px solid var(--card-borda);border-radius:12px;padding:12px;margin-bottom:12px;}
+  .catCab{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
+  .catCab .cat-nome{font-weight:600;}
+  .rmv{background:none;border:none;color:#ff8080;font-size:18px;cursor:pointer;padding:0 4px;flex-shrink:0;line-height:1;}
+  .prodRow{background:rgba(255,255,255,.03);border:1px solid var(--card-borda);border-radius:12px;padding:13px;margin-bottom:12px;}
+  .prodRow .p-nome{width:100%;box-sizing:border-box;padding:12px 14px;font-size:15px;margin-bottom:10px;}
+  .prodLinha2{display:flex;gap:10px;align-items:center;}
+  .prodLinha2 .p-preco{width:130px;flex-shrink:0;padding:11px 13px;font-size:14px;}
+  .prodLinha2 .acabLbl{flex:1;}
+  .prodLinha2 .rmv{margin-left:auto;}
+  .prodGaleria{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:9px;}
+  .fSlot{width:56px;height:56px;border-radius:9px;position:relative;flex-shrink:0;}
+  .fSlot img{width:100%;height:100%;object-fit:cover;border-radius:9px;border:1px solid #2b405a;display:block;}
+  .fSlot .rmF{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:#e74c3c;color:#fff;border:2px solid var(--campo);font-size:11px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .fAdd{width:56px;height:56px;border-radius:9px;border:1.5px solid #ff8a3d;background:rgba(255,138,61,.16);color:#ffb37a;font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;flex-shrink:0;font-family:inherit;}
+  .fAdd:hover{background:rgba(255,138,61,.28);border-color:#ffa15c;}
+  .fAdd:disabled{opacity:.55;cursor:default;}
+  .fHint{font-size:11.5px;color:#7f95b3;width:100%;}
+  .galGrade{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px;}
+  .galCel{position:relative;aspect-ratio:1/1;border-radius:11px;overflow:hidden;border:1px solid #2b405a;background:#0b1728;}
+  .galCel img{width:100%;height:100%;object-fit:cover;display:block;}
+  .galCel .rmF{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:#e74c3c;color:#fff;border:2px solid rgba(0,0,0,.35);font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:2;}
+  .galAdd{aspect-ratio:1/1;border-radius:11px;border:1.5px dashed #ff8a3d;background:rgba(255,138,61,.14);color:#ffb37a;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-family:inherit;}
+  .galAdd span.mais{font-size:26px;line-height:1;}
+  .galAdd:hover{background:rgba(255,138,61,.24);border-color:#ffa15c;}
+  .galAdd:disabled{opacity:.55;cursor:default;}
+  .notaFotos{background:rgba(255,195,64,.10);border:1px solid rgba(255,195,64,.42);color:#ffe6b3;padding:9px 12px;border-radius:9px;margin:0 2px 12px;font-size:13px;line-height:1.5;}
+  .notaFotos b{color:#ffd479;}
+  .notaFotos button{margin-top:8px;background:linear-gradient(135deg,var(--ciano),var(--azul));color:#04121f;border:none;border-radius:8px;padding:7px 14px;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+  .acabLbl{display:flex;align-items:center;gap:5px;font-size:12px;color:#c7d6ea;white-space:nowrap;cursor:pointer;}
+  .acabLbl input{width:auto;}
+  .addProd{background:none;border:1px dashed var(--card-borda);color:#8fa6c4;border-radius:8px;padding:8px;font-size:12px;font-weight:600;cursor:pointer;width:100%;margin-top:4px;}
+  .linha2{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+  .linha2 input{flex:1;}
+  .vazioCard{font-size:13px;color:#7f95b3;text-align:center;padding:10px;}
+  .escondido{display:none !important;}
+  .tab.travada{opacity:.5}
+  .tab.travada::after{content:' 🔒';font-size:11px}
+  .avisoPlano{background:rgba(0,102,255,.14);border:1px solid rgba(0,212,255,.45);color:#dbe9ff;padding:10px 12px;border-radius:8px;margin:10px 0 0;font-size:14px;line-height:1.4}
+  .modalPlano{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
+  .modalPlano.escondido{display:none}
+  .mpCaixa{background:#0D1B2A;border:1px solid rgba(0,212,255,.35);border-radius:16px;max-width:520px;width:100%;max-height:90vh;overflow:auto;padding:20px;position:relative}
+  .mpFechar{position:absolute;top:12px;right:12px;background:none;border:none;color:#9fb3c8;font-size:20px;cursor:pointer}
+  .mpTitulo{color:#fff;margin:0;font-size:20px}
+  .mpHead{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .mpIcon{width:34px;height:34px;border-radius:9px;flex:0 0 auto}
+  .mpStatus{color:#dbe9ff;font-size:14px;margin-bottom:14px;padding:10px;background:rgba(0,102,255,.12);border-radius:8px}
+  .mpCampo{margin-bottom:14px}
+  .mpCampo label{display:block;color:#9fb3c8;font-size:13px;margin-bottom:4px}
+  .mpCampo input{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:#13263d;color:#fff;font-size:15px;box-sizing:border-box}
+  .mpPlanos{display:flex;gap:12px;flex-wrap:wrap}
+  .mpPlano{flex:1;min-width:200px;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px;position:relative}
+  .mpPlano.destaque{border-color:var(--ciano);box-shadow:0 0 0 1px rgba(0,212,255,.35)}
+  .mpBadge{position:absolute;top:-10px;left:14px;background:var(--ciano);color:#04121f;font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px}
+  .mpNome{color:#00D4FF;font-weight:700;font-size:18px}
+  .mpDesc{color:#9fb3c8;font-size:13px;margin:4px 0 10px}
+  .mpBtn{display:block;width:100%;margin:6px 0;padding:10px;border-radius:8px;border:none;background:#0066FF;color:#fff;font-size:14px;cursor:pointer;text-align:center}
+  .mpBtn:hover{background:#0052cc}
+  .mpTag{display:inline-block;background:#00D4FF;color:#0D1B2A;font-size:11px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:4px}
+  .mpAviso{color:#ff9b9b;font-size:14px;margin-top:12px;min-height:18px}
+  .mpBtn.sel{background:#00D4FF;color:#0D1B2A;font-weight:700;box-shadow:0 0 0 2px #00D4FF}
+  .mpSelInfo{color:#dbe9ff;font-size:14px;margin-top:14px;padding:10px;background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.35);border-radius:8px}
+  .mpBtnConf{display:block;width:100%;margin-top:12px;padding:13px;border-radius:10px;border:none;background:#00D4FF;color:#0D1B2A;font-size:15px;font-weight:700;cursor:pointer}
+  .mpBtnConf:hover{filter:brightness(1.06)}
+  .mpBtnConf:disabled{background:#20364d;color:#6b7f96;cursor:not-allowed}
+
+  /* ===== Painel em grade (estilo app) ===== */
+  #painel .appTopo{display:flex;align-items:center;gap:11px;margin:-6px -4px 18px;padding:12px 14px;border-radius:14px;
+    background:linear-gradient(120deg,rgba(0,102,255,.22),rgba(0,212,255,.14));border:1px solid var(--card-borda);}
+  #painel .appLogo{width:38px;height:38px;border-radius:10px;flex:0 0 auto;background:#fff2;padding:3px;}
+  #painel .appTitWrap{flex:1;min-width:0;}
+  #painel .appTit{font-weight:700;font-size:16px;line-height:1.1;}
+  #painel .appSub{font-size:11px;color:#8fa6c4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #painel .appSub b{color:#b9cbe4;font-weight:500;}
+  #painel .appOnline{font-size:11px;font-weight:700;color:#43e08a;flex:0 0 auto;}
+  #painel .appSair{flex:0 0 auto;background:rgba(255,255,255,.07);border:1px solid var(--card-borda);color:#cfe0f5;
+    font-family:inherit;font-weight:600;font-size:12.5px;padding:7px 12px;border-radius:9px;cursor:pointer;}
+  #painel .appSair:hover{background:rgba(255,255,255,.13);}
+
+  .olaLinha{font-size:17px;font-weight:700;margin:2px 2px 14px;}
+  .olaLinha .olaLeve{font-weight:500;font-size:13.5px;color:#8fa6c4;display:block;margin-top:2px;}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px;}
+  .gcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
+    background:var(--card);border:1px solid var(--card-borda);border-radius:16px;padding:16px 6px 14px;
+    cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s;position:relative;min-height:104px;}
+  .gcard:hover{transform:translateY(-2px);border-color:var(--ciano);box-shadow:0 10px 26px rgba(0,0,0,.35);}
+  .gcard:active{transform:translateY(0);}
+  .gcIcon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;}
+  .gcImg{width:58px;height:58px;object-fit:cover;border-radius:15px;display:block;box-shadow:0 3px 10px rgba(0,0,0,.30);}
+  .gcard.travado .gcImg{filter:grayscale(.7);opacity:.6;}
+  .gcLabel{font-size:13px;font-weight:600;color:#e6eefb;text-align:center;line-height:1.15;}
+  .i-perfil{background:rgba(0,102,255,.16);}
+  .i-card{background:rgba(0,212,255,.16);}
+  .i-promo{background:rgba(46,204,113,.16);}
+  .i-eve{background:rgba(155,110,255,.18);}
+  .i-loc{background:rgba(255,99,132,.16);}
+  .i-plano{background:rgba(255,193,64,.18);}
+  .i-pag{background:rgba(0,212,255,.16);}
+  .gcard.travado .gcLabel{color:#7f95b3;}
+  .gcard.travado .gcIcon{filter:grayscale(.7);opacity:.75;}
+  .gcard.travado::after{content:"🔒";position:absolute;top:8px;right:9px;font-size:13px;opacity:.9;}
+  .seloOuro{align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#3a2a00;background:linear-gradient(135deg,#ffe08a,#ffcf4d 45%,#e8a900);border:1px solid #d99e00;border-radius:999px;padding:3px 10px;box-shadow:0 2px 8px rgba(224,168,0,.35);letter-spacing:.02em;}
+  .seloOuro::before{content:"★";font-size:11px;line-height:1;}
+  #seloTopo{margin-top:5px;}
+  #seloDrawer{margin:2px 6px 6px;}
+  .gcard.gcIndicar{border:2px solid #ff8a00;background:linear-gradient(160deg,rgba(255,138,0,.20),rgba(255,159,64,.06));box-shadow:0 0 14px rgba(255,138,0,.5);animation:pulseInd 1.5s ease-in-out infinite;}
+  .gcard.gcIndicar .gcLabel{color:#ffb060;font-weight:700;}
+  @keyframes pulseInd{0%,100%{box-shadow:0 0 10px rgba(255,138,0,.45),0 0 0 0 rgba(255,138,0,.55);}50%{box-shadow:0 0 22px rgba(255,138,0,.9),0 0 0 6px rgba(255,138,0,0);}}
+  @media(prefers-reduced-motion:reduce){.gcard.gcIndicar{animation:none;}}
+  .pcTab{margin:6px 0 12px;}
+  .pcTabTit{font-size:12px;font-weight:700;color:#9fb3c8;margin:0 2px 6px;text-transform:uppercase;letter-spacing:.04em;}
+  .pcTabela{width:100%;border-collapse:collapse;font-size:13.5px;}
+  .pcTabela td{padding:8px 10px;border:1px solid var(--card-borda);}
+  .pcTabela td:first-child{color:#e6eefb;}
+  .pcTabela td b{color:var(--ciano);}
+  .pcTabela td:last-child{color:#9fb3c8;text-align:right;}
+  .pcBadgeOficial{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(37,227,155,.18),rgba(0,212,255,.12));border:1px solid #25e39b;color:#25e39b;font-size:12.5px;font-weight:800;padding:6px 12px;border-radius:999px;margin:-2px 0 12px;letter-spacing:.02em;}
+  .pcGanhos{margin:2px 0 12px;display:flex;flex-direction:column;gap:8px;}
+  .pcGanhoItem{display:flex;gap:10px;align-items:flex-start;background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:11px 12px;}
+  .pcGanhoPct{flex:0 0 auto;min-width:46px;text-align:center;background:rgba(0,212,255,.14);color:var(--ciano);font-weight:800;font-size:14px;border-radius:8px;padding:6px 4px;}
+  .pcGanhoTxt{font-size:13px;color:#cfe0f5;line-height:1.5;}
+  .pcGanhoTxt b{color:#e6eefb;}
+  .candLbl{display:block;font-size:12.5px;color:#9fb3c8;font-weight:600;margin:10px 2px 5px;}
+  .candInp{width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:15px;}
+  .candDica{font-size:12px;color:#7f95b3;margin:5px 2px;}
+  .candAviso{font-size:13px;color:#ff9b9b;margin:6px 2px;min-height:16px;}
+  .candCheck{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#cfe0f5;margin:12px 2px;line-height:1.4;}
+  .candCheck a{color:var(--ciano);}
+  .pcKpis{display:flex;gap:10px;margin:12px 0 8px;}
+  .pcKpi{flex:1;background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:12px 10px;text-align:center;}
+  .pcKpi .n{display:block;font-size:20px;font-weight:800;color:var(--ciano);line-height:1.1;}
+  .pcKpi .t{display:block;font-size:11.5px;color:#9fb3c8;margin-top:3px;}
+  .pcLinhas{margin:2px 0 10px;}
+  .pcLinha{display:flex;justify-content:space-between;align-items:center;padding:8px 2px;border-top:1px solid var(--card-borda);font-size:13.5px;color:#cfe0f5;}
+  .pcLinha b{color:#e6eefb;}
+
+  #editor .voltar{background:rgba(255,159,64,.16);border:1px solid rgba(255,159,64,.6);color:#ffca8a;
+    font-family:inherit;font-weight:700;font-size:14px;padding:10px 16px;border-radius:10px;cursor:pointer;margin-bottom:4px;}
+  #editor .voltar:hover{background:rgba(255,159,64,.28);}
+  #editor .voltarFim{display:block;width:auto;margin:16px auto 6px;}
+  .voltarFim{display:block;width:auto;margin:14px auto 4px;background:rgba(255,159,64,.16);border:1px solid rgba(255,159,64,.6);color:#ffca8a;border-radius:10px;padding:9px 18px;font-family:inherit;font-weight:600;font-size:13.5px;cursor:pointer;}
+  .voltarFim:hover{background:rgba(255,159,64,.26);}
+  .catCapa{margin:2px 0 10px;}
+  .capaLbl{font-size:11.5px;color:#8fa6c4;margin-bottom:6px;}
+  .capaSlot{position:relative;width:100%;max-width:240px;aspect-ratio:16/9;border-radius:9px;}
+  .capaSlot img{width:100%;height:100%;object-fit:cover;border-radius:9px;border:1px solid #2b405a;display:block;}
+  .capaSlot .rmF{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:#e74c3c;color:#fff;border:2px solid var(--campo);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .capaAdd{width:100%;max-width:240px;aspect-ratio:16/9;border-radius:9px;border:1.5px solid #ff8a3d;background:rgba(255,138,61,.14);color:#ffb37a;font-weight:700;font-size:12.5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:inherit;}
+  .capaAdd:hover{background:rgba(255,138,61,.26);}
+  .editorTit{font-size:20px;font-weight:700;margin:12px 2px 16px;}
+  @media(max-width:380px){.grid{gap:9px}.gcIcon{width:46px;height:46px;font-size:23px}.gcLabel{font-size:12px}}
+
+  .statusHome{background:var(--card);border:1px solid var(--card-borda);border-radius:14px;padding:13px 15px;margin:0 2px 16px;}
+  .statusHome .shLabel{display:block;font-size:13px;color:#b9cbe4;margin-bottom:9px;font-weight:600;}
+  .statusHome .shDica{display:block;font-size:11.5px;color:#8fa6c4;margin-top:9px;}
+  .statusHome .shDica b{color:var(--ciano);}
+  .i-wpp{background:rgba(37,211,102,.18);}
+  .i-aval{background:rgba(255,193,64,.18);}
+  .dicaBox{background:rgba(0,212,255,.08);border:1px solid var(--card-borda);border-radius:11px;padding:12px 14px;font-size:13px;color:#b9cbe4;line-height:1.5;margin-top:4px;}
+  .dicaBox b{color:#e6eefb;}
+  .avalResumo{background:var(--card);border:1px solid var(--card-borda);border-radius:14px;padding:18px;text-align:center;font-size:14px;color:#b9cbe4;line-height:1.5;}
+  .avalNota{display:flex;align-items:center;justify-content:center;gap:10px;}
+  .avalNota b{font-size:34px;color:#fff;}
+  .avalEst{display:inline-flex;gap:1px;color:#ffc340;}
+  .avalEst svg{width:18px;height:18px;flex-shrink:0;}
+  .avalEst svg.empty{color:#64748b;fill:none;stroke:currentColor;stroke-width:1.5;}
+  .avalEst svg.full{fill:currentColor;stroke:none;}
+  .avalQtd{font-size:12.5px;color:#8fa6c4;margin-top:4px;}
+  .avalLista{margin-top:14px;display:flex;flex-direction:column;gap:10px;}
+  .avalItem{background:var(--campo);border:1px solid var(--card-borda);border-radius:11px;padding:11px 13px;}
+  .avalTopo{font-size:13.5px;color:#e6eefb;}
+  .avalTopo .avalEst svg{width:14px;height:14px;}
+  .avalTxt{font-size:13px;color:#b9cbe4;margin-top:5px;line-height:1.45;}
+
+  .mpPlano.mpEnt{flex-basis:100%;border-color:rgba(255,193,64,.4)}
+  .mpEnt .mpNome{color:#ffc340}
+  .mpEntLinha{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:4px}
+  .mpEntPreco{font-size:20px;font-weight:800;color:#ffc340}
+  .mpEntPreco small{font-size:12px;color:#9fb3c8;font-weight:500}
+  /* seleção de plano: destaque do card + info + botão pulsante */
+  .mpPlano.selCard{border-color:var(--ciano);box-shadow:0 0 0 2px rgba(0,212,255,.55)}
+  .mpPlano.selCard.selCardEnt{border-color:#ffc340;box-shadow:0 0 0 2px rgba(255,193,64,.6),0 0 24px rgba(255,193,64,.28);background:rgba(255,193,64,.06)}
+  .mpSelInfo.selEnt{color:#ffe08a;background:rgba(255,193,64,.15);border-color:rgba(255,193,64,.6)}
+  .mpSelInfo.selEnt b{color:#ffc340}
+  .mpBtnConf{--pulseColor:rgba(0,212,255,.5)}
+  .mpBtnConf.entMode{background:#ffc340;color:#3d2b00}
+  .mpBtnConf.entMode{--pulseColor:rgba(255,193,64,.6)}
+  @keyframes mpPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 var(--pulseColor)}50%{transform:scale(1.03);box-shadow:0 0 20px 5px var(--pulseColor)}}
+  .mpBtnConf.pulsar:not(:disabled){animation:mpPulse 1.15s ease-in-out infinite}
+  .mpBtnEnt{width:auto!important;margin:0!important;background:linear-gradient(135deg,#25D366,#128C4B)!important;color:#fff!important;padding:11px 18px!important;font-weight:700}
+  .appMenu{flex:0 0 auto;background:none;border:none;color:var(--ciano);cursor:pointer;padding:2px 4px 2px 0;display:flex;align-items:center;}
+  .appMenu svg{width:24px;height:24px;}
+  .drawerOv{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;visibility:hidden;transition:.2s;z-index:900;}
+  .drawerOv.on{opacity:1;visibility:visible;}
+  .drawer{position:fixed;top:0;left:0;bottom:0;width:272px;max-width:82vw;background:#0c1a2c;border-right:1px solid var(--card-borda);transform:translateX(-100%);transition:transform .22s;z-index:901;display:flex;flex-direction:column;padding:18px 12px 14px;gap:2px;box-shadow:8px 0 30px rgba(0,0,0,.5);overflow-y:auto;}
+  .drawer.on{transform:translateX(0);}
+  .drawerX{position:absolute;top:12px;right:12px;background:none;border:none;color:#8fa6c4;font-size:18px;cursor:pointer;}
+  .drawerTit{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;color:#e6eefb;margin:2px 6px 12px;}
+  .drawerTit svg{width:20px;height:20px;color:var(--ciano);}
+  .drawer a,.drawer>button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:none;color:#cfe0f5;font-family:inherit;font-size:14.5px;padding:12px 12px;border-radius:11px;cursor:pointer;text-decoration:none;}
+  .drawer a:hover,.drawer>button:hover{background:rgba(0,212,255,.1);color:var(--ciano);}
+  .drawerSec{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6f86a6;margin:14px 12px 4px;}
+  .drawerSec:first-of-type{margin-top:4px;}
+  .drawerRedes{display:flex;gap:10px;padding:6px 10px 4px;}
+  .drawerRedes a{flex:1;display:flex;align-items:center;justify-content:center;padding:11px 0;border-radius:11px;border:1px solid var(--card-borda);color:#cfe0f5;background:rgba(255,255,255,.02);}
+  .drawerRedes a:hover{background:rgba(0,212,255,.12);color:var(--ciano);border-color:var(--ciano);}
+  .drawerRedes svg{width:20px;height:20px;}
+  .drawer .diImg{width:22px;height:22px;object-fit:contain;border-radius:6px;flex:0 0 auto;}
+  .drawerNota{margin-top:12px;font-size:11.5px;color:#7f95b3;padding:12px 10px 2px;border-top:1px solid var(--card-borda);text-align:center;}
+  .idxLead{color:#dbe9ff;font-size:14.5px;line-height:1.55;margin:2px 0 14px;}
+  .idxLead b{color:var(--ciano);}
+  .idxBtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:8px 0;padding:13px;border-radius:11px;border:none;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;}
+  .idxBtn.prim{background:var(--ciano);color:#04121f;}
+  .idxBtn.wa{background:#25D366;color:#04240f;}
+  .idxNota{color:#8fa6c4;font-size:12.5px;margin-top:12px;line-height:1.5;}
+  .drawerDel{color:#c66;font-size:12.5px;opacity:.75;justify-content:center;margin-top:2px;}
+  .drawerDel:hover{background:rgba(229,72,77,.12);color:#ff8a8a;opacity:1;}
+  .excNota{color:#9fb3c8;font-size:13px;line-height:1.55;margin:0 0 14px;}
+  .excCheck{display:flex;gap:9px;align-items:flex-start;color:#dbe9ff;font-size:13.5px;line-height:1.4;margin:0 0 14px;cursor:pointer;}
+  .excCheck input{margin-top:2px;flex:0 0 auto;width:17px;height:17px;accent-color:#e5484d;}
 </style>
+</head>
+<body>
+<div class="box" id="box">
 
-<!-- ============================================================
-2) LOCALIZAR este bloco exato no <body> (modal "Indicar agora"):
-============================================================ -->
+  <div class="marca">
+    <img src="logo.png" class="logoMarca" alt="moviki — o mapa inteligente dos negócios em movimento" onerror="this.style.display='none';var f=document.getElementById('logoFb');if(f)f.style.display='block'">
+    <div id="logoFb" class="nome" style="display:none">movi<b>ki</b></div>
+  </div>
+  <div class="slogan">O mapa inteligente dos negócios <b>em movimento</b></div>
 
-<!-- ----- BLOCO ORIGINAL (SUBSTITUIR POR INTEIRO) ----- -->
-<!--
-<div id="modalParceiro" class="modalPlano escondido" onclick="if(event.target===this)fecharParceiro()">
-  <div class="mpCaixa" style="max-width:460px">
-    <button type="button" class="mpFechar" onclick="fecharParceiro()" aria-label="Fechar">✕</button>
-    <div class="mpHead"><h2 class="mpTitulo">💰 Indicar agora</h2></div>
-    <div class="pcBadgeOficial">✅ Parceiro Oficial</div>
-    <p class="idxLead">Você é <b>parceiro Moviki</b>! Compartilhe seu link: cada negócio que assinar por ele vira <b>15% todo mês</b> pra você.</p>
-    <div style="background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:11px 13px;margin:4px 0 10px;font-size:14px;color:#e6eefb;word-break:break-all"><span id="pcLink">moviki.com.br/p/…</span></div>
-    <button type="button" class="idxBtn prim" onclick="pcCopiarLink(this)">📋 Copiar meu link</button>
-    <button type="button" class="idxBtn wa" onclick="pcCompartilharWhats()">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2zm5.9 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.8-.6-3.1-1.3-5.1-4.5-5.3-4.7-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.3.3c-.2.2-.3.4-.1.7.2.3.9 1.4 1.9 2.3 1.3 1.1 2.3 1.5 2.6 1.6.3.1.5.1.7-.1l.9-1c.2-.3.4-.2.7-.1l2 .9c.3.2.5.3.6.4.1.3.1.7-.1 1.3z"/></svg>
-      Enviar pelo WhatsApp
-    </button>
-    <div class="pcKpis">
-      <div class="pcKpi"><span class="n" id="pcIndicados">0</span><span class="t">negócios indicados</span></div>
-      <div class="pcKpi"><span class="n" id="pcDisp">R$ 0,00</span><span class="t">disponível pra saque</span></div>
-    </div>
-    <div class="pcLinhas">
-      <div class="pcLinha" id="pcRowRetido" style="display:none"><span>A liberar (em análise)</span><b id="pcRetido">R$ 0,00</b></div>
-      <div class="pcLinha"><span>Já pago a você</span><b id="pcPago">R$ 0,00</b></div>
-    </div>
-    <div class="pcTab">
-      <div class="pcTabTit">Como você ganha</div>
-      <div class="pcGanhos">
-        <div class="pcGanhoItem"><span class="pcGanhoPct">15%</span><span class="pcGanhoTxt">A pessoa que você indicar: você recebe uma comissão recorrente de <b>15%</b> todo mês enquanto ela pagar a assinatura.</span></div>
-        <div class="pcGanhoItem"><span class="pcGanhoPct">7,5%</span><span class="pcGanhoTxt">A pessoa que você indicou indicar um amigo: você recebe um bônus único de <b>7,5%</b> no primeiro pagamento desse novo negócio.</span></div>
-        <div class="pcGanhoItem"><span class="pcGanhoPct">5%</span><span class="pcGanhoTxt">A indicação do amigo indicar outra pessoa: você recebe um bônus único de <b>5%</b> no primeiro pagamento dela.</span></div>
+  <div class="card">
+
+    <!-- ACESSO -->
+    <div id="formArea">
+      <div class="abas">
+        <button id="abaEntrar" class="ativa" onclick="trocarAba('entrar')">Entrar</button>
+        <button id="abaCriar" onclick="trocarAba('criar')">Criar conta</button>
       </div>
+      <div class="campo"><label for="email">E-mail</label><input id="email" type="email" placeholder="voce@email.com" autocomplete="email"></div>
+      <div class="campo"><label for="senha">Senha</label><input id="senha" type="password" placeholder="mínimo 6 caracteres" autocomplete="current-password"><button type="button" class="verSenha" onclick="verSenha()">mostrar</button></div>
+      <div id="linhaEsqueci" class="linhaEsqueci"><button type="button" id="btnEsqueci" class="linkEsqueci" onclick="esqueciSenha()">Esqueci minha senha</button></div>
+      <button id="btnAcao" class="btn" onclick="acao()">Entrar</button>
+      <div id="aviso" class="aviso"></div>
+      <div class="dica" id="dica"></div>
     </div>
-    <a href="parceiro.html" target="_blank" rel="noopener" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5">Abrir meu painel completo</a>
-    <a href="https://moviki.com.br/parceiros-ganhos.html" target="_blank" rel="noopener" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5">Entenda como ganhar mais</a>
-    <p class="idxNota">Comissões liberadas via Pix a partir de R$ 20. O saque é feito no seu painel completo.</p>
+
+    <!-- PAINEL -->
+    <div id="painel" class="painel">
+      <div class="drawerOv" id="drawerOv" onclick="fecharMenu()"></div>
+      <nav class="drawer" id="drawer" aria-label="Menu">
+        <button type="button" class="drawerX" onclick="fecharMenu()" aria-label="Fechar">✕</button>
+        <div class="drawerTit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Menu</div>
+        <div class="drawerSec">Minha conta</div>
+        <button type="button" onclick="fecharMenu();irSecao('perfil')"><img class="diImg" src="icones/perfil.png" alt="" onerror="this.replaceWith(document.createTextNode('👤'))"> Perfil do negócio</button>
+        <button type="button" onclick="fecharMenu();abrirPlano()"><img class="diImg" src="icones/plano.png" alt="" onerror="this.replaceWith(document.createTextNode('💳'))"> Meu Plano</button>
+        <div id="seloDrawer" class="seloOuro" style="display:none">Cliente Enterprise</div>
+        <button type="button" onclick="fecharMenu();verMinhaPagina()"><img class="diImg" src="icones/pagina.png" alt="" onerror="this.replaceWith(document.createTextNode('🌐'))"> Minha Página</button>
+        <button type="button" id="drawerPontos" style="display:none" onclick="fecharMenu();abrirPontos()"><img class="diImg" src="icones/multipontos.png" alt="" onerror="this.replaceWith(document.createTextNode('📍'))"> Meus pontos</button>
+
+        <div class="drawerSec">Crescer</div>
+        <button type="button" onclick="abrirIndica()"><img class="diImg" src="icones/indicar.png" alt="" onerror="this.replaceWith(document.createTextNode('💰'))"> Indique e ganhe</button>
+        <a href="https://g.page/r/CeZnw1wWHEgMEBM/review" target="_blank" rel="noopener"><img class="diImg" src="icones/google.png" alt="" onerror="this.replaceWith(document.createTextNode('⭐'))"> Avaliar o Moviki no Google</a>
+
+        <div class="drawerSec">Redes sociais</div>
+        <div class="drawerRedes">
+          <a href="https://www.instagram.com/moviki.app/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg></a>
+          <a href="https://www.facebook.com/profile.php?id=61592924561303" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.4 8.4h-2V6.9c0-.6.4-.8.7-.8h1.3V3.5l-1.9 0c-2.1 0-2.6 1.6-2.6 2.6v2.3H8.6v2.7h2.3V21h2.5v-9.9h1.7l.3-2.7z"/></svg></a>
+          <a href="https://www.youtube.com/@app.moviki" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 8.2a2.6 2.6 0 0 0-1.8-1.8C18.6 6 12 6 12 6s-6.6 0-8.2.4A2.6 2.6 0 0 0 2 8.2 27 27 0 0 0 1.6 12 27 27 0 0 0 2 15.8a2.6 2.6 0 0 0 1.8 1.8C5.4 18 12 18 12 18s6.6 0 8.2-.4a2.6 2.6 0 0 0 1.8-1.8A27 27 0 0 0 22.4 12 27 27 0 0 0 22 8.2zM10 15V9l5.2 3L10 15z"/></svg></a>
+        </div>
+
+        <div class="drawerSec">Ajuda</div>
+        <a href="https://wa.me/554120186848?text=Ol%C3%A1!%20Preciso%20de%20ajuda%20com%20o%20Moviki." target="_blank" rel="noopener">💬 Falar com o suporte</a>
+        <a href="https://moviki.com.br" target="_blank" rel="noopener"><img class="diImg" src="icones/sobre.png" alt="" onerror="this.replaceWith(document.createTextNode('ℹ️'))"> Sobre o Moviki</a>
+        <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener"><img class="diImg" src="icones/termos.png" alt="" onerror="this.replaceWith(document.createTextNode('📄'))"> Termos de uso</a>
+        <a href="https://moviki.com.br/privacidade.html" target="_blank" rel="noopener"><img class="diImg" src="icones/politicas.png" alt="" onerror="this.replaceWith(document.createTextNode('🔒'))"> Políticas de privacidade</a>
+
+        <button type="button" onclick="fecharMenu();sair()"><img class="diImg" src="icones/sair.png" alt="" onerror="this.replaceWith(document.createTextNode('🚪'))"> Sair</button>
+        <button type="button" class="drawerDel" onclick="abrirExcluir()">Excluir minha conta</button>
+        <div class="drawerNota">O mapa inteligente dos negócios em movimento.</div>
+      </nav>
+
+      <div id="modalIndica" class="modalPlano escondido" onclick="if(event.target===this)fecharIndica()">
+        <div class="mpCaixa" style="max-width:460px">
+          <button type="button" class="mpFechar" onclick="fecharIndica()" aria-label="Fechar">✕</button>
+          <div id="candForm">
+            <div class="mpHead"><h2 class="mpTitulo">💰 Seja parceiro e ganhe</h2></div>
+            <p class="idxLead">Indique negócios pro Moviki e ganhe <b>15% todo mês</b> de cada um que assinar pelo seu link. É grátis, e você recebe no seu Pix.</p>
+            <div class="pcGanhos">
+              <div class="pcGanhoItem"><span class="pcGanhoPct">15%</span><span class="pcGanhoTxt">A pessoa que você indicar: você recebe uma comissão recorrente de <b>15%</b> todo mês enquanto ela pagar a assinatura.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct">7,5%</span><span class="pcGanhoTxt">A pessoa que você indicou indicar um amigo: você recebe um bônus único de <b>7,5%</b> no primeiro pagamento desse novo negócio.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct">5%</span><span class="pcGanhoTxt">A indicação do amigo indicar outra pessoa: você recebe um bônus único de <b>5%</b> no primeiro pagamento dela.</span></div>
+            </div>
+            <label class="candLbl">Seu nome</label>
+            <input id="candNome" class="candInp" type="text" maxlength="80" placeholder="Nome completo">
+            <label class="candLbl">Escolha seu apelido (vira seu link)</label>
+            <input id="candSlug" class="candInp" type="text" maxlength="40" placeholder="seunome" oninput="candPrevSlug()">
+            <div class="candDica">Seu link: moviki.com.br/p/<span id="candSlugTxt">seunome</span></div>
+            <label class="candLbl">Sua chave Pix (pra receber)</label>
+            <input id="candPix" class="candInp" type="text" maxlength="140" placeholder="CPF, e-mail, telefone ou chave aleatória">
+            <label class="candCheck"><input type="checkbox" id="candOk"> Li e concordo com o <a href="regulamento.html" target="_blank" rel="noopener">Regulamento do Programa de Parceiros</a>.</label>
+            <div id="candAviso" class="candAviso"></div>
+            <button type="button" id="candBtn" class="idxBtn prim" onclick="candEnviar()">Enviar meu pedido</button>
+            <p class="idxNota">Depois de enviar, seu pedido passa por uma análise rápida. Quando aprovado, seu link e seus ganhos aparecem aqui no painel.</p>
+          </div>
+          <div id="candPendente" style="display:none;text-align:center">
+            <div id="candPendIcon" style="font-size:40px;line-height:1;margin:6px 0 4px">⏳</div>
+            <h2 class="mpTitulo" id="candPendTit" style="margin:0 0 8px">Pedido em análise</h2>
+            <p class="idxLead" id="candPendTxt" style="margin-bottom:14px">Recebemos seu pedido pra ser parceiro! Assim que for aprovado, seu link e seus ganhos aparecem aqui no painel.</p>
+            <button type="button" class="idxBtn prim" onclick="fecharIndica()">Entendi</button>
+          </div>
+        </div>
+      </div>
+      <div id="modalParceiro" class="modalPlano escondido" onclick="if(event.target===this)fecharParceiro()">
+        <div class="mpCaixa" style="max-width:460px">
+          <button type="button" class="mpFechar" onclick="fecharParceiro()" aria-label="Fechar">✕</button>
+          <div class="mpHead"><h2 class="mpTitulo">💰 Indicar agora</h2></div>
+          <div class="pcBadgeOficial">✅ Parceiro Oficial</div>
+          <p class="idxLead">Você é <b>parceiro Moviki</b>! Compartilhe seu link: cada negócio que assinar por ele vira <b>15% todo mês</b> pra você.</p>
+          <div style="background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:11px 13px;margin:4px 0 10px;font-size:14px;color:#e6eefb;word-break:break-all"><span id="pcLink">moviki.com.br/p/…</span></div>
+          <button type="button" class="idxBtn prim" onclick="pcCopiarLink(this)">📋 Copiar meu link</button>
+          <button type="button" class="idxBtn wa" onclick="pcCompartilharWhats()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2zm5.9 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.8-.6-3.1-1.3-5.1-4.5-5.3-4.7-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.3.3c-.2.2-.3.4-.1.7.2.3.9 1.4 1.9 2.3 1.3 1.1 2.3 1.5 2.6 1.6.3.1.5.1.7-.1l.9-1c.2-.3.4-.2.7-.1l2 .9c.3.2.5.3.6.4.1.3.1.7-.1 1.3z"/></svg>
+            Enviar pelo WhatsApp
+          </button>
+          <div class="pcKpis">
+            <div class="pcKpi"><span class="n" id="pcIndicados">0</span><span class="t">negócios indicados</span></div>
+            <div class="pcKpi"><span class="n" id="pcDisp">R$ 0,00</span><span class="t">disponível pra saque</span></div>
+          </div>
+          <div class="pcLinhas">
+            <div class="pcLinha" id="pcRowRetido" style="display:none"><span>A liberar (em análise)</span><b id="pcRetido">R$ 0,00</b></div>
+            <div class="pcLinha"><span>Já pago a você</span><b id="pcPago">R$ 0,00</b></div>
+          </div>
+          <div class="pcTab">
+            <div class="pcTabTit">Como você ganha</div>
+            <div class="pcGanhos">
+              <div class="pcGanhoItem"><span class="pcGanhoPct">15%</span><span class="pcGanhoTxt">A pessoa que você indicar: você recebe uma comissão recorrente de <b>15%</b> todo mês enquanto ela pagar a assinatura.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct">7,5%</span><span class="pcGanhoTxt">A pessoa que você indicou indicar um amigo: você recebe um bônus único de <b>7,5%</b> no primeiro pagamento desse novo negócio.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct">5%</span><span class="pcGanhoTxt">A indicação do amigo indicar outra pessoa: você recebe um bônus único de <b>5%</b> no primeiro pagamento dela.</span></div>
+            </div>
+          </div>
+          <a href="parceiro.html" target="_blank" rel="noopener" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5">Abrir meu painel completo</a>
+          <a href="https://moviki.com.br/parceiros-ganhos.html" target="_blank" rel="noopener" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5">Entenda como ganhar mais</a>
+          <p class="idxNota">Comissões liberadas via Pix a partir de R$ 20. O saque é feito no seu painel completo.</p>
+        </div>
+      </div>
+      <div id="modalPontos" class="modalPlano escondido" onclick="if(event.target===this)fecharPontos()">
+        <div class="mpCaixa" style="max-width:480px">
+          <button type="button" class="mpFechar" onclick="fecharPontos()" aria-label="Fechar">✕</button>
+          <div class="mpHead"><h2 class="mpTitulo">📍 Meus pontos</h2></div>
+          <p class="idxLead">Cada ponto é uma unidade sua no mapa (carrinho, food truck, quiosque…), com localização e link próprios. O plano Enterprise inclui até <b id="ptInclusos">3</b> pontos, contando o seu negócio principal.</p>
+          <div id="ptResumo"></div>
+          <div id="ptLista">Carregando…</div>
+          <button type="button" id="ptAddBtn" class="idxBtn prim" onclick="ptNovo()">+ Adicionar ponto</button>
+          <div id="ptForm" style="display:none;margin-top:12px;border-top:1px solid var(--card-borda);padding-top:12px">
+            <input id="ptNome" type="text" maxlength="80" placeholder="Nome do ponto (ex: Carrinho Bairro Central)" style="width:100%;box-sizing:border-box;margin-bottom:8px;padding:11px;border-radius:10px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:15px">
+            <input id="ptSlug" type="text" maxlength="40" placeholder="apelido-do-ponto" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:15px" oninput="ptPrevSlug()">
+            <div style="font-size:12px;color:#7f95b3;margin:5px 2px 8px">O link ficará: moviki.com.br/<span id="ptSlugTxt">apelido</span></div><div style="margin-bottom:8px"><div style="font-size:12.5px;color:#9fb3c8;margin-bottom:6px">🕐 Horário de funcionamento (opcional)</div><div id="ptDias" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px"></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="font-size:13px;color:#9fb3c8">Das</span><select id="ptAbre" style="padding:9px;border-radius:9px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:14px"></select><span style="font-size:13px;color:#9fb3c8">às</span><select id="ptFecha" style="padding:9px;border-radius:9px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:14px"></select></div></div>
+            <div style="position:relative"><input id="ptEndereco" type="text" maxlength="120" autocomplete="off" placeholder="Digite o endereço ou nome do lugar" oninput="ptSugerir()" style="width:100%;box-sizing:border-box;margin-bottom:6px;padding:11px;border-radius:10px;border:1px solid var(--card-borda);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:14px"><div id="ptSug" style="display:none;position:absolute;left:0;right:0;top:44px;z-index:9;background:#0b1728;border:1px solid var(--ciano);border-radius:10px;max-height:210px;overflow:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div></div><div style="text-align:center;font-size:12px;color:#7f95b3" >— ou —</div><div id="ptGps" style="font-size:13px;color:#7f95b3;margin-bottom:6px">📍 Localização ainda não definida.</div>
+            <button type="button" class="idxBtn" style="background:rgba(255,159,64,.14);border:1px solid #ff9f40;color:#ffcf9a" onclick="ptPegarGps()">📍 Usar minha localização atual</button>
+            <div id="ptAviso" style="font-size:13px;margin:6px 2px;min-height:16px"></div>
+            <button type="button" id="ptSalvarBtn" class="idxBtn prim" onclick="ptSalvar()">Salvar ponto</button>
+            <button type="button" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5" onclick="ptCancelar()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+      <div id="modalExcluir" class="modalPlano escondido" onclick="if(event.target===this)fecharExcluir()">
+        <div class="mpCaixa" style="max-width:440px">
+          <button type="button" class="mpFechar" onclick="fecharExcluir()" aria-label="Fechar">✕</button>
+          <div id="excPasso1">
+            <div class="mpHead"><h2 class="mpTitulo">Excluir minha conta</h2></div>
+            <p class="idxLead" style="color:#ffd7d7">Isto remove sua conta, seu negócio e todos os seus dados do Moviki. A ação é <b style="color:#ff9b9b">definitiva</b> e não dá pra desfazer.</p>
+            <p class="excNota">Ao confirmar, sua conta e seus dados são excluídos em até 48 horas. Se você tiver uma assinatura ativa, ela é cancelada nesse processo. Você continua usando o app normalmente até lá.</p>
+            <label class="excCheck"><input type="checkbox" id="excOk" onchange="var b=document.getElementById('excBtn');if(b)b.disabled=!this.checked"> Entendo que minha conta e meus dados serão excluídos.</label>
+            <button type="button" id="excBtn" class="idxBtn" style="background:#e5484d;color:#fff" disabled onclick="confirmarExclusao()">Solicitar exclusão da conta</button>
+            <button type="button" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5" onclick="fecharExcluir()">Cancelar</button>
+          </div>
+          <div id="excPasso2" style="display:none;text-align:center">
+            <div style="font-size:42px;line-height:1;margin:6px 0 4px">✅</div>
+            <h2 class="mpTitulo" style="margin:0 0 8px">Pedido recebido</h2>
+            <p class="idxLead" style="margin-bottom:14px">Sua conta será excluída em até 48 horas. Você pode continuar usando o app normalmente até lá. Mudou de ideia? Fale com o suporte antes disso.</p>
+            <button type="button" class="idxBtn prim" onclick="fecharExcluir()">Entendi</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="appTopo">
+        <button type="button" class="appMenu" onclick="abrirMenu()" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+        <img src="favicon512.png" class="appLogo" alt="Moviki" onerror="this.style.visibility='hidden'">
+        <div class="appTitWrap">
+          <div class="appTit">Painel do Negócio</div>
+          <div class="appSub"><b id="oExEmail"></b></div>
+          <span id="seloTopo" class="seloOuro" style="display:none">Enterprise</span>
+        </div>
+        <button type="button" class="appSair" onclick="sair()">Sair</button>
+      </div>
+
+      <div id="bannerVerif" class="bannerVerif escondido">
+        <div class="bvTexto" id="bvTexto"></div>
+        <div class="bvAcoes" id="bvAcoes">
+          <button type="button" id="bvJa" onclick="jaConfirmei()">Já confirmei</button>
+          <button type="button" id="bvBtn" class="bvSec" onclick="reenviarVerif()">Não recebi — enviar de novo</button>
+        </div>
+      </div>
+
+      <div id="grade">
+        <div class="olaLinha">Vamos colocar seu negócio no mapa hoje? 🚀 <span class="olaLeve">Atualize e apareça pros seus clientes.</span></div>
+        <div class="statusHome">
+          <span class="shLabel">Seu negócio está agora:</span>
+          <div class="statusLinha">
+            <button id="btnAberto" class="statusBtn" onclick="setStatus('aberto')">🟢 Aberto</button>
+            <button id="btnFechado" class="statusBtn" onclick="setStatus('fechado')">🔴 Fechado</button>
+          </div>
+          <span class="shDica">Lembre de tocar em <b>Salvar tudo</b> pra valer no seu link.</span>
+        </div>
+        <div id="onboarding" class="onb escondido">
+        <div class="onbTop">
+          <div class="onbTit">👋 Bem-vindo ao Moviki!</div>
+          <button type="button" class="onbOcultar" onclick="ocultarOnboarding()">ocultar</button>
+        </div>
+        <div class="onbSub">Deixe seu negócio no ar em 3 passos rápidos. Toque em cada passo pra preencher.</div>
+        <div class="onbBarra"><i id="onbProgresso"></i></div>
+        <button type="button" class="onbPasso" id="onbNome" onclick="irPasso('nome')">
+          <span class="mark">1</span><span class="txt">Dê um nome ao seu negócio</span><span class="seta">›</span>
+        </button>
+        <button type="button" class="onbPasso" id="onbLink" onclick="irPasso('link')">
+          <span class="mark">2</span><span class="txt">Escolha seu link (moviki.com.br/...)</span><span class="seta">›</span>
+        </button>
+        <button type="button" class="onbPasso" id="onbLocal" onclick="irPasso('local')">
+          <span class="mark">3</span><span class="txt">Marque a localização do seu ponto</span><span class="seta">›</span>
+        </button>
+        <div class="onbFinal" id="onbFinal"></div>
+      </div>
+        <div id="bannerTrial" class="bannerTrial escondido"></div>
+        <div class="grid">
+          <button type="button" class="gcard" onclick="irSecao('perfil')"><img class="gcImg" src="icones/perfil.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Perfil</span></button>
+          <button type="button" class="gcard" id="gc-cardapio" onclick="irSecao('cardapio')"><img class="gcImg" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Cardápio</span></button>
+          <button type="button" class="gcard" id="gc-promocoes" onclick="irSecao('promocoes')"><img class="gcImg" src="icones/promocoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Promoções</span></button>
+          <button type="button" class="gcard" id="gc-eventos" onclick="irSecao('eventos')"><img class="gcImg" src="icones/eventos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Eventos</span></button>
+          <button type="button" class="gcard" id="gc-fotos" onclick="irSecao('fotos')"><img class="gcImg" src="icones/fotos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Fotos</span></button>
+          <button type="button" class="gcard" onclick="irSecao('local')"><img class="gcImg" src="icones/localizacao.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Localização</span></button>
+          <button type="button" class="gcard" onclick="irSecao('whatsapp')"><img class="gcImg" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">WhatsApp</span></button>
+          <button type="button" class="gcard" onclick="irSecao('avaliacoes')"><img class="gcImg" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Avaliações</span></button>
+          <button type="button" class="gcard" onclick="abrirPlano()"><img class="gcImg" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meu Plano</span></button>
+          <button type="button" class="gcard" onclick="verMinhaPagina()"><img class="gcImg" src="icones/pagina.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Minha Página</span></button>
+          <button type="button" class="gcard" id="gc-pontos" style="display:none" onclick="abrirPontos()"><img class="gcImg" src="icones/multipontos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meus pontos</span></button>
+          <button type="button" class="gcard gcIndicar" id="gc-indicar" style="display:none" onclick="abrirModalParceiro()"><img class="gcImg" src="icones/indicar.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Indicar agora</span></button>
+        </div>
+      </div>
+
+      <div class="tabs" style="display:none">
+        <button class="tab ativa" data-tab="perfil" onclick="abrirTab('perfil')">Perfil</button>
+        <button class="tab" data-tab="cardapio" onclick="abrirTab('cardapio')">Cardápio</button>
+        <button class="tab" data-tab="promocoes" onclick="abrirTab('promocoes')">Promoções</button>
+        <button class="tab" data-tab="eventos" onclick="abrirTab('eventos')">Eventos</button>
+        <button class="tab" data-tab="fotos" onclick="abrirTab('fotos')">Fotos</button>
+        <button class="tab" data-tab="local" onclick="abrirTab('local')">Localização</button>
+        <button class="tab" data-tab="whatsapp" onclick="abrirTab('whatsapp')">WhatsApp</button>
+        <button class="tab" data-tab="avaliacoes" onclick="abrirTab('avaliacoes')">Avaliações</button>
+      </div>
+
+      <div id="avisoPlano" class="avisoPlano escondido" onclick="abrirPlano()" style="cursor:pointer">🔒 <b>Cardápio</b>, <b>Promoções</b> e <b>Eventos</b> são do plano <b>Pró</b>. <u>Clique aqui pra assinar</u>.</div>
+      <div id="modalPlano" class="modalPlano escondido">
+        <div class="mpCaixa">
+          <button class="mpFechar" onclick="fecharPlano()">✕</button>
+          <div class="mpHead"><img src="favicon512.png" class="mpIcon" alt=""><h2 class="mpTitulo">Meu plano</h2></div>
+          <div id="mpStatus" class="mpStatus"></div>
+          <div class="mpCampo"><label for="cpfAssinatura">Seu CPF ou CNPJ</label>
+            <input id="cpfAssinatura" type="text" placeholder="Só números" inputmode="numeric"></div>
+                    <div class="mpPlanos">
+            <div class="mpPlano destaque">
+              <div class="mpBadge">Recomendado</div>
+              <div class="mpNome">Pró</div>
+              <div class="mpDesc">+ Cardápio, Promoções e Eventos</div>
+              <button class="mpBtn" onclick="selecionarPlano('pro','mensal',this)">Mensal · R$ 37,90</button>
+              <button class="mpBtn" onclick="selecionarPlano('pro','trimestral',this)">Trimestral · R$ 99,90</button>
+              <button class="mpBtn" onclick="selecionarPlano('pro','anual',this)">Anual · R$ 379,00 <span class="mpTag">2 meses grátis</span></button>
+            </div>
+            <div class="mpPlano">
+              <div class="mpNome">Premium</div>
+              <div class="mpDesc">Tudo do Pró + extras</div>
+              <button class="mpBtn" onclick="selecionarPlano('premium','mensal',this)">Mensal · R$ 49,90</button>
+              <button class="mpBtn" onclick="selecionarPlano('premium','trimestral',this)">Trimestral · R$ 134,90</button>
+              <button class="mpBtn" onclick="selecionarPlano('premium','anual',this)">Anual · R$ 499,00 <span class="mpTag">2 meses grátis</span></button>
+            </div>
+            <div class="mpPlano mpEnt">
+              <div class="mpNome">Enterprise</div>
+              <div class="mpDesc">Tudo do Premium + <b>vários pontos</b> num cadastro só · relatórios consolidados · suporte prioritário</div>
+              <div id="mpEntAcao" class="mpEntLinha"></div>
+            </div>
+          </div>
+          <div id="mpSelInfo" class="mpSelInfo escondido"></div>
+          <button id="mpConfirmar" class="mpBtnConf" onclick="confirmarPlano()" disabled>Confirmar meu plano · ir para o pagamento</button>
+          <div id="mpAviso" class="mpAviso"></div>
+        </div>
+      </div>
+
+      <div id="editor" class="escondido">
+        <button type="button" class="voltar" onclick="voltarHome()">‹ Voltar ao início</button>
+        <h2 class="editorTit" id="editorTit">Perfil</h2>
+        <div class="tabConteudo" id="tab-perfil">
+        <div class="campo"><label for="nome">Nome do negócio</label><input id="nome" type="text" placeholder="Ex.: Caldeirão Nordestino" oninput="atualizarOnboarding(false)"></div>
+        <div class="campo"><label for="apelido">Seu link no Moviki</label><div class="linkCampo"><span class="pref">moviki.com.br/</span><input id="apelido" type="text" placeholder="caldeirao" autocomplete="off" oninput="atualizarOnboarding(false)"></div></div>
+        <div id="linkPronto" class="linkPronto escondido"><div class="rot">✅ Link pra divulgar (bio do Instagram, WhatsApp...):</div><div class="linkRow"><a id="linkPublico" href="#" target="_blank" rel="noopener"></a><button onclick="copiarLink()" id="btnCopiar">Copiar</button></div></div>
+        <div class="campo"><label for="recado">Recado do dia (opcional)</label><textarea id="recado" rows="2" placeholder="Ex.: Hoje tem caldo de feijão!"></textarea></div>
+        <div style="border:1px solid rgba(0,212,255,.25);border-radius:12px;padding:14px;background:rgba(0,102,255,.05);margin-top:4px">
+          <label style="font-weight:700;font-size:15px;display:block;margin-bottom:4px">🎨 Aparência da sua página</label>
+          <div style="font-size:13px;color:#9fb3d0;margin-bottom:10px">Escolha a cor da sua marca. Ela pinta os destaques da sua página pública e o seu pino no mapa. <span style="color:#7f95b3">(recurso do plano Premium ou superior)</span></div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <input id="corInput" type="color" value="#00D4FF" style="width:52px;height:40px;border:none;border-radius:10px;background:transparent;cursor:pointer;padding:0">
+            <div style="display:flex;gap:7px;flex-wrap:wrap">
+              <button type="button" title="Ciano" onclick="document.getElementById('corInput').value='#00D4FF'" style="width:28px;height:28px;border-radius:50%;border:2px solid #1c3457;background:#00D4FF;cursor:pointer"></button>
+              <button type="button" title="Laranja" onclick="document.getElementById('corInput').value='#FF6B35'" style="width:28px;height:28px;border-radius:50%;border:2px solid #1c3457;background:#FF6B35;cursor:pointer"></button>
+              <button type="button" title="Verde" onclick="document.getElementById('corInput').value='#22C55E'" style="width:28px;height:28px;border-radius:50%;border:2px solid #1c3457;background:#22C55E;cursor:pointer"></button>
+              <button type="button" title="Roxo" onclick="document.getElementById('corInput').value='#A855F7'" style="width:28px;height:28px;border-radius:50%;border:2px solid #1c3457;background:#A855F7;cursor:pointer"></button>
+              <button type="button" title="Vermelho" onclick="document.getElementById('corInput').value='#EF4444'" style="width:28px;height:28px;border-radius:50%;border:2px solid #1c3457;background:#EF4444;cursor:pointer"></button>
+              <button type="button" title="Dourado" onclick="document.getElementById('corInput').value='#F59E0B'" style="width:28px;height:28px;border-radius:50%;border:2px solid #1c3457;background:#F59E0B;cursor:pointer"></button>
+            </div>
+            <button type="button" class="btn secundario" style="margin:0;padding:8px 12px;font-size:13px" onclick="document.getElementById('corInput').value='#00D4FF'">Voltar ao padrão</button>
+          </div>
+          <div id="wlRow" style="display:none;border-top:1px solid rgba(255,255,255,.1);margin-top:12px;padding-top:12px">
+            <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer">
+              <input id="wlToggle" type="checkbox" style="margin-top:3px;width:18px;height:18px;accent-color:#00D4FF;cursor:pointer">
+              <span style="font-size:14px;color:#e6eefb"><b>Usar só a minha marca (white-label)</b><br><span style="font-size:12.5px;color:#9fb3d0">Esconde a logo e o slogan do Moviki na sua página pública e usa a sua logo no lugar. Precisa ter enviado sua logo na aba <b>Localização</b>. <span style="color:#7f95b3">(recurso Enterprise)</span></span></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cardápio -->
+      <div class="tabConteudo escondido" id="tab-cardapio">
+        <div id="notaFotos" class="notaFotos"></div>
+        <div class="secTitulo"><label>Categorias e produtos</label><button class="addBtn" onclick="adicionarCategoria()">+ Categoria</button></div>
+        <div id="listaCategorias"></div>
+        <div id="vazioCat" class="vazioCard">Nenhuma categoria ainda. Crie uma (ex.: Caldos, Lanches, Bebidas).</div>
+      </div>
+
+      <!-- Promoções -->
+      <div class="tabConteudo escondido" id="tab-promocoes">
+        <div class="secTitulo"><label>Promoções</label><button class="addBtn" onclick="adicionarPromo()">+ Promoção</button></div>
+        <div id="listaPromos"></div>
+        <div id="vazioPromo" class="vazioCard">Nenhuma promoção ainda.</div>
+      </div>
+
+      <!-- Eventos -->
+      <div class="tabConteudo escondido" id="tab-eventos">
+        <div class="secTitulo"><label>Eventos</label><button class="addBtn" onclick="adicionarEvento()">+ Evento</button></div>
+        <div id="listaEventos"></div>
+        <div id="vazioEvento" class="vazioCard">Nenhum evento ainda.</div>
+      </div>
+
+      <!-- Fotos (galeria do negócio) -->
+      <div class="tabConteudo escondido" id="tab-fotos">
+        <div id="notaGaleria" class="notaFotos"></div>
+        <div class="secTitulo"><label>Galeria do negócio</label><span id="galContador" style="font-size:12.5px;color:#8fa6c4"></span></div>
+        <p style="font-size:13px;color:#9fb3d0;margin:0 0 12px;line-height:1.5">Mostre seu ambiente, sua equipe, seus pratos, seu ponto. Essas fotos aparecem numa aba <b>Fotos</b> na sua página pública. Até <b>12</b> fotos.</p>
+        <div id="galGrade" class="galGrade"></div>
+      </div>
+
+      <!-- Local -->
+      <div class="tabConteudo escondido" id="tab-local">
+        <div class="gps" id="gpsInfo">📍 Localização ainda não definida.</div>
+        <button class="btn secundario" onclick="pegarLocalizacao()">📍 Atualizar minha localização</button>
+        <div class="logoCard" style="margin-top:14px;border:1px solid rgba(0,212,255,.35);border-radius:12px;padding:16px;background:rgba(0,102,255,.08)">
+          <label style="font-weight:700;display:block;margin-bottom:6px;font-size:15px">🖼️ Destaque seu ponto com a sua logo no mapa</label>
+          <p style="font-size:13.5px;color:#cfe0f5;margin:0 0 10px;line-height:1.5">No meio de vários pinos iguais, o <b>seu aparece com a sua marca</b> — as pessoas reconhecem seu negócio de longe, param o olhar no seu ponto e clicam mais. É a diferença entre passar batido e ser <b>notado</b>.</p>
+          <p style="font-size:13px;color:#9fb3d0;margin:0 0 12px;line-height:1.4">✨ A logo no mapa é um recurso do plano <b>Premium</b>. Assine e ative agora — ou já deixe sua logo pronta aqui embaixo pra ela entrar no ar assim que você assinar.</p>
+          <button type="button" class="btn" style="width:100%;margin-bottom:12px" onclick="abrirPlano()">✨ Quero minha logo no mapa — ver o Premium</button>
+          <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
+            <div id="logoPreview" style="margin-bottom:10px"></div>
+            <input id="logoInput" type="file" accept="image/*" style="display:none" onchange="enviarLogo(this)">
+            <button type="button" class="btn btnUpload" onclick="document.getElementById('logoInput').click()">📤 Escolher / enviar minha logo</button>
+            <div id="logoMsg" style="font-size:13px;margin-top:8px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WhatsApp -->
+      <div class="tabConteudo escondido" id="tab-whatsapp">
+        <div class="campo"><label for="whatsapp">Seu WhatsApp (com DDD)</label>
+          <input id="whatsapp" type="tel" inputmode="numeric" placeholder="Ex.: 81 99999-9999">
+        </div>
+        <div class="dicaBox">💬 Esse número vira o botão <b>“Chamar no WhatsApp”</b> na sua página pública. Digite só números com o DDD. Deixe em branco pra não mostrar o botão.</div>
+      </div>
+
+      <!-- Avaliações -->
+      <div class="tabConteudo escondido" id="tab-avaliacoes">
+        <div id="avalResumo" class="avalResumo">Carregando...</div>
+        <div id="avalLista" class="avalLista"></div>
+      </div>
+      </div>
+
+      <div style="height:10px;"></div>
+      <button id="btnSalvar" class="btn" onclick="salvar()">Salvar tudo</button>
+      <button type="button" class="voltar voltarFim" onclick="voltarHome()">‹ Voltar ao início</button>
+      <div id="avisoP" class="aviso"></div>
+    </div>
+    </div>
+
   </div>
 </div>
--->
 
-<!-- ----- BLOCO NOVO (COLAR NO LUGAR DO BLOCO ACIMA) ----- -->
-<div id="modalParceiro" class="modalPlano escondido" onclick="if(event.target===this)fecharParceiro()">
-  <div class="mpCaixa" style="max-width:460px">
-    <button type="button" class="mpFechar" onclick="fecharParceiro()" aria-label="Fechar">✕</button>
-    <div class="mpHead"><h2 class="mpTitulo">💰 Indicar agora</h2></div>
-    <div class="pcBadgeOficial">✅ Parceiro Oficial</div>
-    <p class="idxLead">Você é <b>parceiro Moviki</b>! Compartilhe seu link: cada negócio que assinar por ele vira <b>15% todo mês</b> pra você.</p>
-    <div style="background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:11px 13px;margin:4px 0 10px;font-size:14px;color:#e6eefb;word-break:break-all"><span id="pcLink">moviki.com.br/p/…</span></div>
-    <button type="button" class="idxBtn prim" onclick="pcCopiarLink(this)">📋 Copiar meu link</button>
-    <button type="button" class="idxBtn wa" onclick="pcCompartilharWhats()">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.4 5 5.1-1.3A10 10 0 1 0 12 2zm5.9 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.8-.6-3.1-1.3-5.1-4.5-5.3-4.7-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.3.3c-.2.2-.3.4-.1.7.2.3.9 1.4 1.9 2.3 1.3 1.1 2.3 1.5 2.6 1.6.3.1.5.1.7-.1l.9-1c.2-.3.4-.2.7-.1l2 .9c.3.2.5.3.6.4.1.3.1.7-.1 1.3z"/></svg>
-      Enviar pelo WhatsApp
-    </button>
-    <div class="pcKpis">
-      <div class="pcKpi"><span class="n" id="pcIndicados">0</span><span class="t">negócios indicados</span></div>
-      <div class="pcKpi"><span class="n" id="pcDisp">R$ 0,00</span><span class="t">disponível pra saque</span></div>
-    </div>
-    <div class="pcLinhas">
-      <div class="pcLinha" id="pcRowRetido" style="display:none"><span>A liberar (em análise)</span><b id="pcRetido">R$ 0,00</b></div>
-      <div class="pcLinha"><span>Já pago a você</span><b id="pcPago">R$ 0,00</b></div>
-    </div>
-    <div class="pcTab">
-      <div class="pcTabTit">Como você ganha</div>
-      <div class="pcGanhos">
-        <div class="pcGanhoItem"><span class="pcGanhoPct">15%</span><span class="pcGanhoTxt">A pessoa que você indicar: você recebe uma comissão recorrente de <b>15%</b> todo mês enquanto ela pagar a assinatura.</span></div>
-        <div class="pcGanhoItem"><span class="pcGanhoPct">7,5%</span><span class="pcGanhoTxt">A pessoa que você indicou indicar um amigo: você recebe um bônus único de <b>7,5%</b> no primeiro pagamento desse novo negócio.</span></div>
-        <div class="pcGanhoItem"><span class="pcGanhoPct">5%</span><span class="pcGanhoTxt">A indicação do amigo indicar outra pessoa: você recebe um bônus único de <b>5%</b> no primeiro pagamento dela.</span></div>
-      </div>
-    </div>
-    <a href="parceiro.html" target="_blank" rel="noopener" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5">Abrir meu painel completo</a>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, sendEmailVerification }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, getDocs, query, where }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    <!-- SIMULADOR DE GANHOS INTERATIVO -->
-    <div class="mkSim" id="mkSim">
-      <div class="mkSimTitulo">🚀 Simule seus ganhos</div>
-      <div class="mkSimTabs">
-        <button type="button" class="mkSimTab active" onclick="mkSimSelecionarPlano('pro',this)">Pró<span class="mkSimTabPreco">R$ 37,90</span></button>
-        <button type="button" class="mkSimTab" onclick="mkSimSelecionarPlano('premium',this)">Premium<span class="mkSimTabPreco">R$ 49,90</span></button>
-        <button type="button" class="mkSimTab" onclick="mkSimSelecionarPlano('enterprise',this)">Enterprise<span class="mkSimTabPreco">R$ 99,90</span></button>
-      </div>
-      <div class="mkSimGrupo">
-        <div class="mkSimLabel"><span>Quantos negócios você vai indicar direto?</span><span class="mkSimValor" id="mkValor1">3</span></div>
-        <input type="range" min="0" max="100" value="3" id="mkSlider1" class="mkSimRange" oninput="mkSimAtualizar()">
-        <div class="mkSimSub">Ganho recorrente todo mês enquanto o negócio ficar ativo.</div>
-      </div>
-      <div class="mkSimGrupo">
-        <div class="mkSimLabel"><span>Se cada um deles indicar quantos amigos?</span><span class="mkSimValor" id="mkValor2">2</span></div>
-        <input type="range" min="0" max="100" value="2" id="mkSlider2" class="mkSimRange" oninput="mkSimAtualizar()">
-        <div class="mkSimSub">Bônus único no 1º pagamento de cada um.</div>
-      </div>
-      <div class="mkSimGrupo">
-        <div class="mkSimLabel"><span>E se os amigos deles trouxerem quantas pessoas?</span><span class="mkSimValor" id="mkValor3">2</span></div>
-        <input type="range" min="0" max="100" value="2" id="mkSlider3" class="mkSimRange" oninput="mkSimAtualizar()">
-        <div class="mkSimSub">Bônus único no 1º pagamento de cada um.</div>
-      </div>
-      <div class="mkSimVisor">
-        <span class="mkSimVisorLabel">Sua Projeção de Ganhos</span>
-        <span class="mkSimVisorValor" id="mkVisorValor">R$ 0,00</span>
-      </div>
-    </div>
-
-    <p class="idxNota">Comissões liberadas via Pix a partir de R$ 20. O saque é feito no seu painel completo.</p>
-    <button type="button" class="mkSimFechar" onclick="fecharParceiro()">✕ Fechar e voltar ao mapa</button>
-  </div>
-</div>
-
-<!-- ============================================================
-3) LOCALIZAR "</body>" e COLAR este bloco imediatamente ANTES dele
-   (script isolado — não usa nem declara nenhuma variável do
-   escopo module nem do escopo comum já existentes):
-============================================================ -->
-<script>
-(function(){
-  var MK_PLANOS = {
-    pro:        { n1:5.68,  n2:2.84, n3:1.89 },
-    premium:    { n1:7.48,  n2:3.74, n3:2.49 },
-    enterprise: { n1:14.98, n2:7.49, n3:4.99 }
+  const firebaseConfig = {
+    apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
+    authDomain: "moviki-app.firebaseapp.com",
+    projectId: "moviki-app",
+    storageBucket: "moviki-app.firebasestorage.app",
+    messagingSenderId: "451920150738",
+    appId: "1:451920150738:web:be458392064c964c792d0b"
   };
-  var mkPlanoAtual = 'pro';
-
-  function mkFmtBRL(v){
-    return 'R$ ' + (Math.round(v*100)/100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const app = initializeApp(firebaseConfig);
+  // App Check: garante que só o app REAL fale com o Firebase (barra bots/abuso).
+  // (Ainda SEM imposição — o Firebase só vai EXIGIR o token quando ligarmos o enforcement no console.)
+  try {
+    initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider('6LdwcHQtAAAAAJKPpfIrUr8QQ_PfvXl89uJFq9-w'),
+      isTokenAutoRefreshEnabled: true
+    });
+  } catch (e) { console.error('App Check:', e); }
+  const auth = getAuth(app);
+  auth.languageCode = 'pt-BR';  // e-mails e páginas do Firebase em português do Brasil
+  const db = getFirestore(app);
+  const el = id => document.getElementById(id);
+  let modo='entrar', usuarioAtual=null, statusAtual='fechado', coords=null, slugSalvo='';
+  const ROBO='https://moviki-robo.vercel.app';
+  // Garante o trial de 30 dias (Pró). Idempotente: o robô só concede 1x por conta.
+  // Retorna o JSON do robô se deu certo (ou já existia), ou null se falhou.
+  async function garantirTrial(){
+    try{
+      if(!auth.currentUser)return null;
+      const tk=await auth.currentUser.getIdToken();
+      const r=await fetch(ROBO+'/api/ativar-trial',{method:'POST',headers:{'Authorization':'Bearer '+tk}});
+      const j=await r.json().catch(()=>({}));
+      return r.ok?j:null;
+    }catch(e){return null;}
+  }
+  let dadosAssinatura=null;
+  const RESERVADOS=['index','mapa','404','assets','www','painel','login','moviki'];
+  // Rastreio do Programa de Parceiros: captura ?ref da URL (limpo) e guarda no navegador.
+  let refParceiro='';
+  try{
+    const r=(new URLSearchParams(location.search).get('ref')||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,40);
+    if(r.length>=3){ refParceiro=r; try{localStorage.setItem('moviki_ref',r);}catch(_){}}
+    else { try{refParceiro=(localStorage.getItem('moviki_ref')||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,40);}catch(_){} }
+  }catch(e){}
+  // Grava, 1x, de qual parceiro veio este lojista (só no cadastro; a regra do Firestore impede alterar depois).
+  async function registrarIndicacao(uid){
+    if(!uid || refParceiro.length<3) return;
+    try{ await setDoc(doc(db,'indicacoes',uid),{ref:refParceiro,criadoEm:serverTimestamp()}); }catch(e){}
   }
 
-  window.mkSimSelecionarPlano = function(id, btn){
-    mkPlanoAtual = id;
-    var tabs = document.querySelectorAll('#mkSim .mkSimTab');
-    for(var i=0;i<tabs.length;i++){ tabs[i].classList.remove('active'); }
-    if(btn) btn.classList.add('active');
-    window.mkSimAtualizar();
+  /* ---- ACESSO ---- */
+  const aviso=el('aviso');
+  function limparAviso(){aviso.className='aviso';aviso.textContent='';}
+  function erroAcesso(t){aviso.className='aviso erro';aviso.textContent=t;}
+  function avisoOk(t){aviso.className='aviso ok';aviso.textContent=t;}
+  window.trocarAba=function(n){modo=n;el('abaEntrar').classList.toggle('ativa',n==='entrar');el('abaCriar').classList.toggle('ativa',n==='criar');el('btnAcao').textContent=n==='entrar'?'Entrar':'Criar conta';el('dica').textContent=n==='criar'?'Vai criar uma conta de teste. Use um e-mail seu e uma senha simples.':'';var le=el('linhaEsqueci');if(le)le.style.display=n==='entrar'?'block':'none';limparAviso();};
+  window.verSenha=function(){const s=el('senha'),b=document.querySelector('.verSenha');if(s.type==='password'){s.type='text';b.textContent='ocultar';}else{s.type='password';b.textContent='mostrar';}};
+  function msgErro(c){const m={'auth/invalid-email':'E-mail inválido.','auth/missing-password':'Digite uma senha.','auth/weak-password':'A senha precisa ter pelo menos 6 caracteres.','auth/email-already-in-use':'Esse e-mail já tem conta. Tente "Entrar".','auth/invalid-credential':'E-mail ou senha incorretos.','auth/user-not-found':'Não encontrei conta com esse e-mail.','auth/wrong-password':'Senha incorreta.','auth/too-many-requests':'Muitas tentativas. Espere um pouco.','auth/network-request-failed':'Sem conexão. Confira a internet.'};return m[c]||('Erro: '+c);}
+  window.acao=async function(){const email=el('email').value.trim(),senha=el('senha').value,btn=el('btnAcao');limparAviso();if(!email){erroAcesso('Digite seu e-mail.');return;}if(!senha){erroAcesso('Digite uma senha.');return;}btn.disabled=true;const t=btn.textContent;btn.textContent='Aguarde...';try{if(modo==='criar'){await createUserWithEmailAndPassword(auth,email,senha);try{await sendEmailVerification(auth.currentUser);}catch(_){}try{await registrarIndicacao(auth.currentUser.uid);}catch(_){}garantirTrial();try{auth.currentUser.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:auth.currentUser.uid})}).catch(function(){});}).catch(function(){});}catch(_){}}else await signInWithEmailAndPassword(auth,email,senha);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.textContent=t;}};
+  window.sair=async function(){await signOut(auth);};
+  window.reenviarVerif=async function(){
+    const b=el('bvBtn');if(b)b.disabled=true;
+    try{
+      await sendEmailVerification(auth.currentUser);
+      el('bvTexto').innerHTML='📨 Reenviei o link para <b>'+auth.currentUser.email+'</b>. Abra seu e-mail e clique nele para confirmar. (Veja o spam também.)';
+    }catch(e){ el('bvTexto').textContent='Não consegui reenviar agora. Tente de novo em instantes.'; }
+    if(b)setTimeout(function(){b.disabled=false;},5000);
+  };
+  window.jaConfirmei=async function(){
+    const j=el('bvJa');if(j)j.disabled=true;
+    try{
+      await auth.currentUser.reload();
+      if(auth.currentUser.emailVerified){
+        const bv=el('bannerVerif');bv.classList.add('ok');
+        el('bvTexto').innerHTML='✅ <b>E-mail confirmado!</b> Tudo certo, obrigado.';
+        el('bvAcoes').style.display='none';
+        setTimeout(function(){bv.classList.add('escondido');},2500);
+      }else{
+        el('bvTexto').innerHTML='⚠️ Ainda não confirmado. Abra o e-mail que enviamos e clique no link primeiro. Depois toque em "Já confirmei" de novo.';
+        if(j)j.disabled=false;
+      }
+    }catch(e){ if(j)j.disabled=false; }
+  };
+  window.esqueciSenha=async function(){
+    const email=el('email').value.trim();limparAviso();
+    if(!email){erroAcesso('Digite seu e-mail no campo acima e clique aqui de novo — eu envio o link de recuperação pra ele.');return;}
+    const btn=el('btnEsqueci');if(btn)btn.disabled=true;
+    avisoOk('Enviando o link de recuperação...');
+    try{
+      await sendPasswordResetEmail(auth,email);
+      avisoOk('Pronto! Enviei um link para '+email+'. Olhe a caixa de entrada (e o spam) — o link abre uma página segura pra criar uma senha nova.');
+    }catch(e){erroAcesso(msgErro(e.code));}
+    if(btn)btn.disabled=false;
   };
 
-  window.mkSimAtualizar = function(){
-    var s1 = document.getElementById('mkSlider1');
-    var s2 = document.getElementById('mkSlider2');
-    var s3 = document.getElementById('mkSlider3');
-    if(!s1||!s2||!s3) return;
+  let planoPainel='basico';
+  async function carregarPlanoPainel(uid){
+    try{const a=await getDoc(doc(db,'assinaturas',uid));const d=a.exists()?a.data():null;dadosAssinatura=d;
+      const ok=d&&d.ativo===true&&(!d.vence_em||d.vence_em.toMillis()>Date.now());
+      planoPainel=ok?(d.plano||'basico'):'basico';}
+    catch(e){planoPainel='basico';dadosAssinatura=null;}
+  }
+  function aplicarPlanoNasAbas(){
+    const libera=planoPainel==='pro'||planoPainel==='premium'||planoPainel==='enterprise';if(window.ptAtualizarDrawer)ptAtualizarDrawer();
+    var _wl=el('wlRow');if(_wl)_wl.style.display=(planoPainel==='enterprise')?'block':'none';
+    ['cardapio','promocoes','eventos'].forEach(t=>{const b=document.querySelector('.tab[data-tab="'+t+'"]');if(b)b.classList.toggle('travada',!libera);});
+    if(libera){const av=el('avisoPlano');if(av)av.classList.add('escondido');}
+    atualizarNotaFotos();
+    atualizarNotaGaleria();
+  }
+  let _avisoPlanoTimer=null;
+  function mostrarAvisoPlano(){const av=el('avisoPlano');if(!av)return;av.classList.remove('escondido');if(_avisoPlanoTimer)clearTimeout(_avisoPlanoTimer);_avisoPlanoTimer=setTimeout(()=>av.classList.add('escondido'),5000);}
+  window.abrirPlano=function(){renderStatusPlano();renderCardEnterprise();el('modalPlano').classList.remove('escondido');};
+  function renderCardEnterprise(){
+    var box=el('mpEntAcao'); if(!box)return;
+    if(ehEnterprisePainel()){
+      box.innerHTML='<span style="color:#8fd8a0;font-weight:700;font-size:14px">✓ Você é Enterprise</span>'+
+        '<button class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important" onclick="fecharPlano();abrirPontos()">⚙️ Gerenciar meus pontos</button>';
+    }else{
+      box.innerHTML='<span style="color:#9fb3c8;font-size:13px">Vários pontos, relatórios e mais</span>'+
+        '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
+    }
+  }
+  /* ---- Meus pontos (multi-ponto Enterprise) ---- */
+  var ptListaCache=[], ptCoords=null, ptEditId=null;
+  function ptEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function ptLimpaSlug(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,40);}
+  var ptDiasSel=[false,false,false,false,false,false,false];
+  var ptDiasAbrev=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  function ptRenderDias(){var box=el('ptDias');if(!box)return;box.innerHTML=ptDiasAbrev.map(function(d,i){var on=ptDiasSel[i];return '<button type="button" onclick="ptToggleDia('+i+')" style="padding:7px 11px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;border:1px solid '+(on?'var(--ciano)':'var(--card-borda)')+';background:'+(on?'rgba(0,212,255,.16)':'#0b1728')+';color:'+(on?'var(--ciano)':'#9fb3c8')+'">'+d+'</button>';}).join('');}
+  window.ptToggleDia=function(i){ptDiasSel[i]=!ptDiasSel[i];ptRenderDias();};
+  function ptInitHorario(){var abre=el('ptAbre'),fecha=el('ptFecha');if(!abre||abre.options.length)return;var opts='';for(var hh=0;hh<24;hh++){for(var mm=0;mm<60;mm+=30){var v=(hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm;opts+='<option value="'+v+'">'+v+'</option>';}}abre.innerHTML=opts;fecha.innerHTML=opts;abre.value='09:00';fecha.value='18:00';}
+  function ptFmtHora(h){var a=String(h||'').split(':');var hh=+a[0];return a[1]==='00'?hh+'h':hh+'h'+a[1];}
+  function ptHorarioTexto(){var sel=[];for(var i=0;i<7;i++)if(ptDiasSel[i])sel.push(i);if(!sel.length)return '';var dias;if(sel.length===7)dias='Todos os dias';else{var contig=true;for(var k=1;k<sel.length;k++)if(sel[k]!==sel[k-1]+1)contig=false;if(contig&&sel.length>2)dias=ptDiasAbrev[sel[0]]+' a '+ptDiasAbrev[sel[sel.length-1]];else dias=sel.map(function(i){return ptDiasAbrev[i];}).join(', ');}return dias+', das '+ptFmtHora(el('ptAbre').value)+' às '+ptFmtHora(el('ptFecha').value);}
+  function ptHorarioCfg(){var sel=[];for(var i=0;i<7;i++)if(ptDiasSel[i])sel.push(i);return {dias:sel,abre:el('ptAbre').value,fecha:el('ptFecha').value};}
+  function ptResetHorario(){ptInitHorario();ptDiasSel=[false,false,false,false,false,false,false];if(el('ptAbre'))el('ptAbre').value='09:00';if(el('ptFecha'))el('ptFecha').value='18:00';ptRenderDias();}
+  function ptSetHorario(cfg){ptInitHorario();ptDiasSel=[false,false,false,false,false,false,false];if(cfg&&cfg.dias&&cfg.dias.forEach)cfg.dias.forEach(function(i){if(i>=0&&i<7)ptDiasSel[i]=true;});if(cfg&&cfg.abre&&el('ptAbre'))el('ptAbre').value=cfg.abre;if(cfg&&cfg.fecha&&el('ptFecha'))el('ptFecha').value=cfg.fecha;ptRenderDias();}
+  function ehEnterprisePainel(){return !!(dadosAssinatura&&dadosAssinatura.ativo===true&&dadosAssinatura.plano==='enterprise'&&(!dadosAssinatura.vence_em||dadosAssinatura.vence_em.toMillis()>Date.now()));}
+  window.ptAtualizarDrawer=function(){var vis=ehEnterprisePainel();var b=el('drawerPontos');if(b)b.style.display=vis?'flex':'none';var g=el('gc-pontos');if(g)g.style.display=vis?'flex':'none';var st=el('seloTopo');if(st)st.style.display=vis?'inline-flex':'none';var sd=el('seloDrawer');if(sd)sd.style.display=vis?'inline-flex':'none';};
 
-    var n1 = parseInt(s1.value,10)||0;
-    var n2 = parseInt(s2.value,10)||0;
-    var n3 = parseInt(s3.value,10)||0;
+  // ===== Programa de Parceiros — área "Indicar agora" no painel do lojista =====
+  var _parceiro=null; window._ehParceiro=false;
+  var _pcBrl=function(n){return 'R$ '+(Number(n)||0).toFixed(2).replace('.',',');};
+  var _pcMsg=function(link){return 'Oi! Tudo bem? 😊 Quero te mostrar o Moviki — um mapa que ajuda seus clientes a te encontrarem na hora. É grátis pra começar. Dá uma olhada pelo meu link: '+link;};
+  async function carregarParceiroPainel(uid){
+    _parceiro=null; window._ehParceiro=false; window._statusParceiro=null;
+    var card=el('gc-indicar'); if(card)card.style.display='none';
+    try{
+      var s=await getDoc(doc(db,'parceiros',uid));
+      if(!s.exists())return;
+      var p=s.data();
+      window._statusParceiro=p.status||null;
+      if(p.status!=='aprovado'||!p.slug)return;
+      _parceiro={uid:uid,slug:p.slug,nome:p.nome||''};
+      window._ehParceiro=true;
+      if(card)card.style.display='flex';
+      var lk=el('pcLink'); if(lk)lk.textContent='moviki.com.br/p/'+p.slug;
+      contarIndicadosParceiro(); carregarComissaoParceiro();
+    }catch(e){}
+  }
+  async function contarIndicadosParceiro(){
+    if(!_parceiro)return;
+    try{
+      var q=query(collection(db,'indicacoes'),where('ref','==',_parceiro.slug));
+      var r=await getDocs(q);
+      var n=el('pcIndicados'); if(n)n.textContent=r.size;
+    }catch(e){}
+  }
+  async function carregarComissaoParceiro(){
+    if(!_parceiro)return;
+    try{
+      var q=query(collection(db,'comissoes'),where('parceiroUid','==',_parceiro.uid));
+      var r=await getDocs(q);
+      var pago=0,receber=0,retido=0,agora=Date.now();
+      r.forEach(function(d){var c=d.data();if(c.estornada)return;var v=Number(c.valor)||0;
+        if(c.pago){pago+=v;}else{var libMs=0;if(c.liberaEm){libMs=(typeof c.liberaEm.toMillis==='function')?c.liberaEm.toMillis():(c.liberaEm.seconds?c.liberaEm.seconds*1000:0);}if(libMs&&libMs>agora)retido+=v;else receber+=v;}});
+      var d1=el('pcDisp');if(d1)d1.textContent=_pcBrl(receber);
+      var pg=el('pcPago');if(pg)pg.textContent=_pcBrl(pago);
+      var rr=el('pcRowRetido'),rv=el('pcRetido');
+      if(rv)rv.textContent=_pcBrl(retido);
+      if(rr)rr.style.display=retido>0?'flex':'none';
+    }catch(e){}
+  }
+  window.abrirModalParceiro=function(){if(window.fecharMenu)fecharMenu();var m=el('modalParceiro');if(m)m.classList.remove('escondido');};
+  window.fecharParceiro=function(){var m=el('modalParceiro');if(m)m.classList.add('escondido');};
+  window.pcCopiarLink=function(btn){if(!_parceiro)return;var msg=_pcMsg('https://moviki.com.br/p/'+_parceiro.slug);
+    var ok=function(){if(btn&&btn.textContent){var t=btn.textContent;btn.textContent='✓ Link copiado!';setTimeout(function(){btn.textContent=t;},1800);}};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(ok).catch(function(){window.prompt('Copie e envie:',msg);});}
+    else{window.prompt('Copie e envie:',msg);}
+  };
+  window.pcCompartilharWhats=function(){if(!_parceiro)return;window.open('https://wa.me/?text='+encodeURIComponent(_pcMsg('https://moviki.com.br/p/'+_parceiro.slug)),'_blank');};
 
-    document.getElementById('mkValor1').textContent = n1;
-    document.getElementById('mkValor2').textContent = n2;
-    document.getElementById('mkValor3').textContent = n3;
-
-    var p = MK_PLANOS[mkPlanoAtual];
-    var totalN2 = n1 * n2;
-    var totalN3 = totalN2 * n3;
-    var total = (n1 * p.n1) + (totalN2 * p.n2) + (totalN3 * p.n3);
-
-    var visor = document.getElementById('mkVisorValor');
-    if(visor){
-      visor.textContent = mkFmtBRL(total);
-      visor.classList.remove('mkSimPop');
-      void visor.offsetWidth;
-      visor.classList.add('mkSimPop');
+  // ===== Candidatura a parceiro (a partir do próprio painel do lojista) =====
+  function limpaSlugParc(v){return (v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_-]/g,'').slice(0,40);}
+  window.candPrevSlug=function(){var t=el('candSlugTxt');if(t)t.textContent=limpaSlugParc(el('candSlug').value)||'seunome';};
+  window.prepararCandidatura=function(){
+    var st=window._statusParceiro, f=el('candForm'), pp=el('candPendente');
+    var ic=el('candPendIcon'), ti=el('candPendTit'), tx=el('candPendTxt');
+    if(st==='pendente'||st==='recusado'||st==='suspenso'){
+      if(f)f.style.display='none'; if(pp)pp.style.display='block';
+      if(st==='pendente'){ if(ic)ic.textContent='⏳'; if(ti)ti.textContent='Pedido em análise'; if(tx)tx.textContent='Recebemos seu pedido pra ser parceiro! Assim que for aprovado, seu link e seus ganhos aparecem aqui no painel.'; }
+      else if(st==='recusado'){ if(ic)ic.textContent='❌'; if(ti)ti.textContent='Pedido não aprovado'; if(tx)tx.textContent='Seu pedido de parceria não foi aprovado no momento. Se tiver dúvidas, fale com o suporte pelo menu.'; }
+      else { if(ic)ic.textContent='⏸️'; if(ti)ti.textContent='Parceria suspensa'; if(tx)tx.textContent='Sua parceria está suspensa no momento. Fale com o suporte pelo menu para regularizar.'; }
+    } else {
+      if(f)f.style.display='block'; if(pp)pp.style.display='none';
+      var nomeInp=el('candNome'); if(nomeInp&&!nomeInp.value){ var nn=el('nome'); if(nn&&nn.value)nomeInp.value=nn.value; }
     }
   };
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded', window.mkSimAtualizar);
-  } else {
-    window.mkSimAtualizar();
+  window.candEnviar=async function(){
+    if(!usuarioAtual)return;
+    var nome=(el('candNome').value||'').trim(), slug=limpaSlugParc(el('candSlug').value), pix=(el('candPix').value||'').trim(), av=el('candAviso');
+    if(nome.length<2){av.textContent='Digite seu nome.';return;}
+    if(slug.length<3){av.textContent='Escolha um apelido com pelo menos 3 letras.';return;}
+    if(pix.length<3){av.textContent='Digite sua chave Pix.';return;}
+    if(!el('candOk').checked){av.textContent='Você precisa aceitar o regulamento.';return;}
+    var btn=el('candBtn'); btn.disabled=true; var t=btn.textContent; btn.textContent='Enviando...'; av.textContent='';
+    try{
+      var chk=await getDoc(doc(db,'parceiro_slugs',slug));
+      if(chk.exists()){ av.textContent='Esse apelido já está em uso. Escolha outro.'; btn.disabled=false; btn.textContent=t; return; }
+      await setDoc(doc(db,'parceiro_slugs',slug),{uid:usuarioAtual.uid});
+      await setDoc(doc(db,'parceiros',usuarioAtual.uid),{nome:nome,email:usuarioAtual.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.0',em:serverTimestamp()},criadoEm:serverTimestamp()});
+      try{ usuarioAtual.getIdToken().then(function(tk){ fetch(ROBO+'/api/novo-parceiro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:usuarioAtual.uid})}).catch(function(){}); }).catch(function(){}); }catch(_){}
+      window._statusParceiro='pendente';
+      var ic=el('candPendIcon'), ti=el('candPendTit'), tx=el('candPendTxt');
+      if(ic)ic.textContent='✅'; if(ti)ti.textContent='Pedido enviado!'; if(tx)tx.textContent='Recebemos seu pedido pra ser parceiro. Assim que for aprovado, seu link e seus ganhos aparecem aqui no painel. Você também recebe um e-mail.';
+      el('candForm').style.display='none'; el('candPendente').style.display='block';
+    }catch(e){ av.textContent='Não consegui enviar agora. Tente de novo em instantes.'; btn.disabled=false; btn.textContent=t; }
+  };
+  window.abrirPontos=function(){if(window.fecharMenu)fecharMenu();var m=el('modalPontos');if(!m)return;m.classList.remove('escondido');ptInitHorario();ptCancelar();ptCarregar();};
+  window.fecharPontos=function(){var m=el('modalPontos');if(m)m.classList.add('escondido');};
+  window.ptPrevSlug=function(){var t=el('ptSlugTxt');if(t)t.textContent=ptLimpaSlug(el('ptSlug').value)||'apelido';};
+  async function ptCarregar(){
+    var lista=el('ptLista');lista.textContent='Carregando…';
+    try{
+      var idToken=await usuarioAtual.getIdToken();
+      var r=await fetch(ROBO+'/api/pontos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'listar'})});
+      var j=await r.json().catch(function(){return{};});
+      if(!r.ok||!j.ok){lista.textContent=(j&&j.erro)||'Não consegui carregar seus pontos.';return;}
+      if(j.inclusos){var pi=el('ptInclusos');if(pi)pi.textContent=j.inclusos;}
+      ptListaCache=j.pontos||[];
+      ptRender(ptListaCache);
+      ptRenderResumo(ptListaCache,j.inclusos);
+    }catch(e){lista.textContent='Não consegui carregar seus pontos.';}
   }
+  function ptRender(pontos){
+    var lista=el('ptLista');
+    if(!pontos.length){lista.innerHTML='<div style="font-size:13.5px;color:#7f95b3;padding:8px 2px">Você ainda não tem pontos além do principal. Toque em “Adicionar ponto”.</div>';return;}
+    lista.innerHTML=pontos.map(function(p){
+      return '<div style="border:1px solid var(--card-borda);border-radius:12px;padding:11px 12px;margin-bottom:8px">'+
+        '<div style="font-weight:700;color:#e6eefb">'+ptEsc(p.nome||'Ponto')+(p.ativo?'':(p.cobranca?' <span style=\'font-size:11px;color:#ffcf9a\'>(aguardando pagamento)</span>':' <span style=\'font-size:11px;color:#ffcf9a\'>(inativo)</span>'))+'</div>'+
+        '<div style="color:var(--ciano);font-size:12.5px;word-break:break-all;margin-top:2px">moviki.com.br/'+ptEsc(p.slug)+'</div>'+
+        '<div style="display:flex;gap:8px;margin-top:8px">'+
+          '<button type="button" class="idxBtn" style="flex:1;margin:0;padding:8px;background:rgba(0,212,255,.12);border:1px solid var(--ciano);color:var(--ciano)" onclick="ptCopiar(\''+ptEsc(p.slug)+'\')">📋 Copiar link</button>'+
+          '<button type="button" class="idxBtn" style="flex:1;margin:0;padding:8px;background:rgba(37,211,102,.14);border:1px solid #25D366;color:#7ee6a0" onclick="ptWpp(\''+ptEsc(p.slug)+'\')">WhatsApp</button>'+
+        '</div>'+
+        '<div style="display:flex;gap:8px;margin-top:8px">'+
+          '<button type="button" class="idxBtn" style="flex:1;margin:0;padding:8px;background:rgba(0,212,255,.12);border:1px solid var(--ciano);color:var(--ciano)" onclick="ptEditar(\''+p.id+'\')">Editar</button>'+
+          '<button type="button" class="idxBtn" style="flex:1;margin:0;padding:8px;background:transparent;border:1px solid #c66;color:#ff9b9b" onclick="ptRemover(\''+p.id+'\',\''+ptEsc(p.nome||'')+'\')">Remover</button>'+
+        '</div></div>';
+    }).join('');
+  }
+  function ptFmtBRL(v){return 'R$ '+(Number(v)||0).toFixed(2).replace('.',',');}
+  function ptRenderResumo(pontos,inclusos){
+    var box=el('ptResumo');if(!box)return;
+    pontos=pontos||[];
+    var BASE=99.90,EXTRA=19.90;
+    var incl=Number(inclusos)||3;                 // pontos inclusos no plano (contando o principal)
+    var freeExtras=Math.max(0,incl-1);            // extras grátis (principal já é 1)
+    var totalExtras=pontos.length;
+    var totalPontos=1+totalExtras;                // principal + extras
+    var aguardando=pontos.filter(function(p){return !p.ativo;}).length;
+    var extrasPagosAtivos=pontos.filter(function(p){return p.ativo&&p.cobranca;}).length;
+    var restamGratis=Math.max(0,freeExtras-totalExtras);
+    var mensal=BASE+extrasPagosAtivos*EXTRA;
+    var linhas=''+
+      '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">'+
+        '<div style="flex:1;min-width:90px;background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:10px 12px">'+
+          '<div style="font-size:22px;font-weight:800;color:var(--ciano);line-height:1">'+totalPontos+'</div>'+
+          '<div style="font-size:11.5px;color:#9fb3c8;margin-top:3px">pontos no mapa</div>'+
+        '</div>'+
+        '<div style="flex:1;min-width:90px;background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:10px 12px">'+
+          '<div style="font-size:22px;font-weight:800;color:#7ee6a0;line-height:1">'+(1+pontos.filter(function(p){return p.ativo;}).length)+'</div>'+
+          '<div style="font-size:11.5px;color:#9fb3c8;margin-top:3px">ativos agora</div>'+
+        '</div>'+
+        (aguardando>0?'<div style="flex:1;min-width:90px;background:#0b1728;border:1px solid #ff9f40;border-radius:12px;padding:10px 12px">'+
+          '<div style="font-size:22px;font-weight:800;color:#ffcf9a;line-height:1">'+aguardando+'</div>'+
+          '<div style="font-size:11.5px;color:#ffcf9a;margin-top:3px">aguardando pagamento</div>'+
+        '</div>':'')+
+      '</div>'+
+      '<div style="background:linear-gradient(135deg,rgba(0,102,255,.12),rgba(0,212,255,.10));border:1px solid var(--ciano);border-radius:12px;padding:11px 13px;margin-bottom:12px">'+
+        '<div style="font-size:12.5px;color:#9fb3c8;margin-bottom:4px">Cobrança mensal</div>'+
+        '<div style="font-size:19px;font-weight:800;color:#e6eefb">'+ptFmtBRL(mensal)+'<span style="font-size:12px;color:#7f95b3;font-weight:600">/mês</span></div>'+
+        '<div style="font-size:12px;color:#7f95b3;margin-top:4px">Plano Enterprise '+ptFmtBRL(BASE)+(extrasPagosAtivos>0?' + '+extrasPagosAtivos+' ponto'+(extrasPagosAtivos>1?'s':'')+' extra'+(extrasPagosAtivos>1?'s':'')+' × '+ptFmtBRL(EXTRA):'')+'</div>'+
+        (restamGratis>0?'<div style="font-size:12px;color:#7ee6a0;margin-top:5px">✓ Você ainda pode adicionar '+restamGratis+' ponto'+(restamGratis>1?'s':'')+' sem custo extra.</div>':'')+
+      '</div>';
+    box.innerHTML=linhas;
+  }
+  window.ptNovo=function(){ptEditId=null;el('ptNome').value='';el('ptSlug').value='';if(el('ptEndereco'))el('ptEndereco').value='';if(el('ptSug')){el('ptSug').style.display='none';el('ptSug').innerHTML='';}ptResetHorario();setTimeout(function(){var f=el('ptForm');if(f&&f.scrollIntoView)f.scrollIntoView({behavior:'smooth',block:'center'});},60);el('ptSlug').disabled=false;el('ptSlug').style.opacity='1';var t=el('ptSlugTxt');if(t)t.textContent='apelido';ptCoords=null;el('ptGps').innerHTML='📍 Localização ainda não definida.';el('ptAviso').textContent='';el('ptSalvarBtn').textContent='Salvar ponto';el('ptForm').style.display='block';el('ptAddBtn').style.display='none';};
+  window.ptCancelar=function(){var f=el('ptForm');if(f)f.style.display='none';var a=el('ptAddBtn');if(a)a.style.display='block';var av=el('ptAviso');if(av)av.textContent='';ptEditId=null;};
+  window.ptEditar=function(id){var p=ptListaCache.find(function(x){return x.id===id;});if(!p)return;ptEditId=id;el('ptNome').value=p.nome||'';el('ptSlug').value=p.slug||'';el('ptSlug').disabled=false;el('ptSlug').style.opacity='1';var t=el('ptSlugTxt');if(t)t.textContent=p.slug||'apelido';ptCoords=(typeof p.lat==='number'&&typeof p.lng==='number')?{lat:p.lat,lng:p.lng}:null;el('ptGps').innerHTML=ptCoords?'📍 <b>Localização salva.</b> Toque abaixo pra atualizar.':'📍 Localização ainda não definida.';el('ptAviso').style.color='#ffcf9a';el('ptAviso').textContent='Você pode mudar o nome e o apelido. Se trocar o apelido, o link antigo deste ponto para de funcionar.';el('ptSalvarBtn').textContent='Salvar alterações';ptSetHorario(p.horarioCfg);el('ptForm').style.display='block';el('ptAddBtn').style.display='none';setTimeout(function(){var f=el('ptForm');if(f&&f.scrollIntoView)f.scrollIntoView({behavior:'smooth',block:'center'});},60);};
+  window.ptPegarGps=function(){var g=el('ptGps');if(!navigator.geolocation){g.textContent='Seu aparelho não tem GPS no navegador.';return;}g.innerHTML='📍 Pegando localização...';navigator.geolocation.getCurrentPosition(function(pos){ptCoords={lat:pos.coords.latitude,lng:pos.coords.longitude};g.innerHTML='📍 <b>Localização capturada!</b> '+ptCoords.lat.toFixed(5)+', '+ptCoords.lng.toFixed(5);},function(err){g.textContent=err.code===1?'Você bloqueou a localização. Libere nas permissões do navegador.':'Não consegui pegar a localização.';},{enableHighAccuracy:true,timeout:10000});};var ptSugTimer=null;window.ptSugerir=function(){var cx=el('ptSug');var txt=el('ptEndereco').value.trim();if(ptSugTimer)clearTimeout(ptSugTimer);if(txt.length<3){cx.style.display='none';cx.innerHTML='';return;}ptSugTimer=setTimeout(async function(){try{var idToken=await usuarioAtual.getIdToken();var r=await fetch(ROBO+'/api/pontos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'sugestoes',texto:txt})});var j=await r.json().catch(function(){return{};});var arr=(j&&j.sugestoes)||[];if(!arr.length){cx.style.display='none';cx.innerHTML='';return;}cx.innerHTML=arr.map(function(s){return '<div onclick="ptEscolher(\''+s.id+'\')" data-t="'+ptEsc(s.texto)+'" style="padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06);font-size:13.5px;color:#e6eefb">📍 '+ptEsc(s.texto)+'</div>';}).join('');cx.style.display='block';}catch(e){cx.style.display='none';}},300);};window.ptEscolher=async function(id){var cx=el('ptSug');var el2=cx.querySelector('[onclick*="'+id+'"]');var g=el('ptGps');cx.style.display='none';if(el2&&el2.getAttribute('data-t'))el('ptEndereco').value=el2.getAttribute('data-t');g.innerHTML='📍 Localizando...';try{var idToken=await usuarioAtual.getIdToken();var r=await fetch(ROBO+'/api/pontos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'detalhe',placeId:id})});var j=await r.json().catch(function(){return{};});if(r.ok&&j.ok){ptCoords={lat:j.lat,lng:j.lng};g.innerHTML='📍 <b>Local definido:</b> '+ptEsc(j.endereco||el('ptEndereco').value);}else{g.textContent='Não consegui pegar esse lugar. Escolha outro ou use o GPS.';}}catch(e){g.textContent='Não consegui pegar esse lugar agora.';}};
+  window.ptSalvar=async function(){
+    var av=el('ptAviso');av.style.color='#ff9b9b';
+    var nome=el('ptNome').value.trim();var slug=ptLimpaSlug(el('ptSlug').value);
+    if(!nome){av.textContent='Dê um nome ao ponto.';return;}
+    if(slug.length<3){av.textContent='O apelido precisa de ao menos 3 letras.';return;}
+    if(!ptCoords){av.textContent='Toque em “Usar minha localização atual”.';return;}
+    var btn=el('ptSalvarBtn');btn.disabled=true;var t=btn.textContent;btn.textContent='Salvando...';
+    try{
+      var idToken=await usuarioAtual.getIdToken();
+      var horario=ptHorarioTexto();var horarioCfg=ptHorarioCfg();var payload=ptEditId?{idToken:idToken,acao:'editar',pid:ptEditId,nome:nome,slug:slug,horario:horario,horarioCfg:horarioCfg,lat:ptCoords.lat,lng:ptCoords.lng}:{idToken:idToken,acao:'criar',nome:nome,slug:slug,horario:horario,horarioCfg:horarioCfg,lat:ptCoords.lat,lng:ptCoords.lng};
+      var r=await fetch(ROBO+'/api/pontos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      var j=await r.json().catch(function(){return{};});
+      if(r.ok&&j.ok){
+        if(j.invoiceUrl){try{window.open(j.invoiceUrl,'_blank');}catch(_){}av.style.color='#ffcf9a';av.innerHTML='Ponto criado! É um ponto extra (R$ 19,90/mês) — abrimos o pagamento em outra aba. Ele fica ativo assim que o pagamento confirmar.';ptCarregar();}
+        else{ptCancelar();ptCarregar();}
+      }
+      else if(j&&j.motivo==='apelido_em_uso'){av.textContent='Esse apelido já está em uso. Tente outro.';}
+      else{av.textContent=(j&&j.erro)||'Não consegui salvar agora.';}
+    }catch(e){av.textContent='Não consegui salvar agora.';}
+    btn.disabled=false;btn.textContent=t;
+  };
+  window.ptCopiar=function(slug){var link='https://moviki.com.br/'+slug;if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(link).then(function(){alert('Link copiado!');},function(){prompt('Copie o link:',link);});}else{prompt('Copie o link:',link);}};
+  window.ptWpp=function(slug){var link='https://moviki.com.br/'+slug;window.open('https://wa.me/?text='+encodeURIComponent('Achou meu ponto no Moviki? Acesse: '+link),'_blank');};
+  window.ptRemover=async function(id,nome){
+    if(!confirm('Remover o ponto “'+(nome||'')+'”? O link dele sai do ar.'))return;
+    try{
+      var idToken=await usuarioAtual.getIdToken();
+      var r=await fetch(ROBO+'/api/pontos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'remover',pid:id})});
+      var j=await r.json().catch(function(){return{};});
+      if(r.ok&&j.ok){ptCarregar();}else{alert((j&&j.erro)||'Não consegui remover agora.');}
+    }catch(e){alert('Não consegui remover agora.');}
+  };
+  window.fecharPlano=function(){el('modalPlano').classList.add('escondido');};
+  window.abrirExcluir=function(){ if(window.fecharMenu)window.fecharMenu(); var p1=el('excPasso1'),p2=el('excPasso2'),c=el('excOk'),b=el('excBtn'); if(p1)p1.style.display='block'; if(p2)p2.style.display='none'; if(c)c.checked=false; if(b){b.disabled=true;b.textContent='Solicitar exclusão da conta';} var m=el('modalExcluir'); if(m)m.classList.remove('escondido'); };
+  window.fecharExcluir=function(){ var m=el('modalExcluir'); if(m)m.classList.add('escondido'); };
+  window.confirmarExclusao=async function(){ var b=el('excBtn'); if(b){b.disabled=true;b.textContent='Enviando...';} try{ if(!usuarioAtual)throw new Error('sem sessao'); var idToken=await usuarioAtual.getIdToken(); var r=await fetch(ROBO+'/api/excluir-conta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken})}); var j=await r.json().catch(function(){return {};}); if(r.ok&&j.ok){ el('excPasso1').style.display='none'; el('excPasso2').style.display='block'; }else{ if(b){b.disabled=false;b.textContent='Solicitar exclusão da conta';} alert('Não consegui registrar agora. Tente de novo em instantes ou fale com o suporte.'); } }catch(e){ if(b){b.disabled=false;b.textContent='Solicitar exclusão da conta';} alert('Não consegui registrar agora. Tente de novo em instantes ou fale com o suporte.'); } };
+  function mostrarBannerTrial(){
+    const b=el('bannerTrial');if(!b)return;
+    const d=dadosAssinatura;
+    // Só aparece pra quem está em teste (trial). Quem paga (periodo mensal/anual) nunca vê.
+    if(!d||d.periodo!=='trial'||!d.vence_em){b.className='bannerTrial escondido';return;}
+    const dias=Math.ceil((d.vence_em.toMillis()-Date.now())/86400000);
+    if(dias>7){b.className='bannerTrial escondido';return;} // cedo demais, não incomoda
+    let urg='',titulo='',txt='';
+    if(dias<=0){
+      urg='fim';titulo='⛔ Seu teste grátis acabou';
+      txt='Reative agora pra voltar com seu cardápio, promoções e eventos no ar — e no Premium sua logo aparece no mapa.';
+    }else if(dias<=2){
+      urg='urgente';titulo='⏳ Seu teste grátis acaba em '+dias+(dias===1?' dia':' dias');
+      txt='Assine pra não perder seu cardápio, promoções e eventos. No Premium, sua logo ainda aparece no mapa.';
+    }else{
+      titulo='⏳ Seu teste grátis acaba em '+dias+' dias';
+      txt='Continue com o Moviki e mantenha tudo no ar. No Premium, sua logo aparece no mapa e você ganha destaque.';
+    }
+    b.className='bannerTrial'+(urg?(' '+urg):'');
+    b.innerHTML='<div class="btTexto"><div class="btTitulo">'+titulo+'</div><div class="btSub">'+txt+'</div></div><button type="button" class="btBtn" onclick="abrirPlano()">Assinar agora</button>';
+  }
+  function renderStatusPlano(){
+    const s=el('mpStatus');if(!s)return;
+    if(planoPainel==='pro'||planoPainel==='premium'||planoPainel==='enterprise'){
+      let ate='';if(dadosAssinatura&&dadosAssinatura.vence_em){ate=' até '+new Date(dadosAssinatura.vence_em.toMillis()).toLocaleDateString('pt-BR');}
+      s.innerHTML='✅ Seu plano atual: <b>'+(planoPainel==='enterprise'?'Enterprise':planoPainel==='premium'?'Premium':'Pró')+'</b>'+ate+'. <span style=\'color:#8fd8a0\'>Renova automaticamente — você não precisa reassinar.</span>';
+    }else{s.innerHTML='Seu plano atual: <b>Básico</b> (grátis). Escolha Pró ou Premium — ou fale com a gente pro Enterprise (vários pontos).';}
+  }
+  let planoSel=null,periodoSel=null;
+  const _precoLabel={pro:{mensal:'Mensal · R$ 37,90',trimestral:'Trimestral · R$ 99,90',anual:'Anual · R$ 379,00'},premium:{mensal:'Mensal · R$ 49,90',trimestral:'Trimestral · R$ 134,90',anual:'Anual · R$ 499,00'},enterprise:{mensal:'Mensal · R$ 99,90'}};
+  window.selecionarPlano=function(plano,periodo,btn){
+    planoSel=plano;periodoSel=periodo;
+    document.querySelectorAll('.mpBtn').forEach(b=>b.classList.remove('sel'));
+    if(btn)btn.classList.add('sel');
+    // destaca o CARD escolhido (Enterprise em dourado)
+    document.querySelectorAll('.mpPlano').forEach(c=>c.classList.remove('selCard','selCardEnt'));
+    var card = (plano==='enterprise') ? document.querySelector('.mpEnt') : (btn?btn.closest('.mpPlano'):null);
+    if(card){ card.classList.add('selCard'); if(plano==='enterprise') card.classList.add('selCardEnt'); }
+    const nome=plano==='enterprise'?'Enterprise':plano==='premium'?'Premium':'Pró';
+    const info=el('mpSelInfo');info.classList.remove('escondido');
+    info.classList.toggle('selEnt', plano==='enterprise');
+    info.innerHTML='Selecionado: <b>'+nome+'</b> · '+_precoLabel[plano][periodo];
+    var cf=el('mpConfirmar'); cf.disabled=false;
+    cf.classList.add('pulsar');
+    cf.classList.toggle('entMode', plano==='enterprise');
+    el('mpAviso').textContent='';
+    // rola até o botão pra ele ver que é o próximo passo
+    try{ cf.scrollIntoView({behavior:'smooth',block:'nearest'}); }catch(_){}
+  };
+  window.confirmarPlano=async function(){
+    const av=el('mpAviso');av.style.color='#9fb3c8';av.textContent='';
+    if(!planoSel){av.style.color='#ff9b9b';av.textContent='Escolha um plano primeiro.';return;}
+    const cpf=(el('cpfAssinatura').value||'').replace(/\D/g,'');
+    if(cpf.length!==11&&cpf.length!==14){av.style.color='#ff9b9b';av.textContent='Informe um CPF (11 dígitos) ou CNPJ (14).';return;}
+    if(!usuarioAtual){av.style.color='#ff9b9b';av.textContent='Faça login primeiro.';return;}
+    const c=el('mpConfirmar');const txt=c.textContent;c.disabled=true;c.textContent='Gerando seu pagamento...';
+    av.textContent='Gerando seu pagamento...';
+    try{
+      const token=await usuarioAtual.getIdToken();
+      const r=await fetch(ROBO+'/api/criar-assinatura',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({plano:planoSel,periodo:periodoSel,cpfCnpj:cpf,nome:(el('nome').value||'').trim(),email:usuarioAtual.email})});
+      const data=await r.json();
+      if(r.ok&&data.invoiceUrl){window.location.href=data.invoiceUrl;return;}
+      if(data&&data.motivo==='ja_ativo'){av.style.color='#8fd8a0';av.textContent=data.erro||'Você já tem um plano ativo — ele renova sozinho.';}else{av.style.color='#ff9b9b';av.textContent=data.erro||'Não consegui gerar o pagamento. Tente de novo.';}
+      c.disabled=false;c.textContent=txt;
+    }catch(e){av.style.color='#ff9b9b';av.textContent='Erro de conexão. Tente de novo.';c.disabled=false;c.textContent=txt;}
+  };
+
+  /* ---- TABS ---- */
+  window.abrirTab=function(nome){
+    const alvo=document.querySelector('.tab[data-tab="'+nome+'"]');
+    if(alvo&&alvo.classList.contains('travada')){mostrarAvisoPlano();return;}
+    document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('ativa',b.dataset.tab===nome));
+    document.querySelectorAll('.tabConteudo').forEach(c=>c.classList.add('escondido'));
+    el('tab-'+nome).classList.remove('escondido');
+  };
+
+  /* ---- PAINEL util ---- */
+  const avisoP=el('avisoP');
+  function limparAvisoP(){avisoP.className='aviso';avisoP.textContent='';}
+  function okP(t){avisoP.className='aviso ok';avisoP.textContent=t;}
+  function erroP(t){avisoP.className='aviso erro';avisoP.textContent=t;}
+  window.setStatus=function(s){statusAtual=s;el('btnAberto').className='statusBtn'+(s==='aberto'?' aberto':'');el('btnFechado').className='statusBtn'+(s==='fechado'?' fechado':'');};
+  window.carregarAvaliacoesPainel=async function(){
+    const resumo=el('avalResumo'),lista=el('avalLista');
+    if(!usuarioAtual||!resumo)return;
+    resumo.innerHTML='Carregando...';if(lista)lista.innerHTML='';
+    try{
+      const qs=await getDocs(collection(db,'negocios',usuarioAtual.uid,'avaliacoes'));
+      let n=0,soma=0;const itens=[];
+      qs.forEach(dd=>{const a=dd.data();const r=Number(a.nota||0);if(r>=1&&r<=5){n++;soma+=r;itens.push(a);}});
+      if(n===0){resumo.innerHTML='Você ainda não recebeu avaliações.<br><span class="avalQtd">Divulgue seu link e peça pros clientes avaliarem.</span>';return;}
+      const media=soma/n,cheias=Math.round(media);
+      const estrelaCheia='<svg class="full" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.26-.36L12 2z"/></svg>';
+      const estrelaVazia='<svg class="empty" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.26-.36L12 2z"/></svg>';
+      let starsHtml='';for(let i=1;i<=5;i++) starsHtml+=(i<=cheias?estrelaCheia:estrelaVazia);
+      resumo.innerHTML='<div class="avalNota"><b>'+media.toFixed(1).replace('.',',')+'</b><span class="avalEst">'+starsHtml+'</span></div><div class="avalQtd">'+n+' avaliação'+(n>1?'ões':'')+'</div>';
+      itens.sort((a,b)=>((b.criadoEm&&b.criadoEm.seconds||0)-(a.criadoEm&&a.criadoEm.seconds||0)));
+      lista.innerHTML=itens.slice(0,50).map(a=>{const r=Number(a.nota||0);let e='';for(let i=1;i<=5;i++) e+=(i<=r?estrelaCheia:estrelaVazia);const nm=(a.nome||'Cliente').toString().slice(0,40).replace(/[<>]/g,'');const tx=(a.comentario||'').toString().slice(0,300).replace(/[<>]/g,'');return '<div class="avalItem"><div class="avalTopo"><span class="avalEst">'+e+'</span> <b>'+nm+'</b></div>'+(tx?'<div class="avalTxt">'+tx+'</div>':'')+'</div>';}).join('');
+    }catch(e){resumo.innerHTML='⭐ As avaliações ainda não estão ativadas no servidor. Me avise que eu ativo (regras do Firebase).';}
+  };
+  function mostrarLogoPreview(url){
+    var p=el('logoPreview'); if(!p)return;
+    p.innerHTML = url ? '<img src="'+url+'" alt="logo" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #00D4FF">' : '<span style="font-size:13px;color:#7f95b3">Nenhuma logo enviada ainda.</span>';
+  }
+  function comprimirImagem(file){
+    return new Promise(function(resolve,reject){
+      var img=new Image(), rd=new FileReader();
+      rd.onload=function(){ img.onload=function(){
+        var size=256, cv=document.createElement('canvas'); cv.width=size; cv.height=size;
+        var ctx=cv.getContext('2d');
+        var m=Math.min(img.width,img.height), sx=(img.width-m)/2, sy=(img.height-m)/2;
+        ctx.drawImage(img,sx,sy,m,m,0,0,size,size);
+        resolve(cv.toDataURL('image/jpeg',0.85));
+      }; img.onerror=function(){reject(new Error('img'));}; img.src=rd.result; };
+      rd.onerror=function(){reject(new Error('read'));}; rd.readAsDataURL(file);
+    });
+  }
+  window.enviarLogo=async function(input){
+    var file=input.files&&input.files[0]; if(!file)return;
+    var msg=el('logoMsg');
+    if(!/^image\//.test(file.type)){ if(msg){msg.style.color='#ff6b6b';msg.textContent='Escolha um arquivo de imagem.';} input.value=''; return; }
+    if(msg){msg.style.color='#9fb3d0';msg.textContent='Enviando logo...';}
+    try{
+      var dataUrl=await comprimirImagem(file);
+      var idToken=await usuarioAtual.getIdToken();
+      var r=await fetch('https://moviki-robo.vercel.app/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl})});
+      var j=await r.json().catch(function(){return {};});
+      if(r.ok&&j.ok&&j.url){ mostrarLogoPreview(j.url); if(msg){msg.style.color='#3ddc97';msg.textContent='Logo salva! \u2713 Aparece no seu pino no plano Premium.';} }
+      else{
+        var m='Não deu certo. Tente de novo.';
+        if(j.motivo==='sem_config') m='Configuração de imagem pendente no servidor.';
+        else if(r.status===413) m='Imagem muito grande. Tente uma menor.';
+        else if(r.status===401) m='Sessão expirada — saia e entre de novo.';
+        if(msg){msg.style.color='#ff6b6b';msg.textContent=m;}
+      }
+    }catch(e){ if(msg){msg.style.color='#ff6b6b';msg.textContent='Falha ao enviar. Verifique a conexão.';} }
+    input.value='';
+  };
+  window.pegarLocalizacao=function(){limparAvisoP();if(!navigator.geolocation){erroP('Seu aparelho não tem GPS no navegador.');return;}el('gpsInfo').innerHTML='📍 Pegando localização...';navigator.geolocation.getCurrentPosition((pos)=>{coords={lat:pos.coords.latitude,lng:pos.coords.longitude};el('gpsInfo').innerHTML='📍 <b>Localização capturada!</b><br>'+coords.lat.toFixed(5)+', '+coords.lng.toFixed(5)+' <span style="color:#7f95b3">(lembre de Salvar)</span>';atualizarOnboarding(false);},(err)=>{if(err.code===1)erroP('Você bloqueou a localização. Libere nas permissões do navegador.');else erroP('Não consegui pegar a localização.');el('gpsInfo').innerHTML='📍 Localização ainda não definida.';},{enableHighAccuracy:true,timeout:10000});};
+
+  /* ---- CARDÁPIO (categorias -> produtos) ---- */
+  function vazioCat(){el('vazioCat').classList.toggle('escondido',el('listaCategorias').children.length>0);}
+  function novaProdRow(catBloco,nome='',preco='',acabando=false,fotos=[]){
+    const r=document.createElement('div');r.className='prodRow';
+    r._fotos=Array.isArray(fotos)?fotos.filter(Boolean).slice(0,3):[];
+    r.innerHTML='<input class="p-nome" type="text" placeholder="Nome do produto"><div class="prodLinha2"><input class="p-preco" type="text" placeholder="R$ 0,00"><label class="acabLbl"><input type="checkbox" class="p-acab"> acabando</label><button class="rmv" type="button" title="Remover produto">✕</button></div><div class="prodGaleria"></div>';
+    r.querySelector('.p-nome').value=nome;r.querySelector('.p-preco').value=preco;r.querySelector('.p-acab').checked=!!acabando;
+    r.querySelector('.rmv').onclick=()=>r.remove();
+    renderFotos(r);
+    catBloco.querySelector('.listaProdutos').appendChild(r);
+  }
+  function renderFotos(r){
+    const g=r.querySelector('.prodGaleria'); if(!g)return;
+    g.innerHTML='';
+    (r._fotos||[]).forEach((url,i)=>{
+      const s=document.createElement('div');s.className='fSlot';
+      const im=document.createElement('img');im.src=url;im.alt='foto do produto';
+      const rm=document.createElement('button');rm.type='button';rm.className='rmF';rm.title='Remover';rm.textContent='✕';
+      rm.onclick=()=>{r._fotos.splice(i,1);renderFotos(r);};
+      s.appendChild(im);s.appendChild(rm);g.appendChild(s);
+    });
+    if((r._fotos||[]).length<3){
+      const add=document.createElement('button');add.type='button';add.className='fAdd';
+      add.innerHTML='<span style="font-size:17px;line-height:1">＋</span><span>Foto</span>';
+      add.onclick=()=>escolherFoto(r,add);
+      g.appendChild(add);
+    }
+    const hint=document.createElement('div');hint.className='fHint';
+    hint.textContent=(r._fotos&&r._fotos.length)?(r._fotos.length+' de 3 fotos'):'📷 Toque no ＋ e ponha a foto do seu produto aqui (até 3)';
+    g.appendChild(hint);
+  }
+  function escolherFoto(r,addBtn){
+    const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+    inp.onchange=async function(){
+      const file=inp.files&&inp.files[0]; if(!file)return;
+      if(!/^image\//.test(file.type)){toast('Escolha um arquivo de imagem.',true);return;}
+      if(addBtn){addBtn.disabled=true;addBtn.innerHTML='<span style="font-size:10.5px">Enviando…</span>';}
+      try{
+        const dataUrl=await comprimirQuadrado(file,640);
+        const idToken=await usuarioAtual.getIdToken();
+        const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
+        const j=await resp.json().catch(function(){return {};});
+        if(resp.ok&&j.ok&&j.url){ r._fotos.push(j.url); renderFotos(r); toast('Foto adicionada. Não esqueça de Salvar.'); }
+        else{ var m='Não deu certo. Tente de novo.'; if(j&&j.motivo==='sem_config')m='Config de imagem pendente no servidor.'; else if(resp.status===413)m='Imagem muito grande. Tente outra.'; else if(resp.status===401)m='Sessão expirada — saia e entre de novo.'; toast(m,true); renderFotos(r); }
+      }catch(e){ toast('Falha ao enviar a foto. Confira a conexão.',true); renderFotos(r); }
+    };
+    inp.click();
+  }
+  function comprimirQuadrado(file,size){
+    return new Promise(function(resolve,reject){
+      var img=new Image(), rd=new FileReader();
+      rd.onload=function(){ img.onload=function(){
+        var s=size||640, cv=document.createElement('canvas'); cv.width=s; cv.height=s;
+        var ctx=cv.getContext('2d');
+        var m=Math.min(img.width,img.height), sx=(img.width-m)/2, sy=(img.height-m)/2;
+        ctx.drawImage(img,sx,sy,m,m,0,0,s,s);
+        resolve(cv.toDataURL('image/jpeg',0.72));
+      }; img.onerror=function(){reject(new Error('img'));}; img.src=rd.result; };
+      rd.onerror=function(){reject(new Error('read'));}; rd.readAsDataURL(file);
+    });
+  }
+  function comprimirProporcional(file,maxLado){
+    return new Promise(function(resolve,reject){
+      var img=new Image(), rd=new FileReader();
+      rd.onload=function(){ img.onload=function(){
+        var M=maxLado||1080, w=img.width, h=img.height;
+        if(w>=h){ if(w>M){ h=Math.round(h*M/w); w=M; } }
+        else { if(h>M){ w=Math.round(w*M/h); h=M; } }
+        var cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+        var ctx=cv.getContext('2d');
+        ctx.drawImage(img,0,0,w,h);
+        resolve(cv.toDataURL('image/jpeg',0.75));
+      }; img.onerror=function(){reject(new Error('img'));}; img.src=rd.result; };
+      rd.onerror=function(){reject(new Error('read'));}; rd.readAsDataURL(file);
+    });
+  }
+  function toast(msg,erro){
+    var t=document.getElementById('mvToast');
+    if(!t){t=document.createElement('div');t.id='mvToast';t.style.cssText='position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:99999;max-width:88%;padding:12px 18px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;transition:opacity .2s;pointer-events:none;text-align:center;';document.body.appendChild(t);}
+    t.style.background=erro?'#e74c3c':'#1f8f5f';t.style.color='#fff';t.textContent=msg;
+    t.style.opacity='1'; clearTimeout(t._h); t._h=setTimeout(function(){t.style.opacity='0';},2800);
+  }
+  function estadoFotos(){
+    const d=dadosAssinatura; if(!d)return 'bloqueado';
+    const ativo=d.ativo===true&&(!d.vence_em||d.vence_em.toMillis()>Date.now());
+    if(ativo&&(d.plano==='premium'||d.plano==='enterprise'))return 'premium';
+    if(ativo&&d.periodo==='trial')return 'trial';
+    return 'bloqueado';
+  }
+  function atualizarNotaFotos(){
+    const n=el('notaFotos'); if(!n)return;
+    const e=estadoFotos();
+    if(e==='premium'){ n.innerHTML='📸 <b>Fotos ativas.</b> As fotos dos seus produtos aparecem no seu site pra quem visita — capriche pra dar água na boca.'; }
+    else if(e==='trial'){ n.innerHTML='📸 <b>No teste grátis suas fotos já aparecem no site!</b> Aproveite pra caprichar nas fotos dos produtos. Pra elas continuarem aparecendo quando o teste acabar, assine o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
+    else { n.innerHTML='📸 <b>Fotos são um recurso do Premium.</b> Pode adicionar as fotos agora — elas passam a aparecer no seu site assim que você assinar o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
+  }
+
+  /* ---- GALERIA DO NEGÓCIO (aba Fotos) ---- */
+  const GAL_MAX=12;
+  let _galeria=[];
+  function galSet(arr){_galeria=(arr||[]).filter(fotoUrlOk).slice(0,GAL_MAX);renderGaleria();}
+  function lerGaleria(){return _galeria.slice();}
+  function atualizarNotaGaleria(){
+    const n=el('notaGaleria'); if(!n)return;
+    const e=estadoFotos();
+    if(e==='premium'){ n.innerHTML='📸 <b>Galeria ativa.</b> Suas fotos aparecem numa aba <b>Fotos</b> na sua página pública.'; }
+    else if(e==='trial'){ n.innerHTML='📸 <b>No teste grátis sua galeria já aparece no site!</b> Capriche nas fotos. Pra continuarem no ar depois do teste, assine o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
+    else { n.innerHTML='📸 <b>A galeria é um recurso do Premium.</b> Pode adicionar as fotos agora — elas passam a aparecer no site assim que você assinar o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
+  }
+  function renderGaleria(){
+    const g=el('galGrade'); if(!g)return;
+    atualizarNotaGaleria();
+    const c=el('galContador'); if(c)c.textContent=_galeria.length+' / '+GAL_MAX;
+    let h='';
+    _galeria.forEach(function(u,i){
+      h+='<div class="galCel"><img src="'+u+'" alt="foto" loading="lazy"><button type="button" class="rmF" title="Remover" onclick="removerFotoGaleria('+i+')">✕</button></div>';
+    });
+    if(_galeria.length<GAL_MAX){
+      h+='<button type="button" class="galAdd" id="galAddBtn" onclick="escolherFotoGaleria()"><span class="mais">＋</span><span>Adicionar foto</span></button>';
+    }
+    g.innerHTML=h;
+  }
+  window.removerFotoGaleria=function(i){ _galeria.splice(i,1); renderGaleria(); toast('Foto removida. Não esqueça de Salvar.'); };
+  window.escolherFotoGaleria=function(){
+    if(_galeria.length>=GAL_MAX){toast('Você já atingiu o limite de '+GAL_MAX+' fotos.',true);return;}
+    const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+    inp.onchange=async function(){
+      const file=inp.files&&inp.files[0]; if(!file)return;
+      if(!/^image\//.test(file.type)){toast('Escolha uma imagem.',true);return;}
+      const add=el('galAddBtn'); if(add){add.disabled=true;add.innerHTML='<span style="font-size:12px">Enviando…</span>';}
+      try{
+        const dataUrl=await comprimirProporcional(file,1080);
+        const idToken=await usuarioAtual.getIdToken();
+        const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
+        const j=await resp.json().catch(function(){return {};});
+        if(resp.ok&&j.ok&&j.url){ _galeria.push(j.url); renderGaleria(); toast('Foto adicionada. Não esqueça de Salvar.'); }
+        else{ toast('Não deu certo. Tente de novo.',true); renderGaleria(); }
+      }catch(e){ toast('Falha ao enviar. Confira a conexão.',true); renderGaleria(); }
+    };
+    inp.click();
+  };
+  const CORES_CAT=[
+    {b:'#00d4ff',g:'rgba(0,212,255,.10)'},
+    {b:'#ff8a3d',g:'rgba(255,138,61,.10)'},
+    {b:'#42d392',g:'rgba(66,211,146,.10)'},
+    {b:'#b57bff',g:'rgba(181,123,255,.10)'},
+    {b:'#ff6b9d',g:'rgba(255,107,157,.10)'},
+    {b:'#ffd166',g:'rgba(255,209,102,.10)'}
+  ];
+  window.adicionarCategoria=function(nome='',produtos=[],capa=''){
+    const b=document.createElement('div');b.className='catBloco';
+    b._capa=fotoUrlOk(capa)?capa:'';
+    const _c=CORES_CAT[el('listaCategorias').children.length%CORES_CAT.length];
+    b.style.borderLeft='4px solid '+_c.b;
+    b.style.background='linear-gradient(100deg,'+_c.g+',rgba(255,255,255,.02) 55%)';
+    b.innerHTML='<div class="catCab"><input class="cat-nome" type="text" placeholder="Nome da categoria (ex.: Caldos)"><button class="rmv" title="Remover categoria">✕</button></div><div class="catCapa"></div><div class="listaProdutos"></div><button class="addProd">+ Produto</button>';
+    b.querySelector('.cat-nome').value=nome;
+    b.querySelector('.rmv').onclick=()=>{b.remove();vazioCat();};
+    b.querySelector('.addProd').onclick=()=>novaProdRow(b);
+    el('listaCategorias').appendChild(b);
+    renderCapaCat(b);
+    (produtos&&produtos.length?produtos:[{}]).forEach(p=>novaProdRow(b,p.nome||'',p.preco||'',p.acabando,p.fotos||[]));
+    vazioCat();
+  };
+  function fotoUrlOk(u){return typeof u==='string'&&/^https:\/\/[a-z0-9.-]*(ibb\.co|firebasestorage\.googleapis\.com|firebasestorage\.app)\//i.test(u);}
+  function renderCapaCat(b){
+    const g=b.querySelector('.catCapa'); if(!g)return;
+    g.innerHTML='';
+    const lbl=document.createElement('div');lbl.className='capaLbl';lbl.textContent='Foto de capa da categoria (aparece na grade do cardápio):';g.appendChild(lbl);
+    if(b._capa){
+      const sl=document.createElement('div');sl.className='capaSlot';
+      const im=document.createElement('img');im.src=b._capa;im.alt='capa';
+      const rm=document.createElement('button');rm.type='button';rm.className='rmF';rm.title='Remover capa';rm.textContent='✕';
+      rm.onclick=()=>{b._capa='';renderCapaCat(b);};
+      sl.appendChild(im);sl.appendChild(rm);g.appendChild(sl);
+    } else {
+      const add=document.createElement('button');add.type='button';add.className='capaAdd';
+      add.innerHTML='<span style=\"font-size:18px;line-height:1\">＋</span><span>Imagem de capa da categoria aqui</span>';
+      add.onclick=()=>escolherCapaCat(b,add);
+      g.appendChild(add);
+    }
+  }
+  function escolherCapaCat(b,addBtn){
+    const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+    inp.onchange=async function(){
+      const file=inp.files&&inp.files[0]; if(!file)return;
+      if(!/^image\//.test(file.type)){toast('Escolha uma imagem.',true);return;}
+      if(addBtn){addBtn.disabled=true;addBtn.innerHTML='<span style="font-size:12px">Enviando…</span>';}
+      try{
+        const dataUrl=await comprimirQuadrado(file,640);
+        const idToken=await usuarioAtual.getIdToken();
+        const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
+        const j=await resp.json().catch(function(){return {};});
+        if(resp.ok&&j.ok&&j.url){ b._capa=j.url; renderCapaCat(b); toast('Capa adicionada. Não esqueça de Salvar.'); }
+        else{ toast('Não deu certo. Tente de novo.',true); renderCapaCat(b); }
+      }catch(e){ toast('Falha ao enviar. Confira a conexão.',true); renderCapaCat(b); }
+    };
+    inp.click();
+  }
+  function lerCardapio(){
+    const cats=[];
+    el('listaCategorias').querySelectorAll('.catBloco').forEach(b=>{
+      const nome=b.querySelector('.cat-nome').value.trim();if(!nome)return;
+      const produtos=[];
+      b.querySelectorAll('.prodRow').forEach(r=>{const pn=r.querySelector('.p-nome').value.trim();if(!pn)return;const it={nome:pn,preco:r.querySelector('.p-preco').value.trim(),acabando:r.querySelector('.p-acab').checked};if(r._fotos&&r._fotos.length)it.fotos=r._fotos.slice(0,3);produtos.push(it);});
+      const catObj={categoria:nome,produtos};if(b._capa)catObj.capa=b._capa;cats.push(catObj);
+    });
+    return cats;
+  }
+
+  /* ---- PROMOÇÕES ---- */
+  function vazioPromo(){el('vazioPromo').classList.toggle('escondido',el('listaPromos').children.length>0);}
+  window.adicionarPromo=function(titulo='',detalhe='',capa=''){
+    const r=document.createElement('div');r.className='catBloco';
+    r._capa=fotoUrlOk(capa)?capa:'';
+    r.innerHTML='<div class="linha2"><input class="pr-tit" type="text" placeholder="Título (ex.: Combo 2 por R$20)"><button class="rmv">✕</button></div><input class="pr-det" type="text" placeholder="Detalhe (opcional)"><div class="promoCapaSlot" style="margin-top:10px"></div>';
+    r.querySelector('.pr-tit').value=titulo;r.querySelector('.pr-det').value=detalhe;
+    r.querySelector('.rmv').onclick=()=>{r.remove();vazioPromo();};
+    el('listaPromos').appendChild(r);renderCapaPromo(r);vazioPromo();
+  };
+  function lerPromos(){const a=[];el('listaPromos').querySelectorAll('.catBloco').forEach(r=>{const t=r.querySelector('.pr-tit').value.trim();if(!t)return;const o={titulo:t,detalhe:r.querySelector('.pr-det').value.trim()};if(r._capa)o.capa=r._capa;a.push(o);});return a;}
+  function renderCapaPromo(r){
+    const g=r.querySelector('.promoCapaSlot'); if(!g)return;
+    g.innerHTML='';
+    const lbl=document.createElement('div');lbl.className='capaLbl';lbl.textContent='Foto de capa (aparece na promo, do lado esquerdo):';g.appendChild(lbl);
+    if(r._capa){
+      const sl=document.createElement('div');sl.className='capaSlot';
+      const im=document.createElement('img');im.src=r._capa;im.alt='capa';
+      const rm=document.createElement('button');rm.type='button';rm.className='rmF';rm.title='Remover capa';rm.textContent='✕';
+      rm.onclick=()=>{r._capa='';renderCapaPromo(r);};
+      sl.appendChild(im);sl.appendChild(rm);g.appendChild(sl);
+    } else {
+      const add=document.createElement('button');add.type='button';add.className='capaAdd';
+      add.innerHTML='<span style=\"font-size:18px;line-height:1\">＋</span><span>Imagem da promoção aqui</span>';
+      add.onclick=()=>escolherCapaPromo(r,add);
+      g.appendChild(add);
+    }
+  }
+  function escolherCapaPromo(r,addBtn){
+    const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+    inp.onchange=async function(){
+      const file=inp.files&&inp.files[0]; if(!file)return;
+      if(!/^image\//.test(file.type)){toast('Escolha uma imagem.',true);return;}
+      if(addBtn){addBtn.disabled=true;addBtn.innerHTML='<span style="font-size:12px">Enviando…</span>';}
+      try{
+        const dataUrl=await comprimirProporcional(file,1080);
+        const idToken=await usuarioAtual.getIdToken();
+        const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
+        const j=await resp.json().catch(function(){return {};});
+        if(resp.ok&&j.ok&&j.url){ r._capa=j.url; renderCapaPromo(r); toast('Capa adicionada. Não esqueça de Salvar.'); }
+        else{ toast('Não deu certo. Tente de novo.',true); renderCapaPromo(r); }
+      }catch(e){ toast('Falha ao enviar. Confira a conexão.',true); renderCapaPromo(r); }
+    };
+    inp.click();
+  }
+
+  /* ---- EVENTOS ---- */
+  function vazioEvento(){el('vazioEvento').classList.toggle('escondido',el('listaEventos').children.length>0);}
+  window.adicionarEvento=function(titulo='',quando='',detalhe='',capa=''){
+    const r=document.createElement('div');r.className='catBloco';
+    r._capa=fotoUrlOk(capa)?capa:'';
+    r.innerHTML='<div class="linha2"><input class="ev-tit" type="text" placeholder="Nome do evento"><button class="rmv">✕</button></div><input class="ev-quando" type="text" placeholder="Quando (ex.: Sáb 26/07 às 18h)" style="margin-bottom:8px"><input class="ev-det" type="text" placeholder="Local / detalhe (opcional)"><div class="eventoCapaSlot" style="margin-top:10px"></div>';
+    r.querySelector('.ev-tit').value=titulo;r.querySelector('.ev-quando').value=quando;r.querySelector('.ev-det').value=detalhe;
+    r.querySelector('.rmv').onclick=()=>{r.remove();vazioEvento();};
+    el('listaEventos').appendChild(r);renderCapaEvento(r);vazioEvento();
+  };
+  function lerEventos(){const a=[];el('listaEventos').querySelectorAll('.catBloco').forEach(r=>{const t=r.querySelector('.ev-tit').value.trim();if(!t)return;const o={titulo:'',titulo:t,quando:r.querySelector('.ev-quando').value.trim(),detalhe:r.querySelector('.ev-det').value.trim()};if(r._capa)o.capa=r._capa;a.push(o);});return a;}
+  function renderCapaEvento(r){
+    const g=r.querySelector('.eventoCapaSlot'); if(!g)return;
+    g.innerHTML='';
+    const lbl=document.createElement('div');lbl.className='capaLbl';lbl.textContent='Foto de capa (aparece no evento, do lado direito):';g.appendChild(lbl);
+    if(r._capa){
+      const sl=document.createElement('div');sl.className='capaSlot';
+      const im=document.createElement('img');im.src=r._capa;im.alt='capa';
+      const rm=document.createElement('button');rm.type='button';rm.className='rmF';rm.title='Remover capa';rm.textContent='✕';
+      rm.onclick=()=>{r._capa='';renderCapaEvento(r);};
+      sl.appendChild(im);sl.appendChild(rm);g.appendChild(sl);
+    } else {
+      const add=document.createElement('button');add.type='button';add.className='capaAdd';
+      add.innerHTML='<span style=\"font-size:18px;line-height:1\">＋</span><span>Imagem do evento aqui</span>';
+      add.onclick=()=>escolherCapaEvento(r,add);
+      g.appendChild(add);
+    }
+  }
+  function escolherCapaEvento(r,addBtn){
+    const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+    inp.onchange=async function(){
+      const file=inp.files&&inp.files[0]; if(!file)return;
+      if(!/^image\//.test(file.type)){toast('Escolha uma imagem.',true);return;}
+      if(addBtn){addBtn.disabled=true;addBtn.innerHTML='<span style="font-size:12px">Enviando…</span>';}
+      try{
+        const dataUrl=await comprimirProporcional(file,1080);
+        const idToken=await usuarioAtual.getIdToken();
+        const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
+        const j=await resp.json().catch(function(){return {};});
+        if(resp.ok&&j.ok&&j.url){ r._capa=j.url; renderCapaEvento(r); toast('Capa adicionada. Não esqueça de Salvar.'); }
+        else{ toast('Não deu certo. Tente de novo.',true); renderCapaEvento(r); }
+      }catch(e){ toast('Falha ao enviar. Confira a conexão.',true); renderCapaEvento(r); }
+    };
+    inp.click();
+  }
+
+  /* ---- LINK ---- */
+  function limpaSlug(v){return (v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'');}
+  function mostrarLink(slug){slugSalvo=slug;el('linkPublico').textContent='moviki.com.br/'+slug;el('linkPublico').href='https://moviki.com.br/'+slug;el('linkPronto').classList.remove('escondido');}
+  window.copiarLink=function(){if(!slugSalvo)return;navigator.clipboard.writeText('https://moviki.com.br/'+slugSalvo).then(()=>{const b=el('btnCopiar');b.textContent='Copiado!';setTimeout(()=>b.textContent='Copiar',1500);});};
+
+  /* ---- SALVAR ---- */
+  window.salvar=async function(){
+    if(!usuarioAtual)return;
+    const btn=el('btnSalvar');limparAvisoP();
+    const nome=el('nome').value.trim();
+    if(!nome){abrirTab('perfil');erroP('Dê um nome ao seu negócio (aba Perfil).');return;}
+    const apelidoDigitado=el('apelido').value.trim();
+    let slug='';
+    if(apelidoDigitado){slug=limpaSlug(apelidoDigitado);if(slug.length<3){abrirTab('perfil');erroP('O apelido precisa ter ao menos 3 letras/números (sem espaços ou acentos).');return;}if(RESERVADOS.includes(slug)){abrirTab('perfil');erroP('Esse apelido é reservado, escolha outro.');return;}}
+    btn.disabled=true;const t=btn.textContent;btn.textContent='Salvando...';
+    try{
+      if(slug){const ref=doc(db,'slugs',slug);const snap=await getDoc(ref);if(snap.exists()&&snap.data().uid!==usuarioAtual.uid){abrirTab('perfil');erroP('O apelido "'+slug+'" já está em uso. Escolha outro.');btn.disabled=false;btn.textContent=t;return;}if(!snap.exists()){await setDoc(ref,{uid:usuarioAtual.uid});}el('apelido').value=slug;}
+      const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),fotos:lerGaleria(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
+      var _cor=el('corInput')?el('corInput').value:'';if(/^#[0-9a-fA-F]{6}$/.test(_cor))dados.cor=_cor;dados.whiteLabel=el('wlToggle')?!!el('wlToggle').checked:false;
+      if(coords){dados.lat=coords.lat;dados.lng=coords.lng;}
+      if(slug){dados.slug=slug;}
+      await setDoc(doc(db,'negocios',usuarioAtual.uid),dados,{merge:true});
+      okP('✅ Tudo salvo!');
+      if(slug) mostrarLink(slug);
+      onbSalvo=true;atualizarOnboarding(false);
+    }catch(e){erroP('Não consegui salvar: '+(e.code||e.message));}
+    btn.disabled=false;btn.textContent=t;
+  };
+
+  /* ---- ONBOARDING (primeiros passos do lojista novo) ---- */
+  let onbOculto=false, onbSalvo=false, onbDone=false;
+  window.ocultarOnboarding=function(){onbOculto=true;onbDone=true;try{if(usuarioAtual&&usuarioAtual.uid)localStorage.setItem('moviki_onb_'+usuarioAtual.uid,'1');}catch(_){}const b=el('onboarding');if(b)b.classList.add('escondido');};
+  window.irPasso=function(qual){
+    abrirTab(qual==='local'?'local':'perfil');
+    setTimeout(function(){
+      if(qual==='nome'){const n=el('nome');n.focus();n.scrollIntoView({behavior:'smooth',block:'center'});}
+      else if(qual==='link'){const a=el('apelido');a.focus();a.scrollIntoView({behavior:'smooth',block:'center'});}
+      else{const t=el('tab-local');if(t)t.scrollIntoView({behavior:'smooth',block:'center'});}
+    },70);
+  };
+  function _marcaPasso(id,n,feito){const p=el(id);if(!p)return;p.classList.toggle('feito',feito);const m=p.querySelector('.mark');if(m)m.textContent=feito?'✓':n;}
+  window.atualizarOnboarding=function(inicial){
+    const box=el('onboarding');if(!box)return;
+    const temNome=!!el('nome').value.trim();
+    const temLink=!!(el('apelido').value.trim()||slugSalvo);
+    const temLocal=!!coords;
+    _marcaPasso('onbNome','1',temNome);_marcaPasso('onbLink','2',temLink);_marcaPasso('onbLocal','3',temLocal);
+    const feitos=(temNome?1:0)+(temLink?1:0)+(temLocal?1:0);
+    const barra=el('onbProgresso');if(barra)barra.style.width=(feitos/3*100)+'%';
+    const fin=el('onbFinal');
+    if(fin)fin.innerHTML = feitos===3 ? '✅ Tudo pronto! Toque em <b>Salvar tudo</b> aqui embaixo e deixe como <b>Aberto</b> quando estiver funcionando.' : '';
+    if(feitos===3){onbDone=true;try{if(usuarioAtual&&usuarioAtual.uid)localStorage.setItem('moviki_onb_'+usuarioAtual.uid,'1');}catch(_){}}
+    const esconder = onbOculto || onbSalvo || onbDone;
+    box.classList.toggle('escondido', esconder);
+  };
+
+  async function carregarDados(uid){
+    try{
+      const snap=await getDoc(doc(db,'negocios',uid));
+      if(snap.exists()){
+        const d=snap.data();
+        el('nome').value=d.nome||'';el('recado').value=d.recado||'';el('apelido').value=d.slug||'';if(el('whatsapp'))el('whatsapp').value=d.whatsapp||'';
+        if(el('corInput'))el('corInput').value=(typeof d.cor==='string'&&/^#[0-9a-fA-F]{6}$/.test(d.cor))?d.cor:'#00D4FF';if(el('wlToggle'))el('wlToggle').checked=(d.whiteLabel===true);
+        setStatus(d.status||'fechado');
+        if(d.slug) mostrarLink(d.slug);
+        el('listaCategorias').innerHTML='';(d.cardapio||[]).forEach(c=>adicionarCategoria(c.categoria||'',c.produtos||[],c.capa||''));vazioCat();
+        el('listaPromos').innerHTML='';(d.promocoes||[]).forEach(p=>adicionarPromo(p.titulo||'',p.detalhe||'',p.capa||''));vazioPromo();
+        el('listaEventos').innerHTML='';(d.eventos||[]).forEach(e2=>adicionarEvento(e2.titulo||'',e2.quando||'',e2.detalhe||'',e2.capa||''));vazioEvento();
+        galSet(d.fotos||[]);
+        if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}mostrarLogoPreview(d.markerLogo||'');if(d.nome&&d.slug&&d.lat!=null&&d.lng!=null){onbDone=true;try{localStorage.setItem('moviki_onb_'+uid,'1');}catch(_){}}
+      }else{setStatus('fechado');vazioCat();vazioPromo();vazioEvento();galSet([]);mostrarLogoPreview('');}
+    }catch(e){setStatus('fechado');vazioCat();vazioPromo();vazioEvento();}
+  }
+
+  onAuthStateChanged(auth,async(user)=>{
+    usuarioAtual=user;
+    if(user){
+      el('formArea').style.display='none';el('painel').style.display='block';el('box').classList.add('largo');
+      el('oExEmail').textContent=user.email;
+      var _bv=el('bannerVerif');
+      if(user.emailVerified){_bv.classList.add('escondido');}
+      else{
+        el('bvTexto').innerHTML='⚠️ <b>Falta confirmar seu e-mail.</b> Enviamos um link para <b>'+user.email+'</b>. Abra seu e-mail e clique no link para ativar sua conta. Não achou? Veja a caixa de spam.';
+        el('bvAcoes').style.display='flex';
+        _bv.classList.remove('ok');_bv.classList.remove('escondido');
+      }
+      coords=null;slugSalvo='';onbOculto=false;onbSalvo=false;onbDone=false;try{if(user&&localStorage.getItem('moviki_onb_'+user.uid))onbDone=true;}catch(_){}el('linkPronto').classList.add('escondido');
+      el('listaCategorias').innerHTML='';el('listaPromos').innerHTML='';el('listaEventos').innerHTML='';galSet([]);
+      el('gpsInfo').innerHTML='📍 Localização ainda não definida.';
+      abrirTab('perfil');
+      await carregarDados(user.uid);
+      atualizarOnboarding(true);
+      await carregarPlanoPainel(user.uid);
+      if(!dadosAssinatura){ const _t=await garantirTrial(); if(_t){ await carregarPlanoPainel(user.uid); } }
+      aplicarPlanoNasAbas();
+      mostrarBannerTrial();
+      carregarParceiroPainel(user.uid);
+      try{ if(new URLSearchParams(location.search).get('plano')==='enterprise' && !ehEnterprisePainel()){ abrirPlano(); setTimeout(function(){ try{selecionarPlano('enterprise','mensal',null);}catch(_){}} ,150); } }catch(_){}
+    }else{
+      el('painel').style.display='none';el('formArea').style.display='block';el('box').classList.remove('largo');
+      el('email').value='';el('senha').value='';el('btnAcao').disabled=false;trocarAba('entrar');
+    }
+  });
+</script>
+<script>
+(function(){
+  var TIT={perfil:'Perfil',cardapio:'Cardápio',promocoes:'Promoções',eventos:'Eventos',local:'Localização',whatsapp:'WhatsApp',avaliacoes:'Avaliações'};
+  function $(id){return document.getElementById(id);}
+  function mostrarEditor(sec){
+    var g=$('grade'),e=$('editor'),t=$('editorTit');
+    if(g)g.classList.add('escondido');
+    if(e)e.classList.remove('escondido');
+    if(t)t.textContent=TIT[sec]||'';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  window.abrirMenu=function(){var d=$('drawer'),o=$('drawerOv');if(d)d.classList.add('on');if(o)o.classList.add('on');};
+  window.fecharMenu=function(){var d=$('drawer'),o=$('drawerOv');if(d)d.classList.remove('on');if(o)o.classList.remove('on');};
+  window.abrirIndica=function(){fecharMenu();if(window._ehParceiro&&window.abrirModalParceiro){window.abrirModalParceiro();return;}if(window.prepararCandidatura)window.prepararCandidatura();var m=$('modalIndica');if(m)m.classList.remove('escondido');};
+  window.fecharIndica=function(){var m=$('modalIndica');if(m)m.classList.add('escondido');};
+  window.compartilharConviteWhats=function(){
+    var msg='Olá! Tudo bem? 😊 Quero te apresentar o *Moviki* — o mapa inteligente que coloca o seu negócio no ar pra os clientes te encontrarem na hora. Você monta uma página só sua com cardápio, promoções, localização e avaliações. Vale muito a pena dar uma olhada: https://moviki.com.br/comerciantes.html';
+    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank','noopener');
+  };
+  window.voltarHome=function(){
+    var g=$('grade'),e=$('editor');
+    if(e)e.classList.add('escondido');
+    if(g)g.classList.remove('escondido');
+    if(typeof window.atualizarOnboarding==='function'){try{window.atualizarOnboarding(false);}catch(x){}}
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  window.irSecao=function(sec){
+    var tab=document.querySelector('.tab[data-tab="'+sec+'"]');
+    if(tab&&tab.classList.contains('travada')){ if(window.abrirPlano)window.abrirPlano(); return; }
+    if(window.abrirTab){ window.abrirTab(sec); }        // wrapped below -> shows editor
+    else { mostrarEditor(sec); }
+    if(sec==='avaliacoes' && window.carregarAvaliacoesPainel){ setTimeout(window.carregarAvaliacoesPainel,60); }
+  };
+  window.verMinhaPagina=function(){
+    var a=$('linkPublico'); var href=a&&a.getAttribute('href');
+    if(href&&href!=='#'&&href.indexOf('http')===0){ window.open(href,'_blank','noopener'); }
+    else { window.irSecao('perfil'); }
+  };
+  function syncLocks(){
+    ['cardapio','promocoes','eventos'].forEach(function(t){
+      var tab=document.querySelector('.tab[data-tab="'+t+'"]'), card=$('gc-'+t);
+      if(tab&&card) card.classList.toggle('travado', tab.classList.contains('travada'));
+    });
+  }
+  var tries=0;
+  var iv=setInterval(function(){
+    tries++;
+    if(typeof window.abrirTab==='function'){
+      clearInterval(iv);
+      // wrap abrirTab: after it shows a section, reveal the editor
+      var _orig=window.abrirTab;
+      window.abrirTab=function(nome){
+        _orig(nome);
+        var alvo=document.getElementById('tab-'+nome);
+        if(alvo && !alvo.classList.contains('escondido')){ mostrarEditor(nome); }
+      };
+      // observe plan-lock changes -> mirror onto cards
+      ['cardapio','promocoes','eventos'].forEach(function(t){
+        var tab=document.querySelector('.tab[data-tab="'+t+'"]');
+        if(tab && window.MutationObserver){ new MutationObserver(syncLocks).observe(tab,{attributes:true,attributeFilter:['class']}); }
+      });
+      syncLocks(); setTimeout(syncLocks,1200); setTimeout(syncLocks,2500);
+      // when painel becomes visible (login), force HOME (grid), overriding boot's abrirTab('perfil')
+      var painel=$('painel');
+      if(painel && window.MutationObserver){
+        new MutationObserver(function(){
+          if(painel.style.display==='block'){ setTimeout(window.voltarHome,0); }
+        }).observe(painel,{attributes:true,attributeFilter:['style']});
+      }
+    }
+    if(tries>200) clearInterval(iv);
+  },25);
 })();
 </script>
+<script>window.falarEnterprise=function(){window.open('https://wa.me/554120186848?text='+encodeURIComponent('Olá! Tenho interesse no plano Enterprise do Moviki (vários pontos). Pode me explicar como funciona?'),'_blank');};</script>
+</body>
+</html>
