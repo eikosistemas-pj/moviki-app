@@ -424,6 +424,12 @@
   .qzCheck input{margin-top:2px;flex:0 0 auto;width:16px;height:16px;accent-color:var(--ciano);}
   .qzCheck a{color:var(--ciano);}
   .qzNota{font-size:12px;color:#7f95b3;text-align:center;margin-top:14px;line-height:1.5;}
+  .qzTexto{font-size:14.5px;color:#cfe0f5;line-height:1.6;text-align:center;margin:-8px 2px 20px;}
+  .qzSubtitulo{font-size:12.5px;color:#8fa6c4;text-align:center;margin:-14px 2px 16px;}
+  .qzGanhos{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+  .qzGanhoItem{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 14px;}
+  .qzGanhoPct{flex:0 0 auto;min-width:52px;text-align:center;background:rgba(0,212,255,.16);color:var(--ciano);font-weight:800;font-size:14px;border-radius:8px;padding:6px 4px;}
+  .qzGanhoTxt{font-size:13px;color:#cfe0f5;line-height:1.5;}
   .qzRodape{text-align:center;margin-top:6px;}
   .qzLink{background:none;border:none;color:var(--ciano);cursor:pointer;font-size:13px;font-weight:600;padding:0;text-decoration:underline;font-family:inherit;}
   .qzVoltarQuiz{text-align:center;margin-top:14px;}
@@ -886,9 +892,21 @@
       <h1 class="qzTitulo">Olá! Bem-vindo ao Moviki. O que vamos fazer hoje?</h1>
       <div class="qzGrid">
         <button type="button" class="qzCard qzCardGrande" onclick="mqzIrA2()"><span class="qIcon">🚚</span><span class="qTxt">Colocar meu negócio no mapa</span></button>
-        <button type="button" class="qzCard qzCardGrande" onclick="mqzIrB2()"><span class="qIcon">📢</span><span class="qTxt">Indicar negócios e ganhar comissões</span></button>
+        <button type="button" class="qzCard qzCardGrande" onclick="mqzIrApresent()"><span class="qIcon">📢</span><span class="qTxt">Indicar negócios e ganhar comissões</span></button>
       </div>
       <div class="qzRodape"><button type="button" class="qzLink" onclick="mqzIrLogin()">Já tenho uma conta — Entrar</button></div>
+    </div>
+
+    <!-- B1 — APRESENTAÇÃO DO PRODUTO (o influenciador conhece o Moviki antes do quiz) -->
+    <div id="qzApresent" class="qzTela" style="display:none">
+      <h1 class="qzTitulo">O que é o Moviki?</h1>
+      <p class="qzTexto">O Moviki é o mapa inteligente que ajuda negócios itinerantes — food trucks, feirantes, carrinhos — a serem encontrados por clientes em tempo real. Como parceiro, você indica o Moviki pra comerciantes que conhece e ganha comissão enquanto eles forem clientes.</p>
+      <div class="qzGanhos">
+        <div class="qzGanhoItem"><span class="qzGanhoPct">15%</span><span class="qzGanhoTxt">Recorrente todo mês, em cada negócio que assinar pelo seu link.</span></div>
+        <div class="qzGanhoItem"><span class="qzGanhoPct">7,5%</span><span class="qzGanhoTxt">Bônus único quando quem você indicou também indica um amigo.</span></div>
+        <div class="qzGanhoItem"><span class="qzGanhoPct">5%</span><span class="qzGanhoTxt">Bônus único quando esse amigo indica mais alguém.</span></div>
+      </div>
+      <button type="button" class="qzBtnPrim" onclick="mqzIrB2()">Entendi, continuar →</button>
     </div>
 
     <!-- A2 — TIPO DE EMPREENDEDOR -->
@@ -920,13 +938,14 @@
       <button type="button" id="qzA3Btn" class="qzBtnPrim" onclick="mqzSubmeterComerciante()">Finalizar Setup 🚀</button>
     </div>
 
-    <!-- B2 — CANAL DE DIVULGAÇÃO -->
+    <!-- B2 — CANAL DE DIVULGAÇÃO (multi-seleção: pode marcar mais de um) -->
     <div id="qzB2" class="qzTela" style="display:none">
       <h1 class="qzTitulo">Onde você vai divulgar o seu link oficial do Moviki?</h1>
+      <p class="qzSubtitulo">Pode marcar mais de uma opção.</p>
       <div class="qzGrid">
-        <button type="button" class="qzCard" onclick="mqzEscolherCanal('instagram',this)"><span class="qIcon">📱</span><span class="qTxt">No meu Instagram / TikTok</span></button>
-        <button type="button" class="qzCard" onclick="mqzEscolherCanal('whatsapp',this)"><span class="qIcon">👥</span><span class="qTxt">No meu WhatsApp para comerciantes locais</span></button>
-        <button type="button" class="qzCard" onclick="mqzEscolherCanal('associacoes',this)"><span class="qIcon">🏛️</span><span class="qTxt">Em associações e cooperativas de feirantes</span></button>
+        <button type="button" class="qzCard" onclick="mqzToggleCanal('instagram',this)"><span class="qIcon">📱</span><span class="qTxt">No meu Instagram / TikTok</span></button>
+        <button type="button" class="qzCard" onclick="mqzToggleCanal('whatsapp',this)"><span class="qIcon">👥</span><span class="qTxt">No meu WhatsApp para comerciantes locais</span></button>
+        <button type="button" class="qzCard" onclick="mqzToggleCanal('associacoes',this)"><span class="qIcon">🏛️</span><span class="qTxt">Em associações e cooperativas de feirantes</span></button>
       </div>
       <button type="button" id="qzB2Avancar" class="qzBtnPrim" disabled onclick="mqzIrB3()">Avançar →</button>
     </div>
@@ -935,6 +954,7 @@
     <div id="qzB3" class="qzTela" style="display:none">
       <h1 class="qzTitulo">Cadastro de Parceiro</h1>
       <div class="qzCampo"><label for="qzNomeB">Seu nome</label><input id="qzNomeB" type="text" maxlength="80" placeholder="Nome completo"></div>
+      <div class="qzCampo"><label for="qzArroba">Seu @ do Instagram/TikTok (opcional)</label><input id="qzArroba" type="text" maxlength="40" placeholder="@seuarroba"></div>
       <div class="qzCampo"><label for="qzEmailB">E-mail</label><input id="qzEmailB" type="email" placeholder="voce@email.com" autocomplete="email"></div>
       <div class="qzCampo"><label for="qzSenhaB">Senha</label><input id="qzSenhaB" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password"></div>
       <div class="qzCampo"><label for="qzPix">Sua chave Pix</label><input id="qzPix" type="text" maxlength="140" placeholder="CPF, e-mail, telefone ou chave aleatória"></div>
@@ -1940,6 +1960,13 @@
       await setDoc(doc(db,'parceiro_slugs',slug),{uid:user.uid});
       const dadosParceiro={nome:nome,email:user.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.0',em:serverTimestamp()},criadoEm:serverTimestamp()};
       if(refParceiro&&refParceiro.length>=3&&refParceiro!==slug) dadosParceiro.indicadoPor=refParceiro;
+      const arroba=(d.arroba||'').trim().replace(/^@+/,'').slice(0,39);
+      if(arroba) dadosParceiro.arroba='@'+arroba;
+      if(Array.isArray(d.canais)&&d.canais.length){
+        const CANAIS_OK=['instagram','whatsapp','associacoes'];
+        const canais=d.canais.filter(c=>CANAIS_OK.includes(c)).slice(0,3);
+        if(canais.length) dadosParceiro.canais=canais;
+      }
       await setDoc(doc(db,'parceiros',user.uid),dadosParceiro);
       try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-parceiro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:user.uid})}).catch(function(){});}).catch(function(){}); }catch(_){}
       return {ok:true,redirect:'parceiro.html'};
@@ -1948,10 +1975,12 @@
     }
   };
 
+  let _mqzJaAutenticouAntes=false;
   onAuthStateChanged(auth,async(user)=>{
     usuarioAtual=user;
     if(window.mqzEsconderLoader)window.mqzEsconderLoader();
     if(user){
+      _mqzJaAutenticouAntes=true;
       if(window.mqzEsconder)window.mqzEsconder();
       el('box').style.display='block';
       el('formArea').style.display='none';el('painel').style.display='block';el('box').classList.add('largo');
@@ -1979,6 +2008,10 @@
       el('painel').style.display='none';el('formArea').style.display='block';el('box').classList.remove('largo');
       el('email').value='';el('senha').value='';el('btnAcao').disabled=false;trocarAba('entrar');
       el('box').style.display='none';
+      // Só reseta o quiz pra Tela 1 numa transição real de logout — no boot inicial (1ª checagem
+      // do Firebase) o quiz já nasce na Tela 1 por padrão, então resetar aqui perderia à toa o
+      // progresso de quem já estava navegando via a rede de segurança do loader (offline/lento).
+      if(_mqzJaAutenticouAntes){ if(window.mqzResetar)window.mqzResetar(); _mqzJaAutenticouAntes=false; }
       if(window.mqzMostrar)window.mqzMostrar();
     }
   });
@@ -2130,7 +2163,10 @@
    único lugar que fala com Firebase). Nunca toca em db/auth/usuarioAtual direto. */
 (function(){
   var $=function(id){return document.getElementById(id);};
-  var passoAtual='qzTela1', pilha=[], escolhaTipo='', escolhaCanal='';
+  var passoAtual='qzTela1', pilha=[], escolhaTipo='', escolhaCanais=[];
+  // Progresso por tela: o ramo do comerciante tem 3 passos, o do influenciador tem 4
+  // (Tela1 -> Apresentação -> Canais -> Cadastro) — cada um com sua própria régua.
+  var PROGRESSO={qzTela1:33,qzA2:66,qzA3:100,qzApresent:25,qzB2:50,qzB3:75};
 
   function progresso(pct){var b=$('qzBarra');if(b)b.style.width=pct+'%';}
   function mostrarTela(id,empilhar){
@@ -2141,12 +2177,10 @@
     requestAnimationFrame(function(){alvo.classList.add('qzAtiva');});
     passoAtual=id;
     var voltar=$('qzVoltar'); if(voltar) voltar.style.visibility=(id==='qzTela1')?'hidden':'visible';
-    if(id==='qzTela1')progresso(33);
-    else if(id==='qzA2'||id==='qzB2')progresso(66);
-    else progresso(100);
+    progresso(PROGRESSO[id]||100);
   }
   function resetarQuiz(){
-    pilha=[]; escolhaTipo=''; escolhaCanal='';
+    pilha=[]; escolhaTipo=''; escolhaCanais=[];
     document.querySelectorAll('#qzA2 .qzCard, #qzB2 .qzCard').forEach(function(c){c.classList.remove('qzSel');});
     var a2=$('qzA2Avancar'); if(a2)a2.disabled=true;
     var b2=$('qzB2Avancar'); if(b2)b2.disabled=true;
@@ -2156,20 +2190,22 @@
 
   window.mqzVoltar=function(){ mostrarTela(pilha.pop()||'qzTela1',false); };
   window.mqzIrA2=function(){ mostrarTela('qzA2'); };
+  window.mqzIrApresent=function(){ mostrarTela('qzApresent'); };
   window.mqzIrB2=function(){ mostrarTela('qzB2'); };
   window.mqzIrA3=function(){ if(!escolhaTipo)return; mostrarTela('qzA3'); };
-  window.mqzIrB3=function(){ if(!escolhaCanal)return; mostrarTela('qzB3'); };
+  window.mqzIrB3=function(){ if(!escolhaCanais.length)return; mostrarTela('qzB3'); };
   window.mqzEscolherTipo=function(tipo,btn){
     escolhaTipo=tipo;
     document.querySelectorAll('#qzA2 .qzCard').forEach(function(c){c.classList.remove('qzSel');});
     if(btn)btn.classList.add('qzSel');
     var av=$('qzA2Avancar'); if(av)av.disabled=false;
   };
-  window.mqzEscolherCanal=function(canal,btn){
-    escolhaCanal=canal;
-    document.querySelectorAll('#qzB2 .qzCard').forEach(function(c){c.classList.remove('qzSel');});
-    if(btn)btn.classList.add('qzSel');
-    var av=$('qzB2Avancar'); if(av)av.disabled=false;
+  // Multi-seleção: cada canal alterna independente (o influenciador pode divulgar em mais de um lugar).
+  window.mqzToggleCanal=function(canal,btn){
+    var i=escolhaCanais.indexOf(canal);
+    if(i===-1){ escolhaCanais.push(canal); if(btn)btn.classList.add('qzSel'); }
+    else{ escolhaCanais.splice(i,1); if(btn)btn.classList.remove('qzSel'); }
+    var av=$('qzB2Avancar'); if(av)av.disabled=!escolhaCanais.length;
   };
 
   function slugPreview(v){return (v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'');}
@@ -2205,9 +2241,11 @@
     var btn=$('qzB3Btn'); if(!btn)return;
     var dados={
       nome:($('qzNomeB')&&$('qzNomeB').value)||'',
+      arroba:($('qzArroba')&&$('qzArroba').value)||'',
       email:($('qzEmailB')&&$('qzEmailB').value)||'',
       senha:($('qzSenhaB')&&$('qzSenhaB').value)||'',
-      pix:($('qzPix')&&$('qzPix').value)||''
+      pix:($('qzPix')&&$('qzPix').value)||'',
+      canais:escolhaCanais.slice()
     };
     if(dados.nome.trim().length<2){if(erro)erro.textContent='Digite seu nome completo.';return;}
     if(!dados.email.trim()){if(erro)erro.textContent='Digite seu e-mail.';return;}

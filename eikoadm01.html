@@ -499,6 +499,18 @@
   let parceirosMap={};
   const STAT={pendente:{n:'Pendente',c:'s-pend'},aprovado:{n:'Aprovado',c:'s-aprov'},recusado:{n:'Recusado',c:'s-recus'},suspenso:{n:'Suspenso',c:'s-susp'}};
   const escP=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  // Perfil de divulgação capturado no Quiz de Onboarding (19/08/2026) — opcional,
+  // só existe pra quem se cadastrou como parceiro puro pelo quiz.
+  const CANAL_LABEL={instagram:'Instagram/TikTok',whatsapp:'WhatsApp',associacoes:'Associações/cooperativas'};
+  function chipsCanais(p){
+    const sel=Array.isArray(p.canais)?p.canais:[];
+    if(!sel.length && !p.arroba) return '';
+    const chips=['instagram','whatsapp','associacoes'].map(c=>{
+      const ativo=sel.indexOf(c)!==-1;
+      return '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:3px 9px;border-radius:999px;margin:2px 6px 2px 0;background:'+(ativo?'rgba(46,204,113,.15)':'rgba(120,120,120,.10)')+';color:'+(ativo?'#0d9488':'#8a97a8')+';border:1px solid '+(ativo?'rgba(46,204,113,.4)':'rgba(120,120,120,.25)')+'">'+(ativo?'✅':'➖')+' '+CANAL_LABEL[c]+'</span>';
+    }).join('');
+    return '<div style="margin-top:2px"><span class="pk" style="display:block;margin-bottom:4px">Onde divulga</span>'+chips+'</div>';
+  }
   async function carregarParceiros(){
     let arr=[];
     try{ const s=await getDocs(collection(db,'parceiros')); s.forEach(d=>arr.push(Object.assign({uid:d.id},d.data()))); }
@@ -520,8 +532,10 @@
       return '<div class="pcard"><div class="pchead"><div><b>'+escP(p.nome||'(sem nome)')+'</b> <span class="badge '+st.c+'">'+st.n+'</span></div><span class="pcdata">'+dt+'</span></div>'+
         '<div class="pcinfo">'+
           '<div><span class="pk">E-mail</span>'+escP(p.email||'—')+'</div>'+
+          (p.arroba?'<div><span class="pk">@ dele</span>'+escP(p.arroba)+'</div>':'')+
           '<div><span class="pk">Link</span><a href="https://moviki.com.br/p/'+encodeURIComponent(p.slug||'')+'" target="_blank" rel="noopener">/p/'+slug+'</a></div>'+
           '<div><span class="pk">Pix</span><code>'+escP(p.pix||'—')+'</code> <button class="pcopy" onclick="copiarPixParc(\''+p.uid+'\',this)">copiar</button></div>'+
+          chipsCanais(p)+
         '</div><div class="pcacoes">'+acoes+'</div><div id="bv_'+p.uid+'" style="font-size:12.5px;margin-top:8px"></div></div>';
     }).join('');
   }
