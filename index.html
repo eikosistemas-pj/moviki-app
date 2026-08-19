@@ -2051,6 +2051,17 @@
     usuarioAtual=user;
     if(window.mqzEsconderLoader)window.mqzEsconderLoader();
     if(user){
+      // Parceiro puro (afiliado/influenciador, cadastrado via mqzCriarParceiro) NUNCA tem negocios/{uid} —
+      // o painel dele é outro, o parceiro.html, só com comissão/link/saque, nada de negócio/cardápio.
+      // No cadastro o redirect já acontece na hora (ver mqzCriarParceiro), mas num login normal (2ª vez em
+      // diante) cai direto aqui — sem essa checagem, ele via por engano o onboarding de "monte seu negócio".
+      try{
+        const _negSnap=await getDoc(doc(db,'negocios',user.uid));
+        if(!_negSnap.exists()){
+          const _parSnap=await getDoc(doc(db,'parceiros',user.uid));
+          if(_parSnap.exists()){ window.location.href='parceiro.html'; return; }
+        }
+      }catch(_){}
       _mqzJaAutenticouAntes=true;
       if(window.mqzEsconder)window.mqzEsconder();
       el('box').style.display='block';
