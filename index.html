@@ -225,6 +225,13 @@
   .gcard.travado::after{content:"🔒";position:absolute;top:8px;right:9px;font-size:13px;opacity:.9;}
   .seloOuro{align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#3a2a00;background:linear-gradient(135deg,#ffe08a,#ffcf4d 45%,#e8a900);border:1px solid #d99e00;border-radius:999px;padding:3px 10px;box-shadow:0 2px 8px rgba(224,168,0,.35);letter-spacing:.02em;}
   .seloOuro::before{content:"★";font-size:11px;line-height:1;}
+  .selo-basico{align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#c7d6ea;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:3px 10px;letter-spacing:.02em;}
+  .selo-bronze{align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#3a1f0a;background:linear-gradient(135deg,#e3a06b,#cd7f32 45%,#a85c28);border:1px solid #8a4a1f;border-radius:999px;padding:3px 10px;box-shadow:0 2px 8px rgba(168,92,40,.35);letter-spacing:.02em;}
+  .selo-bronze::before{content:"★";font-size:11px;line-height:1;}
+  .selo-prata{align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#2b2f36;background:linear-gradient(135deg,#f2f4f7,#c8ccd2 45%,#9aa0a8);border:1px solid #8b9099;border-radius:999px;padding:3px 10px;box-shadow:0 2px 8px rgba(140,145,152,.35);letter-spacing:.02em;}
+  .selo-prata::before{content:"★";font-size:11px;line-height:1;}
+  .selo-trial{align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#9fb3c8;background:transparent;border:1px dashed rgba(255,255,255,.35);border-radius:999px;padding:3px 10px;letter-spacing:.02em;}
+  .selo-trial::before{content:"⏳";font-size:11px;line-height:1;}
   #seloTopo{margin-top:5px;}
   #seloDrawer{margin:2px 6px 6px;}
   .gcard.gcIndicar{border:2px solid #ff8a00;background:linear-gradient(160deg,rgba(255,138,0,.20),rgba(255,159,64,.06));box-shadow:0 0 14px rgba(255,138,0,.5);animation:pulseInd 1.5s ease-in-out infinite;}
@@ -914,6 +921,7 @@
   }
   function aplicarPlanoNasAbas(){
     const libera=planoPainel==='pro'||planoPainel==='premium'||planoPainel==='enterprise';if(window.ptAtualizarDrawer)ptAtualizarDrawer();
+    atualizarSeloPlano();
     var _wl=el('wlRow');if(_wl)_wl.style.display=(planoPainel==='enterprise')?'block':'none';
     ['cardapio','promocoes','eventos'].forEach(t=>{const b=document.querySelector('.tab[data-tab="'+t+'"]');if(b)b.classList.toggle('travada',!libera);});
     if(libera){const av=el('avisoPlano');if(av)av.classList.add('escondido');}
@@ -950,7 +958,22 @@
   function ehEnterprisePainel(){return !!(dadosAssinatura&&dadosAssinatura.ativo===true&&dadosAssinatura.plano==='enterprise'&&(!dadosAssinatura.vence_em||dadosAssinatura.vence_em.toMillis()>Date.now()));}
   // Só é "pagante" quem tem assinatura ativa e período mensal/anual — trial e Básico grátis não contam.
   function ehPagante(){const d=dadosAssinatura;return !!(d&&d.ativo===true&&d.periodo!=='trial'&&(!d.vence_em||d.vence_em.toMillis()>Date.now()));}
-  window.ptAtualizarDrawer=function(){var vis=ehEnterprisePainel();var b=el('drawerPontos');if(b)b.style.display=vis?'flex':'none';var g=el('gc-pontos');if(g)g.style.display=vis?'flex':'none';var st=el('seloTopo');if(st)st.style.display=vis?'inline-flex':'none';var sd=el('seloDrawer');if(sd)sd.style.display=vis?'inline-flex':'none';};
+  window.ptAtualizarDrawer=function(){var vis=ehEnterprisePainel();var b=el('drawerPontos');if(b)b.style.display=vis?'flex':'none';var g=el('gc-pontos');if(g)g.style.display=vis?'flex':'none';};
+  // Selo do plano atual, sempre visível no topo do painel e no menu — Básico (cinza) / Pró (bronze) / Premium (prata) / Enterprise (ouro).
+  // Quem está em teste grátis (qualquer plano) vê o selo de trial no lugar, pra não parecer que já é assinante pago.
+  function atualizarSeloPlano(){
+    var st=el('seloTopo'), sd=el('seloDrawer');
+    if(!st&&!sd) return;
+    var emTrial=!!(dadosAssinatura&&dadosAssinatura.periodo==='trial');
+    var cls,txt;
+    if(emTrial){ cls='selo-trial'; txt='Teste grátis'; }
+    else if(planoPainel==='enterprise'){ cls='seloOuro'; txt='Enterprise'; }
+    else if(planoPainel==='premium'){ cls='selo-prata'; txt='Premium'; }
+    else if(planoPainel==='pro'){ cls='selo-bronze'; txt='Pró'; }
+    else { cls='selo-basico'; txt='Básico'; }
+    if(st){ st.className=cls; st.textContent=txt; st.style.display='inline-flex'; }
+    if(sd){ sd.className=cls; sd.textContent='Cliente '+txt; sd.style.display='inline-flex'; }
+  }
 
   // ===== Programa de Parceiros — área "Indicar agora" no painel do lojista =====
   var _parceiro=null; window._ehParceiro=false;
@@ -979,8 +1002,9 @@
     var b=el('bannerParceiro'); if(!b) return;
     var st=window._statusParceiro;
     if(st==='aprovado'){
+      // Só avisa o status — o botão de ação já existe no card "Indicar agora" da grade, não duplica aqui.
       b.className='bannerTrial parceiro';
-      b.innerHTML='<div class="btTexto"><div class="btTitulo">✅ Você é Parceiro Oficial</div><div class="btSub">Compartilhe seu link e ganhe 15% recorrente por cada negócio que assinar.</div></div><button type="button" class="btBtn" onclick="abrirModalParceiro()">Indicar agora</button>';
+      b.innerHTML='<div class="btTexto"><div class="btTitulo">✅ Você é Parceiro Oficial</div><div class="btSub">Compartilhe seu link e ganhe 15% recorrente por cada negócio que assinar. Toque em "Indicar agora" na grade abaixo.</div></div>';
     } else if(st==='pendente'){
       b.className='bannerTrial urgente';
       b.innerHTML='<div class="btTexto"><div class="btTitulo">⏳ Pedido de parceria em análise</div><div class="btSub">Assim que for aprovado, seu link de indicação aparece aqui.</div></div>';
