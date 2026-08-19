@@ -72,12 +72,9 @@
   .mkSimRange{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:linear-gradient(90deg,#00D4FF,#25e39b);outline:none;cursor:pointer}
   .mkSimRange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #00D4FF;box-shadow:0 0 10px rgba(0,212,255,.8);cursor:pointer}
   .mkSimRange::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #00D4FF;box-shadow:0 0 10px rgba(0,212,255,.8);cursor:pointer}
-  .mkSimVisor{margin-top:6px;padding:16px 14px;border-radius:14px;text-align:center;background:rgba(0,0,0,.35);border:1px solid rgba(37,227,155,.4)}
-  .mkSimVisorLabel{display:block;font-size:13px;color:#9fb3c8;font-weight:600;letter-spacing:.02em}
-  .mkSimVisorValor{display:block;margin-top:4px;font-size:30px;font-weight:800;color:#25e39b;text-shadow:0 0 14px rgba(37,227,155,.75)}
-  .mkSimVisorValor.mkSimPop{animation:mkSimPopAnim .32s ease}
-  @keyframes mkSimPopAnim{0%{transform:scale(1)}35%{transform:scale(1.18);text-shadow:0 0 22px rgba(37,227,155,1)}100%{transform:scale(1)}}
-  @media(prefers-reduced-motion:reduce){.mkSimVisorValor.mkSimPop{animation:none}.mkSimTab{transition:none}}
+  .balao-resultado{transition:transform .1s ease}
+  .balao-resultado.mkPop{transform:scale(1.04)}
+  @media(prefers-reduced-motion:reduce){.balao-resultado.mkPop{transform:none}.mkSimTab{transition:none}}
 </style>
 </head>
 <body>
@@ -174,22 +171,31 @@
       </div>
       <div class="mkSimGrupo">
         <div class="mkSimLabel"><span>Quantos negócios você vai indicar direto?</span><span class="mkSimValor" id="mkValor1">3</span></div>
-        <input type="range" min="0" max="100" value="3" id="mkSlider1" class="mkSimRange" oninput="mkSimAtualizar()">
+        <input type="range" min="0" max="100" value="3" id="slider1" class="mkSimRange" oninput="mkSimAtualizar()">
         <div class="mkSimSub">Ganho recorrente todo mês enquanto o negócio ficar ativo.</div>
       </div>
       <div class="mkSimGrupo">
         <div class="mkSimLabel"><span>Se cada um deles indicar quantos amigos?</span><span class="mkSimValor" id="mkValor2">2</span></div>
-        <input type="range" min="0" max="100" value="2" id="mkSlider2" class="mkSimRange" oninput="mkSimAtualizar()">
+        <input type="range" min="0" max="100" value="2" id="slider2" class="mkSimRange" oninput="mkSimAtualizar()">
         <div class="mkSimSub">Bônus único no 1º pagamento de cada um.</div>
       </div>
       <div class="mkSimGrupo">
         <div class="mkSimLabel"><span>E se os amigos deles trouxerem quantas pessoas?</span><span class="mkSimValor" id="mkValor3">2</span></div>
-        <input type="range" min="0" max="100" value="2" id="mkSlider3" class="mkSimRange" oninput="mkSimAtualizar()">
+        <input type="range" min="0" max="100" value="2" id="slider3" class="mkSimRange" oninput="mkSimAtualizar()">
         <div class="mkSimSub">Bônus único no 1º pagamento de cada um.</div>
       </div>
-      <div class="mkSimVisor">
-        <span class="mkSimVisorLabel">Sua Projeção de Ganhos</span>
-        <span class="mkSimVisorValor" id="mkVisorValor">R$ 0,00</span>
+      <div class="simulador-resultados-container" style="display:flex; align-items:center; gap:12px; margin:25px 0;">
+        <div class="balao-resultado" id="balaoRecorrente" style="flex:1; background:rgba(10,25,47,0.6); backdrop-filter:blur(12px); border-radius:16px; padding:16px; text-align:center; border:1px solid rgba(0,242,254,0.3); box-shadow:0 0 15px rgba(0,242,254,0.1); color:#00f2fe;">
+          <span style="display:block; font-size:0.85rem; font-weight:700;">Comissão Mensal Recorrente</span>
+          <span style="display:block; font-size:0.65rem; color:#8892b0;">Ganhos da sua indicação direta</span>
+          <div id="valorRecorrente" style="font-size:1.4rem; font-weight:800; margin-top:10px;">R$ 0,00</div>
+        </div>
+        <div style="font-size:1.8rem; font-weight:bold; color:#64ffda;">+</div>
+        <div class="balao-resultado" id="balaoUnico" style="flex:1; background:rgba(10,25,47,0.6); backdrop-filter:blur(12px); border-radius:16px; padding:16px; text-align:center; border:1px solid rgba(5,242,153,0.3); box-shadow:0 0 15px rgba(5,242,153,0.1); color:#05f299;">
+          <span style="display:block; font-size:0.85rem; font-weight:700;">Bônus Único (1º Mês)</span>
+          <span style="display:block; font-size:0.65rem; color:#8892b0;">Indicações indiretas acumuladas</span>
+          <div id="valorUnico" style="font-size:1.4rem; font-weight:800; margin-top:10px;">R$ 0,00</div>
+        </div>
       </div>
     </div>
 
@@ -455,15 +461,22 @@
 
 <script>
 (function(){
-  var MK_PLANOS = {
-    pro:        { n1:5.68,  n2:2.84, n3:1.89 },
-    premium:    { n1:7.48,  n2:3.74, n3:2.49 },
-    enterprise: { n1:14.98, n2:7.49, n3:4.99 }
+  var planos = {
+    pro:        { valor: 37.90, p1: 0.15, p2: 0.075, p3: 0.05 },
+    premium:    { valor: 49.90, p1: 0.15, p2: 0.075, p3: 0.05 },
+    enterprise: { valor: 99.90, p1: 0.15, p2: 0.075, p3: 0.05 }
   };
   var mkPlanoAtual = 'pro';
 
   function mkFmtBRL(v){
     return 'R$ ' + (Math.round(v*100)/100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+
+  function mkPopEfeito(elId){
+    var elx = document.getElementById(elId);
+    if(!elx) return;
+    elx.classList.add('mkPop');
+    setTimeout(function(){ elx.classList.remove('mkPop'); }, 100);
   }
 
   window.mkSimSelecionarPlano = function(id, btn){
@@ -475,31 +488,33 @@
   };
 
   window.mkSimAtualizar = function(){
-    var s1 = document.getElementById('mkSlider1');
-    var s2 = document.getElementById('mkSlider2');
-    var s3 = document.getElementById('mkSlider3');
+    var s1 = document.getElementById('slider1');
+    var s2 = document.getElementById('slider2');
+    var s3 = document.getElementById('slider3');
     if(!s1||!s2||!s3) return;
 
-    var n1 = parseInt(s1.value,10)||0;
-    var n2 = parseInt(s2.value,10)||0;
-    var n3 = parseInt(s3.value,10)||0;
+    var q1 = parseInt(s1.value,10)||0;
+    var q2 = parseInt(s2.value,10)||0;
+    var q3 = parseInt(s3.value,10)||0;
 
-    document.getElementById('mkValor1').textContent = n1;
-    document.getElementById('mkValor2').textContent = n2;
-    document.getElementById('mkValor3').textContent = n3;
+    document.getElementById('mkValor1').textContent = q1;
+    document.getElementById('mkValor2').textContent = q2;
+    document.getElementById('mkValor3').textContent = q3;
 
-    var p = MK_PLANOS[mkPlanoAtual];
-    var totalN2 = n1 * n2;
-    var totalN3 = totalN2 * n3;
-    var total = (n1 * p.n1) + (totalN2 * p.n2) + (totalN3 * p.n3);
+    var planoAtivo = planos[mkPlanoAtual];
 
-    var visor = document.getElementById('mkVisorValor');
-    if(visor){
-      visor.textContent = mkFmtBRL(total);
-      visor.classList.remove('mkSimPop');
-      void visor.offsetWidth;
-      visor.classList.add('mkSimPop');
-    }
+    var totalRecorrente = q1 * (planoAtivo.valor * planoAtivo.p1);
+    var totalBarra2 = q1 * q2 * (planoAtivo.valor * planoAtivo.p2);
+    var totalBarra3 = q1 * q2 * q3 * (planoAtivo.valor * planoAtivo.p3);
+    var totalBonusUnico = totalBarra2 + totalBarra3;
+
+    var elRecorrente = document.getElementById('valorRecorrente');
+    var elUnico = document.getElementById('valorUnico');
+    if(elRecorrente) elRecorrente.textContent = mkFmtBRL(totalRecorrente);
+    if(elUnico) elUnico.textContent = mkFmtBRL(totalBonusUnico);
+
+    mkPopEfeito('balaoRecorrente');
+    mkPopEfeito('balaoUnico');
   };
 
   if(document.readyState==='loading'){
