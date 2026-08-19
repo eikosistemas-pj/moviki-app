@@ -40,7 +40,7 @@
   body{min-height:100vh;background:radial-gradient(1200px 600px at 50% -10%, #163155 0%, var(--escuro) 55%);color:var(--claro);display:flex;align-items:center;justify-content:center;padding:20px;}
   body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     background:linear-gradient(rgba(6,14,26,.22), rgba(6,14,26,.38)), url('fundo.jpg') center center / cover no-repeat;}
-  .box{width:100%;max-width:440px;transition:max-width .2s;}
+  .box{width:100%;max-width:440px;transition:max-width .2s;display:none;}
   .box.largo{max-width:660px;}
   .marca{display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
   .marca svg{width:38px;height:38px;}
@@ -371,6 +371,63 @@
   .mkSimFechar{display:block;width:100%;margin-top:16px;padding:12px;border-radius:11px;background:transparent;border:1px solid rgba(255,255,255,.22);color:#cfe0f5;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
   .mkSimFechar:hover{background:rgba(255,255,255,.06)}
   @media(prefers-reduced-motion:reduce){.balao-resultado.mkPop{transform:none}.mkSimTab{transition:none}}
+
+  /* ===== ONBOARDING QUIZ — Hyper-Personalização (padrão Duolingo) ===== */
+  #qzLoader{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;background:radial-gradient(1200px 600px at 50% -10%,#163155 0%,var(--escuro) 60%);}
+  #qzLoader.qzEscondido{display:none}
+  .qzSpin{width:42px;height:42px;border-radius:50%;border:3px solid rgba(0,212,255,.25);border-top-color:var(--ciano);animation:qzGirar .8s linear infinite}
+  @keyframes qzGirar{to{transform:rotate(360deg)}}
+  .quizOverlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px;background:radial-gradient(1300px 650px at 50% -10%,#1a3a63 0%,#060e1a 62%);}
+  .quizOverlay.qzEscondido{display:none}
+  .quizBox{position:relative;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;padding:26px 22px 28px;border-radius:24px;
+    background:linear-gradient(160deg,rgba(19,38,61,.72),rgba(6,14,26,.86));border:1px solid rgba(0,212,255,.28);
+    -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+    box-shadow:0 30px 70px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.06),0 0 40px rgba(0,212,255,.08);}
+  .qzTopo{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+  .qzVoltarBtn{flex:0 0 auto;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);color:#cfe0f5;font-family:inherit;font-weight:600;font-size:12.5px;padding:8px 12px;border-radius:10px;cursor:pointer;transition:.15s;}
+  .qzVoltarBtn:hover{background:rgba(255,255,255,.12);border-color:var(--ciano);color:var(--ciano);}
+  .qzBarraWrap{flex:1;height:8px;border-radius:8px;background:rgba(255,255,255,.08);overflow:hidden;}
+  .qzBarraWrap i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--ciano),var(--azul));transition:width .4s cubic-bezier(.4,0,.2,1);}
+  .qzTela{display:none;opacity:0;transform:translateY(14px);}
+  .qzTela.qzAtiva{display:block;opacity:1;transform:translateY(0);transition:opacity .35s ease,transform .35s ease;}
+  .qzMarca{display:flex;justify-content:center;margin-bottom:6px;}
+  .qzLogo{width:100%;max-width:150px;height:auto;}
+  .qzTitulo{font-size:21px;font-weight:700;line-height:1.3;text-align:center;color:#fff;margin:6px 4px 22px;}
+  .qzGrid{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+  .qzCard{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:16px 18px;border-radius:16px;cursor:pointer;
+    background:linear-gradient(150deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.14);color:#e6eefb;font-family:inherit;
+    box-shadow:0 8px 20px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.05);
+    transition:transform .12s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease;}
+  .qzCard:hover{transform:translateY(-3px);border-color:rgba(0,212,255,.55);box-shadow:0 14px 30px rgba(0,0,0,.35),0 0 22px rgba(0,212,255,.28);}
+  .qzCard:active{transform:translateY(0) scale(.97);box-shadow:0 4px 10px rgba(0,0,0,.3),0 0 14px rgba(0,212,255,.35);}
+  .qzCard.qzSel{border-color:var(--ciano);background:linear-gradient(150deg,rgba(0,212,255,.16),rgba(0,102,255,.08));box-shadow:0 0 0 2px rgba(0,212,255,.55),0 14px 30px rgba(0,0,0,.35),0 0 26px rgba(0,212,255,.4);}
+  .qzCardGrande{padding:20px 18px;}
+  .qIcon{font-size:26px;flex:0 0 auto;line-height:1;}
+  .qTxt{font-size:15px;font-weight:600;line-height:1.3;}
+  .qzBtnPrim{width:100%;padding:15px;border:none;border-radius:13px;cursor:pointer;font-family:inherit;font-size:15.5px;font-weight:700;letter-spacing:.2px;color:#04121f;
+    background:linear-gradient(135deg,var(--ciano),var(--azul));box-shadow:0 10px 24px rgba(0,102,255,.35),0 0 0 1px rgba(0,212,255,.25) inset;
+    transition:transform .1s ease,box-shadow .18s ease,filter .15s ease;}
+  .qzBtnPrim:hover:not(:disabled){filter:brightness(1.08);box-shadow:0 14px 30px rgba(0,102,255,.5),0 0 26px rgba(0,212,255,.45);}
+  .qzBtnPrim:active:not(:disabled){transform:scale(.97);}
+  .qzBtnPrim:disabled{opacity:.4;cursor:default;box-shadow:none;}
+  .qzCampo{margin-bottom:14px;}
+  .qzCampo label{display:block;font-size:13px;font-weight:500;color:#c7d6ea;margin:0 0 6px 2px;}
+  .qzCampo input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(6,14,26,.55);color:#fff;font-size:15px;outline:none;transition:.15s;}
+  .qzCampo input:focus{border-color:var(--ciano);box-shadow:0 0 0 3px rgba(0,212,255,.15);}
+  .qzLinkCampo{display:flex;align-items:center;border:1px solid rgba(255,255,255,.16);background:rgba(6,14,26,.55);border-radius:12px;overflow:hidden;}
+  .qzLinkCampo:focus-within{border-color:var(--ciano);box-shadow:0 0 0 3px rgba(0,212,255,.15);}
+  .qzPref{padding:13px 2px 13px 14px;color:#8fa6c4;font-size:14px;white-space:nowrap;}
+  .qzLinkCampo input{border:none;background:transparent;box-shadow:none!important;padding-left:2px;}
+  .qzSlugPrev{font-size:11.5px;color:#7f95b3;margin:6px 2px 0;}
+  .qzErro{min-height:18px;font-size:13px;color:#ff9a9a;margin:2px 2px 12px;text-align:center;}
+  .qzCheck{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:#cfe0f5;line-height:1.4;margin:2px 2px 14px;cursor:pointer;}
+  .qzCheck input{margin-top:2px;flex:0 0 auto;width:16px;height:16px;accent-color:var(--ciano);}
+  .qzCheck a{color:var(--ciano);}
+  .qzNota{font-size:12px;color:#7f95b3;text-align:center;margin-top:14px;line-height:1.5;}
+  .qzRodape{text-align:center;margin-top:6px;}
+  .qzLink{background:none;border:none;color:var(--ciano);cursor:pointer;font-size:13px;font-weight:600;padding:0;text-decoration:underline;font-family:inherit;}
+  .qzVoltarQuiz{text-align:center;margin-top:14px;}
+  @media(max-width:380px){.quizBox{padding:20px 16px 22px}.qzTitulo{font-size:18px}}
 </style>
 </head>
 <body>
@@ -396,6 +453,7 @@
       <button id="btnAcao" class="btn" onclick="acao()">Entrar</button>
       <div id="aviso" class="aviso"></div>
       <div class="dica" id="dica"></div>
+      <div class="qzVoltarQuiz"><button type="button" class="qzLink" onclick="mqzIrQuiz()">Novo por aqui? Fazer o quiz rápido</button></div>
     </div>
 
     <!-- PAINEL -->
@@ -805,6 +863,85 @@
       <button type="button" class="voltar voltarFim" onclick="voltarHome()">‹ Voltar ao início</button>
       <div id="avisoP" class="aviso"></div>
     </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="qzLoader" class="qzLoader">
+  <div class="qzSpin"></div>
+</div>
+
+<div id="quizModal" class="quizOverlay qzEscondido">
+  <div class="quizBox">
+
+    <div class="qzTopo">
+      <button type="button" id="qzVoltar" class="qzVoltarBtn" onclick="mqzVoltar()" style="visibility:hidden">⬅ Voltar</button>
+      <div class="qzBarraWrap"><i id="qzBarra" style="width:33%"></i></div>
+    </div>
+
+    <!-- TELA 1 — O GRANDE FILTRO -->
+    <div id="qzTela1" class="qzTela qzAtiva">
+      <div class="qzMarca"><img src="logo.png" class="qzLogo" alt="Moviki" onerror="this.style.display='none'"></div>
+      <h1 class="qzTitulo">Olá! Bem-vindo ao Moviki. O que vamos fazer hoje?</h1>
+      <div class="qzGrid">
+        <button type="button" class="qzCard qzCardGrande" onclick="mqzIrA2()"><span class="qIcon">🚚</span><span class="qTxt">Colocar meu negócio no mapa</span></button>
+        <button type="button" class="qzCard qzCardGrande" onclick="mqzIrB2()"><span class="qIcon">📢</span><span class="qTxt">Indicar negócios e ganhar comissões</span></button>
+      </div>
+      <div class="qzRodape"><button type="button" class="qzLink" onclick="mqzIrLogin()">Já tenho uma conta — Entrar</button></div>
+    </div>
+
+    <!-- A2 — TIPO DE EMPREENDEDOR -->
+    <div id="qzA2" class="qzTela" style="display:none">
+      <h1 class="qzTitulo">Que tipo de empreendedor em movimento você é?</h1>
+      <div class="qzGrid">
+        <button type="button" class="qzCard" onclick="mqzEscolherTipo('foodtruck',this)"><span class="qIcon">🍔</span><span class="qTxt">Hamburgueria / Food Truck</span></button>
+        <button type="button" class="qzCard" onclick="mqzEscolherTipo('pizzaria',this)"><span class="qIcon">🍕</span><span class="qTxt">Pizzaria</span></button>
+        <button type="button" class="qzCard" onclick="mqzEscolherTipo('lanches',this)"><span class="qIcon">🍢</span><span class="qTxt">Pastelaria / Lanches de Rua</span></button>
+        <button type="button" class="qzCard" onclick="mqzEscolherTipo('feira',this)"><span class="qIcon">🥬</span><span class="qTxt">Feirante / Hortifrúti</span></button>
+        <button type="button" class="qzCard" onclick="mqzEscolherTipo('itinerante',this)"><span class="qIcon">🍦</span><span class="qTxt">Carrinho Itinerante (Sorvete/Pipoca)</span></button>
+      </div>
+      <button type="button" id="qzA2Avancar" class="qzBtnPrim" disabled onclick="mqzIrA3()">Avançar →</button>
+    </div>
+
+    <!-- A3 — CADASTRO DO COMERCIANTE -->
+    <div id="qzA3" class="qzTela" style="display:none">
+      <h1 class="qzTitulo">Vamos colocar seu negócio no ar</h1>
+      <div class="qzCampo"><label for="qzNome">Nome do negócio</label><input id="qzNome" type="text" maxlength="80" placeholder="Ex.: Caldeirão Nordestino"></div>
+      <div class="qzCampo"><label for="qzWhats">WhatsApp (com DDD)</label><input id="qzWhats" type="tel" inputmode="numeric" placeholder="Ex.: 81 99999-9999"></div>
+      <div class="qzCampo"><label for="qzEmailA">E-mail</label><input id="qzEmailA" type="email" placeholder="voce@email.com" autocomplete="email"></div>
+      <div class="qzCampo"><label for="qzSenhaA">Senha</label><input id="qzSenhaA" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password"></div>
+      <div class="qzCampo">
+        <label for="qzSlug">Apelido do seu link</label>
+        <div class="qzLinkCampo"><span class="qzPref">moviki.com.br/</span><input id="qzSlug" type="text" maxlength="40" placeholder="seunegocio" autocomplete="off"></div>
+        <div class="qzSlugPrev">Seu link: moviki.com.br/<span id="qzSlugTxt">seunegocio</span></div>
+      </div>
+      <div id="qzA3Erro" class="qzErro"></div>
+      <button type="button" id="qzA3Btn" class="qzBtnPrim" onclick="mqzSubmeterComerciante()">Finalizar Setup 🚀</button>
+    </div>
+
+    <!-- B2 — CANAL DE DIVULGAÇÃO -->
+    <div id="qzB2" class="qzTela" style="display:none">
+      <h1 class="qzTitulo">Onde você vai divulgar o seu link oficial do Moviki?</h1>
+      <div class="qzGrid">
+        <button type="button" class="qzCard" onclick="mqzEscolherCanal('instagram',this)"><span class="qIcon">📱</span><span class="qTxt">No meu Instagram / TikTok</span></button>
+        <button type="button" class="qzCard" onclick="mqzEscolherCanal('whatsapp',this)"><span class="qIcon">👥</span><span class="qTxt">No meu WhatsApp para comerciantes locais</span></button>
+        <button type="button" class="qzCard" onclick="mqzEscolherCanal('associacoes',this)"><span class="qIcon">🏛️</span><span class="qTxt">Em associações e cooperativas de feirantes</span></button>
+      </div>
+      <button type="button" id="qzB2Avancar" class="qzBtnPrim" disabled onclick="mqzIrB3()">Avançar →</button>
+    </div>
+
+    <!-- B3 — CADASTRO DE PARCEIRO PURO -->
+    <div id="qzB3" class="qzTela" style="display:none">
+      <h1 class="qzTitulo">Cadastro de Parceiro</h1>
+      <div class="qzCampo"><label for="qzNomeB">Seu nome</label><input id="qzNomeB" type="text" maxlength="80" placeholder="Nome completo"></div>
+      <div class="qzCampo"><label for="qzEmailB">E-mail</label><input id="qzEmailB" type="email" placeholder="voce@email.com" autocomplete="email"></div>
+      <div class="qzCampo"><label for="qzSenhaB">Senha</label><input id="qzSenhaB" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password"></div>
+      <div class="qzCampo"><label for="qzPix">Sua chave Pix</label><input id="qzPix" type="text" maxlength="140" placeholder="CPF, e-mail, telefone ou chave aleatória"></div>
+      <label class="qzCheck"><input type="checkbox" id="qzAceiteB"> Li e concordo com o <a href="regulamento.html" target="_blank" rel="noopener">Regulamento do Programa de Parceiros</a>.</label>
+      <div id="qzB3Erro" class="qzErro"></div>
+      <button type="button" id="qzB3Btn" class="qzBtnPrim" onclick="mqzSubmeterParceiro()">Ativar Meu Link 💰</button>
+      <div class="qzNota">Receba via Pix direto na sua conta assim que acumular R$ 20,00 em comissões confirmadas.</div>
     </div>
 
   </div>
@@ -1721,9 +1858,102 @@
     }catch(e){setStatus('fechado');vazioCat();vazioPromo();vazioEvento();}
   }
 
+  /* ---- ONBOARDING QUIZ (Hyper-Personalização) — bridge Firebase p/ o script isolado do quiz ---- */
+  const TEMPLATES_CARDAPIO={
+    pizzaria:[
+      {categoria:'🍕 Pizzas Salgadas',produtos:[{nome:'Pizza de Calabresa',preco:'35,00',acabando:false}]},
+      {categoria:'🥤 Bebidas',produtos:[{nome:'Refrigerante Lata',preco:'6,00',acabando:false}]}
+    ],
+    feira:[
+      {categoria:'🥬 Verduras e Legumes',produtos:[
+        {nome:'Tomate Italiano (KG)',preco:'7,90',acabando:false},
+        {nome:'Alface Crespa (Maço)',preco:'3,50',acabando:false}
+      ]}
+    ],
+    foodtruck:[
+      {categoria:'🍔 Burgers Artesanais',produtos:[{nome:'X-Burger Tradicional',preco:'24,90',acabando:false}]}
+    ],
+    lanches:[
+      {categoria:'🍢 Pastéis Fritos na Hora',produtos:[{nome:'Pastel de Carne Especial',preco:'10,00',acabando:false}]}
+    ],
+    itinerante:[
+      {categoria:'🍦 Sorvetes e Picolés',produtos:[{nome:'Cascão 2 Bolas',preco:'12,00',acabando:false}]}
+    ]
+  };
+  // Cria a conta do comerciante a partir do Quiz e já injeta o esqueleto de cardápio do template escolhido.
+  window.mqzCriarComerciante=async function(d){
+    try{
+      const nome=(d.nome||'').trim();
+      if(!nome) return {ok:false,erro:'Dê um nome ao seu negócio.'};
+      const email=(d.email||'').trim();
+      const senha=d.senha||'';
+      const whatsapp=(d.whatsapp||'').replace(/\D/g,'');
+      const slug=limpaSlug(d.slug||'');
+      if(slug.length<3) return {ok:false,erro:'Escolha um apelido de link com pelo menos 3 letras/números.'};
+      if(RESERVADOS.includes(slug)) return {ok:false,erro:'Esse apelido é reservado, escolha outro.'};
+      const tpl=TEMPLATES_CARDAPIO[d.template];
+      if(!tpl) return {ok:false,erro:'Escolha o tipo do seu negócio.'};
+      const chkSlug=await getDoc(doc(db,'slugs',slug));
+      if(chkSlug.exists()) return {ok:false,erro:'O apelido "'+slug+'" já está em uso. Escolha outro.'};
+      await createUserWithEmailAndPassword(auth,email,senha);
+      const user=auth.currentUser;
+      try{await sendEmailVerification(user);}catch(_){}
+      try{await registrarIndicacao(user.uid);}catch(_){}
+      garantirTrial();
+      try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:user.uid})}).catch(function(){});}).catch(function(){}); }catch(_){}
+      await setDoc(doc(db,'slugs',slug),{uid:user.uid});
+      const dadosNegocio={
+        nome:nome,status:'fechado',promocoes:[],eventos:[],fotos:[],
+        markerLogo:'',cor:'#00f2fe',whiteLabel:false,
+        cardapio:tpl,slug:slug,atualizadoEm:serverTimestamp()
+      };
+      if(whatsapp) dadosNegocio.whatsapp=whatsapp;
+      await setDoc(doc(db,'negocios',user.uid),dadosNegocio,{merge:true});
+      await carregarDados(user.uid);
+      atualizarOnboarding(false);
+      return {ok:true};
+    }catch(e){
+      return {ok:false,erro:(e&&e.code)?msgErro(e.code):'Não consegui concluir o cadastro agora. Tente de novo.'};
+    }
+  };
+  // Cria a conta do parceiro puro (afiliado/influenciador) — sem negocios/{uid}, isento da trava de pagante.
+  window.mqzCriarParceiro=async function(d){
+    try{
+      const nome=(d.nome||'').trim();
+      if(nome.length<2) return {ok:false,erro:'Digite seu nome completo.'};
+      const email=(d.email||'').trim();
+      const senha=d.senha||'';
+      const pix=(d.pix||'').trim();
+      if(pix.length<3) return {ok:false,erro:'Digite sua chave Pix.'};
+      let slug=limpaSlugParc(d.slug||nome);
+      if(slug.length<3) slug='parceiro'+Math.floor(Math.random()*9000+1000);
+      let livre=false;
+      for(let i=0;i<5&&!livre;i++){
+        const s=await getDoc(doc(db,'parceiro_slugs',slug));
+        if(!s.exists()){livre=true;break;}
+        slug=limpaSlugParc(nome)+Math.floor(Math.random()*900+100);
+      }
+      if(!livre) return {ok:false,erro:'Não consegui gerar seu link agora. Tente de novo.'};
+      await createUserWithEmailAndPassword(auth,email,senha);
+      const user=auth.currentUser;
+      try{await sendEmailVerification(user);}catch(_){}
+      await setDoc(doc(db,'parceiro_slugs',slug),{uid:user.uid});
+      const dadosParceiro={nome:nome,email:user.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.0',em:serverTimestamp()},criadoEm:serverTimestamp()};
+      if(refParceiro&&refParceiro.length>=3&&refParceiro!==slug) dadosParceiro.indicadoPor=refParceiro;
+      await setDoc(doc(db,'parceiros',user.uid),dadosParceiro);
+      try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-parceiro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:user.uid})}).catch(function(){});}).catch(function(){}); }catch(_){}
+      return {ok:true,redirect:'parceiro.html'};
+    }catch(e){
+      return {ok:false,erro:(e&&e.code)?msgErro(e.code):'Não consegui concluir o cadastro agora. Tente de novo.'};
+    }
+  };
+
   onAuthStateChanged(auth,async(user)=>{
     usuarioAtual=user;
+    if(window.mqzEsconderLoader)window.mqzEsconderLoader();
     if(user){
+      if(window.mqzEsconder)window.mqzEsconder();
+      el('box').style.display='block';
       el('formArea').style.display='none';el('painel').style.display='block';el('box').classList.add('largo');
       el('oExEmail').textContent=user.email;
       var _bv=el('bannerVerif');
@@ -1748,6 +1978,8 @@
     }else{
       el('painel').style.display='none';el('formArea').style.display='block';el('box').classList.remove('largo');
       el('email').value='';el('senha').value='';el('btnAcao').disabled=false;trocarAba('entrar');
+      el('box').style.display='none';
+      if(window.mqzMostrar)window.mqzMostrar();
     }
   });
 </script>
@@ -1889,6 +2121,119 @@
   } else {
     window.mkSimAtualizar();
   }
+})();
+</script>
+<script>
+/* ===== ONBOARDING QUIZ — Hyper-Personalização (padrão Duolingo) =====
+   Escopo isolado: só manipula DOM próprio (#quizModal, #box, #formArea) e chama
+   window.mqzCriarComerciante/window.mqzCriarParceiro (definidos no script module,
+   único lugar que fala com Firebase). Nunca toca em db/auth/usuarioAtual direto. */
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var passoAtual='qzTela1', pilha=[], escolhaTipo='', escolhaCanal='';
+
+  function progresso(pct){var b=$('qzBarra');if(b)b.style.width=pct+'%';}
+  function mostrarTela(id,empilhar){
+    if(empilhar!==false) pilha.push(passoAtual);
+    document.querySelectorAll('.qzTela').forEach(function(t){t.classList.remove('qzAtiva');t.style.display='none';});
+    var alvo=$(id); if(!alvo)return;
+    alvo.style.display='block';
+    requestAnimationFrame(function(){alvo.classList.add('qzAtiva');});
+    passoAtual=id;
+    var voltar=$('qzVoltar'); if(voltar) voltar.style.visibility=(id==='qzTela1')?'hidden':'visible';
+    if(id==='qzTela1')progresso(33);
+    else if(id==='qzA2'||id==='qzB2')progresso(66);
+    else progresso(100);
+  }
+  function resetarQuiz(){
+    pilha=[]; escolhaTipo=''; escolhaCanal='';
+    document.querySelectorAll('#qzA2 .qzCard, #qzB2 .qzCard').forEach(function(c){c.classList.remove('qzSel');});
+    var a2=$('qzA2Avancar'); if(a2)a2.disabled=true;
+    var b2=$('qzB2Avancar'); if(b2)b2.disabled=true;
+    ['qzA3Erro','qzB3Erro'].forEach(function(id){var e=$(id);if(e)e.textContent='';});
+    mostrarTela('qzTela1',false);
+  }
+
+  window.mqzVoltar=function(){ mostrarTela(pilha.pop()||'qzTela1',false); };
+  window.mqzIrA2=function(){ mostrarTela('qzA2'); };
+  window.mqzIrB2=function(){ mostrarTela('qzB2'); };
+  window.mqzIrA3=function(){ if(!escolhaTipo)return; mostrarTela('qzA3'); };
+  window.mqzIrB3=function(){ if(!escolhaCanal)return; mostrarTela('qzB3'); };
+  window.mqzEscolherTipo=function(tipo,btn){
+    escolhaTipo=tipo;
+    document.querySelectorAll('#qzA2 .qzCard').forEach(function(c){c.classList.remove('qzSel');});
+    if(btn)btn.classList.add('qzSel');
+    var av=$('qzA2Avancar'); if(av)av.disabled=false;
+  };
+  window.mqzEscolherCanal=function(canal,btn){
+    escolhaCanal=canal;
+    document.querySelectorAll('#qzB2 .qzCard').forEach(function(c){c.classList.remove('qzSel');});
+    if(btn)btn.classList.add('qzSel');
+    var av=$('qzB2Avancar'); if(av)av.disabled=false;
+  };
+
+  function slugPreview(v){return (v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'');}
+  document.addEventListener('input',function(e){
+    if(e.target&&e.target.id==='qzSlug'){ var t=$('qzSlugTxt'); if(t)t.textContent=slugPreview(e.target.value)||'seunegocio'; }
+  });
+
+  window.mqzSubmeterComerciante=function(){
+    var erro=$('qzA3Erro'); if(erro)erro.textContent='';
+    var btn=$('qzA3Btn'); if(!btn)return;
+    var dados={
+      nome:($('qzNome')&&$('qzNome').value)||'',
+      whatsapp:($('qzWhats')&&$('qzWhats').value)||'',
+      email:($('qzEmailA')&&$('qzEmailA').value)||'',
+      senha:($('qzSenhaA')&&$('qzSenhaA').value)||'',
+      slug:($('qzSlug')&&$('qzSlug').value)||'',
+      template:escolhaTipo
+    };
+    if(!dados.nome.trim()){if(erro)erro.textContent='Dê um nome ao seu negócio.';return;}
+    if(!dados.email.trim()){if(erro)erro.textContent='Digite seu e-mail.';return;}
+    if(dados.senha.length<6){if(erro)erro.textContent='A senha precisa ter pelo menos 6 caracteres.';return;}
+    if(!window.mqzCriarComerciante){if(erro)erro.textContent='Não consegui conectar agora. Recarregue a página.';return;}
+    var t=btn.textContent; btn.disabled=true; btn.textContent='Criando sua conta...';
+    window.mqzCriarComerciante(dados).then(function(r){
+      if(r&&r.ok){ window.mqzEsconder(); }
+      else{ if(erro)erro.textContent=(r&&r.erro)||'Não consegui concluir agora. Tente de novo.'; btn.disabled=false; btn.textContent=t; }
+    }).catch(function(){ if(erro)erro.textContent='Não consegui concluir agora. Tente de novo.'; btn.disabled=false; btn.textContent=t; });
+  };
+
+  window.mqzSubmeterParceiro=function(){
+    var erro=$('qzB3Erro'); if(erro)erro.textContent='';
+    if(!($('qzAceiteB')&&$('qzAceiteB').checked)){if(erro)erro.textContent='Você precisa aceitar o regulamento.';return;}
+    var btn=$('qzB3Btn'); if(!btn)return;
+    var dados={
+      nome:($('qzNomeB')&&$('qzNomeB').value)||'',
+      email:($('qzEmailB')&&$('qzEmailB').value)||'',
+      senha:($('qzSenhaB')&&$('qzSenhaB').value)||'',
+      pix:($('qzPix')&&$('qzPix').value)||''
+    };
+    if(dados.nome.trim().length<2){if(erro)erro.textContent='Digite seu nome completo.';return;}
+    if(!dados.email.trim()){if(erro)erro.textContent='Digite seu e-mail.';return;}
+    if(dados.senha.length<6){if(erro)erro.textContent='A senha precisa ter pelo menos 6 caracteres.';return;}
+    if(dados.pix.trim().length<3){if(erro)erro.textContent='Digite sua chave Pix.';return;}
+    if(!window.mqzCriarParceiro){if(erro)erro.textContent='Não consegui conectar agora. Recarregue a página.';return;}
+    var t=btn.textContent; btn.disabled=true; btn.textContent='Ativando seu link...';
+    window.mqzCriarParceiro(dados).then(function(r){
+      if(r&&r.ok){ window.location.href=r.redirect||'parceiro.html'; }
+      else{ if(erro)erro.textContent=(r&&r.erro)||'Não consegui concluir agora. Tente de novo.'; btn.disabled=false; btn.textContent=t; }
+    }).catch(function(){ if(erro)erro.textContent='Não consegui concluir agora. Tente de novo.'; btn.disabled=false; btn.textContent=t; });
+  };
+
+  window.mqzIrLogin=function(){ window.mqzEsconder(); var b=$('box'); if(b)b.style.display='block'; };
+  window.mqzIrQuiz=function(){ var b=$('box'); if(b)b.style.display='none'; resetarQuiz(); window.mqzMostrar(); };
+  window.mqzMostrar=function(){ var m=$('quizModal'); if(m)m.classList.remove('qzEscondido'); };
+  window.mqzEsconder=function(){ var m=$('quizModal'); if(m)m.classList.add('qzEscondido'); };
+  window.mqzEsconderLoader=function(){ var l=$('qzLoader'); if(l)l.classList.add('qzEscondido'); };
+  window.mqzResetar=resetarQuiz;
+
+  // Rede de segurança: se o Firebase não resolver o estado de autenticação a tempo
+  // (ex.: SDK bloqueado por rede), não deixa o usuário preso no loader pra sempre.
+  setTimeout(function(){
+    var l=$('qzLoader');
+    if(l&&!l.classList.contains('qzEscondido')){ l.classList.add('qzEscondido'); window.mqzMostrar(); }
+  },8000);
 })();
 </script>
 </body>
