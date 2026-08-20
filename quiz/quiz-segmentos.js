@@ -30,6 +30,10 @@
            (rodada 4, 20/08/2026 — substituem os 5 legados com fundo próprio,
            mesmo padrão visual dos demais; "lanches" trocou o conteúdo pra
            pastel frito, mais fiel ao rótulo "Pastelaria/Lanches de Rua")
+           perfumaria.png, chaveiro.png, papelaria.png (rodada 8, 20/08/2026
+           — 3 subtipos novos, ver ESTRUTURA/árvore abaixo); servicos.png
+           também foi SUBSTITUÍDO nesta rodada (mesmo nome de arquivo, brilho
+           especular corrigido)
 
    OBJETIVO
    Fonte única de verdade dos macro-segmentos e sub-tipos do quiz. O motor do
@@ -38,12 +42,24 @@
    Pra acrescentar um macro-nicho novo no futuro, edita SÓ este arquivo — não
    mexe no motor nem no HTML.
 
-   STATUS DOS ÍCONES (20/08/2026) — TODOS os 31 ícones no mesmo padrão
-   visual (3D, fundo transparente, 256×256, sombra neutra): os 26 da rodada 3
-   (Serviços ativado + Floricultura + Bar Móvel + macro Tecnologia) MAIS os 5
-   da rodada 4, que substituíram os últimos ícones com fundo próprio
-   (legado). Pendente: 'servicos.png' saiu sem o brilho especular dos demais
-   (falha de geração, não de padronização) — precisa regenerar.
+   STATUS DOS ÍCONES (20/08/2026, atualizado rodada 8) — 34 ícones no total,
+   mesmo padrão visual (3D glossy, fundo transparente, 256×256, sombra
+   sintética neutra): os 26 da rodada 3 + os 5 da rodada 4 (substituíram
+   legados com fundo próprio) + os 3 NOVOS desta rodada (perfumaria.png,
+   chaveiro.png, papelaria.png, pipeline Kairogen flux-2-klein-9b + chroma
+   key/despill em Python, mesmo processo documentado no doc-mãe).
+   RESOLVIDO nesta rodada: 'servicos.png' foi regenerado — o brilho
+   especular que faltava (reclamação original do Eiko) agora está presente
+   (destaque branco compacto no canto superior esquerdo da chave de boca +
+   reflexos nos dentes da engrenagem, mesmo padrão de 'alimentacao.png').
+   Achado novo (não corrigido nesta rodada, fora de escopo): o padrão visual
+   dos 31 ícones anteriores NÃO é 100% uniforme — pelo menos `alimentacao.png`,
+   `bebidas.png` e `petshop.png` têm um contorno branco "sticker" (die-cut) que
+   a maioria dos outros (ex.: `moda.png`, `artesanato.png`, `pizzaria.png`) não
+   tem; e `tecnologia.png` aparenta ainda ter um fundo colorido sólido por trás
+   do objeto, não transparente — parece não ter passado pelo chroma key. Os 3
+   ícones novos desta rodada seguiram o padrão majoritário (sem contorno,
+   fundo 100% transparente).
 
    CARDÁPIOS — 20/08/2026: TODOS os 24 subtipos foram revisados pra ter pelo
    menos 2 categorias de exemplo (antes a maioria tinha só 1) — objetivo é
@@ -488,7 +504,7 @@ window.MOVIKI_SEGMENTOS = [
     id: 'servicos',
     label: 'Serviços',
     emoji: '🛠️',
-    icone: 'quiz/icones/servicos.png',
+    icone: 'quiz/icones/servicos.png', // REGENERADO 20/08/2026 — brilho especular corrigido (ver header do arquivo)
     // DECISÃO 20/08/2026 (Eiko pediu análise, não pergunta binária): os 4 subtipos abaixo
     // ficam 'simples' (não viram 'proprio'). Cardápio Moviki é vitrine pública sem
     // carrinho/checkout (cliente vê preço e chama no WhatsApp, não "seleciona variação
@@ -572,6 +588,90 @@ window.MOVIKI_SEGMENTOS = [
           { categoria: '✨ Lavagem Completa + Cera', produtos: [
             { nome: 'Completa + Cera (Carro Pequeno/Hatch)', preco: '60,00', acabando: false },
             { nome: 'Completa + Cera (SUV/Caminhonete)', preco: '80,00', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'chaveiroconserto',
+        label: 'Chaveiro / Conserto Rápido',
+        emoji: '🔑',
+        icone: 'quiz/icones/chaveiro.png', // NOVO, 20/08/2026 — gerado nesta rodada
+        molde: 'simples',
+        moldeId: null,
+        // NOVO SUBTIPO (20/08/2026, Eiko aprovou): chaveiro/sapateiro/conserto rápido
+        // ambulante — serviço itinerante clássico no Brasil, mesmo padrão dos outros
+        // 4 de Serviços (preço fixo por item, sem carrinho/checkout).
+        cardapioExemplo: [
+          { categoria: '🔑 Chaves', produtos: [
+            { nome: 'Cópia de Chave Simples', preco: '12,00', acabando: false, descricao: 'Chaves comuns (Yale, tetra). Traga a chave original.' },
+            { nome: 'Cópia de Chave Tetra/Alta Segurança', preco: '25,00', acabando: false }
+          ] },
+          { categoria: '🧰 Consertos Rápidos', produtos: [
+            { nome: 'Troca de Zíper', preco: '20,00', acabando: false },
+            { nome: 'Ajuste de Fecho/Fivela', preco: '15,00', acabando: false }
+          ] }
+        ]
+      }
+    ]
+  },
+
+  {
+    id: 'belezaperfumaria',
+    label: 'Beleza & Perfumaria',
+    emoji: '💄',
+    icone: 'quiz/icones/perfumaria.png',
+    // NOVO MACRO (20/08/2026, Eiko aprovou): venda de cosméticos/perfumes — é VAREJO
+    // (o lojista vende o produto), diferente dos subtipos de estética/barbearia em
+    // Serviços (que PRESTAM um serviço). Por ora só 1 subtipo — mesmo padrão que
+    // Hortifrúti teve no começo (ver doc-mãe) antes de ganhar Floricultura. O motor
+    // do quiz pula a tela de Nível 2 automaticamente quando um macro tem só 1
+    // subtipo (evita pedir pro lojista "escolher" entre uma única opção).
+    subtipos: [
+      {
+        id: 'perfumariacosmeticos',
+        label: 'Perfumaria / Cosméticos',
+        emoji: '💄',
+        icone: 'quiz/icones/perfumaria.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '💐 Perfumes', produtos: [
+            { nome: 'Perfume Importado (contratipo) 100ml', preco: '45,00', acabando: false, descricao: 'Alta fixação. Pergunte a fragrância disponível.' },
+            { nome: 'Perfume Nacional 50ml', preco: '25,00', acabando: false }
+          ] },
+          { categoria: '💅 Maquiagem e Cuidados', produtos: [
+            { nome: 'Batom Matte', preco: '18,00', acabando: false },
+            { nome: 'Kit Skincare Básico', preco: '35,00', acabando: false }
+          ] }
+        ]
+      }
+    ]
+  },
+
+  {
+    id: 'papelarialivraria',
+    label: 'Papelaria & Livraria',
+    emoji: '📚',
+    icone: 'quiz/icones/papelaria.png',
+    // NOVO MACRO (20/08/2026, Eiko aprovou): livros/papelaria de rua — camelô de
+    // livros, banca de revista, material escolar avulso. Por ora só 1 subtipo,
+    // mesmo raciocínio de Beleza & Perfumaria acima (nível 2 pulado automaticamente).
+    subtipos: [
+      {
+        id: 'livrariapapelaria',
+        label: 'Livraria / Papelaria de Rua',
+        emoji: '📚',
+        icone: 'quiz/icones/papelaria.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '📖 Livros', produtos: [
+            { nome: 'Livro Usado (Literatura)', preco: '15,00', acabando: false, descricao: 'Estado de conservação varia — pergunte o título disponível.' },
+            { nome: 'Livro Infantil', preco: '20,00', acabando: false }
+          ] },
+          { categoria: '✏️ Papelaria', produtos: [
+            { nome: 'Caderno Universitário', preco: '18,00', acabando: false },
+            { nome: 'Kit Canetas Coloridas', preco: '12,00', acabando: false }
           ] }
         ]
       }
