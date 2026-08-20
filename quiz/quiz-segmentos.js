@@ -9,12 +9,15 @@
        index.html            ← NÃO TOCA (só recebe, no futuro, 1 linha:
                                 <script src="quiz/quiz-segmentos.js"></script>
                                 antes do script do quiz)
-       icones/                ← NÃO TOCA — ícones antigos ficam onde estão
-         qz-foodtruck.png, qz-pizzaria.png, qz-lanches.png, qz-feira.png,
-         qz-itinerante.png (reaproveitados, ver subtipos abaixo)
+       icones/                ← NÃO TOCA — ícones antigos legados que NÃO
+         foram substituídos ficam aqui (nenhum no momento; os 5 que tinham
+         fundo próprio — qz-foodtruck/qz-pizzaria/qz-lanches/qz-feira/
+         qz-itinerante — foram substituídos em 20/08/2026, ver quiz/icones/)
        quiz/                  ← PASTA NOVA, tudo desta etapa mora aqui
          quiz-segmentos.js    ← este arquivo
-         icones/               ← ícones NOVOS gerados nesta etapa
+         icones/               ← TODOS os 31 ícones do quiz vivem aqui,
+           todos no MESMO padrão visual (fundo transparente, objeto 3D
+           flutuando + sombra neutra)
            alimentacao.png, hortifruti.png, bebidas.png, moda.png,
            artesanato.png, servicos.png, tecnologia.png (ícones de macro-segmento)
            pratofeito.png, cafeteria.png, pipoca.png, suco.png,
@@ -22,7 +25,11 @@
            decoracao.png, bijuteriaartesanal.png, manufaturados.png,
            floricultura.png, barmovel.png, petshop.png, barbeariasalao.png,
            estetica.png, lavagemcarro.png, acessorioscelular.png,
-           relogiosgadgets.png (ícones de sub-tipo)
+           relogiosgadgets.png (ícones de sub-tipo, rodada 3)
+           foodtruck.png, pizzaria.png, lanches.png, feira.png, sorvete.png
+           (rodada 4, 20/08/2026 — substituem os 5 legados com fundo próprio,
+           mesmo padrão visual dos demais; "lanches" trocou o conteúdo pra
+           pastel frito, mais fiel ao rótulo "Pastelaria/Lanches de Rua")
 
    OBJETIVO
    Fonte única de verdade dos macro-segmentos e sub-tipos do quiz. O motor do
@@ -31,10 +38,11 @@
    Pra acrescentar um macro-nicho novo no futuro, edita SÓ este arquivo — não
    mexe no motor nem no HTML.
 
-   STATUS DOS ÍCONES (20/08/2026) — v2, rodada 3: TODOS os 26 ícones novos
-   prontos (3D glossy sticker, fundo transparente, 256×256), incluindo os 9
-   da 3ª rodada (Serviços ativado + Floricultura + Bar Móvel + macro
-   Tecnologia). Nenhum pendente.
+   STATUS DOS ÍCONES (20/08/2026) — TODOS os 31 ícones no mesmo padrão
+   visual (3D, fundo transparente, 256×256, sombra neutra): os 26 da rodada 3
+   (Serviços ativado + Floricultura + Bar Móvel + macro Tecnologia) MAIS os 5
+   da rodada 4, que substituíram os últimos ícones com fundo próprio
+   (legado). Nenhum pendente.
 
    ESTRUTURA
    MOVIKI_SEGMENTOS = [ macro, macro, ... ]
@@ -64,7 +72,15 @@
          cafeteria).
      moldeId:        id do molde próprio (null quando molde:'simples')
      cardapioExemplo: seed inicial gravado em negocios/{uid}.cardapio na
-                       criação da conta (substitui TEMPLATES_CARDAPIO atual)
+                       criação da conta (substitui TEMPLATES_CARDAPIO atual).
+                       produtos: [{ nome, preco, acabando, foto }]
+                       foto (DECIDIDO 20/08/2026, Eiko): string|null — UMA
+                       foto por produto no molde 'simples' (o editor atual em
+                       index.html permite 3 fotos/produto; no simples fica só
+                       1, pra manter leve). AINDA NÃO IMPLEMENTADO no editor
+                       real nem nas regras do Firestore — index.html continua
+                       usando o fluxo de 3 fotos (_fotos[]) até essa decisão
+                       ser desenvolvida. Ver pendência correspondente.
    }
    ========================================================================== */
 
@@ -80,7 +96,7 @@ window.MOVIKI_SEGMENTOS = [
         id: 'foodtruck',
         label: 'Hamburgueria / Food Truck',
         emoji: '🍔',
-        icone: 'icones/qz-foodtruck.png', // legado, reaproveitado sem mudança
+        icone: 'quiz/icones/foodtruck.png', // v2: padronizado (fundo transparente), substitui o legado 'icones/qz-foodtruck.png'
         molde: 'proprio',
         moldeId: 'hamburgueria', // TODO Fase 2: tamanho do combo, ponto da carne, adicionais
         cardapioExemplo: [
@@ -96,7 +112,7 @@ window.MOVIKI_SEGMENTOS = [
         id: 'pizzaria',
         label: 'Pizzaria',
         emoji: '🍕',
-        icone: 'icones/qz-pizzaria.png', // legado, reaproveitado sem mudança
+        icone: 'quiz/icones/pizzaria.png', // v2: padronizado (fundo transparente), substitui o legado 'icones/qz-pizzaria.png'
         molde: 'proprio',
         moldeId: 'pizzaria', // TODO Fase 2: tamanho (P/M/G), borda, meio a meio
         cardapioExemplo: [
@@ -112,7 +128,7 @@ window.MOVIKI_SEGMENTOS = [
         id: 'lanches',
         label: 'Pastelaria / Lanches de Rua',
         emoji: '🍢',
-        icone: 'icones/qz-lanches.png', // legado, reaproveitado sem mudança
+        icone: 'quiz/icones/lanches.png', // v2: padronizado (fundo transparente) + conteúdo trocado pra pastel frito (mais representativo de "Pastelaria/Lanches de Rua"), substitui o legado 'icones/qz-lanches.png'
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
@@ -160,7 +176,7 @@ window.MOVIKI_SEGMENTOS = [
         id: 'feira',
         label: 'Verduras, Legumes e Frutas',
         emoji: '🥬',
-        icone: 'icones/qz-feira.png', // legado, reaproveitado sem mudança
+        icone: 'quiz/icones/feira.png', // v2: padronizado (fundo transparente), substitui o legado 'icones/qz-feira.png'
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
@@ -197,7 +213,7 @@ window.MOVIKI_SEGMENTOS = [
         id: 'sorvete',
         label: 'Sorvete / Picolé / Açaí',
         emoji: '🍦',
-        icone: 'icones/qz-itinerante.png', // legado, reaproveitado sem mudança
+        icone: 'quiz/icones/sorvete.png', // v2: padronizado (fundo transparente) + renomeado pra bater com o id do subtipo, substitui o legado 'icones/qz-itinerante.png'
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
