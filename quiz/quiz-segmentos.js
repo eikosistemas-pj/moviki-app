@@ -16,30 +16,25 @@
          quiz-segmentos.js    ← este arquivo
          icones/               ← ícones NOVOS gerados nesta etapa
            alimentacao.png, hortifruti.png, bebidas.png, moda.png,
-           artesanato.png, servicos.png  (ícones de macro-segmento)
+           artesanato.png, servicos.png, tecnologia.png (ícones de macro-segmento)
            pratofeito.png, cafeteria.png, pipoca.png, suco.png,
            aguacoco.png, roupas.png, calcados.png, acessorios.png,
-           decoracao.png, bijuteriaartesanal.png, manufaturados.png
-           (ícones de sub-tipo que não existiam)
+           decoracao.png, bijuteriaartesanal.png, manufaturados.png,
+           floricultura.png, barmovel.png, petshop.png, barbeariasalao.png,
+           estetica.png, lavagemcarro.png, acessorioscelular.png,
+           relogiosgadgets.png (ícones de sub-tipo)
 
    OBJETIVO
    Fonte única de verdade dos macro-segmentos e sub-tipos do quiz. O motor do
    quiz (mostrarTela/mqzEscolherTipo etc., em index.html) passa a MONTAR os
    cards do Nível 1 e Nível 2 lendo este array — nada de HTML fixo por tipo.
-   Pra acrescentar um macro-nicho novo no futuro (ex.: Serviços, quando for
-   desenhado), edita SÓ este arquivo — não mexe no motor nem no HTML.
+   Pra acrescentar um macro-nicho novo no futuro, edita SÓ este arquivo — não
+   mexe no motor nem no HTML.
 
-   STATUS DOS ÍCONES NOVOS (20/08/2026) — gerados em estilo 3D glossy sticker
-   igual aos qz-*.png existentes, fundo em cor chapada (magenta/azul/verde)
-   pronta pra remoção de fundo (fica transparente) antes de subir pro repo:
-     PRONTO (gerado, falta só remover fundo): alimentacao, hortifruti,
-       bebidas, moda, artesanato, servicos, pratofeito, cafeteria, pipoca,
-       suco, aguacoco, roupas, calcados
-     PENDENTE (créditos de geração de imagem acabaram): acessorios,
-       decoracao, bijuteriaartesanal, manufaturados
-   Enquanto o arquivo .png de um subtipo/macro não existir em quiz/icones/,
-   o <img onerror="..."> já usado no quiz cai automaticamente no emoji do
-   campo `emoji` abaixo — nada quebra.
+   STATUS DOS ÍCONES (20/08/2026) — v2, rodada 3: TODOS os 26 ícones novos
+   prontos (3D glossy sticker, fundo transparente, 256×256), incluindo os 9
+   da 3ª rodada (Serviços ativado + Floricultura + Bar Móvel + macro
+   Tecnologia). Nenhum pendente.
 
    ESTRUTURA
    MOVIKI_SEGMENTOS = [ macro, macro, ... ]
@@ -58,6 +53,8 @@
      molde:    'simples' | 'proprio'
        - 'simples' → reaproveita o formato atual de cardápio
          (categoria + produtos:[{nome,preco,acabando}]), sem campos extras.
+         Serve tanto pra PRODUTO quanto pra SERVIÇO com preço fixo (lista de
+         serviços = mesma estrutura de categoria+item+preço).
        - 'proprio' → precisa de UI/schema dedicados (variações de produto:
          tamanho, borda, adicionais, itens montáveis). moldeId aponta pro
          molde a ser implementado. ENQUANTO o molde próprio não existir,
@@ -77,7 +74,7 @@ window.MOVIKI_SEGMENTOS = [
     id: 'alimentacao',
     label: 'Alimentação',
     emoji: '🍔',
-    icone: 'quiz/icones/alimentacao.png', // PRONTO (falta remover fundo)
+    icone: 'quiz/icones/alimentacao.png',
     subtipos: [
       {
         id: 'foodtruck',
@@ -128,7 +125,7 @@ window.MOVIKI_SEGMENTOS = [
         id: 'pratofeito',
         label: 'Prato Feito / Marmitex',
         emoji: '🍱',
-        icone: 'quiz/icones/pratofeito.png', // PRONTO (falta remover fundo)
+        icone: 'quiz/icones/pratofeito.png',
         molde: 'proprio',
         moldeId: 'pratofeito', // TODO Fase 2: cliente monta o prato (proteína/arroz/feijão/salada, cada item com preço ou incluso)
         cardapioExemplo: [
@@ -141,7 +138,7 @@ window.MOVIKI_SEGMENTOS = [
         id: 'pipoca',
         label: 'Pipoca / Doces e Guloseimas',
         emoji: '🍿',
-        icone: 'quiz/icones/pipoca.png', // PRONTO (falta remover fundo)
+        icone: 'quiz/icones/pipoca.png',
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
@@ -157,7 +154,7 @@ window.MOVIKI_SEGMENTOS = [
     id: 'hortifruti',
     label: 'Hortifrúti / Feira',
     emoji: '🥬',
-    icone: 'quiz/icones/hortifruti.png', // PRONTO (falta remover fundo)
+    icone: 'quiz/icones/hortifruti.png',
     subtipos: [
       {
         id: 'feira',
@@ -172,6 +169,20 @@ window.MOVIKI_SEGMENTOS = [
             { nome: 'Alface Crespa (Maço)', preco: '3,50', acabando: false }
           ] }
         ]
+      },
+      {
+        id: 'floricultura',
+        label: 'Floricultura / Plantas e Mudas',
+        emoji: '🌸',
+        icone: 'quiz/icones/floricultura.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🌸 Flores e Plantas', produtos: [
+            { nome: 'Buquê de Flores Sortidas', preco: '35,00', acabando: false },
+            { nome: 'Muda de Planta Ornamental', preco: '15,00', acabando: false }
+          ] }
+        ]
       }
     ]
   },
@@ -180,7 +191,7 @@ window.MOVIKI_SEGMENTOS = [
     id: 'bebidas',
     label: 'Bebidas',
     emoji: '🥤',
-    icone: 'quiz/icones/bebidas.png', // PRONTO (falta remover fundo)
+    icone: 'quiz/icones/bebidas.png',
     subtipos: [
       {
         id: 'sorvete',
@@ -199,7 +210,7 @@ window.MOVIKI_SEGMENTOS = [
         id: 'suco',
         label: 'Suco / Vitamina Natural',
         emoji: '🧃',
-        icone: 'quiz/icones/suco.png', // PRONTO (falta remover fundo)
+        icone: 'quiz/icones/suco.png',
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
@@ -212,7 +223,7 @@ window.MOVIKI_SEGMENTOS = [
         id: 'cafeteria',
         label: 'Café / Cafeteria Móvel',
         emoji: '☕',
-        icone: 'quiz/icones/cafeteria.png', // PRONTO (falta remover fundo)
+        icone: 'quiz/icones/cafeteria.png',
         molde: 'proprio',
         moldeId: 'cafeteria', // TODO Fase 2: tipo de café + açúcar/adoçante/sem açúcar + tamanho
         cardapioExemplo: [
@@ -225,12 +236,26 @@ window.MOVIKI_SEGMENTOS = [
         id: 'aguacoco',
         label: 'Água de Coco / Outras Bebidas',
         emoji: '🥥',
-        icone: 'quiz/icones/aguacoco.png', // PRONTO (falta remover fundo)
+        icone: 'quiz/icones/aguacoco.png',
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
           { categoria: '🥥 Água de Coco', produtos: [
             { nome: 'Água de Coco Gelada (300ml)', preco: '8,00', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'barmovel',
+        label: 'Bar Móvel / Chopp / Drinks',
+        emoji: '🍺',
+        icone: 'quiz/icones/barmovel.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🍺 Chopp e Drinks', produtos: [
+            { nome: 'Chopp (Copo 300ml)', preco: '10,00', acabando: false },
+            { nome: 'Caipirinha', preco: '18,00', acabando: false }
           ] }
         ]
       }
@@ -241,13 +266,13 @@ window.MOVIKI_SEGMENTOS = [
     id: 'moda',
     label: 'Moda / Brechó',
     emoji: '👕',
-    icone: 'quiz/icones/moda.png', // PRONTO (falta remover fundo)
+    icone: 'quiz/icones/moda.png',
     subtipos: [
       {
         id: 'roupas',
         label: 'Roupas',
         emoji: '👕',
-        icone: 'quiz/icones/roupas.png', // PRONTO (falta remover fundo)
+        icone: 'quiz/icones/roupas.png',
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
@@ -260,7 +285,7 @@ window.MOVIKI_SEGMENTOS = [
         id: 'calcados',
         label: 'Calçados',
         emoji: '👟',
-        icone: 'quiz/icones/calcados.png', // PRONTO (falta remover fundo)
+        icone: 'quiz/icones/calcados.png',
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
@@ -273,7 +298,7 @@ window.MOVIKI_SEGMENTOS = [
         id: 'acessorios',
         label: 'Acessórios / Bijuterias',
         emoji: '💍',
-        icone: 'quiz/icones/acessorios.png', // PENDENTE — créditos acabaram, ainda não gerado
+        icone: 'quiz/icones/acessorios.png',
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
@@ -289,13 +314,13 @@ window.MOVIKI_SEGMENTOS = [
     id: 'artesanato',
     label: 'Artesanato',
     emoji: '🎨',
-    icone: 'quiz/icones/artesanato.png', // PRONTO (falta remover fundo)
+    icone: 'quiz/icones/artesanato.png',
     subtipos: [
       {
         id: 'decoracao',
         label: 'Decoração / Utilidades',
         emoji: '🏺',
-        icone: 'quiz/icones/decoracao.png', // PENDENTE — créditos acabaram, ainda não gerado
+        icone: 'quiz/icones/decoracao.png',
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
@@ -308,7 +333,7 @@ window.MOVIKI_SEGMENTOS = [
         id: 'bijuteriaartesanal',
         label: 'Bijuteria Artesanal',
         emoji: '📿',
-        icone: 'quiz/icones/bijuteriaartesanal.png', // PENDENTE — créditos acabaram, ainda não gerado
+        icone: 'quiz/icones/bijuteriaartesanal.png',
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
@@ -321,7 +346,7 @@ window.MOVIKI_SEGMENTOS = [
         id: 'manufaturados',
         label: 'Outros Manufaturados',
         emoji: '🧵',
-        icone: 'quiz/icones/manufaturados.png', // PENDENTE — créditos acabaram, ainda não gerado
+        icone: 'quiz/icones/manufaturados.png',
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
@@ -333,19 +358,106 @@ window.MOVIKI_SEGMENTOS = [
     ]
   },
 
-  /* RESERVADO — macro-nicho futuro (Eiko, 20/08/2026): "Serviços" vai abranger
-     muita coisa (ex.: manutenção, beleza, montagem) e precisa de molde
-     próprio de cardápio (provavelmente lista de serviços com preço/duração,
-     não "produto"). Fica com subtipos vazio até ser desenhado — quando for
-     a hora, entra aqui como qualquer outro macro, sem mexer no motor. Ícone
-     do macro já está pronto (falta só remover fundo) pra quando for ativado. */
   {
     id: 'servicos',
     label: 'Serviços',
     emoji: '🛠️',
-    icone: 'quiz/icones/servicos.png', // PRONTO (falta remover fundo)
-    reservado: true,
-    subtipos: []
+    icone: 'quiz/icones/servicos.png',
+    subtipos: [
+      {
+        id: 'petshop',
+        label: 'Petshop Móvel / Banho e Tosa',
+        emoji: '🐶',
+        icone: 'quiz/icones/petshop.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🐶 Banho e Tosa', produtos: [
+            { nome: 'Banho Completo (Pequeno Porte)', preco: '40,00', acabando: false },
+            { nome: 'Tosa Higiênica', preco: '25,00', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'barbeariasalao',
+        label: 'Barbearia / Salão Móvel',
+        emoji: '💈',
+        icone: 'quiz/icones/barbeariasalao.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '💈 Cortes', produtos: [
+            { nome: 'Corte Masculino', preco: '35,00', acabando: false },
+            { nome: 'Barba', preco: '20,00', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'estetica',
+        label: 'Estética / Manicure Móvel',
+        emoji: '💅',
+        icone: 'quiz/icones/estetica.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '💅 Unhas', produtos: [
+            { nome: 'Manicure Simples', preco: '25,00', acabando: false },
+            { nome: 'Pedicure Simples', preco: '25,00', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'lavagemcarro',
+        label: 'Lavagem de Carro Móvel',
+        emoji: '🚗',
+        icone: 'quiz/icones/lavagemcarro.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🚗 Lavagem', produtos: [
+            { nome: 'Lavagem Simples', preco: '30,00', acabando: false },
+            { nome: 'Lavagem Completa + Cera', preco: '60,00', acabando: false }
+          ] }
+        ]
+      }
+    ]
+  },
+
+  {
+    id: 'tecnologia',
+    label: 'Tecnologia / Acessórios',
+    emoji: '📱',
+    icone: 'quiz/icones/tecnologia.png',
+    subtipos: [
+      {
+        id: 'acessorioscelular',
+        label: 'Acessórios de Celular',
+        emoji: '🔌',
+        icone: 'quiz/icones/acessorioscelular.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '📱 Acessórios', produtos: [
+            { nome: 'Capinha de Celular', preco: '20,00', acabando: false },
+            { nome: 'Película de Vidro', preco: '15,00', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'relogiosgadgets',
+        label: 'Relógios e Gadgets',
+        emoji: '⌚',
+        icone: 'quiz/icones/relogiosgadgets.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '⌚ Relógios e Gadgets', produtos: [
+            { nome: 'Relógio Smartwatch', preco: '80,00', acabando: false },
+            { nome: 'Power Bank 10000mAh', preco: '50,00', acabando: false }
+          ] }
+        ]
+      }
+    ]
   }
 
 ];
