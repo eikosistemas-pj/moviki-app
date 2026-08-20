@@ -445,6 +445,25 @@
   .qIcon3d{width:42px;height:42px;flex:0 0 auto;object-fit:contain;border-radius:11px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35));}
   .qzCardGrande .qIcon3d{width:52px;height:52px;border-radius:14px;}
   .qTxt{font-size:15px;font-weight:600;line-height:1.3;}
+  /* Nível 1 / Nível 2 do quiz de segmentação (20/08/2026) — grade 2 colunas com
+     ícones 3D glossy. Seleção de 1 toque: tocar no card já avança pra próxima
+     tela (sem botão "Avançar" extra), reduzindo o número de toques do fluxo. */
+  .qzSegGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;}
+  .qzSegCard{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:18px 8px 14px;border-radius:16px;cursor:pointer;
+    background:linear-gradient(150deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.14);color:#e6eefb;font-family:inherit;
+    box-shadow:0 8px 20px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.05);
+    transition:transform .12s ease,box-shadow .18s ease,border-color .18s ease;}
+  .qzSegCard:hover{transform:translateY(-3px);border-color:rgba(0,212,255,.55);box-shadow:0 14px 30px rgba(0,0,0,.35),0 0 22px rgba(0,212,255,.28);}
+  .qzSegCard:active,.qzSegCard.qzSel{transform:translateY(0) scale(.97);border-color:var(--ciano);box-shadow:0 0 0 2px rgba(0,212,255,.55),0 14px 30px rgba(0,0,0,.35),0 0 26px rgba(0,212,255,.4);}
+  .qzSegIconWrap{width:72px;height:72px;display:flex;align-items:center;justify-content:center;position:relative;}
+  .qzSegIconWrap::before{content:'';position:absolute;inset:-14px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.28) 0%,rgba(0,212,255,0) 70%);opacity:0;transition:opacity .25s;}
+  .qzSegCard:hover .qzSegIconWrap::before{opacity:1;}
+  .qzSegIconWrap img{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5));animation:qzFlutuar 3.4s ease-in-out infinite;}
+  .qzSegCard:nth-child(even) .qzSegIconWrap img{animation-delay:-1.7s;}
+  @keyframes qzFlutuar{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+  @media(prefers-reduced-motion:reduce){.qzSegIconWrap img{animation:none;}}
+  .qzSegEmoji{font-size:38px;line-height:1;}
+  .qzSegLabel{font-size:13.5px;font-weight:600;line-height:1.25;}
   .qzBtnPrim{width:100%;padding:15px;border:none;border-radius:13px;cursor:pointer;font-family:inherit;font-size:15.5px;font-weight:700;letter-spacing:.2px;color:#04121f;
     background:linear-gradient(135deg,var(--ciano),var(--azul));box-shadow:0 10px 24px rgba(0,102,255,.35),0 0 0 1px rgba(0,212,255,.25) inset;
     transition:transform .1s ease,box-shadow .18s ease,filter .15s ease;}
@@ -1000,17 +1019,18 @@
       <button type="button" class="qzBtnPrim" onclick="mqzIrB2()">Entendi, continuar →</button>
     </div>
 
-    <!-- A2 — TIPO DE EMPREENDEDOR -->
+    <!-- A2 — NÍVEL 1: MACRO-SEGMENTO (lido de window.MOVIKI_SEGMENTOS, montado por renderNivel1()) -->
     <div id="qzA2" class="qzTela" style="display:none">
-      <h1 class="qzTitulo">Que tipo de empreendedor em movimento você é?</h1>
-      <div class="qzGrid">
-        <button type="button" class="qzCard" onclick="mqzEscolherTipo('foodtruck',this)"><img class="qIcon3d" src="icones/qz-foodtruck.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🍔'))"><span class="qTxt">Hamburgueria / Food Truck</span></button>
-        <button type="button" class="qzCard" onclick="mqzEscolherTipo('pizzaria',this)"><img class="qIcon3d" src="icones/qz-pizzaria.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🍕'))"><span class="qTxt">Pizzaria</span></button>
-        <button type="button" class="qzCard" onclick="mqzEscolherTipo('lanches',this)"><img class="qIcon3d" src="icones/qz-lanches.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🍢'))"><span class="qTxt">Pastelaria / Lanches de Rua</span></button>
-        <button type="button" class="qzCard" onclick="mqzEscolherTipo('feira',this)"><img class="qIcon3d" src="icones/qz-feira.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🥬'))"><span class="qTxt">Feirante / Hortifrúti</span></button>
-        <button type="button" class="qzCard" onclick="mqzEscolherTipo('itinerante',this)"><img class="qIcon3d" src="icones/qz-itinerante.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🍦'))"><span class="qTxt">Carrinho Itinerante (Sorvete/Pipoca)</span></button>
-      </div>
-      <button type="button" id="qzA2Avancar" class="qzBtnPrim" disabled onclick="mqzIrA3()">Avançar →</button>
+      <h1 class="qzTitulo">Que tipo de negócio é o seu?</h1>
+      <p class="qzSub2" style="font-size:13px;color:#8fa6c4;margin:-8px 0 16px">Toque numa opção pra continuar.</p>
+      <div class="qzSegGrid" id="qzA2Grid"></div>
+    </div>
+
+    <!-- A2b — NÍVEL 2: SUB-TIPO dentro do macro escolhido (montado por renderNivel2()) -->
+    <div id="qzA2b" class="qzTela" style="display:none">
+      <h1 class="qzTitulo" id="qzA2bTitulo">Mais especificamente...</h1>
+      <p class="qzSub2" style="font-size:13px;color:#8fa6c4;margin:-8px 0 16px">Toque numa opção pra continuar.</p>
+      <div class="qzSegGrid" id="qzA2bGrid"></div>
     </div>
 
     <!-- A3 — CADASTRO DO COMERCIANTE -->
@@ -2017,28 +2037,21 @@
   }
 
   /* ---- ONBOARDING QUIZ (Hyper-Personalização) — bridge Firebase p/ o script isolado do quiz ---- */
-  const TEMPLATES_CARDAPIO={
-    pizzaria:[
-      {categoria:'🍕 Pizzas Salgadas',produtos:[{nome:'Pizza de Calabresa',preco:'35,00',acabando:false}]},
-      {categoria:'🥤 Bebidas',produtos:[{nome:'Refrigerante Lata',preco:'6,00',acabando:false}]}
-    ],
-    feira:[
-      {categoria:'🥬 Verduras e Legumes',produtos:[
-        {nome:'Tomate Italiano (KG)',preco:'7,90',acabando:false},
-        {nome:'Alface Crespa (Maço)',preco:'3,50',acabando:false}
-      ]}
-    ],
-    foodtruck:[
-      {categoria:'🍔 Burgers Artesanais',produtos:[{nome:'X-Burger Tradicional',preco:'24,90',acabando:false}]}
-    ],
-    lanches:[
-      {categoria:'🍢 Pastéis Fritos na Hora',produtos:[{nome:'Pastel de Carne Especial',preco:'10,00',acabando:false}]}
-    ],
-    itinerante:[
-      {categoria:'🍦 Sorvetes e Picolés',produtos:[{nome:'Cascão 2 Bolas',preco:'12,00',acabando:false}]}
-    ]
-  };
-  // Cria a conta do comerciante a partir do Quiz e já injeta o esqueleto de cardápio do template escolhido.
+  // Localiza o subtipo escolhido dentro de window.MOVIKI_SEGMENTOS (9 macros, 27 subtipos,
+  // ver quiz/quiz-segmentos.js) e devolve uma CÓPIA do cardapioExemplo (nunca a referência
+  // original — cada conta precisa do seu próprio array editável, senão uma conta editaria
+  // o cardápio "molde" de todas as outras).
+  function buscarSubtipoQuiz(id){
+    const seg=window.MOVIKI_SEGMENTOS||[];
+    for(let i=0;i<seg.length;i++){
+      const subtipos=seg[i].subtipos||[];
+      for(let j=0;j<subtipos.length;j++){
+        if(subtipos[j].id===id) return subtipos[j];
+      }
+    }
+    return null;
+  }
+  // Cria a conta do comerciante a partir do Quiz e já injeta o esqueleto de cardápio do subtipo escolhido.
   window.mqzCriarComerciante=async function(d){
     try{
       const nome=(d.nome||'').trim();
@@ -2049,8 +2062,9 @@
       const slug=limpaSlug(d.slug||'');
       if(slug.length<3) return {ok:false,erro:'Escolha um apelido de link com pelo menos 3 letras/números.'};
       if(RESERVADOS.includes(slug)) return {ok:false,erro:'Esse apelido é reservado, escolha outro.'};
-      const tpl=TEMPLATES_CARDAPIO[d.template];
-      if(!tpl) return {ok:false,erro:'Escolha o tipo do seu negócio.'};
+      const subtipo=buscarSubtipoQuiz(d.template);
+      if(!subtipo) return {ok:false,erro:'Escolha o tipo do seu negócio.'};
+      const tpl=JSON.parse(JSON.stringify(subtipo.cardapioExemplo||[]));
       const chkSlug=await getDoc(doc(db,'slugs',slug));
       if(chkSlug.exists()) return {ok:false,erro:'O apelido "'+slug+'" já está em uso. Escolha outro.'};
       await createUserWithEmailAndPassword(auth,email,senha);
@@ -2311,6 +2325,7 @@
   }
 })();
 </script>
+<script src="quiz/quiz-segmentos.js"></script>
 <script>
 /* ===== ONBOARDING QUIZ — Hyper-Personalização (padrão Duolingo) =====
    Escopo isolado: só manipula DOM próprio (#quizModal, #box, #formArea) e chama
@@ -2318,10 +2333,12 @@
    único lugar que fala com Firebase). Nunca toca em db/auth/usuarioAtual direto. */
 (function(){
   var $=function(id){return document.getElementById(id);};
-  var passoAtual='qzTela1', pilha=[], escolhaTipo='', escolhaCanais=[];
-  // Progresso por tela: o ramo do comerciante tem 3 passos, o do influenciador tem 4
-  // (Tela1 -> Apresentação -> Canais -> Cadastro) — cada um com sua própria régua.
-  var PROGRESSO={qzTela1:33,qzA2:66,qzA3:100,qzApresent:25,qzB2:50,qzB3:75};
+  var esc=function(s){return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
+  var passoAtual='qzTela1', pilha=[], escolhaMacro=null, escolhaSubtipo='', escolhaCanais=[];
+  // Progresso por tela: o ramo do comerciante tem 4 passos (Tela1 -> Nível 1 macro ->
+  // Nível 2 subtipo -> Cadastro), desde que o quiz de segmentação (9 macros/27 subtipos,
+  // quiz/quiz-segmentos.js) foi integrado aqui em 20/08/2026. O ramo do influenciador não mudou.
+  var PROGRESSO={qzTela1:25,qzA2:50,qzA2b:75,qzA3:100,qzApresent:25,qzB2:50,qzB3:75};
 
   function progresso(pct){var b=$('qzBarra');if(b)b.style.width=pct+'%';}
   function mostrarTela(id,empilhar){
@@ -2335,26 +2352,67 @@
     progresso(PROGRESSO[id]||100);
   }
   function resetarQuiz(){
-    pilha=[]; escolhaTipo=''; escolhaCanais=[];
-    document.querySelectorAll('#qzA2 .qzCard, #qzB2 .qzCard').forEach(function(c){c.classList.remove('qzSel');});
-    var a2=$('qzA2Avancar'); if(a2)a2.disabled=true;
+    pilha=[]; escolhaMacro=null; escolhaSubtipo=''; escolhaCanais=[];
+    document.querySelectorAll('#qzB2 .qzCard').forEach(function(c){c.classList.remove('qzSel');});
     var b2=$('qzB2Avancar'); if(b2)b2.disabled=true;
     ['qzA3Erro','qzB3Erro'].forEach(function(id){var e=$(id);if(e)e.textContent='';});
     mostrarTela('qzTela1',false);
   }
 
+  // ---- Nível 1 (macro) / Nível 2 (subtipo) — lidos de window.MOVIKI_SEGMENTOS ----
+  // Ícone com fallback pro emoji do registro se o .png não existir/carregar.
+  function iconeHtml(caminho,emoji){
+    return '<div class="qzSegIconWrap"><img src="'+esc(caminho)+'" alt="" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=&quot;qzSegEmoji&quot;>'+esc(emoji||'❓')+'</span>\'"></div>';
+  }
+  function renderNivel1(){
+    var seg=window.MOVIKI_SEGMENTOS||[];
+    var h='';
+    seg.forEach(function(m,i){
+      var n=(m.subtipos||[]).length;
+      h+='<button type="button" class="qzSegCard" onclick="mqzEscolherMacro('+i+',this)">'+iconeHtml(m.icone,m.emoji)+'<span class="qzSegLabel">'+esc(m.label)+'</span><span class="qzSegSub">'+n+' opç'+(n===1?'ão':'ões')+'</span></button>';
+    });
+    var g=$('qzA2Grid'); if(g)g.innerHTML=h;
+  }
+  function renderNivel2(){
+    if(!escolhaMacro)return;
+    var t=$('qzA2bTitulo'); if(t)t.textContent=escolhaMacro.label+' — qual desses é o seu?';
+    var h='';
+    (escolhaMacro.subtipos||[]).forEach(function(s,j){
+      h+='<button type="button" class="qzSegCard" onclick="mqzEscolherSubtipo('+j+',this)">'+iconeHtml(s.icone,s.emoji)+'<span class="qzSegLabel">'+esc(s.label)+'</span></button>';
+    });
+    var g=$('qzA2bGrid'); if(g)g.innerHTML=h;
+  }
+  // Seleção de 1 toque: marca o card e já avança pra próxima tela (sem precisar de
+  // botão "Avançar" separado) — decisão de UX de 20/08/2026 pra não deixar o fluxo
+  // mais cansativo depois que a classificação virou 2 telas em vez de 1.
+  window.mqzEscolherMacro=function(indice,btn){
+    var seg=window.MOVIKI_SEGMENTOS||[];
+    escolhaMacro=seg[indice]; escolhaSubtipo='';
+    if(btn)btn.classList.add('qzSel');
+    var subs=escolhaMacro&&escolhaMacro.subtipos||[];
+    if(subs.length===1){
+      // Macro com 1 subtipo só (ex.: Beleza & Perfumaria, Papelaria & Livraria) —
+      // pula a tela de Nível 2 direto, não faz sentido pedir pro lojista "escolher"
+      // entre uma única opção. Evita 1 toque desnecessário.
+      escolhaSubtipo=subs[0].id;
+      setTimeout(function(){ mostrarTela('qzA3'); },160);
+      return;
+    }
+    setTimeout(function(){ renderNivel2(); mostrarTela('qzA2b'); },160);
+  };
+  window.mqzEscolherSubtipo=function(indice,btn){
+    if(!escolhaMacro)return;
+    var s=escolhaMacro.subtipos[indice]; if(!s)return;
+    escolhaSubtipo=s.id;
+    if(btn)btn.classList.add('qzSel');
+    setTimeout(function(){ mostrarTela('qzA3'); },160);
+  };
+
   window.mqzVoltar=function(){ mostrarTela(pilha.pop()||'qzTela1',false); };
-  window.mqzIrA2=function(){ mostrarTela('qzA2'); };
+  window.mqzIrA2=function(){ renderNivel1(); mostrarTela('qzA2'); };
   window.mqzIrApresent=function(){ mostrarTela('qzApresent'); };
   window.mqzIrB2=function(){ mostrarTela('qzB2'); };
-  window.mqzIrA3=function(){ if(!escolhaTipo)return; mostrarTela('qzA3'); };
   window.mqzIrB3=function(){ if(!escolhaCanais.length)return; mostrarTela('qzB3'); };
-  window.mqzEscolherTipo=function(tipo,btn){
-    escolhaTipo=tipo;
-    document.querySelectorAll('#qzA2 .qzCard').forEach(function(c){c.classList.remove('qzSel');});
-    if(btn)btn.classList.add('qzSel');
-    var av=$('qzA2Avancar'); if(av)av.disabled=false;
-  };
   // Multi-seleção: cada canal alterna independente (o influenciador pode divulgar em mais de um lugar).
   window.mqzToggleCanal=function(canal,btn){
     var i=escolhaCanais.indexOf(canal);
@@ -2377,7 +2435,7 @@
       email:($('qzEmailA')&&$('qzEmailA').value)||'',
       senha:($('qzSenhaA')&&$('qzSenhaA').value)||'',
       slug:($('qzSlug')&&$('qzSlug').value)||'',
-      template:escolhaTipo
+      template:escolhaSubtipo
     };
     if(!dados.nome.trim()){if(erro)erro.textContent='Dê um nome ao seu negócio.';return;}
     if(!dados.email.trim()){if(erro)erro.textContent='Digite seu e-mail.';return;}
