@@ -482,6 +482,17 @@
   .qzBtnGoogle:disabled{opacity:.6;cursor:default;}
   .qzDivisorOu{display:flex;align-items:center;gap:10px;margin:2px 0 16px;color:#7f95b3;font-size:12px;}
   .qzDivisorOu::before,.qzDivisorOu::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.14);}
+  /* Botao irmao do Google: mesmo formato/altura, cor escura — o cliente escolhe UM caminho
+     de cadastro (Google OU e-mail+senha), nunca ve os dois formularios abertos ao mesmo tempo. */
+  .qzBtnEmail{width:100%;padding:12px;border:1px solid rgba(255,255,255,.22);border-radius:12px;cursor:pointer;background:rgba(255,255,255,.06);color:#e8f1ff;font-size:14.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;transition:.15s;margin-bottom:12px;font-family:inherit;}
+  .qzBtnEmail:hover{background:rgba(255,255,255,.12);border-color:var(--ciano);}
+  .qzBtnEmail:disabled{opacity:.6;cursor:default;}
+  .qzBtnEmailIc{flex:0 0 auto;}
+  .qzVoltarAuth{display:block;width:100%;background:none;border:none;color:#8fa6c4;cursor:pointer;font-size:12.5px;font-weight:600;font-family:inherit;padding:12px 0 0;text-decoration:underline;}
+  .qzVoltarAuth:hover{color:var(--ciano);}
+  .qzSlugMsg{font-size:11.5px;margin:5px 2px 0;min-height:14px;color:#7f95b3;}
+  .qzSlugMsg.ok{color:#8ff0b5;}
+  .qzSlugMsg.erro{color:#ff9a9a;}
   .qzLinkCampo{display:flex;align-items:center;border:1px solid rgba(255,255,255,.16);background:rgba(6,14,26,.55);border-radius:12px;overflow:hidden;}
   .qzLinkCampo:focus-within{border-color:var(--ciano);box-shadow:0 0 0 3px rgba(0,212,255,.15);}
   .qzPref{padding:13px 2px 13px 14px;color:#8fa6c4;font-size:14px;white-space:nowrap;}
@@ -1046,17 +1057,25 @@
       <h1 class="qzTitulo">Vamos colocar seu negócio no ar</h1>
       <div class="qzCampo"><label for="qzNome">Nome do negócio</label><input id="qzNome" type="text" maxlength="80" placeholder="Ex.: Caldeirão Nordestino"></div>
       <div class="qzCampo"><label for="qzWhats">WhatsApp (com DDD)</label><input id="qzWhats" type="tel" inputmode="numeric" placeholder="Ex.: 81 99999-9999"></div>
-      <button type="button" id="qzA3BtnGoogle" class="qzBtnGoogle" onclick="mqzGoogleComerciante()"><svg class="btnGoogleIcon" viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.9-2.26 5.36-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Continuar com Google</button>
-      <div class="qzDivisorOu"><span>ou crie com e-mail e senha</span></div>
-      <div class="qzCampo"><label for="qzEmailA">E-mail</label><input id="qzEmailA" type="email" placeholder="voce@email.com" autocomplete="email"></div>
-      <div class="qzCampo qzCampoSenha"><label for="qzSenhaA">Senha</label><input id="qzSenhaA" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password"><button type="button" class="verSenha" onclick="mqzVerSenha('qzSenhaA',this)">mostrar</button></div>
       <div class="qzCampo">
         <label for="qzSlug">Apelido do seu link</label>
         <div class="qzLinkCampo"><span class="qzPref">moviki.com.br/</span><input id="qzSlug" type="text" maxlength="40" placeholder="seunegocio" autocomplete="off"></div>
         <div class="qzSlugPrev">Seu link: moviki.com.br/<span id="qzSlugTxt">seunegocio</span></div>
+        <div id="qzSlugMsg" class="qzSlugMsg"></div>
       </div>
       <div id="qzA3Erro" class="qzErro"></div>
-      <button type="button" id="qzA3Btn" class="qzBtnPrim" onclick="mqzSubmeterComerciante()">Finalizar Setup 🚀</button>
+      <!-- Escolha do jeito de criar a conta. Um caminho por vez: o formulario de e-mail/senha
+           so aparece se a pessoa pedir, pra ninguem achar que precisa preencher os dois. -->
+      <div id="qzA3Escolha">
+        <button type="button" id="qzA3BtnGoogle" class="qzBtnGoogle" onclick="mqzGoogleComerciante()"><svg class="btnGoogleIcon" viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.9-2.26 5.36-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Continuar com Google</button>
+        <button type="button" id="qzA3BtnEmail" class="qzBtnEmail" onclick="mqzAbrirEmailA()"><svg class="qzBtnEmailIc" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>Continuar com e-mail e senha</button>
+      </div>
+      <div id="qzA3Email" style="display:none">
+        <div class="qzCampo"><label for="qzEmailA">E-mail</label><input id="qzEmailA" type="email" placeholder="voce@email.com" autocomplete="email"></div>
+        <div class="qzCampo qzCampoSenha"><label for="qzSenhaA">Senha</label><input id="qzSenhaA" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password"><button type="button" class="verSenha" onclick="mqzVerSenha('qzSenhaA',this)">mostrar</button></div>
+        <button type="button" id="qzA3Btn" class="qzBtnPrim" onclick="mqzSubmeterComerciante()">Finalizar Setup 🚀</button>
+        <button type="button" class="qzVoltarAuth" onclick="mqzFecharEmailA()">‹ Prefiro entrar com o Google</button>
+      </div>
     </div>
 
     <!-- B2 — CANAL DE DIVULGAÇÃO (multi-seleção: pode marcar mais de um) -->
@@ -1078,12 +1097,17 @@
       <div class="qzCampo"><label for="qzArroba">Seu @ do Instagram/TikTok (opcional)</label><input id="qzArroba" type="text" maxlength="40" placeholder="@seuarroba"></div>
       <div class="qzCampo"><label for="qzPix">Sua chave Pix</label><input id="qzPix" type="text" maxlength="140" placeholder="CPF, e-mail, telefone ou chave aleatória"></div>
       <label class="qzCheck"><input type="checkbox" id="qzAceiteB"> Li e concordo com o <a href="regulamento.html" target="_blank" rel="noopener">Regulamento do Programa de Parceiros</a>.</label>
-      <button type="button" id="qzB3BtnGoogle" class="qzBtnGoogle" onclick="mqzGoogleParceiro()"><svg class="btnGoogleIcon" viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.9-2.26 5.36-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Continuar com Google</button>
-      <div class="qzDivisorOu"><span>ou crie com e-mail e senha</span></div>
-      <div class="qzCampo"><label for="qzEmailB">E-mail</label><input id="qzEmailB" type="email" placeholder="voce@email.com" autocomplete="email"></div>
-      <div class="qzCampo qzCampoSenha"><label for="qzSenhaB">Senha</label><input id="qzSenhaB" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password"><button type="button" class="verSenha" onclick="mqzVerSenha('qzSenhaB',this)">mostrar</button></div>
       <div id="qzB3Erro" class="qzErro"></div>
-      <button type="button" id="qzB3Btn" class="qzBtnPrim" onclick="mqzSubmeterParceiro()">Ativar Meu Link 💰</button>
+      <div id="qzB3Escolha">
+        <button type="button" id="qzB3BtnGoogle" class="qzBtnGoogle" onclick="mqzGoogleParceiro()"><svg class="btnGoogleIcon" viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.9-2.26 5.36-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Continuar com Google</button>
+        <button type="button" id="qzB3BtnEmail" class="qzBtnEmail" onclick="mqzAbrirEmailB()"><svg class="qzBtnEmailIc" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>Continuar com e-mail e senha</button>
+      </div>
+      <div id="qzB3Email" style="display:none">
+        <div class="qzCampo"><label for="qzEmailB">E-mail</label><input id="qzEmailB" type="email" placeholder="voce@email.com" autocomplete="email"></div>
+        <div class="qzCampo qzCampoSenha"><label for="qzSenhaB">Senha</label><input id="qzSenhaB" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password"><button type="button" class="verSenha" onclick="mqzVerSenha('qzSenhaB',this)">mostrar</button></div>
+        <button type="button" id="qzB3Btn" class="qzBtnPrim" onclick="mqzSubmeterParceiro()">Ativar Meu Link 💰</button>
+        <button type="button" class="qzVoltarAuth" onclick="mqzFecharEmailB()">‹ Prefiro entrar com o Google</button>
+      </div>
       <div class="qzNota">Receba via Pix direto na sua conta assim que acumular R$ 20,00 em comissões confirmadas.</div>
     </div>
 
@@ -1154,7 +1178,7 @@
   function avisoOk(t){aviso.className='aviso ok';aviso.textContent=t;}
   window.trocarAba=function(n){modo=n;el('abaEntrar').classList.toggle('ativa',n==='entrar');el('abaCriar').classList.toggle('ativa',n==='criar');el('btnAcao').textContent=n==='entrar'?'Entrar':'Criar conta';el('dica').textContent=n==='criar'?'Vai criar uma conta de teste. Use um e-mail seu e uma senha simples.':'';var le=el('linhaEsqueci');if(le)le.style.display=n==='entrar'?'block':'none';limparAviso();};
   window.verSenha=function(){const s=el('senha'),b=document.querySelector('.verSenha');if(s.type==='password'){s.type='text';b.textContent='ocultar';}else{s.type='password';b.textContent='mostrar';}};
-  function msgErro(c){const m={'auth/invalid-email':'E-mail inválido.','auth/missing-password':'Digite uma senha.','auth/weak-password':'A senha precisa ter pelo menos 6 caracteres.','auth/email-already-in-use':'Esse e-mail já tem conta. Tente "Entrar".','auth/invalid-credential':'E-mail ou senha incorretos.','auth/user-not-found':'Não encontrei conta com esse e-mail.','auth/wrong-password':'Senha incorreta.','auth/too-many-requests':'Muitas tentativas. Espere um pouco.','auth/network-request-failed':'Sem conexão. Confira a internet.','auth/popup-blocked':'Seu navegador bloqueou a janela do Google. Permita pop-ups e tente de novo.','auth/account-exists-with-different-credential':'Esse e-mail já tem conta criada com senha. Entre com e-mail e senha, ou clique em "Esqueci minha senha".','auth/unauthorized-domain':'Este endereço ainda não está autorizado no Firebase para login com Google.'};return m[c]||('Erro: '+c);}
+  function msgErro(c){const m={'auth/invalid-email':'E-mail inválido.','auth/missing-password':'Digite uma senha.','auth/weak-password':'A senha precisa ter pelo menos 6 caracteres.','auth/email-already-in-use':'Esse e-mail já tem conta. Tente "Entrar".','auth/invalid-credential':'E-mail ou senha incorretos.','auth/user-not-found':'Não encontrei conta com esse e-mail.','auth/wrong-password':'Senha incorreta.','auth/too-many-requests':'Muitas tentativas. Espere um pouco.','auth/network-request-failed':'Sem conexão. Confira a internet.','auth/popup-blocked':'Seu navegador bloqueou a janela do Google. Permita pop-ups e tente de novo.','auth/account-exists-with-different-credential':'Esse e-mail já tem conta criada com senha. Entre com e-mail e senha, ou clique em "Esqueci minha senha".','auth/unauthorized-domain':'Este endereço ainda não está autorizado no Firebase para login com Google.','auth/internal-error':'Não consegui falar com o login do Google agora. Tente de novo — ou crie sua conta com e-mail e senha, que funciona do mesmo jeito.','auth/operation-not-allowed':'O login com Google está desativado nesta conta do sistema. Use e-mail e senha por enquanto.'};return m[c]||('Erro: '+c);}
   window.acao=async function(){const email=el('email').value.trim(),senha=el('senha').value,btn=el('btnAcao');limparAviso();if(!email){erroAcesso('Digite seu e-mail.');return;}if(!senha){erroAcesso('Digite uma senha.');return;}btn.disabled=true;const t=btn.textContent;btn.textContent='Aguarde...';try{if(modo==='criar'){await createUserWithEmailAndPassword(auth,email,senha);try{await sendEmailVerification(auth.currentUser);}catch(_){}try{await registrarIndicacao(auth.currentUser.uid);}catch(_){}garantirTrial();try{auth.currentUser.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:auth.currentUser.uid})}).catch(function(){});}).catch(function(){});}catch(_){}}else await signInWithEmailAndPassword(auth,email,senha);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.textContent=t;}};
   // Login/cadastro com Google. Mesmo botão serve pros dois casos: o Firebase cria a conta
   // na hora se for a 1ª vez (getAdditionalUserInfo().isNewUser diz se foi criação agora).
@@ -1169,7 +1193,26 @@
   }
   // Navegadores embutidos (Instagram/Facebook/TikTok/WhatsApp) bloqueiam ou o Google recusa o popup —
   // nesse caso já manda direto pro redirect. O retorno do redirect é tratado abaixo, no boot do módulo.
-  getRedirectResult(auth).then(function(cred){if(cred)return posLoginGoogleNovo(cred);}).catch(function(e){if(e&&e.code)erroAcesso(msgErro(e.code));});
+  getRedirectResult(auth).then(function(cred){
+    if(!cred) return;
+    if(typeof marcarRedirect==='function') marcarRedirect(false);   // voltou bem: libera nova tentativa
+    // Voltou do Google por redirect. Se o quiz tinha um cadastro em andamento (respostas
+    // guardadas antes de sair da página), termina ele; senão é login normal.
+    const pend=(typeof mqzLerPendente==='function')?mqzLerPendente():null;
+    if(pend&&pend.tipo==='comerciante'){
+      return gravarComercianteGoogle(cred,pend.dados).then(function(r){
+        if(window.mqzEsconder)window.mqzEsconder();
+        if(r&&r.slugTrocado) alert('O apelido que você escolheu acabou de ser usado por outra pessoa. Seu link ficou: moviki.com.br/'+r.slug+' — dá pra trocar em Perfil quando quiser.');
+      });
+    }
+    if(pend&&pend.tipo==='parceiro'){
+      return gravarParceiroGoogle(cred,pend.dados).then(function(r){
+        if(r&&r.ok&&!r.jaExistia){ window.location.href=r.redirect||'parceiro.html'; return; }
+        if(window.mqzEsconder)window.mqzEsconder();
+      });
+    }
+    return posLoginGoogleNovo(cred);
+  }).catch(function(e){if(e&&e.code)erroAcesso(msgErro(e.code));});
   window.entrarGoogle=async function(){
     const btn=el('btnGoogle');if(!btn)return;limparAviso();
     btn.disabled=true;const t=btn.innerHTML;btn.innerHTML='Aguarde...';
@@ -2063,6 +2106,17 @@
     }
     return null;
   }
+  // Consulta ao vivo se o apelido está livre (o quiz chama enquanto a pessoa digita).
+  // Devolve 'livre' | 'ocupado' | 'reservado' | 'curto' | 'erro'.
+  window.mqzSlugLivre=async function(valor){
+    const slug=limpaSlug(valor||'');
+    if(slug.length<3) return {estado:'curto',slug:slug};
+    if(RESERVADOS.includes(slug)) return {estado:'reservado',slug:slug};
+    try{
+      const s=await getDoc(doc(db,'slugs',slug));
+      return {estado:s.exists()?'ocupado':'livre',slug:slug};
+    }catch(e){ return {estado:'erro',slug:slug}; }
+  };
   // Cria a conta do comerciante a partir do Quiz e já injeta o esqueleto de cardápio do subtipo escolhido.
   window.mqzCriarComerciante=async function(d){
     try{
@@ -2145,100 +2199,159 @@
   // chega pela bio), o Google recusa popup; em vez de arriscar perder as respostas do quiz num
   // redirect de página inteira, orienta a abrir no navegador padrão ou seguir com e-mail/senha
   // (que continua funcionando normal por esse caminho, sem depender do Google).
-  async function autenticarGoogleQuiz(){
-    if(UA_WEBVIEW_SEM_POPUP){ const e=new Error('webview'); e.code='moviki/webview-sem-popup'; throw e; }
+  // CAUSA DO BUG "auth/internal-error" NO BOTÃO DO GOOGLE (corrigido em 20/08/2026):
+  // signInWithPopup PRECISA ser a primeira coisa assíncrona depois do clique. A versão
+  // anterior consultava o Firestore (`await getDoc(slugs/...)`) ANTES de abrir o popup —
+  // esse await derruba a "ativação do usuário" que o navegador exige pra permitir abrir
+  // janela, e o Chrome moderno (cookie de terceiro restrito) devolve isso como
+  // auth/internal-error em vez de auth/popup-blocked. Agora: valida só o que é local
+  // (sem rede), abre o popup na hora, e só depois consulta/grava no Firestore.
+  const MQZ_PEND='moviki_quiz_pendente';
+  // Guarda as respostas do quiz antes de um redirect de página inteira. Sem isso, voltar
+  // do Google perderia nome/WhatsApp/apelido/subtipo, que só existem em memória.
+  function mqzGuardarPendente(tipo,d){
+    try{ sessionStorage.setItem(MQZ_PEND,JSON.stringify({tipo:tipo,dados:d,em:Date.now()})); }catch(_){}
+  }
+  function mqzLerPendente(){
     try{
-      return await signInWithPopup(auth,GOOGLE_PROVIDER);
-    }catch(e){
-      const c=e&&e.code;
-      if(c==='auth/popup-blocked'||c==='auth/operation-not-supported-in-this-environment'){
-        const e2=new Error('webview'); e2.code='moviki/webview-sem-popup'; throw e2;
+      const raw=sessionStorage.getItem(MQZ_PEND);
+      if(!raw) return null;
+      sessionStorage.removeItem(MQZ_PEND);
+      const p=JSON.parse(raw);
+      if(!p||!p.tipo||!p.dados) return null;
+      if(Date.now()-(p.em||0)>30*60*1000) return null; // meia hora: velho demais, não aplica
+      return p;
+    }catch(_){ return null; }
+  }
+  // Trava de 1 tentativa: se o redirect também voltar com erro, não redireciona de novo
+  // (senão a pessoa fica indo e voltando do Google sem entender por quê).
+  const MQZ_RD='moviki_google_redirect_tentado';
+  function jaTentouRedirect(){ try{ return sessionStorage.getItem(MQZ_RD)==='1'; }catch(_){ return false; } }
+  function marcarRedirect(v){ try{ v?sessionStorage.setItem(MQZ_RD,'1'):sessionStorage.removeItem(MQZ_RD); }catch(_){} }
+  async function autenticarGoogleQuiz(tipo,d){
+    if(!UA_WEBVIEW_SEM_POPUP){
+      try{
+        const cred=await signInWithPopup(auth,GOOGLE_PROVIDER);
+        marcarRedirect(false);
+        return cred;
+      }catch(e){
+        const c=e&&e.code;
+        console.error('Moviki: login Google por popup falhou —',c||'(sem code)',e&&e.message?('| '+e.message):'',e&&e.customData?e.customData:'');
+        if(c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request') throw e;
+        // Falha de JANELA (bloqueada, ambiente sem suporte, ou o auth/internal-error que o
+        // Chrome devolve quando barra o cookie de terceiro do domínio de autenticação) não é
+        // motivo pra desistir: dá pra tentar a mesma coisa por navegação de página inteira.
+        const RECUPERAVEL=['auth/popup-blocked','auth/internal-error','auth/operation-not-supported-in-this-environment','auth/web-storage-unsupported','auth/timeout','auth/network-request-failed'];
+        if(RECUPERAVEL.indexOf(c)===-1||jaTentouRedirect()) throw e;
       }
-      throw e;
     }
+    mqzGuardarPendente(tipo,d);
+    marcarRedirect(true);
+    await signInWithRedirect(auth,GOOGLE_PROVIDER);
+    const e=new Error('redirecionando'); e.code='moviki/redirecionando'; throw e;
   }
   function erroGoogleQuiz(e){
     const c=e&&e.code;
-    if(c==='moviki/webview-sem-popup') return 'Esse navegador (dentro do Instagram/TikTok/Facebook, por exemplo) não permite abrir o login do Google aqui. Toque em "⋯" e escolha "Abrir no navegador", ou cadastre com e-mail e senha abaixo.';
+    if(c==='moviki/redirecionando') return '';                 // a página já está saindo pro Google
     if(c==='auth/popup-closed-by-user'||c==='auth/cancelled-popup-request') return '';
+    if(c==='auth/unauthorized-domain') return 'Este endereço ainda não está liberado no login com Google. Use e-mail e senha por enquanto.';
+    console.error('Moviki: erro no cadastro via Google —',c||e);
     return c?msgErro(c):'Não consegui concluir o cadastro agora. Tente de novo.';
   }
+  // Gravação do comerciante DEPOIS que o Google autenticou. Serve pros dois caminhos:
+  // popup (retorno direto) e redirect (retomada no boot, via mqzLerPendente).
+  async function gravarComercianteGoogle(cred,d){
+    const info=getAdditionalUserInfo(cred);
+    const user=cred.user;
+    if(info&&!info.isNewUser){
+      // Conta Google já existia (ex.: refazendo o quiz por engano) — não sobrescreve o
+      // negócio/cardápio que já tem. onAuthStateChanged carrega o painel real dele.
+      return {ok:true,jaExistia:true};
+    }
+    const nome=(d.nome||'').trim();
+    const whatsapp=(d.whatsapp||'').replace(/\D/g,'');
+    let slug=limpaSlug(d.slug||'');
+    const subtipo=buscarSubtipoQuiz(d.template);
+    const tpl=JSON.parse(JSON.stringify((subtipo&&subtipo.cardapioExemplo)||[]));
+    // A conta Google já existe neste ponto — não dá pra abortar por apelido ocupado sem
+    // deixar o cliente logado e sem negócio. Se alguém tomou o apelido nesse meio-tempo,
+    // gera variação numerada e avisa qual link ficou (ele troca depois em Perfil).
+    let livre=false, base=slug;
+    for(let i=0;i<5&&!livre;i++){
+      const s=await getDoc(doc(db,'slugs',slug));
+      if(!s.exists()){ livre=true; break; }
+      slug=base+(i+2);
+    }
+    if(!livre) return {ok:false,erro:'O apelido "'+base+'" já está em uso. Escolha outro.'};
+    try{await registrarIndicacao(user.uid);}catch(_){}
+    garantirTrial();
+    try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:user.uid})}).catch(function(){});}).catch(function(){}); }catch(_){}
+    await setDoc(doc(db,'slugs',slug),{uid:user.uid});
+    const dadosNegocio={
+      nome:nome,status:'fechado',promocoes:[],eventos:[],fotos:[],
+      markerLogo:'',cor:'#00f2fe',whiteLabel:false,
+      cardapio:tpl,slug:slug,atualizadoEm:serverTimestamp()
+    };
+    if(whatsapp) dadosNegocio.whatsapp=whatsapp;
+    await setDoc(doc(db,'negocios',user.uid),dadosNegocio,{merge:true});
+    await carregarDados(user.uid);
+    atualizarOnboarding(false);
+    return {ok:true,slug:slug,slugTrocado:(slug!==base)};
+  }
+  async function gravarParceiroGoogle(cred,d){
+    const info=getAdditionalUserInfo(cred);
+    const user=cred.user;
+    if(info&&!info.isNewUser){ return {ok:true,jaExistia:true}; }
+    const nome=(d.nome||'').trim();
+    const pix=(d.pix||'').trim();
+    let slug=limpaSlugParc(d.slug||nome);
+    if(slug.length<3) slug='parceiro'+Math.floor(Math.random()*9000+1000);
+    let livre=false;
+    for(let i=0;i<5&&!livre;i++){
+      const s=await getDoc(doc(db,'parceiro_slugs',slug));
+      if(!s.exists()){livre=true;break;}
+      slug=limpaSlugParc(nome)+Math.floor(Math.random()*900+100);
+    }
+    if(!livre) return {ok:false,erro:'Não consegui gerar seu link agora. Tente de novo.'};
+    await setDoc(doc(db,'parceiro_slugs',slug),{uid:user.uid});
+    const dadosParceiro={nome:nome,email:user.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.0',em:serverTimestamp()},criadoEm:serverTimestamp()};
+    if(refParceiro&&refParceiro.length>=3&&refParceiro!==slug) dadosParceiro.indicadoPor=refParceiro;
+    const arroba=(d.arroba||'').trim().replace(/^@+/,'').slice(0,39);
+    if(arroba) dadosParceiro.arroba='@'+arroba;
+    if(Array.isArray(d.canais)&&d.canais.length){
+      const CANAIS_OK=['instagram','whatsapp','associacoes'];
+      const canais=d.canais.filter(c=>CANAIS_OK.includes(c)).slice(0,3);
+      if(canais.length) dadosParceiro.canais=canais;
+    }
+    await setDoc(doc(db,'parceiros',user.uid),dadosParceiro);
+    try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-parceiro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:user.uid})}).catch(function(){});}).catch(function(){}); }catch(_){}
+    return {ok:true,redirect:'parceiro.html'};
+  }
   // Cria a conta do comerciante via Google a partir do Quiz — mesma lógica de negócio de
-  // mqzCriarComerciante, só que a autenticação é o popup do Google em vez de e-mail/senha.
+  // mqzCriarComerciante, só que a autenticação é o Google em vez de e-mail/senha.
   window.mqzCriarComercianteGoogle=async function(d){
+    // Validação LOCAL (nada de rede aqui — ver comentário do bug lá em cima).
+    const nome=(d.nome||'').trim();
+    if(!nome) return {ok:false,erro:'Dê um nome ao seu negócio.'};
+    const slug=limpaSlug(d.slug||'');
+    if(slug.length<3) return {ok:false,erro:'Escolha um apelido de link com pelo menos 3 letras/números.'};
+    if(RESERVADOS.includes(slug)) return {ok:false,erro:'Esse apelido é reservado, escolha outro.'};
+    if(!buscarSubtipoQuiz(d.template)) return {ok:false,erro:'Escolha o tipo do seu negócio.'};
     try{
-      const nome=(d.nome||'').trim();
-      if(!nome) return {ok:false,erro:'Dê um nome ao seu negócio.'};
-      const whatsapp=(d.whatsapp||'').replace(/\D/g,'');
-      const slug=limpaSlug(d.slug||'');
-      if(slug.length<3) return {ok:false,erro:'Escolha um apelido de link com pelo menos 3 letras/números.'};
-      if(RESERVADOS.includes(slug)) return {ok:false,erro:'Esse apelido é reservado, escolha outro.'};
-      const subtipo=buscarSubtipoQuiz(d.template);
-      if(!subtipo) return {ok:false,erro:'Escolha o tipo do seu negócio.'};
-      const tpl=JSON.parse(JSON.stringify(subtipo.cardapioExemplo||[]));
-      const chkSlug=await getDoc(doc(db,'slugs',slug));
-      if(chkSlug.exists()) return {ok:false,erro:'O apelido "'+slug+'" já está em uso. Escolha outro.'};
-      const cred=await autenticarGoogleQuiz();
-      const info=getAdditionalUserInfo(cred);
-      const user=cred.user;
-      if(info&&!info.isNewUser){
-        // Conta Google já existia (ex.: refazendo o quiz por engano) — não sobrescreve o
-        // negócio/cardápio que já tem. onAuthStateChanged carrega o painel real dele.
-        return {ok:true,jaExistia:true};
-      }
-      try{await registrarIndicacao(user.uid);}catch(_){}
-      garantirTrial();
-      try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:user.uid})}).catch(function(){});}).catch(function(){}); }catch(_){}
-      await setDoc(doc(db,'slugs',slug),{uid:user.uid});
-      const dadosNegocio={
-        nome:nome,status:'fechado',promocoes:[],eventos:[],fotos:[],
-        markerLogo:'',cor:'#00f2fe',whiteLabel:false,
-        cardapio:tpl,slug:slug,atualizadoEm:serverTimestamp()
-      };
-      if(whatsapp) dadosNegocio.whatsapp=whatsapp;
-      await setDoc(doc(db,'negocios',user.uid),dadosNegocio,{merge:true});
-      await carregarDados(user.uid);
-      atualizarOnboarding(false);
-      return {ok:true};
+      const cred=await autenticarGoogleQuiz('comerciante',d);
+      return await gravarComercianteGoogle(cred,d);
     }catch(e){
       return {ok:false,erro:erroGoogleQuiz(e)};
     }
   };
   // Cria a conta do parceiro via Google a partir do Quiz — mesma lógica de mqzCriarParceiro.
   window.mqzCriarParceiroGoogle=async function(d){
+    const nome=(d.nome||'').trim();
+    if(nome.length<2) return {ok:false,erro:'Digite seu nome completo.'};
+    if((d.pix||'').trim().length<3) return {ok:false,erro:'Digite sua chave Pix.'};
     try{
-      const nome=(d.nome||'').trim();
-      if(nome.length<2) return {ok:false,erro:'Digite seu nome completo.'};
-      const pix=(d.pix||'').trim();
-      if(pix.length<3) return {ok:false,erro:'Digite sua chave Pix.'};
-      let slug=limpaSlugParc(d.slug||nome);
-      if(slug.length<3) slug='parceiro'+Math.floor(Math.random()*9000+1000);
-      const cred=await autenticarGoogleQuiz();
-      const info=getAdditionalUserInfo(cred);
-      const user=cred.user;
-      if(info&&!info.isNewUser){
-        return {ok:true,jaExistia:true};
-      }
-      let livre=false;
-      for(let i=0;i<5&&!livre;i++){
-        const s=await getDoc(doc(db,'parceiro_slugs',slug));
-        if(!s.exists()){livre=true;break;}
-        slug=limpaSlugParc(nome)+Math.floor(Math.random()*900+100);
-      }
-      if(!livre) return {ok:false,erro:'Não consegui gerar seu link agora. Tente de novo.'};
-      await setDoc(doc(db,'parceiro_slugs',slug),{uid:user.uid});
-      const dadosParceiro={nome:nome,email:user.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.0',em:serverTimestamp()},criadoEm:serverTimestamp()};
-      if(refParceiro&&refParceiro.length>=3&&refParceiro!==slug) dadosParceiro.indicadoPor=refParceiro;
-      const arroba=(d.arroba||'').trim().replace(/^@+/,'').slice(0,39);
-      if(arroba) dadosParceiro.arroba='@'+arroba;
-      if(Array.isArray(d.canais)&&d.canais.length){
-        const CANAIS_OK=['instagram','whatsapp','associacoes'];
-        const canais=d.canais.filter(c=>CANAIS_OK.includes(c)).slice(0,3);
-        if(canais.length) dadosParceiro.canais=canais;
-      }
-      await setDoc(doc(db,'parceiros',user.uid),dadosParceiro);
-      try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-parceiro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:user.uid})}).catch(function(){});}).catch(function(){}); }catch(_){}
-      return {ok:true,redirect:'parceiro.html'};
+      const cred=await autenticarGoogleQuiz('parceiro',d);
+      return await gravarParceiroGoogle(cred,d);
     }catch(e){
       return {ok:false,erro:erroGoogleQuiz(e)};
     }
@@ -2473,6 +2586,10 @@
     document.querySelectorAll('#qzB2 .qzCard').forEach(function(c){c.classList.remove('qzSel');});
     var b2=$('qzB2Avancar'); if(b2)b2.disabled=true;
     ['qzA3Erro','qzB3Erro'].forEach(function(id){var e=$(id);if(e)e.textContent='';});
+    // Volta os dois formulários de cadastro pro estado inicial (só os botões de escolha).
+    if(window.mqzFecharEmailA)window.mqzFecharEmailA();
+    if(window.mqzFecharEmailB)window.mqzFecharEmailB();
+    var ms=$('qzSlugMsg'); if(ms){ms.textContent='';ms.className='qzSlugMsg';}
     mostrarTela('qzTela1',false);
   }
 
@@ -2539,9 +2656,44 @@
   };
 
   function slugPreview(v){return (v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'');}
+  // Checagem do apelido enquanto digita: avisa na hora se j\u00e1 est\u00e1 em uso, em vez de deixar
+  // a pessoa descobrir s\u00f3 depois de autenticar (quando a conta j\u00e1 foi criada).
+  var _slugTimer=null, _slugUltimo='';
+  function msgSlug(txt,classe){ var m=$('qzSlugMsg'); if(!m)return; m.textContent=txt||''; m.className='qzSlugMsg'+(classe?(' '+classe):''); }
+  function checarSlugQuiz(valor){
+    if(!window.mqzSlugLivre) return;
+    var alvo=slugPreview(valor);
+    _slugUltimo=alvo;
+    if(alvo.length<3){ msgSlug(alvo.length?'O apelido precisa de pelo menos 3 letras/n\u00fameros.':'',alvo.length?'erro':''); return; }
+    msgSlug('Verificando\u2026','');
+    window.mqzSlugLivre(valor).then(function(r){
+      if(!r||r.slug!==_slugUltimo) return;             // j\u00e1 digitou outra coisa, resposta velha
+      if(r.estado==='livre') msgSlug('Apelido dispon\u00edvel!','ok');
+      else if(r.estado==='ocupado') msgSlug('Esse apelido j\u00e1 est\u00e1 em uso. Escolha outro.','erro');
+      else if(r.estado==='reservado') msgSlug('Esse apelido \u00e9 reservado. Escolha outro.','erro');
+      else msgSlug('','');
+    }).catch(function(){ msgSlug('',''); });
+  }
   document.addEventListener('input',function(e){
-    if(e.target&&e.target.id==='qzSlug'){ var t=$('qzSlugTxt'); if(t)t.textContent=slugPreview(e.target.value)||'seunegocio'; }
+    if(e.target&&e.target.id==='qzSlug'){
+      var t=$('qzSlugTxt'); if(t)t.textContent=slugPreview(e.target.value)||'seunegocio';
+      var v=e.target.value;
+      clearTimeout(_slugTimer);
+      _slugTimer=setTimeout(function(){ checarSlugQuiz(v); },450);
+    }
   });
+
+  // Alterna entre os dois caminhos de cadastro. S\u00f3 um fica vis\u00edvel por vez \u2014 assim ningu\u00e9m
+  // acha que precisa preencher e-mail/senha DEPOIS de j\u00e1 ter entrado com o Google.
+  function trocarAuth(escolha,formulario,mostrarForm){
+    var esc=$(escolha), frm=$(formulario);
+    if(esc) esc.style.display=mostrarForm?'none':'block';
+    if(frm) frm.style.display=mostrarForm?'block':'none';
+  }
+  window.mqzAbrirEmailA=function(){ trocarAuth('qzA3Escolha','qzA3Email',true); var c=$('qzEmailA'); if(c)c.focus(); };
+  window.mqzFecharEmailA=function(){ trocarAuth('qzA3Escolha','qzA3Email',false); var e=$('qzA3Erro'); if(e)e.textContent=''; };
+  window.mqzAbrirEmailB=function(){ trocarAuth('qzB3Escolha','qzB3Email',true); var c=$('qzEmailB'); if(c)c.focus(); };
+  window.mqzFecharEmailB=function(){ trocarAuth('qzB3Escolha','qzB3Email',false); var e=$('qzB3Erro'); if(e)e.textContent=''; };
 
   // Mostrar/ocultar senha nos campos do quiz (mesmo padr\u00e3o do bot\u00e3o "mostrar/ocultar" da tela
   // de Entrar) \u2014 recebe o id do campo porque o quiz tem 2 campos de senha (comerciante/parceiro).
@@ -2567,7 +2719,10 @@
     if(!window.mqzCriarComercianteGoogle){if(erro)erro.textContent='N\u00e3o consegui conectar agora. Recarregue a p\u00e1gina.';return;}
     var t=btn.innerHTML; btn.disabled=true; btn.innerHTML='Aguarde...';
     window.mqzCriarComercianteGoogle(dados).then(function(r){
-      if(r&&r.ok){ window.mqzEsconder(); }
+      if(r&&r.ok){
+        window.mqzEsconder();
+        if(r.slugTrocado) alert('O apelido que voc\u00ea escolheu acabou de ser usado por outra pessoa. Seu link ficou: moviki.com.br/'+r.slug+' \u2014 d\u00e1 pra trocar em Perfil quando quiser.');
+      }
       else{ if(erro)erro.textContent=(r&&r.erro)||''; btn.disabled=false; btn.innerHTML=t; }
     }).catch(function(){ if(erro)erro.textContent='N\u00e3o consegui concluir agora. Tente de novo.'; btn.disabled=false; btn.innerHTML=t; });
   };
