@@ -66,6 +66,12 @@
   .btn.secundario{background:transparent;border:1px solid var(--card-borda);color:#c7d6ea;}
   .btn.secundario:hover{border-color:var(--ciano);color:var(--ciano);filter:none;}
   .btn.btnUpload{background:rgba(255,138,61,.16);border:1.5px solid #ff8a3d;color:#ffb37a;}
+  .btnGoogle{width:100%;padding:12px;border:1px solid var(--card-borda);border-radius:11px;cursor:pointer;background:#fff;color:#1f2a3a;font-size:14.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;transition:.15s;margin-bottom:16px;font-family:inherit;}
+  .btnGoogle:hover{filter:brightness(.96);}
+  .btnGoogle:disabled{opacity:.6;cursor:default;}
+  .btnGoogleIcon{flex:0 0 auto;}
+  .divisorOu{display:flex;align-items:center;gap:10px;margin:-4px 0 18px;color:#5f7794;font-size:12px;}
+  .divisorOu::before,.divisorOu::after{content:'';flex:1;height:1px;background:var(--card-borda);}
   .btn.btnUpload:hover{background:rgba(255,138,61,.28);filter:none;border-color:#ffa15c;}
   .aviso{margin-top:14px;padding:12px;border-radius:10px;font-size:13.5px;display:none;text-align:center;}
   .aviso.ok{display:block;background:rgba(46,204,113,.12);color:#8ff0b5;border:1px solid rgba(46,204,113,.35);}
@@ -487,6 +493,8 @@
         <button id="abaEntrar" class="ativa" onclick="trocarAba('entrar')">Entrar</button>
         <button id="abaCriar" onclick="trocarAba('criar')">Criar conta</button>
       </div>
+      <button type="button" id="btnGoogle" class="btnGoogle" onclick="entrarGoogle()"><svg class="btnGoogleIcon" viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.9-2.26 5.36-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Continuar com Google</button>
+      <div class="divisorOu"><span>ou</span></div>
       <div class="campo"><label for="email">E-mail</label><input id="email" type="email" placeholder="voce@email.com" autocomplete="email"></div>
       <div class="campo"><label for="senha">Senha</label><input id="senha" type="password" placeholder="mínimo 6 caracteres" autocomplete="current-password"><button type="button" class="verSenha" onclick="verSenha()">mostrar</button></div>
       <div id="linhaEsqueci" class="linhaEsqueci"><button type="button" id="btnEsqueci" class="linkEsqueci" onclick="esqueciSenha()">Esqueci minha senha</button></div>
@@ -1051,7 +1059,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, sendEmailVerification }
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, sendEmailVerification, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, getAdditionalUserInfo }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, getDocs, query, where }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -1112,8 +1120,39 @@
   function avisoOk(t){aviso.className='aviso ok';aviso.textContent=t;}
   window.trocarAba=function(n){modo=n;el('abaEntrar').classList.toggle('ativa',n==='entrar');el('abaCriar').classList.toggle('ativa',n==='criar');el('btnAcao').textContent=n==='entrar'?'Entrar':'Criar conta';el('dica').textContent=n==='criar'?'Vai criar uma conta de teste. Use um e-mail seu e uma senha simples.':'';var le=el('linhaEsqueci');if(le)le.style.display=n==='entrar'?'block':'none';limparAviso();};
   window.verSenha=function(){const s=el('senha'),b=document.querySelector('.verSenha');if(s.type==='password'){s.type='text';b.textContent='ocultar';}else{s.type='password';b.textContent='mostrar';}};
-  function msgErro(c){const m={'auth/invalid-email':'E-mail inválido.','auth/missing-password':'Digite uma senha.','auth/weak-password':'A senha precisa ter pelo menos 6 caracteres.','auth/email-already-in-use':'Esse e-mail já tem conta. Tente "Entrar".','auth/invalid-credential':'E-mail ou senha incorretos.','auth/user-not-found':'Não encontrei conta com esse e-mail.','auth/wrong-password':'Senha incorreta.','auth/too-many-requests':'Muitas tentativas. Espere um pouco.','auth/network-request-failed':'Sem conexão. Confira a internet.'};return m[c]||('Erro: '+c);}
+  function msgErro(c){const m={'auth/invalid-email':'E-mail inválido.','auth/missing-password':'Digite uma senha.','auth/weak-password':'A senha precisa ter pelo menos 6 caracteres.','auth/email-already-in-use':'Esse e-mail já tem conta. Tente "Entrar".','auth/invalid-credential':'E-mail ou senha incorretos.','auth/user-not-found':'Não encontrei conta com esse e-mail.','auth/wrong-password':'Senha incorreta.','auth/too-many-requests':'Muitas tentativas. Espere um pouco.','auth/network-request-failed':'Sem conexão. Confira a internet.','auth/popup-blocked':'Seu navegador bloqueou a janela do Google. Permita pop-ups e tente de novo.','auth/account-exists-with-different-credential':'Esse e-mail já tem conta criada com senha. Entre com e-mail e senha, ou clique em "Esqueci minha senha".','auth/unauthorized-domain':'Este endereço ainda não está autorizado no Firebase para login com Google.'};return m[c]||('Erro: '+c);}
   window.acao=async function(){const email=el('email').value.trim(),senha=el('senha').value,btn=el('btnAcao');limparAviso();if(!email){erroAcesso('Digite seu e-mail.');return;}if(!senha){erroAcesso('Digite uma senha.');return;}btn.disabled=true;const t=btn.textContent;btn.textContent='Aguarde...';try{if(modo==='criar'){await createUserWithEmailAndPassword(auth,email,senha);try{await sendEmailVerification(auth.currentUser);}catch(_){}try{await registrarIndicacao(auth.currentUser.uid);}catch(_){}garantirTrial();try{auth.currentUser.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:auth.currentUser.uid})}).catch(function(){});}).catch(function(){});}catch(_){}}else await signInWithEmailAndPassword(auth,email,senha);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.textContent=t;}};
+  // Login/cadastro com Google. Mesmo botão serve pros dois casos: o Firebase cria a conta
+  // na hora se for a 1ª vez (getAdditionalUserInfo().isNewUser diz se foi criação agora).
+  // E-mail do Google já vem verificado -> não passa pelo bannerVerif nem pelo fluxo de sendEmailVerification.
+  const GOOGLE_PROVIDER=new GoogleAuthProvider();
+  const UA_WEBVIEW_SEM_POPUP=/FBAN|FBAV|Instagram|Line\/|MicroMessenger|TikTok|; ?wv\)/i.test(navigator.userAgent||'');
+  async function posLoginGoogleNovo(cred){
+    const info=getAdditionalUserInfo(cred);
+    if(!info||!info.isNewUser)return;
+    try{await registrarIndicacao(cred.user.uid);}catch(_){}
+    try{const tk=await cred.user.getIdToken();fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:cred.user.uid})}).catch(function(){});}catch(_){}
+  }
+  // Navegadores embutidos (Instagram/Facebook/TikTok/WhatsApp) bloqueiam ou o Google recusa o popup —
+  // nesse caso já manda direto pro redirect. O retorno do redirect é tratado abaixo, no boot do módulo.
+  getRedirectResult(auth).then(function(cred){if(cred)return posLoginGoogleNovo(cred);}).catch(function(e){if(e&&e.code)erroAcesso(msgErro(e.code));});
+  window.entrarGoogle=async function(){
+    const btn=el('btnGoogle');if(!btn)return;limparAviso();
+    btn.disabled=true;const t=btn.innerHTML;btn.innerHTML='Aguarde...';
+    if(UA_WEBVIEW_SEM_POPUP){try{await signInWithRedirect(auth,GOOGLE_PROVIDER);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.innerHTML=t;}return;}
+    try{
+      const cred=await signInWithPopup(auth,GOOGLE_PROVIDER);
+      await posLoginGoogleNovo(cred);
+    }catch(e){
+      const c=e&&e.code;
+      if(c==='auth/popup-blocked'||c==='auth/operation-not-supported-in-this-environment'){
+        try{await signInWithRedirect(auth,GOOGLE_PROVIDER);}catch(e2){erroAcesso(msgErro(e2.code));btn.disabled=false;btn.innerHTML=t;}
+        return;
+      }
+      if(c!=='auth/popup-closed-by-user'&&c!=='auth/cancelled-popup-request'){erroAcesso(msgErro(c));}
+      btn.disabled=false;btn.innerHTML=t;
+    }
+  };
   window.sair=async function(){await signOut(auth);};
   window.reenviarVerif=async function(){
     const b=el('bvBtn');if(b)b.disabled=true;
