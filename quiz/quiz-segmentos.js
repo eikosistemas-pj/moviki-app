@@ -42,7 +42,14 @@
    visual (3D, fundo transparente, 256×256, sombra neutra): os 26 da rodada 3
    (Serviços ativado + Floricultura + Bar Móvel + macro Tecnologia) MAIS os 5
    da rodada 4, que substituíram os últimos ícones com fundo próprio
-   (legado). Nenhum pendente.
+   (legado). Pendente: 'servicos.png' saiu sem o brilho especular dos demais
+   (falha de geração, não de padronização) — precisa regenerar.
+
+   CARDÁPIOS — 20/08/2026: macro 'servicos' reescrito com seeds que mostram
+   variação de preço via múltiplas linhas na mesma categoria (por porte de
+   pet, por tamanho de veículo, por combo de serviço) em vez de UI de
+   variação dedicada — ver comentário de decisão dentro do bloco 'servicos'
+   abaixo. Nenhum dos 4 subtipos de Serviços virou 'proprio'.
 
    ESTRUTURA
    MOVIKI_SEGMENTOS = [ macro, macro, ... ]
@@ -379,6 +386,17 @@ window.MOVIKI_SEGMENTOS = [
     label: 'Serviços',
     emoji: '🛠️',
     icone: 'quiz/icones/servicos.png',
+    // DECISÃO 20/08/2026 (Eiko pediu análise, não pergunta binária): os 4 subtipos abaixo
+    // ficam 'simples' (não viram 'proprio'). Cardápio Moviki é vitrine pública sem
+    // carrinho/checkout (cliente vê preço e chama no WhatsApp, não "seleciona variação
+    // e compra" dentro do app) — então uma UI de variação não teria função de cálculo
+    // nenhuma, só duplicaria o que 'simples' já resolve: múltiplas linhas na mesma
+    // categoria, uma por variação de preço (porte do pet, tamanho do veículo, combo de
+    // serviços). É o mesmo padrão que Barbearia já usava (Corte / Barba como itens
+    // separados). Custo de fazer 'proprio' aqui: UI nova no editor + schema novo +
+    // revisão de regras Firestore, pra um resultado que o cliente final vê exatamente
+    // igual (nome + preço). Os 4 seeds abaixo foram reescritos pra deixar esse padrão
+    // explícito (por porte/tamanho e por combo), servindo de exemplo pro lojista.
     subtipos: [
       {
         id: 'petshop',
@@ -388,8 +406,12 @@ window.MOVIKI_SEGMENTOS = [
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
-          { categoria: '🐶 Banho e Tosa', produtos: [
-            { nome: 'Banho Completo (Pequeno Porte)', preco: '40,00', acabando: false },
+          { categoria: '🐶 Banho', produtos: [
+            { nome: 'Banho (Porte Pequeno)', preco: '35,00', acabando: false },
+            { nome: 'Banho (Porte Médio)', preco: '45,00', acabando: false },
+            { nome: 'Banho (Porte Grande)', preco: '60,00', acabando: false }
+          ] },
+          { categoria: '✂️ Tosa', produtos: [
             { nome: 'Tosa Higiênica', preco: '25,00', acabando: false }
           ] }
         ]
@@ -404,7 +426,8 @@ window.MOVIKI_SEGMENTOS = [
         cardapioExemplo: [
           { categoria: '💈 Cortes', produtos: [
             { nome: 'Corte Masculino', preco: '35,00', acabando: false },
-            { nome: 'Barba', preco: '20,00', acabando: false }
+            { nome: 'Barba', preco: '20,00', acabando: false },
+            { nome: 'Corte + Barba', preco: '50,00', acabando: false }
           ] }
         ]
       },
@@ -418,7 +441,8 @@ window.MOVIKI_SEGMENTOS = [
         cardapioExemplo: [
           { categoria: '💅 Unhas', produtos: [
             { nome: 'Manicure Simples', preco: '25,00', acabando: false },
-            { nome: 'Pedicure Simples', preco: '25,00', acabando: false }
+            { nome: 'Pedicure Simples', preco: '25,00', acabando: false },
+            { nome: 'Manicure + Pedicure', preco: '45,00', acabando: false }
           ] }
         ]
       },
@@ -430,9 +454,13 @@ window.MOVIKI_SEGMENTOS = [
         molde: 'simples',
         moldeId: null,
         cardapioExemplo: [
-          { categoria: '🚗 Lavagem', produtos: [
-            { nome: 'Lavagem Simples', preco: '30,00', acabando: false },
-            { nome: 'Lavagem Completa + Cera', preco: '60,00', acabando: false }
+          { categoria: '🚗 Lavagem Simples', produtos: [
+            { nome: 'Lavagem Simples (Carro Pequeno/Hatch)', preco: '30,00', acabando: false },
+            { nome: 'Lavagem Simples (SUV/Caminhonete)', preco: '45,00', acabando: false }
+          ] },
+          { categoria: '✨ Lavagem Completa + Cera', produtos: [
+            { nome: 'Completa + Cera (Carro Pequeno/Hatch)', preco: '60,00', acabando: false },
+            { nome: 'Completa + Cera (SUV/Caminhonete)', preco: '80,00', acabando: false }
           ] }
         ]
       }
