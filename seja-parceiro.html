@@ -13,6 +13,12 @@
   :root{--ciano:#00D4FF;--azul:#0066FF;--verde:#25e39b}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Poppins',system-ui,sans-serif;background:linear-gradient(160deg,#0b2038 0%,#0e2d54 55%,#0a1c34 100%);color:#F2F5F9;min-height:100vh;padding:26px 16px 60px;-webkit-font-smoothing:antialiased}
+
+  /* --- Ícones 3D do pacote Moviki (substituem emoji) --- */
+  .icoT{width:1.25em;height:1.25em;object-fit:contain;vertical-align:-.28em;margin-right:.32em;display:inline-block;}
+  .icoB{width:26px;height:26px;object-fit:contain;flex:0 0 26px;display:inline-block;vertical-align:middle;}
+  .icoK{width:40px;height:40px;object-fit:contain;display:block;}
+  .icoM{width:20px;height:20px;object-fit:contain;vertical-align:-.32em;margin-right:.3em;display:inline-block;}
   .wrap{max-width:480px;margin:0 auto}
   .marca{text-align:center;margin-bottom:14px}
   .marca img{height:34px}
@@ -81,7 +87,7 @@
     </div>
 
     <div id="sucesso">
-      <div class="ic">🎉</div>
+      <div class="ic"><img class="icoK" src="icones/festa.png" alt="" loading="lazy" onerror="mvI(this,'🎉')"></div>
       <h2>Cadastro recebido!</h2>
       <p>Bem-vindo(a) ao Programa de Parceiros Moviki. Seu cadastro foi registrado com sucesso.</p>
       <div class="box">Seu acesso está <b>em análise</b>. Assim que for aprovado, seu link de parceiro é ativado e você recebe um e-mail de boas-vindas. 💚</div>
@@ -203,6 +209,10 @@
     }
   };
   function erro(m){ el('aviso').textContent=m; return false; }
+</script>
+<script>
+/* Ícone 3D com fallback pro emoji original (nada quebra se o PNG faltar). */
+function mvI(img,e){var s=document.createElement('span');s.textContent=e;s.style.cssText='font-size:1em;line-height:1';img.replaceWith(s);}
 </script>
 </body>
 </html>

@@ -62,6 +62,12 @@
   .lcPino{position:absolute;bottom:9px;right:10px;background:#0d1c30;border:1px solid #22406a;border-radius:999px;font-size:11px;color:#8fd8a0;padding:5px 10px;font-weight:700;}
   .lcSalvaTxt{font-size:13.5px;color:#9fb3d0;margin-bottom:13px;line-height:1.55;}
   .lcSalvaTxt b{color:#8fd8a0;}
+
+  /* --- Ícones 3D do pacote Moviki (substituem emoji) --- */
+  .icoT{width:1.25em;height:1.25em;object-fit:contain;vertical-align:-.28em;margin-right:.32em;display:inline-block;}
+  .icoB{width:26px;height:26px;object-fit:contain;flex:0 0 26px;display:inline-block;vertical-align:middle;}
+  .icoK{width:40px;height:40px;object-fit:contain;display:block;}
+  .icoM{width:20px;height:20px;object-fit:contain;vertical-align:-.32em;margin-right:.3em;display:inline-block;}
   .bannerTrial{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(0,102,255,.18),rgba(0,212,255,.12));border:1px solid rgba(0,212,255,.45);border-radius:12px;padding:13px 15px;margin-bottom:14px;flex-wrap:wrap;}
   .bannerTrial.urgente{background:rgba(255,159,64,.14);border-color:rgba(255,159,64,.55);}
   .bannerTrial.fim{background:rgba(231,76,60,.15);border-color:rgba(231,76,60,.55);}
@@ -634,7 +640,7 @@
         <div class="mpCaixa" style="max-width:460px">
           <button type="button" class="mpFechar" onclick="fecharIndica()" aria-label="Fechar">✕</button>
           <div id="candForm">
-            <div class="mpHead"><h2 class="mpTitulo">💰 Seja parceiro e ganhe</h2></div>
+            <div class="mpHead"><h2 class="mpTitulo"><img class="icoT" src="icones/comissoes.png" alt="" loading="lazy" onerror="mvI(this,'💰')">Seja parceiro e ganhe</h2></div>
             <p class="idxLead">Indique negócios pro Moviki e ganhe <b>15% todo mês</b> de cada um que assinar pelo seu link. É grátis, e você recebe no seu Pix.</p>
             <div class="pcGanhos">
               <div class="pcGanhoItem"><span class="pcGanhoPct">15%</span><span class="pcGanhoTxt">A pessoa que você indicar: você recebe uma comissão recorrente de <b>15%</b> todo mês enquanto ela pagar a assinatura.</span></div>
@@ -664,8 +670,8 @@
       <div id="modalParceiro" class="modalPlano escondido" onclick="if(event.target===this)fecharParceiro()">
         <div class="mpCaixa" style="max-width:460px">
           <button type="button" class="mpFechar" onclick="fecharParceiro()" aria-label="Fechar">✕</button>
-          <div class="mpHead"><h2 class="mpTitulo">💰 Indicar agora</h2></div>
-          <div class="pcBadgeOficial">✅ Parceiro Oficial</div>
+          <div class="mpHead"><h2 class="mpTitulo"><img class="icoT" src="icones/indicar.png" alt="" loading="lazy" onerror="mvI(this,'💰')">Indicar agora</h2></div>
+          <div class="pcBadgeOficial"><img class="icoM" src="icones/escudo.png" alt="" loading="lazy" onerror="mvI(this,'✅')">Parceiro Oficial</div>
           <p class="idxLead">Você é <b>parceiro Moviki</b>! Compartilhe seu link: cada negócio que assinar por ele vira <b>15% todo mês</b> pra você.</p>
           <div style="background:#0b1728;border:1px solid var(--card-borda);border-radius:12px;padding:11px 13px;margin:4px 0 10px;font-size:14px;color:#e6eefb;word-break:break-all"><span id="pcLink">moviki.com.br/p/…</span></div>
           <button type="button" class="idxBtn prim" onclick="pcCopiarLink(this)">📋 Copiar meu link</button>
@@ -693,7 +699,7 @@
 
           <!-- SIMULADOR DE GANHOS INTERATIVO -->
           <div class="mkSim" id="mkSim">
-            <div class="mkSimTitulo">🚀 Simule seus ganhos</div>
+            <div class="mkSimTitulo"><img class="icoT" src="icones/foguete.png" alt="" loading="lazy" onerror="mvI(this,'🚀')">Simule seus ganhos</div>
             <div class="mkSimTabs">
               <button type="button" class="mkSimTab active" onclick="mkSimSelecionarPlano('pro',this)">Pró<span class="mkSimTabPreco">R$ 37,90</span></button>
               <button type="button" class="mkSimTab" onclick="mkSimSelecionarPlano('premium',this)">Premium<span class="mkSimTabPreco">R$ 49,90</span></button>
@@ -745,14 +751,14 @@
       <div id="modalCandTravado" class="modalPlano escondido" onclick="if(event.target===this)fecharCandTravado()">
         <div class="mpCaixa" style="max-width:440px">
           <button type="button" class="mpFechar" onclick="fecharCandTravado()" aria-label="Fechar">✕</button>
-          <div class="mpHead"><h2 class="mpTitulo">🔒 Vire parceiro Moviki</h2></div>
+          <div class="mpHead"><h2 class="mpTitulo"><img class="icoT" src="icones/comissoes.png" alt="" loading="lazy" onerror="mvI(this,'🔒')">Vire parceiro Moviki</h2></div>
           <p class="idxLead">Pra virar parceiro oficial e começar a ganhar comissão por indicação, sua assinatura precisa estar <b>ativa e paga</b> — assim garantimos que só quem realmente usa o Moviki ganha com ele.</p>
           <div class="pcTab">
             <div class="pcTabTit">Ao assinar um plano, você garante</div>
             <div class="pcGanhos">
-              <div class="pcGanhoItem"><span class="pcGanhoPct">🚀</span><span class="pcGanhoTxt">Seu negócio completo no ar: cardápio, promoções, eventos e fotos sem interrupção.</span></div>
-              <div class="pcGanhoItem"><span class="pcGanhoPct">💰</span><span class="pcGanhoTxt">Liberação pra virar parceiro e ganhar <b>15% recorrente</b> por cada negócio que você indicar.</span></div>
-              <div class="pcGanhoItem"><span class="pcGanhoPct">📈</span><span class="pcGanhoTxt">Prioridade no mapa e nos recursos do seu plano, sem depender do teste grátis.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct"><img class="icoB" src="icones/foguete.png" alt="" loading="lazy" onerror="mvI(this,'🚀')"></span><span class="pcGanhoTxt">Seu negócio completo no ar: cardápio, promoções, eventos e fotos sem interrupção.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct"><img class="icoB" src="icones/comissoes.png" alt="" loading="lazy" onerror="mvI(this,'💰')"></span><span class="pcGanhoTxt">Liberação pra virar parceiro e ganhar <b>15% recorrente</b> por cada negócio que você indicar.</span></div>
+              <div class="pcGanhoItem"><span class="pcGanhoPct"><img class="icoB" src="icones/relatorios.png" alt="" loading="lazy" onerror="mvI(this,'📈')"></span><span class="pcGanhoTxt">Prioridade no mapa e nos recursos do seu plano, sem depender do teste grátis.</span></div>
             </div>
           </div>
           <button type="button" class="idxBtn prim" onclick="fecharCandTravado();abrirPlano();">Ver planos e assinar</button>
@@ -762,7 +768,7 @@
       <div id="modalConheca" class="modalPlano escondido" onclick="if(event.target===this)fecharConheca()">
         <div class="mpCaixa" style="max-width:520px">
           <button type="button" class="mpFechar" onclick="fecharConheca()" aria-label="Fechar">✕</button>
-          <div class="mpHead"><h2 class="mpTitulo">🚀 Conheça o Moviki</h2></div>
+          <div class="mpHead"><h2 class="mpTitulo"><img class="icoT" src="icones/foguete.png" alt="" loading="lazy" onerror="mvI(this,'🚀')">Conheça o Moviki</h2></div>
           <p class="idxLead">O mapa inteligente dos negócios em movimento — foodtrucks, feirantes, ambulantes e carrinhos aparecem em tempo real pra quem está por perto procurando exatamente o que eles vendem.</p>
 
           <div class="mkcSecao">
@@ -782,15 +788,15 @@
           <div class="mkcSecao">
             <div class="mkcTit">Dicas de quem indica bem</div>
             <ul class="mkcLista">
-              <li><span>🎯</span>Comece pela sua própria rede: feirantes, foodtrucks e ambulantes que você já conhece pessoalmente convertem mais rápido.</li>
-              <li><span>📍</span>Mostre o mapa funcionando ao vivo — é o argumento mais forte, mais forte que qualquer explicação.</li>
-              <li><span>🤝</span>Associações e cooperativas de feirantes multiplicam o alcance: uma conversa pode render várias indicações de uma vez.</li>
-              <li><span>🔁</span>Depois que a pessoa assina, incentive ela a indicar também — é aí que entram os bônus de 2º e 3º nível.</li>
+              <li><span><img class="icoB" src="icones/alvo.png" alt="" loading="lazy" onerror="mvI(this,'🎯')"></span>Comece pela sua própria rede: feirantes, foodtrucks e ambulantes que você já conhece pessoalmente convertem mais rápido.</li>
+              <li><span><img class="icoB" src="icones/localizacao.png" alt="" loading="lazy" onerror="mvI(this,'📍')"></span>Mostre o mapa funcionando ao vivo — é o argumento mais forte, mais forte que qualquer explicação.</li>
+              <li><span><img class="icoB" src="icones/maos.png" alt="" loading="lazy" onerror="mvI(this,'🤝')"></span>Associações e cooperativas de feirantes multiplicam o alcance: uma conversa pode render várias indicações de uma vez.</li>
+              <li><span><img class="icoB" src="icones/recorrente.png" alt="" loading="lazy" onerror="mvI(this,'🔁')"></span>Depois que a pessoa assina, incentive ela a indicar também — é aí que entram os bônus de 2º e 3º nível.</li>
             </ul>
           </div>
 
           <div class="mkcSecao">
-            <div class="mkcTit">📣 Novidades do programa de parceiros</div>
+            <div class="mkcTit"><img class="icoT" src="icones/indicar.png" alt="" loading="lazy" onerror="mvI(this,'📣')">Novidades do programa de parceiros</div>
             <div id="mkcNovidades"><div class="mkcNovidade"><div class="mkcNovidadeData">19/08/2026</div><div class="mkcNovidadeTxt">Programa de parceiros no ar, com comissão em 3 níveis (15% / 7,5% / 5%) e aprovação em análise pra garantir qualidade nas indicações.</div></div></div>
           </div>
 
@@ -800,7 +806,7 @@
       <div id="modalPontos" class="modalPlano escondido" onclick="if(event.target===this)fecharPontos()">
         <div class="mpCaixa" style="max-width:480px">
           <button type="button" class="mpFechar" onclick="fecharPontos()" aria-label="Fechar">✕</button>
-          <div class="mpHead"><h2 class="mpTitulo">📍 Meus pontos</h2></div>
+          <div class="mpHead"><h2 class="mpTitulo"><img class="icoT" src="icones/multipontos.png" alt="" loading="lazy" onerror="mvI(this,'📍')">Meus pontos</h2></div>
           <p class="idxLead">Cada ponto é uma unidade sua no mapa (carrinho, food truck, quiosque…), com localização e link próprios. O plano Enterprise inclui até <b id="ptInclusos">3</b> pontos, contando o seu negócio principal.</p>
           <div id="ptResumo"></div>
           <div id="ptLista">Carregando…</div>
@@ -861,11 +867,11 @@
         <div class="statusHome">
           <span class="shLabel">Seu negócio está agora:</span>
           <div class="statusLinha">
-            <button id="btnAberto" class="statusBtn" onclick="setStatus('aberto')">🟢 Aberto</button>
-            <button id="btnFechado" class="statusBtn" onclick="setStatus('fechado')">🔴 Fechado</button>
+            <button id="btnAberto" class="statusBtn" onclick="setStatus('aberto')"><img class="icoM" src="icones/aberto.png" alt="" loading="lazy" onerror="mvI(this,'🟢')">Aberto</button>
+            <button id="btnFechado" class="statusBtn" onclick="setStatus('fechado')"><img class="icoM" src="icones/fechado.png" alt="" loading="lazy" onerror="mvI(this,'🔴')">Fechado</button>
           </div>
           <span class="shDica">Lembre de tocar em <b>Salvar tudo</b> pra valer no seu link.</span>
-          <button type="button" class="shVerPagina" onclick="verMinhaPagina()">🌐 Ver minha página</button>
+          <button type="button" class="shVerPagina" onclick="verMinhaPagina()"><img class="icoM" src="icones/pagina.png" alt="" loading="lazy" onerror="mvI(this,'🌐')">Ver minha página</button>
         </div>
         <div id="onboarding" class="onb escondido">
         <div class="onbTop">
@@ -913,7 +919,7 @@
         <button class="tab" data-tab="avaliacoes" onclick="abrirTab('avaliacoes')">Avaliações</button>
       </div>
 
-      <div id="avisoPlano" class="avisoPlano escondido" onclick="abrirPlano()" style="cursor:pointer">🔒 <b>Cardápio</b>, <b>Promoções</b> e <b>Eventos</b> são do plano <b>Pró</b>. <u>Clique aqui pra assinar</u>.</div>
+      <div id="avisoPlano" class="avisoPlano escondido" onclick="abrirPlano()" style="cursor:pointer"><img class="icoM" src="icones/plano.png" alt="" loading="lazy" onerror="mvI(this,'🔒')"><b>Cardápio</b>, <b>Promoções</b> e <b>Eventos</b> são do plano <b>Pró</b>. <u>Clique aqui pra assinar</u>.</div>
       <div id="modalPlano" class="modalPlano escondido">
         <div class="mpCaixa">
           <button class="mpFechar" onclick="fecharPlano()">✕</button>
@@ -958,7 +964,7 @@
         <div id="linkPronto" class="linkPronto escondido"><div class="rot">✅ Link pra divulgar (bio do Instagram, WhatsApp...):</div><div class="linkRow"><a id="linkPublico" href="#" target="_blank" rel="noopener"></a><button onclick="copiarLink()" id="btnCopiar">Copiar</button></div></div>
         <div class="campo"><label for="recado">Recado do dia (opcional)</label><textarea id="recado" rows="2" placeholder="Ex.: Hoje tem caldo de feijão!"></textarea></div>
         <div style="border:1px solid rgba(0,212,255,.25);border-radius:12px;padding:14px;background:rgba(0,102,255,.05);margin-top:4px">
-          <label style="font-weight:700;font-size:15px;display:block;margin-bottom:4px">🎨 Aparência da sua página</label>
+          <label style="font-weight:700;font-size:15px;display:block;margin-bottom:4px"><img class="icoM" src="icones/cormarca.png" alt="" loading="lazy" onerror="mvI(this,'🎨')">Aparência da sua página</label>
           <div style="font-size:13px;color:#9fb3d0;margin-bottom:10px">Escolha a cor da sua marca. Ela pinta os destaques da sua página pública e o seu pino no mapa. <span style="color:#7f95b3">(recurso do plano Premium ou superior)</span></div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
             <input id="corInput" type="color" value="#00D4FF" style="width:52px;height:40px;border:none;border-radius:10px;background:transparent;cursor:pointer;padding:0">
@@ -984,7 +990,7 @@
       <!-- Cardápio -->
       <div class="tabConteudo escondido" id="tab-cardapio">
         <div id="notaFotos" class="notaFotos"></div>
-        <div class="dica" style="text-align:left;margin:0 2px 14px">💡 As categorias abaixo são só um ponto de partida — sinta-se à vontade pra criar, renomear ou apagar quantas quiser. O cardápio é todo seu.</div>
+        <div class="dica" style="text-align:left;margin:0 2px 14px"><img class="icoM" src="icones/lampada.png" alt="" loading="lazy" onerror="mvI(this,'💡')">As categorias abaixo são só um ponto de partida — sinta-se à vontade pra criar, renomear ou apagar quantas quiser. O cardápio é todo seu.</div>
         <div class="secTitulo"><label>Categorias e produtos</label><button class="addBtn" onclick="adicionarCategoria()">+ Categoria</button></div>
         <div id="listaCategorias"></div>
         <div id="vazioCat" class="vazioCard">Nenhuma categoria ainda. Crie uma (ex.: Caldos, Lanches, Bebidas).</div>
@@ -1015,10 +1021,10 @@
       <!-- Local -->
       <div class="tabConteudo escondido" id="tab-local">
         <div class="gps" id="gpsInfo">📍 Localização ainda não definida.</div>
-        <button class="btn secundario" onclick="pegarLocalizacao()">📍 Atualizar minha localização</button>
+        <button class="btn secundario" onclick="pegarLocalizacao()"><img class="icoM" src="icones/localizacao.png" alt="" loading="lazy" onerror="mvI(this,'📍')">Atualizar minha localização</button>
         <div class="logoCard">
           <div class="lcHead">
-            <span class="lcIco">🖼️</span>
+            <span class="lcIco"><img class="icoB" src="icones/logopino.png" alt="" loading="lazy" onerror="mvI(this,'🖼️')"></span>
             <div>
               <div class="lcTit">Sua logo no mapa</div>
               <span class="lcSelo">RECURSO PREMIUM</span>
@@ -1035,7 +1041,7 @@
             <!-- ESTADO 1: ainda sem logo -->
             <div id="logoVazio">
               <div class="lcDrop" id="logoDrop" onclick="lcEscolher()">
-                <div class="lcDropIco">📤</div>
+                <div class="lcDropIco"><img class="icoK" src="icones/upload.png" alt="" loading="lazy" onerror="mvI(this,'📤')"></div>
                 <div class="lcDropTit">Toque aqui pra enviar sua logo</div>
                 <div class="lcDropSub">Depois você ajusta o enquadramento e confirma como ela vai aparecer no pino. JPG ou PNG.</div>
               </div>
@@ -1085,7 +1091,7 @@
         <div class="campo"><label for="whatsapp">Seu WhatsApp (com DDD)</label>
           <input id="whatsapp" type="tel" inputmode="numeric" placeholder="Ex.: 81 99999-9999">
         </div>
-        <div class="dicaBox">💬 Esse número vira o botão <b>“Chamar no WhatsApp”</b> na sua página pública. Digite só números com o DDD. Deixe em branco pra não mostrar o botão.</div>
+        <div class="dicaBox"><img class="icoM" src="icones/whatsapp.png" alt="" loading="lazy" onerror="mvI(this,'💬')">Esse número vira o botão <b>“Chamar no WhatsApp”</b> na sua página pública. Digite só números com o DDD. Deixe em branco pra não mostrar o botão.</div>
       </div>
 
       <!-- Avaliações -->
@@ -1460,7 +1466,7 @@
   var CONHECA_VERSAO='2026-08-19';
   function mkConhecaViu(){ try{ return localStorage.getItem('mkConheceuVersao')===CONHECA_VERSAO; }catch(e){ return true; } }
   function mkConhecaBotaoHTML(){
-    return '<button type="button" class="mkConhecaBtn" onclick="abrirConheca()"><span class="mkConhecaDot'+(mkConhecaViu()?' escondido':'')+'"></span>🚀 Conheça o Moviki</button>';
+    return '<button type="button" class="mkConhecaBtn" onclick="abrirConheca()"><span class="mkConhecaDot'+(mkConhecaViu()?' escondido':'')+'"></span><img class="icoM" src="icones/foguete.png" alt="" loading="lazy" onerror="mvI(this,\'🚀\')">Conheça o Moviki</button>';
   }
   window.abrirConheca=function(){
     try{ localStorage.setItem('mkConheceuVersao',CONHECA_VERSAO); }catch(e){}
@@ -3018,6 +3024,10 @@
     if(l&&!l.classList.contains('qzEscondido')){ l.classList.add('qzEscondido'); window.mqzMostrar(); }
   },8000);
 })();
+</script>
+<script>
+/* Ícone 3D com fallback pro emoji original (nada quebra se o PNG faltar). */
+function mvI(img,e){var s=document.createElement('span');s.textContent=e;s.style.cssText='font-size:1em;line-height:1';img.replaceWith(s);}
 </script>
 </body>
 </html>

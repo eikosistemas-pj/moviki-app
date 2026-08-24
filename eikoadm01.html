@@ -20,6 +20,12 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Poppins',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--texto);line-height:1.55;-webkit-font-smoothing:antialiased}
+
+  /* --- Ícones 3D do pacote Moviki (substituem emoji) --- */
+  .icoT{width:1.25em;height:1.25em;object-fit:contain;vertical-align:-.28em;margin-right:.32em;display:inline-block;}
+  .icoB{width:26px;height:26px;object-fit:contain;flex:0 0 26px;display:inline-block;vertical-align:middle;}
+  .icoK{width:40px;height:40px;object-fit:contain;display:block;}
+  .icoM{width:20px;height:20px;object-fit:contain;vertical-align:-.32em;margin-right:.3em;display:inline-block;}
   .escondido{display:none!important}
   a{color:var(--azul);text-decoration:none}
 
@@ -194,7 +200,7 @@
 <!-- RESTRITO -->
 <div id="restrito" class="centro escondido">
   <div class="box">
-    <h2>🔒 Acesso restrito</h2>
+    <h2><img class="icoT" src="icones/politicas.png" alt="" loading="lazy" onerror="mvI(this,'🔒')">Acesso restrito</h2>
     <p class="sub">Este painel é do dono do Moviki.</p>
     <p style="text-align:center;font-size:13px">Você entrou como:<br><b id="restritoEmail"></b></p>
     <button class="btn cinza" onclick="sair()">Sair</button>
@@ -227,27 +233,27 @@
   <div class="main">
     <div class="topbar">
       <h1 id="pageTitle">Início</h1>
-      <div class="user"><span class="av">👑</span><span id="donoEmail"></span></div>
+      <div class="user"><span class="av"><img class="icoB" src="icones/coroa.png" alt="" loading="lazy" onerror="mvI(this,'👑')"></span><span id="donoEmail"></span></div>
     </div>
     <div class="conteudo">
 
       <!-- INÍCIO -->
       <section id="pg-inicio" class="pagina">
         <div class="kpis">
-          <div class="kpi k1"><div class="top"><div class="ic i1">🏪</div></div><div class="n" id="kpiLojistas">—</div><div class="l">Lojistas cadastrados</div></div>
+          <div class="kpi k1"><div class="top"><div class="ic i1"><img class="icoK" src="icones/convidar-comerciante.png" alt="" loading="lazy" onerror="mvI(this,'🏪')"></div></div><div class="n" id="kpiLojistas">—</div><div class="l">Lojistas cadastrados</div></div>
           <div class="kpi k2"><div class="top"><div class="ic i2">⭐</div></div><div class="n" id="kpiPro">—</div><div class="l">Pró ou superior</div></div>
-          <div class="kpi k3"><div class="top"><div class="ic i3">🟢</div></div><div class="n" id="kpiAbertos">—</div><div class="l">Abertos agora</div></div>
-          <div class="kpi k4"><div class="top"><div class="ic i4">💵</div></div><div class="n" id="kpiReceita">—</div><div class="l">Receita est./mês</div></div>
+          <div class="kpi k3"><div class="top"><div class="ic i3"><img class="icoK" src="icones/aberto.png" alt="" loading="lazy" onerror="mvI(this,'🟢')"></div></div><div class="n" id="kpiAbertos">—</div><div class="l">Abertos agora</div></div>
+          <div class="kpi k4"><div class="top"><div class="ic i4"><img class="icoK" src="icones/comissoes.png" alt="" loading="lazy" onerror="mvI(this,'💵')"></div></div><div class="n" id="kpiReceita">—</div><div class="l">Receita est./mês</div></div>
         </div>
         <div class="painelBox" style="margin-bottom:22px">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">
-            <h3 style="margin:0">🗺️ Quem está online agora</h3>
+            <h3 style="margin:0"><img class="icoT" src="icones/localizacao.png" alt="" loading="lazy" onerror="mvI(this,'🗺️')">Quem está online agora</h3>
             <span id="mapaCont" style="font-size:13px;font-weight:600;color:var(--suave)">—</span>
           </div>
           <div id="admMapa" style="height:360px;border-radius:12px;overflow:hidden;border:1px solid var(--borda);background:#eaf0f6"></div>
         </div>
         <div class="painelBox bemvindo">
-          <h3>Bem-vindo, dono 👑</h3>
+          <h3>Bem-vindo, dono <img class="icoM" src="icones/coroa.png" alt="" loading="lazy" onerror="mvI(this,'👑')"></h3>
           <p>Use o menu à esquerda pra convidar comerciantes e parceiros, ver seus lojistas e acompanhar os números. Os indicadores acima atualizam sozinhos quando você entra.</p>
         </div>
       </section>
@@ -255,27 +261,27 @@
       <!-- CONVIDAR COMERCIANTE -->
       <section id="pg-convComerciante" class="pagina escondido">
         <div class="convBloco">
-          <div class="convTopo"><span class="convIc ic-com">🛍️</span><div class="convTxt"><b>Link do comerciante</b><span>Dono de negócio pra usar o Moviki</span></div></div>
+          <div class="convTopo"><span class="convIc ic-com"><img class="icoB" src="icones/convidar-comerciante.png" alt="" loading="lazy" onerror="mvI(this,'🛍️')"></span><div class="convTxt"><b>Link do comerciante</b><span>Dono de negócio pra usar o Moviki</span></div></div>
           <div class="convLink"><input id="linkCom" readonly value="https://moviki.com.br/comerciantes.html"><button class="convCopy" onclick="copiarLink('linkCom',this)">Copiar</button></div>
           <div class="convAcoes">
             <button class="convBtn wpp" onclick="convidarWhats('com')">💬 Enviar pelo WhatsApp</button>
             <button class="convBtn insta" onclick="copiarInsta('com',this)">📸 Copiar p/ Instagram</button>
           </div>
         </div>
-        <div class="convDica">💡 No Instagram não dá pra abrir a conversa já com o texto — o botão <b>copia a mensagem pronta</b>. Aí é só abrir o Direct e colar. <button class="convIgOpen" onclick="abrirInstagram()">Abrir Instagram</button></div>
+        <div class="convDica"><img class="icoM" src="icones/lampada.png" alt="" loading="lazy" onerror="mvI(this,'💡')">No Instagram não dá pra abrir a conversa já com o texto — o botão <b>copia a mensagem pronta</b>. Aí é só abrir o Direct e colar. <button class="convIgOpen" onclick="abrirInstagram()">Abrir Instagram</button></div>
       </section>
 
       <!-- CONVIDAR PARCEIRO -->
       <section id="pg-convParceiro" class="pagina escondido">
         <div class="convBloco">
-          <div class="convTopo"><span class="convIc ic-par">🤝</span><div class="convTxt"><b>Link do parceiro</b><span>Influenciador/afiliado pra indicar e ganhar</span></div></div>
+          <div class="convTopo"><span class="convIc ic-par"><img class="icoB" src="icones/maos.png" alt="" loading="lazy" onerror="mvI(this,'🤝')"></span><div class="convTxt"><b>Link do parceiro</b><span>Influenciador/afiliado pra indicar e ganhar</span></div></div>
           <div class="convLink"><input id="linkPar" readonly value="https://moviki.com.br/parceiros.html"><button class="convCopy" onclick="copiarLink('linkPar',this)">Copiar</button></div>
           <div class="convAcoes">
             <button class="convBtn wpp" onclick="convidarWhats('par')">💬 Enviar pelo WhatsApp</button>
             <button class="convBtn insta" onclick="copiarInsta('par',this)">📸 Copiar p/ Instagram</button>
           </div>
         </div>
-        <div class="convDica">💡 Mesma coisa aqui: pro Instagram, o botão copia a mensagem pronta e você cola no Direct. <button class="convIgOpen" onclick="abrirInstagram()">Abrir Instagram</button></div>
+        <div class="convDica"><img class="icoM" src="icones/lampada.png" alt="" loading="lazy" onerror="mvI(this,'💡')">Mesma coisa aqui: pro Instagram, o botão copia a mensagem pronta e você cola no Direct. <button class="convIgOpen" onclick="abrirInstagram()">Abrir Instagram</button></div>
       </section>
 
       <!-- USUÁRIOS -->
@@ -721,6 +727,10 @@
   window.copiarInsta = (t,btn) => { copiar(MSG_IG[t]+LINK[t]); feedback(btn,'✅ Mensagem copiada!'); };
   window.copiarLink = (id,btn) => { const e=el(id); if(e) copiar(e.value); feedback(btn,'✅ Copiado!'); };
   window.abrirInstagram = () => window.open('https://instagram.com/','_blank');
+</script>
+<script>
+/* Ícone 3D com fallback pro emoji original (nada quebra se o PNG faltar). */
+function mvI(img,e){var s=document.createElement('span');s.textContent=e;s.style.cssText='font-size:1em;line-height:1';img.replaceWith(s);}
 </script>
 </body>
 </html>

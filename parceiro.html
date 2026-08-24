@@ -13,6 +13,12 @@
   :root{--ciano:#00D4FF;--azul:#0066FF;--verde:#25e39b;--amber:#ffcf6b;--vermelho:#ff9a9a}
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Poppins',system-ui,sans-serif;background:linear-gradient(160deg,#0b2038 0%,#0e2d54 55%,#0a1c34 100%);color:#F2F5F9;min-height:100vh;padding:26px 16px 60px;-webkit-font-smoothing:antialiased}
+
+  /* --- Ícones 3D do pacote Moviki (substituem emoji) --- */
+  .icoT{width:1.25em;height:1.25em;object-fit:contain;vertical-align:-.28em;margin-right:.32em;display:inline-block;}
+  .icoB{width:26px;height:26px;object-fit:contain;flex:0 0 26px;display:inline-block;vertical-align:middle;}
+  .icoK{width:40px;height:40px;object-fit:contain;display:block;}
+  .icoM{width:20px;height:20px;object-fit:contain;vertical-align:-.32em;margin-right:.3em;display:inline-block;}
   .wrap{max-width:480px;margin:0 auto}
   .marca{text-align:center;margin-bottom:14px}
   .marca img{height:34px}
@@ -155,19 +161,19 @@
       <div class="topo">
         <div class="ola">Olá, <span id="pNome">parceiro</span> 👋</div>
         <div class="topoAcoes">
-          <a class="voltarMapa hide" id="btnVoltarPainel" href="index.html">🗺️ Voltar ao Mapa</a>
+          <a class="voltarMapa hide" id="btnVoltarPainel" href="index.html"><img class="icoM" src="icones/localizacao.png" alt="" loading="lazy" onerror="mvI(this,'🗺️')">Voltar ao Mapa</a>
           <button class="sair" id="sair">Sair</button>
         </div>
       </div>
       <div id="badge" class="badge pendente">Em análise ⏳</div>
       <div class="status-nota" id="statusNota"></div>
-      <button type="button" class="mkConhecaBtn hide" id="btnConheca"><span class="mkConhecaDot" id="mkConhecaDot"></span>🚀 Conheça o Moviki</button>
+      <button type="button" class="mkConhecaBtn hide" id="btnConheca"><span class="mkConhecaDot" id="mkConhecaDot"></span><img class="icoM" src="icones/foguete.png" alt="" loading="lazy" onerror="mvI(this,'🚀')">Conheça o Moviki</button>
     </div>
 
     <div id="modalConheca" class="modalPlano hide" onclick="if(event.target===this)document.getElementById('modalConheca').classList.add('hide')">
       <div class="mpCaixa">
         <button type="button" class="mpFechar" id="btnFecharConheca" aria-label="Fechar">✕</button>
-        <h1 style="text-align:left;margin-bottom:6px">🚀 Conheça o Moviki</h1>
+        <h1 style="text-align:left;margin-bottom:6px"><img class="icoT" src="icones/foguete.png" alt="" loading="lazy" onerror="mvI(this,'🚀')">Conheça o Moviki</h1>
         <p class="sub" style="text-align:left;margin-bottom:16px">O mapa inteligente dos negócios em movimento — foodtrucks, feirantes, ambulantes e carrinhos aparecem em tempo real pra quem está por perto procurando exatamente o que eles vendem.</p>
 
         <div class="mkcSecao">
@@ -187,15 +193,15 @@
         <div class="mkcSecao">
           <div class="mkcTit">Dicas de quem indica bem</div>
           <ul class="mkcLista">
-            <li><span>🎯</span>Comece pela sua própria rede: feirantes, foodtrucks e ambulantes que você já conhece pessoalmente convertem mais rápido.</li>
-            <li><span>📍</span>Mostre o mapa funcionando ao vivo — é o argumento mais forte, mais forte que qualquer explicação.</li>
-            <li><span>🤝</span>Associações e cooperativas de feirantes multiplicam o alcance: uma conversa pode render várias indicações de uma vez.</li>
-            <li><span>🔁</span>Depois que a pessoa assina, incentive ela a indicar também — é aí que entram os bônus de 2º e 3º nível.</li>
+            <li><span><img class="icoB" src="icones/alvo.png" alt="" loading="lazy" onerror="mvI(this,'🎯')"></span>Comece pela sua própria rede: feirantes, foodtrucks e ambulantes que você já conhece pessoalmente convertem mais rápido.</li>
+            <li><span><img class="icoB" src="icones/localizacao.png" alt="" loading="lazy" onerror="mvI(this,'📍')"></span>Mostre o mapa funcionando ao vivo — é o argumento mais forte, mais forte que qualquer explicação.</li>
+            <li><span><img class="icoB" src="icones/maos.png" alt="" loading="lazy" onerror="mvI(this,'🤝')"></span>Associações e cooperativas de feirantes multiplicam o alcance: uma conversa pode render várias indicações de uma vez.</li>
+            <li><span><img class="icoB" src="icones/recorrente.png" alt="" loading="lazy" onerror="mvI(this,'🔁')"></span>Depois que a pessoa assina, incentive ela a indicar também — é aí que entram os bônus de 2º e 3º nível.</li>
           </ul>
         </div>
 
         <div class="mkcSecao">
-          <div class="mkcTit">📣 Novidades do programa de parceiros</div>
+          <div class="mkcTit"><img class="icoT" src="icones/indicar.png" alt="" loading="lazy" onerror="mvI(this,'📣')">Novidades do programa de parceiros</div>
           <div class="mkcNovidade"><div class="mkcNovidadeData">19/08/2026</div><div class="mkcNovidadeTxt">Programa de parceiros no ar, com comissão em 3 níveis (15% / 7,5% / 5%) e aprovação em análise pra garantir qualidade nas indicações.</div></div>
         </div>
 
@@ -245,7 +251,7 @@
 
     <!-- SIMULADOR DE GANHOS INTERATIVO -->
     <div class="mkSim" id="mkSim">
-      <div class="mkSimTitulo">🚀 Simule seus ganhos</div>
+      <div class="mkSimTitulo"><img class="icoT" src="icones/foguete.png" alt="" loading="lazy" onerror="mvI(this,'🚀')">Simule seus ganhos</div>
       <div class="mkSimTabs">
         <button type="button" class="mkSimTab active" onclick="mkSimSelecionarPlano('pro',this)">Pró<span class="mkSimTabPreco">R$ 37,90</span></button>
         <button type="button" class="mkSimTab" onclick="mkSimSelecionarPlano('premium',this)">Premium<span class="mkSimTabPreco">R$ 49,90</span></button>
@@ -639,6 +645,10 @@
     window.mkSimAtualizar();
   }
 })();
+</script>
+<script>
+/* Ícone 3D com fallback pro emoji original (nada quebra se o PNG faltar). */
+function mvI(img,e){var s=document.createElement('span');s.textContent=e;s.style.cssText='font-size:1em;line-height:1';img.replaceWith(s);}
 </script>
 </body>
 </html>
