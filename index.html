@@ -15,6 +15,51 @@
 <meta name="theme-color" content="#0D1B2A">
 <style>
   :root{--ciano:#00D4FF;--azul:#0066FF;--escuro:#0D1B2A;--claro:#F2F5F9;--card:#13263d;--card-borda:#223a5c;--campo:#0d1c30;}
+  /* ---- LOGO NO MAPA (aba Local) — cartao + editor de enquadramento ---- */
+  .logoCard{margin-top:16px;border:1px solid rgba(0,212,255,.35);border-radius:16px;padding:18px 16px 16px;background:linear-gradient(160deg,rgba(0,102,255,.16),rgba(0,212,255,.04));}
+  .lcHead{display:flex;align-items:flex-start;gap:11px;margin-bottom:11px;}
+  .lcIco{font-size:25px;line-height:1.1;}
+  .lcTit{font-weight:700;font-size:18px;color:#eaf6ff;letter-spacing:-.3px;line-height:1.25;}
+  .lcSelo{display:inline-block;margin-top:5px;font-size:10px;font-weight:700;letter-spacing:1.3px;color:#02131f;background:linear-gradient(135deg,#00D4FF,#0066FF);border-radius:999px;padding:4px 10px;}
+  .lcTxt{font-size:14.5px;line-height:1.62;color:#d5e5f7;margin:0 0 9px;}
+  .lcTxt b{color:#fff;}
+  .lcTxtFraco{font-size:13.5px;color:#9fb3d0;line-height:1.55;margin-bottom:2px;}
+  .lcCta{display:block;width:100%;text-align:center;text-decoration:none;font-family:inherit;font-weight:700;font-size:15px;color:#02131f;background:linear-gradient(135deg,#00D4FF,#0066FF);border:none;border-radius:12px;padding:15px 14px;margin:15px 0 7px;cursor:pointer;animation:lcPulsa 2.3s ease-in-out infinite;}
+  @keyframes lcPulsa{0%,100%{transform:scale(1);box-shadow:0 8px 22px rgba(0,212,255,.20);}50%{transform:scale(1.022);box-shadow:0 13px 32px rgba(0,212,255,.45);}}
+  .lcCtaSub{text-align:center;font-size:12px;color:#8fa6c4;line-height:1.45;}
+  .lcArea{border-top:1px solid rgba(255,255,255,.1);padding-top:15px;margin-top:15px;}
+  .lcRotulo{font-size:11.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8fa6c4;margin-bottom:11px;}
+  .lcDrop{width:100%;aspect-ratio:1/1;border:2px dashed rgba(0,212,255,.45);border-radius:16px;background:rgba(4,16,30,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;cursor:pointer;text-align:center;padding:20px;transition:.18s;}
+  .lcDrop:hover,.lcDrop.arrasta{border-color:#00D4FF;background:rgba(0,212,255,.09);}
+  .lcDropIco{font-size:42px;line-height:1;}
+  .lcDropTit{font-size:16px;font-weight:700;color:#eaf6ff;}
+  .lcDropSub{font-size:13px;color:#93a9c7;max-width:260px;line-height:1.5;}
+  .lcObs{font-size:12.5px;color:#8fa6c4;line-height:1.5;margin-top:10px;text-align:center;}
+  .lcPalco{position:relative;width:100%;aspect-ratio:1/1;border-radius:16px;overflow:hidden;background:#04101e;touch-action:none;cursor:grab;border:1px solid rgba(0,212,255,.3);}
+  .lcPalco:active{cursor:grabbing;}
+  .lcPalco canvas{display:block;width:100%;height:100%;}
+  .lcMask{position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 2px rgba(0,212,255,.85),0 0 0 9999px rgba(4,11,20,.7);pointer-events:none;}
+  .lcDicaWrap{position:absolute;left:0;right:0;bottom:9px;text-align:center;pointer-events:none;}
+  .lcDica{display:inline-block;font-size:12px;color:#eaf6ff;background:rgba(4,11,20,.72);border-radius:999px;padding:5px 13px;backdrop-filter:blur(2px);}
+  .lcCtrl{display:flex;align-items:center;gap:11px;margin:13px 0 10px;}
+  .lcCtrl span{font-size:15px;}
+  .lcCtrl input[type=range]{flex:1;accent-color:#00D4FF;height:22px;}
+  .lcFundo{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#93a9c7;margin-bottom:13px;flex-wrap:wrap;}
+  .lcFundo button{font-family:inherit;font-size:12.5px;font-weight:600;border-radius:999px;padding:6px 13px;border:1px solid #22406a;background:#0d1c30;color:#cfe0f5;cursor:pointer;}
+  .lcFundo button.on{border-color:#00D4FF;color:#00D4FF;background:rgba(0,212,255,.1);}
+  .lcAcoes{display:flex;gap:10px;flex-wrap:wrap;}
+  .lcAcoes button{flex:1;min-width:118px;font-family:inherit;font-weight:700;font-size:14.5px;border-radius:12px;padding:14px 12px;border:none;cursor:pointer;}
+  .lcAcoes button:disabled{opacity:.6;cursor:default;}
+  .lcOk{flex:1 0 100%;background:linear-gradient(135deg,#25e39b,#0fb87f);color:#04121f;}
+  .lcSec{background:transparent;border:1.5px solid #2a4a72;color:#cfe0f5;}
+  .lcSalva .lcSec{border-color:rgba(0,212,255,.55);color:#9ce4ff;}
+  .lcSec:hover{border-color:#00D4FF;color:#00D4FF;}
+  .lcSalva{text-align:center;}
+  .lcMoldura{position:relative;width:100%;max-width:250px;aspect-ratio:1/1;margin:0 auto 13px;border-radius:20px;background:radial-gradient(circle at 50% 45%,rgba(0,212,255,.18),rgba(4,16,30,.75) 70%);display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,212,255,.25);}
+  .lcMoldura img{width:74%;height:74%;border-radius:50%;object-fit:cover;border:3px solid #00D4FF;box-shadow:0 0 0 7px rgba(0,212,255,.12),0 14px 34px rgba(0,0,0,.45);}
+  .lcPino{position:absolute;bottom:9px;right:10px;background:#0d1c30;border:1px solid #22406a;border-radius:999px;font-size:11px;color:#8fd8a0;padding:5px 10px;font-weight:700;}
+  .lcSalvaTxt{font-size:13.5px;color:#9fb3d0;margin-bottom:13px;line-height:1.55;}
+  .lcSalvaTxt b{color:#8fd8a0;}
   .bannerTrial{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(0,102,255,.18),rgba(0,212,255,.12));border:1px solid rgba(0,212,255,.45);border-radius:12px;padding:13px 15px;margin-bottom:14px;flex-wrap:wrap;}
   .bannerTrial.urgente{background:rgba(255,159,64,.14);border-color:rgba(255,159,64,.55);}
   .bannerTrial.fim{background:rgba(231,76,60,.15);border-color:rgba(231,76,60,.55);}
@@ -968,16 +1013,66 @@
       <div class="tabConteudo escondido" id="tab-local">
         <div class="gps" id="gpsInfo">📍 Localização ainda não definida.</div>
         <button class="btn secundario" onclick="pegarLocalizacao()">📍 Atualizar minha localização</button>
-        <div class="logoCard" style="margin-top:14px;border:1px solid rgba(0,212,255,.35);border-radius:12px;padding:16px;background:rgba(0,102,255,.08)">
-          <label style="font-weight:700;display:block;margin-bottom:6px;font-size:15px">🖼️ Destaque seu ponto com a sua logo no mapa</label>
-          <p style="font-size:13.5px;color:#cfe0f5;margin:0 0 10px;line-height:1.5">No meio de vários pinos iguais, o <b>seu aparece com a sua marca</b> — as pessoas reconhecem seu negócio de longe, param o olhar no seu ponto e clicam mais. É a diferença entre passar batido e ser <b>notado</b>.</p>
-          <p style="font-size:13px;color:#9fb3d0;margin:0 0 12px;line-height:1.4">✨ A logo no mapa é um recurso do plano <b>Premium</b>. Assine e ative agora — ou já deixe sua logo pronta aqui embaixo pra ela entrar no ar assim que você assinar.</p>
-          <button type="button" class="btn" style="width:100%;margin-bottom:12px" onclick="abrirPlano()">✨ Quero minha logo no mapa — ver o Premium</button>
-          <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
-            <div id="logoPreview" style="margin-bottom:10px"></div>
-            <input id="logoInput" type="file" accept="image/*" style="display:none" onchange="enviarLogo(this)">
-            <button type="button" class="btn btnUpload" onclick="document.getElementById('logoInput').click()">📤 Escolher / enviar minha logo</button>
-            <div id="logoMsg" style="font-size:13px;margin-top:8px"></div>
+        <div class="logoCard">
+          <div class="lcHead">
+            <span class="lcIco">🖼️</span>
+            <div>
+              <div class="lcTit">Sua logo no mapa</div>
+              <span class="lcSelo">RECURSO PREMIUM</span>
+            </div>
+          </div>
+          <p class="lcTxt">No meio de vários pinos iguais, <b>o seu aparece com a sua marca</b>. As pessoas reconhecem seu negócio de longe, param o olhar no seu ponto — e clicam mais.</p>
+          <p class="lcTxt lcTxtFraco">É a diferença entre passar batido e ser <b>notado</b>.</p>
+          <a class="lcCta" href="https://moviki.com.br/premium.html" target="_blank" rel="noopener">✨ Quero minha logo no mapa — ver o Premium</a>
+          <div class="lcCtaSub">Veja tudo o que o Premium libera · a partir de <b>R$ 41,58/mês</b> no plano anual</div>
+
+          <div class="lcArea">
+            <div class="lcRotulo">Sua logo</div>
+
+            <!-- ESTADO 1: ainda sem logo -->
+            <div id="logoVazio">
+              <div class="lcDrop" id="logoDrop" onclick="lcEscolher()">
+                <div class="lcDropIco">📤</div>
+                <div class="lcDropTit">Toque aqui pra enviar sua logo</div>
+                <div class="lcDropSub">Depois você ajusta o enquadramento e confirma como ela vai aparecer no pino. JPG ou PNG.</div>
+              </div>
+              <div class="lcObs">Pode deixar a logo pronta agora, mesmo sem ser Premium — ela entra no ar assim que você assinar.</div>
+            </div>
+
+            <!-- ESTADO 2: ajustando o enquadramento -->
+            <div id="logoEditor" class="escondido">
+              <div class="lcPalco" id="lcPalco">
+                <canvas id="lcCanvas" width="560" height="560"></canvas>
+                <div class="lcMask"></div>
+                <div class="lcDicaWrap"><span class="lcDica">Arraste pra posicionar · pinça ou a barra pra dar zoom</span></div>
+              </div>
+              <div class="lcCtrl"><span>🔍</span><input id="lcZoomRange" type="range" min="1" max="4" step="0.01" value="1" oninput="lcZoom(this.value)"></div>
+              <div class="lcFundo">Fundo da logo:
+                <button type="button" id="lcFundoClaro" class="on" onclick="lcFundoSet('#ffffff',this)">Claro</button>
+                <button type="button" id="lcFundoEscuro" onclick="lcFundoSet('#0d1c30',this)">Escuro</button>
+                <span style="flex:1;min-width:120px;font-size:11.5px">(vale só pra logo com fundo transparente)</span>
+              </div>
+              <div class="lcAcoes">
+                <button type="button" class="lcOk" onclick="lcConfirmar(this)">✓ Confirmar e salvar</button>
+                <button type="button" class="lcSec" onclick="lcEscolher()">Trocar imagem</button>
+                <button type="button" class="lcSec" onclick="lcCancelar()">Cancelar</button>
+              </div>
+            </div>
+
+            <!-- ESTADO 3: logo salva -->
+            <div id="logoSalva" class="lcSalva escondido">
+              <div class="lcMoldura">
+                <img id="logoImgGrande" src="" alt="Sua logo">
+                <span class="lcPino">📍 assim no mapa</span>
+              </div>
+              <div class="lcSalvaTxt"><b>✓ Logo salva.</b> É assim que ela aparece no seu pino e no topo da sua página pública.</div>
+              <div class="lcAcoes">
+                <button type="button" class="lcSec" onclick="lcEscolher()">🔄 Mudar minha logo</button>
+              </div>
+            </div>
+
+            <input id="logoInput" type="file" accept="image/*" style="display:none" onchange="lcArquivo(this)">
+            <div id="logoMsg" style="font-size:13px;margin-top:11px;line-height:1.5"></div>
           </div>
         </div>
       </div>
@@ -1679,44 +1774,137 @@
       lista.innerHTML=itens.slice(0,50).map(a=>{const r=Number(a.nota||0);let e='';for(let i=1;i<=5;i++) e+=(i<=r?estrelaCheia:estrelaVazia);const nm=(a.nome||'Cliente').toString().slice(0,40).replace(/[<>]/g,'');const tx=(a.comentario||'').toString().slice(0,300).replace(/[<>]/g,'');return '<div class="avalItem"><div class="avalTopo"><span class="avalEst">'+e+'</span> <b>'+nm+'</b></div>'+(tx?'<div class="avalTxt">'+tx+'</div>':'')+'</div>';}).join('');
     }catch(e){resumo.innerHTML='⭐ As avaliações ainda não estão ativadas no servidor. Me avise que eu ativo (regras do Firebase).';}
   };
-  function mostrarLogoPreview(url){
-    var p=el('logoPreview'); if(!p)return;
-    p.innerHTML = url ? '<img src="'+url+'" alt="logo" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #00D4FF">' : '<span style="font-size:13px;color:#7f95b3">Nenhuma logo enviada ainda.</span>';
-  }
-  function comprimirImagem(file){
-    return new Promise(function(resolve,reject){
-      var img=new Image(), rd=new FileReader();
-      rd.onload=function(){ img.onload=function(){
-        var size=256, cv=document.createElement('canvas'); cv.width=size; cv.height=size;
-        var ctx=cv.getContext('2d');
-        var m=Math.min(img.width,img.height), sx=(img.width-m)/2, sy=(img.height-m)/2;
-        ctx.drawImage(img,sx,sy,m,m,0,0,size,size);
-        resolve(cv.toDataURL('image/jpeg',0.85));
-      }; img.onerror=function(){reject(new Error('img'));}; img.src=rd.result; };
-      rd.onerror=function(){reject(new Error('read'));}; rd.readAsDataURL(file);
+  /* ---- LOGO NO MAPA: 3 estados (vazio -> editor de enquadramento -> salva) ---- */
+  const LC_SIZE=560, LC_OUT=384;
+  let _lcImg=null,_lcEsc=1,_lcX=0,_lcY=0,_lcBase=1,_lcFundo='#ffffff',_lcUrl='';
+  function lcEstado(qual){
+    ['logoVazio','logoEditor','logoSalva'].forEach(function(id){
+      var n=el(id); if(n) n.classList.toggle('escondido', id!==qual);
     });
   }
-  window.enviarLogo=async function(input){
-    var file=input.files&&input.files[0]; if(!file)return;
-    var msg=el('logoMsg');
-    if(!/^image\//.test(file.type)){ if(msg){msg.style.color='#ff6b6b';msg.textContent='Escolha um arquivo de imagem.';} input.value=''; return; }
-    if(msg){msg.style.color='#9fb3d0';msg.textContent='Enviando logo...';}
+  function mostrarLogoPreview(url){
+    _lcUrl=url||'';
+    var img=el('logoImgGrande');
+    if(_lcUrl){ if(img)img.src=_lcUrl; lcEstado('logoSalva'); }
+    else{ lcEstado('logoVazio'); }
+  }
+  function lcMsg(txt,cor){ var m=el('logoMsg'); if(!m)return; m.style.color=cor||'#9fb3d0'; m.textContent=txt||''; }
+  function lcDesenhar(){
+    var cv=el('lcCanvas'); if(!cv||!_lcImg)return;
+    var ctx=cv.getContext('2d');
+    ctx.fillStyle=_lcFundo; ctx.fillRect(0,0,LC_SIZE,LC_SIZE);
+    var s=_lcBase*_lcEsc, w=_lcImg.width*s, h=_lcImg.height*s;
+    var maxX=Math.max(0,(w-LC_SIZE)/2), maxY=Math.max(0,(h-LC_SIZE)/2);
+    _lcX=Math.min(maxX,Math.max(-maxX,_lcX));
+    _lcY=Math.min(maxY,Math.max(-maxY,_lcY));
+    ctx.drawImage(_lcImg,(LC_SIZE-w)/2+_lcX,(LC_SIZE-h)/2+_lcY,w,h);
+  }
+  window.lcZoom=function(v){ _lcEsc=Math.min(4,Math.max(1,Number(v)||1)); lcDesenhar(); };
+  window.lcFundoSet=function(cor,btn){
+    _lcFundo=cor;
+    ['lcFundoClaro','lcFundoEscuro'].forEach(function(id){var n=el(id);if(n)n.classList.toggle('on',n===btn);});
+    lcDesenhar();
+  };
+  window.lcEscolher=function(){ var i=el('logoInput'); if(i)i.click(); };
+  window.lcCancelar=function(){ _lcImg=null; lcMsg(''); mostrarLogoPreview(_lcUrl); };
+  window.lcArquivo=function(input){
+    var f=input.files&&input.files[0]; if(!f){return;}
+    if(!/^image\//.test(f.type)){ lcMsg('Escolha um arquivo de imagem (JPG ou PNG).','#ff6b6b'); input.value=''; return; }
+    var rd=new FileReader();
+    rd.onload=function(){
+      var im=new Image();
+      im.onload=function(){
+        _lcImg=im; _lcEsc=1; _lcX=0; _lcY=0;
+        _lcBase=Math.max(LC_SIZE/im.width, LC_SIZE/im.height);
+        var z=el('lcZoomRange'); if(z)z.value=1;
+        var cv=el('lcCanvas'); if(cv){ cv.width=LC_SIZE; cv.height=LC_SIZE; }
+        lcEstado('logoEditor'); lcMsg('Ajuste o enquadramento e confirme.'); lcDesenhar();
+      };
+      im.onerror=function(){ lcMsg('Nao consegui abrir essa imagem. Tente outra.','#ff6b6b'); };
+      im.src=rd.result;
+    };
+    rd.onerror=function(){ lcMsg('Nao consegui ler o arquivo.','#ff6b6b'); };
+    rd.readAsDataURL(f);
+    input.value='';
+  };
+  window.lcConfirmar=async function(btn){
+    if(!_lcImg){ return; }
+    var origem=el('lcCanvas'); if(!origem)return;
+    var cv=document.createElement('canvas'); cv.width=LC_OUT; cv.height=LC_OUT;
+    cv.getContext('2d').drawImage(origem,0,0,LC_OUT,LC_OUT);
+    var dataUrl=cv.toDataURL('image/jpeg',0.88);
+    if(btn){ btn.disabled=true; btn.textContent='Enviando...'; }
+    lcMsg('Enviando sua logo...');
     try{
-      var dataUrl=await comprimirImagem(file);
       var idToken=await usuarioAtual.getIdToken();
       var r=await fetch('https://moviki-robo.vercel.app/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl})});
       var j=await r.json().catch(function(){return {};});
-      if(r.ok&&j.ok&&j.url){ mostrarLogoPreview(j.url); if(msg){msg.style.color='#3ddc97';msg.textContent='Logo salva! \u2713 Aparece no seu pino no plano Premium.';} }
-      else{
-        var m='Não deu certo. Tente de novo.';
-        if(j.motivo==='sem_config') m='Configuração de imagem pendente no servidor.';
+      if(r.ok&&j.ok&&j.url){
+        _lcImg=null;
+        mostrarLogoPreview(j.url);
+        lcMsg('Logo salva! ✓ Ela aparece no seu pino no plano Premium.','#3ddc97');
+        toast('Logo salva com sucesso!');
+      }else{
+        var m='Nao deu certo. Tente de novo.';
+        if(j.motivo==='sem_config') m='Configuracao de imagem pendente no servidor.';
         else if(r.status===413) m='Imagem muito grande. Tente uma menor.';
-        else if(r.status===401) m='Sessão expirada — saia e entre de novo.';
-        if(msg){msg.style.color='#ff6b6b';msg.textContent=m;}
+        else if(r.status===401) m='Sessao expirada - saia e entre de novo.';
+        lcMsg(m,'#ff6b6b');
       }
-    }catch(e){ if(msg){msg.style.color='#ff6b6b';msg.textContent='Falha ao enviar. Verifique a conexão.';} }
-    input.value='';
+    }catch(e){ lcMsg('Falha ao enviar. Verifique a conexao.','#ff6b6b'); }
+    if(btn){ btn.disabled=false; btn.textContent='✓ Confirmar e salvar'; }
   };
+  function lcDist(a,b){ var dx=a.x-b.x, dy=a.y-b.y; return Math.sqrt(dx*dx+dy*dy); }
+  (function lcInit(){
+    var palco=el('lcPalco'); if(!palco)return;
+    var pts={}, arrastando=false, lx=0, ly=0, dist0=0, esc0=1;
+    palco.addEventListener('pointerdown',function(e){
+      try{palco.setPointerCapture(e.pointerId);}catch(_){}
+      pts[e.pointerId]={x:e.clientX,y:e.clientY};
+      var k=Object.keys(pts);
+      if(k.length===1){ arrastando=true; lx=e.clientX; ly=e.clientY; }
+      else{ arrastando=false; dist0=lcDist(pts[k[0]],pts[k[1]]); esc0=_lcEsc; }
+    });
+    palco.addEventListener('pointermove',function(e){
+      if(!pts[e.pointerId])return;
+      pts[e.pointerId]={x:e.clientX,y:e.clientY};
+      var k=Object.keys(pts);
+      if(k.length>=2&&dist0>0){
+        var d=lcDist(pts[k[0]],pts[k[1]]);
+        _lcEsc=Math.min(4,Math.max(1,esc0*(d/dist0)));
+        var z=el('lcZoomRange'); if(z)z.value=_lcEsc;
+        lcDesenhar(); return;
+      }
+      if(!arrastando)return;
+      var r=palco.getBoundingClientRect(), f=LC_SIZE/(r.width||1);
+      _lcX+=(e.clientX-lx)*f; _lcY+=(e.clientY-ly)*f;
+      lx=e.clientX; ly=e.clientY;
+      lcDesenhar();
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+      palco.addEventListener(ev,function(e){
+        delete pts[e.pointerId];
+        if(!Object.keys(pts).length){ arrastando=false; dist0=0; }
+      });
+    });
+    palco.addEventListener('wheel',function(e){
+      if(!_lcImg)return;
+      e.preventDefault();
+      _lcEsc=Math.min(4,Math.max(1,_lcEsc*(e.deltaY<0?1.08:0.92)));
+      var z=el('lcZoomRange'); if(z)z.value=_lcEsc;
+      lcDesenhar();
+    },{passive:false});
+    var drop=el('logoDrop');
+    if(drop){
+      ['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.classList.add('arrasta'); }); });
+      ['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.classList.remove('arrasta'); }); });
+      drop.addEventListener('drop',function(e){
+        var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; if(!f)return;
+        try{ var dt=new DataTransfer(); dt.items.add(f); var inp=el('logoInput'); inp.files=dt.files; window.lcArquivo(inp); }catch(_){}
+      });
+    }
+  })();
+
   window.pegarLocalizacao=function(){limparAvisoP();if(!navigator.geolocation){erroP('Seu aparelho não tem GPS no navegador.');return;}el('gpsInfo').innerHTML='📍 Pegando localização...';navigator.geolocation.getCurrentPosition((pos)=>{coords={lat:pos.coords.latitude,lng:pos.coords.longitude};el('gpsInfo').innerHTML='📍 <b>Localização capturada!</b><br>'+coords.lat.toFixed(5)+', '+coords.lng.toFixed(5)+' <span style="color:#7f95b3">(lembre de Salvar)</span>';atualizarOnboarding(false);},(err)=>{if(err.code===1)erroP('Você bloqueou a localização. Libere nas permissões do navegador.');else erroP('Não consegui pegar a localização.');el('gpsInfo').innerHTML='📍 Localização ainda não definida.';},{enableHighAccuracy:true,timeout:10000});};
 
   /* ---- CARDÁPIO (categorias -> produtos) ---- */
@@ -2400,7 +2588,19 @@
       aplicarPlanoNasAbas();
       mostrarBannerTrial();
       carregarParceiroPainel(user.uid);
-      try{ if(new URLSearchParams(location.search).get('plano')==='enterprise' && !ehEnterprisePainel()){ abrirPlano(); setTimeout(function(){ try{selecionarPlano('enterprise','mensal',null);}catch(_){}} ,150); } }catch(_){}
+      try{
+        var _qs=new URLSearchParams(location.search), _pl=_qs.get('plano'), _pr=_qs.get('periodo')||'mensal';
+        if(_pl==='enterprise' && !ehEnterprisePainel()){ abrirPlano(); setTimeout(function(){ try{selecionarPlano('enterprise','mensal',null);}catch(_){}} ,150); }
+        else if(_pl==='premium'||_pl==='pro'){
+          if(['mensal','trimestral','anual'].indexOf(_pr)<0)_pr='mensal';
+          abrirPlano();
+          setTimeout(function(){ try{
+            var _b=document.querySelector('.mpPlano .mpBtn[onclick^="selecionarPlano(\''+_pl+'\',\''+_pr+'\'"]');
+            selecionarPlano(_pl,_pr,_b);
+            if(_b&&_b.scrollIntoView)_b.scrollIntoView({block:'center'});
+          }catch(_){}} ,150);
+        }
+      }catch(_){}
     }else{
       el('painel').style.display='none';el('formArea').style.display='block';el('box').classList.remove('largo');
       el('email').value='';el('senha').value='';el('btnAcao').disabled=false;trocarAba('entrar');
