@@ -108,8 +108,8 @@
   .tab{flex:0 0 auto;border:1px solid var(--card-borda);background:var(--campo);color:#8fa6c4;padding:9px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
   .tab.ativa{background:linear-gradient(135deg,var(--ciano),var(--azul));color:#04121f;border-color:transparent;}
   .tabConteudo{margin-bottom:6px;}
-  .statusLinha{display:flex;gap:10px;margin-bottom:16px;}
-  .statusBtn{flex:1;padding:12px;border-radius:11px;border:1px solid var(--card-borda);background:var(--campo);color:#8fa6c4;font-weight:600;font-size:14px;cursor:pointer;transition:.15s;}
+  .statusLinha{display:flex;gap:8px;margin-bottom:0;}
+  .statusBtn{flex:1;padding:8px 10px;border-radius:9px;border:1px solid var(--card-borda);background:var(--campo);color:#8fa6c4;font-weight:600;font-size:12.5px;line-height:1.2;cursor:pointer;transition:.15s;}
   .statusBtn.aberto{background:rgba(0,212,255,.15);border-color:var(--ciano);color:var(--ciano);}
   .statusBtn.fechado{background:rgba(255,120,120,.14);border-color:#ff8080;color:#ff9a9a;}
   .gps{background:var(--campo);border:1px solid var(--card-borda);border-radius:11px;padding:14px;margin-bottom:16px;font-size:13px;color:#8fa6c4;}
@@ -307,6 +307,10 @@
   .statusHome .shLabel{display:block;font-size:13px;color:#b9cbe4;margin-bottom:9px;font-weight:600;}
   .statusHome .shDica{display:block;font-size:11.5px;color:#8fa6c4;margin-top:9px;}
   .statusHome .shDica b{color:var(--ciano);}
+  .shVerPagina{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:11px;padding:13px 14px;border:none;border-radius:12px;background:linear-gradient(135deg,#00ffa3,#00e0c6);color:#03251a;font-family:inherit;font-weight:800;font-size:14.5px;letter-spacing:.02em;cursor:pointer;animation:pulseVP 1.6s ease-in-out infinite;}
+  .shVerPagina:active{transform:scale(.985);}
+  @keyframes pulseVP{0%,100%{box-shadow:0 0 12px rgba(0,255,163,.50),0 0 0 0 rgba(0,255,163,.55);}50%{box-shadow:0 0 26px rgba(0,255,163,.95),0 0 0 7px rgba(0,255,163,0);}}
+  @media(prefers-reduced-motion:reduce){.shVerPagina{animation:none;}}
   .i-wpp{background:rgba(37,211,102,.18);}
   .i-aval{background:rgba(255,193,64,.18);}
   .dicaBox{background:rgba(0,212,255,.08);border:1px solid var(--card-borda);border-radius:11px;padding:12px 14px;font-size:13px;color:#b9cbe4;line-height:1.5;margin-top:4px;}
@@ -813,6 +817,7 @@
             <button id="btnFechado" class="statusBtn" onclick="setStatus('fechado')">🔴 Fechado</button>
           </div>
           <span class="shDica">Lembre de tocar em <b>Salvar tudo</b> pra valer no seu link.</span>
+          <button type="button" class="shVerPagina" onclick="verMinhaPagina()">🌐 Ver minha página</button>
         </div>
         <div id="onboarding" class="onb escondido">
         <div class="onbTop">
@@ -844,7 +849,6 @@
           <button type="button" class="gcard" onclick="irSecao('whatsapp')"><img class="gcImg" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">WhatsApp</span></button>
           <button type="button" class="gcard" onclick="irSecao('avaliacoes')"><img class="gcImg" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Avaliações</span></button>
           <button type="button" class="gcard" onclick="abrirPlano()"><img class="gcImg" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meu Plano</span></button>
-          <button type="button" class="gcard" onclick="verMinhaPagina()"><img class="gcImg" src="icones/pagina.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Minha Página</span></button>
           <button type="button" class="gcard" id="gc-pontos" style="display:none" onclick="abrirPontos()"><img class="gcImg" src="icones/multipontos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meus pontos</span></button>
           <button type="button" class="gcard gcIndicar" id="gc-indicar" style="display:none" onclick="abrirModalParceiro()"><img class="gcImg" src="icones/indicar.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Indicar agora</span></button>
         </div>
