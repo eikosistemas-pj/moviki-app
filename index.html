@@ -978,6 +978,12 @@
             </div>
             <button type="button" class="btn secundario" style="margin:0;padding:8px 12px;font-size:13px" onclick="document.getElementById('corInput').value='#00D4FF'">Voltar ao padrão</button>
           </div>
+          <div id="divulgaRow" style="border-top:1px solid rgba(255,255,255,.1);margin-top:12px;padding-top:12px">
+            <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer">
+              <input id="divulgaToggle" type="checkbox" style="margin-top:3px;width:18px;height:18px;accent-color:#25e39b;cursor:pointer">
+              <span style="font-size:14px;color:#e6eefb"><b>Quero que o Moviki divulgue meu negócio nas redes sociais</b><br><span style="font-size:12.5px;color:#9fb3d0">De vez em quando montamos um post com o nome do seu negócio, sua logo, seu segmento, sua cidade e o seu link, e publicamos no Instagram e no Facebook do Moviki. É divulgação gratuita pra você. <b>Nunca publicamos seu endereço exato</b> — só a cidade. Pode desligar quando quiser.</span></span>
+            </label>
+          </div>
           <div id="wlRow" style="display:none;border-top:1px solid rgba(255,255,255,.1);margin-top:12px;padding-top:12px">
             <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer">
               <input id="wlToggle" type="checkbox" style="margin-top:3px;width:18px;height:18px;accent-color:#00D4FF;cursor:pointer">
@@ -2236,7 +2242,7 @@
     try{
       if(slug){const ref=doc(db,'slugs',slug);const snap=await getDoc(ref);if(snap.exists()&&snap.data().uid!==usuarioAtual.uid){abrirTab('perfil');erroP('O apelido "'+slug+'" já está em uso. Escolha outro.');btn.disabled=false;btn.textContent=t;return;}if(!snap.exists()){await setDoc(ref,{uid:usuarioAtual.uid});}el('apelido').value=slug;}
       const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),fotos:lerGaleria(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
-      var _cor=el('corInput')?el('corInput').value:'';if(/^#[0-9a-fA-F]{6}$/.test(_cor))dados.cor=_cor;dados.whiteLabel=el('wlToggle')?!!el('wlToggle').checked:false;
+      var _cor=el('corInput')?el('corInput').value:'';if(/^#[0-9a-fA-F]{6}$/.test(_cor))dados.cor=_cor;dados.whiteLabel=el('wlToggle')?!!el('wlToggle').checked:false;dados.autorizaDivulgacao=el('divulgaToggle')?!!el('divulgaToggle').checked:false;
       if(coords){dados.lat=coords.lat;dados.lng=coords.lng;}
       if(slug){dados.slug=slug;}
       await setDoc(doc(db,'negocios',usuarioAtual.uid),dados,{merge:true});
@@ -2280,7 +2286,7 @@
       if(snap.exists()){
         const d=snap.data();
         el('nome').value=d.nome||'';el('recado').value=d.recado||'';el('apelido').value=d.slug||'';if(el('whatsapp'))el('whatsapp').value=d.whatsapp||'';
-        if(el('corInput'))el('corInput').value=(typeof d.cor==='string'&&/^#[0-9a-fA-F]{6}$/.test(d.cor))?d.cor:'#00D4FF';if(el('wlToggle'))el('wlToggle').checked=(d.whiteLabel===true);
+        if(el('corInput'))el('corInput').value=(typeof d.cor==='string'&&/^#[0-9a-fA-F]{6}$/.test(d.cor))?d.cor:'#00D4FF';if(el('wlToggle'))el('wlToggle').checked=(d.whiteLabel===true);if(el('divulgaToggle'))el('divulgaToggle').checked=(d.autorizaDivulgacao===true);
         setStatus(d.status||'fechado');
         if(d.slug) mostrarLink(d.slug);
         el('listaCategorias').innerHTML='';(d.cardapio||[]).forEach(c=>adicionarCategoria(c.categoria||'',c.produtos||[],c.capa||''));vazioCat();
@@ -2297,6 +2303,20 @@
   // ver quiz/quiz-segmentos.js) e devolve uma CÓPIA do cardapioExemplo (nunca a referência
   // original — cada conta precisa do seu próprio array editável, senão uma conta editaria
   // o cardápio "molde" de todas as outras).
+  // Dado o id do sub-tipo, devolve o id do MACRO-segmento a que ele pertence.
+  // O robô social escolhe o fundo da arte pelo macro (alimentacao-01.jpg etc.),
+  // e o subtipo sozinho não permite deduzir isso fora deste repo — por isso os
+  // dois campos são gravados juntos.
+  function buscarMacroQuiz(id){
+    const seg=window.MOVIKI_SEGMENTOS||[];
+    for(let i=0;i<seg.length;i++){
+      const subtipos=seg[i].subtipos||[];
+      for(let j=0;j<subtipos.length;j++){
+        if(subtipos[j].id===id) return seg[i].id||'';
+      }
+    }
+    return '';
+  }
   function buscarSubtipoQuiz(id){
     const seg=window.MOVIKI_SEGMENTOS||[];
     for(let i=0;i<seg.length;i++){
@@ -2344,6 +2364,9 @@
       const dadosNegocio={
         nome:nome,status:'fechado',promocoes:[],eventos:[],fotos:[],
         markerLogo:'',cor:'#00f2fe',whiteLabel:false,
+        segmento:String(d.template||'').slice(0,40),
+        segmentoMacro:String(buscarMacroQuiz(d.template)||'').slice(0,40),
+        autorizaDivulgacao:false,
         cardapio:tpl,slug:slug,atualizadoEm:serverTimestamp()
       };
       if(whatsapp) dadosNegocio.whatsapp=whatsapp;
@@ -2491,6 +2514,9 @@
     const dadosNegocio={
       nome:nome,status:'fechado',promocoes:[],eventos:[],fotos:[],
       markerLogo:'',cor:'#00f2fe',whiteLabel:false,
+      segmento:String(d.template||'').slice(0,40),
+      segmentoMacro:String(buscarMacroQuiz(d.template)||'').slice(0,40),
+      autorizaDivulgacao:false,
       cardapio:tpl,slug:slug,atualizadoEm:serverTimestamp()
     };
     if(whatsapp) dadosNegocio.whatsapp=whatsapp;
