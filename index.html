@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app; connect-src 'self' https://*.googleapis.com https://moviki-robo.vercel.app https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com; frame-src https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://*.google-analytics.com; connect-src 'self' https://*.googleapis.com https://moviki-robo.vercel.app https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 
@@ -13,6 +13,7 @@
 <link rel="icon" type="image/png" href="favicon512.png">
 <link rel="apple-touch-icon" href="favicon512.png">
 <meta name="theme-color" content="#0D1B2A">
+<script src="/mvmetrica.js"></script>
 <style>
   :root{--ciano:#00D4FF;--azul:#0066FF;--escuro:#0D1B2A;--claro:#F2F5F9;--card:#13263d;--card-borda:#223a5c;--campo:#0d1c30;}
   /* ---- LOGO NO MAPA (aba Local) — cartao + editor de enquadramento ---- */
@@ -1293,7 +1294,7 @@
   window.trocarAba=function(n){modo=n;el('abaEntrar').classList.toggle('ativa',n==='entrar');el('abaCriar').classList.toggle('ativa',n==='criar');el('btnAcao').textContent=n==='entrar'?'Entrar':'Criar conta';el('dica').textContent=n==='criar'?'Vai criar uma conta de teste. Use um e-mail seu e uma senha simples.':'';var le=el('linhaEsqueci');if(le)le.style.display=n==='entrar'?'block':'none';limparAviso();};
   window.verSenha=function(){const s=el('senha'),b=document.querySelector('.verSenha');if(s.type==='password'){s.type='text';b.textContent='ocultar';}else{s.type='password';b.textContent='mostrar';}};
   function msgErro(c){const m={'auth/invalid-email':'E-mail inválido.','auth/missing-password':'Digite uma senha.','auth/weak-password':'A senha precisa ter pelo menos 6 caracteres.','auth/email-already-in-use':'Esse e-mail já tem conta. Tente "Entrar".','auth/invalid-credential':'E-mail ou senha incorretos.','auth/user-not-found':'Não encontrei conta com esse e-mail.','auth/wrong-password':'Senha incorreta.','auth/too-many-requests':'Muitas tentativas. Espere um pouco.','auth/network-request-failed':'Sem conexão. Confira a internet.','auth/popup-blocked':'Seu navegador bloqueou a janela do Google. Permita pop-ups e tente de novo.','auth/account-exists-with-different-credential':'Esse e-mail já tem conta criada com senha. Entre com e-mail e senha, ou clique em "Esqueci minha senha".','auth/unauthorized-domain':'Este endereço ainda não está autorizado no Firebase para login com Google.','auth/internal-error':'Não consegui falar com o login do Google agora. Tente de novo — ou crie sua conta com e-mail e senha, que funciona do mesmo jeito.','auth/operation-not-allowed':'O login com Google está desativado nesta conta do sistema. Use e-mail e senha por enquanto.'};return m[c]||('Erro: '+c);}
-  window.acao=async function(){const email=el('email').value.trim(),senha=el('senha').value,btn=el('btnAcao');limparAviso();if(!email){erroAcesso('Digite seu e-mail.');return;}if(!senha){erroAcesso('Digite uma senha.');return;}btn.disabled=true;const t=btn.textContent;btn.textContent='Aguarde...';try{if(modo==='criar'){await createUserWithEmailAndPassword(auth,email,senha);try{await sendEmailVerification(auth.currentUser);}catch(_){}try{await registrarIndicacao(auth.currentUser.uid);}catch(_){}garantirTrial();try{auth.currentUser.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:auth.currentUser.uid})}).catch(function(){});}).catch(function(){});}catch(_){}}else await signInWithEmailAndPassword(auth,email,senha);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.textContent=t;}};
+  window.acao=async function(){const email=el('email').value.trim(),senha=el('senha').value,btn=el('btnAcao');limparAviso();if(!email){erroAcesso('Digite seu e-mail.');return;}if(!senha){erroAcesso('Digite uma senha.');return;}btn.disabled=true;const t=btn.textContent;btn.textContent='Aguarde...';try{if(modo==='criar'){await createUserWithEmailAndPassword(auth,email,senha);try{ if(window.mvSignup) mvSignup('email'); }catch(_){}try{await sendEmailVerification(auth.currentUser);}catch(_){}try{await registrarIndicacao(auth.currentUser.uid);}catch(_){}garantirTrial();try{auth.currentUser.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:auth.currentUser.uid})}).catch(function(){});}).catch(function(){});}catch(_){}}else await signInWithEmailAndPassword(auth,email,senha);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.textContent=t;}};
   // Login/cadastro com Google. Mesmo botão serve pros dois casos: o Firebase cria a conta
   // na hora se for a 1ª vez (getAdditionalUserInfo().isNewUser diz se foi criação agora).
   // E-mail do Google já vem verificado -> não passa pelo bannerVerif nem pelo fluxo de sendEmailVerification.
@@ -1302,6 +1303,7 @@
   async function posLoginGoogleNovo(cred){
     const info=getAdditionalUserInfo(cred);
     if(!info||!info.isNewUser)return;
+    try{ if(window.mvSignup) mvSignup('google'); }catch(_){}
     try{await registrarIndicacao(cred.user.uid);}catch(_){}
     try{const tk=await cred.user.getIdToken();fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:cred.user.uid})}).catch(function(){});}catch(_){}
   }
@@ -1398,7 +1400,7 @@
   }
   let _avisoPlanoTimer=null;
   function mostrarAvisoPlano(){const av=el('avisoPlano');if(!av)return;av.classList.remove('escondido');if(_avisoPlanoTimer)clearTimeout(_avisoPlanoTimer);_avisoPlanoTimer=setTimeout(()=>av.classList.add('escondido'),5000);}
-  window.abrirPlano=function(){renderStatusPlano();renderCardEnterprise();el('modalPlano').classList.remove('escondido');};
+  window.abrirPlano=function(){try{ if(window.mvEv) mvEv('modal_plano_aberto',{origem:(window._mvOrigem||'menu')}); window._mvOrigem=''; }catch(_){}renderStatusPlano();renderCardEnterprise();el('modalPlano').classList.remove('escondido');};
   function renderCardEnterprise(){
     var box=el('mpEntAcao'); if(!box)return;
     if(ehEnterprisePainel()){
@@ -1721,6 +1723,7 @@
   const _precoLabel={pro:{mensal:'Mensal · R$ 37,90',trimestral:'Trimestral · R$ 99,90',anual:'Anual · R$ 379,00'},premium:{mensal:'Mensal · R$ 49,90',trimestral:'Trimestral · R$ 134,90',anual:'Anual · R$ 499,00'},enterprise:{mensal:'Mensal · R$ 99,90'}};
   window.selecionarPlano=function(plano,periodo,btn){
     planoSel=plano;periodoSel=periodo;
+    try{ if(window.mvEv) mvEv('plano_selecionado',{plano:plano,periodo:periodo}); }catch(_){}
     document.querySelectorAll('.mpBtn').forEach(b=>b.classList.remove('sel'));
     if(btn)btn.classList.add('sel');
     // destaca o CARD escolhido (Enterprise em dourado)
@@ -1748,12 +1751,16 @@
     av.textContent='Gerando seu pagamento...';
     try{
       const token=await usuarioAtual.getIdToken();
-      const r=await fetch(ROBO+'/api/criar-assinatura',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({plano:planoSel,periodo:periodoSel,cpfCnpj:cpf,nome:(el('nome').value||'').trim(),email:usuarioAtual.email})});
+      let gaCid='',gaSid='';
+      try{ if(window.mvIds){ const _ids=await window.mvIds(); gaCid=_ids.cid||''; gaSid=_ids.sid||''; } }catch(_){}
+      try{ if(window.mvEv) mvEv('begin_checkout',{plano:planoSel,periodo:periodoSel}); }catch(_){}
+      const r=await fetch(ROBO+'/api/criar-assinatura',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({plano:planoSel,periodo:periodoSel,cpfCnpj:cpf,nome:(el('nome').value||'').trim(),email:usuarioAtual.email,gaClientId:gaCid,gaSessionId:gaSid})});
       const data=await r.json();
-      if(r.ok&&data.invoiceUrl){window.location.href=data.invoiceUrl;return;}
+      if(r.ok&&data.invoiceUrl){try{ if(window.mvEv) mvEv('checkout_redirecionado',{plano:planoSel,periodo:periodoSel}); }catch(_){}window.location.href=data.invoiceUrl;return;}
       if(data&&data.motivo==='ja_ativo'){av.style.color='#8fd8a0';av.textContent=data.erro||'Você já tem um plano ativo — ele renova sozinho.';}else{av.style.color='#ff9b9b';av.textContent=data.erro||'Não consegui gerar o pagamento. Tente de novo.';}
+      try{ if(window.mvEv) mvEv('checkout_falhou',{plano:planoSel,periodo:periodoSel,motivo:(data&&data.motivo)||'erro'}); }catch(_){}
       c.disabled=false;c.textContent=txt;
-    }catch(e){av.style.color='#ff9b9b';av.textContent='Erro de conexão. Tente de novo.';c.disabled=false;c.textContent=txt;}
+    }catch(e){try{ if(window.mvEv) mvEv('checkout_falhou',{plano:planoSel,periodo:periodoSel,motivo:'conexao'}); }catch(_){}av.style.color='#ff9b9b';av.textContent='Erro de conexão. Tente de novo.';c.disabled=false;c.textContent=txt;}
   };
 
   /* ---- TABS ---- */
@@ -2355,6 +2362,7 @@
       const chkSlug=await getDoc(doc(db,'slugs',slug));
       if(chkSlug.exists()) return {ok:false,erro:'O apelido "'+slug+'" já está em uso. Escolha outro.'};
       await createUserWithEmailAndPassword(auth,email,senha);
+      try{ if(window.mvSignup) mvSignup('email'); }catch(_){}
       const user=auth.currentUser;
       try{await sendEmailVerification(user);}catch(_){}
       try{await registrarIndicacao(user.uid);}catch(_){}
@@ -2397,6 +2405,7 @@
       }
       if(!livre) return {ok:false,erro:'Não consegui gerar seu link agora. Tente de novo.'};
       await createUserWithEmailAndPassword(auth,email,senha);
+      try{ if(window.mvSignup) mvSignup('email'); }catch(_){}
       const user=auth.currentUser;
       try{await sendEmailVerification(user);}catch(_){}
       await setDoc(doc(db,'parceiro_slugs',slug),{uid:user.uid});
@@ -2492,6 +2501,7 @@
       // negócio/cardápio que já tem. onAuthStateChanged carrega o painel real dele.
       return {ok:true,jaExistia:true};
     }
+    try{ if(window.mvSignup) mvSignup('google'); }catch(_){}
     const nome=(d.nome||'').trim();
     const whatsapp=(d.whatsapp||'').replace(/\D/g,'');
     let slug=limpaSlug(d.slug||'');
@@ -2529,6 +2539,7 @@
     const info=getAdditionalUserInfo(cred);
     const user=cred.user;
     if(info&&!info.isNewUser){ return {ok:true,jaExistia:true}; }
+    try{ if(window.mvSignup) mvSignup('google'); }catch(_){}
     const nome=(d.nome||'').trim();
     const pix=(d.pix||'').trim();
     let slug=limpaSlugParc(d.slug||nome);
@@ -2811,6 +2822,7 @@
 
   function progresso(pct){var b=$('qzBarra');if(b)b.style.width=pct+'%';}
   function mostrarTela(id,empilhar){
+    try{ if(window.mvEv && typeof id==='string' && id.indexOf('qz')===0) mvEv('quiz_etapa',{etapa:id}); }catch(_){}
     if(empilhar!==false) pilha.push(passoAtual);
     document.querySelectorAll('.qzTela').forEach(function(t){t.classList.remove('qzAtiva');t.style.display='none';});
     var alvo=$(id); if(!alvo)return;
