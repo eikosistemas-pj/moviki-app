@@ -1028,6 +1028,18 @@ body.naHome #btnSalvar{margin-top:14px;}
   color:var(--mv-txt-3);padding:7px 0;border-top:1px solid var(--mv-linha);}
 .mvDsLinha b{color:var(--mv-txt);font-weight:600;text-transform:capitalize;}
 
+/* desempenho trancado no Básico: mostra que o dado existe, sem entregar */
+.mvDsKpisSo1{grid-template-columns:1fr;}
+.mvDsTrancado{position:relative;margin-top:2px;}
+.mvDsBorrado{filter:blur(5px);opacity:.5;pointer-events:none;user-select:none;}
+.mvDsCta{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:8px;padding:10px;background:linear-gradient(180deg,rgba(14,28,48,.35),rgba(14,28,48,.86));border-radius:var(--mv-r);}
+.mvDsCadeado{font-size:20px;line-height:1;}
+.mvDsCta p{font-size:12px;color:var(--mv-txt-2);line-height:1.5;max-width:250px;}
+.mvDsCta p b{color:var(--mv-ciano);}
+.mvDsCta button{border:none;border-radius:var(--mv-r-pill);background:var(--mv-grad);color:#02131f;
+  font-family:inherit;font-weight:700;font-size:13px;padding:9px 20px;cursor:pointer;}
+
 /* ---------- barra inferior com ação rápida ---------- */
 .mvBar{align-items:end;}
 .mvBarFab{position:relative;color:var(--mv-ciano) !important;}
@@ -2001,6 +2013,7 @@ body.naHome #btnSalvar{margin-top:14px;}
     var _wl=el('wlRow');if(_wl)_wl.style.display=(planoPainel==='enterprise')?'block':'none';
     ['cardapio','promocoes','eventos'].forEach(t=>{const b=document.querySelector('.tab[data-tab="'+t+'"]');if(b)b.classList.toggle('travada',!libera);});
     if(libera){const av=el('avisoPlano');if(av)av.classList.add('escondido');}
+    try{ if(window.pintarDesempenho) window.pintarDesempenho(); }catch(_){}
     atualizarNotaFotos();
     atualizarNotaGaleria();
   }
@@ -2908,6 +2921,7 @@ body.naHome #btnSalvar{margin-top:14px;}
      contador não registrou, o número não aparece.
      --------------------------------------------------------------------------- */
   const DIAS_SEM=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  let _desemp=null;
   function _diaId(d){const z=n=>(n<10?'0':'')+n;return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());}
   async function carregarDesempenho(uid){
     const box=el('mvDesemp'); if(!box)return;
@@ -2917,7 +2931,7 @@ body.naHome #btnSalvar{margin-top:14px;}
     try{
       docs=await Promise.all(dias.map(d=>getDoc(doc(db,'metricas',uid,'dias',_diaId(d))).catch(()=>null)));
     }catch(e){ box.style.display='none'; return; }
-    let views=0,whats=0,rota=0,card=0,total=0;
+    let views=0,whats=0,rota=0,card=0;
     const porDia=[], porSemana=[0,0,0,0,0,0,0], faixas=new Array(12).fill(0);
     docs.forEach((snap,i)=>{
       const x=(snap&&snap.exists&&snap.exists())?(snap.data()||{}):{};
@@ -2926,33 +2940,78 @@ body.naHome #btnSalvar{margin-top:14px;}
       porDia.push({d:dias[i],v:v});
       porSemana[dias[i].getDay()]+=v;
       for(let b=0;b<12;b++)faixas[b]+=Number(x['b'+b]||0);
-      total+=v;
     });
-    if(total===0){
+    _desemp={porDia:porDia,porSemana:porSemana,faixas:faixas,views:views,whats:whats,rota:rota,card:card};
+    pintarDesempenho();
+  }
+  /* Quem vê o quê (decidido em 26/08/2026):
+       Básico -> só o número de visitas dos ÚLTIMOS 7 DIAS. O resto aparece
+                 trancado, pra ele saber que o dado existe e que está perdendo.
+       Pró+   -> tudo: 14 dias, os 4 números, o gráfico, melhor dia e pico.
+     O CONTADOR grava para TODOS os planos, sempre. Se o lojista assinar depois,
+     o histórico já está lá — e isso é o melhor argumento de venda que existe. */
+  function pintarDesempenho(){
+    const box=el('mvDesemp'); if(!box||!_desemp)return;
+    const D=_desemp;
+    const libera = planoPainel==='pro'||planoPainel==='premium'||planoPainel==='enterprise';
+    const dias = libera?14:7;
+    const recorte = D.porDia.slice(D.porDia.length-dias);
+    const views = recorte.reduce(function(a,x){return a+x.v;},0);
+    const totalGeral = D.views+D.whats+D.rota+D.card;
+
+    if(totalGeral===0){
       box.innerHTML='<div class="mvRcTit">Seu desempenho</div>'+
-        '<p class="mvDsVazio">Ainda não há visitas registradas nos últimos 14 dias. '+
+        '<p class="mvDsVazio">Ainda não há visitas registradas nos últimos '+dias+' dias. '+
         'Assim que alguém abrir a sua página, os números aparecem aqui.</p>';
       box.style.display=''; return;
     }
-    const maxV=Math.max.apply(null,porDia.map(x=>x.v))||1;
-    const barras=porDia.map(x=>'<i style="height:'+Math.max(4,Math.round(x.v/maxV*100))+'%" title="'+_diaId(x.d)+': '+x.v+'"></i>').join('');
-    let melhorD=0; for(let i=1;i<7;i++) if(porSemana[i]>porSemana[melhorD]) melhorD=i;
-    let melhorF=0; for(let i=1;i<12;i++) if(faixas[i]>faixas[melhorF]) melhorF=i;
-    const fh=melhorF*2, faixaTxt=fh+'h - '+(fh+2)+'h';
-    box.innerHTML=
-      '<div class="mvRcTit">Seu desempenho <span class="mvDsPer">14 dias</span></div>'+
-      '<div class="mvDsKpis">'+
-        '<div class="mvDsKpi"><b>'+views+'</b><span>visitas na sua página</span></div>'+
-        '<div class="mvDsKpi"><b>'+whats+'</b><span>chamaram no WhatsApp</span></div>'+
-        '<div class="mvDsKpi"><b>'+rota+'</b><span>pediram a rota</span></div>'+
-        '<div class="mvDsKpi"><b>'+card+'</b><span>abriram o cardápio</span></div>'+
-      '</div>'+
-      '<div class="mvDsGraf">'+barras+'</div>'+
-      '<div class="mvDsLinha"><span>Melhor dia</span><b>'+DIAS_SEM[melhorD]+'</b></div>'+
-      '<div class="mvDsLinha"><span>Horário de pico</span><b>'+faixaTxt+'</b></div>';
+
+    const maxV=Math.max.apply(null,recorte.map(function(x){return x.v;}))||1;
+    const barras=recorte.map(function(x){return '<i style="height:'+Math.max(4,Math.round(x.v/maxV*100))+'%" title="'+_diaId(x.d)+': '+x.v+'"></i>';}).join('');
+    let melhorD=0; for(let i=1;i<7;i++) if(D.porSemana[i]>D.porSemana[melhorD]) melhorD=i;
+    let melhorF=0; for(let i=1;i<12;i++) if(D.faixas[i]>D.faixas[melhorF]) melhorF=i;
+    const fh=melhorF*2;
+
+    if(libera){
+      box.innerHTML=
+        '<div class="mvRcTit">Seu desempenho <span class="mvDsPer">14 dias</span></div>'+
+        '<div class="mvDsKpis">'+
+          '<div class="mvDsKpi"><b>'+D.views+'</b><span>visitas na sua página</span></div>'+
+          '<div class="mvDsKpi"><b>'+D.whats+'</b><span>chamaram no WhatsApp</span></div>'+
+          '<div class="mvDsKpi"><b>'+D.rota+'</b><span>pediram a rota</span></div>'+
+          '<div class="mvDsKpi"><b>'+D.card+'</b><span>abriram o cardápio</span></div>'+
+        '</div>'+
+        '<div class="mvDsGraf">'+barras+'</div>'+
+        '<div class="mvDsLinha"><span>Melhor dia</span><b>'+DIAS_SEM[melhorD]+'</b></div>'+
+        '<div class="mvDsLinha"><span>Horário de pico</span><b>'+fh+'h - '+(fh+2)+'h</b></div>';
+    }else{
+      box.innerHTML=
+        '<div class="mvRcTit">Seu desempenho <span class="mvDsPer">7 dias</span></div>'+
+        '<div class="mvDsKpis mvDsKpisSo1">'+
+          '<div class="mvDsKpi"><b>'+views+'</b><span>visitas na sua página</span></div>'+
+        '</div>'+
+        '<div class="mvDsTrancado">'+
+          '<div class="mvDsBorrado" aria-hidden="true">'+
+            '<div class="mvDsKpis">'+
+              '<div class="mvDsKpi"><b>••</b><span>chamaram no WhatsApp</span></div>'+
+              '<div class="mvDsKpi"><b>••</b><span>pediram a rota</span></div>'+
+            '</div>'+
+            '<div class="mvDsGraf">'+barras+'</div>'+
+            '<div class="mvDsLinha"><span>Melhor dia</span><b>•••••</b></div>'+
+            '<div class="mvDsLinha"><span>Horário de pico</span><b>••h - ••h</b></div>'+
+          '</div>'+
+          '<div class="mvDsCta">'+
+            '<div class="mvDsCadeado">🔒</div>'+
+            '<p>Quantos chamaram no WhatsApp, pediram a rota e abriram seu cardápio — '+
+            'mais o seu melhor dia da semana e o horário de pico. <b>No plano Pró.</b></p>'+
+            '<button type="button" onclick="abrirPlano()">Ver o Pró</button>'+
+          '</div>'+
+        '</div>';
+    }
     box.style.display='';
   }
   window.carregarDesempenho=carregarDesempenho;
+  window.pintarDesempenho=pintarDesempenho;
 
   async function carregarDados(uid){
     try{
