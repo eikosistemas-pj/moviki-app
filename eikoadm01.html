@@ -196,6 +196,7 @@ input::placeholder{color:#6b7f96}
 .pill{display:inline-flex;align-items:center;gap:5px;border-radius:var(--mv-r-pill);font-size:11.5px;font-weight:700;padding:3px 10px;white-space:nowrap}
 .pill.ok{color:var(--mv-ok);background:rgba(37,227,155,.13);border:1px solid rgba(37,227,155,.34)}
 .pill.warn{color:var(--mv-alerta);background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.34)}
+.pill.perigo{color:var(--mv-erro);background:rgba(255,92,92,.12);border:1px solid rgba(255,92,92,.34)}
 .pill.off{color:var(--mv-txt-3);background:var(--mv-campo);border:1px solid var(--mv-linha)}
 .pill.info{color:var(--mv-ciano);background:rgba(0,212,255,.10);border:1px solid rgba(0,212,255,.32)}
 @media(min-width:1340px){
@@ -921,7 +922,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-26-pixauto4';
+  window.MOVIKI_VERSAO = '2026-08-26-pixauto5';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1496,19 +1497,21 @@ table.mvTab td b{font-weight:700}
   }
 
   function pintarComissoes(){
-    const pend = SAQ.filter(s=>s.status === 'solicitado').sort((a,b)=>ms(a.pedidoEm) - ms(b.pedidoEm));
+    const pend = SAQ.filter(s=>s.status === 'solicitado' || s.status === 'falhou').sort((a,b)=>ms(a.pedidoEm) - ms(b.pedidoEm));
     badge('badCom', pend.length); badge('badComM', pend.length);
     txt('saqueChip', pend.length + (pend.length === 1 ? ' pedido' : ' pedidos'));
 
     el('saqueBox').innerHTML = pend.length ? pend.map(s=>{
       saquePix[s.id] = pixParceiro(s.parceiroUid);
       return '<div class="icard">'+
-        '<div class="icTopo"><div class="icNome">'+esc(nomeParceiro(s.parceiroUid))+' <span class="pill warn">Saque pedido</span></div>'+
+        '<div class="icTopo"><div class="icNome">'+esc(nomeParceiro(s.parceiroUid))+
+          (s.status === 'falhou' ? ' <span class="pill perigo">Pix não saiu</span>' : ' <span class="pill warn">Saque pedido</span>')+'</div>'+
         '<span class="icData">'+dataBR(ms(s.pedidoEm))+'</span></div>'+
         '<div class="icInfo">'+
           '<div><span class="icK">Valor</span><span class="icV"><b>'+brl(s.valorSolicitado)+'</b></span></div>'+
           '<div><span class="icK">Pix</span><span class="icV"><code>'+esc(saquePix[s.id]||'—')+'</code> <button type="button" class="btnMini" data-saque="pix" data-id="'+esc(s.id)+'">copiar</button></span></div>'+
         '</div>'+
+        (s.ultimoErroPagamento ? '<div class="avisoRegra" style="margin-bottom:10px">Última tentativa falhou: '+esc(s.ultimoErroPagamento)+'</div>' : '')+
         '<div style="margin-bottom:11px"><span class="icK">Comprovante (só para pagamento na mão)</span>'+
           '<input type="text" id="comp_'+esc(s.id)+'" placeholder="ID ou observação do Pix" style="margin-top:5px"></div>'+
         '<div class="icAcoes">'+
