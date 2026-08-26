@@ -13,6 +13,7 @@
 <link rel="icon" type="image/png" href="favicon512.png">
 <link rel="apple-touch-icon" href="favicon512.png">
 <meta name="theme-color" content="#0D1B2A">
+<link rel="stylesheet" href="/movikiui.css">
 <script src="/mvmetrica.js"></script>
 <style>
   :root{--ciano:#00D4FF;--azul:#0066FF;--escuro:#0D1B2A;--claro:#F2F5F9;--card:#13263d;--card-borda:#223a5c;--campo:#0d1c30;}
@@ -572,6 +573,465 @@
   .qzLink{background:none;border:none;color:var(--ciano);cursor:pointer;font-size:13px;font-weight:600;padding:0;text-decoration:underline;font-family:inherit;}
   .qzVoltarQuiz{text-align:center;margin-top:14px;}
   @media(max-width:380px){.quizBox{padding:20px 16px 22px}.qzTitulo{font-size:18px}}
+
+/* ==========================================================================
+   REPAGINAÇÃO 2.0 — PAINEL DO LOJISTA  (26/08/2026)
+   Bloco de override no fim da folha: reescreve a casca, o cabeçalho, a home,
+   os campos, os botões, os modais e a barra inferior no visual 2.0 — o mesmo
+   da landing e da página pública. As regras antigas continuam acima como
+   rede de segurança; o que vale é o que está aqui.
+   Rede de segurança de tokens: se o /movikiui.css não carregar, os --mv-*
+   abaixo seguram a página (lição 25/08 — texto preto no fundo preto).
+   ========================================================================== */
+:root{
+  --mv-ciano:#00D4FF; --mv-azul:#0066FF;
+  --mv-grad:linear-gradient(135deg,#00D4FF,#0066FF);
+  --mv-bg:#060d18; --mv-bg-2:#0a1424; --mv-surf:#0e1c30; --mv-surf-2:#13263d;
+  --mv-campo:#0b1728; --mv-linha:#1c3457; --mv-linha-forte:#284a78;
+  --mv-txt:#eaf6ff; --mv-txt-2:#c6d8ee; --mv-txt-3:#8fa6c4;
+  --mv-ok:#25e39b; --mv-alerta:#ffb020; --mv-erro:#ff6b6b;
+  --mv-roxo:#a855f7; --mv-laranja:#ff8a00; --mv-whats:#25D366;
+  --mv-r-sm:10px; --mv-r:14px; --mv-r-lg:18px; --mv-r-xl:24px; --mv-r-pill:999px;
+  /* os nomes antigos passam a apontar para os tokens novos: repinta tudo de uma vez */
+  --ciano:var(--mv-ciano); --azul:var(--mv-azul); --escuro:var(--mv-bg);
+  --claro:var(--mv-txt); --card:var(--mv-surf-2); --card-borda:var(--mv-linha);
+  --campo:var(--mv-campo);
+}
+html{background:var(--mv-bg);overflow-x:clip;-webkit-text-size-adjust:100%;}
+body{background:var(--mv-bg);color:var(--mv-txt);line-height:1.45;overflow-x:visible;}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55;
+  background:
+    radial-gradient(900px 460px at 50% -8%,rgba(0,102,255,.20),transparent 70%),
+    radial-gradient(700px 380px at 100% 12%,rgba(0,212,255,.10),transparent 72%);
+}
+*{min-width:0;}
+img{max-width:100%;}
+::selection{background:rgba(0,212,255,.28);}
+
+/* ---------- casca ---------- */
+.box{position:relative;z-index:1;width:100%;max-width:1080px;margin:0 auto;padding:0 14px calc(96px + env(safe-area-inset-bottom));}
+@media(min-width:1120px){
+  .box{margin:22px auto 26px;padding:0 26px 120px;border:1px solid var(--mv-linha);border-radius:var(--mv-r-xl);
+       background:linear-gradient(180deg,#08111f,#060d18);box-shadow:0 26px 70px rgba(0,0,0,.5);}
+}
+
+/* ---------- tela de acesso ---------- */
+.marca{padding-top:26px;text-align:center;}
+.marca .logoMarca{margin:0 auto;max-width:210px;}
+.slogan{text-align:center;color:var(--mv-txt-3);font-size:13.5px;letter-spacing:.2px;margin:8px 0 20px;}
+.slogan b{color:var(--mv-txt-2);font-weight:600;}
+.card{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-xl);padding:20px 16px;box-shadow:0 18px 46px rgba(0,0,0,.38);}
+@media(min-width:560px){.card{padding:26px 24px;}}
+.abas{display:flex;gap:6px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:var(--mv-r-pill);padding:5px;margin-bottom:16px;}
+.abas button{flex:1;border:none;background:none;color:var(--mv-txt-3);font-weight:600;font-size:14.5px;padding:10px 8px;border-radius:var(--mv-r-pill);cursor:pointer;transition:.18s;}
+.abas button.ativa{background:var(--mv-grad);color:#02131f;box-shadow:0 6px 18px rgba(0,212,255,.28);}
+
+/* ---------- campos ---------- */
+label{display:block;font-size:12.5px;font-weight:600;letter-spacing:.2px;color:var(--mv-txt-3);margin:0 0 6px 2px;}
+.campo{margin-bottom:14px;position:relative;}
+input,textarea,select{width:100%;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:var(--mv-r);
+  color:var(--mv-txt);font-size:15.5px;padding:13px 14px;outline:none;transition:border-color .16s,box-shadow .16s;}
+input::placeholder,textarea::placeholder{color:#6d84a4;}
+input:focus,textarea:focus,select:focus{border-color:var(--mv-ciano);box-shadow:0 0 0 3px rgba(0,212,255,.16);}
+input[type=color]{padding:0;border:none;background:transparent;}
+input[type=range]{padding:0;border:none;background:transparent;accent-color:var(--mv-ciano);}
+input[type=checkbox]{width:auto;padding:0;}
+
+/* ---------- botões ---------- */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;border:none;border-radius:var(--mv-r);
+  background:var(--mv-grad);color:#02131f;font-family:inherit;font-weight:700;font-size:16px;cursor:pointer;
+  box-shadow:0 12px 30px rgba(0,102,255,.30);transition:transform .15s,filter .15s;margin-top:6px;}
+.btn:hover{filter:brightness(1.06);}
+.btn:active{transform:scale(.985);}
+.btn:disabled{opacity:.55;cursor:default;box-shadow:none;}
+.btn.secundario{background:transparent;border:1.5px solid var(--mv-linha-forte);color:var(--mv-txt-2);box-shadow:none;}
+.btn.secundario:hover{border-color:var(--mv-ciano);color:var(--mv-ciano);}
+.btnGoogle{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;border-radius:var(--mv-r);
+  background:#fff;color:#1f2937;border:none;font-family:inherit;font-weight:600;font-size:15.5px;cursor:pointer;}
+.divisorOu{display:flex;align-items:center;gap:10px;color:var(--mv-txt-3);font-size:12.5px;margin:16px 0;}
+.divisorOu::before,.divisorOu::after{content:"";flex:1;height:1px;background:var(--mv-linha);}
+.verSenha{position:absolute;right:12px;bottom:12px;background:none;border:none;color:var(--mv-ciano);font-size:12.5px;font-weight:600;cursor:pointer;}
+.linkEsqueci{background:none;border:none;color:var(--mv-txt-3);font-size:13px;cursor:pointer;text-decoration:underline;}
+
+/* ---------- avisos ---------- */
+.aviso{font-size:13.5px;line-height:1.5;margin-top:10px;text-align:center;min-height:18px;}
+.aviso.ok{color:var(--mv-ok);}
+.aviso.erro{color:var(--mv-erro);}
+.dica{font-size:13px;color:var(--mv-txt-3);text-align:center;margin-top:10px;line-height:1.55;}
+
+/* ---------- cabeçalho do painel (sticky) ---------- */
+#painel .appTopo{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:11px;
+  margin:0 -14px 14px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;
+  background:rgba(8,17,30,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--mv-linha);}
+@media(min-width:1120px){#painel .appTopo{margin:0 -26px 16px;padding-left:26px;padding-right:26px;border-radius:var(--mv-r-xl) var(--mv-r-xl) 0 0;}}
+#painel .appMenu{width:42px;height:42px;flex:0 0 auto;border-radius:var(--mv-r-sm);border:1px solid var(--mv-linha);
+  background:var(--mv-surf);color:var(--mv-txt);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+#painel .appMenu svg{width:20px;height:20px;}
+#painel .appLogo{width:36px;height:36px;flex:0 0 auto;border-radius:50%;object-fit:cover;background:var(--mv-campo);padding:4px;border:1px solid var(--mv-linha);}
+#painel .appTitWrap{flex:1;min-width:0;}
+#painel .appTit{font-size:15px;font-weight:700;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#painel .appSub{font-size:11.5px;color:var(--mv-txt-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#painel .appSair{flex:0 0 auto;border:1px solid var(--mv-linha);background:var(--mv-surf);color:var(--mv-txt-2);
+  font-family:inherit;font-weight:600;font-size:13px;border-radius:var(--mv-r-pill);padding:9px 14px;cursor:pointer;}
+#painel .appSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
+
+/* ---------- home ---------- */
+.olaLinha{font-size:17px;font-weight:700;letter-spacing:-.3px;line-height:1.35;margin:4px 2px 14px;text-align:center;}
+.olaLinha .olaLeve{display:block;font-size:13.5px;font-weight:500;color:var(--mv-txt-3);margin-top:4px;}
+@media(min-width:760px){.olaLinha{text-align:left;}.olaLinha .olaLeve{display:inline;margin-left:6px;}}
+
+.statusHome{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);padding:16px 14px;text-align:center;margin-bottom:14px;}
+.statusHome .shLabel{display:block;font-size:12.5px;font-weight:600;letter-spacing:.3px;color:var(--mv-txt-3);margin-bottom:11px;}
+.statusLinha{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.statusBtn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border-radius:var(--mv-r);
+  border:1px solid var(--mv-linha);background:var(--mv-campo);color:var(--mv-txt-2);
+  font-family:inherit;font-weight:700;font-size:15px;cursor:pointer;transition:.16s;}
+.statusBtn.aberto{border-color:rgba(37,227,155,.55);background:rgba(37,227,155,.13);color:var(--mv-ok);box-shadow:0 0 0 1px rgba(37,227,155,.25) inset;}
+.statusBtn.fechado{border-color:rgba(255,107,107,.5);background:rgba(255,107,107,.12);color:#ff8b96;}
+.statusHome .shDica{display:block;font-size:12.5px;color:var(--mv-txt-3);margin-top:11px;line-height:1.5;}
+.shVerPagina{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;
+  border:1px solid var(--mv-linha-forte);background:transparent;color:var(--mv-ciano);
+  font-family:inherit;font-weight:700;font-size:14px;border-radius:var(--mv-r-pill);padding:11px 20px;cursor:pointer;animation:none;}
+.shVerPagina:hover{border-color:var(--mv-ciano);background:rgba(0,212,255,.08);}
+
+.onb{background:linear-gradient(160deg,rgba(0,102,255,.16),rgba(0,212,255,.04));border:1px solid rgba(0,212,255,.3);
+  border-radius:var(--mv-r-lg);padding:16px 14px;margin-bottom:14px;}
+.onbTit{font-size:16px;font-weight:700;}
+.onbSub{font-size:13px;color:var(--mv-txt-2);line-height:1.5;margin:4px 0 12px;}
+.onbBarra{height:7px;border-radius:var(--mv-r-pill);background:var(--mv-campo);overflow:hidden;margin-bottom:12px;}
+.onbBarra i{display:block;height:100%;background:var(--mv-grad);transition:width .35s;}
+.onbPasso{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:var(--mv-surf);
+  border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:12px;margin-bottom:8px;cursor:pointer;color:var(--mv-txt);font-family:inherit;}
+.onbPasso .mark{width:26px;height:26px;flex:0 0 auto;border-radius:50%;background:var(--mv-campo);border:1px solid var(--mv-linha-forte);
+  display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;color:var(--mv-txt-3);}
+.onbPasso .txt{flex:1;font-size:14px;font-weight:600;}
+.onbPasso .seta{color:var(--mv-txt-3);}
+.onbPasso.feito .mark{background:rgba(37,227,155,.16);border-color:rgba(37,227,155,.5);color:var(--mv-ok);}
+.onbPasso.feito .txt{color:var(--mv-txt-3);text-decoration:line-through;}
+.onbOcultar{background:none;border:none;color:var(--mv-txt-3);font-size:12.5px;cursor:pointer;}
+.onbFinal{font-size:13px;color:var(--mv-ok);line-height:1.5;margin-top:6px;}
+
+/* ---------- grade de atalhos ---------- */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+@media(min-width:560px){.grid{grid-template-columns:repeat(3,1fr);gap:12px;}}
+@media(min-width:900px){.grid{grid-template-columns:repeat(4,1fr);}}
+.gcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;min-height:112px;
+  background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);padding:14px 8px;
+  cursor:pointer;color:var(--mv-txt);font-family:inherit;position:relative;overflow:hidden;transition:transform .16s,border-color .16s,box-shadow .16s;}
+.gcard::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 0%,rgba(0,212,255,.10),transparent 60%);opacity:0;transition:opacity .18s;}
+.gcard:hover{transform:translateY(-2px);border-color:var(--mv-linha-forte);box-shadow:0 14px 32px rgba(0,0,0,.42);}
+.gcard:hover::before{opacity:1;}
+.gcard:active{transform:scale(.985);}
+.gcImg{width:46px;height:46px;object-fit:contain;position:relative;}
+.gcLabel{font-size:13.5px;font-weight:600;text-align:center;line-height:1.25;position:relative;}
+.gcard.travado{opacity:.62;}
+.gcard.travado::after{content:"Pró";position:absolute;top:8px;right:8px;font-size:10px;font-weight:700;letter-spacing:.6px;
+  color:var(--mv-alerta);background:rgba(255,176,32,.14);border:1px solid rgba(255,176,32,.4);border-radius:var(--mv-r-pill);padding:2px 8px;}
+.gcard.gcIndicar{border-color:rgba(255,138,0,.45);background:linear-gradient(160deg,rgba(255,138,0,.16),var(--mv-surf));}
+.gcard.gcIndicar .gcLabel{color:var(--mv-laranja);}
+
+/* ---------- editor ---------- */
+#editor{padding-bottom:8px;}
+.editorTit{font-size:22px;font-weight:800;letter-spacing:-.5px;margin:10px 2px 16px;text-align:center;}
+@media(min-width:760px){.editorTit{text-align:left;font-size:24px;}}
+#editor .voltar,.voltarFim{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--mv-linha);
+  color:var(--mv-txt-2);font-family:inherit;font-weight:600;font-size:13.5px;border-radius:var(--mv-r-pill);padding:9px 16px;cursor:pointer;margin:2px 0 4px;}
+#editor .voltar:hover,.voltarFim:hover{border-color:var(--mv-ciano);color:var(--mv-ciano);}
+.voltarFim{display:block;margin:12px auto 0;}
+.tabConteudo{margin-top:4px;}
+.secTitulo{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:16px 2px 10px;}
+.secTitulo label{margin:0;font-size:14px;font-weight:700;color:var(--mv-txt);letter-spacing:-.2px;}
+.addBtn{border:1px dashed var(--mv-linha-forte);background:transparent;color:var(--mv-ciano);font-family:inherit;
+  font-weight:600;font-size:13.5px;border-radius:var(--mv-r-pill);padding:9px 15px;cursor:pointer;}
+.addBtn:hover{border-color:var(--mv-ciano);background:rgba(0,212,255,.07);}
+.vazioCard{background:var(--mv-campo);border:1px dashed var(--mv-linha-forte);border-radius:var(--mv-r);
+  padding:20px 14px;text-align:center;font-size:13.5px;color:var(--mv-txt-3);line-height:1.55;}
+.dicaBox{display:flex;align-items:flex-start;gap:9px;background:var(--mv-surf);border:1px solid var(--mv-linha);
+  border-left:3px solid var(--mv-ciano);border-radius:var(--mv-r);padding:13px 14px;font-size:13.5px;color:var(--mv-txt-2);line-height:1.55;margin-top:12px;}
+.dicaBox b{color:var(--mv-txt);}
+.notaFotos{background:rgba(255,176,32,.10);border:1px solid rgba(255,176,32,.32);border-radius:var(--mv-r);
+  padding:12px 13px;font-size:13px;color:#ffd591;line-height:1.55;margin-bottom:12px;}
+.catBloco,.prodRow{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r);}
+.gps{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:13px 14px;font-size:13.5px;color:var(--mv-txt-2);}
+.linkCampo{display:flex;align-items:center;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:var(--mv-r);overflow:hidden;}
+.linkCampo:focus-within{border-color:var(--mv-ciano);box-shadow:0 0 0 3px rgba(0,212,255,.16);}
+.linkCampo .pref{padding:0 2px 0 13px;color:var(--mv-txt-3);font-size:14.5px;white-space:nowrap;}
+.linkCampo input{border:none;background:transparent;box-shadow:none;padding-left:2px;}
+.linkCampo input:focus{box-shadow:none;}
+.linkPronto{background:rgba(37,227,155,.10);border:1px solid rgba(37,227,155,.32);border-radius:var(--mv-r);padding:13px;margin-bottom:14px;}
+.linkRow{display:flex;gap:8px;align-items:center;margin-top:7px;flex-wrap:wrap;}
+.linkRow a{flex:1;min-width:0;color:var(--mv-ciano);font-size:13.5px;word-break:break-all;}
+.linkRow button{border:1px solid var(--mv-linha-forte);background:var(--mv-campo);color:var(--mv-txt-2);
+  font-family:inherit;font-weight:600;font-size:13px;border-radius:var(--mv-r-pill);padding:8px 14px;cursor:pointer;}
+
+/* ---------- avaliações ---------- */
+.avalResumo{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);padding:16px;text-align:center;}
+.avalItem{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:13px;margin-top:10px;}
+
+/* ---------- modais: folha que sobe no celular ---------- */
+.modalPlano{position:fixed;inset:0;z-index:120;background:rgba(3,8,16,.72);backdrop-filter:blur(4px);
+  display:flex;align-items:flex-end;justify-content:center;padding:0;}
+@media(min-width:760px){.modalPlano{align-items:center;padding:24px;}}
+.modalPlano.escondido{display:none !important;}
+.mpCaixa{width:100%;max-width:620px;max-height:92vh;max-height:92dvh;overflow:auto;-webkit-overflow-scrolling:touch;
+  background:var(--mv-bg-2);border:1px solid var(--mv-linha);border-radius:var(--mv-r-xl) var(--mv-r-xl) 0 0;
+  padding:22px 16px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.6);position:relative;}
+@media(min-width:760px){.mpCaixa{border-radius:var(--mv-r-xl);padding:26px 24px;box-shadow:0 30px 80px rgba(0,0,0,.6);}}
+.mpCaixa::before{content:"";display:block;width:44px;height:4px;border-radius:var(--mv-r-pill);background:var(--mv-linha-forte);margin:-8px auto 14px;}
+@media(min-width:760px){.mpCaixa::before{display:none;}}
+.mpFechar{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--mv-linha);
+  background:var(--mv-surf);color:var(--mv-txt-2);cursor:pointer;font-size:15px;line-height:1;}
+.mpTitulo{font-size:19px;font-weight:800;letter-spacing:-.4px;text-align:center;}
+@media(min-width:760px){.mpTitulo{text-align:left;}}
+.mpPlanos{display:grid;grid-template-columns:1fr;gap:12px;margin-top:16px;}
+@media(min-width:640px){.mpPlanos{grid-template-columns:repeat(2,1fr);}}
+.mpPlano{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);padding:16px 14px;position:relative;}
+.mpPlano.destaque{border-color:var(--mv-ciano);box-shadow:0 0 0 1px rgba(0,212,255,.25),0 16px 40px rgba(0,102,255,.20);}
+.mpBtn{width:100%;margin-top:8px;border:1px solid var(--mv-linha-forte);background:var(--mv-campo);color:var(--mv-txt);
+  font-family:inherit;font-weight:600;font-size:14px;border-radius:var(--mv-r);padding:12px;cursor:pointer;}
+.mpBtn.sel{border-color:var(--mv-ciano);background:rgba(0,212,255,.12);color:var(--mv-ciano);}
+.mpBtnConf{width:100%;min-height:54px;margin-top:16px;border:none;border-radius:var(--mv-r);background:var(--mv-grad);
+  color:#02131f;font-family:inherit;font-weight:700;font-size:15.5px;cursor:pointer;}
+.mpBtnConf:disabled{opacity:.5;cursor:default;}
+
+/* ---------- drawer ---------- */
+.drawerOv{position:fixed;inset:0;z-index:130;background:rgba(3,8,16,.66);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .22s;}
+.drawerOv.on{opacity:1;pointer-events:auto;}
+.drawer{position:fixed;top:0;bottom:0;left:0;z-index:140;width:min(310px,86vw);overflow-y:auto;
+  background:var(--mv-bg-2);border-right:1px solid var(--mv-linha);padding:calc(18px + env(safe-area-inset-top)) 14px calc(22px + env(safe-area-inset-bottom));
+  transform:translateX(-100%);transition:transform .26s cubic-bezier(.22,.9,.3,1);}
+.drawer.on{transform:none;}
+.drawer a,.drawer>button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;text-decoration:none;
+  background:transparent;border:1px solid transparent;border-radius:var(--mv-r);color:var(--mv-txt-2);
+  font-family:inherit;font-size:14.5px;font-weight:500;padding:12px;cursor:pointer;}
+.drawer a:hover,.drawer>button:hover{background:var(--mv-surf);border-color:var(--mv-linha);color:var(--mv-txt);}
+.drawerSec{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mv-txt-3);margin:16px 4px 6px;}
+.drawerX{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--mv-linha);background:var(--mv-surf);color:var(--mv-txt-2);cursor:pointer;}
+.drawer .diImg{width:22px;height:22px;object-fit:contain;flex:0 0 auto;}
+
+/* ---------- barra inferior (celular) ---------- */
+.mvBar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:grid;grid-template-columns:repeat(5,1fr);
+  background:rgba(8,17,30,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--mv-linha);padding-bottom:env(safe-area-inset-bottom);}
+@media(min-width:1120px){.mvBar{display:none;}}
+.mvBar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  background:none;border:none;color:var(--mv-txt-3);font-family:inherit;font-size:10.5px;font-weight:600;
+  padding:9px 2px;cursor:pointer;min-height:58px;}
+.mvBar button svg{width:21px;height:21px;}
+.mvBar button.on{color:var(--mv-ciano);}
+.mvBar button.on svg{filter:drop-shadow(0 0 7px rgba(0,212,255,.55));}
+
+/* ---------- banners ---------- */
+.bannerTrial{background:linear-gradient(160deg,rgba(0,102,255,.18),var(--mv-surf));border:1px solid rgba(0,212,255,.3);
+  border-radius:var(--mv-r-lg);padding:14px;margin-bottom:12px;}
+.bannerTrial.urgente{background:linear-gradient(160deg,rgba(255,176,32,.16),var(--mv-surf));border-color:rgba(255,176,32,.4);}
+.bannerTrial.fim{background:linear-gradient(160deg,rgba(255,107,107,.16),var(--mv-surf));border-color:rgba(255,107,107,.4);}
+.bannerTrial.parceiro{background:linear-gradient(160deg,rgba(255,138,0,.16),var(--mv-surf));border-color:rgba(255,138,0,.42);}
+.bannerVerif{background:rgba(255,176,32,.10);border:1px solid rgba(255,176,32,.34);border-radius:var(--mv-r-lg);padding:14px;margin-bottom:12px;font-size:13.5px;color:#ffd591;line-height:1.55;}
+
+/* ---------- selos ---------- */
+.seloOuro,.selo-basico,.selo-bronze,.selo-prata,.selo-trial{display:inline-flex;align-items:center;gap:5px;
+  font-size:10.5px;font-weight:700;letter-spacing:.7px;border-radius:var(--mv-r-pill);padding:3px 10px;}
+
+/* ---------- quiz: só encosta no visual, não mexe na estrutura ---------- */
+.quizBox{background:var(--mv-bg-2);border:1px solid var(--mv-linha);border-radius:var(--mv-r-xl);}
+.qzBtnPrim{background:var(--mv-grad);color:#02131f;border-radius:var(--mv-r);font-weight:700;}
+.qzCard,.qzSegCard{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);}
+.qzCard:hover,.qzSegCard:hover{border-color:var(--mv-ciano);}
+.qzCampo input{border-radius:var(--mv-r);}
+
+/* ---------- áreas de imagem e remover, na cor da marca ---------- */
+.capaAdd,.fAdd,.galAdd{border:1.5px dashed var(--mv-linha-forte) !important;background:var(--mv-campo) !important;
+  color:var(--mv-ciano) !important;border-radius:var(--mv-r) !important;font-family:inherit;font-weight:600;cursor:pointer;}
+.capaAdd:hover,.fAdd:hover,.galAdd:hover{border-color:var(--mv-ciano) !important;background:rgba(0,212,255,.07) !important;}
+.capaAdd:disabled,.fAdd:disabled,.galAdd:disabled{opacity:.5;cursor:default;}
+.capaSlot,.fSlot,.galCel{border-radius:var(--mv-r);overflow:hidden;border:1px solid var(--mv-linha);}
+.rmv,.rmF{color:var(--mv-erro);}
+.prodRow{padding:12px;margin-top:10px;}
+.catBloco{padding:13px;margin-top:12px;border-left:3px solid var(--mv-ciano);}
+.acabLbl{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--mv-txt-2);}
+
+/* ---------- corrige a casca antiga (body flex + .box.largo 660px) ---------- */
+body{padding:0;align-items:flex-start;display:flex;justify-content:center;}
+body:not(.logado){align-items:center;}
+.box.largo{max-width:1080px;}
+@media(min-width:1120px){body.logado{padding:0;}}
+
+/* ---------- logado: a marca encolhe, o cabeçalho assume ---------- */
+body.logado .marca{padding-top:14px;}
+body.logado .marca .logoMarca{max-width:112px;}
+body.logado .slogan{display:none;}
+body.logado .card{background:transparent;border:none;box-shadow:none;padding:0;}
+@media(min-width:560px){body.logado .card{padding:0;}}
+
+/* ---------- ajustes finais do cabeçalho ---------- */
+#painel .appLinha2{display:flex;align-items:center;gap:7px;min-width:0;margin-top:2px;}
+#painel .appLinha2 .appSub{flex:1;min-width:0;}
+#seloTopo,#painel .appLinha2 [class*="selo"]{margin-top:0;flex:0 0 auto;font-size:10px;padding:2px 8px;}
+#painel .appLogo{display:none;}
+@media(min-width:560px){#painel .appLogo{display:block;}}
+.shVerPagina{box-shadow:none !important;}
+.shVerPagina:hover{box-shadow:none !important;}
+.marca .logoMarca{max-width:170px;}
+@media(min-width:560px){.marca .logoMarca{max-width:210px;}}
+.slogan{max-width:420px;margin-left:auto;margin-right:auto;}
+
+
+/* ==========================================================================
+   CASCA DE APLICATIVO 2.0 — lateral no desktop, coluna de apoio, ações
+   recomendadas e barra inferior com ação rápida.
+   Regra que manda aqui: NADA de métrica que o produto não tem. Visualizações,
+   alcance, contatos, insights e atividade recente são Fase 6 — não existem
+   hoje e não entram como número de mentira. O que a home mostra é só o que
+   está no documento do próprio negócio.
+   ========================================================================== */
+@media(min-width:1120px){ .box,.box.largo{max-width:1180px;} }
+@media(min-width:1400px){ .box,.box.largo{max-width:1320px;} }
+
+.mvShell{display:block;}
+@media(min-width:900px){
+  .mvShell{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start;}
+}
+@media(min-width:1120px){
+  .mvShell{grid-template-columns:248px minmax(0,1fr) 300px;}
+}
+.mvMain{min-width:0;}
+
+/* ---------- lateral ---------- */
+.mvSide{display:none;}
+@media(min-width:1120px){
+  .mvSide{display:block;position:sticky;top:78px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;}
+}
+.mvSideNeg{display:flex;align-items:center;gap:10px;background:var(--mv-surf);border:1px solid var(--mv-linha);
+  border-radius:var(--mv-r-lg);padding:11px;margin-bottom:12px;}
+.mvSideLogo{width:40px;height:40px;flex:0 0 auto;border-radius:var(--mv-r-sm);object-fit:cover;background:var(--mv-campo);padding:4px;}
+.mvSideTxt{min-width:0;}
+.mvSideNome{font-size:14px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.selo{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:var(--mv-r-pill);
+  font-size:11px;font-weight:600;border:1px solid transparent;white-space:nowrap;margin-top:4px;}
+.selo .bol{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 7px currentColor;flex:0 0 auto;}
+.selo.aberto{color:var(--mv-ok);background:rgba(37,227,155,.13);border-color:rgba(37,227,155,.32);}
+.selo.fechado{color:#ff8b96;background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.30);}
+
+.mvNav{display:flex;flex-direction:column;gap:2px;}
+.mvNavIt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;
+  border:1px solid transparent;border-radius:var(--mv-r);color:var(--mv-txt-2);font-family:inherit;
+  font-size:14px;font-weight:600;padding:10px 11px;cursor:pointer;transition:.15s;}
+.mvNavIt:hover{background:var(--mv-surf);border-color:var(--mv-linha);color:var(--mv-txt);}
+.mvNavIt.ativo{background:rgba(0,212,255,.10);border-color:rgba(0,212,255,.40);color:var(--mv-ciano);}
+.mvNavIco{width:22px;height:22px;flex:0 0 auto;object-fit:contain;}
+.mvNavIt.travado{opacity:.55;}
+.mvSideCta{margin-top:14px;background:linear-gradient(160deg,rgba(0,102,255,.20),rgba(0,212,255,.05));
+  border:1px solid rgba(0,212,255,.34);border-radius:var(--mv-r-lg);padding:14px;}
+.mvSideCtaTit{font-size:14.5px;font-weight:700;margin-bottom:5px;}
+.mvSideCta p{font-size:12.5px;color:var(--mv-txt-2);line-height:1.5;margin-bottom:11px;}
+.mvSideCta button{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;
+  border-radius:var(--mv-r);background:var(--mv-grad);color:#02131f;font-family:inherit;font-weight:700;
+  font-size:13.5px;padding:11px;cursor:pointer;}
+.mvSideSair{display:flex;align-items:center;gap:10px;width:100%;margin-top:14px;background:transparent;
+  border:1px solid var(--mv-linha);border-radius:var(--mv-r);color:var(--mv-txt-3);font-family:inherit;
+  font-size:13.5px;font-weight:600;padding:10px 11px;cursor:pointer;}
+.mvSideSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
+
+/* ---------- coluna de apoio ---------- */
+.mvRight{display:flex;flex-direction:column;gap:12px;margin-top:16px;}
+@media(min-width:900px){.mvRight{margin-top:0;position:sticky;top:78px;align-self:start;}}
+.mvRc{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);padding:14px;}
+.mvRcTit{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;font-weight:700;margin-bottom:10px;}
+.mvRcTit b{color:var(--mv-ciano);font-size:15px;}
+.mvRcLink{display:block;color:var(--mv-ciano);font-size:13.5px;font-weight:600;word-break:break-all;margin-bottom:10px;}
+.mvRcBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.mvRcBtns button{border:1px solid var(--mv-linha-forte);background:var(--mv-campo);color:var(--mv-txt-2);
+  font-family:inherit;font-weight:600;font-size:13px;border-radius:var(--mv-r-sm);padding:9px;cursor:pointer;}
+.mvRcBtns button:hover{border-color:var(--mv-ciano);color:var(--mv-ciano);}
+.mvRcBarra{height:8px;border-radius:var(--mv-r-pill);background:var(--mv-campo);overflow:hidden;}
+.mvRcBarra i{display:block;height:100%;width:0;background:var(--mv-grad);transition:width .4s;}
+.mvRcLista{list-style:none;margin:11px 0 0;padding:0;}
+.mvRcLista li{position:relative;padding-left:18px;font-size:12.5px;color:var(--mv-txt-3);line-height:1.75;}
+.mvRcLista li::before{content:"";position:absolute;left:2px;top:8px;width:7px;height:7px;border-radius:50%;
+  border:1.5px solid var(--mv-linha-forte);}
+.mvRcLista li.ok{color:var(--mv-ok);}
+.mvRcLista li.ok::before{background:var(--mv-ok);border-color:var(--mv-ok);}
+.mvRcPlano{margin-bottom:11px;}
+.mvRcBtnLargo{display:flex;align-items:center;justify-content:center;width:100%;text-decoration:none;
+  border:1px solid var(--mv-linha-forte);background:var(--mv-campo);color:var(--mv-txt);font-family:inherit;
+  font-weight:600;font-size:13.5px;border-radius:var(--mv-r);padding:11px;cursor:pointer;}
+.mvRcBtnLargo:hover{border-color:var(--mv-ciano);color:var(--mv-ciano);}
+.mvRcAjuda p{font-size:12.5px;color:var(--mv-txt-2);line-height:1.5;margin-bottom:11px;}
+.mvRcWhats{border-color:rgba(37,211,102,.45);color:#6ff0a6;}
+.mvRcWhats:hover{border-color:var(--mv-whats);color:var(--mv-whats);}
+
+/* ---------- saudação ---------- */
+.mvOla{text-align:center;margin:6px 2px 16px;}
+.mvOla h1{font-size:clamp(21px,5.4vw,28px);font-weight:800;letter-spacing:-.6px;line-height:1.2;overflow-wrap:anywhere;}
+.mvOla p{font-size:13.5px;color:var(--mv-txt-3);margin-top:4px;}
+@media(min-width:760px){.mvOla{text-align:left;}}
+
+/* ---------- card do mapa ---------- */
+.mvMapaCard{position:relative;overflow:hidden;border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);
+  background:linear-gradient(160deg,#0b1c33,#071223);margin-bottom:14px;}
+.mvMapaArte{position:absolute;inset:0;opacity:.85;pointer-events:none;}
+.mvMapaArte::before{content:"";position:absolute;inset:-20% -10% 0;opacity:.5;
+  background-image:linear-gradient(rgba(0,212,255,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.16) 1px,transparent 1px);
+  background-size:42px 42px;transform:perspective(420px) rotateX(60deg) scale(1.8);transform-origin:50% 0%;}
+.mvMapaArte::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(90% 70% at 30% 0%,rgba(0,102,255,.42),transparent 62%),linear-gradient(180deg,transparent 30%,#071223 96%);}
+.mvMapaPino{position:absolute;left:78%;top:34%;width:16px;height:16px;border-radius:50% 50% 50% 0;
+  transform:translate(-50%,-50%) rotate(-45deg);background:var(--mv-ciano);box-shadow:0 0 16px rgba(0,212,255,.85);z-index:2;}
+.mvMapaOnda{position:absolute;left:78%;top:34%;width:22px;height:22px;border-radius:50%;
+  border:1.5px solid rgba(0,212,255,.55);transform:translate(-50%,-50%);animation:mvOnda 2.6s ease-out infinite;z-index:1;}
+.mvMapaOnda.o2{animation-delay:1.3s;}
+@keyframes mvOnda{0%{opacity:.85;transform:translate(-50%,-50%) scale(.4);}100%{opacity:0;transform:translate(-50%,-50%) scale(3.6);}}
+.mvMapaTxt{position:relative;z-index:3;padding:18px 16px;}
+@media(min-width:560px){.mvMapaTxt{padding:22px;max-width:74%;}}
+.mvMapaTopo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:7px;}
+.mvMapaTopo h2{font-size:18px;font-weight:800;letter-spacing:-.4px;}
+.mvMapaTopo .selo{margin-top:0;}
+.mvMapaTxt p{font-size:13.5px;color:var(--mv-txt-2);line-height:1.55;margin-bottom:14px;}
+.mvMapaBtn{border:none;border-radius:var(--mv-r);background:var(--mv-grad);color:#02131f;font-family:inherit;
+  font-weight:700;font-size:14px;padding:12px 18px;cursor:pointer;box-shadow:0 10px 26px rgba(0,102,255,.32);}
+
+/* ---------- seções e ações recomendadas ---------- */
+.mvSec{margin:18px 0 10px;}
+.mvSecTopo{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.mvSecTopo h2{font-size:17px;font-weight:700;letter-spacing:-.3px;}
+.mvSecSub{font-size:13px;color:var(--mv-txt-3);margin-top:3px;line-height:1.5;}
+.mvAcoes{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px;}
+@media(min-width:640px){.mvAcoes{grid-template-columns:repeat(3,1fr);}}
+.mvAcao{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;
+  background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);padding:15px 14px;
+  color:var(--mv-txt);font-family:inherit;cursor:pointer;transition:transform .16s,border-color .16s,box-shadow .16s;}
+.mvAcao:hover{transform:translateY(-2px);border-color:rgba(0,212,255,.45);box-shadow:0 14px 32px rgba(0,0,0,.42);}
+.mvAcaoIco{width:38px;height:38px;object-fit:contain;margin-bottom:2px;}
+.mvAcaoTit{font-size:15px;font-weight:700;letter-spacing:-.2px;}
+.mvAcao p{font-size:12.5px;color:var(--mv-txt-3);line-height:1.5;flex:1;}
+.mvAcaoCta{color:var(--mv-ciano);font-size:13px;font-weight:700;margin-top:6px;}
+.mvAcao.travado{opacity:.6;}
+
+/* na home o botão "Voltar ao início" não faz sentido — some */
+body.naHome .voltarFim{display:none;}
+body.naHome #btnSalvar{margin-top:14px;}
+
+/* ---------- barra inferior com ação rápida ---------- */
+.mvBar{align-items:end;}
+.mvBarFab{position:relative;color:var(--mv-ciano) !important;}
+.mvFabCirc{display:flex;align-items:center;justify-content:center;width:50px;height:50px;margin-top:-22px;
+  border-radius:50%;background:var(--mv-grad);color:#02131f;box-shadow:0 10px 26px rgba(0,102,255,.5);border:3px solid var(--mv-bg);}
+.mvFabCirc svg{width:22px;height:22px;}
+.mvRapGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.mvRapGrid button{display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--mv-surf);
+  border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);padding:16px 10px;color:var(--mv-txt);
+  font-family:inherit;font-weight:600;font-size:13.5px;cursor:pointer;}
+.mvRapGrid button:hover{border-color:var(--mv-ciano);}
+.mvRapGrid img{width:40px;height:40px;object-fit:contain;}
+@media(min-width:1120px){.mvRapida{display:none;}}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+}
+
 </style>
 </head>
 <body>
@@ -848,13 +1308,35 @@
         <button type="button" class="appMenu" onclick="abrirMenu()" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
         <img src="favicon512.png" class="appLogo" alt="Moviki" onerror="this.style.visibility='hidden'">
         <div class="appTitWrap">
-          <div class="appTit">Painel do Negócio</div>
-          <div class="appSub"><b id="oExEmail"></b></div>
-          <span id="seloTopo" class="seloOuro" style="display:none">Enterprise</span>
+          <div class="appTit" id="appTit">Painel do Negócio</div>
+          <div class="appLinha2"><span class="appSub"><b id="oExEmail"></b></span><span id="seloTopo" class="seloOuro" style="display:none">Enterprise</span></div>
         </div>
         <button type="button" class="appSair" onclick="sair()">Sair</button>
       </div>
 
+
+      <!-- barra inferior (celular) — 5 lugares, o do meio é a ação rápida -->
+      <nav class="mvBar" id="mvBar" aria-label="Atalhos">
+        <button type="button" data-bar="home" onclick="mvBarIr('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.8V21h14V9.8"/></svg>Início</button>
+        <button type="button" data-bar="cardapio" onclick="mvBarIr('cardapio')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v7a3 3 0 0 0 6 0V3"/><path d="M9 10v11"/><path d="M17 3c-1.7 1.6-2.5 3.6-2.5 6 0 1.7.8 2.8 2.5 3v9"/></svg>Cardápio</button>
+        <button type="button" class="mvBarFab" onclick="mvAbrirRapida()" aria-label="Ação rápida"><span class="mvFabCirc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Ação rápida</button>
+        <button type="button" data-bar="promocoes" onclick="mvBarIr('promocoes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0l-7.2-7.2a2 2 0 0 1-.6-1.4V4.5A1.5 1.5 0 0 1 4.3 3h7.5a2 2 0 0 1 1.4.6l7.4 7.4a2 2 0 0 1 0 2.4z"/><circle cx="7.5" cy="7.5" r="1.3"/></svg>Promoções</button>
+        <button type="button" data-bar="mais" onclick="mvBarIr('mais')"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>Mais</button>
+      </nav>
+
+      <!-- folha de ação rápida -->
+      <div id="mvRapida" class="modalPlano escondido" onclick="if(event.target===this)mvFecharRapida()">
+        <div class="mpCaixa" style="max-width:460px">
+          <button type="button" class="mpFechar" onclick="mvFecharRapida()" aria-label="Fechar">✕</button>
+          <h2 class="mpTitulo">Ação rápida</h2>
+          <div class="mvRapGrid">
+            <button type="button" onclick="mvFecharRapida();irSecao('fotos')"><img src="icones/fotos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Adicionar fotos</span></button>
+            <button type="button" onclick="mvFecharRapida();irSecao('promocoes')"><img src="icones/promocoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Criar promoção</span></button>
+            <button type="button" onclick="mvFecharRapida();irSecao('cardapio')"><img src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Atualizar cardápio</span></button>
+            <button type="button" onclick="mvFecharRapida();verMinhaPagina()"><img src="icones/pagina.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Ver minha página</span></button>
+          </div>
+        </div>
+      </div>
       <div id="bannerVerif" class="bannerVerif escondido">
         <div class="bvTexto" id="bvTexto"></div>
         <div class="bvAcoes" id="bvAcoes">
@@ -863,8 +1345,55 @@
         </div>
       </div>
 
+      <div class="mvShell">
+      <aside class="mvSide" id="mvSide" aria-label="Navegação">
+        <div class="mvSideNeg">
+          <img class="mvSideLogo" id="mvSideLogo" src="favicon512.png" alt="" onerror="this.style.visibility='hidden'">
+          <div class="mvSideTxt">
+            <div class="mvSideNome" id="mvSideNome">Meu negócio</div>
+            <span class="selo fechado" id="mvSideSelo"><span class="bol"></span>Fechado</span>
+          </div>
+        </div>
+        <nav class="mvNav">
+        <button type="button" class="mvNavIt" data-sec="home" onclick="mvIr('home')"><img class="mvNavIco" src="icones/inicio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Início</span></button>
+        <button type="button" class="mvNavIt" data-sec="cardapio" onclick="mvIr('cardapio')"><img class="mvNavIco" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Cardápio</span></button>
+        <button type="button" class="mvNavIt" data-sec="promocoes" onclick="mvIr('promocoes')"><img class="mvNavIco" src="icones/promocoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Promoções</span></button>
+        <button type="button" class="mvNavIt" data-sec="eventos" onclick="mvIr('eventos')"><img class="mvNavIco" src="icones/eventos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Eventos</span></button>
+        <button type="button" class="mvNavIt" data-sec="fotos" onclick="mvIr('fotos')"><img class="mvNavIco" src="icones/fotos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Fotos</span></button>
+        <button type="button" class="mvNavIt" data-sec="local" onclick="mvIr('local')"><img class="mvNavIco" src="icones/localizacao.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Localização</span></button>
+        <button type="button" class="mvNavIt" data-sec="info" onclick="mvIr('info')"><img class="mvNavIco" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Informações</span></button>
+        <button type="button" class="mvNavIt" data-sec="whatsapp" onclick="mvIr('whatsapp')"><img class="mvNavIco" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>WhatsApp</span></button>
+        <button type="button" class="mvNavIt" data-sec="avaliacoes" onclick="mvIr('avaliacoes')"><img class="mvNavIco" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Avaliações</span></button>
+        <button type="button" class="mvNavIt" onclick="abrirPlano()"><img class="mvNavIco" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meu Plano</span></button>
+          <button type="button" class="mvNavIt" id="mvNavPontos" style="display:none" onclick="abrirPontos()"><img class="mvNavIco" src="icones/multipontos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meus pontos</span></button>
+        </nav>
+        <div class="mvSideCta">
+          <div class="mvSideCtaTit">Indique e ganhe</div>
+          <p>Convide outros negócios pro Moviki e receba comissão recorrente.</p>
+          <button type="button" onclick="abrirIndica()"><img class="mvNavIco" src="icones/indicar.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'">Indicar agora</button>
+        </div>
+        <button type="button" class="mvSideSair" onclick="sair()"><img class="mvNavIco" src="icones/sair.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Sair da conta</span></button>
+      </aside>
+      <div class="mvMain">
       <div id="grade">
-        <div class="olaLinha">Vamos colocar seu negócio no mapa hoje? 🚀 <span class="olaLeve">Atualize e apareça pros seus clientes.</span></div>
+        <div class="mvOla">
+          <h1 id="mvOlaTit">Olá! 👋</h1>
+          <p>Aqui está o resumo do seu negócio hoje.</p>
+        </div>
+
+        <div class="mvMapaCard">
+          <div class="mvMapaArte" aria-hidden="true">
+            <span class="mvMapaPino"></span><span class="mvMapaOnda"></span><span class="mvMapaOnda o2"></span>
+          </div>
+          <div class="mvMapaTxt">
+            <div class="mvMapaTopo">
+              <h2>Seu negócio no mapa</h2>
+              <span class="selo fechado" id="mvMapaSelo"><span class="bol"></span>Não aparece ainda</span>
+            </div>
+            <p id="mvMapaSub">Marque sua localização e escolha seu link pra aparecer no mapa e nas buscas do Moviki.</p>
+            <button type="button" class="mvMapaBtn" onclick="verMinhaPagina()">Ver meu perfil público</button>
+          </div>
+        </div>
         <div class="statusHome">
           <span class="shLabel">Seu negócio está agora:</span>
           <div class="statusLinha">
@@ -894,6 +1423,18 @@
       </div>
         <div id="bannerTrial" class="bannerTrial escondido"></div>
         <div id="bannerParceiro" class="bannerTrial escondido"></div>
+        <section class="mvSec" id="mvAcoesSec">
+          <div class="mvSecTopo">
+            <h2>Próximas ações recomendadas</h2>
+          </div>
+          <p class="mvSecSub">Do que o seu perfil precisa agora pra atrair mais cliente.</p>
+          <div class="mvAcoes" id="mvAcoes"></div>
+        </section>
+
+        <section class="mvSec">
+          <div class="mvSecTopo"><h2>Ferramentas</h2></div>
+          <p class="mvSecSub">Tudo que o seu negócio precisa, num lugar só.</p>
+        </section>
         <div class="grid">
           <button type="button" class="gcard" onclick="irSecao('perfil')"><img class="gcImg" src="icones/perfil.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Perfil</span></button>
           <button type="button" class="gcard" id="gc-cardapio" onclick="irSecao('cardapio')"><img class="gcImg" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Cardápio</span></button>
@@ -901,6 +1442,7 @@
           <button type="button" class="gcard" id="gc-eventos" onclick="irSecao('eventos')"><img class="gcImg" src="icones/eventos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Eventos</span></button>
           <button type="button" class="gcard" id="gc-fotos" onclick="irSecao('fotos')"><img class="gcImg" src="icones/fotos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Fotos</span></button>
           <button type="button" class="gcard" onclick="irSecao('local')"><img class="gcImg" src="icones/localizacao.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Localização</span></button>
+          <button type="button" class="gcard" onclick="irSecao('info')"><img class="gcImg" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Informações</span></button>
           <button type="button" class="gcard" onclick="irSecao('whatsapp')"><img class="gcImg" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">WhatsApp</span></button>
           <button type="button" class="gcard" onclick="irSecao('avaliacoes')"><img class="gcImg" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Avaliações</span></button>
           <button type="button" class="gcard" onclick="abrirPlano()"><img class="gcImg" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meu Plano</span></button>
@@ -916,6 +1458,7 @@
         <button class="tab" data-tab="eventos" onclick="abrirTab('eventos')">Eventos</button>
         <button class="tab" data-tab="fotos" onclick="abrirTab('fotos')">Fotos</button>
         <button class="tab" data-tab="local" onclick="abrirTab('local')">Localização</button>
+        <button class="tab" data-tab="info" onclick="abrirTab('info')">Informações</button>
         <button class="tab" data-tab="whatsapp" onclick="abrirTab('whatsapp')">WhatsApp</button>
         <button class="tab" data-tab="avaliacoes" onclick="abrirTab('avaliacoes')">Avaliações</button>
       </div>
@@ -1093,6 +1636,23 @@
         </div>
       </div>
 
+      <!-- Informações (Fase 2b) -->
+      <div class="tabConteudo escondido" id="tab-info">
+        <div class="campo"><label for="infoHorario">Horário de funcionamento</label>
+          <input id="infoHorario" type="text" maxlength="120" placeholder="Ex.: Seg a Sáb, 11h às 23h">
+        </div>
+        <div class="campo"><label for="infoEndereco">Endereço escrito</label>
+          <input id="infoEndereco" type="text" maxlength="200" placeholder="Ex.: Rua das Flores, 120 - Centro, Recife">
+        </div>
+        <div class="campo"><label for="infoEntrega">Entrega</label>
+          <input id="infoEntrega" type="text" maxlength="60" placeholder="Ex.: Entrega R$ 5,00 - ate 5 km">
+        </div>
+        <div class="campo"><label for="infoPreco">Preço médio por pessoa (opcional)</label>
+          <input id="infoPreco" type="text" inputmode="decimal" placeholder="Ex.: 24,90">
+        </div>
+        <div class="dicaBox"><img class="icoM" src="icones/lampada.png" alt="" loading="lazy" onerror="mvI(this,'&#128161;')">Tudo aqui é opcional e aparece nos <b>cards de informação</b> da sua página pública. Campo em branco simplesmente não aparece pro cliente — nada de dado inventado.</div>
+      </div>
+
       <!-- WhatsApp -->
       <div class="tabConteudo escondido" id="tab-whatsapp">
         <div class="campo"><label for="whatsapp">Seu WhatsApp (com DDD)</label>
@@ -1112,6 +1672,36 @@
       <button id="btnSalvar" class="btn" onclick="salvar()">Salvar tudo</button>
       <button type="button" class="voltar voltarFim" onclick="voltarHome()">‹ Voltar ao início</button>
       <div id="avisoP" class="aviso"></div>
+      </div><!-- /mvMain -->
+      <aside class="mvRight" id="mvRight">
+        <div class="mvRc" id="mvRcLink" style="display:none">
+          <div class="mvRcTit">Seu link pra divulgar</div>
+          <a class="mvRcLink" id="mvRcLinkA" href="#" target="_blank" rel="noopener"></a>
+          <div class="mvRcBtns">
+            <button type="button" onclick="mvCopiarLink()" id="mvRcCopiar">Copiar</button>
+            <button type="button" onclick="verMinhaPagina()">Ver página</button>
+          </div>
+        </div>
+
+        <div class="mvRc" id="mvRcCompl">
+          <div class="mvRcTit">Perfil completo <b id="mvComplPct">0%</b></div>
+          <div class="mvRcBarra"><i id="mvComplBar"></i></div>
+          <ul class="mvRcLista" id="mvComplLista"></ul>
+        </div>
+
+        <div class="mvRc">
+          <div class="mvRcTit">Seu plano</div>
+          <div class="mvRcPlano"><span id="mvRcPlanoSelo" class="selo-basico">Básico</span></div>
+          <button type="button" class="mvRcBtnLargo" onclick="abrirPlano()">Ver planos e vantagens</button>
+        </div>
+
+        <div class="mvRc mvRcAjuda">
+          <div class="mvRcTit">Precisa de ajuda?</div>
+          <p>Fale com a gente no WhatsApp. Respondemos de verdade.</p>
+          <a class="mvRcBtnLargo mvRcWhats" href="https://wa.me/554120186848?text=Ol%C3%A1!%20Preciso%20de%20ajuda%20com%20o%20Moviki." target="_blank" rel="noopener">Falar com o suporte</a>
+        </div>
+      </aside>
+      </div><!-- /mvShell -->
     </div>
     </div>
 
@@ -1428,7 +2018,7 @@
   function ehEnterprisePainel(){return !!(dadosAssinatura&&dadosAssinatura.ativo===true&&dadosAssinatura.plano==='enterprise'&&(!dadosAssinatura.vence_em||dadosAssinatura.vence_em.toMillis()>Date.now()));}
   // Só é "pagante" quem tem assinatura ativa e período mensal/anual — trial e Básico grátis não contam.
   function ehPagante(){const d=dadosAssinatura;return !!(d&&d.ativo===true&&d.periodo!=='trial'&&(!d.vence_em||d.vence_em.toMillis()>Date.now()));}
-  window.ptAtualizarDrawer=function(){var vis=ehEnterprisePainel();var b=el('drawerPontos');if(b)b.style.display=vis?'flex':'none';var g=el('gc-pontos');if(g)g.style.display=vis?'flex':'none';};
+  window.ptAtualizarDrawer=function(){var vis=ehEnterprisePainel();var b=el('drawerPontos');if(b)b.style.display=vis?'flex':'none';var g=el('gc-pontos');if(g)g.style.display=vis?'flex':'none';var n=el('mvNavPontos');if(n)n.style.display=vis?'flex':'none';};
   // Selo do plano atual, sempre visível no topo do painel e no menu — Básico (cinza) / Pró (bronze) / Premium (prata) / Enterprise (ouro).
   // Quem está em teste grátis (qualquer plano) vê o selo de trial no lugar, pra não parecer que já é assinante pago.
   function atualizarSeloPlano(){
@@ -1443,6 +2033,7 @@
     else { cls='selo-basico'; txt='Básico'; }
     if(st){ st.className=cls; st.textContent=txt; st.style.display='inline-flex'; }
     if(sd){ sd.className=cls; sd.textContent='Cliente '+txt; sd.style.display='inline-flex'; }
+    var sr=el('mvRcPlanoSelo'); if(sr){ sr.className=cls; sr.textContent=txt; }
   }
 
   // ===== Programa de Parceiros — área "Indicar agora" no painel do lojista =====
@@ -2249,6 +2840,12 @@
     try{
       if(slug){const ref=doc(db,'slugs',slug);const snap=await getDoc(ref);if(snap.exists()&&snap.data().uid!==usuarioAtual.uid){abrirTab('perfil');erroP('O apelido "'+slug+'" já está em uso. Escolha outro.');btn.disabled=false;btn.textContent=t;return;}if(!snap.exists()){await setDoc(ref,{uid:usuarioAtual.uid});}el('apelido').value=slug;}
       const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),fotos:lerGaleria(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
+      /* Fase 2b: informações do negócio. Sempre gravados (texto vazio = some da página pública). */
+      dados.horario=el('infoHorario')?el('infoHorario').value.trim().slice(0,120):'';
+      dados.endereco=el('infoEndereco')?el('infoEndereco').value.trim().slice(0,200):'';
+      dados.entrega=el('infoEntrega')?el('infoEntrega').value.trim().slice(0,60):'';
+      var _pm=el('infoPreco')?parseFloat(String(el('infoPreco').value).replace(/[^0-9,.]/g,'').replace(',','.')):NaN;
+      dados.precoMedio=(isFinite(_pm)&&_pm>0&&_pm<=100000)?Math.round(_pm*100)/100:0;
       var _cor=el('corInput')?el('corInput').value:'';if(/^#[0-9a-fA-F]{6}$/.test(_cor))dados.cor=_cor;dados.whiteLabel=el('wlToggle')?!!el('wlToggle').checked:false;dados.autorizaDivulgacao=el('divulgaToggle')?!!el('divulgaToggle').checked:false;
       if(coords){dados.lat=coords.lat;dados.lng=coords.lng;}
       if(slug){dados.slug=slug;}
@@ -2292,7 +2889,8 @@
       const snap=await getDoc(doc(db,'negocios',uid));
       if(snap.exists()){
         const d=snap.data();
-        el('nome').value=d.nome||'';el('recado').value=d.recado||'';el('apelido').value=d.slug||'';if(el('whatsapp'))el('whatsapp').value=d.whatsapp||'';
+        el('nome').value=d.nome||'';if(el('appTit')&&d.nome)el('appTit').textContent=d.nome;el('recado').value=d.recado||'';el('apelido').value=d.slug||'';if(el('whatsapp'))el('whatsapp').value=d.whatsapp||'';
+        if(el('infoHorario'))el('infoHorario').value=d.horario||'';if(el('infoEndereco'))el('infoEndereco').value=d.endereco||'';if(el('infoEntrega'))el('infoEntrega').value=d.entrega||'';if(el('infoPreco'))el('infoPreco').value=(typeof d.precoMedio==='number'&&d.precoMedio>0)?d.precoMedio.toFixed(2).replace('.',','):'';
         if(el('corInput'))el('corInput').value=(typeof d.cor==='string'&&/^#[0-9a-fA-F]{6}$/.test(d.cor))?d.cor:'#00D4FF';if(el('wlToggle'))el('wlToggle').checked=(d.whiteLabel===true);if(el('divulgaToggle'))el('divulgaToggle').checked=(d.autorizaDivulgacao===true);
         setStatus(d.status||'fechado');
         if(d.slug) mostrarLink(d.slug);
@@ -2300,8 +2898,8 @@
         el('listaPromos').innerHTML='';(d.promocoes||[]).forEach(p=>adicionarPromo(p.titulo||'',p.detalhe||'',p.capa||''));vazioPromo();
         el('listaEventos').innerHTML='';(d.eventos||[]).forEach(e2=>adicionarEvento(e2.titulo||'',e2.quando||'',e2.detalhe||'',e2.capa||''));vazioEvento();
         galSet(d.fotos||[]);
-        if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}mostrarLogoPreview(d.markerLogo||'');if(d.nome&&d.slug&&d.lat!=null&&d.lng!=null){onbDone=true;try{localStorage.setItem('moviki_onb_'+uid,'1');}catch(_){}}
-      }else{setStatus('fechado');vazioCat();vazioPromo();vazioEvento();galSet([]);mostrarLogoPreview('');}
+        try{if(window.mvResumo)window.mvResumo(d);}catch(_r){}if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}mostrarLogoPreview(d.markerLogo||'');if(d.nome&&d.slug&&d.lat!=null&&d.lng!=null){onbDone=true;try{localStorage.setItem('moviki_onb_'+uid,'1');}catch(_){}}
+      }else{setStatus('fechado');vazioCat();vazioPromo();vazioEvento();galSet([]);mostrarLogoPreview('');try{if(window.mvResumo)window.mvResumo(null);}catch(_r){}}
     }catch(e){setStatus('fechado');vazioCat();vazioPromo();vazioEvento();}
   }
 
@@ -2661,15 +3259,132 @@
 </script>
 <script>
 (function(){
-  var TIT={perfil:'Perfil',cardapio:'Cardápio',promocoes:'Promoções',eventos:'Eventos',local:'Localização',whatsapp:'WhatsApp',avaliacoes:'Avaliações'};
+  var TIT={perfil:'Perfil',cardapio:'Cardápio',promocoes:'Promoções',eventos:'Eventos',local:'Localização',info:'Informações',whatsapp:'WhatsApp',avaliacoes:'Avaliações'};
   function $(id){return document.getElementById(id);}
   function mostrarEditor(sec){
     var g=$('grade'),e=$('editor'),t=$('editorTit');
     if(g)g.classList.add('escondido');
     if(e)e.classList.remove('escondido');
     if(t)t.textContent=TIT[sec]||'';
+    mvBarAtivo(sec);
+    mvNavAtivo(sec);
+    document.body.classList.remove('naHome');
     window.scrollTo({top:0,behavior:'smooth'});
   }
+  /* barra inferior do celular (repaginação 2.0) */
+  function mvBarAtivo(qual){
+    var bs=document.querySelectorAll('#mvBar button[data-bar]');
+    for(var i=0;i<bs.length;i++){ bs[i].classList.toggle('on', bs[i].getAttribute('data-bar')===qual); }
+  }
+  window.mvBarIr=function(qual){
+    if(qual==='mais'){ if(window.abrirMenu)window.abrirMenu(); return; }
+    if(qual==='home'){ if(window.voltarHome)window.voltarHome(); return; }
+    if(window.irSecao)window.irSecao(qual);
+  };
+  /* ---- navegação lateral (desktop) ---- */
+  function mvNavAtivo(sec){
+    var ns=document.querySelectorAll('.mvNavIt[data-sec]');
+    for(var i=0;i<ns.length;i++){ ns[i].classList.toggle('ativo', ns[i].getAttribute('data-sec')===sec); }
+  }
+  window.mvIr=function(sec){
+    if(sec==='home'){ if(window.voltarHome)window.voltarHome(); return; }
+    if(window.irSecao)window.irSecao(sec);
+  };
+  window.mvAbrirRapida=function(){ var m=$('mvRapida'); if(m)m.classList.remove('escondido'); };
+  window.mvFecharRapida=function(){ var m=$('mvRapida'); if(m)m.classList.add('escondido'); };
+  window.mvCopiarLink=function(){
+    var a=$('mvRcLinkA'); if(!a)return;
+    var t=a.getAttribute('href')||'';
+    try{ navigator.clipboard.writeText(t); }catch(e){}
+    var b=$('mvRcCopiar'); if(b){ var o=b.textContent; b.textContent='Copiado!'; setTimeout(function(){b.textContent=o;},1600); }
+  };
+
+  /* ---- resumo da home: SÓ com o que existe de verdade no documento do negócio.
+     Nada de visualizações, alcance, contatos ou insights — isso não existe ainda
+     (é a Fase 6) e anunciar seria propaganda enganosa. ---- */
+  function _txt(id,v){ var e=$(id); if(e)e.textContent=v; }
+  function _selo(id,ok,txt){
+    var e=$(id); if(!e)return;
+    e.className='selo '+(ok?'aberto':'fechado');
+    e.innerHTML='<span class="bol"></span>';
+    e.appendChild(document.createTextNode(txt));
+  }
+  var MV_ACOES=[
+    {ch:function(d){return !(d.lat&&d.lng);},sec:'local',ico:'localizacao',t:'Marque sua localização',d:'Sem o ponto no mapa ninguém encontra seu negócio.',c:'Marcar no mapa'},
+    {ch:function(d){return !d.slug;},sec:'perfil',ico:'link',t:'Escolha seu link',d:'É o endereço que você manda no WhatsApp e põe na bio.',c:'Escolher link'},
+    {ch:function(d){return !(d.fotos&&d.fotos.length);},sec:'fotos',ico:'fotos',t:'Adicione fotos',d:'Perfil com foto passa muito mais confiança pro cliente.',c:'Adicionar fotos'},
+    {ch:function(d){return !(d.cardapio&&d.cardapio.length);},sec:'cardapio',ico:'cardapio',t:'Monte seu cardápio',d:'Mostre o que você vende, com preço, sem o cliente precisar perguntar.',c:'Montar cardápio'},
+    {ch:function(d){return !(d.promocoes&&d.promocoes.length);},sec:'promocoes',ico:'promocoes',t:'Crie uma promoção',d:'Promoção é o que faz o cliente decidir na hora.',c:'Criar promoção'},
+    {ch:function(d){return !d.whatsapp;},sec:'whatsapp',ico:'whatsapp',t:'Conecte seu WhatsApp',d:'Vira o botão de chamar você direto da sua página.',c:'Conectar WhatsApp'},
+    {ch:function(d){return !d.horario;},sec:'info',ico:'sobre',t:'Informe seu horário',d:'O cliente quer saber a que horas você abre antes de sair de casa.',c:'Informar horário'},
+    {ch:function(d){return !(d.eventos&&d.eventos.length);},sec:'eventos',ico:'eventos',t:'Divulgue um evento',d:'Tem algo acontecendo? Coloque na sua página.',c:'Criar evento'}
+  ];
+  var MV_COMPL=[
+    {k:'Nome do negócio',ch:function(d){return !!d.nome;}},
+    {k:'Link (moviki.com.br/...)',ch:function(d){return !!d.slug;}},
+    {k:'Localização no mapa',ch:function(d){return !!(d.lat&&d.lng);}},
+    {k:'WhatsApp',ch:function(d){return !!d.whatsapp;}},
+    {k:'Horário de funcionamento',ch:function(d){return !!d.horario;}},
+    {k:'Cardápio',ch:function(d){return !!(d.cardapio&&d.cardapio.length);}},
+    {k:'Fotos',ch:function(d){return !!(d.fotos&&d.fotos.length);}},
+    {k:'Promoção',ch:function(d){return !!(d.promocoes&&d.promocoes.length);}}
+  ];
+  window.mvResumo=function(dado){
+    var d=dado||{};
+    var nome=(d.nome||'').trim();
+    _txt('mvOlaTit', nome ? ('Olá, '+nome+'! 👋') : 'Olá! 👋');
+    _txt('mvSideNome', nome || 'Meu negócio');
+    var aberto = d.status==='aberto';
+    _selo('mvSideSelo', aberto, aberto?'Aberto agora':'Fechado');
+
+    var noMapa = !!(d.lat&&d.lng&&d.slug);
+    _selo('mvMapaSelo', noMapa, noMapa?'Visível no mapa':'Não aparece ainda');
+    _txt('mvMapaSub', noMapa
+      ? 'Seu negócio está no mapa e no seu link. Quem estiver perto pode te encontrar.'
+      : 'Marque sua localização e escolha seu link pra aparecer no mapa e nas buscas do Moviki.');
+
+    var cx=$('mvRcLink'), a=$('mvRcLinkA');
+    if(cx&&a){
+      if(d.slug){ a.href='https://moviki.com.br/'+d.slug; a.textContent='moviki.com.br/'+d.slug; cx.style.display=''; }
+      else cx.style.display='none';
+    }
+
+    var feitos=0, faltam=[];
+    for(var i=0;i<MV_COMPL.length;i++){ if(MV_COMPL[i].ch(d))feitos++; else faltam.push(MV_COMPL[i].k); }
+    var pct=Math.round(feitos/MV_COMPL.length*100);
+    _txt('mvComplPct', pct+'%');
+    var bar=$('mvComplBar'); if(bar)bar.style.width=pct+'%';
+    var lst=$('mvComplLista');
+    if(lst){
+      lst.innerHTML='';
+      if(!faltam.length){ var li0=document.createElement('li'); li0.className='ok'; li0.textContent='Tudo preenchido. Mandou bem!'; lst.appendChild(li0); }
+      else for(var j=0;j<faltam.length&&j<4;j++){ var li=document.createElement('li'); li.textContent=faltam[j]; lst.appendChild(li); }
+    }
+
+    var box=$('mvAcoes');
+    if(box){
+      box.innerHTML='';
+      var n=0;
+      for(var k=0;k<MV_ACOES.length&&n<3;k++){
+        var it=MV_ACOES[k];
+        if(!it.ch(d))continue;
+        n++;
+        var b=document.createElement('button');
+        b.type='button'; b.className='mvAcao';
+        b.setAttribute('data-sec',it.sec);
+        b.onclick=(function(sec){return function(){window.mvIr(sec);};})(it.sec);
+        var im=document.createElement('img'); im.className='mvAcaoIco'; im.src='icones/'+it.ico+'.png'; im.alt=''; im.loading='lazy';
+        im.onerror=function(){this.style.visibility='hidden';};
+        var t=document.createElement('div'); t.className='mvAcaoTit'; t.textContent=it.t;
+        var p2=document.createElement('p'); p2.textContent=it.d;
+        var c=document.createElement('span'); c.className='mvAcaoCta'; c.textContent=it.c+' ›';
+        b.appendChild(im); b.appendChild(t); b.appendChild(p2); b.appendChild(c);
+        box.appendChild(b);
+      }
+      var sec=$('mvAcoesSec');
+      if(sec) sec.style.display = n ? '' : 'none';
+    }
+  };
   window.abrirMenu=function(){var d=$('drawer'),o=$('drawerOv');if(d)d.classList.add('on');if(o)o.classList.add('on');};
   window.fecharMenu=function(){var d=$('drawer'),o=$('drawerOv');if(d)d.classList.remove('on');if(o)o.classList.remove('on');};
   window.abrirIndica=function(){fecharMenu();if(window._ehParceiro&&window.abrirModalParceiro){window.abrirModalParceiro();return;}if(window.prepararCandidatura)window.prepararCandidatura();var m=$('modalIndica');if(m)m.classList.remove('escondido');};
@@ -2683,6 +3398,9 @@
     if(e)e.classList.add('escondido');
     if(g)g.classList.remove('escondido');
     if(typeof window.atualizarOnboarding==='function'){try{window.atualizarOnboarding(false);}catch(x){}}
+    mvBarAtivo('home');
+    mvNavAtivo('home');
+    document.body.classList.add('naHome');
     window.scrollTo({top:0,behavior:'smooth'});
   };
   window.irSecao=function(sec){
@@ -2700,7 +3418,12 @@
   function syncLocks(){
     ['cardapio','promocoes','eventos'].forEach(function(t){
       var tab=document.querySelector('.tab[data-tab="'+t+'"]'), card=$('gc-'+t);
-      if(tab&&card) card.classList.toggle('travado', tab.classList.contains('travada'));
+      var trav = tab && tab.classList.contains('travada');
+      if(tab&&card) card.classList.toggle('travado', !!trav);
+      var nav=document.querySelector('.mvNavIt[data-sec="'+t+'"]');
+      if(nav) nav.classList.toggle('travado', !!trav);
+      var ac=document.querySelector('.mvAcao[data-sec="'+t+'"]');
+      if(ac) ac.classList.toggle('travado', !!trav);
     });
   }
   var tries=0;
@@ -2725,8 +3448,11 @@
       var painel=$('painel');
       if(painel && window.MutationObserver){
         new MutationObserver(function(){
-          if(painel.style.display==='block'){ setTimeout(window.voltarHome,0); }
+          var on = painel.style.display==='block';
+          document.body.classList.toggle('logado', on);
+          if(on){ setTimeout(window.voltarHome,0); }
         }).observe(painel,{attributes:true,attributeFilter:['style']});
+        document.body.classList.toggle('logado', painel.style.display==='block');
       }
     }
     if(tries>200) clearInterval(iv);
