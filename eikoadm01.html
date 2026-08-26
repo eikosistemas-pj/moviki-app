@@ -619,6 +619,15 @@ table.mvTab td b{font-weight:700}
               <button type="button" class="btnMini" id="btnCsvCom">Exportar CSV</button></div>
             <div id="comBox"><div class="vazio">Carregando…</div></div>
           </div>
+          <div class="cd">
+            <div class="cdTopo"><div><div class="cdTit">Ensaio de pagamento</div><div class="cdSub">Cria uma comissão de mentira (até R$ 10,00) para um parceiro, só para você testar o Pix de ponta a ponta. Ela nasce marcada como teste e já liberada para saque.</div></div></div>
+            <div class="ferr">
+              <select id="tsParc"><option value="">Escolha o parceiro…</option></select>
+              <input type="number" id="tsValor" value="5" min="0.01" max="10" step="0.01" style="max-width:120px" placeholder="Valor">
+              <button type="button" class="btnMini ok" id="btnComTeste">Criar comissão de teste</button>
+            </div>
+            <div class="icMsg" id="tsMsg"></div>
+          </div>
         </section>
 
         <!-- ============ SEÇÃO: MÉTRICAS ============ -->
@@ -912,7 +921,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-26-pixauto2';
+  window.MOVIKI_VERSAO = '2026-08-26-pixauto3';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1364,6 +1373,7 @@ table.mvTab td b{font-weight:700}
           (p.arroba ? '<div><span class="icK">@ dele</span><span class="icV">'+esc(p.arroba)+'</span></div>' : '')+
           '<div><span class="icK">Link</span><span class="icV"><a href="https://moviki.com.br/p/'+encodeURIComponent(p.slug||'')+'" target="_blank" rel="noopener">/p/'+esc(p.slug||'')+'</a></span></div>'+
           '<div><span class="icK">Pix</span><span class="icV"><code>'+esc(p.pix||'—')+'</code> <button type="button" class="btnMini" data-acao="pix" data-uid="'+esc(p.uid)+'">copiar</button></span></div>'+
+          '<div><span class="icK">Identificador (uid)</span><span class="icV"><code>'+esc(p.uid||'—')+'</code> <button type="button" class="btnMini" data-acao="uid" data-uid="'+esc(p.uid)+'">copiar</button></span></div>'+
         '</div>'+ chips +
         '<div class="icAcoes">'+acoes+'</div>'+
         '<div class="icMsg" id="pmsg_'+esc(p.uid)+'"></div>'+
@@ -1386,6 +1396,7 @@ table.mvTab td b{font-weight:700}
     const p = PARC.filter(x=>x.uid === uid)[0] || {};
     const msg = el('pmsg_'+uid);
     if(acao === 'pix'){ copiar(p.pix||''); feedback(b,'copiado'); return; }
+    if(acao === 'uid'){ copiar(uid||''); feedback(b,'copiado'); return; }
     if(acao === 'recusar' && !confirm('Recusar este parceiro?')) return;
     if(acao === 'suspender' && !confirm('Suspender este parceiro?')) return;
     if(acao === 'reenviar'){ await reenviarBoasVindas(uid, b, msg); return; }
@@ -1537,6 +1548,16 @@ table.mvTab td b{font-weight:700}
         }).join('')+
         '</tbody></table></div>'
       : '<div class="vazio">Nenhuma comissão ainda. Aparece aqui quando um indicado pagar.</div>';
+
+    // lista de parceiros do "Ensaio de pagamento"
+    const sel = el('tsParc');
+    if(sel){
+      const antes = sel.value;
+      const aptos = PARC.filter(p=>p.status === 'aprovado');
+      sel.innerHTML = '<option value="">Escolha o parceiro…</option>' +
+        aptos.map(p=>'<option value="'+esc(p.uid)+'">'+esc(p.nome||'(sem nome)')+(p.pix?'':' — SEM PIX')+'</option>').join('');
+      if(antes) sel.value = antes;
+    }
   }
 
   /* Chama o robô (api/pagar-saque). etapa: 'conferir' | 'pagar' | 'manual'. */
@@ -1699,6 +1720,34 @@ table.mvTab td b{font-weight:700}
                  r[u].receber.toFixed(2).replace('.',','),
                  r[u].pago.toFixed(2).replace('.',','),
                  r[u].total.toFixed(2).replace('.',',')]));
+  });
+
+  /* ---------- ensaio de pagamento: cria uma comissão de teste ---------- */
+  el('btnComTeste').addEventListener('click', async ()=>{
+    const b = el('btnComTeste'), msg = el('tsMsg');
+    const uid = el('tsParc').value;
+    const valor = Number(el('tsValor').value);
+    msg.textContent = '';
+    if(!uid){ msg.style.color='var(--mv-erro)'; msg.textContent='Escolha o parceiro primeiro.'; return; }
+    if(!(valor > 0) || valor > 10){ msg.style.color='var(--mv-erro)'; msg.textContent='Use um valor entre R$ 0,01 e R$ 10,00.'; return; }
+    if(!confirm('Criar uma comissão de teste de ' + brl(valor) + ' para ' + nomeParceiro(uid) + '?\n\nDepois é só clicar em "Pagar via Pix" na linha dele.')) return;
+    const t = b.textContent; b.disabled = true; b.textContent = 'Criando…';
+    try{
+      const idToken = await auth.currentUser.getIdToken();
+      const r = await fetch('https://moviki-robo.vercel.app/api/comissao-teste', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({idToken, parceiroUid:uid, valor:valor})
+      });
+      const j = await r.json().catch(()=>({}));
+      if(!r.ok || !j.ok) throw new Error(j.mensagem || j.erro || 'falhou');
+      msg.style.color = 'var(--mv-ok)';
+      msg.textContent = 'Pronto! ' + brl(j.valor) + ' na conta de ' + (j.parceiro || 'parceiro') + '. Agora use "Pagar via Pix" na linha dele, aqui em cima.';
+      b.disabled = false; b.textContent = t;
+      carregarComissoes().then(pintarPendencias);
+    }catch(e){
+      b.disabled = false; b.textContent = t;
+      msg.style.color = 'var(--mv-erro)'; msg.textContent = 'Não deu certo: ' + (e.message || 'tente de novo');
+    }
   });
 
   /* ==========================================================
