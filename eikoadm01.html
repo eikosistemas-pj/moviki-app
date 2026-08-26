@@ -921,7 +921,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-26-pixauto3';
+  window.MOVIKI_VERSAO = '2026-08-26-pixauto4';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1734,9 +1734,9 @@ table.mvTab td b{font-weight:700}
     const t = b.textContent; b.disabled = true; b.textContent = 'Criando…';
     try{
       const idToken = await auth.currentUser.getIdToken();
-      const r = await fetch('https://moviki-robo.vercel.app/api/comissao-teste', {
+      const r = await fetch('https://moviki-robo.vercel.app/api/pagar-saque', {
         method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({idToken, parceiroUid:uid, valor:valor})
+        body: JSON.stringify({idToken, parceiroUid:uid, etapa:'teste', valor:valor})
       });
       const j = await r.json().catch(()=>({}));
       if(!r.ok || !j.ok) throw new Error(j.mensagem || j.erro || 'falhou');
