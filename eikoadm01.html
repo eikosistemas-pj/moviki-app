@@ -615,7 +615,7 @@ table.mvTab td b{font-weight:700}
             <div id="saqueBox"><div class="vazio">Carregando…</div></div>
           </div>
           <div class="cd">
-            <div class="cdTopo"><div><div class="cdTit">Comissões por parceiro</div><div class="cdSub">Comissões estornadas ficam de fora da conta.</div></div>
+            <div class="cdTopo"><div><div class="cdTit">Comissões por parceiro</div><div class="cdSub">Comissões estornadas ficam de fora da conta. Dá para pagar cada parceiro direto aqui, sem esperar ele pedir saque.</div></div>
               <button type="button" class="btnMini" id="btnCsvCom">Exportar CSV</button></div>
             <div id="comBox"><div class="vazio">Carregando…</div></div>
           </div>
@@ -912,7 +912,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-26-pixauto';
+  window.MOVIKI_VERSAO = '2026-08-26-pixauto2';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1514,13 +1514,27 @@ table.mvTab td b{font-weight:700}
     const aPagar = linhas.reduce((s,x)=>s + x.r.receber, 0);
     txt('kAPagar', brl(aPagar));
 
+    // quem já tem pedido de saque aberto paga pelo card de cima, não pela linha
+    const comPedido = {};
+    pend.forEach(s => { comPedido[s.parceiroUid] = true; });
+
     el('comBox').innerHTML = linhas.length
-      ? '<div class="tabRola"><table class="mvTab"><thead><tr><th>Parceiro</th><th>Chave Pix</th><th class="num">A receber</th><th class="num">Já pago</th><th class="num">Total</th></tr></thead><tbody>'+
-        linhas.map(x=>'<tr><td><span class="celNome">'+esc(x.nome)+'</span></td>'+
-          '<td><code>'+esc(pixParceiro(x.uid)||'— sem Pix —')+'</code></td>'+
+      ? '<div class="tabRola"><table class="mvTab"><thead><tr><th>Parceiro</th><th>Chave Pix</th><th class="num">A receber</th><th class="num">Já pago</th><th class="num">Total</th><th>Pagar</th></tr></thead><tbody>'+
+        linhas.map(x=>{
+          const pix = pixParceiro(x.uid);
+          let acao;
+          if(comPedido[x.uid])      acao = '<span class="pill warn">Saque pedido</span>';
+          else if(x.r.receber <= 0) acao = '<span class="icK">nada a pagar</span>';
+          else if(!pix)             acao = '<span class="icK">sem Pix</span>';
+          else acao = '<button type="button" class="btnMini ok" data-com="auto" data-uid="'+esc(x.uid)+'">Pagar via Pix</button>'+
+                      ' <button type="button" class="btnMini" data-com="manual" data-uid="'+esc(x.uid)+'">na mão</button>';
+          return '<tr><td><span class="celNome">'+esc(x.nome)+'</span></td>'+
+          '<td><code>'+esc(pix||'— sem Pix —')+'</code></td>'+
           '<td class="num"><b style="color:var(--mv-ok)">'+brl(x.r.receber)+'</b></td>'+
           '<td class="num">'+brl(x.r.pago)+'</td>'+
-          '<td class="num">'+brl(x.r.total)+'</td></tr>').join('')+
+          '<td class="num">'+brl(x.r.total)+'</td>'+
+          '<td>'+acao+'<div class="icMsg" id="cmsg_'+esc(x.uid)+'"></div></td></tr>';
+        }).join('')+
         '</tbody></table></div>'
       : '<div class="vazio">Nenhuma comissão ainda. Aparece aqui quando um indicado pagar.</div>';
   }
@@ -1602,6 +1616,76 @@ table.mvTab td b{font-weight:700}
       const j = await chamarSaque(id, 'manual', comp);
       if(msg){ msg.style.color = 'var(--mv-ok)'; msg.textContent = 'Registrado! ' + brl(j.valorPago) + ' quitado.'; }
       setTimeout(()=>{ carregarComissoes().then(pintarPendencias); }, 900);
+    }catch(e){ erro(e); }
+  });
+
+  /* Mesmo pagamento, mas disparado direto da LINHA do parceiro na tabela de
+     comissões — sem ele ter pedido saque. O robô abre o registro sozinho. */
+  async function chamarParceiro(uid, etapa){
+    const idToken = await auth.currentUser.getIdToken();
+    const r = await fetch('https://moviki-robo.vercel.app/api/pagar-saque', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({idToken, parceiroUid:uid, etapa:etapa})
+    });
+    const j = await r.json().catch(()=>({}));
+    if(!r.ok || !j.ok) throw new Error(j.mensagem || j.erro || 'falhou');
+    return j;
+  }
+
+  el('comBox').addEventListener('click', async ev=>{
+    const b = ev.target.closest ? ev.target.closest('[data-com]') : null;
+    if(!b) return;
+    const acao = b.getAttribute('data-com');
+    const uid  = b.getAttribute('data-uid');
+    const msg  = el('cmsg_'+uid);
+    const t    = b.textContent;
+    const erro = e => {
+      b.disabled = false; b.textContent = t;
+      if(msg){ msg.style.color = 'var(--mv-erro)'; msg.textContent = 'Não deu certo: ' + (e.message || 'tente de novo'); }
+    };
+
+    if(acao === 'manual'){
+      if(!confirm('Confirmar que você JÁ fez o Pix para ' + nomeParceiro(uid) + ' pelo banco?\n\nIsso apenas registra aqui — nenhum dinheiro sai agora.')) return;
+      b.disabled = true; b.textContent = 'Registrando…';
+      try{
+        const j = await chamarParceiro(uid, 'manual');
+        if(msg){ msg.style.color = 'var(--mv-ok)'; msg.textContent = 'Registrado! ' + brl(j.valorPago) + '.'; }
+        setTimeout(()=>{ carregarComissoes().then(pintarPendencias); }, 900);
+      }catch(e){ erro(e); }
+      return;
+    }
+
+    b.disabled = true; b.textContent = 'Conferindo…';
+    if(msg){ msg.style.color = 'var(--mv-txt-3)'; msg.textContent = 'Consultando a chave no Asaas…'; }
+    let d;
+    try{ d = await chamarParceiro(uid, 'conferir'); }
+    catch(e){ erro(e); return; }
+
+    const linhas = [
+      'Confirme antes de enviar o dinheiro:',
+      '',
+      'Parceiro: ' + nomeParceiro(uid),
+      'Valor: ' + brl(d.valor),
+      'Chave: ' + d.chave + '  (' + d.tipoChave + ')',
+      'Titular: ' + (d.titular || '(o banco não informou)'),
+      (d.documento ? 'Documento: ' + d.documento : ''),
+      (d.banco ? 'Banco: ' + d.banco : ''),
+      '',
+      'Enviar o Pix agora?'
+    ].filter(Boolean).join('\n');
+
+    if(!confirm(linhas)){
+      b.disabled = false; b.textContent = t;
+      if(msg) msg.textContent = '';
+      return;
+    }
+
+    b.disabled = true; b.textContent = 'Enviando…';
+    if(msg){ msg.style.color = 'var(--mv-txt-3)'; msg.textContent = 'Enviando o Pix…'; }
+    try{
+      const j = await chamarParceiro(uid, 'pagar');
+      if(msg){ msg.style.color = 'var(--mv-ok)'; msg.textContent = 'Pix enviado! ' + brl(j.valorPago) + '.'; }
+      setTimeout(()=>{ carregarComissoes().then(pintarPendencias); }, 1200);
     }catch(e){ erro(e); }
   });
 
