@@ -1014,6 +1014,20 @@ body.logado .card{background:transparent;border:none;box-shadow:none;padding:0;}
 body.naHome .voltarFim{display:none;}
 body.naHome #btnSalvar{margin-top:14px;}
 
+/* ---------- desempenho (dados reais do contador) ---------- */
+.mvDsPer{font-size:11.5px;font-weight:600;color:var(--mv-txt-3);border:1px solid var(--mv-linha);
+  border-radius:var(--mv-r-pill);padding:2px 9px;}
+.mvDsVazio{font-size:12.5px;color:var(--mv-txt-3);line-height:1.55;}
+.mvDsKpis{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
+.mvDsKpi{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:10px 11px;}
+.mvDsKpi b{display:block;font-size:20px;font-weight:800;letter-spacing:-.5px;color:var(--mv-ciano);line-height:1.15;}
+.mvDsKpi span{display:block;font-size:11px;color:var(--mv-txt-3);line-height:1.35;margin-top:2px;}
+.mvDsGraf{display:flex;align-items:flex-end;gap:3px;height:56px;padding:0 1px;margin-bottom:11px;}
+.mvDsGraf i{flex:1;min-width:0;border-radius:3px 3px 0 0;background:linear-gradient(180deg,var(--mv-ciano),rgba(0,102,255,.35));}
+.mvDsLinha{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12.5px;
+  color:var(--mv-txt-3);padding:7px 0;border-top:1px solid var(--mv-linha);}
+.mvDsLinha b{color:var(--mv-txt);font-weight:600;text-transform:capitalize;}
+
 /* ---------- barra inferior com ação rápida ---------- */
 .mvBar{align-items:end;}
 .mvBarFab{position:relative;color:var(--mv-ciano) !important;}
@@ -1674,6 +1688,8 @@ body.naHome #btnSalvar{margin-top:14px;}
       <div id="avisoP" class="aviso"></div>
       </div><!-- /mvMain -->
       <aside class="mvRight" id="mvRight">
+        <div class="mvRc mvDesemp" id="mvDesemp" style="display:none"></div>
+
         <div class="mvRc" id="mvRcLink" style="display:none">
           <div class="mvRcTit">Seu link pra divulgar</div>
           <a class="mvRcLink" id="mvRcLinkA" href="#" target="_blank" rel="noopener"></a>
@@ -2383,6 +2399,8 @@ body.naHome #btnSalvar{margin-top:14px;}
       const estrelaVazia='<svg class="empty" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.26-.36L12 2z"/></svg>';
       let starsHtml='';for(let i=1;i<=5;i++) starsHtml+=(i<=cheias?estrelaCheia:estrelaVazia);
       resumo.innerHTML='<div class="avalNota"><b>'+media.toFixed(1).replace('.',',')+'</b><span class="avalEst">'+starsHtml+'</span></div><div class="avalQtd">'+n+' avaliação'+(n>1?'ões':'')+'</div>';
+      /* regrava o resumo público: é ele que a página pública lê (1 leitura em vez de N) */
+      try{ await setDoc(doc(db,'negocios',usuarioAtual.uid,'resumo','avaliacoes'),{n:n,soma:soma},{merge:true}); }catch(_){}
       itens.sort((a,b)=>((b.criadoEm&&b.criadoEm.seconds||0)-(a.criadoEm&&a.criadoEm.seconds||0)));
       lista.innerHTML=itens.slice(0,50).map(a=>{const r=Number(a.nota||0);let e='';for(let i=1;i<=5;i++) e+=(i<=r?estrelaCheia:estrelaVazia);const nm=(a.nome||'Cliente').toString().slice(0,40).replace(/[<>]/g,'');const tx=(a.comentario||'').toString().slice(0,300).replace(/[<>]/g,'');return '<div class="avalItem"><div class="avalTopo"><span class="avalEst">'+e+'</span> <b>'+nm+'</b></div>'+(tx?'<div class="avalTxt">'+tx+'</div>':'')+'</div>';}).join('');
     }catch(e){resumo.innerHTML='⭐ As avaliações ainda não estão ativadas no servidor. Me avise que eu ativo (regras do Firebase).';}
@@ -2884,6 +2902,58 @@ body.naHome #btnSalvar{margin-top:14px;}
     box.classList.toggle('escondido', esconder);
   };
 
+  /* ---------------------------------------------------------------------------
+     DESEMPENHO — lê metricas/{uid}/dias/{AAAA-MM-DD} dos últimos 14 dias.
+     São 14 leituras por abertura do painel. Nada aqui é estimado: se o
+     contador não registrou, o número não aparece.
+     --------------------------------------------------------------------------- */
+  const DIAS_SEM=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  function _diaId(d){const z=n=>(n<10?'0':'')+n;return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate());}
+  async function carregarDesempenho(uid){
+    const box=el('mvDesemp'); if(!box)return;
+    const hoje=new Date(); const dias=[];
+    for(let i=13;i>=0;i--){const d=new Date(hoje);d.setDate(hoje.getDate()-i);dias.push(d);}
+    let docs=[];
+    try{
+      docs=await Promise.all(dias.map(d=>getDoc(doc(db,'metricas',uid,'dias',_diaId(d))).catch(()=>null)));
+    }catch(e){ box.style.display='none'; return; }
+    let views=0,whats=0,rota=0,card=0,total=0;
+    const porDia=[], porSemana=[0,0,0,0,0,0,0], faixas=new Array(12).fill(0);
+    docs.forEach((snap,i)=>{
+      const x=(snap&&snap.exists&&snap.exists())?(snap.data()||{}):{};
+      const v=Number(x.views||0);
+      views+=v; whats+=Number(x.whats||0); rota+=Number(x.rota||0); card+=Number(x.cardapio||0);
+      porDia.push({d:dias[i],v:v});
+      porSemana[dias[i].getDay()]+=v;
+      for(let b=0;b<12;b++)faixas[b]+=Number(x['b'+b]||0);
+      total+=v;
+    });
+    if(total===0){
+      box.innerHTML='<div class="mvRcTit">Seu desempenho</div>'+
+        '<p class="mvDsVazio">Ainda não há visitas registradas nos últimos 14 dias. '+
+        'Assim que alguém abrir a sua página, os números aparecem aqui.</p>';
+      box.style.display=''; return;
+    }
+    const maxV=Math.max.apply(null,porDia.map(x=>x.v))||1;
+    const barras=porDia.map(x=>'<i style="height:'+Math.max(4,Math.round(x.v/maxV*100))+'%" title="'+_diaId(x.d)+': '+x.v+'"></i>').join('');
+    let melhorD=0; for(let i=1;i<7;i++) if(porSemana[i]>porSemana[melhorD]) melhorD=i;
+    let melhorF=0; for(let i=1;i<12;i++) if(faixas[i]>faixas[melhorF]) melhorF=i;
+    const fh=melhorF*2, faixaTxt=fh+'h - '+(fh+2)+'h';
+    box.innerHTML=
+      '<div class="mvRcTit">Seu desempenho <span class="mvDsPer">14 dias</span></div>'+
+      '<div class="mvDsKpis">'+
+        '<div class="mvDsKpi"><b>'+views+'</b><span>visitas na sua página</span></div>'+
+        '<div class="mvDsKpi"><b>'+whats+'</b><span>chamaram no WhatsApp</span></div>'+
+        '<div class="mvDsKpi"><b>'+rota+'</b><span>pediram a rota</span></div>'+
+        '<div class="mvDsKpi"><b>'+card+'</b><span>abriram o cardápio</span></div>'+
+      '</div>'+
+      '<div class="mvDsGraf">'+barras+'</div>'+
+      '<div class="mvDsLinha"><span>Melhor dia</span><b>'+DIAS_SEM[melhorD]+'</b></div>'+
+      '<div class="mvDsLinha"><span>Horário de pico</span><b>'+faixaTxt+'</b></div>';
+    box.style.display='';
+  }
+  window.carregarDesempenho=carregarDesempenho;
+
   async function carregarDados(uid){
     try{
       const snap=await getDoc(doc(db,'negocios',uid));
@@ -2898,7 +2968,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         el('listaPromos').innerHTML='';(d.promocoes||[]).forEach(p=>adicionarPromo(p.titulo||'',p.detalhe||'',p.capa||''));vazioPromo();
         el('listaEventos').innerHTML='';(d.eventos||[]).forEach(e2=>adicionarEvento(e2.titulo||'',e2.quando||'',e2.detalhe||'',e2.capa||''));vazioEvento();
         galSet(d.fotos||[]);
-        try{if(window.mvResumo)window.mvResumo(d);}catch(_r){}if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}mostrarLogoPreview(d.markerLogo||'');if(d.nome&&d.slug&&d.lat!=null&&d.lng!=null){onbDone=true;try{localStorage.setItem('moviki_onb_'+uid,'1');}catch(_){}}
+        try{if(window.mvResumo)window.mvResumo(d);}catch(_r){}try{carregarDesempenho(uid);}catch(_r2){}if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}mostrarLogoPreview(d.markerLogo||'');if(d.nome&&d.slug&&d.lat!=null&&d.lng!=null){onbDone=true;try{localStorage.setItem('moviki_onb_'+uid,'1');}catch(_){}}
       }else{setStatus('fechado');vazioCat();vazioPromo();vazioEvento();galSet([]);mostrarLogoPreview('');try{if(window.mvResumo)window.mvResumo(null);}catch(_r){}}
     }catch(e){setStatus('fechado');vazioCat();vazioPromo();vazioEvento();}
   }
