@@ -502,7 +502,7 @@ input::placeholder{color:#6b7f96}
               <span class="sdBolha cinza"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.4"/></svg></span>
             </div>
             <button type="button" class="btnSaque" id="btnSaque" disabled>Solicitar saque</button>
-            <p class="cdSub" id="saqueNota">Saque mínimo de R$ 20,00. O pagamento cai na sua chave Pix cadastrada.</p>
+            <p class="cdSub" id="saqueNota">Saque mínimo de R$ 20,00. O Pix cai na sua chave cadastrada em até 1 dia útil (24h).</p>
             <div class="aviso" id="avisoSaque"></div>
           </div>
 
@@ -578,6 +578,7 @@ input::placeholder{color:#6b7f96}
               <li><b>1</b><span>A comissão nasce quando o seu indicado paga a mensalidade dele.</span></li>
               <li><b>2</b><span>Ela fica alguns dias em análise (aparece em "Aguardando liberação") e depois entra no seu saldo.</span></li>
               <li><b>3</b><span>Com R$ 20,00 ou mais disponíveis, você pede o saque e recebe na chave Pix cadastrada em "Meus dados".</span></li>
+              <li><b>4</b><span>Depois de pedir, o Pix é enviado em <b>até 1 dia útil (24h)</b>. Pedido no fim de semana ou feriado cai no próximo dia útil.</span></li>
             </ul>
           </div>
         </section>
@@ -833,6 +834,7 @@ input::placeholder{color:#6b7f96}
     <li><b>2</b><span>Ela fica alguns dias em <b>Aguardando liberação</b> — é o prazo de segurança contra estorno.</span></li>
     <li><b>3</b><span>Passado o prazo, o valor entra em <b>Disponível para saque</b>.</span></li>
     <li><b>4</b><span>Com R$ 20,00 ou mais, você pede o saque e recebe na chave Pix cadastrada em Meus dados.</span></li>
+    <li><b>5</b><span>Depois do pedido, o Pix é enviado em <b>até 1 dia útil (24h)</b> — fim de semana e feriado contam no próximo dia útil.</span></li>
   </ul>
   <button type="button" class="btn" data-fechar="ovSaldo">Entendi</button>
 </div></div>
@@ -844,7 +846,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-26-fase4';
+  window.MOVIKI_VERSAO = '2026-08-26-saque24h';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1140,7 +1142,7 @@ input::placeholder{color:#6b7f96}
     if(!b || !nota) return;
     if(saquePendente){
       b.disabled = true; b.textContent = 'Saque solicitado ✓';
-      nota.textContent = 'Você tem um saque em análise. Assim que for pago, aparece aqui.';
+      nota.textContent = 'Saque em processamento. O Pix é enviado em até 1 dia útil (24h) e aparece aqui como pago.';
     } else if(COM.aReceber < 20){
       b.disabled = true; b.textContent = 'Solicitar saque';
       nota.textContent = 'Saque mínimo de R$ 20,00. Continue divulgando para acumular.';
@@ -1157,6 +1159,7 @@ input::placeholder{color:#6b7f96}
       if(av) av.textContent = 'Cadastre sua chave Pix em "Meus dados" antes de sacar.';
       irSec('dados'); return;
     }
+    if(!confirm('Pedir saque de ' + brl(COM.aReceber) + ' na chave Pix ' + MEU.pix + '?\n\nO Pix é enviado em até 1 dia útil (24h). Pedido feito no fim de semana ou feriado é pago no próximo dia útil.')) return;
     const b = el('btnSaque'); b.disabled = true; b.textContent = 'Enviando…';
     try{
       await addDoc(collection(db,'saques'), {
@@ -1166,7 +1169,7 @@ input::placeholder{color:#6b7f96}
         pedidoEm: serverTimestamp()
       });
       saquePendente = true; atualizarBotaoSaque();
-      if(av){ av.className='aviso ok'; av.textContent='Saque solicitado! O pagamento é feito no seu Pix em até 5 dias úteis.'; }
+      if(av){ av.className='aviso ok'; av.textContent='Saque solicitado! O Pix cai na sua chave cadastrada em até 1 dia útil (24h). Pedidos feitos no fim de semana ou feriado são pagos no próximo dia útil.'; }
       carregarSaques();
     }catch(e){
       b.disabled = false; b.textContent = 'Solicitar saque';

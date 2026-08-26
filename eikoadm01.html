@@ -611,6 +611,7 @@ table.mvTab td b{font-weight:700}
         <section data-sec="comissoes" class="hide">
           <div class="cd">
             <div class="cdTopo"><div class="cdTit">Pedidos de saque</div><span class="cdChip" id="saqueChip">—</span></div>
+            <p class="cdSub">O parceiro vê "Pix em até 1 dia útil (24h)". <b>Pagar via Pix agora</b> manda o dinheiro pelo Asaas na hora (você confere o titular antes). Acima de R$ 500 o envio automático é bloqueado: pague pelo banco e use <b>Já paguei na mão</b>.</p>
             <div id="saqueBox"><div class="vazio">Carregando…</div></div>
           </div>
           <div class="cd">
@@ -911,7 +912,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-26-fase5';
+  window.MOVIKI_VERSAO = '2026-08-26-pixauto';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1497,9 +1498,12 @@ table.mvTab td b{font-weight:700}
           '<div><span class="icK">Valor</span><span class="icV"><b>'+brl(s.valorSolicitado)+'</b></span></div>'+
           '<div><span class="icK">Pix</span><span class="icV"><code>'+esc(saquePix[s.id]||'—')+'</code> <button type="button" class="btnMini" data-saque="pix" data-id="'+esc(s.id)+'">copiar</button></span></div>'+
         '</div>'+
-        '<div style="margin-bottom:11px"><span class="icK">Comprovante (opcional)</span>'+
+        '<div style="margin-bottom:11px"><span class="icK">Comprovante (só para pagamento na mão)</span>'+
           '<input type="text" id="comp_'+esc(s.id)+'" placeholder="ID ou observação do Pix" style="margin-top:5px"></div>'+
-        '<div class="icAcoes"><button type="button" class="btnMini ok" data-saque="pagar" data-id="'+esc(s.id)+'">Marcar como pago</button></div>'+
+        '<div class="icAcoes">'+
+          '<button type="button" class="btnMini ok" data-saque="auto" data-id="'+esc(s.id)+'">Pagar via Pix agora</button>'+
+          '<button type="button" class="btnMini" data-saque="pagar" data-id="'+esc(s.id)+'">Já paguei na mão</button>'+
+        '</div>'+
         '<div class="icMsg" id="smsg_'+esc(s.id)+'"></div>'+
       '</div>';
     }).join('') : '<div class="vazio">Nenhum saque solicitado no momento.</div>';
@@ -1511,8 +1515,9 @@ table.mvTab td b{font-weight:700}
     txt('kAPagar', brl(aPagar));
 
     el('comBox').innerHTML = linhas.length
-      ? '<div class="tabRola"><table class="mvTab"><thead><tr><th>Parceiro</th><th class="num">A receber</th><th class="num">Já pago</th><th class="num">Total</th></tr></thead><tbody>'+
+      ? '<div class="tabRola"><table class="mvTab"><thead><tr><th>Parceiro</th><th>Chave Pix</th><th class="num">A receber</th><th class="num">Já pago</th><th class="num">Total</th></tr></thead><tbody>'+
         linhas.map(x=>'<tr><td><span class="celNome">'+esc(x.nome)+'</span></td>'+
+          '<td><code>'+esc(pixParceiro(x.uid)||'— sem Pix —')+'</code></td>'+
           '<td class="num"><b style="color:var(--mv-ok)">'+brl(x.r.receber)+'</b></td>'+
           '<td class="num">'+brl(x.r.pago)+'</td>'+
           '<td class="num">'+brl(x.r.total)+'</td></tr>').join('')+
@@ -1520,38 +1525,96 @@ table.mvTab td b{font-weight:700}
       : '<div class="vazio">Nenhuma comissão ainda. Aparece aqui quando um indicado pagar.</div>';
   }
 
+  /* Chama o robô (api/pagar-saque). etapa: 'conferir' | 'pagar' | 'manual'. */
+  async function chamarSaque(id, etapa, comprovante){
+    const idToken = await auth.currentUser.getIdToken();
+    const r = await fetch('https://moviki-robo.vercel.app/api/pagar-saque', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({idToken, saqueId:id, etapa:etapa, comprovante:comprovante||''})
+    });
+    const j = await r.json().catch(()=>({}));
+    if(!r.ok || !j.ok) throw new Error(j.mensagem || j.erro || 'falhou');
+    return j;
+  }
+
   el('saqueBox').addEventListener('click', async ev=>{
     const b = ev.target.closest ? ev.target.closest('[data-saque]') : null;
     if(!b) return;
-    const id = b.getAttribute('data-id');
-    if(b.getAttribute('data-saque') === 'pix'){ copiar(saquePix[id]||''); feedback(b,'copiado'); return; }
-    if(!confirm('Confirmar que você JÁ fez o Pix para este parceiro?')) return;
+    const acao = b.getAttribute('data-saque');
+    const id   = b.getAttribute('data-id');
+
+    if(acao === 'pix'){ copiar(saquePix[id]||''); feedback(b,'copiado'); return; }
+
     const msg = el('smsg_'+id);
-    if(msg){ msg.style.color = 'var(--mv-txt-3)'; msg.textContent = 'Processando…'; }
-    b.disabled = true; const t = b.textContent; b.textContent = 'Processando…';
-    try{
-      const campo = el('comp_'+id);
-      const comp = ((campo && campo.value) || '').trim();
-      const idToken = await auth.currentUser.getIdToken();
-      const r = await fetch('https://moviki-robo.vercel.app/api/pagar-saque', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({idToken, saqueId:id, comprovante:comp})
-      });
-      const j = await r.json().catch(()=>({}));
-      if(!r.ok || !j.ok) throw new Error(j.erro || 'falhou');
-      if(msg){ msg.style.color = 'var(--mv-ok)'; msg.textContent = 'Pago! ' + brl(j.valorPago) + ' quitado.'; }
-      setTimeout(()=>{ carregarComissoes().then(pintarPendencias); }, 900);
-    }catch(e){
+    const campo = el('comp_'+id);
+    const comp = ((campo && campo.value) || '').trim();
+    const t = b.textContent;
+    const erro = e => {
       b.disabled = false; b.textContent = t;
-      if(msg){ msg.style.color = 'var(--mv-erro)'; msg.textContent = 'Não deu certo: ' + (e.message || 'tente de novo') + '.'; }
+      if(msg){ msg.style.color = 'var(--mv-erro)'; msg.textContent = 'Não deu certo: ' + (e.message || 'tente de novo'); }
+    };
+
+    /* ---------- PIX AUTOMÁTICO: confere o titular, depois manda ---------- */
+    if(acao === 'auto'){
+      b.disabled = true; b.textContent = 'Conferindo…';
+      if(msg){ msg.style.color = 'var(--mv-txt-3)'; msg.textContent = 'Consultando a chave Pix no Asaas…'; }
+      let d;
+      try{ d = await chamarSaque(id, 'conferir'); }
+      catch(e){ erro(e); return; }
+
+      const linhas = [
+        'Confirme antes de enviar o dinheiro:',
+        '',
+        'Valor: ' + brl(d.valor),
+        'Chave: ' + d.chave + '  (' + d.tipoChave + ')',
+        'Titular: ' + (d.titular || '(o banco não informou)'),
+        (d.documento ? 'Documento: ' + d.documento : ''),
+        (d.banco ? 'Banco: ' + d.banco : ''),
+        '',
+        'Enviar o Pix agora?'
+      ].filter(Boolean).join('\n');
+
+      if(!confirm(linhas)){
+        b.disabled = false; b.textContent = t;
+        if(msg){ msg.textContent = ''; }
+        return;
+      }
+
+      b.disabled = true; b.textContent = 'Enviando Pix…';
+      if(msg){ msg.style.color = 'var(--mv-txt-3)'; msg.textContent = 'Enviando o Pix…'; }
+      try{
+        const j = await chamarSaque(id, 'pagar', comp);
+        if(msg){
+          msg.style.color = 'var(--mv-ok)';
+          msg.textContent = j.jaPago ? 'Este saque já estava pago.'
+            : 'Pix enviado! ' + brl(j.valorPago) + ' para ' + (j.titular || 'o parceiro') + '.';
+        }
+        setTimeout(()=>{ carregarComissoes().then(pintarPendencias); }, 1200);
+      }catch(e){ erro(e); }
+      return;
     }
+
+    /* ---------- PAGAMENTO NA MÃO: só registra ---------- */
+    if(!confirm('Confirmar que você JÁ fez o Pix para este parceiro pelo banco?\n\nIsso apenas registra o pagamento aqui — nenhum dinheiro sai agora.')) return;
+    b.disabled = true; b.textContent = 'Registrando…';
+    if(msg){ msg.style.color = 'var(--mv-txt-3)'; msg.textContent = 'Registrando…'; }
+    try{
+      const j = await chamarSaque(id, 'manual', comp);
+      if(msg){ msg.style.color = 'var(--mv-ok)'; msg.textContent = 'Registrado! ' + brl(j.valorPago) + ' quitado.'; }
+      setTimeout(()=>{ carregarComissoes().then(pintarPendencias); }, 900);
+    }catch(e){ erro(e); }
   });
 
   el('btnCsvCom').addEventListener('click', ()=>{
     const r = resumoPorParceiro();
     baixarCSV('moviki-comissoes',
-      ['Parceiro','A receber','Já pago','Total'],
-      Object.keys(r).map(u=>[nomeParceiro(u), r[u].receber.toFixed(2).replace('.',','), r[u].pago.toFixed(2).replace('.',','), r[u].total.toFixed(2).replace('.',',')]));
+      ['Parceiro','Chave Pix','A receber','Já pago','Total'],
+      Object.keys(r)
+        .sort((a,b)=>r[b].receber - r[a].receber)
+        .map(u=>[nomeParceiro(u), pixParceiro(u) || 'SEM PIX CADASTRADO',
+                 r[u].receber.toFixed(2).replace('.',','),
+                 r[u].pago.toFixed(2).replace('.',','),
+                 r[u].total.toFixed(2).replace('.',',')]));
   });
 
   /* ==========================================================
