@@ -2,10 +2,12 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com; connect-src 'self' https://*.googleapis.com https://www.google.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://*.google-analytics.com; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <title>Seja um Parceiro Moviki</title>
+<script>window.MOVIKI_VERSAO='2026-08-27-ga4parceiro';</script>
+<script src="/mvmetrica.js"></script>
 <link rel="icon" href="favicon512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -34,6 +36,8 @@
   .linkPrev b{color:var(--ciano)}
   .slugMsg{font-size:12px;margin-top:5px;min-height:15px}
   .slugMsg.ok{color:var(--verde)} .slugMsg.erro{color:#ff9a9a}
+  .nota{margin-top:18px;background:rgba(255,176,32,.09);border:1px solid rgba(255,176,32,.32);border-radius:12px;padding:12px 14px;font-size:12.5px;color:#f0dcb4;line-height:1.55}
+  .nota a{color:var(--ciano)}
   .aceite{display:flex;gap:10px;align-items:flex-start;margin:18px 0 4px;font-size:13px;color:#cfe0f5;line-height:1.5}
   .aceite input{width:18px;height:18px;flex:0 0 auto;margin-top:2px}
   .aceite a{color:var(--ciano)}
@@ -57,7 +61,7 @@
 
     <div id="form">
       <h1>Seja um Parceiro Moviki</h1>
-      <p class="sub">Indique o Moviki e ganhe comissão recorrente. Preencha abaixo pra começar.</p>
+      <p class="sub">Indique o Moviki e receba <b>15% da mensalidade</b> de cada assinatura efetivamente paga que vier pelo seu link, enquanto o comerciante seguir pagando. Preencha abaixo pra começar.</p>
 
       <label for="nome">Nome completo</label>
       <input id="nome" type="text" placeholder="Seu nome" autocomplete="name" maxlength="80">
@@ -75,6 +79,13 @@
       <input id="slug" type="text" placeholder="ex.: joao" maxlength="40" autocomplete="off">
       <div class="linkPrev">Seu link: <b id="prev">moviki.com.br/p/…</b></div>
       <div class="slugMsg" id="slugMsg"></div>
+
+      <div class="nota">
+        Sem custo para participar. A comissão só existe sobre assinatura efetivamente paga:
+        plano grátis não gera comissão, e <b>o valor recebido pode ser zero</b>. Não há pagamento
+        por cadastrar pessoas nem por montar equipe. Condições completas no
+        <a href="regulamento.html" target="_blank" rel="noopener" data-ev="regulamento_nota">Regulamento</a>.
+      </div>
 
       <div class="aceite">
         <input id="aceite" type="checkbox">
@@ -121,6 +132,21 @@
   // pessoa que use o mesmo navegador depois.
   const _r = limpaSlug(new URLSearchParams(location.search).get('ref'));
   const refUpline = (_r.length >= 3) ? _r : '';
+
+  // ---- Medicao (GA4) ----
+  // O /pp/<apelido> carimba o destino com UTM e manda pra CA. Sem estas linhas o
+  // carimbo chegava aqui e morria: a pagina nao media nada.
+  const mvEv = (n,p) => { try{ window.mvEv && window.mvEv(n, p||{}); }catch(_){} };
+  mvEv('pagina_seja_parceiro', { tem_upline: refUpline ? 'sim' : 'nao' });
+  if (refUpline) mvEv('chegou_por_indicacao', { ref: refUpline, destino: 'seja_parceiro' });
+  let _iniciou = 0;
+  ['nome','email','senha','pix','slug'].forEach(id => {
+    const c = el(id);
+    if (c) c.addEventListener('focus', () => {
+      if (_iniciou) return; _iniciou = 1;
+      mvEv('parceiro_cadastro_iniciado', { tem_upline: refUpline ? 'sim' : 'nao' });
+    }, { once:true });
+  });
 
   let slugOk=false, checando=false, ultimo='';
   const slugInput=el('slug');
@@ -195,6 +221,9 @@
         }).catch(function(){});
       }catch(_){}
 
+      window.mvSignup && window.mvSignup('parceiro_email');
+      mvEv('parceiro_cadastrado', { tem_upline: refUpline ? 'sim' : 'nao', metodo: 'email' });
+
       el('form').style.display='none';
       el('sucesso').style.display='block';
       window.scrollTo({top:0,behavior:'smooth'});
@@ -208,7 +237,22 @@
       else erro('Não foi possível concluir agora. Confira os dados e tente de novo.');
     }
   };
-  function erro(m){ el('aviso').textContent=m; return false; }
+  function erro(m){
+    el('aviso').textContent=m;
+    mvEv('parceiro_cadastro_erro', { motivo: String(m).slice(0,80) });
+    return false;
+  }
+</script>
+<script>
+/* cta_click por delegacao: link novo ja nasce medido. */
+document.addEventListener('click', function(ev){
+  try{
+    var a = ev.target && ev.target.closest ? ev.target.closest('a[href]') : null;
+    if (!a || !window.mvEv) return;
+    var nome = a.getAttribute('data-ev') || (/regulamento/i.test(a.getAttribute('href')||'') ? 'regulamento' : (/parceiro\.html/i.test(a.getAttribute('href')||'') ? 'entrar_painel_parceiro' : ''));
+    if (nome) window.mvEv('cta_click', { cta: nome, pagina: 'seja_parceiro' });
+  }catch(e){}
+}, true);
 </script>
 <script>
 /* Ícone 3D com fallback pro emoji original (nada quebra se o PNG faltar). */
