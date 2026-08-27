@@ -1366,7 +1366,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         <div class="mpCaixa" style="max-width:560px">
           <button type="button" class="mpFechar" onclick="fecharMensagens()" aria-label="Fechar">✕</button>
           <div class="mpHead"><h2 class="mpTitulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;color:var(--ciano)"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.6 9.6 0 0 1-2.9-.4L3 21l1.6-4.5a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/></svg>Falar com o Moviki</h2></div>
-          <p class="idxLead">Canal direto com quem cuida do Moviki. Escreva aqui e a gente responde nesta mesma tela.</p>
+          <p class="idxLead">Canal direto com quem cuida do Moviki. Escreva aqui e a gente responde nesta mesma tela — o <b>Vik</b>, nosso assistente, responde as dúvidas rápidas na hora.</p>
 
           <div class="msgDocs escondido" id="msgBlocoDocs">
             <div class="msgDocsTit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/></svg>Mensagens do admin</div>
@@ -1375,7 +1375,7 @@ body.naHome #btnSalvar{margin-top:14px;}
           </div>
 
           <div id="msgLista"><div class="msgVazio">Carregando…</div></div>
-          <div class="msgPensando escondido" id="msgPensando"><i></i>Assistente Moviki está escrevendo…</div>
+          <div class="msgPensando escondido" id="msgPensando"><i></i>Vik está escrevendo…</div>
 
           <div class="msgEnviar">
             <textarea id="msgTexto" maxlength="2000" rows="1" placeholder="Escreva sua mensagem…"></textarea>
@@ -2120,7 +2120,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-08-27-botchat';
+  window.MOVIKI_VERSAO='2026-08-27-vik';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -2227,7 +2227,7 @@ body.naHome #btnSalvar{margin-top:14px;}
       }
       var txt=m.texto?msgEsc(m.texto).replace(/\n/g,'<br>'):'';
       var classe=eu?'msgEu':(ehBot?'msgBot':'msgEle');
-      var quem=eu?'você':(ehBot?'Assistente Moviki':'Moviki');
+      var quem=eu?'você':(ehBot?'Vik · assistente':'Moviki');
       return '<div class="msgBolha '+classe+'">'+txt+anexo+
         '<span class="msgQuando">'+quem+' · '+msgQuando(m.criadoEm)+'</span></div>';
     }).join('');

@@ -730,7 +730,7 @@ input::placeholder{color:#6b7f96}
             </div>
 
             <div class="pmLista" id="pmLista"><div class="pmVazio">Carregando…</div></div>
-            <div class="pmPensando hide" id="pmPensando"><i></i>Assistente Moviki está escrevendo…</div>
+            <div class="pmPensando hide" id="pmPensando"><i></i>Vik está escrevendo…</div>
 
             <div class="pmEnviar">
               <textarea id="pmTexto" maxlength="2000" rows="1" placeholder="Escreva sua mensagem…"></textarea>
@@ -924,7 +924,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-27-botchat';
+  window.MOVIKI_VERSAO = '2026-08-27-vik';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1115,7 +1115,7 @@ input::placeholder{color:#6b7f96}
       }
       const t = m.texto ? esc(m.texto).replace(/\n/g,'<br>') : '';
       const classe = eu ? 'pmEu' : (ehBot ? 'pmBot' : 'pmEle');
-      const quem = eu ? 'você' : (ehBot ? 'Assistente Moviki' : 'Moviki');
+      const quem = eu ? 'você' : (ehBot ? 'Vik · assistente' : 'Moviki');
       return '<div class="pmBolha '+classe+'">'+t+anexo+
         '<span class="pmQuando">'+quem+' · '+pmQuando(m.criadoEm)+'</span></div>';
     }).join('');

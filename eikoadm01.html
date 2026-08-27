@@ -769,12 +769,12 @@ table.mvTab td b{font-weight:700}
                   <div class="cvDocs" style="margin-top:10px">
                     <div class="cvDocsLinha">
                       <div class="cvDocsTxt">
-                        <b>Assistente de IA nesta conversa</b>
-                        <span id="cvBotEstado">Desligado: só gente responde aqui.</span>
+                        <b>Vik — assistente de IA nesta conversa</b>
+                        <span id="cvBotEstado">Desligado: o Vik não responde aqui.</span>
                       </div>
                       <label class="sw"><input type="checkbox" id="swBot" disabled><span class="swT"><span class="swB"></span></span></label>
                     </div>
-                    <div class="cdSub" style="margin-top:8px;line-height:1.5">Ligado, o assistente responde dúvida de produto, plano e comissão com os dados reais desta conta. Ele cala sozinho por 30 minutos toda vez que você escreve. <b>Deixe desligado em conversa de dinheiro, saque ou documento.</b></div>
+                    <div class="cdSub" style="margin-top:8px;line-height:1.5">Ligado, o Vik responde dúvida de produto, plano e comissão com os dados reais desta conta. Ele cala sozinho por 30 minutos toda vez que você escreve. <b>Deixe desligado em conversa de dinheiro, saque ou documento.</b></div>
                   </div>
 
                   <div class="cvThread" id="cvThread"></div>
@@ -1111,7 +1111,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-27-botchat';
+  window.MOVIKI_VERSAO = '2026-08-27-vik';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2664,7 +2664,7 @@ table.mvTab td b{font-weight:700}
     }
     box.innerHTML = lista.map(c => {
       const nova = cvNaoLida(c);
-      const quem = c.ultimoDe === 'admin' ? 'você: ' : (c.ultimoDe === 'bot' ? 'assistente: ' : '');
+      const quem = c.ultimoDe === 'admin' ? 'você: ' : (c.ultimoDe === 'bot' ? 'Vik: ' : '');
       return '<button type="button" class="cvIt'+(c.uid === CONV_ABERTA ? ' on' : '')+'" data-conv="'+esc(c.uid)+'">'+
         '<div class="cvItTopo">'+(nova ? '<span class="cvPt"></span>' : '')+
           '<span class="cvItNome">'+esc(cvNome(c))+'</span>'+
@@ -2727,7 +2727,7 @@ table.mvTab td b{font-weight:700}
       }
       const t = m.texto ? esc(m.texto).replace(/\n/g,'<br>') : '';
       const classe = eu ? 'cvEu' : (ehBot ? 'cvBot' : 'cvEle');
-      const quem = eu ? 'você' : (ehBot ? 'assistente (IA)' : 'lojista');
+      const quem = eu ? 'você' : (ehBot ? 'Vik (IA)' : 'lojista');
       return '<div class="cvBolha '+classe+'">'+t+anexo+
         '<span class="cvQuando">'+quem+' · '+dataBR(ms(m.criadoEm))+' '+cvQuando(m.criadoEm)+'</span></div>';
     }).join('');
@@ -2753,8 +2753,8 @@ table.mvTab td b{font-weight:700}
     const sw = el('swBot');
     if(sw){ sw.checked = on; sw.disabled = false; }
     txt('cvBotEstado', on
-      ? 'Ligado: o assistente responde as mensagens desta pessoa.'
-      : 'Desligado: só gente responde aqui.');
+      ? 'Ligado: o Vik responde as mensagens desta pessoa.'
+      : 'Desligado: o Vik não responde aqui.');
   }
 
   async function marcarVistoDono(uid){
@@ -2944,8 +2944,8 @@ table.mvTab td b{font-weight:700}
       await setDoc(doc(db,'conversas',CONV_ABERTA), base, {merge:true});
       cvPintarBot(Object.assign({}, c || {uid:CONV_ABERTA}, {botLigado: !!ligado}));
       av.textContent = ligado
-        ? 'Assistente ligado nesta conversa. A próxima mensagem dela já vai ser respondida por ele.'
-        : 'Assistente desligado. Só gente responde aqui agora.';
+        ? 'Vik ligado nesta conversa. A próxima mensagem dela já vai ser respondida por ele.'
+        : 'Vik desligado. Só gente responde aqui agora.';
     }catch(e){
       av.style.color = 'var(--mv-erro)';
       av.textContent = 'Não consegui salvar. Confira se as regras v14 estão publicadas.';
