@@ -686,7 +686,7 @@ table.mvTab td b{font-weight:700}
                 <tbody id="nlBody"><tr><td colspan="5" class="vazio">Carregando…</td></tr></tbody>
               </table>
             </div>
-            <div class="cdSub" style="margin-top:12px">Antes do primeiro disparo de campanha é obrigatório ter a página <b>descadastro.html</b> no ar — a regra que permite marcar <code>ativo:false</code> já está publicada.</div>
+            <div class="cdSub" style="margin-top:12px">A página <b>descadastro.html</b> está no ar e a regra de <code>ativo:false</code> publicada — pode disparar campanha. O CSV traz uma coluna <b>Link de descadastro</b> com o link individual de cada pessoa: é esse link que tem que ir em todo e-mail enviado. Dispare só para quem está como <b>ativo</b>.</div>
           </div>
         </section>
 
@@ -922,7 +922,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-26-pixauto5';
+  window.MOVIKI_VERSAO = '2026-08-27-descad';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1818,9 +1818,11 @@ table.mvTab td b{font-weight:700}
   el('btnCsvNl').addEventListener('click', ()=>{
     if(!NL.length){ feedback(el('btnCsvNl'),'Lista vazia'); return; }
     baixarCSV('moviki-newsletter',
-      ['E-mail','Origem','Situação','Consentimento','Texto do consentimento','Entrou em'],
+      ['E-mail','Origem','Situação','Consentimento','Texto do consentimento','Entrou em','Link de descadastro'],
       NL.map(x=>[x.email||'', x.origem||'', (x.ativo !== false ? 'ativo' : 'descadastrado'),
-                 (x.consentimento === true ? 'sim' : 'não'), x.consentimentoTexto||'', dataBR(ms(x.criadoEm))]));
+                 (x.consentimento === true ? 'sim' : 'não'), x.consentimentoTexto||'', dataBR(ms(x.criadoEm)),
+                 'https://moviki.com.br/descadastro.html?id=' + encodeURIComponent(x.id||'') +
+                 '&e=' + encodeURIComponent(x.email||'')]));
   });
   el('nlBody').addEventListener('click', async ev=>{
     const b = ev.target.closest ? ev.target.closest('[data-nl]') : null;
