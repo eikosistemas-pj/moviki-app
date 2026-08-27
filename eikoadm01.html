@@ -372,6 +372,41 @@ table.mvTab td b{font-weight:700}
 @media(min-width:1000px){.cvGrade{grid-template-columns:320px minmax(0,1fr);align-items:start}}
 .cvGrade > div{min-width:0}
 #cvBusca{min-width:0;flex:1 1 120px}
+.cvPick{border:1px solid var(--mv-ciano);background:rgba(0,212,255,.06);border-radius:12px;padding:12px;margin-bottom:10px}
+.cvPickTopo{display:flex;align-items:flex-start;gap:10px;margin-bottom:9px}
+.cvPickTopo > div{flex:1;min-width:0}
+.cvPickTopo b{display:block;font-size:14px}
+.cvPickTopo span{display:block;font-size:12.5px;color:var(--mv-txt-3);margin-top:2px;line-height:1.45}
+.cvPickCampo{width:100%;box-sizing:border-box;padding:10px 11px;border-radius:10px;border:1px solid var(--mv-linha);
+  background:var(--mv-surf-2);color:var(--mv-txt);font-family:inherit;font-size:14px}
+.cvPickFiltros{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0}
+.cvPickFiltros .btnMini.on{border-color:var(--mv-ciano);color:var(--mv-ciano)}
+#cvPickLista{max-height:44vh}
+.cvTag{flex:0 0 auto;font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;
+  padding:2px 7px;border-radius:var(--mv-r-pill);border:1px solid var(--mv-linha);color:var(--mv-txt-3)}
+.cvTag.loj{border-color:rgba(0,212,255,.5);color:#7fe3ff}
+.cvTag.par{border-color:rgba(126,230,160,.5);color:#7ee6a0}
+.cvBarra{margin-top:8px;height:6px;border-radius:99px;background:var(--mv-surf-2);overflow:hidden;border:1px solid var(--mv-linha)}
+.cvBarra i{display:block;height:100%;width:0;background:var(--mv-grad);transition:width .18s}
+.cvSubindo{display:flex;align-items:center;gap:9px;margin-top:8px;font-size:12.5px;color:var(--mv-txt-2)}
+.cvSubindo b{font-weight:700}
+.cvMini{display:block;max-width:220px;max-height:170px;border-radius:10px;margin-top:7px;border:1px solid var(--mv-linha)}
+.cvApagar{margin-top:6px;background:none;border:none;padding:0;font:inherit;font-size:11.5px;
+  color:var(--mv-txt-3);cursor:pointer;text-decoration:underline}
+.cvApagar:hover{color:var(--mv-erro)}
+.mvToast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(78px + env(safe-area-inset-bottom));z-index:400;
+  max-width:min(460px,calc(100vw - 28px));display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:14px;
+  background:var(--mv-surf);border:1px solid var(--mv-ciano);box-shadow:0 18px 46px rgba(0,0,0,.55);cursor:pointer;
+  animation:toastEntra .22s ease-out}
+@media(min-width:1000px){.mvToast{bottom:24px;left:auto;right:24px;transform:none}}
+@keyframes toastEntra{from{opacity:0;transform:translateY(14px)}to{opacity:1}}
+@media(min-width:1000px){@keyframes toastEntra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}}
+.mvToast .tsIco{flex:0 0 auto;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,212,255,.14);color:var(--mv-ciano)}
+.mvToast .tsIco svg{width:17px;height:17px}
+.mvToast .tsTxt{flex:1;min-width:0}
+.mvToast .tsQuem{font-size:13.5px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mvToast .tsMsg{font-size:12.5px;color:var(--mv-txt-3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cvLista{max-height:60vh;overflow:auto;display:flex;flex-direction:column;gap:7px}
 .cvIt{display:block;width:100%;text-align:left;background:var(--mv-surf-2);border:1px solid var(--mv-linha);
   border-radius:12px;padding:11px 12px;cursor:pointer;font-family:inherit;color:var(--mv-txt);transition:.15s}
@@ -682,9 +717,27 @@ table.mvTab td b{font-weight:700}
 
               <div>
                 <div class="ferr" style="margin-bottom:10px">
-                  <input type="search" id="cvBusca" placeholder="Buscar negócio…" autocomplete="off">
+                  <input type="search" id="cvBusca" placeholder="Buscar por nome, apelido ou e-mail…" autocomplete="off">
                   <button type="button" class="btnMini" id="btnCvNova">Nova conversa</button>
                 </div>
+
+                <div class="cvPick hide" id="cvPicker">
+                  <div class="cvPickTopo">
+                    <div>
+                      <b>Falar com quem?</b>
+                      <span>Busque por nome do negócio, apelido do link ou e-mail.</span>
+                    </div>
+                    <button type="button" class="btnMini" id="btnCvPickFechar">Cancelar</button>
+                  </div>
+                  <input type="search" id="cvPickBusca" class="cvPickCampo" placeholder="nome, apelido ou e-mail…" autocomplete="off">
+                  <div class="cvPickFiltros">
+                    <button type="button" class="btnMini on" data-pick="todos">Todos</button>
+                    <button type="button" class="btnMini" data-pick="lojista">Lojistas</button>
+                    <button type="button" class="btnMini" data-pick="parceiro">Parceiros</button>
+                  </div>
+                  <div class="cvLista" id="cvPickLista"></div>
+                </div>
+
                 <div class="cvLista" id="cvLista"><div class="cvVazio">Carregando…</div></div>
               </div>
 
@@ -716,7 +769,14 @@ table.mvTab td b{font-weight:700}
                     <button type="button" class="cvIco" id="btnCvClipe" aria-label="Anexar documento" title="Anexar documento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.4 11.05 12.25 20.2a5.5 5.5 0 0 1-7.78-7.78l9.2-9.2a3.67 3.67 0 1 1 5.18 5.19l-9.2 9.19a1.83 1.83 0 1 1-2.6-2.59l8.5-8.49"/></svg></button>
                     <button type="button" class="cvIco" id="btnCvEnviar" aria-label="Enviar" title="Enviar" style="background:var(--mv-ciano);border-color:var(--mv-ciano);color:#02131f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 20 16-8L4 4l3 8z"/><path d="M7 12h13"/></svg></button>
                   </div>
-                  <input type="file" id="cvArquivo" style="display:none">
+                  <input type="file" id="cvArquivo" style="display:none" accept=".pdf,.jpg,.jpeg,.png,.webp,.gif,.doc,.docx,.xls,.xlsx,.csv,.txt,application/pdf,image/jpeg,image/png,image/webp,image/gif">
+                  <div class="cvSubindo hide" id="cvSubindo">
+                    <div style="flex:1;min-width:0">
+                      <div><b id="cvSubNome">arquivo</b> <span id="cvSubPct">0%</span></div>
+                      <div class="cvBarra"><i id="cvSubBarra"></i></div>
+                    </div>
+                    <button type="button" class="btnMini" id="btnCvCancelarUp">Cancelar</button>
+                  </div>
                   <div id="cvAviso" style="font-size:12.5px;min-height:16px;margin:6px 2px 0"></div>
                 </div>
               </div>
@@ -1014,12 +1074,12 @@ table.mvTab td b{font-weight:700}
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, onSnapshot, serverTimestamp, query, orderBy, limit, documentId } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getStorage, ref as stRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, onSnapshot, serverTimestamp, query, orderBy, limit, documentId } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref as stRef, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-27-mensagens';
+  window.MOVIKI_VERSAO = '2026-08-27-mensagens2';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2224,6 +2284,8 @@ table.mvTab td b{font-weight:700}
     const pp = PARC.filter(p=>p.status === 'pendente').length;
     const ps = SAQ.filter(s=>s.status === 'solicitado').length;
     const pe = EXC.length;
+    const pm = CONVS.filter(cvNaoLida).length;
+    if(pm) itens.push({n:pm, t:(pm === 1 ? '1 mensagem nova de lojista' : pm + ' mensagens novas de lojistas'), ir:'mensagens'});
     if(pp) itens.push({n:pp, t:(pp === 1 ? '1 parceiro esperando aprovação' : pp + ' parceiros esperando aprovação'), ir:'parceiros'});
     if(ps) itens.push({n:ps, t:(ps === 1 ? '1 saque pedido' : ps + ' saques pedidos'), ir:'comissoes'});
     if(pe) itens.push({n:pe, t:(pe === 1 ? '1 pedido de exclusão de conta' : pe + ' pedidos de exclusão de conta'), ir:'exclusoes'});
@@ -2290,6 +2352,11 @@ table.mvTab td b{font-weight:700}
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'application/vnd.ms-excel',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+  // O iPhone manda foto em HEIC/HEIF por padrão. O arquivo SOBE, mas nem o
+  // Chrome nem o Windows abrem — vira anexo morto. Recusa na entrada e explica.
+  const CV_IMG_RUIM = ['image/heic','image/heif','image/heic-sequence','image/heif-sequence'];
+  function cvImagem(t){ return String(t||'').indexOf('image/') === 0 && !CV_IMG_RUIM.includes(t); }
+  let CV_UPLOAD = null;   // tarefa de upload em andamento (para cancelar)
 
   function cvQuando(t){
     const m = ms(t); if(!m) return '—';
@@ -2311,10 +2378,109 @@ table.mvTab td b{font-weight:700}
   // O nome do negócio muda depois que a conversa nasce, então a lista mostra
   // sempre o nome ATUAL de negocios/{uid}; o campo 'nome' da conversa é só o
   // último recurso (negócio apagado, ou lista de negócios que não carregou).
-  function cvNome(c){
-    const n = NEG.find(x => x.uid === c.uid);
-    return (n && n.nome) || c.nome || '(sem nome)';
+  // Uma pessoa pode ser lojista, parceiro, ou os dois na MESMA conta (mesmo uid)
+  // — e aí é uma conversa só, vista dos dois painéis. Por isso o destinatário é
+  // sempre procurado nas duas listas.
+  function cvQuemE(uid){
+    const n = NEG.find(x => x.uid === uid);
+    const p = PARC.find(x => x.uid === uid);
+    const tipos = [];
+    if(n) tipos.push('lojista');
+    if(p) tipos.push('parceiro');
+    return {
+      uid, negocio:n||null, parceiro:p||null,
+      nome: (n && n.nome) || (p && p.nome) || '',
+      tipos,
+      email: (p && p.email) || '',
+      apelido: (n && n.slug) || (p && p.slug) || ''
+    };
   }
+  function cvNome(c){
+    const q = cvQuemE(c.uid);
+    return q.nome || c.nome || '(sem nome)';
+  }
+  function cvRotuloTipo(q){
+    if(q.tipos.length === 2) return 'Lojista e parceiro';
+    if(q.tipos[0] === 'parceiro') return 'Parceiro';
+    if(q.tipos[0] === 'lojista') return PLANOS[PLANO_DE[q.uid]||'basico'].n;
+    return 'Conta';
+  }
+  // Um texto só com tudo que dá pra buscar: nome, apelido do link, e-mail,
+  // arroba do parceiro, segmento e endereço do negócio.
+  function cvAlvoBusca(uid, extra){
+    const q = cvQuemE(uid);
+    return [q.nome, q.apelido, q.email, (q.parceiro && q.parceiro.arroba) || '',
+            (q.negocio && q.negocio.segmento) || '', (q.negocio && q.negocio.endereco) || '',
+            extra || ''].join(' ').toLowerCase();
+  }
+  /* ==========================================================
+     AVISO DE MENSAGEM NOVA — "chat central"
+     O painel do dono fica aberto o dia todo. Antes, mensagem nova só aparecia
+     como um número pequeno na lateral: quem estava em outra seção não via.
+     Agora: título da aba, item no sino, aviso flutuante e um bipe curto.
+     ========================================================== */
+  const TITULO_BASE = document.title;
+  let CV_MARCAS = null;          // uid -> carimbo da última mensagem já vista na tela
+  let CV_PRIMEIRA_CARGA = true;  // a 1ª leitura não avisa nada (senão apita ao abrir)
+  let CV_TOAST_TIMER = null;
+
+  function cvBipe(){
+    try{
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return;
+      const ctx = new AC();
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = 880;
+      g.gain.setValueAtTime(0.0001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.09, ctx.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.28);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(); o.stop(ctx.currentTime + 0.3);
+      setTimeout(()=>{ try{ ctx.close(); }catch(e){} }, 600);
+    }catch(e){}
+  }
+
+  function cvToast(quem, previa, uid){
+    const velho = el('mvToast'); if(velho) velho.remove();
+    if(CV_TOAST_TIMER) clearTimeout(CV_TOAST_TIMER);
+    const d = document.createElement('div');
+    d.className = 'mvToast'; d.id = 'mvToast';
+    d.innerHTML = '<span class="tsIco"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.6 9.6 0 0 1-2.9-.4L3 21l1.6-4.5a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/></svg></span>'+
+      '<span class="tsTxt"><span class="tsQuem">'+esc(quem)+'</span><span class="tsMsg">'+esc(previa || 'mandou um arquivo')+'</span></span>';
+    d.addEventListener('click', ()=>{ d.remove(); irSec('mensagens'); abrirConversa(uid); });
+    document.body.appendChild(d);
+    CV_TOAST_TIMER = setTimeout(()=>{ try{ d.remove(); }catch(e){} }, 9000);
+  }
+
+  function cvPintarTitulo(q){
+    document.title = q > 0 ? '(' + q + ') ' + TITULO_BASE : TITULO_BASE;
+  }
+
+  // Roda a cada chegada do onSnapshot de conversas. Só avisa quando o carimbo
+  // da conversa ANDOU desde a última vez e quem falou foi o lojista.
+  function cvConferirNovidade(){
+    const marcasNovas = new Map();
+    const avisar = [];
+    CONVS.forEach(c => {
+      const carimbo = ms(c.ultimaEm);
+      marcasNovas.set(c.uid, carimbo);
+      if(CV_PRIMEIRA_CARGA || !CV_MARCAS) return;
+      const antes = CV_MARCAS.get(c.uid) || 0;
+      if(c.ultimoDe === 'lojista' && carimbo > antes) avisar.push(c);
+    });
+    CV_MARCAS = marcasNovas;
+    if(CV_PRIMEIRA_CARGA){ CV_PRIMEIRA_CARGA = false; return; }
+    if(!avisar.length) return;
+
+    // Conversa aberta na tela, e a seção Mensagens visível: não precisa gritar.
+    const secVisivel = !document.querySelector('section[data-sec="mensagens"]').classList.contains('hide');
+    const so = avisar.filter(c => !(secVisivel && c.uid === CONV_ABERTA));
+    if(!so.length) return;
+    const c = so[so.length - 1];
+    cvToast(cvNome(c), c.ultimaMsg, c.uid);
+    cvBipe();
+  }
+
   function cvPintarBadge(){
     const q = CONVS.filter(cvNaoLida).length;
     ['badMsg','badMsgM'].forEach(id=>{
@@ -2322,6 +2488,8 @@ table.mvTab td b{font-weight:700}
       n.textContent = q;
       n.classList.toggle('hide', q === 0);
     });
+    cvPintarTitulo(q);
+    try{ pintarPendencias(); }catch(e){}
   }
 
   function ouvirConversas(){
@@ -2332,6 +2500,7 @@ table.mvTab td b{font-weight:700}
         qs => {
           CONVS = []; qs.forEach(d => CONVS.push(Object.assign({uid:d.id}, d.data())));
           hide('cvErroRegra');
+          cvConferirNovidade();
           cvPintarBadge(); pintarConversas();
         },
         () => { show('cvErroRegra'); el('cvLista').innerHTML = '<div class="cvVazio">Não consegui ler as conversas.</div>'; }
@@ -2342,7 +2511,7 @@ table.mvTab td b{font-weight:700}
   function pintarConversas(){
     const box = el('cvLista'); if(!box) return;
     const filtro = ((el('cvBusca')||{}).value||'').trim().toLowerCase();
-    const lista = CONVS.filter(c => !filtro || cvNome(c).toLowerCase().includes(filtro) || (c.email||'').toLowerCase().includes(filtro));
+    const lista = CONVS.filter(c => !filtro || cvAlvoBusca(c.uid, (c.nome||'')+' '+(c.email||'')).includes(filtro));
     txt('cvChip', CONVS.length + (CONVS.length === 1 ? ' conversa' : ' conversas'));
     if(!lista.length){
       box.innerHTML = '<div class="cvVazio">'+(CONVS.length ? 'Nenhuma conversa com esse nome.' : 'Ninguém escreveu ainda. Use <b>Nova conversa</b> para começar.')+'</div>';
@@ -2367,7 +2536,8 @@ table.mvTab td b{font-weight:700}
     hide('cvSemSelecao'); show('cvAberta');
     const c = CONVS.find(x => x.uid === uid) || {uid};
     txt('cvNome', cvNome(c));
-    txt('cvSub', (c.email || '—') + ' · ' + (PLANOS[PLANO_DE[uid]||'basico'].n));
+    const q = cvQuemE(uid);
+    txt('cvSub', [cvRotuloTipo(q), q.apelido ? '/'+q.apelido : '', q.email || c.email || ''].filter(Boolean).join(' · '));
     el('cvThread').innerHTML = '<div class="cvVazio">Carregando…</div>';
     el('cvAviso').textContent = '';
     cvPintarDocs(c);
@@ -2376,7 +2546,7 @@ table.mvTab td b{font-weight:700}
     try{ if(PARA_MSGS) PARA_MSGS(); }catch(e){}
     PARA_MSGS = onSnapshot(
       query(collection(db,'conversas',uid,'mensagens'), orderBy('criadoEm','asc'), limit(200)),
-      qs => { CONV_MSGS = []; qs.forEach(d => CONV_MSGS.push(d.data())); pintarThread(); },
+      qs => { CONV_MSGS = []; qs.forEach(d => CONV_MSGS.push(Object.assign({id:d.id}, d.data()))); pintarThread(); },
       () => { el('cvThread').innerHTML = '<div class="cvVazio">Não consegui ler as mensagens.</div>'; }
     );
     marcarVistoDono(uid);
@@ -2395,10 +2565,20 @@ table.mvTab td b{font-weight:700}
       const eu = (m.de === 'admin');
       let anexo = '';
       if(m.arquivoUrl){
-        anexo = '<a class="cvAnexo" href="'+esc(m.arquivoUrl)+'" target="_blank" rel="noopener">'+
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/></svg>'+
-          '<span style="min-width:0"><span style="display:block;font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(m.arquivoNome||'documento')+'</span>'+
-          '<span style="font-size:11px;color:var(--mv-txt-3)">'+cvTam(m.arquivoTam)+' · abrir</span></span></a>';
+        // Imagem vira miniatura clicável; o resto vira cartão de documento.
+        // Antes tudo era cartão, e três fotos seguidas ficavam indistinguíveis.
+        const ehImg = cvImagem(m.arquivoTipo);
+        anexo = ehImg
+          ? '<a href="'+esc(m.arquivoUrl)+'" target="_blank" rel="noopener">'+
+            '<img class="cvMini" src="'+esc(m.arquivoUrl)+'" alt="'+esc(m.arquivoNome||'imagem')+'" loading="lazy">'+
+            '</a><div style="font-size:11px;color:var(--mv-txt-3);margin-top:4px">'+esc(m.arquivoNome||'imagem')+' · '+cvTam(m.arquivoTam)+'</div>'
+          : '<a class="cvAnexo" href="'+esc(m.arquivoUrl)+'" target="_blank" rel="noopener">'+
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/></svg>'+
+            '<span style="min-width:0"><span style="display:block;font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(m.arquivoNome||'documento')+'</span>'+
+            '<span style="font-size:11px;color:var(--mv-txt-3)">'+cvTam(m.arquivoTam)+' · abrir</span></span></a>';
+        if(m.id){
+          anexo += '<button type="button" class="cvApagar" onclick="cvApagarMsg(\''+esc(m.id)+'\',\''+esc(m.arquivoUrl)+'\',\''+esc((m.arquivoNome||'').replace(/'/g,''))+'\')">apagar este anexo</button>';
+        }
       }
       const t = m.texto ? esc(m.texto).replace(/\n/g,'<br>') : '';
       return '<div class="cvBolha '+(eu ? 'cvEu' : 'cvEle')+'">'+t+anexo+
@@ -2451,7 +2631,7 @@ table.mvTab td b{font-weight:700}
     const av = el('cvAviso'); av.style.color = 'var(--mv-erro)';
     const t = el('cvTexto').value.trim();
     if(!t){ av.textContent = 'Escreva alguma coisa antes de enviar.'; return; }
-    CONV_ENVIANDO = true; el('btnCvEnviar').disabled = true;
+    cvTravar(true);
     av.style.color = 'var(--mv-txt-3)'; av.textContent = 'Enviando…';
     try{
       await cvGravarResumo(CONV_ABERTA, t);
@@ -2461,24 +2641,81 @@ table.mvTab td b{font-weight:700}
       av.style.color = 'var(--mv-erro)';
       av.textContent = 'Não consegui enviar. Confira se as regras v13 estão publicadas.';
     }
-    CONV_ENVIANDO = false; el('btnCvEnviar').disabled = false;
+    cvTravar(false);
+  }
+
+  // Caminho do arquivo dentro do Storage, extraído da própria URL de download.
+  // Guardar o caminho num campo novo obrigaria a mexer no hasOnly da regra v13 —
+  // e a URL já carrega a informação.
+  function cvCaminhoDoArquivo(url){
+    try{
+      const dep = String(url).split('/o/')[1];
+      if(!dep) return '';
+      return decodeURIComponent(dep.split('?')[0]);
+    }catch(e){ return ''; }
+  }
+
+  function cvMostrarProgresso(nome, pct){
+    show('cvSubindo');
+    txt('cvSubNome', nome);
+    txt('cvSubPct', Math.round(pct) + '%');
+    const b = el('cvSubBarra'); if(b) b.style.width = Math.round(pct) + '%';
+  }
+  function cvEsconderProgresso(){
+    hide('cvSubindo');
+    const b = el('cvSubBarra'); if(b) b.style.width = '0%';
+    CV_UPLOAD = null;
+  }
+  function cvTravar(travado){
+    CONV_ENVIANDO = travado;
+    ['btnCvEnviar','btnCvClipe'].forEach(id => { const n = el(id); if(n) n.disabled = travado; });
   }
 
   async function cvAnexar(inp){
     const av = el('cvAviso'); av.style.color = 'var(--mv-erro)';
     const f = inp && inp.files && inp.files[0];
-    if(!f || !CONV_ABERTA) return;
-    if(f.size > CV_TETO){ av.textContent = 'Arquivo muito grande. O limite é 10 MB.'; return; }
-    const tipo = f.type || 'application/octet-stream';
-    if(tipo.indexOf('image/') !== 0 && !CV_TIPOS.includes(tipo)){
-      av.textContent = 'Tipo não aceito. Envie PDF, imagem, Word, Excel ou texto.'; return;
+    if(!f || !CONV_ABERTA){ try{ inp.value=''; }catch(_){} return; }
+
+    // Trava de clique repetido: sem isso, tocar de novo no anexo enquanto o
+    // primeiro ainda sobe cria uma cópia do MESMO arquivo. Foi o que encheu a
+    // primeira conversa de teste de duplicatas.
+    if(CONV_ENVIANDO){
+      av.textContent = 'Calma — já tem um arquivo subindo. Espere a barra terminar.';
+      try{ inp.value=''; }catch(_){}
+      return;
     }
-    CONV_ENVIANDO = true; el('btnCvEnviar').disabled = true;
-    av.style.color = 'var(--mv-txt-3)'; av.textContent = 'Enviando o documento…';
+
+    const tipo = f.type || 'application/octet-stream';
+    if(CV_IMG_RUIM.includes(tipo) || /\.(heic|heif)$/i.test(f.name||'')){
+      av.textContent = 'Foto em HEIC/HEIF (formato do iPhone) não abre no navegador. No iPhone: Ajustes › Câmera › Formatos › "Mais compatível" — ou mande como PDF.';
+      try{ inp.value=''; }catch(_){}
+      return;
+    }
+    if(f.size > CV_TETO){ av.textContent = 'Arquivo muito grande. O limite é 10 MB.'; try{ inp.value=''; }catch(_){} return; }
+    if(!cvImagem(tipo) && !CV_TIPOS.includes(tipo)){
+      av.textContent = 'Tipo não aceito. Envie PDF, imagem (JPG/PNG), Word, Excel ou texto.';
+      try{ inp.value=''; }catch(_){} return;
+    }
+
+    // Mesmo arquivo (nome + tamanho) já nesta conversa: pergunta antes.
+    const repetido = CONV_MSGS.some(m => m.arquivoNome === f.name && Number(m.arquivoTam) === f.size);
+    if(repetido && !confirm('"'+f.name+'" já está nesta conversa. Enviar de novo mesmo assim?')){
+      try{ inp.value=''; }catch(_){} return;
+    }
+
+    cvTravar(true);
+    av.style.color = 'var(--mv-txt-3)'; av.textContent = '';
+    const nome = String(f.name||'documento').slice(-80).replace(/[^\w.\- ]+/g,'_');
+    cvMostrarProgresso(nome, 0);
     try{
-      const nome = String(f.name||'documento').slice(-80).replace(/[^\w.\- ]+/g,'_');
       const r = stRef(storage, 'documentos/'+CONV_ABERTA+'/'+Date.now()+'_'+nome);
-      await uploadBytes(r, f, {contentType: tipo});
+      const tarefa = uploadBytesResumable(r, f, {contentType: tipo});
+      CV_UPLOAD = tarefa;
+      await new Promise((ok, erro) => {
+        tarefa.on('state_changed',
+          snap => cvMostrarProgresso(nome, snap.totalBytes ? (snap.bytesTransferred/snap.totalBytes)*100 : 0),
+          erro, ok);
+      });
       const url = await getDownloadURL(r);
       const legenda = el('cvTexto').value.trim();
       await cvGravarResumo(CONV_ABERTA, legenda || ('Documento: '+nome));
@@ -2488,11 +2725,33 @@ table.mvTab td b{font-weight:700}
       el('cvTexto').value = ''; av.textContent = '';
     }catch(e){
       av.style.color = 'var(--mv-erro)';
-      av.textContent = 'Não consegui enviar o documento. Confira as regras do Storage.';
+      av.textContent = (e && e.code === 'storage/canceled')
+        ? 'Envio cancelado.'
+        : 'Não consegui enviar o documento. Confira as regras do Storage.';
     }
-    CONV_ENVIANDO = false; el('btnCvEnviar').disabled = false;
+    cvEsconderProgresso();
+    cvTravar(false);
     try{ inp.value = ''; }catch(_){}
   }
+
+  // Apagar anexo: só o admin, e apaga NOS DOIS lugares — a mensagem no Firestore
+  // e o arquivo no Storage. Apagar só a mensagem deixaria o arquivo pagando
+  // armazenamento para sempre, invisível.
+  async function cvApagarMsg(mid, url, nome){
+    if(!CONV_ABERTA || !mid) return;
+    if(!confirm('Apagar "'+(nome||'este anexo')+'" da conversa? O arquivo some do Storage também. Não dá pra desfazer.')) return;
+    const av = el('cvAviso'); av.style.color = 'var(--mv-txt-3)'; av.textContent = 'Apagando…';
+    try{
+      await deleteDoc(doc(db,'conversas',CONV_ABERTA,'mensagens',mid));
+      const caminho = cvCaminhoDoArquivo(url);
+      if(caminho){ try{ await deleteObject(stRef(storage, caminho)); }catch(_){} }
+      av.textContent = 'Anexo apagado.';
+    }catch(e){
+      av.style.color = 'var(--mv-erro)';
+      av.textContent = 'Não consegui apagar. Só o dono pode, e as regras v13 precisam estar publicadas.';
+    }
+  }
+  window.cvApagarMsg = cvApagarMsg;
 
   async function cvTrocarDocs(ligado){
     if(!CONV_ABERTA) return;
@@ -2503,9 +2762,12 @@ table.mvTab td b{font-weight:700}
       const base = {uid: CONV_ABERTA, docsLiberado: !!ligado};
       if(!c){ base.criadoEm = serverTimestamp(); base.ultimaEm = serverTimestamp(); base.ultimoDe = 'admin'; base.ultimaMsg = ''; }
       await setDoc(doc(db,'conversas',CONV_ABERTA), base, {merge:true});
-      av.textContent = ligado ? 'Liberado. O lojista já vê o bloco “Mensagens do admin”.' : 'Desligado.';
-      el('cvPedido').classList.toggle('hide', !ligado);
-      el('btnCvPedido').classList.toggle('hide', !ligado);
+      // O texto ao lado do interruptor tem que virar junto. Antes ele ficava
+      // preso em "Desligado:" mesmo com o botão azul — e a tela mentia.
+      cvPintarDocs(Object.assign({}, c || {uid:CONV_ABERTA}, {docsLiberado: !!ligado}));
+      av.textContent = ligado
+        ? 'Liberado. O lojista já vê o bloco “Mensagens do admin”.'
+        : 'Desligado. O bloco de anexo sumiu do painel dele.';
     }catch(e){
       av.style.color = 'var(--mv-erro)';
       av.textContent = 'Não consegui salvar. Confira se as regras v13 estão publicadas.';
@@ -2525,39 +2787,96 @@ table.mvTab td b{font-weight:700}
     }
   }
 
-  function cvNovaConversa(){
-    if(!NEG.length){ alert('A lista de negócios ainda não carregou. Toque em "Atualizar dados" e tente de novo.'); return; }
-    const nome = prompt('Nome (ou parte do nome) do negócio com quem você quer falar:');
-    if(nome === null) return;
-    const alvo = String(nome).trim().toLowerCase();
-    if(!alvo) return;
-    const achados = NEG.filter(n => (n.nome||'').toLowerCase().includes(alvo));
-    if(!achados.length){ alert('Não achei negócio com esse nome.'); return; }
-    if(achados.length > 1 && achados.length <= 10){
-      const op = prompt('Achei '+achados.length+':\n'+achados.map((n,i)=>(i+1)+') '+(n.nome||'(sem nome)')).join('\n')+'\n\nDigite o número:');
-      const i = parseInt(op,10) - 1;
-      if(!(i >= 0 && i < achados.length)) return;
-      irSec('mensagens'); abrirConversa(achados[i].uid); return;
+  /* ---- seletor de destinatário ----
+     Trocou o prompt() do navegador por uma lista de verdade. O prompt só achava
+     pelo NOME do negócio, e o que o dono tem na cabeça normalmente é o APELIDO
+     do link (moviki.com.br/karina) ou o E-MAIL. Agora busca nos dois, mais
+     arroba do parceiro, segmento e endereço — e mostra lojistas E parceiros. */
+  let CV_PICK_FILTRO = 'todos';
+
+  function cvAbrirPicker(){
+    if(!NEG.length && !PARC.length){
+      alert('As listas ainda não carregaram. Toque em "Atualizar dados" e tente de novo.');
+      return;
     }
-    if(achados.length > 10){ alert('Muitos resultados. Seja mais específico.'); return; }
-    irSec('mensagens'); abrirConversa(achados[0].uid);
+    show('cvPicker');
+    el('cvPickBusca').value = '';
+    CV_PICK_FILTRO = 'todos';
+    document.querySelectorAll('.cvPickFiltros [data-pick]').forEach(b =>
+      b.classList.toggle('on', b.getAttribute('data-pick') === 'todos'));
+    cvPickRender();
+    setTimeout(()=>{ try{ el('cvPickBusca').focus(); }catch(e){} }, 80);
+  }
+  function cvFecharPicker(){ hide('cvPicker'); }
+
+  function cvPickRender(){
+    const box = el('cvPickLista'); if(!box) return;
+    const filtro = (el('cvPickBusca').value||'').trim().toLowerCase();
+
+    // Junta lojistas e parceiros por uid: quem é os dois aparece UMA vez só,
+    // porque a conversa também é uma só.
+    const porUid = new Map();
+    NEG.forEach(n => porUid.set(n.uid, true));
+    PARC.forEach(p => porUid.set(p.uid, true));
+
+    let lista = [...porUid.keys()].map(cvQuemE).filter(q => q.nome || q.email || q.apelido);
+    if(CV_PICK_FILTRO !== 'todos') lista = lista.filter(q => q.tipos.includes(CV_PICK_FILTRO));
+    if(filtro) lista = lista.filter(q => cvAlvoBusca(q.uid).includes(filtro));
+    lista.sort((a,b) => (a.nome||'').localeCompare(b.nome||'', 'pt-BR'));
+
+    if(!lista.length){
+      box.innerHTML = '<div class="cvVazio">Ninguém com esse nome, apelido ou e-mail.</div>';
+      return;
+    }
+    const teto = 60;
+    box.innerHTML = lista.slice(0, teto).map(q => {
+      const tag = q.tipos.length === 2
+        ? '<span class="cvTag loj">lojista+parceiro</span>'
+        : (q.tipos[0] === 'parceiro' ? '<span class="cvTag par">parceiro</span>' : '<span class="cvTag loj">lojista</span>');
+      const linha2 = [q.apelido ? '/'+q.apelido : '', q.email || ''].filter(Boolean).join(' · ');
+      const jaTem = CONVS.some(c => c.uid === q.uid) ? ' <span style="color:var(--mv-txt-3);font-size:11px">(já tem conversa)</span>' : '';
+      // Parceiro PURO (sem negócio) ainda não tem caixa de mensagens no
+      // parceiro.html — a mensagem seria gravada e ninguém veria. Avisa em vez
+      // de esconder: assim que o painel do parceiro ganhar a caixa, esta linha sai.
+      const semCaixa = (q.tipos.length === 1 && q.tipos[0] === 'parceiro')
+        ? '<div class="cvItPrev" style="color:#ffcf9a">o painel do parceiro ainda não tem a caixa — ele não vai ver</div>' : '';
+      return '<button type="button" class="cvIt" data-conv="'+esc(q.uid)+'">'+
+        '<div class="cvItTopo"><span class="cvItNome">'+esc(q.nome || '(sem nome)')+'</span>'+tag+'</div>'+
+        '<div class="cvItPrev">'+(esc(linha2) || '—')+jaTem+'</div>'+semCaixa+
+      '</button>';
+    }).join('') + (lista.length > teto
+      ? '<div class="cvVazio" style="padding:10px">Mostrando '+teto+' de '+lista.length+'. Digite mais letras para afinar.</div>'
+      : '');
   }
 
   /* ---- ligações de tela ---- */
   document.addEventListener('click', ev => {
     const a = ev.target && ev.target.closest ? ev.target.closest('[data-conv]') : null;
-    if(a){ abrirConversa(a.getAttribute('data-conv')); return; }
+    if(a){ cvFecharPicker(); abrirConversa(a.getAttribute('data-conv')); return; }
     const b = ev.target && ev.target.closest ? ev.target.closest('[data-cv]') : null;
     if(b){ irSec('mensagens'); abrirConversa(b.getAttribute('data-cv')); return; }
   });
   el('cvBusca').addEventListener('input', pintarConversas);
   el('btnCvFechar').addEventListener('click', fecharConversa);
   el('btnCvEnviar').addEventListener('click', cvEnviar);
-  el('btnCvClipe').addEventListener('click', ()=>{ const i = el('cvArquivo'); i.value=''; i.click(); });
+  el('btnCvClipe').addEventListener('click', ()=>{
+    if(CONV_ENVIANDO) return;
+    const i = el('cvArquivo'); i.value=''; i.click();
+  });
+  el('btnCvCancelarUp').addEventListener('click', ()=>{ try{ if(CV_UPLOAD) CV_UPLOAD.cancel(); }catch(e){} });
   el('cvArquivo').addEventListener('change', function(){ cvAnexar(this); });
   el('swDocs').addEventListener('change', function(){ cvTrocarDocs(this.checked); });
   el('btnCvPedido').addEventListener('click', cvSalvarPedido);
-  el('btnCvNova').addEventListener('click', cvNovaConversa);
+  el('btnCvNova').addEventListener('click', cvAbrirPicker);
+  el('btnCvPickFechar').addEventListener('click', cvFecharPicker);
+  el('cvPickBusca').addEventListener('input', cvPickRender);
+  document.querySelectorAll('.cvPickFiltros [data-pick]').forEach(b => {
+    b.addEventListener('click', () => {
+      CV_PICK_FILTRO = b.getAttribute('data-pick');
+      document.querySelectorAll('.cvPickFiltros [data-pick]').forEach(x => x.classList.toggle('on', x === b));
+      cvPickRender();
+    });
+  });
   el('cvTexto').addEventListener('keydown', e => {
     if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)){ e.preventDefault(); cvEnviar(); }
   });

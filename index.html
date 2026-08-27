@@ -716,6 +716,10 @@ input[type=checkbox]{width:auto;padding:0;}
 .msgBtnIco svg{width:19px;height:19px;}
 .msgBtnIco[disabled]{opacity:.45;cursor:not-allowed;}
 .msgAviso{font-size:12.5px;min-height:16px;margin:6px 2px 0;}
+.msgBarra{margin-top:8px;height:6px;border-radius:99px;background:var(--mv-campo);overflow:hidden;border:1px solid var(--mv-linha);}
+.msgBarra i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0066FF,#00D4FF);transition:width .18s;}
+.msgSubindo{display:flex;align-items:center;gap:9px;margin-top:8px;font-size:12.5px;color:var(--mv-txt-2);}
+.msgMini{display:block;max-width:200px;max-height:160px;border-radius:10px;margin-top:7px;border:1px solid var(--mv-linha);}
 
 /* ---------- home ---------- */
 .olaLinha{font-size:17px;font-weight:700;letter-spacing:-.3px;line-height:1.35;margin:4px 2px 14px;text-align:center;}
@@ -1370,7 +1374,14 @@ body.naHome #btnSalvar{margin-top:14px;}
             <button type="button" class="msgBtnIco escondido" id="msgBtnClipe" onclick="msgEscolherArquivo()" aria-label="Anexar documento" title="Anexar documento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.4 11.05 12.25 20.2a5.5 5.5 0 0 1-7.78-7.78l9.2-9.2a3.67 3.67 0 1 1 5.18 5.19l-9.2 9.19a1.83 1.83 0 1 1-2.6-2.59l8.5-8.49"/></svg></button>
             <button type="button" class="msgBtnIco" id="msgBtnEnviar" onclick="msgEnviar()" aria-label="Enviar" title="Enviar" style="background:var(--ciano);border-color:var(--ciano);color:#04121f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 20 16-8L4 4l3 8z"/><path d="M7 12h13"/></svg></button>
           </div>
-          <input type="file" id="msgArquivo" style="display:none" onchange="msgArquivoEscolhido(this)">
+          <input type="file" id="msgArquivo" style="display:none" accept=".pdf,.jpg,.jpeg,.png,.webp,.gif,.doc,.docx,.xls,.xlsx,.csv,.txt,application/pdf,image/jpeg,image/png,image/webp,image/gif" onchange="msgArquivoEscolhido(this)">
+          <div class="msgSubindo escondido" id="msgSubindo">
+            <div style="flex:1;min-width:0">
+              <div><b id="msgSubNome">arquivo</b> <span id="msgSubPct">0%</span></div>
+              <div class="msgBarra"><i id="msgSubBarra"></i></div>
+            </div>
+            <button type="button" class="idxBtn" style="width:auto;margin:0;padding:7px 11px;font-size:13px;background:transparent;border:1px solid var(--mv-linha);color:#cfe0f5" onclick="msgCancelarUpload()">Cancelar</button>
+          </div>
           <div class="msgAviso" id="msgAviso"></div>
           <div style="font-size:11.5px;color:var(--mv-txt-3);margin-top:8px;line-height:1.5">Respondemos em horário comercial. Para urgência de pagamento, use o WhatsApp do suporte.</div>
         </div>
@@ -1922,7 +1933,7 @@ body.naHome #btnSalvar{margin-top:14px;}
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, getDocs, addDoc, onSnapshot, query, where, orderBy, limit }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getStorage, ref as stRef, uploadBytes, getDownloadURL }
+  import { getStorage, ref as stRef, uploadBytesResumable, getDownloadURL }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   const firebaseConfig = {
@@ -2101,7 +2112,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-08-27-mensagens';
+  window.MOVIKI_VERSAO='2026-08-27-mensagens2';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -2116,6 +2127,11 @@ body.naHome #btnSalvar{margin-top:14px;}
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'application/vnd.ms-excel',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+  // O iPhone manda foto em HEIC/HEIF por padrao. O arquivo SOBE, mas nem o
+  // navegador nem o Windows abrem — vira anexo morto. Recusa e explica.
+  var MSG_IMG_RUIM=['image/heic','image/heif','image/heic-sequence','image/heif-sequence'];
+  function msgEhImagem(t){ return String(t||'').indexOf('image/')===0 && MSG_IMG_RUIM.indexOf(t)<0; }
+  var MSG_UPLOAD=null;
 
   function msgEsc(v){return String(v==null?'':v).replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});}
   function msgMs(t){ try{ return t&&t.toMillis?t.toMillis():(t?new Date(t).getTime():0); }catch(e){ return 0; } }
@@ -2180,10 +2196,15 @@ body.naHome #btnSalvar{margin-top:14px;}
       var eu=(m.de==='lojista');
       var anexo='';
       if(m.arquivoUrl){
-        anexo='<a class="msgAnexo" href="'+msgEsc(m.arquivoUrl)+'" target="_blank" rel="noopener">'+
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/></svg>'+
-          '<span style="min-width:0"><span class="msgAnexoNome" style="display:block">'+msgEsc(m.arquivoNome||'documento')+'</span>'+
-          '<span class="msgAnexoTam">'+msgTam(m.arquivoTam)+' · toque para abrir</span></span></a>';
+        // Imagem vira miniatura; o resto vira cartao de documento.
+        anexo = msgEhImagem(m.arquivoTipo)
+          ? ('<a href="'+msgEsc(m.arquivoUrl)+'" target="_blank" rel="noopener">'+
+             '<img class="msgMini" src="'+msgEsc(m.arquivoUrl)+'" alt="'+msgEsc(m.arquivoNome||'imagem')+'" loading="lazy">'+
+             '</a><div class="msgAnexoTam" style="margin-top:4px">'+msgEsc(m.arquivoNome||'imagem')+' · '+msgTam(m.arquivoTam)+'</div>')
+          : ('<a class="msgAnexo" href="'+msgEsc(m.arquivoUrl)+'" target="_blank" rel="noopener">'+
+             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/></svg>'+
+             '<span style="min-width:0"><span class="msgAnexoNome" style="display:block">'+msgEsc(m.arquivoNome||'documento')+'</span>'+
+             '<span class="msgAnexoTam">'+msgTam(m.arquivoTam)+' · toque para abrir</span></span></a>');
       }
       var txt=m.texto?msgEsc(m.texto).replace(/\n/g,'<br>'):'';
       return '<div class="msgBolha '+(eu?'msgEu':'msgEle')+'">'+txt+anexo+
@@ -2257,7 +2278,7 @@ body.naHome #btnSalvar{margin-top:14px;}
     var t=el('msgTexto').value.trim();
     if(!t){av.textContent='Escreva alguma coisa antes de enviar.';return;}
     if(!MSG_UID){av.textContent='Faça login de novo para enviar.';return;}
-    MSG_ENVIANDO=true; el('msgBtnEnviar').disabled=true; av.style.color='#9fb3c8'; av.textContent='Enviando…';
+    msgTravar(true); av.style.color='#9fb3c8'; av.textContent='Enviando…';
     try{
       await msgGarantirConversa(t);
       await addDoc(collection(db,'conversas',MSG_UID,'mensagens'),{de:'lojista',texto:t.slice(0,2000),criadoEm:serverTimestamp()});
@@ -2266,30 +2287,68 @@ body.naHome #btnSalvar{margin-top:14px;}
       av.style.color='#ff9b9b';
       av.textContent='Não consegui enviar agora. Tente de novo em instantes.';
     }
-    MSG_ENVIANDO=false; el('msgBtnEnviar').disabled=false;
+    msgTravar(false);
   };
 
   window.msgEscolherArquivo=function(){
+    if(MSG_ENVIANDO){ el('msgAviso').style.color='#ffcf9a'; el('msgAviso').textContent='Calma — já tem um arquivo subindo. Espere a barra terminar.'; return; }
     var i=el('msgArquivo'); if(i){ i.value=''; i.click(); }
   };
+  window.msgCancelarUpload=function(){ try{ if(MSG_UPLOAD)MSG_UPLOAD.cancel(); }catch(e){} };
+
+  function msgProgresso(nome,pct){
+    var b=el('msgSubindo'); if(b)b.classList.remove('escondido');
+    var n=el('msgSubNome'); if(n)n.textContent=nome;
+    var p=el('msgSubPct'); if(p)p.textContent=Math.round(pct)+'%';
+    var i=el('msgSubBarra'); if(i)i.style.width=Math.round(pct)+'%';
+  }
+  function msgEscondeProgresso(){
+    var b=el('msgSubindo'); if(b)b.classList.add('escondido');
+    var i=el('msgSubBarra'); if(i)i.style.width='0%';
+    MSG_UPLOAD=null;
+  }
+  function msgTravar(t){
+    MSG_ENVIANDO=t;
+    ['msgBtnEnviar','msgBtnClipe'].forEach(function(id){ var n=el(id); if(n)n.disabled=t; });
+  }
+
   window.msgArquivoEscolhido=async function(inp){
     var av=el('msgAviso'); av.style.color='#ff9b9b';
-    var f=inp&&inp.files&&inp.files[0]; if(!f)return;
-    if(!(MSG_CONV&&MSG_CONV.docsLiberado===true)){av.textContent='O envio de documentos não está liberado nesta conversa.';return;}
-    if(f.size>MSG_TETO){av.textContent='Arquivo muito grande. O limite é 10 MB.';return;}
+    var f=inp&&inp.files&&inp.files[0];
+    if(!f){ return; }
+
+    // Trava de clique repetido: sem ela, tocar de novo no anexo enquanto o
+    // primeiro ainda sobe manda o MESMO arquivo outra vez.
+    if(MSG_ENVIANDO){ av.textContent='Já tem um arquivo subindo. Espere a barra terminar.'; try{inp.value='';}catch(_){} return; }
+    if(!(MSG_CONV&&MSG_CONV.docsLiberado===true)){ av.textContent='O envio de documentos não está liberado nesta conversa.'; try{inp.value='';}catch(_){} return; }
+
     var tipo=f.type||'application/octet-stream';
-    var ehImg=tipo.indexOf('image/')===0;
-    if(!ehImg&&MSG_TIPOS.indexOf(tipo)<0){
-      av.textContent='Tipo de arquivo não aceito. Envie PDF, foto, Word, Excel ou texto.';
-      return;
+    if(MSG_IMG_RUIM.indexOf(tipo)>=0 || /\.(heic|heif)$/i.test(f.name||'')){
+      av.textContent='Foto em HEIC/HEIF (formato do iPhone) não abre no navegador. No iPhone: Ajustes › Câmera › Formatos › “Mais compatível” — ou mande como PDF.';
+      try{inp.value='';}catch(_){} return;
     }
-    MSG_ENVIANDO=true; el('msgBtnEnviar').disabled=true;
-    av.style.color='#9fb3c8'; av.textContent='Enviando o documento… não feche a tela.';
+    if(f.size>MSG_TETO){ av.textContent='Arquivo muito grande. O limite é 10 MB.'; try{inp.value='';}catch(_){} return; }
+    if(!msgEhImagem(tipo)&&MSG_TIPOS.indexOf(tipo)<0){
+      av.textContent='Tipo de arquivo não aceito. Envie PDF, foto (JPG/PNG), Word, Excel ou texto.';
+      try{inp.value='';}catch(_){} return;
+    }
+    var repetido=MSG_MSGS.some(function(m){ return m.arquivoNome===f.name && Number(m.arquivoTam)===f.size; });
+    if(repetido&&!confirm('“'+f.name+'” já está nesta conversa. Enviar de novo mesmo assim?')){ try{inp.value='';}catch(_){} return; }
+
+    msgTravar(true);
+    av.style.color='#9fb3c8'; av.textContent='';
+    var nome=String(f.name||'documento').slice(-80).replace(/[^\w.\- ]+/g,'_');
+    msgProgresso(nome,0);
     try{
-      var nome=String(f.name||'documento').slice(-80).replace(/[^\w.\- ]+/g,'_');
       var caminho='documentos/'+MSG_UID+'/'+Date.now()+'_'+nome;
       var r=stRef(storage,caminho);
-      await uploadBytes(r,f,{contentType:tipo});
+      var tarefa=uploadBytesResumable(r,f,{contentType:tipo});
+      MSG_UPLOAD=tarefa;
+      await new Promise(function(ok,erro){
+        tarefa.on('state_changed',
+          function(sn){ msgProgresso(nome, sn.totalBytes?(sn.bytesTransferred/sn.totalBytes)*100:0); },
+          erro, ok);
+      });
       var url=await getDownloadURL(r);
       var legenda=el('msgTexto').value.trim();
       await msgGarantirConversa(legenda||('Documento: '+nome));
@@ -2299,9 +2358,12 @@ body.naHome #btnSalvar{margin-top:14px;}
       el('msgTexto').value=''; av.textContent='';
     }catch(e){
       av.style.color='#ff9b9b';
-      av.textContent='Não consegui enviar o documento. Confira o tamanho e tente de novo.';
+      av.textContent=(e&&e.code==='storage/canceled')
+        ? 'Envio cancelado.'
+        : 'Não consegui enviar o documento. Confira o tamanho e tente de novo.';
     }
-    MSG_ENVIANDO=false; el('msgBtnEnviar').disabled=false;
+    msgEscondeProgresso();
+    msgTravar(false);
     try{ inp.value=''; }catch(_){}
   };
 
