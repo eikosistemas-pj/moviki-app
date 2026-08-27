@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com; connect-src 'self' https://*.googleapis.com https://www.google.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app; connect-src 'self' https://*.googleapis.com https://www.google.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <title>Painel do Parceiro · Moviki</title>
@@ -111,6 +111,39 @@ input::placeholder{color:#6b7f96}
 .mvSideSair{display:flex;align-items:center;gap:10px;width:100%;margin-top:14px;background:transparent;border:1px solid var(--mv-linha);
   border-radius:var(--mv-r);color:var(--mv-txt-3);font-size:13.5px;font-weight:600;padding:10px 11px;cursor:pointer}
 .mvSideSair:hover{border-color:var(--mv-erro);color:var(--mv-erro)}
+
+/* ---------- caixa de mensagens (27/08/2026) ---------- */
+.bad{margin-left:auto;min-width:19px;height:19px;padding:0 6px;border-radius:10px;background:#ff5a5a;color:#fff;
+  font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.pmDocs{border:1px solid rgba(255,159,64,.55);background:rgba(255,159,64,.09);border-radius:12px;padding:13px 14px;margin-bottom:12px}
+.pmDocsTit{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:#ffcf9a;margin-bottom:6px}
+.pmDocsTit svg{width:18px;height:18px}
+.pmDocsTxt{font-size:13px;color:var(--mv-txt-2);line-height:1.55}
+.pmLista{max-height:48vh;overflow:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:9px;
+  padding:4px 2px;margin:10px 0;min-width:0}
+.pmBolha{max-width:86%;min-width:0;padding:10px 12px;border-radius:14px;font-size:14px;line-height:1.5;word-break:break-word}
+.pmBolha .pmQuando{display:block;font-size:11px;margin-top:5px;opacity:.62}
+.pmEu{align-self:flex-end;background:rgba(0,212,255,.14);border:1px solid rgba(0,212,255,.34);border-bottom-right-radius:5px}
+.pmEle{align-self:flex-start;background:var(--mv-surf-2);border:1px solid var(--mv-linha);border-bottom-left-radius:5px}
+.pmAnexo{display:flex;align-items:center;gap:9px;margin-top:7px;padding:9px 10px;border-radius:10px;
+  background:rgba(255,255,255,.05);border:1px solid var(--mv-linha);text-decoration:none;color:var(--mv-txt)}
+.pmAnexo svg{width:19px;height:19px;flex:0 0 auto;color:var(--mv-ciano)}
+.pmMini{display:block;max-width:210px;max-height:165px;border-radius:10px;margin-top:7px;border:1px solid var(--mv-linha)}
+.pmVazio{text-align:center;font-size:13.5px;color:var(--mv-txt-3);padding:26px 10px;line-height:1.6}
+.pmEnviar{display:flex;gap:8px;align-items:flex-end;min-width:0}
+.pmEnviar textarea{flex:1;min-width:0;min-height:46px;max-height:130px;resize:vertical;padding:12px;border-radius:12px;
+  border:1px solid var(--mv-linha);background:var(--mv-campo);color:var(--mv-txt);font-family:inherit;font-size:14.5px}
+.pmIco{flex:0 0 auto;width:46px;height:46px;border-radius:12px;border:1px solid var(--mv-linha);background:var(--mv-campo);
+  color:var(--mv-txt-2);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.pmIco:hover{border-color:var(--mv-ciano);color:var(--mv-ciano)}
+.pmIco svg{width:19px;height:19px}
+.pmIco[disabled]{opacity:.45;cursor:not-allowed}
+.pmBarra{margin-top:8px;height:6px;border-radius:99px;background:var(--mv-campo);overflow:hidden;border:1px solid var(--mv-linha)}
+.pmBarra i{display:block;height:100%;width:0;background:var(--mv-grad);transition:width .18s}
+.pmSubindo{display:flex;align-items:center;gap:9px;margin-top:8px;font-size:12.5px;color:var(--mv-txt-2)}
+.pmAviso{font-size:12.5px;min-height:16px;margin:6px 2px 0}
+.pmPt{position:absolute;top:2px;right:2px;width:9px;height:9px;border-radius:50%;background:#ff5a5a;
+  box-shadow:0 0 0 2px var(--mv-campo)}
 
 /* ---------- saudação ---------- */
 .mvOla{margin:2px 2px 16px}
@@ -408,6 +441,7 @@ input::placeholder{color:#6b7f96}
           <button type="button" class="mvNavIt" data-nav="pagamentos"><img class="mvNavIco" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Pagamentos</span></button>
           <button type="button" class="mvNavIt" data-nav="desempenho"><img class="mvNavIco" src="icones/relatorios.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Desempenho</span></button>
           <button type="button" class="mvNavIt" data-nav="divulgacao"><img class="mvNavIco" src="icones/indicar.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Divulgação</span></button>
+          <button type="button" class="mvNavIt" data-nav="mensagens"><img class="mvNavIco" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Falar com o Moviki</span><span class="bad hide" id="badMsgP">1</span></button>
           <button type="button" class="mvNavIt" data-nav="dados"><img class="mvNavIco" src="icones/perfil.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meus dados</span></button>
           <a class="mvNavIt" href="https://wa.me/554120186848?text=Ol%C3%A1!%20Sou%20parceiro%20Moviki%20e%20preciso%20de%20ajuda." target="_blank" rel="noopener" style="text-decoration:none"><img class="mvNavIco" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Suporte</span></a>
         </nav>
@@ -674,6 +708,42 @@ input::placeholder{color:#6b7f96}
         </section>
 
         <!-- ============ SEÇÃO: MEUS DADOS ============ -->
+        <!-- ============ SEÇÃO: FALAR COM O MOVIKI ============ -->
+        <section data-sec="mensagens" class="hide">
+          <div class="cd">
+            <div class="cdTopo">
+              <div>
+                <div class="cdTit">Falar com o Moviki</div>
+                <div class="cdSub">Canal direto com quem cuida do programa. Escreva aqui e a gente responde nesta mesma tela.</div>
+              </div>
+            </div>
+
+            <div class="pmDocs hide" id="pmBlocoDocs">
+              <div class="pmDocsTit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/></svg>Mensagens do admin</div>
+              <div class="pmDocsTxt" id="pmDocsTxt">O Moviki liberou o envio de documentos nesta conversa.</div>
+              <button type="button" class="btn sec" style="margin-top:10px" id="btnPmAnexar2">Anexar documento</button>
+            </div>
+
+            <div class="pmLista" id="pmLista"><div class="pmVazio">Carregando…</div></div>
+
+            <div class="pmEnviar">
+              <textarea id="pmTexto" maxlength="2000" rows="1" placeholder="Escreva sua mensagem…"></textarea>
+              <button type="button" class="pmIco hide" id="btnPmClipe" aria-label="Anexar documento" title="Anexar documento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.4 11.05 12.25 20.2a5.5 5.5 0 0 1-7.78-7.78l9.2-9.2a3.67 3.67 0 1 1 5.18 5.19l-9.2 9.19a1.83 1.83 0 1 1-2.6-2.59l8.5-8.49"/></svg></button>
+              <button type="button" class="pmIco" id="btnPmEnviar" aria-label="Enviar" title="Enviar" style="background:var(--mv-grad);border-color:var(--mv-ciano);color:#02131f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 20 16-8L4 4l3 8z"/><path d="M7 12h13"/></svg></button>
+            </div>
+            <input type="file" id="pmArquivo" style="display:none" accept=".pdf,.jpg,.jpeg,.png,.webp,.gif,.doc,.docx,.xls,.xlsx,.csv,.txt,application/pdf,image/jpeg,image/png,image/webp,image/gif">
+            <div class="pmSubindo hide" id="pmSubindo">
+              <div style="flex:1;min-width:0">
+                <div><b id="pmSubNome">arquivo</b> <span id="pmSubPct">0%</span></div>
+                <div class="pmBarra"><i id="pmSubBarra"></i></div>
+              </div>
+              <button type="button" class="btn sec" style="width:auto;margin:0;padding:8px 12px;font-size:13px" id="btnPmCancelarUp">Cancelar</button>
+            </div>
+            <div class="pmAviso" id="pmAviso"></div>
+            <div style="font-size:11.5px;color:var(--mv-txt-3);margin-top:8px;line-height:1.5">Respondemos em horário comercial.</div>
+          </div>
+        </section>
+
         <section data-sec="dados" class="hide">
           <div class="cd">
             <div class="cdTit" style="margin-bottom:12px">Meus dados</div>
@@ -785,6 +855,7 @@ input::placeholder{color:#6b7f96}
     <button type="button" data-ir="desempenho"><img src="icones/relatorios.png" alt="" onerror="this.style.display='none'">Desempenho</button>
     <button type="button" data-ir="divulgacao"><img src="icones/indicar.png" alt="" onerror="this.style.display='none'">Divulgação</button>
     <button type="button" data-ir="dados"><img src="icones/perfil.png" alt="" onerror="this.style.display='none'">Meus dados</button>
+    <button type="button" data-ir="mensagens"><img src="icones/sobre.png" alt="" onerror="this.style.display='none'">Falar com o Moviki<span class="bad hide" id="badMsgPM">1</span></button>
     <div class="menuSec">Ajuda</div>
     <button type="button" id="btnConheca2"><img src="icones/foguete.png" alt="" onerror="this.style.display='none'">Conheça o Moviki</button>
     <a href="https://wa.me/554120186848?text=Ol%C3%A1!%20Sou%20parceiro%20Moviki%20e%20preciso%20de%20ajuda." target="_blank" rel="noopener"><img src="icones/whatsapp.png" alt="" onerror="this.style.display='none'">Falar com o suporte</a>
@@ -842,11 +913,12 @@ input::placeholder{color:#6b7f96}
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, updateDoc, addDoc, collection, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, query, where, orderBy, limit, onSnapshot, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref as stRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-26-saque24h';
+  window.MOVIKI_VERSAO = '2026-08-27-mensagens';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -859,6 +931,7 @@ input::placeholder{color:#6b7f96}
   const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db   = getFirestore(app);
+  const storage = getStorage(app);
 
   const el   = id => document.getElementById(id);
   const show = id => { const n=el(id); if(n) n.classList.remove('hide'); };
@@ -897,6 +970,7 @@ input::placeholder{color:#6b7f96}
     document.querySelectorAll('section[data-sec]').forEach(s=>{
       s.classList.toggle('hide', s.getAttribute('data-sec') !== nome);
     });
+    if(nome === 'mensagens'){ try{ pmPintar(); pmPintarDocs(); pmMarcarVisto(); }catch(e){} }
     document.querySelectorAll('#mvNav .mvNavIt[data-nav]').forEach(b=>{
       b.classList.toggle('ativo', b.getAttribute('data-nav') === nome);
     });
@@ -938,6 +1012,233 @@ input::placeholder{color:#6b7f96}
   function telas(qual){ ['carregando','login','semcadastro','painel'].forEach(t => t===qual ? show(t) : hide(t)); }
 
   /* ---------- entrada ---------- */
+
+  /* ==========================================================
+     FALAR COM O MOVIKI — caixa de mensagens do parceiro (27/08/2026)
+     Mesma conversa do painel do lojista: conversas/{uid}, onde o uid é o da
+     CONTA. Quem é lojista e parceiro na mesma conta vê a MESMA conversa nos
+     dois painéis — e isso é proposital.
+     Nenhuma regra nova: a v13 já é por uid.
+     ========================================================== */
+  let PM_CONV = null, PM_MSGS = [], PM_ENVIANDO = false, PM_UPLOAD = null;
+  let PM_PARA_CONV = null, PM_PARA_MSGS = null;
+  const PM_TETO = 10*1024*1024;
+  const PM_TIPOS = ['application/pdf','text/plain','text/csv','application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+  // iPhone grava foto em HEIC/HEIF: sobe e não abre em navegador nenhum.
+  const PM_IMG_RUIM = ['image/heic','image/heif','image/heic-sequence','image/heif-sequence'];
+  function pmEhImagem(t){ return String(t||'').indexOf('image/') === 0 && !PM_IMG_RUIM.includes(t); }
+
+  function pmTam(n){
+    n = Number(n)||0;
+    if(n < 1024) return n+' B';
+    if(n < 1024*1024) return (n/1024).toFixed(0)+' KB';
+    return (n/1024/1024).toFixed(1).replace('.',',')+' MB';
+  }
+  function pmQuando(t){
+    const m = ms(t); if(!m) return 'agora';
+    const d = new Date(m), hoje = new Date();
+    const hh = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+    if(d.toDateString() === hoje.toDateString()) return 'hoje '+hh;
+    return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+' '+hh;
+  }
+  function pmNaoLida(){
+    if(!PM_CONV || PM_CONV.ultimoDe !== 'admin') return false;
+    return ms(PM_CONV.ultimaEm) > ms(PM_CONV.vistoLojistaEm);
+  }
+  function pmPintarBadge(){
+    const tem = pmNaoLida();
+    ['badMsgP','badMsgPM'].forEach(id => { const n = el(id); if(n) n.classList.toggle('hide', !tem); });
+    const pt = el('sinoPt2');
+    // O sino do parceiro é das Novidades; não roubo o número dele. O aviso de
+    // mensagem fica no item da lateral e no menu, que é onde ele clica.
+  }
+
+  // Falha calada de propósito: se as regras não estiverem publicadas, a caixa
+  // não abre — mas o painel de comissões não pode cair por causa de mensagem.
+  function pmIniciar(user){
+    pmParar();
+    if(!user) return;
+    try{
+      PM_PARA_CONV = onSnapshot(doc(db,'conversas',user.uid), sn => {
+        PM_CONV = sn.exists() ? sn.data() : null;
+        pmPintarBadge(); pmPintarDocs();
+        if(pmSecaoAberta()) pmMarcarVisto();
+      }, ()=>{});
+      PM_PARA_MSGS = onSnapshot(
+        query(collection(db,'conversas',user.uid,'mensagens'), orderBy('criadoEm','asc'), limit(200)),
+        qs => { PM_MSGS = []; qs.forEach(d => PM_MSGS.push(d.data())); pmPintar(); },
+        ()=>{});
+    }catch(e){}
+  }
+  function pmParar(){
+    try{ if(PM_PARA_CONV) PM_PARA_CONV(); }catch(e){}
+    try{ if(PM_PARA_MSGS) PM_PARA_MSGS(); }catch(e){}
+    PM_PARA_CONV = null; PM_PARA_MSGS = null; PM_CONV = null; PM_MSGS = [];
+  }
+  function pmSecaoAberta(){
+    const sec = document.querySelector('section[data-sec="mensagens"]');
+    return sec && !sec.classList.contains('hide');
+  }
+
+  function pmPintar(){
+    const box = el('pmLista'); if(!box) return;
+    if(!PM_MSGS.length){
+      box.innerHTML = '<div class="pmVazio">Nenhuma mensagem ainda.<br>Escreva abaixo — a gente responde por aqui.</div>';
+      return;
+    }
+    box.innerHTML = PM_MSGS.map(m => {
+      const eu = (m.de === 'lojista');
+      let anexo = '';
+      if(m.arquivoUrl){
+        anexo = pmEhImagem(m.arquivoTipo)
+          ? '<a href="'+esc(m.arquivoUrl)+'" target="_blank" rel="noopener"><img class="pmMini" src="'+esc(m.arquivoUrl)+'" alt="'+esc(m.arquivoNome||'imagem')+'" loading="lazy"></a>'+
+            '<div style="font-size:11px;color:var(--mv-txt-3);margin-top:4px">'+esc(m.arquivoNome||'imagem')+' · '+pmTam(m.arquivoTam)+'</div>'
+          : '<a class="pmAnexo" href="'+esc(m.arquivoUrl)+'" target="_blank" rel="noopener">'+
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/></svg>'+
+            '<span style="min-width:0"><span style="display:block;font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(m.arquivoNome||'documento')+'</span>'+
+            '<span style="font-size:11px;color:var(--mv-txt-3)">'+pmTam(m.arquivoTam)+' · toque para abrir</span></span></a>';
+      }
+      const t = m.texto ? esc(m.texto).replace(/\n/g,'<br>') : '';
+      return '<div class="pmBolha '+(eu ? 'pmEu' : 'pmEle')+'">'+t+anexo+
+        '<span class="pmQuando">'+(eu ? 'você' : 'Moviki')+' · '+pmQuando(m.criadoEm)+'</span></div>';
+    }).join('');
+    setTimeout(()=>{ try{ box.scrollTop = box.scrollHeight; }catch(e){} }, 30);
+  }
+
+  function pmPintarDocs(){
+    const on = !!(PM_CONV && PM_CONV.docsLiberado === true);
+    const bloco = el('pmBlocoDocs'); if(bloco) bloco.classList.toggle('hide', !on);
+    const clipe = el('btnPmClipe'); if(clipe) clipe.classList.toggle('hide', !on);
+    const t = el('pmDocsTxt');
+    if(t){
+      t.innerHTML = (PM_CONV && PM_CONV.docsPedido)
+        ? '<b>O Moviki está pedindo:</b> '+esc(PM_CONV.docsPedido)
+        : 'O Moviki liberou o envio de documentos nesta conversa. Anexe PDF, foto ou planilha — até 10 MB por arquivo.';
+    }
+  }
+
+  async function pmMarcarVisto(){
+    if(!MEU.uid || !PM_CONV || !pmNaoLida()) return;
+    try{ await updateDoc(doc(db,'conversas',MEU.uid), {vistoLojistaEm: serverTimestamp()}); }catch(e){}
+  }
+
+  // Cria a conversa na 1ª mensagem; depois só atualiza os 4 campos que a regra
+  // deixa este lado mexer. setDoc com merge derrubaria o envio pelo hasOnly.
+  async function pmGarantirConversa(resumo){
+    const ref = doc(db,'conversas',MEU.uid);
+    if(PM_CONV){
+      await updateDoc(ref, {
+        ultimaMsg: String(resumo||'').slice(0,200),
+        ultimaEm: serverTimestamp(),
+        ultimoDe: 'lojista',
+        vistoLojistaEm: serverTimestamp()
+      });
+    }else{
+      await setDoc(ref, {
+        uid: MEU.uid,
+        nome: String(MEU.nome||'').slice(0,80),
+        email: String(MEU.email||'').slice(0,120),
+        ultimaMsg: String(resumo||'').slice(0,200),
+        ultimaEm: serverTimestamp(),
+        ultimoDe: 'lojista',
+        vistoLojistaEm: serverTimestamp(),
+        docsLiberado: false,
+        criadoEm: serverTimestamp()
+      });
+    }
+  }
+
+  function pmTravar(t){
+    PM_ENVIANDO = t;
+    ['btnPmEnviar','btnPmClipe'].forEach(id => { const n = el(id); if(n) n.disabled = t; });
+  }
+  function pmProgresso(nome, pct){
+    const b = el('pmSubindo'); if(b) b.classList.remove('hide');
+    txt('pmSubNome', nome); txt('pmSubPct', Math.round(pct)+'%');
+    const i = el('pmSubBarra'); if(i) i.style.width = Math.round(pct)+'%';
+  }
+  function pmEscondeProgresso(){
+    const b = el('pmSubindo'); if(b) b.classList.add('hide');
+    const i = el('pmSubBarra'); if(i) i.style.width = '0%';
+    PM_UPLOAD = null;
+  }
+
+  async function pmEnviar(){
+    if(PM_ENVIANDO) return;
+    const av = el('pmAviso'); av.style.color = 'var(--mv-erro)';
+    const t = el('pmTexto').value.trim();
+    if(!t){ av.textContent = 'Escreva alguma coisa antes de enviar.'; return; }
+    if(!MEU.uid){ av.textContent = 'Faça login de novo para enviar.'; return; }
+    pmTravar(true); av.style.color = 'var(--mv-txt-3)'; av.textContent = 'Enviando…';
+    try{
+      await pmGarantirConversa(t);
+      await addDoc(collection(db,'conversas',MEU.uid,'mensagens'), {de:'lojista', texto:t.slice(0,2000), criadoEm: serverTimestamp()});
+      el('pmTexto').value = ''; av.textContent = '';
+    }catch(e){
+      av.style.color = 'var(--mv-erro)';
+      av.textContent = 'Não consegui enviar agora. Tente de novo em instantes.';
+    }
+    pmTravar(false);
+  }
+
+  async function pmAnexar(inp){
+    const av = el('pmAviso'); av.style.color = 'var(--mv-erro)';
+    const f = inp && inp.files && inp.files[0];
+    if(!f){ return; }
+    if(PM_ENVIANDO){ av.textContent = 'Já tem um arquivo subindo. Espere a barra terminar.'; try{inp.value='';}catch(_){} return; }
+    if(!(PM_CONV && PM_CONV.docsLiberado === true)){ av.textContent = 'O envio de documentos não está liberado nesta conversa.'; try{inp.value='';}catch(_){} return; }
+    const tipo = f.type || 'application/octet-stream';
+    if(PM_IMG_RUIM.includes(tipo) || /\.(heic|heif)$/i.test(f.name||'')){
+      av.textContent = 'Foto em HEIC/HEIF (formato do iPhone) não abre no navegador. No iPhone: Ajustes › Câmera › Formatos › “Mais compatível” — ou mande como PDF.';
+      try{inp.value='';}catch(_){} return;
+    }
+    if(f.size > PM_TETO){ av.textContent = 'Arquivo muito grande. O limite é 10 MB.'; try{inp.value='';}catch(_){} return; }
+    if(!pmEhImagem(tipo) && !PM_TIPOS.includes(tipo)){
+      av.textContent = 'Tipo não aceito. Envie PDF, foto (JPG/PNG), Word, Excel ou texto.';
+      try{inp.value='';}catch(_){} return;
+    }
+    const repetido = PM_MSGS.some(m => m.arquivoNome === f.name && Number(m.arquivoTam) === f.size);
+    if(repetido && !confirm('“'+f.name+'” já está nesta conversa. Enviar de novo mesmo assim?')){ try{inp.value='';}catch(_){} return; }
+
+    pmTravar(true); av.style.color = 'var(--mv-txt-3)'; av.textContent = '';
+    const nome = String(f.name||'documento').slice(-80).replace(/[^\w.\- ]+/g,'_');
+    pmProgresso(nome, 0);
+    try{
+      const r = stRef(storage, 'documentos/'+MEU.uid+'/'+Date.now()+'_'+nome);
+      const tarefa = uploadBytesResumable(r, f, {contentType: tipo});
+      PM_UPLOAD = tarefa;
+      await new Promise((ok, erro) => {
+        tarefa.on('state_changed',
+          sn => pmProgresso(nome, sn.totalBytes ? (sn.bytesTransferred/sn.totalBytes)*100 : 0),
+          erro, ok);
+      });
+      const url = await getDownloadURL(r);
+      const legenda = el('pmTexto').value.trim();
+      await pmGarantirConversa(legenda || ('Documento: '+nome));
+      const payload = {de:'lojista', criadoEm: serverTimestamp(), arquivoUrl:url, arquivoNome:nome, arquivoTipo:tipo, arquivoTam:f.size};
+      if(legenda) payload.texto = legenda.slice(0,2000);
+      await addDoc(collection(db,'conversas',MEU.uid,'mensagens'), payload);
+      el('pmTexto').value = ''; av.textContent = '';
+    }catch(e){
+      av.style.color = 'var(--mv-erro)';
+      av.textContent = (e && e.code === 'storage/canceled') ? 'Envio cancelado.' : 'Não consegui enviar o documento. Tente de novo.';
+    }
+    pmEscondeProgresso(); pmTravar(false);
+    try{ inp.value = ''; }catch(_){}
+  }
+
+  el('btnPmEnviar').addEventListener('click', pmEnviar);
+  el('btnPmClipe').addEventListener('click', ()=>{ if(PM_ENVIANDO) return; const i = el('pmArquivo'); i.value=''; i.click(); });
+  el('btnPmAnexar2').addEventListener('click', ()=>{ if(PM_ENVIANDO) return; const i = el('pmArquivo'); i.value=''; i.click(); });
+  el('pmArquivo').addEventListener('change', function(){ pmAnexar(this); });
+  el('btnPmCancelarUp').addEventListener('click', ()=>{ try{ if(PM_UPLOAD) PM_UPLOAD.cancel(); }catch(e){} });
+  el('pmTexto').addEventListener('keydown', e => {
+    if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)){ e.preventDefault(); pmEnviar(); }
+  });
+
   onAuthStateChanged(auth, async (user)=>{
     if(!user){ telas('login'); return; }
     telas('carregando');
@@ -955,6 +1256,7 @@ input::placeholder{color:#6b7f96}
         const n = await getDoc(doc(db,'negocios',user.uid));
         if(n.exists()) mostrarVoltar();
       }catch(_){ mostrarVoltar(); }
+      pmIniciar(user);
       carregarComissoes();
       carregarSaques();
       carregarIndicacoes();

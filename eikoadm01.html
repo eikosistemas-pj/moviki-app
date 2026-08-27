@@ -1079,7 +1079,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-27-mensagens2';
+  window.MOVIKI_VERSAO = '2026-08-27-mensagens3';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2835,14 +2835,9 @@ table.mvTab td b{font-weight:700}
         : (q.tipos[0] === 'parceiro' ? '<span class="cvTag par">parceiro</span>' : '<span class="cvTag loj">lojista</span>');
       const linha2 = [q.apelido ? '/'+q.apelido : '', q.email || ''].filter(Boolean).join(' · ');
       const jaTem = CONVS.some(c => c.uid === q.uid) ? ' <span style="color:var(--mv-txt-3);font-size:11px">(já tem conversa)</span>' : '';
-      // Parceiro PURO (sem negócio) ainda não tem caixa de mensagens no
-      // parceiro.html — a mensagem seria gravada e ninguém veria. Avisa em vez
-      // de esconder: assim que o painel do parceiro ganhar a caixa, esta linha sai.
-      const semCaixa = (q.tipos.length === 1 && q.tipos[0] === 'parceiro')
-        ? '<div class="cvItPrev" style="color:#ffcf9a">o painel do parceiro ainda não tem a caixa — ele não vai ver</div>' : '';
       return '<button type="button" class="cvIt" data-conv="'+esc(q.uid)+'">'+
         '<div class="cvItTopo"><span class="cvItNome">'+esc(q.nome || '(sem nome)')+'</span>'+tag+'</div>'+
-        '<div class="cvItPrev">'+(esc(linha2) || '—')+jaTem+'</div>'+semCaixa+
+        '<div class="cvItPrev">'+(esc(linha2) || '—')+jaTem+'</div>'+
       '</button>';
     }).join('') + (lista.length > teto
       ? '<div class="cvVazio" style="padding:10px">Mostrando '+teto+' de '+lista.length+'. Digite mais letras para afinar.</div>'
