@@ -697,6 +697,13 @@ input[type=checkbox]{width:auto;padding:0;}
   color:var(--mv-txt);border-bottom-right-radius:5px;}
 .msgEle{align-self:flex-start;background:var(--mv-campo);border:1px solid var(--mv-linha);
   color:var(--mv-txt);border-bottom-left-radius:5px;}
+/* Bolha do assistente de IA. Cor propria de proposito: o lojista precisa
+   saber, sem ler o rodape, que quem respondeu foi o robo e nao o dono. */
+.msgBot{align-self:flex-start;background:rgba(139,110,255,.13);border:1px solid rgba(139,110,255,.42);
+  color:var(--mv-txt);border-bottom-left-radius:5px;}
+.msgPensando{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mv-txt-2);margin:2px 2px 0;}
+.msgPensando i{width:7px;height:7px;border-radius:50%;background:#8b6eff;display:inline-block;
+  animation:msgPulsa 1.2s infinite;}
 .msgAnexo{display:flex;align-items:center;gap:9px;margin-top:7px;padding:9px 10px;border-radius:10px;
   background:rgba(255,255,255,.05);border:1px solid var(--mv-linha);text-decoration:none;color:var(--mv-txt);}
 .msgAnexo svg{width:19px;height:19px;flex:0 0 auto;color:var(--ciano);}
@@ -1368,6 +1375,7 @@ body.naHome #btnSalvar{margin-top:14px;}
           </div>
 
           <div id="msgLista"><div class="msgVazio">Carregando…</div></div>
+          <div class="msgPensando escondido" id="msgPensando"><i></i>Assistente Moviki está escrevendo…</div>
 
           <div class="msgEnviar">
             <textarea id="msgTexto" maxlength="2000" rows="1" placeholder="Escreva sua mensagem…"></textarea>
@@ -2112,7 +2120,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-08-27-mensagens2';
+  window.MOVIKI_VERSAO='2026-08-27-botchat';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -2133,6 +2141,14 @@ body.naHome #btnSalvar{margin-top:14px;}
   function msgEhImagem(t){ return String(t||'').indexOf('image/')===0 && MSG_IMG_RUIM.indexOf(t)<0; }
   var MSG_UPLOAD=null;
 
+  /* ---- ATENDENTE DE IA (repo moviki-ai) ----
+     Endereco do endpoint. String VAZIA = robo desligado no painel inteiro,
+     e a caixa de mensagens volta a se comportar exatamente como antes.
+     Trocar aqui e o unico jeito de ligar/desligar globalmente; por conversa,
+     quem manda e o campo botLigado, que so o dono do Moviki mexe. */
+  var MSG_BOT_URL='https://moviki-ai.vercel.app/api/chat';
+  var MSG_BOT_PENSANDO=false;
+
   function msgEsc(v){return String(v==null?'':v).replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});}
   function msgMs(t){ try{ return t&&t.toMillis?t.toMillis():(t?new Date(t).getTime():0); }catch(e){ return 0; } }
   function msgQuando(t){
@@ -2151,7 +2167,9 @@ body.naHome #btnSalvar{margin-top:14px;}
   }
   function msgTemNaoLida(){
     if(!MSG_CONV)return false;
-    if(MSG_CONV.ultimoDe!=='admin')return false;
+    // 'bot' entra aqui junto com 'admin': resposta do robo tambem e mensagem
+    // nova que o lojista ainda nao viu.
+    if(MSG_CONV.ultimoDe!=='admin'&&MSG_CONV.ultimoDe!=='bot')return false;
     return msgMs(MSG_CONV.ultimaEm) > msgMs(MSG_CONV.vistoLojistaEm);
   }
   function msgPintarSino(){
@@ -2184,6 +2202,7 @@ body.naHome #btnSalvar{margin-top:14px;}
     try{ if(MSG_PARA_MSGS)MSG_PARA_MSGS(); }catch(e){}
     MSG_PARA_CONV=null; MSG_PARA_MSGS=null;
     MSG_UID=''; MSG_CONV=null; MSG_MSGS=[]; msgPintarSino();
+    MSG_BOT_PENSANDO=false; msgPintarPensando(false);
   }
 
   function msgPintarLista(){
@@ -2193,7 +2212,7 @@ body.naHome #btnSalvar{margin-top:14px;}
       return;
     }
     box.innerHTML=MSG_MSGS.map(function(m){
-      var eu=(m.de==='lojista');
+      var eu=(m.de==='lojista'), ehBot=(m.de==='bot');
       var anexo='';
       if(m.arquivoUrl){
         // Imagem vira miniatura; o resto vira cartao de documento.
@@ -2207,8 +2226,10 @@ body.naHome #btnSalvar{margin-top:14px;}
              '<span class="msgAnexoTam">'+msgTam(m.arquivoTam)+' · toque para abrir</span></span></a>');
       }
       var txt=m.texto?msgEsc(m.texto).replace(/\n/g,'<br>'):'';
-      return '<div class="msgBolha '+(eu?'msgEu':'msgEle')+'">'+txt+anexo+
-        '<span class="msgQuando">'+(eu?'você':'Moviki')+' · '+msgQuando(m.criadoEm)+'</span></div>';
+      var classe=eu?'msgEu':(ehBot?'msgBot':'msgEle');
+      var quem=eu?'você':(ehBot?'Assistente Moviki':'Moviki');
+      return '<div class="msgBolha '+classe+'">'+txt+anexo+
+        '<span class="msgQuando">'+quem+' · '+msgQuando(m.criadoEm)+'</span></div>';
     }).join('');
     setTimeout(function(){ try{ box.scrollTop=box.scrollHeight; }catch(e){} },30);
   }
@@ -2223,6 +2244,32 @@ body.naHome #btnSalvar{margin-top:14px;}
         ? '<b>O Moviki está pedindo:</b> '+msgEsc(MSG_CONV.docsPedido)
         : 'O Moviki liberou o envio de documentos nesta conversa. Anexe PDF, foto ou planilha — até 10 MB por arquivo.';
     }
+  }
+
+  function msgPintarPensando(on){
+    var n=el('msgPensando'); if(n)n.classList.toggle('escondido',!on);
+  }
+
+  /* Cutuca o atendente de IA DEPOIS que a mensagem ja esta gravada.
+     O TEXTO NAO VAI NA CHAMADA de proposito: o endpoint le do banco qual foi
+     a ultima mensagem. Mandar o texto junto criaria duas versoes da mesma
+     frase, e nada garantiria que sao iguais.
+     Falha calada: robo fora do ar = conversa segue com gente, como antes. */
+  async function msgChamarBot(){
+    if(!MSG_BOT_URL)return;
+    if(!(MSG_CONV&&MSG_CONV.botLigado===true))return;
+    if(MSG_BOT_PENSANDO)return;
+    MSG_BOT_PENSANDO=true; msgPintarPensando(true);
+    try{
+      var u=auth.currentUser;
+      if(u){
+        var tk=await u.getIdToken();
+        await fetch(MSG_BOT_URL,{method:'POST',headers:{'Authorization':'Bearer '+tk}});
+      }
+    }catch(e){}
+    // A resposta aparece pelo onSnapshot, nao pelo retorno desta chamada.
+    // O atraso curto e so pra barra nao sumir antes da bolha chegar.
+    setTimeout(function(){ MSG_BOT_PENSANDO=false; msgPintarPensando(false); },1500);
   }
 
   async function msgMarcarVisto(){
@@ -2283,6 +2330,7 @@ body.naHome #btnSalvar{margin-top:14px;}
       await msgGarantirConversa(t);
       await addDoc(collection(db,'conversas',MSG_UID,'mensagens'),{de:'lojista',texto:t.slice(0,2000),criadoEm:serverTimestamp()});
       el('msgTexto').value=''; av.textContent='';
+      msgChamarBot();
     }catch(e){
       av.style.color='#ff9b9b';
       av.textContent='Não consegui enviar agora. Tente de novo em instantes.';
