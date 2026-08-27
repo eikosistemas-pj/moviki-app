@@ -365,6 +365,48 @@ table.mvTab td b{font-weight:700}
 .sw input:disabled + .swT{opacity:.5;cursor:not-allowed}
 .sw input:focus-visible + .swT{outline:2px solid var(--mv-ciano);outline-offset:2px}
 
+/* ---------- caixa de mensagens (27/08/2026) ---------- */
+.cvGrade{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+/* minmax(0,1fr) e nao 1fr: item de grid nasce com min-width:auto e a coluna
+   fica do tamanho do conteudo mais largo, estourando a tela no celular. */
+@media(min-width:1000px){.cvGrade{grid-template-columns:320px minmax(0,1fr);align-items:start}}
+.cvGrade > div{min-width:0}
+#cvBusca{min-width:0;flex:1 1 120px}
+.cvLista{max-height:60vh;overflow:auto;display:flex;flex-direction:column;gap:7px}
+.cvIt{display:block;width:100%;text-align:left;background:var(--mv-surf-2);border:1px solid var(--mv-linha);
+  border-radius:12px;padding:11px 12px;cursor:pointer;font-family:inherit;color:var(--mv-txt);transition:.15s}
+.cvIt:hover{border-color:var(--mv-ciano)}
+.cvIt.on{border-color:var(--mv-ciano);background:rgba(0,212,255,.10)}
+.cvItTopo{display:flex;align-items:center;gap:8px}
+.cvItNome{flex:1;min-width:0;font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cvItData{font-size:11px;color:var(--mv-txt-3);flex:0 0 auto}
+.cvItPrev{font-size:12.5px;color:var(--mv-txt-3);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cvPt{width:9px;height:9px;border-radius:50%;background:#ff5a5a;flex:0 0 auto}
+.cvThread{max-height:46vh;overflow:auto;min-width:0;display:flex;flex-direction:column;gap:9px;padding:4px 2px;margin:10px 0}
+.cvBolha{max-width:86%;min-width:0;padding:10px 12px;border-radius:14px;font-size:14px;line-height:1.5;word-break:break-word}
+.cvBolha .cvQuando{display:block;font-size:11px;margin-top:5px;opacity:.62}
+.cvEu{align-self:flex-end;background:rgba(0,212,255,.14);border:1px solid rgba(0,212,255,.34);border-bottom-right-radius:5px}
+.cvEle{align-self:flex-start;background:var(--mv-surf-2);border:1px solid var(--mv-linha);border-bottom-left-radius:5px}
+.cvAnexo{display:flex;align-items:center;gap:9px;margin-top:7px;padding:9px 10px;border-radius:10px;
+  background:rgba(255,255,255,.05);border:1px solid var(--mv-linha);text-decoration:none;color:var(--mv-txt)}
+.cvAnexo svg{width:19px;height:19px;flex:0 0 auto;color:var(--mv-ciano)}
+.cvEnviar{display:flex;gap:8px;align-items:flex-end;min-width:0}
+.cvEnviar textarea{flex:1;min-width:0;min-height:46px;max-height:130px;resize:vertical;padding:12px;border-radius:12px;
+  border:1px solid var(--mv-linha);background:var(--mv-surf-2);color:var(--mv-txt);font-family:inherit;font-size:14.5px}
+.cvIco{flex:0 0 auto;width:46px;height:46px;border-radius:12px;border:1px solid var(--mv-linha);
+  background:var(--mv-surf-2);color:var(--mv-txt-2);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.cvIco:hover{border-color:var(--mv-ciano);color:var(--mv-ciano)}
+.cvIco svg{width:19px;height:19px}
+.cvIco[disabled]{opacity:.45;cursor:not-allowed}
+.cvVazio{text-align:center;font-size:13.5px;color:var(--mv-txt-3);padding:28px 10px}
+.cvDocs{border:1px solid rgba(255,159,64,.55);background:rgba(255,159,64,.09);border-radius:12px;padding:12px 13px;margin-bottom:12px}
+.cvDocsLinha{display:flex;align-items:center;gap:12px}
+.cvDocsTxt{flex:1;min-width:0}
+.cvDocsTxt b{display:block;font-size:13.5px;margin-bottom:3px}
+.cvDocsTxt span{font-size:12.5px;color:var(--mv-txt-3);line-height:1.5}
+.cvPedido{width:100%;box-sizing:border-box;margin-top:10px;padding:10px 11px;border-radius:10px;
+  border:1px solid var(--mv-linha);background:var(--mv-surf-2);color:var(--mv-txt);font-family:inherit;font-size:13.5px}
+
 /* mapa */
 .mapaCaixa{height:340px;border-radius:var(--mv-r);overflow:hidden;border:1px solid var(--mv-linha);background:var(--mv-surf-2)}
 .leaflet-container{background:#0a1424}
@@ -464,6 +506,7 @@ table.mvTab td b{font-weight:700}
           <button type="button" class="mvNavIt" data-nav="negocios"><img class="mvNavIco" src="icones/usuarios.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Negócios</span></button>
           <button type="button" class="mvNavIt" data-nav="parceiros"><img class="mvNavIco" src="icones/parceiros.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Parceiros</span><span class="bad hide" id="badParc">0</span></button>
           <button type="button" class="mvNavIt" data-nav="comissoes"><img class="mvNavIco" src="icones/comissoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Comissões e saques</span><span class="bad hide" id="badCom">0</span></button>
+          <button type="button" class="mvNavIt" data-nav="mensagens"><img class="mvNavIco" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Mensagens</span><span class="bad hide" id="badMsg">0</span></button>
           <button type="button" class="mvNavIt" data-nav="metricas"><img class="mvNavIco" src="icones/alvo.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Métricas</span></button>
           <button type="button" class="mvNavIt" data-nav="newsletter"><img class="mvNavIco" src="icones/recorrente.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Newsletter</span></button>
           <button type="button" class="mvNavIt" data-nav="relatorios"><img class="mvNavIco" src="icones/relatorios.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Relatórios</span></button>
@@ -577,8 +620,8 @@ table.mvTab td b{font-weight:700}
             </div>
             <div class="tabRola">
               <table class="mvTab">
-                <thead><tr><th>Negócio</th><th>Plano</th><th>Status</th><th>Link</th><th>Segmento</th><th>Atualizado</th></tr></thead>
-                <tbody id="negBody"><tr><td colspan="6" class="vazio">Carregando…</td></tr></tbody>
+                <thead><tr><th>Negócio</th><th>Plano</th><th>Status</th><th>Link</th><th>Segmento</th><th>Atualizado</th><th>Conversa</th></tr></thead>
+                <tbody id="negBody"><tr><td colspan="7" class="vazio">Carregando…</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -628,6 +671,58 @@ table.mvTab td b{font-weight:700}
               <button type="button" class="btnMini ok" id="btnComTeste">Criar comissão de teste</button>
             </div>
             <div class="icMsg" id="tsMsg"></div>
+          </div>
+        </section>
+
+        <!-- ============ SEÇÃO: MENSAGENS ============ -->
+        <section data-sec="mensagens" class="hide">
+          <div class="cd">
+            <div class="cdTopo"><div><div class="cdTit">Mensagens</div><div class="cdSub">Canal direto com cada lojista. Quem escreveu primeiro aparece no topo.</div></div><span class="cdChip" id="cvChip">—</span></div>
+            <div class="cvGrade">
+
+              <div>
+                <div class="ferr" style="margin-bottom:10px">
+                  <input type="search" id="cvBusca" placeholder="Buscar negócio…" autocomplete="off">
+                  <button type="button" class="btnMini" id="btnCvNova">Nova conversa</button>
+                </div>
+                <div class="cvLista" id="cvLista"><div class="cvVazio">Carregando…</div></div>
+              </div>
+
+              <div>
+                <div id="cvSemSelecao" class="cvVazio">Escolha uma conversa à esquerda — ou toque em <b>Nova conversa</b> para falar com um lojista que nunca escreveu.</div>
+
+                <div id="cvAberta" class="hide">
+                  <div class="cdTopo" style="margin-bottom:10px">
+                    <div><div class="cdTit" id="cvNome">—</div><div class="cdSub" id="cvSub">—</div></div>
+                    <button type="button" class="btnMini" id="btnCvFechar">Fechar</button>
+                  </div>
+
+                  <div class="cvDocs">
+                    <div class="cvDocsLinha">
+                      <div class="cvDocsTxt">
+                        <b>Mensagens do admin — envio de documentos</b>
+                        <span id="cvDocsEstado">Desligado: o lojista não vê o bloco de anexo. Ligue para pedir um documento a ele.</span>
+                      </div>
+                      <label class="sw"><input type="checkbox" id="swDocs" disabled><span class="swT"><span class="swB"></span></span></label>
+                    </div>
+                    <input type="text" class="cvPedido hide" id="cvPedido" maxlength="300" placeholder="O que você está pedindo? (ex: contrato social e comprovante de endereço)">
+                    <button type="button" class="btnMini hide" id="btnCvPedido" style="margin-top:8px">Salvar o pedido</button>
+                  </div>
+
+                  <div class="cvThread" id="cvThread"></div>
+
+                  <div class="cvEnviar">
+                    <textarea id="cvTexto" maxlength="2000" rows="1" placeholder="Escreva para o lojista…"></textarea>
+                    <button type="button" class="cvIco" id="btnCvClipe" aria-label="Anexar documento" title="Anexar documento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.4 11.05 12.25 20.2a5.5 5.5 0 0 1-7.78-7.78l9.2-9.2a3.67 3.67 0 1 1 5.18 5.19l-9.2 9.19a1.83 1.83 0 1 1-2.6-2.59l8.5-8.49"/></svg></button>
+                    <button type="button" class="cvIco" id="btnCvEnviar" aria-label="Enviar" title="Enviar" style="background:var(--mv-ciano);border-color:var(--mv-ciano);color:#02131f"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 20 16-8L4 4l3 8z"/><path d="M7 12h13"/></svg></button>
+                  </div>
+                  <input type="file" id="cvArquivo" style="display:none">
+                  <div id="cvAviso" style="font-size:12.5px;min-height:16px;margin:6px 2px 0"></div>
+                </div>
+              </div>
+
+            </div>
+            <div class="avisoRegra hide" id="cvErroRegra">Não consegui ler as conversas. A coleção <b>conversas</b> só abre para quem tem documento em <b>admins</b> — e as regras <b>v13</b> precisam estar publicadas no Console.</div>
           </div>
         </section>
 
@@ -890,6 +985,7 @@ table.mvTab td b{font-weight:700}
     <button type="button" data-ir="negocios"><img src="icones/usuarios.png" alt="" onerror="this.style.display='none'">Negócios</button>
     <button type="button" data-ir="parceiros"><img src="icones/parceiros.png" alt="" onerror="this.style.display='none'">Parceiros<span class="bad hide" id="badParcM">0</span></button>
     <button type="button" data-ir="comissoes"><img src="icones/comissoes.png" alt="" onerror="this.style.display='none'">Comissões e saques<span class="bad hide" id="badComM">0</span></button>
+    <button type="button" data-ir="mensagens"><img src="icones/sobre.png" alt="" onerror="this.style.display='none'">Mensagens<span class="bad hide" id="badMsgM">0</span></button>
     <button type="button" data-ir="metricas"><img src="icones/alvo.png" alt="" onerror="this.style.display='none'">Métricas</button>
     <button type="button" data-ir="newsletter"><img src="icones/recorrente.png" alt="" onerror="this.style.display='none'">Newsletter</button>
     <button type="button" data-ir="relatorios"><img src="icones/relatorios.png" alt="" onerror="this.style.display='none'">Relatórios</button>
@@ -918,11 +1014,12 @@ table.mvTab td b{font-weight:700}
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, query, orderBy, limit, documentId } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, onSnapshot, serverTimestamp, query, orderBy, limit, documentId } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref as stRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-27-conformidade';
+  window.MOVIKI_VERSAO = '2026-08-27-mensagens';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -937,6 +1034,7 @@ table.mvTab td b{font-weight:700}
   const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db   = getFirestore(app);
+  const storage = getStorage(app);
 
   /* ---------- utilitários ---------- */
   const el   = id => document.getElementById(id);
@@ -993,6 +1091,7 @@ table.mvTab td b{font-weight:700}
     if(nome === 'visao') setTimeout(()=>{ try{ if(_map) _map.invalidateSize(); }catch(e){} }, 120);
     if(nome === 'exclusoes') carregarExclusoes();
     if(nome === 'newsletter' && SAUDE.newsletter === undefined) carregarNewsletter();
+    if(nome === 'mensagens') ouvirConversas();
   }
   window.mvIrSec = irSec;
 
@@ -1106,6 +1205,10 @@ table.mvTab td b{font-weight:700}
     telas('painel');
     irSec('visao');
     carregarTudo(false);
+    // A caixa de mensagens liga sozinha no login: sem isso o número vermelho de
+    // "não lidas" só apareceria depois de entrar na seção — que é justamente o
+    // que ele existe pra evitar.
+    ouvirConversas();
   });
 
   async function carregarTudo(recarregando){
@@ -1144,7 +1247,7 @@ table.mvTab td b{font-weight:700}
 
     if(!okNeg){
       ['kLojistas','kPro','kAbertos','kReceita'].forEach(id => txt(id,'—'));
-      el('negBody').innerHTML = '<tr><td colspan="6" class="vazio">Não consegui ler os negócios agora.</td></tr>';
+      el('negBody').innerHTML = '<tr><td colspan="7" class="vazio">Não consegui ler os negócios agora.</td></tr>';
       el('relPlanos').innerHTML = '<div class="vazio">Não consegui ler os negócios agora.</div>';
       return;
     }
@@ -1226,7 +1329,7 @@ table.mvTab td b{font-weight:700}
     });
     txt('contaNeg', lista.length + (lista.length === 1 ? ' negócio' : ' negócios'));
     if(!lista.length){
-      el('negBody').innerHTML = '<tr><td colspan="6" class="vazio">Nenhum negócio com esse filtro.</td></tr>';
+      el('negBody').innerHTML = '<tr><td colspan="7" class="vazio">Nenhum negócio com esse filtro.</td></tr>';
       return;
     }
     el('negBody').innerHTML = lista.map(n=>{
@@ -1242,6 +1345,7 @@ table.mvTab td b{font-weight:700}
         '<td>'+link+'</td>'+
         '<td><span class="celNome" style="max-width:150px">'+esc(n.segmento||'—')+'</span></td>'+
         '<td class="num">'+dataBR(ms(n.atualizadoEm))+'</td>'+
+        '<td><button type="button" class="btnMini" data-cv="'+esc(n.uid)+'">Mensagem</button></td>'+
       '</tr>';
     }).join('');
   }
@@ -2171,6 +2275,292 @@ table.mvTab td b{font-weight:700}
   el('btnVerApelido').addEventListener('click', ()=>abrirApelido(false));
   el('btnVerDemo').addEventListener('click', ()=>abrirApelido(true));
   el('apelidoVer').addEventListener('keydown', ev=>{ if(ev.key === 'Enter') abrirApelido(false); });
+
+
+  /* ==========================================================
+     CAIXA DE MENSAGENS DO DONO — 27/08/2026
+     conversas/{uid} (o id É o uid do lojista) + subcoleção mensagens.
+     O switch "envio de documentos" é POR LOJISTA: só o admin liga, e é
+     ele que faz o bloco "Mensagens do admin" aparecer no painel dele.
+     ========================================================== */
+  let CONVS = [], CONV_ABERTA = '', CONV_MSGS = [], CONV_ENVIANDO = false;
+  let PARA_CONVS = null, PARA_MSGS = null;
+  const CV_TETO = 10*1024*1024;
+  const CV_TIPOS = ['application/pdf','text/plain','text/csv','application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+
+  function cvQuando(t){
+    const m = ms(t); if(!m) return '—';
+    const d = new Date(m), hoje = new Date();
+    const hh = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+    if(d.toDateString() === hoje.toDateString()) return hh;
+    return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');
+  }
+  function cvTam(n){
+    n = Number(n)||0;
+    if(n < 1024) return n+' B';
+    if(n < 1024*1024) return (n/1024).toFixed(0)+' KB';
+    return (n/1024/1024).toFixed(1).replace('.',',')+' MB';
+  }
+  function cvNaoLida(c){
+    if(!c || c.ultimoDe !== 'lojista') return false;
+    return ms(c.ultimaEm) > ms(c.vistoDonoEm);
+  }
+  // O nome do negócio muda depois que a conversa nasce, então a lista mostra
+  // sempre o nome ATUAL de negocios/{uid}; o campo 'nome' da conversa é só o
+  // último recurso (negócio apagado, ou lista de negócios que não carregou).
+  function cvNome(c){
+    const n = NEG.find(x => x.uid === c.uid);
+    return (n && n.nome) || c.nome || '(sem nome)';
+  }
+  function cvPintarBadge(){
+    const q = CONVS.filter(cvNaoLida).length;
+    ['badMsg','badMsgM'].forEach(id=>{
+      const n = el(id); if(!n) return;
+      n.textContent = q;
+      n.classList.toggle('hide', q === 0);
+    });
+  }
+
+  function ouvirConversas(){
+    if(PARA_CONVS) return;
+    try{
+      PARA_CONVS = onSnapshot(
+        query(collection(db,'conversas'), orderBy('ultimaEm','desc'), limit(200)),
+        qs => {
+          CONVS = []; qs.forEach(d => CONVS.push(Object.assign({uid:d.id}, d.data())));
+          hide('cvErroRegra');
+          cvPintarBadge(); pintarConversas();
+        },
+        () => { show('cvErroRegra'); el('cvLista').innerHTML = '<div class="cvVazio">Não consegui ler as conversas.</div>'; }
+      );
+    }catch(e){ show('cvErroRegra'); }
+  }
+
+  function pintarConversas(){
+    const box = el('cvLista'); if(!box) return;
+    const filtro = ((el('cvBusca')||{}).value||'').trim().toLowerCase();
+    const lista = CONVS.filter(c => !filtro || cvNome(c).toLowerCase().includes(filtro) || (c.email||'').toLowerCase().includes(filtro));
+    txt('cvChip', CONVS.length + (CONVS.length === 1 ? ' conversa' : ' conversas'));
+    if(!lista.length){
+      box.innerHTML = '<div class="cvVazio">'+(CONVS.length ? 'Nenhuma conversa com esse nome.' : 'Ninguém escreveu ainda. Use <b>Nova conversa</b> para começar.')+'</div>';
+      return;
+    }
+    box.innerHTML = lista.map(c => {
+      const nova = cvNaoLida(c);
+      const quem = c.ultimoDe === 'admin' ? 'você: ' : '';
+      return '<button type="button" class="cvIt'+(c.uid === CONV_ABERTA ? ' on' : '')+'" data-conv="'+esc(c.uid)+'">'+
+        '<div class="cvItTopo">'+(nova ? '<span class="cvPt"></span>' : '')+
+          '<span class="cvItNome">'+esc(cvNome(c))+'</span>'+
+          '<span class="cvItData">'+cvQuando(c.ultimaEm)+'</span></div>'+
+        '<div class="cvItPrev">'+esc(quem + (c.ultimaMsg||'—'))+'</div>'+
+        (c.docsLiberado === true ? '<div class="cvItPrev" style="color:#ffcf9a">documentos liberados</div>' : '')+
+      '</button>';
+    }).join('');
+  }
+
+  async function abrirConversa(uid){
+    if(!uid) return;
+    CONV_ABERTA = uid; CONV_MSGS = [];
+    hide('cvSemSelecao'); show('cvAberta');
+    const c = CONVS.find(x => x.uid === uid) || {uid};
+    txt('cvNome', cvNome(c));
+    txt('cvSub', (c.email || '—') + ' · ' + (PLANOS[PLANO_DE[uid]||'basico'].n));
+    el('cvThread').innerHTML = '<div class="cvVazio">Carregando…</div>';
+    el('cvAviso').textContent = '';
+    cvPintarDocs(c);
+    pintarConversas();
+
+    try{ if(PARA_MSGS) PARA_MSGS(); }catch(e){}
+    PARA_MSGS = onSnapshot(
+      query(collection(db,'conversas',uid,'mensagens'), orderBy('criadoEm','asc'), limit(200)),
+      qs => { CONV_MSGS = []; qs.forEach(d => CONV_MSGS.push(d.data())); pintarThread(); },
+      () => { el('cvThread').innerHTML = '<div class="cvVazio">Não consegui ler as mensagens.</div>'; }
+    );
+    marcarVistoDono(uid);
+  }
+  function fecharConversa(){
+    CONV_ABERTA = ''; CONV_MSGS = [];
+    try{ if(PARA_MSGS) PARA_MSGS(); }catch(e){}
+    PARA_MSGS = null;
+    hide('cvAberta'); show('cvSemSelecao'); pintarConversas();
+  }
+
+  function pintarThread(){
+    const box = el('cvThread'); if(!box) return;
+    if(!CONV_MSGS.length){ box.innerHTML = '<div class="cvVazio">Nenhuma mensagem nesta conversa ainda.</div>'; return; }
+    box.innerHTML = CONV_MSGS.map(m => {
+      const eu = (m.de === 'admin');
+      let anexo = '';
+      if(m.arquivoUrl){
+        anexo = '<a class="cvAnexo" href="'+esc(m.arquivoUrl)+'" target="_blank" rel="noopener">'+
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/></svg>'+
+          '<span style="min-width:0"><span style="display:block;font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(m.arquivoNome||'documento')+'</span>'+
+          '<span style="font-size:11px;color:var(--mv-txt-3)">'+cvTam(m.arquivoTam)+' · abrir</span></span></a>';
+      }
+      const t = m.texto ? esc(m.texto).replace(/\n/g,'<br>') : '';
+      return '<div class="cvBolha '+(eu ? 'cvEu' : 'cvEle')+'">'+t+anexo+
+        '<span class="cvQuando">'+(eu ? 'você' : 'lojista')+' · '+dataBR(ms(m.criadoEm))+' '+cvQuando(m.criadoEm)+'</span></div>';
+    }).join('');
+    setTimeout(()=>{ try{ box.scrollTop = box.scrollHeight; }catch(e){} }, 30);
+  }
+
+  function cvPintarDocs(c){
+    const on = (c && c.docsLiberado === true);
+    const sw = el('swDocs');
+    if(sw){ sw.checked = on; sw.disabled = false; }
+    txt('cvDocsEstado', on
+      ? 'Ligado: o lojista vê o bloco “Mensagens do admin” e pode anexar documento (até 10 MB por arquivo).'
+      : 'Desligado: o lojista não vê o bloco de anexo. Ligue para pedir um documento a ele.');
+    el('cvPedido').classList.toggle('hide', !on);
+    el('btnCvPedido').classList.toggle('hide', !on);
+    el('cvPedido').value = (c && c.docsPedido) || '';
+    el('btnCvClipe').style.display = '';
+  }
+
+  async function marcarVistoDono(uid){
+    const c = CONVS.find(x => x.uid === uid);
+    if(!c || !cvNaoLida(c)) return;
+    try{ await updateDoc(doc(db,'conversas',uid), {vistoDonoEm: serverTimestamp()}); }catch(e){}
+  }
+
+  // O admin escreve a conversa inteira (a regra deixa), então aqui um setDoc com
+  // merge resolve tanto o "conversa nova" quanto o "conversa que já existia".
+  async function cvGravarResumo(uid, resumo){
+    const c = CONVS.find(x => x.uid === uid);
+    const n = NEG.find(x => x.uid === uid);
+    const base = {
+      uid,
+      ultimaMsg: String(resumo||'').slice(0,200),
+      ultimaEm: serverTimestamp(),
+      ultimoDe: 'admin',
+      vistoDonoEm: serverTimestamp()
+    };
+    if(!c){
+      base.nome = String((n && n.nome) || '').slice(0,80);
+      base.docsLiberado = false;
+      base.criadoEm = serverTimestamp();
+    }
+    await setDoc(doc(db,'conversas',uid), base, {merge:true});
+  }
+
+  async function cvEnviar(){
+    if(CONV_ENVIANDO || !CONV_ABERTA) return;
+    const av = el('cvAviso'); av.style.color = 'var(--mv-erro)';
+    const t = el('cvTexto').value.trim();
+    if(!t){ av.textContent = 'Escreva alguma coisa antes de enviar.'; return; }
+    CONV_ENVIANDO = true; el('btnCvEnviar').disabled = true;
+    av.style.color = 'var(--mv-txt-3)'; av.textContent = 'Enviando…';
+    try{
+      await cvGravarResumo(CONV_ABERTA, t);
+      await addDoc(collection(db,'conversas',CONV_ABERTA,'mensagens'), {de:'admin', texto:t.slice(0,2000), criadoEm: serverTimestamp()});
+      el('cvTexto').value = ''; av.textContent = '';
+    }catch(e){
+      av.style.color = 'var(--mv-erro)';
+      av.textContent = 'Não consegui enviar. Confira se as regras v13 estão publicadas.';
+    }
+    CONV_ENVIANDO = false; el('btnCvEnviar').disabled = false;
+  }
+
+  async function cvAnexar(inp){
+    const av = el('cvAviso'); av.style.color = 'var(--mv-erro)';
+    const f = inp && inp.files && inp.files[0];
+    if(!f || !CONV_ABERTA) return;
+    if(f.size > CV_TETO){ av.textContent = 'Arquivo muito grande. O limite é 10 MB.'; return; }
+    const tipo = f.type || 'application/octet-stream';
+    if(tipo.indexOf('image/') !== 0 && !CV_TIPOS.includes(tipo)){
+      av.textContent = 'Tipo não aceito. Envie PDF, imagem, Word, Excel ou texto.'; return;
+    }
+    CONV_ENVIANDO = true; el('btnCvEnviar').disabled = true;
+    av.style.color = 'var(--mv-txt-3)'; av.textContent = 'Enviando o documento…';
+    try{
+      const nome = String(f.name||'documento').slice(-80).replace(/[^\w.\- ]+/g,'_');
+      const r = stRef(storage, 'documentos/'+CONV_ABERTA+'/'+Date.now()+'_'+nome);
+      await uploadBytes(r, f, {contentType: tipo});
+      const url = await getDownloadURL(r);
+      const legenda = el('cvTexto').value.trim();
+      await cvGravarResumo(CONV_ABERTA, legenda || ('Documento: '+nome));
+      const payload = {de:'admin', criadoEm: serverTimestamp(), arquivoUrl:url, arquivoNome:nome, arquivoTipo:tipo, arquivoTam:f.size};
+      if(legenda) payload.texto = legenda.slice(0,2000);
+      await addDoc(collection(db,'conversas',CONV_ABERTA,'mensagens'), payload);
+      el('cvTexto').value = ''; av.textContent = '';
+    }catch(e){
+      av.style.color = 'var(--mv-erro)';
+      av.textContent = 'Não consegui enviar o documento. Confira as regras do Storage.';
+    }
+    CONV_ENVIANDO = false; el('btnCvEnviar').disabled = false;
+    try{ inp.value = ''; }catch(_){}
+  }
+
+  async function cvTrocarDocs(ligado){
+    if(!CONV_ABERTA) return;
+    const sw = el('swDocs'); if(sw) sw.disabled = true;
+    const av = el('cvAviso'); av.style.color = 'var(--mv-txt-3)'; av.textContent = 'Salvando…';
+    try{
+      const c = CONVS.find(x => x.uid === CONV_ABERTA);
+      const base = {uid: CONV_ABERTA, docsLiberado: !!ligado};
+      if(!c){ base.criadoEm = serverTimestamp(); base.ultimaEm = serverTimestamp(); base.ultimoDe = 'admin'; base.ultimaMsg = ''; }
+      await setDoc(doc(db,'conversas',CONV_ABERTA), base, {merge:true});
+      av.textContent = ligado ? 'Liberado. O lojista já vê o bloco “Mensagens do admin”.' : 'Desligado.';
+      el('cvPedido').classList.toggle('hide', !ligado);
+      el('btnCvPedido').classList.toggle('hide', !ligado);
+    }catch(e){
+      av.style.color = 'var(--mv-erro)';
+      av.textContent = 'Não consegui salvar. Confira se as regras v13 estão publicadas.';
+      if(sw) sw.checked = !ligado;
+    }
+    if(sw) sw.disabled = false;
+  }
+
+  async function cvSalvarPedido(){
+    if(!CONV_ABERTA) return;
+    const av = el('cvAviso'); av.style.color = 'var(--mv-txt-3)'; av.textContent = 'Salvando o pedido…';
+    try{
+      await setDoc(doc(db,'conversas',CONV_ABERTA), {uid: CONV_ABERTA, docsPedido: el('cvPedido').value.trim().slice(0,300)}, {merge:true});
+      av.textContent = 'Pedido salvo. Ele aparece dentro do bloco no painel do lojista.';
+    }catch(e){
+      av.style.color = 'var(--mv-erro)'; av.textContent = 'Não consegui salvar o pedido.';
+    }
+  }
+
+  function cvNovaConversa(){
+    if(!NEG.length){ alert('A lista de negócios ainda não carregou. Toque em "Atualizar dados" e tente de novo.'); return; }
+    const nome = prompt('Nome (ou parte do nome) do negócio com quem você quer falar:');
+    if(nome === null) return;
+    const alvo = String(nome).trim().toLowerCase();
+    if(!alvo) return;
+    const achados = NEG.filter(n => (n.nome||'').toLowerCase().includes(alvo));
+    if(!achados.length){ alert('Não achei negócio com esse nome.'); return; }
+    if(achados.length > 1 && achados.length <= 10){
+      const op = prompt('Achei '+achados.length+':\n'+achados.map((n,i)=>(i+1)+') '+(n.nome||'(sem nome)')).join('\n')+'\n\nDigite o número:');
+      const i = parseInt(op,10) - 1;
+      if(!(i >= 0 && i < achados.length)) return;
+      irSec('mensagens'); abrirConversa(achados[i].uid); return;
+    }
+    if(achados.length > 10){ alert('Muitos resultados. Seja mais específico.'); return; }
+    irSec('mensagens'); abrirConversa(achados[0].uid);
+  }
+
+  /* ---- ligações de tela ---- */
+  document.addEventListener('click', ev => {
+    const a = ev.target && ev.target.closest ? ev.target.closest('[data-conv]') : null;
+    if(a){ abrirConversa(a.getAttribute('data-conv')); return; }
+    const b = ev.target && ev.target.closest ? ev.target.closest('[data-cv]') : null;
+    if(b){ irSec('mensagens'); abrirConversa(b.getAttribute('data-cv')); return; }
+  });
+  el('cvBusca').addEventListener('input', pintarConversas);
+  el('btnCvFechar').addEventListener('click', fecharConversa);
+  el('btnCvEnviar').addEventListener('click', cvEnviar);
+  el('btnCvClipe').addEventListener('click', ()=>{ const i = el('cvArquivo'); i.value=''; i.click(); });
+  el('cvArquivo').addEventListener('change', function(){ cvAnexar(this); });
+  el('swDocs').addEventListener('change', function(){ cvTrocarDocs(this.checked); });
+  el('btnCvPedido').addEventListener('click', cvSalvarPedido);
+  el('btnCvNova').addEventListener('click', cvNovaConversa);
+  el('cvTexto').addEventListener('keydown', e => {
+    if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)){ e.preventDefault(); cvEnviar(); }
+  });
 
   /* custo das métricas recalculado quando os negócios chegam */
   const _obsCusto = setInterval(()=>{ if(NEG.length){ atualizarCusto(); clearInterval(_obsCusto); } }, 800);
