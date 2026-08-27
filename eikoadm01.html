@@ -902,6 +902,23 @@ table.mvTab td b{font-weight:700}
             <div class="cdTopo"><div><div class="cdTit">Pedidos de exclusão de conta</div><div class="cdSub">Feitos pelo lojista dentro do app. Ao confirmar, a conta, os dados e a assinatura somem <b>definitivamente</b>.</div></div><span class="cdChip" id="excChip">—</span></div>
             <div id="excBox"><div class="vazio">Carregando…</div></div>
           </div>
+
+          <!-- Excluir por iniciativa do dono: cadastro de teste, duplicata,
+               abandono. O robo (api/exclusoes) sempre aceitou qualquer uid —
+               o que faltava era um lugar aqui pra escolher a conta. -->
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo">
+              <div>
+                <div class="cdTit">Excluir uma conta agora</div>
+                <div class="cdSub">Sem esperar pedido do lojista. Some o negócio, as unidades, o desempenho, as mensagens, os arquivos e o apelido do link — e a assinatura é cancelada no Asaas. <b>Não dá pra desfazer.</b></div>
+              </div>
+              <span class="cdChip" id="excDelChip">—</span>
+            </div>
+            <div class="ferr">
+              <input type="search" id="excBusca" placeholder="Buscar por nome, apelido do link, e-mail ou segmento…" autocomplete="off">
+            </div>
+            <div id="excDelBox"><div class="vazio">Digite pelo menos 2 letras para achar a conta.</div></div>
+          </div>
         </section>
 
         <!-- ============ SEÇÃO: ATALHOS DO DONO ============ -->
@@ -1079,7 +1096,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-27-mensagens3';
+  window.MOVIKI_VERSAO = '2026-08-27-excluir';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1149,7 +1166,7 @@ table.mvTab td b{font-weight:700}
     });
     window.scrollTo({top:0,behavior:'smooth'});
     if(nome === 'visao') setTimeout(()=>{ try{ if(_map) _map.invalidateSize(); }catch(e){} }, 120);
-    if(nome === 'exclusoes') carregarExclusoes();
+    if(nome === 'exclusoes'){ carregarExclusoes(); excDelRender(); }
     if(nome === 'newsletter' && SAUDE.newsletter === undefined) carregarNewsletter();
     if(nome === 'mensagens') ouvirConversas();
   }
@@ -2194,6 +2211,119 @@ table.mvTab td b{font-weight:700}
       } else {
         b.disabled = false; b.textContent = t;
         let m = 'Não consegui excluir agora.';
+        if(r.status === 403) m = 'Sem permissão (seu e-mail precisa estar em admins).';
+        if(msg){ msg.style.color = 'var(--mv-erro)'; msg.textContent = m; }
+      }
+    }catch(e){
+      b.disabled = false; b.textContent = t;
+      if(msg){ msg.style.color = 'var(--mv-erro)'; msg.textContent = 'Erro de conexão. Tente de novo.'; }
+    }
+  });
+
+  /* ==========================================================
+     EXCLUIR CONTA POR INICIATIVA DO DONO
+     O robô (api/exclusoes, action 'excluir') sempre aceitou qualquer uid; o
+     painel só oferecia a exclusão para quem tinha PEDIDO. Cadastro de teste,
+     duplicata e conta abandonada ficavam presos na lista pra sempre.
+     Busca por nome, apelido do link, e-mail e segmento — porque na cabeça de
+     quem usa o negócio "é" o apelido, não o nome (mesma lição do seletor de
+     mensagens). A confirmação é DIGITADA de propósito: um confirm() do
+     navegador é um Enter distraído de distância, e isto não tem volta.
+     ========================================================== */
+  let EXC_ALVO = '';
+
+  function excDelRender(){
+    const box = el('excDelBox'); if(!box) return;
+    const f = (el('excBusca').value||'').trim().toLowerCase();
+    txt('excDelChip', NEG.length ? (NEG.length + (NEG.length === 1 ? ' conta' : ' contas')) : '—');
+    if(f.length < 2){
+      EXC_ALVO = '';
+      box.innerHTML = '<div class="vazio">Digite pelo menos 2 letras para achar a conta.</div>';
+      return;
+    }
+    if(!NEG.length && !PARC.length){
+      box.innerHTML = '<div class="vazio">As listas ainda não carregaram. Toque em "Atualizar dados".</div>';
+      return;
+    }
+    const porUid = new Map();
+    NEG.forEach(n => porUid.set(n.uid, true));
+    PARC.forEach(p => porUid.set(p.uid, true));
+    let lista = [...porUid.keys()].map(cvQuemE).filter(q => cvAlvoBusca(q.uid).includes(f));
+    lista.sort((a,b) => (a.nome||'').localeCompare(b.nome||'', 'pt-BR'));
+
+    if(!lista.length){
+      box.innerHTML = '<div class="vazio">Ninguém com esse nome, apelido ou e-mail.</div>';
+      return;
+    }
+    const teto = 20;
+    box.innerHTML = lista.slice(0, teto).map(q => {
+      const tipo = q.tipos.length === 2 ? 'lojista + parceiro'
+                 : (q.tipos[0] === 'parceiro' ? 'parceiro' : 'lojista');
+      const plano = q.tipos.includes('lojista') ? PLANOS[PLANO_DE[q.uid]||'basico'].n : '—';
+      const aberto = EXC_ALVO === q.uid;
+      return '<div class="icard">'+
+        '<div class="icTopo"><div class="icNome">'+esc(q.nome||'(sem nome)')+' <span class="pill">'+esc(tipo)+'</span></div>'+
+        '<span class="icData">'+esc(plano)+'</span></div>'+
+        '<div class="icInfo">'+
+          '<div><span class="icK">Link</span><span class="icV">'+(q.apelido ? '/'+esc(q.apelido) : '—')+'</span></div>'+
+          '<div><span class="icK">E-mail</span><span class="icV">'+esc(q.email||'—')+'</span></div>'+
+        '</div>'+
+        (aberto
+          ? '<div class="icInfo" style="display:block;margin-top:8px">'+
+              '<div class="cdSub" style="margin-bottom:6px">Para confirmar, digite <b>EXCLUIR</b> abaixo:</div>'+
+              '<div class="ferr" style="margin:0">'+
+                '<input type="text" id="excPalavra" placeholder="EXCLUIR" autocomplete="off" spellcheck="false">'+
+                '<button type="button" class="btnMini perigo" data-excdel="'+esc(q.uid)+'">Excluir definitivamente</button>'+
+                '<button type="button" class="btnMini" data-exccancel="1">Cancelar</button>'+
+              '</div>'+
+            '</div>'
+          : '<div class="icAcoes"><button type="button" class="btnMini perigo" data-excalvo="'+esc(q.uid)+'">Excluir esta conta</button></div>')+
+        '<div class="icMsg" id="edmsg_'+esc(q.uid)+'"></div>'+
+      '</div>';
+    }).join('') + (lista.length > teto
+      ? '<div class="vazio" style="padding:10px">Mostrando '+teto+' de '+lista.length+'. Digite mais letras para afinar.</div>'
+      : '');
+    if(EXC_ALVO){ try{ el('excPalavra').focus(); }catch(e){} }
+  }
+
+  el('excBusca').addEventListener('input', ()=>{ EXC_ALVO = ''; excDelRender(); });
+
+  el('excDelBox').addEventListener('click', async ev=>{
+    const alvo = ev.target.closest ? ev.target.closest('[data-excalvo]') : null;
+    if(alvo){ EXC_ALVO = alvo.getAttribute('data-excalvo'); excDelRender(); return; }
+    if(ev.target.closest && ev.target.closest('[data-exccancel]')){ EXC_ALVO = ''; excDelRender(); return; }
+
+    const b = ev.target.closest ? ev.target.closest('[data-excdel]') : null;
+    if(!b) return;
+    const uid = b.getAttribute('data-excdel');
+    const msg = el('edmsg_'+uid);
+    const palavra = ((el('excPalavra')||{}).value||'').trim().toUpperCase();
+    if(palavra !== 'EXCLUIR'){
+      if(msg){ msg.style.color = 'var(--mv-erro)'; msg.textContent = 'Digite EXCLUIR para confirmar.'; }
+      return;
+    }
+    b.disabled = true; const t = b.textContent; b.textContent = 'Excluindo…';
+    if(msg){ msg.style.color = 'var(--mv-txt-3)'; msg.textContent = 'Excluindo…'; }
+    try{
+      const idToken = await auth.currentUser.getIdToken();
+      const r = await fetch('https://moviki-robo.vercel.app/api/exclusoes', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({idToken, action:'excluir', uid})
+      });
+      const j = await r.json().catch(()=>({}));
+      if(r.ok && j.ok){
+        const rz = j.resumo || {};
+        const partes = ['Conta excluída'];
+        if(rz.assinaturaCancelada) partes.push('assinatura cancelada');
+        if(rz.apelidoLiberado) partes.push('apelido /'+rz.apelidoLiberado+' liberado');
+        if(rz.pontos) partes.push(rz.pontos + (rz.pontos === 1 ? ' unidade' : ' unidades'));
+        if(rz.arquivos) partes.push('arquivos apagados');
+        if(msg){ msg.style.color = 'var(--mv-ok)'; msg.textContent = partes.join(' · ') + '.'; }
+        EXC_ALVO = '';
+        setTimeout(()=>{ carregarTudo(); }, 1200);
+      } else {
+        b.disabled = false; b.textContent = t;
+        let m = (j && j.erro) ? j.erro : 'Não consegui excluir agora.';
         if(r.status === 403) m = 'Sem permissão (seu e-mail precisa estar em admins).';
         if(msg){ msg.style.color = 'var(--mv-erro)'; msg.textContent = m; }
       }
