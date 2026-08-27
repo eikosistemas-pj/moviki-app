@@ -777,6 +777,21 @@ table.mvTab td b{font-weight:700}
                     <div class="cdSub" style="margin-top:8px;line-height:1.5">Ligado, o Vik responde dúvida de produto, plano e comissão com os dados reais desta conta. Ele cala sozinho por 30 minutos toda vez que você escreve. <b>Deixe desligado em conversa de dinheiro, saque ou documento.</b></div>
                   </div>
 
+                  <!-- MEMORIA DO VIK — o que ele aprendeu desta pessoa.
+                       Existe para o dono poder AUDITAR e APAGAR: IA erra ao
+                       extrair fato, e memoria errada envenena todas as
+                       conversas seguintes daquela conta. -->
+                  <div class="cvDocs" style="margin-top:10px">
+                    <div class="cvDocsLinha">
+                      <div class="cvDocsTxt">
+                        <b>O que o Vik aprendeu desta pessoa</b>
+                        <span id="cvMemEstado">—</span>
+                      </div>
+                      <button type="button" class="btnMini" id="btnCvMemApagar" style="display:none">Apagar memória</button>
+                    </div>
+                    <div id="cvMemLista" style="margin-top:9px;font-size:12.5px;line-height:1.6;color:var(--mv-txt-2)"></div>
+                  </div>
+
                   <div class="cvThread" id="cvThread"></div>
 
                   <div class="cvEnviar">
@@ -1111,7 +1126,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-27-vik';
+  window.MOVIKI_VERSAO = '2026-08-27-memoria';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2675,6 +2690,55 @@ table.mvTab td b{font-weight:700}
     }).join('');
   }
 
+  /* ---- MEMORIA DO VIK (colecao vik_memoria/{uid}) ----
+     Leitura so de admin, e ninguem escreve pelo app: quem grava e o Admin
+     SDK do moviki-ai. Aqui o dono so VE e APAGA. */
+  async function cvCarregarMemoria(uid){
+    const box = el('cvMemLista'), bt = el('btnCvMemApagar');
+    if(!box) return;
+    box.innerHTML = ''; txt('cvMemEstado','Carregando…');
+    if(bt) bt.style.display = 'none';
+    try{
+      const sn = await getDoc(doc(db,'vik_memoria',uid));
+      if(!sn.exists()){
+        txt('cvMemEstado','Nada aprendido ainda — o Vik guarda conforme conversa.');
+        return;
+      }
+      const m = sn.data() || {};
+      const partes = [];
+      const lista = (titulo, arr, cor) => {
+        if(!Array.isArray(arr) || !arr.length) return;
+        partes.push('<div style="margin-bottom:7px"><b style="color:'+cor+'">'+titulo+'</b><br>'+
+          arr.map(x => '• '+esc(x)).join('<br>')+'</div>');
+      };
+      lista('Sobre o negócio', m.fatos, 'var(--mv-ciano)');
+      lista('Já perguntou sobre', m.temas, 'var(--mv-txt-2)');
+      lista('Objeções que deu', m.objecoes, '#ffcf9a');
+      lista('Ofertas que recusou', m.recusadas, '#ff9b9b');
+      lista('Ofertas que aceitou', m.aceitas, '#8fd8a0');
+      box.innerHTML = partes.length ? partes.join('') : '<span style="color:var(--mv-txt-3)">Registro vazio.</span>';
+      txt('cvMemEstado', (Number(m.conversas)||0) + ' conversa(s) com o Vik' +
+        (m.ultimaOferta ? ' · última oferta na mesa: '+m.ultimaOferta : ''));
+      if(bt) bt.style.display = '';
+    }catch(e){
+      txt('cvMemEstado','Não consegui ler. As regras v15 precisam estar publicadas.');
+    }
+  }
+
+  async function cvApagarMemoria(){
+    if(!CONV_ABERTA) return;
+    if(!confirm('Apagar tudo o que o Vik aprendeu desta pessoa?\n\nAs mensagens da conversa NÃO são apagadas — só o resumo que o Vik usa para lembrar dela. Ele começa do zero na próxima conversa.')) return;
+    const av = el('cvAviso'); av.style.color = 'var(--mv-txt-3)'; av.textContent = 'Apagando…';
+    try{
+      await deleteDoc(doc(db,'vik_memoria',CONV_ABERTA));
+      av.textContent = 'Memória apagada. O Vik recomeça do zero com esta pessoa.';
+      cvCarregarMemoria(CONV_ABERTA);
+    }catch(e){
+      av.style.color = 'var(--mv-erro)';
+      av.textContent = 'Não consegui apagar. Só o dono pode, e as regras v15 precisam estar publicadas.';
+    }
+  }
+
   async function abrirConversa(uid){
     if(!uid) return;
     CONV_ABERTA = uid; CONV_MSGS = [];
@@ -2686,6 +2750,7 @@ table.mvTab td b{font-weight:700}
     el('cvThread').innerHTML = '<div class="cvVazio">Carregando…</div>';
     el('cvAviso').textContent = '';
     cvPintarDocs(c);
+    cvCarregarMemoria(uid);
     pintarConversas();
 
     try{ if(PARA_MSGS) PARA_MSGS(); }catch(e){}
@@ -3040,6 +3105,7 @@ table.mvTab td b{font-weight:700}
   el('cvArquivo').addEventListener('change', function(){ cvAnexar(this); });
   el('swDocs').addEventListener('change', function(){ cvTrocarDocs(this.checked); });
   el('swBot').addEventListener('change', function(){ cvTrocarBot(this.checked); });
+  el('btnCvMemApagar').addEventListener('click', cvApagarMemoria);
   el('btnCvPedido').addEventListener('click', cvSalvarPedido);
   el('btnCvNova').addEventListener('click', cvAbrirPicker);
   el('btnCvPickFechar').addEventListener('click', cvFecharPicker);
