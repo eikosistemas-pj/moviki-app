@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://*.google-analytics.com; connect-src 'self' https://*.googleapis.com https://moviki-robo.vercel.app https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://*.google-analytics.com; connect-src 'self' https://*.googleapis.com https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 
@@ -2120,7 +2120,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-08-27-vik';
+  window.MOVIKI_VERSAO='2026-08-27-vik2';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -2266,7 +2266,12 @@ body.naHome #btnSalvar{margin-top:14px;}
         var tk=await u.getIdToken();
         await fetch(MSG_BOT_URL,{method:'POST',headers:{'Authorization':'Bearer '+tk}});
       }
-    }catch(e){}
+    }catch(e){
+      // NAO fica calado: foi assim que a CSP bloqueando o dominio do robo
+      // passou horas sem ser vista. Erro aqui nao atrapalha o lojista — a
+      // mensagem dele ja esta gravada — mas TEM que aparecer no console.
+      console.error('[vik] nao consegui chamar o assistente:', e);
+    }
     // A resposta aparece pelo onSnapshot, nao pelo retorno desta chamada.
     // O atraso curto e so pra barra nao sumir antes da bolha chegar.
     setTimeout(function(){ MSG_BOT_PENSANDO=false; msgPintarPensando(false); },1500);
