@@ -127,6 +127,12 @@ input::placeholder{color:#6b7f96}
 .pmEle{align-self:flex-start;background:var(--mv-surf-2);border:1px solid var(--mv-linha);border-bottom-left-radius:5px}
 /* Bolha do assistente de IA: cor propria pra nao confundir robo com o dono. */
 .pmBot{align-self:flex-start;background:rgba(139,110,255,.13);border:1px solid rgba(139,110,255,.42);border-bottom-left-radius:5px}
+/* ---- Vik com cara - 2026-08-28-vikmascote. Mesmo padrao do index.html:
+   avatar FORA da bolha, align-self migrado para o wrapper, altura pelo CSS. ---- */
+.pmLinhaBot{align-self:flex-start;display:flex;align-items:flex-end;gap:8px;max-width:92%;min-width:0}
+.pmLinhaBot .pmBolha{max-width:100%}
+.pmAvatarVik{width:36px;height:36px;border-radius:50%;flex:none;margin-bottom:2px;background:#0338B9}
+.pmPensando .pmAvatarVik{width:22px;height:22px;margin:0}
 .pmPensando{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mv-txt-3);margin:2px 2px 0}
 .pmPensando i{width:7px;height:7px;border-radius:50%;background:#8b6eff;display:inline-block;animation:pmPulsa 1.2s infinite}
 @keyframes pmPulsa{0%,100%{opacity:1}50%{opacity:.3}}
@@ -730,7 +736,7 @@ input::placeholder{color:#6b7f96}
             </div>
 
             <div class="pmLista" id="pmLista"><div class="pmVazio">Carregando…</div></div>
-            <div class="pmPensando hide" id="pmPensando"><i></i>Vik está escrevendo…</div>
+            <div class="pmPensando hide" id="pmPensando"><img class="pmAvatarVik" src="/icones/vik-avatar-headset-96.png" alt="" decoding="async"><i></i>Vik está escrevendo…</div>
 
             <div class="pmEnviar">
               <textarea id="pmTexto" maxlength="2000" rows="1" placeholder="Escreva sua mensagem…"></textarea>
@@ -924,7 +930,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-27-vik2';
+  window.MOVIKI_VERSAO = '2026-08-28-vikmascote';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1116,8 +1122,11 @@ input::placeholder{color:#6b7f96}
       const t = m.texto ? esc(m.texto).replace(/\n/g,'<br>') : '';
       const classe = eu ? 'pmEu' : (ehBot ? 'pmBot' : 'pmEle');
       const quem = eu ? 'você' : (ehBot ? 'Vik · assistente' : 'Moviki');
-      return '<div class="pmBolha '+classe+'">'+t+anexo+
+      const bolha = '<div class="pmBolha '+classe+'">'+t+anexo+
         '<span class="pmQuando">'+quem+' · '+pmQuando(m.criadoEm)+'</span></div>';
+      return ehBot
+        ? '<div class="pmLinhaBot"><img class="pmAvatarVik" src="/icones/vik-avatar-headset-96.png" alt="" decoding="async">'+bolha+'</div>'
+        : bolha;
     }).join('');
     setTimeout(()=>{ try{ box.scrollTop = box.scrollHeight; }catch(e){} }, 30);
   }

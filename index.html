@@ -701,6 +701,23 @@ input[type=checkbox]{width:auto;padding:0;}
    saber, sem ler o rodape, que quem respondeu foi o robo e nao o dono. */
 .msgBot{align-self:flex-start;background:rgba(139,110,255,.13);border:1px solid rgba(139,110,255,.42);
   color:var(--mv-txt);border-bottom-left-radius:5px;}
+/* ---- Vik com cara - 2026-08-28-vikmascote ---------------------------------
+   O avatar entra FORA da bolha, num wrapper proprio: o align-self que
+   posicionava a bolha passa para o wrapper, senao a linha inteira encosta na
+   direita. A altura vem do CSS (36px), nao do atributo, para o arquivo de 96px
+   ficar nitido em tela 2x e nao deslocar nada enquanto carrega. */
+.msgLinhaBot{align-self:flex-start;display:flex;align-items:flex-end;gap:8px;max-width:92%;min-width:0}
+.msgLinhaBot .msgBolha{max-width:100%}
+.msgAvatarVik{width:36px;height:36px;border-radius:50%;flex:none;margin-bottom:2px;background:#0338B9}
+.msgPensando .msgAvatarVik{width:22px;height:22px;margin:0}
+/* Vik das acoes recomendadas: aponta para a ESQUERDA, entao fica a direita do
+   texto. Nunca espelhar - o logo no peito inverte. A secao some inteira quando
+   nao ha acao pendente, entao ele so aparece quando ha o que apontar. */
+.vikAcoes{display:flex;align-items:center;gap:12px}
+.vikAcoes .mvSecSub{margin:0;flex:1 1 auto}
+.vikAcoesImg{height:92px;width:auto;flex:none;margin:-4px 2px -6px 0}
+@media(max-width:360px){.vikAcoesImg{height:74px}}
+
 .msgPensando{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mv-txt-2);margin:2px 2px 0;}
 .msgPensando i{width:7px;height:7px;border-radius:50%;background:#8b6eff;display:inline-block;
   animation:msgPulsa 1.2s infinite;}
@@ -1375,7 +1392,7 @@ body.naHome #btnSalvar{margin-top:14px;}
           </div>
 
           <div id="msgLista"><div class="msgVazio">Carregando…</div></div>
-          <div class="msgPensando escondido" id="msgPensando"><i></i>Vik está escrevendo…</div>
+          <div class="msgPensando escondido" id="msgPensando"><img class="msgAvatarVik" src="/icones/vik-avatar-headset-96.png" alt="" decoding="async"><i></i>Vik está escrevendo…</div>
 
           <div class="msgEnviar">
             <textarea id="msgTexto" maxlength="2000" rows="1" placeholder="Escreva sua mensagem…"></textarea>
@@ -1539,7 +1556,10 @@ body.naHome #btnSalvar{margin-top:14px;}
           <div class="mvSecTopo">
             <h2>Próximas ações recomendadas</h2>
           </div>
-          <p class="mvSecSub">Do que o seu perfil precisa agora pra atrair mais cliente.</p>
+          <div class="vikAcoes">
+            <p class="mvSecSub">Do que o seu perfil precisa agora pra atrair mais cliente.</p>
+            <img class="vikAcoesImg" src="/icones/vik-apontando.webp" alt="" decoding="async" loading="lazy">
+          </div>
           <div class="mvAcoes" id="mvAcoes"></div>
         </section>
 
@@ -2120,7 +2140,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-08-27-vik2';
+  window.MOVIKI_VERSAO='2026-08-28-vikmascote';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -2228,8 +2248,11 @@ body.naHome #btnSalvar{margin-top:14px;}
       var txt=m.texto?msgEsc(m.texto).replace(/\n/g,'<br>'):'';
       var classe=eu?'msgEu':(ehBot?'msgBot':'msgEle');
       var quem=eu?'você':(ehBot?'Vik · assistente':'Moviki');
-      return '<div class="msgBolha '+classe+'">'+txt+anexo+
+      var bolha='<div class="msgBolha '+classe+'">'+txt+anexo+
         '<span class="msgQuando">'+quem+' · '+msgQuando(m.criadoEm)+'</span></div>';
+      return ehBot
+        ? '<div class="msgLinhaBot"><img class="msgAvatarVik" src="/icones/vik-avatar-headset-96.png" alt="" decoding="async">'+bolha+'</div>'
+        : bolha;
     }).join('');
     setTimeout(function(){ try{ box.scrollTop=box.scrollHeight; }catch(e){} },30);
   }
