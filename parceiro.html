@@ -127,7 +127,7 @@ input::placeholder{color:#6b7f96}
 .pmEle{align-self:flex-start;background:var(--mv-surf-2);border:1px solid var(--mv-linha);border-bottom-left-radius:5px}
 /* Bolha do assistente de IA: cor propria pra nao confundir robo com o dono. */
 .pmBot{align-self:flex-start;background:rgba(139,110,255,.13);border:1px solid rgba(139,110,255,.42);border-bottom-left-radius:5px}
-/* ---- Vik com cara - 2026-08-28-vikmascote. Mesmo padrao do index.html:
+/* ---- Vik com cara - 2026-08-28-vikpadrao. Mesmo padrao do index.html:
    avatar FORA da bolha, align-self migrado para o wrapper, altura pelo CSS. ---- */
 .pmLinhaBot{align-self:flex-start;display:flex;align-items:flex-end;gap:8px;max-width:92%;min-width:0}
 .pmLinhaBot .pmBolha{max-width:100%}
@@ -930,7 +930,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-28-vikmascote';
+  window.MOVIKI_VERSAO = '2026-08-28-vikpadrao';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1153,14 +1153,19 @@ input::placeholder{color:#6b7f96}
      divergirem. Falha calada — robo fora do ar, conversa segue com gente. */
   async function pmChamarBot(){
     if(!PM_BOT_URL) return;
-    if(!(PM_CONV && PM_CONV.botLigado === true)) return;
+    // 28/08: a decisao saiu do navegador e foi para o servidor. Aqui so
+    // poupamos a chamada quando o dono desligou esta conversa na mao.
+    if(!PM_CONV) return;
+    if(PM_CONV.botLigado === false) return;
     if(PM_BOT_PENSANDO) return;
     PM_BOT_PENSANDO = true; pmPintarPensando(true);
     try{
       const u = auth.currentUser;
       if(u){
         const tk = await u.getIdToken();
-        await fetch(PM_BOT_URL, {method:'POST', headers:{'Authorization':'Bearer '+tk}});
+        const _r = await fetch(PM_BOT_URL, {method:'POST', headers:{'Authorization':'Bearer '+tk}});
+        // Endpoint ja disse que nao vai responder: a barra some na hora.
+        try{ const _j = await _r.json(); if(_j && _j.pulado){ PM_BOT_PENSANDO=false; pmPintarPensando(false); return; } }catch(_e){}
       }
     }catch(e){
       // Nunca calado: erro de CSP ou de rede tem que aparecer no console.

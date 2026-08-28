@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://unpkg.com https://*.tile.openstreetmap.org; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki-robo.vercel.app; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://unpkg.com https://*.tile.openstreetmap.org; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki-robo.vercel.app https://moviki-ai.vercel.app; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="robots" content="noindex,nofollow">
@@ -717,6 +717,17 @@ table.mvTab td b{font-weight:700}
         <section data-sec="mensagens" class="hide">
           <div class="cd">
             <div class="cdTopo"><div><div class="cdTit">Mensagens</div><div class="cdSub">Canal direto com cada lojista. Quem escreveu primeiro aparece no topo.</div></div><span class="cdChip" id="cvChip">—</span></div>
+            <div class="cvDocs cvPadraoVik" style="margin-bottom:12px">
+              <div class="cvDocsLinha">
+                <div class="cvDocsTxt">
+                  <b>Vik ligado por padrão nas conversas</b>
+                  <span id="cvPadraoEstado">Carregando…</span>
+                </div>
+                <label class="sw"><input type="checkbox" id="swPadraoVik" disabled><span class="swT"><span class="swB"></span></span></label>
+              </div>
+              <div class="cdSub" style="margin-top:8px;line-height:1.5">Vale para toda conversa que você ainda não tocou. <b>O interruptor de cada conversa continua mandando</b> — o que você ligar ou desligar lá dentro ganha deste aqui, sempre. Conversa que você desligou por ser de dinheiro continua desligada.</div>
+            </div>
+
             <div class="cvGrade">
 
               <div>
@@ -775,6 +786,7 @@ table.mvTab td b{font-weight:700}
                       <label class="sw"><input type="checkbox" id="swBot" disabled><span class="swT"><span class="swB"></span></span></label>
                     </div>
                     <div class="cdSub" style="margin-top:8px;line-height:1.5">Ligado, o Vik responde dúvida de produto, plano e comissão com os dados reais desta conta. Ele cala sozinho por 30 minutos toda vez que você escreve. <b>Deixe desligado em conversa de dinheiro, saque ou documento.</b></div>
+                    <button type="button" class="btnMini hide" id="btnCvBotPadrao" style="margin-top:8px">Voltar ao padrão geral</button>
                   </div>
 
                   <!-- MEMORIA DO VIK — o que ele aprendeu desta pessoa.
@@ -1121,12 +1133,12 @@ table.mvTab td b{font-weight:700}
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, onSnapshot, serverTimestamp, query, orderBy, limit, documentId } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, deleteField, onSnapshot, serverTimestamp, query, orderBy, limit, documentId } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getStorage, ref as stRef, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-27-memoria';
+  window.MOVIKI_VERSAO = '2026-08-28-vikpadrao';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2813,13 +2825,97 @@ table.mvTab td b{font-weight:700}
     cvPintarBot(c);
   }
 
+  /* Tres estados, nao dois. O campo botLigado pode estar ausente — e e assim
+     que nasce toda conversa. Ausente NAO e "desligado": e "segue o padrao
+     geral". Se a tela mostrasse so ligado/desligado, o dono acharia que
+     desligou conversas que na verdade estao seguindo o padrao, e ligaria uma
+     por uma sem precisar. */
   function cvPintarBot(c){
-    const on = (c && c.botLigado === true);
+    const temOverride = !!(c && typeof c.botLigado === 'boolean');
+    const on = temOverride ? (c.botLigado === true) : VIK_PADRAO;
     const sw = el('swBot');
     if(sw){ sw.checked = on; sw.disabled = false; }
-    txt('cvBotEstado', on
-      ? 'Ligado: o Vik responde as mensagens desta pessoa.'
-      : 'Desligado: o Vik não responde aqui.');
+    const bt = el('btnCvBotPadrao');
+    if(bt) bt.classList.toggle('hide', !temOverride);
+    txt('cvBotEstado', temOverride
+      ? (on ? 'Ligado só nesta conversa (você decidiu aqui).'
+            : 'Desligado só nesta conversa (você decidiu aqui).')
+      : (VIK_PADRAO ? 'Seguindo o padrão geral: ligado.'
+                    : 'Seguindo o padrão geral: desligado.'));
+  }
+
+  /* ---------- PADRAO GERAL DO VIK (28/08/2026) ----------
+     Vale para toda conversa sem interruptor proprio. Fica em
+     configuracoes/sistema.vikPadraoLigado.
+     A LEITURA e direta (a regra ja permite isAdmin ler esse documento), mas a
+     ESCRITA vai pelo endpoint do moviki-ai: a regra desse documento tem um
+     hasOnly de UM campo, e acrescentar campo ali exigiria republicar as
+     regras. Pelo Admin SDK, nada precisa ser republicado. */
+  let VIK_PADRAO = false;
+
+  async function cvCarregarPadrao(){
+    try{
+      const d = await getDoc(doc(db,'configuracoes','sistema'));
+      VIK_PADRAO = !!(d.exists() && d.data() && d.data().vikPadraoLigado === true);
+    }catch(e){ VIK_PADRAO = false; console.error('[vik] padrao geral:', e); }
+    cvPintarPadrao();
+  }
+
+  function cvPintarPadrao(){
+    const sw = el('swPadraoVik');
+    if(sw){ sw.checked = VIK_PADRAO; sw.disabled = false; }
+    txt('cvPadraoEstado', VIK_PADRAO
+      ? 'Ligado: conversa nova já nasce com o Vik respondendo.'
+      : 'Desligado: conversa nova nasce sem o Vik, como hoje.');
+  }
+
+  async function cvTrocarPadrao(ligado){
+    const sw = el('swPadraoVik'); if(sw) sw.disabled = true;
+    txt('cvPadraoEstado', 'Salvando…');
+    try{
+      const u = auth.currentUser;
+      if(!u) throw new Error('sem sessao');
+      const tk = await u.getIdToken();
+      const r = await fetch('https://moviki-ai.vercel.app/api/chat', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+tk},
+        body: JSON.stringify({acao:'vik_padrao', ligado: !!ligado})
+      });
+      const j = await r.json();
+      if(!j || j.ok !== true) throw new Error(j && j.erro || 'falhou');
+      VIK_PADRAO = j.vikPadraoLigado === true;
+      cvPintarPadrao();
+      // A conversa aberta pode estar herdando o padrao — o texto dela tem que
+      // virar junto, senao a tela mente.
+      if(CONV_ABERTA){ cvPintarBot(CONVS.find(x => x.uid === CONV_ABERTA) || {uid:CONV_ABERTA}); }
+    }catch(e){
+      // Erro aqui aparece NO CONSOLE de proposito: foi um catch mudo que
+      // escondeu a CSP bloqueando este mesmo dominio em 27/08.
+      console.error('[vik] nao consegui salvar o padrao geral:', e);
+      if(sw){ sw.checked = !ligado; sw.disabled = false; }
+      txt('cvPadraoEstado', 'Não consegui salvar. Veja o Console (F12).');
+    }
+  }
+
+  /* Apaga o override e devolve a conversa ao padrao geral. Sem isto, uma vez
+     que o dono encosta no interruptor a conversa fica FORA do padrao para
+     sempre, e nao ha jeito de voltar pela tela. */
+  async function cvVoltarAoPadrao(){
+    if(!CONV_ABERTA) return;
+    const av = el('cvAviso'); av.style.color = 'var(--mv-txt-3)'; av.textContent = 'Salvando…';
+    try{
+      await updateDoc(doc(db,'conversas',CONV_ABERTA), {botLigado: deleteField()});
+      const c = CONVS.find(x => x.uid === CONV_ABERTA);
+      if(c) delete c.botLigado;
+      cvPintarBot(c || {uid:CONV_ABERTA});
+      av.textContent = VIK_PADRAO
+        ? 'Esta conversa voltou ao padrão geral: o Vik responde.'
+        : 'Esta conversa voltou ao padrão geral: o Vik não responde.';
+    }catch(e){
+      av.style.color = 'var(--mv-erro)';
+      av.textContent = 'Não consegui voltar ao padrão.';
+      console.error('[vik] voltar ao padrao:', e);
+    }
   }
 
   async function marcarVistoDono(uid){
@@ -3105,6 +3201,9 @@ table.mvTab td b{font-weight:700}
   el('cvArquivo').addEventListener('change', function(){ cvAnexar(this); });
   el('swDocs').addEventListener('change', function(){ cvTrocarDocs(this.checked); });
   el('swBot').addEventListener('change', function(){ cvTrocarBot(this.checked); });
+  el('swPadraoVik').addEventListener('change', function(){ cvTrocarPadrao(this.checked); });
+  el('btnCvBotPadrao').addEventListener('click', cvVoltarAoPadrao);
+  cvCarregarPadrao();
   el('btnCvMemApagar').addEventListener('click', cvApagarMemoria);
   el('btnCvPedido').addEventListener('click', cvSalvarPedido);
   el('btnCvNova').addEventListener('click', cvAbrirPicker);

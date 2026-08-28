@@ -683,7 +683,7 @@ input[type=checkbox]{width:auto;padding:0;}
   display:flex;align-items:center;justify-content:center;cursor:pointer;}
 #painel .appMsg:hover{border-color:var(--ciano);color:var(--ciano);}
 #painel .appMsg svg{width:19px;height:19px;}
-/* Vik no botao de mensagens do topo - 2026-08-28-vikmascote2.
+/* Vik no botao de mensagens do topo - 2026-08-28-vikpadrao.
    O botao abre exatamente a tela onde o Vik atende; o balao generico ali nao
    dizia isso. A bolinha de nao lida (.msgPt) continua por cima, intacta. */
 .appMsg .vikTopo{width:28px;height:28px;border-radius:50%;display:block;background:#0338B9}
@@ -2158,7 +2158,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-08-28-vikmascote2';
+  window.MOVIKI_VERSAO='2026-08-28-vikpadrao';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -2298,14 +2298,23 @@ body.naHome #btnSalvar{margin-top:14px;}
      Falha calada: robo fora do ar = conversa segue com gente, como antes. */
   async function msgChamarBot(){
     if(!MSG_BOT_URL)return;
-    if(!(MSG_CONV&&MSG_CONV.botLigado===true))return;
+    // 28/08: a decisao de responder ou nao saiu daqui e foi para o servidor.
+    // O navegador so poupa a chamada quando o dono DESLIGOU esta conversa na
+    // mao (false explicito). Campo ausente = pode estar seguindo o padrao
+    // geral, e so o endpoint sabe qual e ele.
+    if(!MSG_CONV)return;
+    if(MSG_CONV.botLigado===false)return;
     if(MSG_BOT_PENSANDO)return;
     MSG_BOT_PENSANDO=true; msgPintarPensando(true);
     try{
       var u=auth.currentUser;
       if(u){
         var tk=await u.getIdToken();
-        await fetch(MSG_BOT_URL,{method:'POST',headers:{'Authorization':'Bearer '+tk}});
+        var _r=await fetch(MSG_BOT_URL,{method:'POST',headers:{'Authorization':'Bearer '+tk}});
+        // Se o endpoint ja disse que nao vai responder (bot desligado, limite
+        // do dia, humano no atendimento), a barra "escrevendo" some na hora em
+        // vez de ficar 1,5s mentindo que vem resposta.
+        try{ var _j=await _r.json(); if(_j&&_j.pulado){ MSG_BOT_PENSANDO=false; msgPintarPensando(false); return; } }catch(_e){}
       }
     }catch(e){
       // NAO fica calado: foi assim que a CSP bloqueando o dominio do robo
