@@ -683,6 +683,18 @@ input[type=checkbox]{width:auto;padding:0;}
   display:flex;align-items:center;justify-content:center;cursor:pointer;}
 #painel .appMsg:hover{border-color:var(--ciano);color:var(--ciano);}
 #painel .appMsg svg{width:19px;height:19px;}
+/* Vik no botao de mensagens do topo - 2026-08-28-vikmascote2.
+   O botao abre exatamente a tela onde o Vik atende; o balao generico ali nao
+   dizia isso. A bolinha de nao lida (.msgPt) continua por cima, intacta. */
+.appMsg .vikTopo{width:28px;height:28px;border-radius:50%;display:block;background:#0338B9}
+/* Card de ajuda: os dois canais separados. O Vik responde duvida rapida; o
+   time atende no WhatsApp. Sem essa separacao o mascote da IA num card que
+   promete "respondemos de verdade" sugere o contrario do que o card vende. */
+.mvRcAjudaTopo{display:flex;gap:10px;align-items:flex-start}
+.mvRcAjudaTopo .mvRcAjudaTxt{flex:1 1 auto;min-width:0}
+.mvRcVik{height:96px;width:auto;flex:none;align-self:center;margin:-8px -6px -8px 0}
+.mvRcAjuda .mvRcBtnLargo+.mvRcBtnLargo{margin-top:8px}
+@media(max-width:400px){.mvRcVik{height:76px}}
 .msgPt{position:absolute;top:6px;right:6px;width:9px;height:9px;border-radius:50%;
   background:#ff5a5a;box-shadow:0 0 0 2px var(--mv-surf);animation:msgPulsa 1.6s infinite;}
 @keyframes msgPulsa{0%,100%{opacity:1}50%{opacity:.35}}
@@ -1439,7 +1451,7 @@ body.naHome #btnSalvar{margin-top:14px;}
           <div class="appTit" id="appTit">Painel do Negócio</div>
           <div class="appLinha2"><span class="appSub"><b id="oExEmail"></b></span><span id="seloTopo" class="seloOuro" style="display:none">Enterprise</span></div>
         </div>
-        <button type="button" class="appMsg" id="btnMsgTopo" onclick="abrirMensagens()" aria-label="Mensagens" title="Mensagens"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.6 9.6 0 0 1-2.9-.4L3 21l1.6-4.5a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/></svg><span class="msgPt escondido" id="msgPonto"></span></button>
+        <button type="button" class="appMsg" id="btnMsgTopo" onclick="abrirMensagens()" aria-label="Mensagens" title="Mensagens"><img class="vikTopo" src="/icones/vik-avatar-headset-96.png" alt="" decoding="async"><span class="msgPt escondido" id="msgPonto"></span></button>
         <button type="button" class="appSair" onclick="sair()">Sair</button>
       </div>
 
@@ -1831,8 +1843,14 @@ body.naHome #btnSalvar{margin-top:14px;}
         </div>
 
         <div class="mvRc mvRcAjuda">
-          <div class="mvRcTit">Precisa de ajuda?</div>
-          <p>Fale com a gente no WhatsApp. Respondemos de verdade.</p>
+          <div class="mvRcAjudaTopo">
+            <div class="mvRcAjudaTxt">
+              <div class="mvRcTit">Precisa de ajuda?</div>
+              <p>Para dúvida rápida, o Vik responde na hora aqui mesmo. Cobrança, saque ou qualquer coisa que precise de gente: o time atende no WhatsApp.</p>
+            </div>
+            <img class="mvRcVik" src="/icones/vik-acenando.webp" alt="" decoding="async" loading="lazy">
+          </div>
+          <button type="button" class="mvRcBtnLargo" onclick="abrirMensagens()">Perguntar ao Vik</button>
           <a class="mvRcBtnLargo mvRcWhats" href="https://wa.me/554120186848?text=Ol%C3%A1!%20Preciso%20de%20ajuda%20com%20o%20Moviki." target="_blank" rel="noopener">Falar com o suporte</a>
         </div>
       </aside>
@@ -2140,7 +2158,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-08-28-vikmascote';
+  window.MOVIKI_VERSAO='2026-08-28-vikmascote2';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
