@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/movikiui.css">
-<script>window.MOVIKI_VERSAO='2026-08-27-404app';</script>
+<script>window.MOVIKI_VERSAO='2026-08-28-404vik';</script>
 <script src="/mvmetrica.js"></script>
 <style>
 /* Rede de seguranca: se o movikiui.css nao carregar, a pagina ainda abre legivel e na marca. */
@@ -25,7 +25,7 @@ body{font-family:'Poppins',system-ui,sans-serif;background:var(--mv-bg);color:va
 .wrap{width:100%;max-width:520px;text-align:center}
 .marca img{height:36px;margin-bottom:22px}
 .card{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);padding:34px 26px;box-shadow:var(--mv-sombra)}
-.cod{font-size:64px;font-weight:800;line-height:1;background:var(--mv-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cod{font-size:44px;font-weight:800;line-height:1;background:var(--mv-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 h1{font-size:21px;font-weight:800;margin:10px 0 8px}
 p{font-size:14.5px;color:var(--mv-txt-2);line-height:1.6}
 .cam{display:inline-block;max-width:100%;overflow-wrap:anywhere;font-size:12.5px;color:var(--mv-txt-3);background:rgba(0,0,0,.28);border:1px solid var(--mv-linha);border-radius:10px;padding:7px 11px;margin-top:14px}
@@ -35,12 +35,18 @@ a.p{background:var(--mv-grad);color:#04121f}
 a.s{background:transparent;color:var(--mv-txt-2);border:1px solid var(--mv-linha)}
 .pe{margin-top:18px;font-size:12.5px;color:var(--mv-txt-3)}
 .pe a{color:var(--mv-txt-2)}
+/* Vik neutro — 2026-08-28. Braços cruzados, expressão contida: a pessoa acabou
+   de bater numa parede, mascote sorrindo aqui seria hostil. Altura fixa no CSS
+   evita deslocar o card quando a imagem chega. */
+.vik{display:block;height:138px;width:auto;margin:-4px auto 6px}
+@media(max-height:640px){.vik{height:112px}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="marca"><img src="/logo.png" alt="Moviki" onerror="this.outerHTML='<span style=&quot;font-weight:800;font-size:24px&quot;>movi<span style=&quot;color:#00D4FF&quot;>ki</span></span>'"></div>
   <div class="card">
+    <img class="vik" src="/icones/vik-neutro.webp" alt="" decoding="async">
     <div class="cod">404</div>
     <h1>Esta página não existe</h1>
     <p>O endereço que você abriu não faz parte do painel do Moviki. Pode ser um link antigo ou um erro de digitação.</p>
