@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <title>Seja um Parceiro Moviki</title>
-<script>window.MOVIKI_VERSAO='2026-08-27-ga4parceiro';</script>
+<script>window.MOVIKI_VERSAO='2026-08-28-vikparceiro';</script>
 <script src="/mvmetrica.js"></script>
 <link rel="icon" href="favicon512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,6 +49,10 @@
   /* sucesso */
   #sucesso{display:none;text-align:center}
   #sucesso .ic{font-size:52px}
+  /* Vik comemorando na confirmacao do cadastro - 2026-08-28-vikparceiro.
+     Aqui ele pode: e comemoracao de um passo concluido, nao promessa de ganho. */
+  .vikFesta{height:168px;width:auto;display:block;margin:0 auto}
+  @media(max-height:700px){.vikFesta{height:132px}}
   #sucesso h2{font-size:21px;font-weight:800;margin:8px 0 8px}
   #sucesso p{font-size:14px;color:#cfe0f5;line-height:1.6}
   #sucesso .box{background:rgba(37,227,155,.1);border:1px solid rgba(37,227,155,.35);border-radius:12px;padding:16px;margin-top:16px;font-size:13.5px;color:#d7f7ec}
@@ -98,7 +102,7 @@
     </div>
 
     <div id="sucesso">
-      <div class="ic"><img class="icoK" src="icones/festa.png" alt="" loading="lazy" onerror="mvI(this,'🎉')"></div>
+      <div class="ic"><img class="vikFesta" src="/icones/vik-comemorando.webp" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></div>
       <h2>Cadastro recebido!</h2>
       <p>Bem-vindo(a) ao Programa de Parceiros Moviki. Seu cadastro foi registrado com sucesso.</p>
       <div class="box">Seu acesso está <b>em análise</b>. Assim que for aprovado, seu link de parceiro é ativado e você recebe um e-mail de boas-vindas. 💚</div>
