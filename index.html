@@ -60,7 +60,7 @@
   .lcSec:hover{border-color:#00D4FF;color:#00D4FF;}
   .lcSalva{text-align:center;}
   .lcMoldura{position:relative;width:100%;max-width:250px;aspect-ratio:1/1;margin:0 auto 13px;border-radius:20px;background:radial-gradient(circle at 50% 45%,rgba(0,212,255,.18),rgba(4,16,30,.75) 70%);display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,212,255,.25);}
-  .lcMoldura img{width:74%;height:74%;border-radius:50%;object-fit:cover;border:3px solid #00D4FF;box-shadow:0 0 0 7px rgba(0,212,255,.12),0 14px 34px rgba(0,0,0,.45);}
+  .lcMoldura img{width:74%;height:74%;border-radius:50%;object-fit:contain;border:3px solid #00D4FF;box-shadow:0 0 0 7px rgba(0,212,255,.12),0 14px 34px rgba(0,0,0,.45);}
   .lcPino{position:absolute;bottom:9px;right:10px;background:#0d1c30;border:1px solid #22406a;border-radius:999px;font-size:11px;color:#8fd8a0;padding:5px 10px;font-weight:700;}
   .lcSalvaTxt{font-size:13.5px;color:#9fb3d0;margin-bottom:13px;line-height:1.55;}
   .lcSalvaTxt b{color:#8fd8a0;}
@@ -195,7 +195,7 @@
   .prodRow .p-desc{width:100%;box-sizing:border-box;padding:10px 13px;font-size:13.5px;line-height:1.4;min-height:44px;margin-top:9px;color:#cfe0f5;}
   .prodGaleria{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:9px;}
   .fSlot{width:56px;height:56px;border-radius:9px;position:relative;flex-shrink:0;}
-  .fSlot img{width:100%;height:100%;object-fit:cover;border-radius:9px;border:1px solid #2b405a;display:block;}
+  .fSlot img{width:100%;height:100%;object-fit:contain;background:#0b1728;border-radius:9px;border:1px solid #2b405a;display:block;}
   .fSlot .rmF{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:#e74c3c;color:#fff;border:2px solid var(--campo);font-size:11px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
   .fAdd{width:56px;height:56px;border-radius:9px;border:1.5px solid #ff8a3d;background:rgba(255,138,61,.16);color:#ffb37a;font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;flex-shrink:0;font-family:inherit;}
   .fAdd:hover{background:rgba(255,138,61,.28);border-color:#ffa15c;}
@@ -203,7 +203,7 @@
   .fHint{font-size:11.5px;color:#7f95b3;width:100%;}
   .galGrade{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px;}
   .galCel{position:relative;aspect-ratio:1/1;border-radius:11px;overflow:hidden;border:1px solid #2b405a;background:#0b1728;}
-  .galCel img{width:100%;height:100%;object-fit:cover;display:block;}
+  .galCel img{width:100%;height:100%;object-fit:contain;background:#0b1728;display:block;}
   .galCel .rmF{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:#e74c3c;color:#fff;border:2px solid rgba(0,0,0,.35);font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:2;}
   .galAdd{aspect-ratio:1/1;border-radius:11px;border:1.5px dashed #ff8a3d;background:rgba(255,138,61,.14);color:#ffb37a;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-family:inherit;}
   .galAdd span.mais{font-size:26px;line-height:1;}
@@ -672,7 +672,7 @@ input[type=checkbox]{width:auto;padding:0;}
 #painel .appMenu{width:42px;height:42px;flex:0 0 auto;border-radius:var(--mv-r-sm);border:1px solid var(--mv-linha);
   background:var(--mv-surf);color:var(--mv-txt);display:flex;align-items:center;justify-content:center;cursor:pointer;}
 #painel .appMenu svg{width:20px;height:20px;}
-#painel .appLogo{width:36px;height:36px;flex:0 0 auto;border-radius:50%;object-fit:cover;background:var(--mv-campo);padding:4px;border:1px solid var(--mv-linha);}
+#painel .appLogo{width:36px;height:36px;flex:0 0 auto;border-radius:50%;object-fit:contain;background:var(--mv-campo);padding:4px;border:1px solid var(--mv-linha);}
 #painel .appTitWrap{flex:1;min-width:0;}
 #painel .appTit{font-size:15px;font-weight:700;letter-spacing:-.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 #painel .appSub{font-size:11.5px;color:var(--mv-txt-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -1072,7 +1072,7 @@ body.logado .card{background:transparent;border:none;box-shadow:none;padding:0;}
 }
 .mvSideNeg{display:flex;align-items:center;gap:10px;background:var(--mv-surf);border:1px solid var(--mv-linha);
   border-radius:var(--mv-r-lg);padding:11px;margin-bottom:12px;}
-.mvSideLogo{width:40px;height:40px;flex:0 0 auto;border-radius:var(--mv-r-sm);object-fit:cover;background:var(--mv-campo);padding:4px;}
+.mvSideLogo{width:40px;height:40px;flex:0 0 auto;border-radius:var(--mv-r-sm);object-fit:contain;background:var(--mv-campo);padding:4px;}
 .mvSideTxt{min-width:0;}
 .mvSideNome{font-size:14px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .selo{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:var(--mv-r-pill);
@@ -1232,7 +1232,7 @@ body.naHome #btnSalvar{margin-top:14px;}
 .mvItemHead:hover .mvItemTit{color:var(--mv-ciano);}
 .mvItemThumb{flex:0 0 auto;width:42px;height:42px;border-radius:10px;background:var(--mv-campo);
   border:1px solid var(--mv-linha);display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.mvItemThumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.mvItemThumb img{width:100%;height:100%;object-fit:contain;display:block;}
 .mvItemThumb svg{width:20px;height:20px;color:var(--mv-txt-3);}
 .mvItemTxt{flex:1 1 auto;min-width:0;}
 .mvItemTit{display:block;font-weight:700;font-size:14.5px;letter-spacing:-.2px;color:var(--mv-txt);
@@ -2395,7 +2395,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-08-31-blocos-vik';
+  window.MOVIKI_VERSAO='2026-08-31-blocos-vik-semcorte';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
