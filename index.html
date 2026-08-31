@@ -1717,6 +1717,14 @@ body.naHome #btnSalvar{margin-top:14px;}
       <div class="tabConteudo escondido" id="tab-local">
         <div class="gps" id="gpsInfo">📍 Localização ainda não definida.</div>
         <button class="btn secundario" onclick="pegarLocalizacao()"><img class="icoM" src="icones/localizacao.png" alt="" loading="lazy" onerror="mvI(this,'📍')">Atualizar minha localização</button>
+        <div class="campo" style="margin-top:14px">
+          <label for="infoEndereco">Endereço escrito (é o que o cliente lê)</label>
+          <div style="position:relative">
+            <input id="infoEndereco" type="text" maxlength="200" autocomplete="off" placeholder="Ex.: Rua das Flores, 120 - Centro, Recife" oninput="endSugerir()" onblur="endFechar()">
+            <div id="endSug" style="display:none;position:absolute;left:0;right:0;top:100%;z-index:9;background:#0b1728;border:1px solid var(--ciano);border-radius:10px;max-height:210px;overflow:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>
+          </div>
+        </div>
+        <div class="dicaBox"><img class="icoM" src="icones/lampada.png" alt="" loading="lazy" onerror="mvI(this,'&#128161;')">Digite e <b>escolha uma sugestão</b>: além de escrever o endereço, isso já marca seu ponto no mapa. Se você é itinerante e muda de lugar, deixe em branco e use só o botão de localização acima.</div>
         <div class="logoCard">
           <div class="lcHead">
             <span class="lcIco"><img class="icoB" src="icones/logopino.png" alt="" loading="lazy" onerror="mvI(this,'🖼️')"></span>
@@ -1785,9 +1793,6 @@ body.naHome #btnSalvar{margin-top:14px;}
       <div class="tabConteudo escondido" id="tab-info">
         <div class="campo"><label for="infoHorario">Horário de funcionamento</label>
           <input id="infoHorario" type="text" maxlength="120" placeholder="Ex.: Seg a Sáb, 11h às 23h">
-        </div>
-        <div class="campo"><label for="infoEndereco">Endereço escrito</label>
-          <input id="infoEndereco" type="text" maxlength="200" placeholder="Ex.: Rua das Flores, 120 - Centro, Recife">
         </div>
         <div class="campo"><label for="infoEntrega">Entrega</label>
           <input id="infoEntrega" type="text" maxlength="60" placeholder="Ex.: Entrega R$ 5,00 - ate 5 km">
@@ -2996,6 +3001,50 @@ body.naHome #btnSalvar{margin-top:14px;}
   })();
 
   window.pegarLocalizacao=function(){limparAvisoP();if(!navigator.geolocation){erroP('Seu aparelho não tem GPS no navegador.');return;}el('gpsInfo').innerHTML='📍 Pegando localização...';navigator.geolocation.getCurrentPosition((pos)=>{coords={lat:pos.coords.latitude,lng:pos.coords.longitude};el('gpsInfo').innerHTML='📍 <b>Localização capturada!</b><br>'+coords.lat.toFixed(5)+', '+coords.lng.toFixed(5)+' <span style="color:#7f95b3">(lembre de Salvar)</span>';atualizarOnboarding(false);},(err)=>{if(err.code===1)erroP('Você bloqueou a localização. Libere nas permissões do navegador.');else erroP('Não consegui pegar a localização.');el('gpsInfo').innerHTML='📍 Localização ainda não definida.';},{enableHighAccuracy:true,timeout:10000});};
+
+  /* ---- ENDEREÇO ESCRITO (aba Localização) ----
+     Mesmo campo de sempre (negocios/{uid}.endereco) — só mudou de aba: o lojista
+     pensa no endereço junto com o mapa, não em "Informações". Escolher uma
+     sugestão também grava lat/lng, então quem tem ponto fixo não precisa estar
+     no local pra marcar. O endereço continua OPCIONAL e fora do Perfil completo:
+     o Moviki existe pra quem NÃO tem endereço fixo. */
+  var endSugTimer=null;
+  function endEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  window.endFechar=function(){setTimeout(function(){var c=el('endSug');if(c){c.style.display='none';}},180);};
+  window.endSugerir=function(){
+    var cx=el('endSug');if(!cx)return;
+    var txt=el('infoEndereco').value.trim();
+    if(endSugTimer)clearTimeout(endSugTimer);
+    if(!usuarioAtual||txt.length<3){cx.style.display='none';cx.innerHTML='';return;}
+    endSugTimer=setTimeout(async function(){
+      try{
+        var idToken=await usuarioAtual.getIdToken();
+        var r=await fetch(ROBO+'/api/endereco',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'sugestoes',texto:txt})});
+        var j=await r.json().catch(function(){return{};});
+        var arr=(j&&j.sugestoes)||[];
+        if(!arr.length){cx.style.display='none';cx.innerHTML='';return;}
+        cx.innerHTML=arr.map(function(s){return '<div onmousedown="endEscolher(\''+s.id+'\')" data-t="'+endEsc(s.texto)+'" style="padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06);font-size:13.5px;color:#e6eefb">📍 '+endEsc(s.texto)+'</div>';}).join('');
+        cx.style.display='block';
+      }catch(e){cx.style.display='none';}
+    },300);
+  };
+  window.endEscolher=async function(id){
+    var cx=el('endSug');if(!cx)return;
+    var alvo=cx.querySelector('[onmousedown*="'+id+'"]');
+    cx.style.display='none';
+    if(alvo&&alvo.getAttribute('data-t'))el('infoEndereco').value=alvo.getAttribute('data-t');
+    try{
+      var idToken=await usuarioAtual.getIdToken();
+      var r=await fetch(ROBO+'/api/endereco',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'detalhe',placeId:id})});
+      var j=await r.json().catch(function(){return{};});
+      if(r.ok&&j.ok){
+        if(j.endereco)el('infoEndereco').value=j.endereco;
+        coords={lat:j.lat,lng:j.lng};
+        el('gpsInfo').innerHTML='📍 <b>Ponto marcado pelo endereço.</b><br>'+j.lat.toFixed(5)+', '+j.lng.toFixed(5)+' <span style="color:#7f95b3">(lembre de Salvar)</span>';
+        atualizarOnboarding(false);
+      }
+    }catch(e){}
+  };
 
   /* ---- CARDÁPIO (categorias -> produtos) ---- */
   function vazioCat(){el('vazioCat').classList.toggle('escondido',el('listaCategorias').children.length>0);}
