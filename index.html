@@ -821,6 +821,34 @@ input[type=checkbox]{width:auto;padding:0;}
 #editor .voltar:hover,.voltarFim:hover{border-color:var(--mv-ciano);color:var(--mv-ciano);}
 .voltarFim{display:block;margin:12px auto 0;}
 .tabConteudo{margin-top:4px;}
+
+/* ---------- BLOCOS RETRATEIS (acordeao) — 1 assunto por bloco ---------- */
+.mvAcc{border:1px solid var(--mv-linha,rgba(255,255,255,.10));border-radius:14px;background:rgba(13,28,48,.55);margin:0 0 10px;overflow:hidden;transition:border-color .18s;}
+.mvAcc:hover{border-color:rgba(0,212,255,.35);}
+.mvAcc.aberto{border-color:rgba(0,212,255,.45);background:rgba(13,28,48,.8);}
+.mvAccHead{display:flex;align-items:center;gap:12px;width:100%;padding:14px 14px;background:transparent;border:0;color:#e6eefb;font-family:inherit;text-align:left;cursor:pointer;}
+.mvAccHead:hover{background:rgba(0,212,255,.05);}
+.mvAccIco{flex:0 0 auto;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:19px;line-height:1;}
+.mvAccIco img{width:24px;height:24px;object-fit:contain;}
+.mvAccTxt{flex:1 1 auto;min-width:0;}
+.mvAccTit{display:block;font-weight:700;font-size:15.5px;letter-spacing:-.2px;line-height:1.25;color:#eaf6ff;}
+.mvAccSub{display:block;font-size:12.5px;color:#9fb3d0;line-height:1.4;margin-top:3px;}
+.mvAccSelo{flex:0 0 auto;font-size:11px;font-weight:700;letter-spacing:.2px;padding:4px 9px;border-radius:999px;white-space:nowrap;
+  border:1px solid rgba(255,255,255,.14);color:#9fb3d0;background:rgba(255,255,255,.04);}
+.mvAccSelo.ok{color:#25e39b;border-color:rgba(37,227,155,.35);background:rgba(37,227,155,.10);}
+.mvAccSelo.pend{color:#ffc46b;border-color:rgba(255,196,107,.32);background:rgba(255,196,107,.10);}
+.mvAccSelo:empty{display:none;}
+.mvAccCor{flex:0 0 auto;width:18px;height:18px;border-radius:50%;border:2px solid #1c3457;}
+.mvAccSeta{flex:0 0 auto;color:#00D4FF;font-size:13px;transition:transform .22s ease;}
+.mvAcc.aberto .mvAccSeta{transform:rotate(180deg);}
+.mvAccBody{display:none;padding:2px 14px 16px;border-top:1px solid rgba(255,255,255,.07);}
+.mvAcc.aberto .mvAccBody{display:block;animation:mvAccIn .18s ease;}
+@keyframes mvAccIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
+@media(prefers-reduced-motion:reduce){.mvAcc.aberto .mvAccBody{animation:none;}.mvAccSeta{transition:none;}}
+.mvAccBody>.logoCard{margin-top:12px;}
+.mvAccBody>.campo:first-child{margin-top:10px;}
+@media(max-width:600px){.mvAccHead{padding:13px 12px;gap:10px;}.mvAccTit{font-size:15px;}.mvAccBody{padding:2px 12px 14px;}}
+
 .secTitulo{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:16px 2px 10px;}
 .secTitulo label{margin:0;font-size:14px;font-weight:700;color:var(--mv-txt);letter-spacing:-.2px;}
 .addBtn{border:1px dashed var(--mv-linha-forte);background:transparent;color:var(--mv-ciano);font-family:inherit;
@@ -1703,13 +1731,29 @@ body.naHome #btnSalvar{margin-top:14px;}
         <button type="button" class="voltar" onclick="voltarHome()">‹ Voltar ao início</button>
         <h2 class="editorTit" id="editorTit">Perfil</h2>
         <div class="tabConteudo" id="tab-perfil">
+      <div class="mvAcc" id="acc-perfil-dados">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-perfil-dados-body" onclick="mvAccToggle('acc-perfil-dados')">
+          <span class="mvAccIco"><img src="icones/perfil.png" alt="" loading="lazy" onerror="mvI(this,'👤')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Nome e link do seu negócio</span><span class="mvAccSub">Como o cliente te encontra e o link que você divulga.</span></span>
+          <span class="mvAccSelo" id="selo-acc-perfil-dados"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-perfil-dados-body">
         <div class="campo"><label for="nome">Nome do negócio</label><input id="nome" type="text" placeholder="Ex.: Caldeirão Nordestino" oninput="atualizarOnboarding(false)"></div>
         <div class="campo"><label for="apelido">Seu link no Moviki</label><div class="linkCampo"><span class="pref">moviki.com.br/</span><input id="apelido" type="text" placeholder="caldeirao" autocomplete="off" oninput="atualizarOnboarding(false)"></div></div>
         <div id="linkPronto" class="linkPronto escondido"><div class="rot">✅ Link pra divulgar (bio do Instagram, WhatsApp...):</div><div class="linkRow"><a id="linkPublico" href="#" target="_blank" rel="noopener"></a><button onclick="copiarLink()" id="btnCopiar">Copiar</button></div></div>
         <div class="campo"><label for="recado">Recado do dia (opcional)</label><textarea id="recado" rows="2" placeholder="Ex.: Hoje tem caldo de feijão!"></textarea></div>
-        <div style="border:1px solid rgba(0,212,255,.25);border-radius:12px;padding:14px;background:rgba(0,102,255,.05);margin-top:4px">
-          <label style="font-weight:700;font-size:15px;display:block;margin-bottom:4px"><img class="icoM" src="icones/cormarca.png" alt="" loading="lazy" onerror="mvI(this,'🎨')">Aparência da sua página</label>
-          <div style="font-size:13px;color:#9fb3d0;margin-bottom:10px">Escolha a cor da sua marca. Ela pinta os destaques da sua página pública e o seu pino no mapa. <span style="color:#7f95b3">(recurso do plano Premium ou superior)</span></div>
+        </div>
+      </div>
+      <div class="mvAcc" id="acc-perfil-cor">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-perfil-cor-body" onclick="mvAccToggle('acc-perfil-cor')">
+          <span class="mvAccIco"><img src="icones/cormarca.png" alt="" loading="lazy" onerror="mvI(this,'🎨')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Aparência da sua página</span><span class="mvAccSub">A cor da sua marca nos destaques e no pino.</span></span>
+          <span class="mvAccCor" id="accCorDot" style="background:#00D4FF"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-perfil-cor-body">
+          <div style="font-size:13px;color:#9fb3d0;margin:10px 0 10px">Escolha a cor da sua marca. Ela pinta os destaques da sua p&aacute;gina p&uacute;blica e o seu pino no mapa. <span style="color:#7f95b3">(recurso do plano Premium ou superior)</span></div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
             <input id="corInput" type="color" value="#00D4FF" style="width:52px;height:40px;border:none;border-radius:10px;background:transparent;cursor:pointer;padding:0">
             <div style="display:flex;gap:7px;flex-wrap:wrap">
@@ -1722,6 +1766,16 @@ body.naHome #btnSalvar{margin-top:14px;}
             </div>
             <button type="button" class="btn secundario" style="margin:0;padding:8px 12px;font-size:13px" onclick="document.getElementById('corInput').value='#00D4FF'">Voltar ao padrão</button>
           </div>
+        </div>
+      </div>
+      <div class="mvAcc" id="acc-perfil-divulga">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-perfil-divulga-body" onclick="mvAccToggle('acc-perfil-divulga')">
+          <span class="mvAccIco"><img src="icones/indicar.png" alt="" loading="lazy" onerror="mvI(this,'📣')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Divulgação e marca própria</span><span class="mvAccSub">Deixe o Moviki divulgar seu negócio e, no Enterprise, use só a sua marca.</span></span>
+          <span class="mvAccSelo" id="selo-acc-perfil-divulga"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-perfil-divulga-body">
           <div id="divulgaRow" style="border-top:1px solid rgba(255,255,255,.1);margin-top:12px;padding-top:12px">
             <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer">
               <input id="divulgaToggle" type="checkbox" style="margin-top:3px;width:18px;height:18px;accent-color:#25e39b;cursor:pointer">
@@ -1735,6 +1789,7 @@ body.naHome #btnSalvar{margin-top:14px;}
             </label>
           </div>
         </div>
+      </div>
       </div>
 
       <!-- Cardápio -->
@@ -1770,8 +1825,26 @@ body.naHome #btnSalvar{margin-top:14px;}
 
       <!-- Local -->
       <div class="tabConteudo escondido" id="tab-local">
+      <div class="mvAcc" id="acc-local-gps">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-local-gps-body" onclick="mvAccToggle('acc-local-gps')">
+          <span class="mvAccIco"><img src="icones/localizacao.png" alt="" loading="lazy" onerror="mvI(this,'📍')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Salve sua localização</span><span class="mvAccSub">Marque no mapa onde seu ponto está agora.</span></span>
+          <span class="mvAccSelo" id="selo-acc-local-gps"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-local-gps-body">
         <div class="gps" id="gpsInfo">📍 Localização ainda não definida.</div>
         <button class="btn secundario btnGps" onclick="pegarLocalizacao()"><img class="icoM" src="icones/localizacao.png" alt="" loading="lazy" onerror="mvI(this,'📍')">Atualizar minha localização</button>
+        </div>
+      </div>
+      <div class="mvAcc" id="acc-local-endereco">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-local-endereco-body" onclick="mvAccToggle('acc-local-endereco')">
+          <span class="mvAccIco"><img src="icones/sobre.png" alt="" loading="lazy" onerror="mvI(this,'🏠')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Endereço escrito</span><span class="mvAccSub">O endereço que o cliente lê na sua página. Opcional pra quem é itinerante.</span></span>
+          <span class="mvAccSelo" id="selo-acc-local-endereco"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-local-endereco-body">
         <div class="endCard" id="endCard">
           <div class="endTopo">
             <span class="endLamp" aria-hidden="true">
@@ -1815,6 +1888,16 @@ body.naHome #btnSalvar{margin-top:14px;}
           <div class="endStatus" id="endStatus"></div>
         </div>
         <div class="endAviso"><span class="endAvisoIco" aria-hidden="true">!</span><div>É <b>itinerante</b> e muda de lugar toda hora? <b>Deixe o endereço em branco</b> e use só o botão de localização aí em cima. Endereço fixo cadastrado num negócio que se move faz o cliente ir ao lugar errado.</div></div>
+        </div>
+      </div>
+      <div class="mvAcc" id="acc-local-logo">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-local-logo-body" onclick="mvAccToggle('acc-local-logo')">
+          <span class="mvAccIco"><img src="icones/logopino.png" alt="" loading="lazy" onerror="mvI(this,'🖼️')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Sua logo no mapa</span><span class="mvAccSub">Seu pino com a sua marca, em vez do pino padrão.</span></span>
+          <span class="mvAccSelo" id="selo-acc-local-logo"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-local-logo-body">
         <div class="logoCard">
           <div class="lcHead">
             <span class="lcIco"><img class="icoB" src="icones/logopino.png" alt="" loading="lazy" onerror="mvI(this,'🖼️')"></span>
@@ -1877,6 +1960,8 @@ body.naHome #btnSalvar{margin-top:14px;}
             <div id="logoMsg" style="font-size:13px;margin-top:11px;line-height:1.5"></div>
           </div>
         </div>
+        </div>
+      </div>
       </div>
 
       <!-- Informações (Fase 2b) -->
@@ -3472,13 +3557,13 @@ body.naHome #btnSalvar{margin-top:14px;}
     if(!usuarioAtual)return;
     const btn=el('btnSalvar');limparAvisoP();
     const nome=el('nome').value.trim();
-    if(!nome){abrirTab('perfil');erroP('Dê um nome ao seu negócio (aba Perfil).');return;}
+    if(!nome){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('Dê um nome ao seu negócio (aba Perfil).');return;}
     const apelidoDigitado=el('apelido').value.trim();
     let slug='';
-    if(apelidoDigitado){slug=limpaSlug(apelidoDigitado);if(slug.length<3){abrirTab('perfil');erroP('O apelido precisa ter ao menos 3 letras/números (sem espaços ou acentos).');return;}if(RESERVADOS.includes(slug)){abrirTab('perfil');erroP('Esse apelido é reservado, escolha outro.');return;}}
+    if(apelidoDigitado){slug=limpaSlug(apelidoDigitado);if(slug.length<3){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('O apelido precisa ter ao menos 3 letras/números (sem espaços ou acentos).');return;}if(RESERVADOS.includes(slug)){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('Esse apelido é reservado, escolha outro.');return;}}
     btn.disabled=true;const t=btn.textContent;btn.textContent='Salvando...';
     try{
-      if(slug){const ref=doc(db,'slugs',slug);const snap=await getDoc(ref);if(snap.exists()&&snap.data().uid!==usuarioAtual.uid){abrirTab('perfil');erroP('O apelido "'+slug+'" já está em uso. Escolha outro.');btn.disabled=false;btn.textContent=t;return;}if(!snap.exists()){await setDoc(ref,{uid:usuarioAtual.uid});}el('apelido').value=slug;}
+      if(slug){const ref=doc(db,'slugs',slug);const snap=await getDoc(ref);if(snap.exists()&&snap.data().uid!==usuarioAtual.uid){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('O apelido "'+slug+'" já está em uso. Escolha outro.');btn.disabled=false;btn.textContent=t;return;}if(!snap.exists()){await setDoc(ref,{uid:usuarioAtual.uid});}el('apelido').value=slug;}
       const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),fotos:lerGaleria(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
       /* Fase 2b: informações do negócio. Sempre gravados (texto vazio = some da página pública). */
       dados.horario=el('infoHorario')?el('infoHorario').value.trim().slice(0,120):'';
@@ -3487,7 +3572,7 @@ body.naHome #btnSalvar{margin-top:14px;}
          que não existe. */
       var _end=el('infoEndereco')?el('infoEndereco').value.trim().slice(0,200):'';
       if(_end && !(endOk && endOk.texto===_end)){
-        abrirTab('local');erroP('Escolha o endereço na lista que aparece embaixo do campo — só vale endereço confirmado no mapa.');
+        abrirTab('local');if(window.mvAccAbrir)mvAccAbrir('acc-local-endereco');erroP('Escolha o endereço na lista que aparece embaixo do campo — só vale endereço confirmado no mapa.');
         var _ie=el('infoEndereco');if(_ie){try{_ie.focus();_ie.scrollIntoView({behavior:'smooth',block:'center'});}catch(_){}}
         btn.disabled=false;btn.textContent=t;return;
       }
@@ -3511,6 +3596,7 @@ body.naHome #btnSalvar{margin-top:14px;}
   window.ocultarOnboarding=function(){onbOculto=true;onbDone=true;try{if(usuarioAtual&&usuarioAtual.uid)localStorage.setItem('moviki_onb_'+usuarioAtual.uid,'1');}catch(_){}const b=el('onboarding');if(b)b.classList.add('escondido');};
   window.irPasso=function(qual){
     abrirTab(qual==='local'?'local':'perfil');
+    if(window.mvAccAbrir)mvAccAbrir(qual==='local'?'acc-local-gps':'acc-perfil-dados');
     setTimeout(function(){
       if(qual==='nome'){const n=el('nome');n.focus();n.scrollIntoView({behavior:'smooth',block:'center'});}
       else if(qual==='link'){const a=el('apelido');a.focus();a.scrollIntoView({behavior:'smooth',block:'center'});}
@@ -4540,6 +4626,101 @@ body.naHome #btnSalvar{margin-top:14px;}
 <script>
 /* Ícone 3D com fallback pro emoji original (nada quebra se o PNG faltar). */
 function mvI(img,e){var s=document.createElement('span');s.textContent=e;s.style.cssText='font-size:1em;line-height:1';img.replaceWith(s);}
+</script>
+<script>
+/* ================= BLOCOS RETRATEIS (acordeao do painel) =================
+   Regra: aba com mais de um assunto vira blocos fechados. So abre no clique.
+   Um bloco aberto por vez dentro da mesma aba. ======================== */
+(function(){
+  function $(id){return document.getElementById(id);}
+  function tabDe(n){ while(n && !(n.classList && n.classList.contains('tabConteudo'))) n=n.parentNode; return n; }
+
+  window.mvAccFecharTudo=function(escopo){
+    var raiz=escopo||document;
+    var ns=raiz.querySelectorAll('.mvAcc');
+    for(var i=0;i<ns.length;i++){
+      ns[i].classList.remove('aberto');
+      var h=ns[i].querySelector('.mvAccHead'); if(h) h.setAttribute('aria-expanded','false');
+    }
+  };
+
+  window.mvAccToggle=function(id){
+    var n=$(id); if(!n) return;
+    var abrir=!n.classList.contains('aberto');
+    mvAccFecharTudo(tabDe(n)||document);
+    if(abrir){
+      n.classList.add('aberto');
+      var h=n.querySelector('.mvAccHead'); if(h) h.setAttribute('aria-expanded','true');
+      try{ n.scrollIntoView({behavior:'smooth',block:'nearest'}); }catch(_){}
+      try{ if(window.mvEv) mvEv('painel_bloco_aberto',{bloco:id}); }catch(_){}
+    }
+    mvAccSync();
+  };
+
+  /* abre um bloco especifico (usado por erro de validacao / onboarding) */
+  window.mvAccAbrir=function(id){
+    var n=$(id); if(!n) return;
+    if(!n.classList.contains('aberto')) mvAccToggle(id);
+    setTimeout(function(){ try{ n.scrollIntoView({behavior:'smooth',block:'center'}); }catch(_){} },90);
+  };
+
+  function selo(id,txt,cls){
+    var e=$('selo-'+id); if(!e) return;
+    e.textContent=txt||''; e.className='mvAccSelo'+(cls?' '+cls:'');
+  }
+  function val(id){ var e=$(id); return e?String(e.value||'').trim():''; }
+
+  window.mvAccSync=function(){
+    /* perfil */
+    var nome=val('nome'), ape=val('apelido');
+    if(nome&&ape) selo('acc-perfil-dados','\u2713 pronto','ok');
+    else selo('acc-perfil-dados','pendente','pend');
+
+    var dot=$('accCorDot'), ci=$('corInput');
+    if(dot&&ci) dot.style.background=ci.value||'#00D4FF';
+
+    var dv=$('divulgaToggle'), wl=$('wlToggle');
+    if(dv&&dv.checked) selo('acc-perfil-divulga','ligado','ok');
+    else if(wl&&wl.checked) selo('acc-perfil-divulga','white-label','ok');
+    else selo('acc-perfil-divulga','desligado','');
+
+    /* localizacao */
+    var g=$('gpsInfo'), gtxt=g?(g.textContent||''):'';
+    if(gtxt && gtxt.indexOf('ainda n')<0) selo('acc-local-gps','\u2713 salva','ok');
+    else selo('acc-local-gps','pendente','pend');
+
+    var end=val('infoEndereco');
+    selo('acc-local-endereco', end?'\u2713 ok':'em branco', end?'ok':'');
+
+    var ls=$('logoSalva');
+    var temLogo = ls && !ls.classList.contains('escondido');
+    selo('acc-local-logo', temLogo?'\u2713 enviada':'sem logo', temLogo?'ok':'');
+  };
+
+  document.addEventListener('input', function(e){ if(e.target&&e.target.id) mvAccSync(); }, true);
+  document.addEventListener('change', function(e){ if(e.target&&e.target.id) mvAccSync(); }, true);
+
+  /* ao trocar de aba: tudo fechado de novo */
+  var tries=0;
+  var iv=setInterval(function(){
+    tries++;
+    if(typeof window.abrirTab==='function'){
+      clearInterval(iv);
+      var _ab=window.abrirTab;
+      window.abrirTab=function(nome){
+        _ab(nome);
+        var alvo=$('tab-'+nome);
+        if(alvo) mvAccFecharTudo(alvo);
+        mvAccSync();
+      };
+    }
+    if(tries>120) clearInterval(iv);
+  },100);
+
+  setInterval(mvAccSync, 2000);
+  if(document.readyState!=='loading') mvAccSync();
+  else document.addEventListener('DOMContentLoaded', mvAccSync);
+})();
 </script>
 </body>
 </html>
