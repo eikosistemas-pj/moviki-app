@@ -1251,6 +1251,15 @@ body.naHome #btnSalvar{margin-top:14px;}
 .mvItemBody>.catCab{margin-top:12px;}
 .mvItemBody>.p-nome,.mvItemBody>.pr-tit,.mvItemBody>.ev-tit{margin-top:12px;}
 .mvItemBody>.linha2{margin-top:12px;}
+/* Link discreto do suporte no cartão de ajuda — 31/08/2026.
+   Era um botão do mesmo tamanho do "Perguntar ao Vik", e botão de igual peso
+   vira escolha de igual peso: muita gente ia direto no humano sem nem tentar
+   o Vik, que responde na hora e enxerga os dados da conta. Virou link. A porta
+   continua aberta, só não compete com a que resolve mais rápido. */
+.mvRcLinkDiscreto{display:block;text-align:center;margin-top:9px;font-size:12.5px;
+  color:var(--mv-txt-3);text-decoration:none;padding:4px;}
+.mvRcLinkDiscreto:hover{color:var(--mv-ciano);text-decoration:underline;}
+
 .mvListaBarra{display:none;justify-content:flex-end;margin:0 2px 6px;}
 .mvListaBarra.mostrar{display:flex;}
 .mvListaBarra button{background:none;border:1px solid var(--mv-linha-forte);color:var(--mv-txt-3);
@@ -1308,7 +1317,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         <div id="seloDrawer" class="seloOuro" style="display:none">Cliente Enterprise</div>
         <button type="button" onclick="fecharMenu();verMinhaPagina()"><img class="diImg" src="icones/pagina.png" alt="" onerror="this.replaceWith(document.createTextNode('🌐'))"> Minha Página</button>
         <button type="button" id="drawerPontos" style="display:none" onclick="fecharMenu();abrirPontos()"><img class="diImg" src="icones/multipontos.png" alt="" onerror="this.replaceWith(document.createTextNode('📍'))"> Meus pontos</button>
-        <button type="button" onclick="fecharMenu();abrirMensagens()"><svg class="diImg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.6 9.6 0 0 1-2.9-.4L3 21l1.6-4.5a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/></svg> Falar com o Moviki<span class="msgBad escondido" id="msgBadMenu">1</span></button>
+        <button type="button" onclick="fecharMenu();abrirMensagens()"><svg class="diImg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.6 9.6 0 0 1-2.9-.4L3 21l1.6-4.5a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/></svg> Falar com o Vik<span class="msgBad escondido" id="msgBadMenu">1</span></button>
 
         <div class="drawerSec">Crescer</div>
         <button type="button" onclick="abrirIndica()"><img class="diImg" src="icones/indicar.png" alt="" onerror="this.replaceWith(document.createTextNode('💰'))"> Indique e ganhe</button>
@@ -1522,8 +1531,8 @@ body.naHome #btnSalvar{margin-top:14px;}
       <div id="modalMsg" class="modalPlano escondido" onclick="if(event.target===this)fecharMensagens()">
         <div class="mpCaixa" style="max-width:560px">
           <button type="button" class="mpFechar" onclick="fecharMensagens()" aria-label="Fechar">✕</button>
-          <div class="mpHead"><h2 class="mpTitulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;color:var(--ciano)"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.6 9.6 0 0 1-2.9-.4L3 21l1.6-4.5a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/></svg>Falar com o Moviki</h2></div>
-          <p class="idxLead">Canal direto com quem cuida do Moviki. Escreva aqui e a gente responde nesta mesma tela — o <b>Vik</b>, nosso assistente, responde as dúvidas rápidas na hora.</p>
+          <div class="mpHead"><h2 class="mpTitulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;color:var(--ciano)"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.6 9.6 0 0 1-2.9-.4L3 21l1.6-4.5a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/></svg>Falar com o Vik</h2></div>
+          <p class="idxLead">O <b>Vik</b> responde aqui na hora — ele conhece o seu painel, o seu plano e os seus números. Quando o assunto precisar de gente, ele mesmo chama alguém do time, nesta mesma conversa.</p>
 
           <div class="msgDocs escondido" id="msgBlocoDocs">
             <div class="msgDocsTit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/></svg>Mensagens do admin</div>
@@ -2074,12 +2083,12 @@ body.naHome #btnSalvar{margin-top:14px;}
           <div class="mvRcAjudaTopo">
             <div class="mvRcAjudaTxt">
               <div class="mvRcTit">Precisa de ajuda?</div>
-              <p>Para dúvida rápida, o Vik responde na hora aqui mesmo. Cobrança, saque ou qualquer coisa que precise de gente: o time atende no WhatsApp.</p>
+              <p>O Vik responde na hora aqui mesmo, e ele vê o seu painel, o seu plano e os seus números. Se for algo que ele não resolva, ele mesmo chama o time.</p>
             </div>
             <img class="mvRcVik" src="/icones/vik-acenando.webp" alt="" decoding="async" loading="lazy">
           </div>
           <button type="button" class="mvRcBtnLargo" onclick="abrirMensagens()">Perguntar ao Vik</button>
-          <a class="mvRcBtnLargo mvRcWhats" href="https://wa.me/554120186848?text=Ol%C3%A1!%20Preciso%20de%20ajuda%20com%20o%20Moviki." target="_blank" rel="noopener">Falar com o suporte</a>
+          <a class="mvRcLinkDiscreto" href="https://wa.me/554120186848?text=Ol%C3%A1!%20Preciso%20de%20ajuda%20com%20o%20Moviki." target="_blank" rel="noopener">prefere WhatsApp? fale com o suporte</a>
         </div>
       </aside>
       </div><!-- /mvShell -->
@@ -2386,7 +2395,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-08-31-blocos';
+  window.MOVIKI_VERSAO='2026-08-31-blocos-vik';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
