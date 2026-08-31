@@ -828,9 +828,55 @@ input[type=checkbox]{width:auto;padding:0;}
 .addBtn:hover{border-color:var(--mv-ciano);background:rgba(0,212,255,.07);}
 .vazioCard{background:var(--mv-campo);border:1px dashed var(--mv-linha-forte);border-radius:var(--mv-r);
   padding:20px 14px;text-align:center;font-size:13.5px;color:var(--mv-txt-3);line-height:1.55;}
-.dicaBox{display:flex;align-items:flex-start;gap:9px;background:var(--mv-surf);border:1px solid var(--mv-linha);
+/* dicaBox: era display:flex e cada <b> do texto virava um ITEM DE FLEX — o texto
+   saia em colunas atropelado (bug visivel em todas as dicas com negrito).
+   Agora o icone flutua e o texto corre normal, com negrito no meio da frase. */
+.dicaBox{display:block;background:var(--mv-surf);border:1px solid var(--mv-linha);
   border-left:3px solid var(--mv-ciano);border-radius:var(--mv-r);padding:13px 14px;font-size:13.5px;color:var(--mv-txt-2);line-height:1.55;margin-top:12px;}
+.dicaBox>img{float:left;margin:1px 10px 2px 0;}
+.dicaBox::after{content:"";display:block;clear:both;}
 .dicaBox b{color:var(--mv-txt);}
+
+/* ---------- ENDERECO ESCRITO (aba Localizacao) ---------- */
+.endCard{background:linear-gradient(180deg,rgba(0,212,255,.10),rgba(0,212,255,.02));
+  border:1px solid var(--mv-linha);border-left:3px solid var(--mv-ciano);border-radius:var(--mv-r);
+  padding:16px;margin-top:14px;}
+.endTopo{display:flex;align-items:flex-start;gap:14px;}
+.endLamp{flex:0 0 auto;width:68px;height:68px;margin-top:-4px;}
+.endLamp svg{width:100%;height:100%;display:block;}
+.endLampGlow{animation:endPisca 2.6s ease-in-out infinite;transform-origin:50% 42%;}
+.endLampFil{animation:endFilamento 2.6s ease-in-out infinite;}
+@keyframes endPisca{0%,100%{opacity:.30;transform:scale(.92);}50%{opacity:.95;transform:scale(1.06);}}
+@keyframes endFilamento{0%,100%{opacity:.55;}50%{opacity:1;}}
+@media (prefers-reduced-motion:reduce){.endLampGlow,.endLampFil{animation:none;opacity:.8;}}
+.endTit{font-size:15.5px;font-weight:700;color:var(--mv-txt);letter-spacing:-.2px;}
+.endSub{font-size:13.5px;color:var(--mv-txt-2);line-height:1.55;margin-top:4px;}
+.endSub b{color:var(--mv-txt);}
+.endBusca{position:relative;margin-top:13px;}
+.endBusca input{padding-right:44px;}
+.endLimpar{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:30px;height:30px;
+  display:none;align-items:center;justify-content:center;border:none;border-radius:50%;
+  background:rgba(255,255,255,.07);color:var(--mv-txt-3);font-size:14px;cursor:pointer;}
+.endLimpar:hover{background:rgba(255,255,255,.14);color:var(--mv-txt);}
+.endCard.temTexto .endLimpar{display:flex;}
+.endSug{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:20;
+  background:var(--mv-campo);border:1px solid var(--mv-ciano);border-radius:var(--mv-r);
+  max-height:230px;overflow:auto;box-shadow:0 14px 34px rgba(0,0,0,.55);}
+.endSug div{padding:12px 13px;cursor:pointer;font-size:14px;color:var(--mv-txt);line-height:1.4;
+  border-bottom:1px solid rgba(255,255,255,.06);}
+.endSug div:last-child{border-bottom:none;}
+.endSug div:hover{background:rgba(0,212,255,.10);}
+.endStatus{font-size:13px;line-height:1.5;margin-top:9px;min-height:18px;}
+.endStatus.ok{color:var(--mv-ok);}
+.endStatus.pend{color:#ffc86b;}
+@media (max-width:600px){
+  .endCard{padding:14px;}
+  .endTopo{gap:11px;}
+  .endLamp{width:54px;height:54px;}
+  .endTit{font-size:14.5px;}
+  .endSub{font-size:13px;}
+  .endSug div{padding:13px 12px;font-size:13.5px;}
+}
 .notaFotos{background:rgba(255,176,32,.10);border:1px solid rgba(255,176,32,.32);border-radius:var(--mv-r);
   padding:12px 13px;font-size:13px;color:#ffd591;line-height:1.55;margin-bottom:12px;}
 .catBloco,.prodRow{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r);}
@@ -1717,14 +1763,49 @@ body.naHome #btnSalvar{margin-top:14px;}
       <div class="tabConteudo escondido" id="tab-local">
         <div class="gps" id="gpsInfo">📍 Localização ainda não definida.</div>
         <button class="btn secundario" onclick="pegarLocalizacao()"><img class="icoM" src="icones/localizacao.png" alt="" loading="lazy" onerror="mvI(this,'📍')">Atualizar minha localização</button>
-        <div class="campo" style="margin-top:14px">
-          <label for="infoEndereco">Endereço escrito (é o que o cliente lê)</label>
-          <div style="position:relative">
-            <input id="infoEndereco" type="text" maxlength="200" autocomplete="off" placeholder="Ex.: Rua das Flores, 120 - Centro, Recife" oninput="endSugerir()" onblur="endFechar()">
-            <div id="endSug" style="display:none;position:absolute;left:0;right:0;top:100%;z-index:9;background:#0b1728;border:1px solid var(--ciano);border-radius:10px;max-height:210px;overflow:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>
+        <div class="endCard" id="endCard">
+          <div class="endTopo">
+            <span class="endLamp" aria-hidden="true">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="endGlow" cx="50%" cy="42%" r="50%">
+                    <stop offset="0%" stop-color="#FFD97A" stop-opacity=".95"/>
+                    <stop offset="55%" stop-color="#FFB020" stop-opacity=".35"/>
+                    <stop offset="100%" stop-color="#FFB020" stop-opacity="0"/>
+                  </radialGradient>
+                  <radialGradient id="endVidro" cx="38%" cy="30%" r="72%">
+                    <stop offset="0%" stop-color="#FFF6D5"/>
+                    <stop offset="45%" stop-color="#FFD067"/>
+                    <stop offset="100%" stop-color="#F09A16"/>
+                  </radialGradient>
+                  <linearGradient id="endMetal" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#E9F2FA"/>
+                    <stop offset="45%" stop-color="#9FB3C8"/>
+                    <stop offset="100%" stop-color="#5B7A98"/>
+                  </linearGradient>
+                </defs>
+                <circle class="endLampGlow" cx="32" cy="27" r="26" fill="url(#endGlow)"/>
+                <path d="M32 6c-9.4 0-17 7.4-17 16.5 0 6 3 10.3 5.9 13.4 1.6 1.7 2.6 3.4 3 5.1h16.2c.4-1.7 1.4-3.4 3-5.1C46 32.8 49 28.5 49 22.5 49 13.4 41.4 6 32 6z" fill="url(#endVidro)"/>
+                <path d="M24 14.5c1.8-3 5.1-5 8.6-5.2-3.2 1.1-5.8 3.3-7 6.3-.5 1.2-2.2.6-1.6-1.1z" fill="#FFFDF2" opacity=".85"/>
+                <path class="endLampFil" d="M26.5 33.5c0-4 1.8-5.5 2.8-8 .8-2 .2-3.6-1.3-4.9M37.5 33.5c0-4-1.8-5.5-2.8-8-.8-2-.2-3.6 1.3-4.9" stroke="#B4640A" stroke-width="1.7" stroke-linecap="round"/>
+                <rect x="22.5" y="41.5" width="19" height="5.2" rx="2.6" fill="url(#endMetal)"/>
+                <rect x="23.5" y="47.6" width="17" height="4.6" rx="2.3" fill="url(#endMetal)"/>
+                <path d="M26 53.4h12c0 2.9-2.7 4.6-6 4.6s-6-1.7-6-4.6z" fill="#7E93AC"/>
+              </svg>
+            </span>
+            <div>
+              <div class="endTit">Endereço escrito</div>
+              <div class="endSub">É o endereço que o cliente lê na sua página. Digite e <b>escolha uma opção da lista</b> — ela vem do mapa, e já marca seu ponto. Endereço digitado à mão não é aceito.</div>
+            </div>
           </div>
+          <div class="endBusca">
+            <input id="infoEndereco" type="text" maxlength="200" autocomplete="off" placeholder="Digite a rua e o número, depois escolha na lista" oninput="endSugerir()" onblur="endFechar()">
+            <button type="button" class="endLimpar" onclick="endLimpar()" title="Limpar endereço" aria-label="Limpar endereço">✕</button>
+            <div class="endSug" id="endSug"></div>
+          </div>
+          <div class="endStatus" id="endStatus"></div>
         </div>
-        <div class="dicaBox"><img class="icoM" src="icones/lampada.png" alt="" loading="lazy" onerror="mvI(this,'&#128161;')">Digite e <b>escolha uma sugestão</b>: além de escrever o endereço, isso já marca seu ponto no mapa. Se você é itinerante e muda de lugar, deixe em branco e use só o botão de localização acima.</div>
+        <div class="dicaBox"><img class="icoM" src="icones/lampada.png" alt="" loading="lazy" onerror="mvI(this,'&#128161;')">Se você é <b>itinerante</b> e muda de lugar toda hora, deixe o endereço em branco e use só o botão de localização acima.</div>
         <div class="logoCard">
           <div class="lcHead">
             <span class="lcIco"><img class="icoB" src="icones/logopino.png" alt="" loading="lazy" onerror="mvI(this,'🖼️')"></span>
@@ -3003,17 +3084,31 @@ body.naHome #btnSalvar{margin-top:14px;}
   window.pegarLocalizacao=function(){limparAvisoP();if(!navigator.geolocation){erroP('Seu aparelho não tem GPS no navegador.');return;}el('gpsInfo').innerHTML='📍 Pegando localização...';navigator.geolocation.getCurrentPosition((pos)=>{coords={lat:pos.coords.latitude,lng:pos.coords.longitude};el('gpsInfo').innerHTML='📍 <b>Localização capturada!</b><br>'+coords.lat.toFixed(5)+', '+coords.lng.toFixed(5)+' <span style="color:#7f95b3">(lembre de Salvar)</span>';atualizarOnboarding(false);},(err)=>{if(err.code===1)erroP('Você bloqueou a localização. Libere nas permissões do navegador.');else erroP('Não consegui pegar a localização.');el('gpsInfo').innerHTML='📍 Localização ainda não definida.';},{enableHighAccuracy:true,timeout:10000});};
 
   /* ---- ENDEREÇO ESCRITO (aba Localização) ----
-     Mesmo campo de sempre (negocios/{uid}.endereco) — só mudou de aba: o lojista
-     pensa no endereço junto com o mapa, não em "Informações". Escolher uma
-     sugestão também grava lat/lng, então quem tem ponto fixo não precisa estar
-     no local pra marcar. O endereço continua OPCIONAL e fora do Perfil completo:
-     o Moviki existe pra quem NÃO tem endereço fixo. */
-  var endSugTimer=null;
+     O campo é o mesmo de sempre (negocios/{uid}.endereco), só mudou de aba.
+     REGRA: só vale endereço vindo do Google Places. Texto batido à mão não salva
+     — endereço inventado no mapa é pior que endereço nenhum. Escolher a sugestão
+     grava lat/lng junto, então quem tem ponto fixo não precisa estar no local.
+     Continua OPCIONAL e fora do Perfil completo: o Moviki existe pra quem NÃO
+     tem endereço fixo. */
+  var endSugTimer=null, endOk=null;   // endOk = {texto,lat,lng} confirmado no mapa
   function endEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-  window.endFechar=function(){setTimeout(function(){var c=el('endSug');if(c){c.style.display='none';}},180);};
+  function endValor(){var i=el('infoEndereco');return i?i.value.trim():'';}
+  window.endConfirmado=function(){var v=endValor();return !v||(endOk&&endOk.texto===v);};
+  function endPintar(){
+    var card=el('endCard'), st=el('endStatus'); if(!card||!st)return;
+    var v=endValor();
+    card.classList.toggle('temTexto', !!v);
+    if(!v){st.className='endStatus';st.textContent='';return;}
+    if(endOk&&endOk.texto===v){st.className='endStatus ok';st.textContent='✓ Endereço confirmado no mapa.';}
+    else{st.className='endStatus pend';st.textContent='⚠ Escolha o endereço na lista pra confirmar. Sem isso ele não é salvo.';}
+  }
+  window.endPintar=endPintar;
+  window.endLimpar=function(){var i=el('infoEndereco');if(!i)return;i.value='';endOk=null;var c=el('endSug');if(c){c.style.display='none';c.innerHTML='';}endPintar();i.focus();};
+  window.endFechar=function(){setTimeout(function(){var c=el('endSug');if(c)c.style.display='none';},180);};
   window.endSugerir=function(){
-    var cx=el('endSug');if(!cx)return;
-    var txt=el('infoEndereco').value.trim();
+    var cx=el('endSug'); if(!cx)return;
+    var txt=endValor();
+    endPintar();
     if(endSugTimer)clearTimeout(endSugTimer);
     if(!usuarioAtual||txt.length<3){cx.style.display='none';cx.innerHTML='';return;}
     endSugTimer=setTimeout(async function(){
@@ -3023,27 +3118,31 @@ body.naHome #btnSalvar{margin-top:14px;}
         var j=await r.json().catch(function(){return{};});
         var arr=(j&&j.sugestoes)||[];
         if(!arr.length){cx.style.display='none';cx.innerHTML='';return;}
-        cx.innerHTML=arr.map(function(s){return '<div onmousedown="endEscolher(\''+s.id+'\')" data-t="'+endEsc(s.texto)+'" style="padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06);font-size:13.5px;color:#e6eefb">📍 '+endEsc(s.texto)+'</div>';}).join('');
+        cx.innerHTML=arr.map(function(s){return '<div onmousedown="endEscolher(\''+s.id+'\')" data-t="'+endEsc(s.texto)+'">\uD83D\uDCCD '+endEsc(s.texto)+'</div>';}).join('');
         cx.style.display='block';
       }catch(e){cx.style.display='none';}
     },300);
   };
   window.endEscolher=async function(id){
-    var cx=el('endSug');if(!cx)return;
+    var cx=el('endSug'); if(!cx)return;
     var alvo=cx.querySelector('[onmousedown*="'+id+'"]');
     cx.style.display='none';
     if(alvo&&alvo.getAttribute('data-t'))el('infoEndereco').value=alvo.getAttribute('data-t');
+    var st=el('endStatus'); if(st){st.className='endStatus';st.textContent='Confirmando no mapa...';}
     try{
       var idToken=await usuarioAtual.getIdToken();
       var r=await fetch(ROBO+'/api/endereco',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'detalhe',placeId:id})});
       var j=await r.json().catch(function(){return{};});
       if(r.ok&&j.ok){
-        if(j.endereco)el('infoEndereco').value=j.endereco;
+        var texto=j.endereco||endValor();
+        el('infoEndereco').value=texto;
+        endOk={texto:texto,lat:j.lat,lng:j.lng};
         coords={lat:j.lat,lng:j.lng};
-        el('gpsInfo').innerHTML='📍 <b>Ponto marcado pelo endereço.</b><br>'+j.lat.toFixed(5)+', '+j.lng.toFixed(5)+' <span style="color:#7f95b3">(lembre de Salvar)</span>';
+        el('gpsInfo').innerHTML='\uD83D\uDCCD <b>Ponto marcado pelo endereço.</b><br>'+j.lat.toFixed(5)+', '+j.lng.toFixed(5)+' <span style="color:var(--mv-txt-3)">(lembre de Salvar)</span>';
         atualizarOnboarding(false);
-      }
-    }catch(e){}
+      }else{ endOk=null; }
+    }catch(e){ endOk=null; }
+    endPintar();
   };
 
   /* ---- CARDÁPIO (categorias -> produtos) ---- */
@@ -3368,7 +3467,16 @@ body.naHome #btnSalvar{margin-top:14px;}
       const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),fotos:lerGaleria(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
       /* Fase 2b: informações do negócio. Sempre gravados (texto vazio = some da página pública). */
       dados.horario=el('infoHorario')?el('infoHorario').value.trim().slice(0,120):'';
-      dados.endereco=el('infoEndereco')?el('infoEndereco').value.trim().slice(0,200):'';
+      /* Endereço só entra se veio do mapa (ver endEscolher). Texto solto trava o
+         salvar inteiro: melhor o lojista corrigir agora do que publicar endereço
+         que não existe. */
+      var _end=el('infoEndereco')?el('infoEndereco').value.trim().slice(0,200):'';
+      if(_end && !(endOk && endOk.texto===_end)){
+        abrirTab('local');erroP('Escolha o endereço na lista que aparece embaixo do campo — só vale endereço confirmado no mapa.');
+        var _ie=el('infoEndereco');if(_ie){try{_ie.focus();_ie.scrollIntoView({behavior:'smooth',block:'center'});}catch(_){}}
+        btn.disabled=false;btn.textContent=t;return;
+      }
+      dados.endereco=_end;
       dados.entrega=el('infoEntrega')?el('infoEntrega').value.trim().slice(0,60):'';
       var _pm=el('infoPreco')?parseFloat(String(el('infoPreco').value).replace(/[^0-9,.]/g,'').replace(',','.')):NaN;
       dados.precoMedio=(isFinite(_pm)&&_pm>0&&_pm<=100000)?Math.round(_pm*100)/100:0;
@@ -3514,7 +3622,7 @@ body.naHome #btnSalvar{margin-top:14px;}
       if(snap.exists()){
         const d=snap.data();
         el('nome').value=d.nome||'';if(el('appTit')&&d.nome)el('appTit').textContent=d.nome;el('recado').value=d.recado||'';el('apelido').value=d.slug||'';if(el('whatsapp'))el('whatsapp').value=d.whatsapp||'';
-        if(el('infoHorario'))el('infoHorario').value=d.horario||'';if(el('infoEndereco'))el('infoEndereco').value=d.endereco||'';if(el('infoEntrega'))el('infoEntrega').value=d.entrega||'';if(el('infoPreco'))el('infoPreco').value=(typeof d.precoMedio==='number'&&d.precoMedio>0)?d.precoMedio.toFixed(2).replace('.',','):'';
+        if(el('infoHorario'))el('infoHorario').value=d.horario||'';if(el('infoEndereco')){el('infoEndereco').value=d.endereco||'';endOk=d.endereco?{texto:d.endereco,lat:d.lat,lng:d.lng}:null;if(window.endPintar)window.endPintar();}if(el('infoEntrega'))el('infoEntrega').value=d.entrega||'';if(el('infoPreco'))el('infoPreco').value=(typeof d.precoMedio==='number'&&d.precoMedio>0)?d.precoMedio.toFixed(2).replace('.',','):'';
         if(el('corInput'))el('corInput').value=(typeof d.cor==='string'&&/^#[0-9a-fA-F]{6}$/.test(d.cor))?d.cor:'#00D4FF';if(el('wlToggle'))el('wlToggle').checked=(d.whiteLabel===true);if(el('divulgaToggle'))el('divulgaToggle').checked=(d.autorizaDivulgacao===true);
         setStatus(d.status||'fechado');
         if(d.slug) mostrarLink(d.slug);
