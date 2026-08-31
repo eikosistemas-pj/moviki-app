@@ -867,6 +867,15 @@ input[type=checkbox]{width:auto;padding:0;}
 .endSug div:last-child{border-bottom:none;}
 .endSug div:hover{background:rgba(0,212,255,.10);}
 .endStatus{font-size:13px;line-height:1.5;margin-top:9px;min-height:18px;}
+.btnGps{border-color:#FFB020!important;color:#FFD591!important;background:rgba(255,176,32,.10)!important;}
+.btnGps:hover{border-color:#FFC960!important;color:#FFE3AE!important;background:rgba(255,176,32,.18)!important;}
+.endAviso{display:flex;align-items:flex-start;gap:11px;background:rgba(255,77,79,.10);
+  border:1px solid rgba(255,77,79,.42);border-left:3px solid #FF4D4F;border-radius:var(--mv-r);
+  padding:13px 14px;margin-top:12px;font-size:13.5px;color:#ffc9c9;line-height:1.55;}
+.endAviso b{color:#fff0f0;}
+.endAvisoIco{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:#FF4D4F;color:#2a0406;
+  font-weight:800;font-size:15px;line-height:24px;text-align:center;}
+@media (max-width:600px){.endAviso{font-size:13px;padding:12px 13px;gap:10px;}}
 .endStatus.ok{color:var(--mv-ok);}
 .endStatus.pend{color:#ffc86b;}
 @media (max-width:600px){
@@ -1762,7 +1771,7 @@ body.naHome #btnSalvar{margin-top:14px;}
       <!-- Local -->
       <div class="tabConteudo escondido" id="tab-local">
         <div class="gps" id="gpsInfo">📍 Localização ainda não definida.</div>
-        <button class="btn secundario" onclick="pegarLocalizacao()"><img class="icoM" src="icones/localizacao.png" alt="" loading="lazy" onerror="mvI(this,'📍')">Atualizar minha localização</button>
+        <button class="btn secundario btnGps" onclick="pegarLocalizacao()"><img class="icoM" src="icones/localizacao.png" alt="" loading="lazy" onerror="mvI(this,'📍')">Atualizar minha localização</button>
         <div class="endCard" id="endCard">
           <div class="endTopo">
             <span class="endLamp" aria-hidden="true">
@@ -1805,7 +1814,7 @@ body.naHome #btnSalvar{margin-top:14px;}
           </div>
           <div class="endStatus" id="endStatus"></div>
         </div>
-        <div class="dicaBox"><img class="icoM" src="icones/lampada.png" alt="" loading="lazy" onerror="mvI(this,'&#128161;')">Se você é <b>itinerante</b> e muda de lugar toda hora, deixe o endereço em branco e use só o botão de localização acima.</div>
+        <div class="endAviso"><span class="endAvisoIco" aria-hidden="true">!</span><div>É <b>itinerante</b> e muda de lugar toda hora? <b>Deixe o endereço em branco</b> e use só o botão de localização aí em cima. Endereço fixo cadastrado num negócio que se move faz o cliente ir ao lugar errado.</div></div>
         <div class="logoCard">
           <div class="lcHead">
             <span class="lcIco"><img class="icoB" src="icones/logopino.png" alt="" loading="lazy" onerror="mvI(this,'🖼️')"></span>
@@ -3116,11 +3125,16 @@ body.naHome #btnSalvar{margin-top:14px;}
         var idToken=await usuarioAtual.getIdToken();
         var r=await fetch(ROBO+'/api/endereco',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'sugestoes',texto:txt})});
         var j=await r.json().catch(function(){return{};});
+        if(!r.ok){throw new Error('busca indisponivel');}
         var arr=(j&&j.sugestoes)||[];
-        if(!arr.length){cx.style.display='none';cx.innerHTML='';return;}
+        if(!arr.length){cx.style.display='none';cx.innerHTML='';var st0=el('endStatus');if(st0){st0.className='endStatus pend';st0.textContent='⚠ Nenhum endereço encontrado. Escreva a rua e o número.';}return;}
         cx.innerHTML=arr.map(function(s){return '<div onmousedown="endEscolher(\''+s.id+'\')" data-t="'+endEsc(s.texto)+'">\uD83D\uDCCD '+endEsc(s.texto)+'</div>';}).join('');
         cx.style.display='block';
-      }catch(e){cx.style.display='none';}
+      }catch(e){
+        cx.style.display='none';
+        var st=el('endStatus');
+        if(st){st.className='endStatus pend';st.textContent='⚠ Busca de endereço indisponível agora. Tente de novo em instantes.';}
+      }
     },300);
   };
   window.endEscolher=async function(id){
@@ -3143,6 +3157,7 @@ body.naHome #btnSalvar{margin-top:14px;}
       }else{ endOk=null; }
     }catch(e){ endOk=null; }
     endPintar();
+    if(!endOk){var st2=el('endStatus');if(st2){st2.className='endStatus pend';st2.textContent='⚠ Não consegui confirmar esse endereço no mapa. Escolha outro da lista.';}}
   };
 
   /* ---- CARDÁPIO (categorias -> produtos) ---- */
