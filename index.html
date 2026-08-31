@@ -1275,6 +1275,30 @@ body.naHome #btnSalvar{margin-top:14px;}
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
 }
 
+/* =====================================================================
+   FOTO DE CAPA DA PAGINA PUBLICA — 31/08/2026
+   Bloco proprio na aba Localizacao, do lado da logo. O lojista enquadra a
+   foto em 16:9 (a moldura exata do topo da pagina) e ve, ali mesmo, o
+   resultado final COM OS EFEITOS: o degrade, a logo por cima e o nome.
+   Assim qualquer foto que ele mande ja sai enquadrada e com o efeito —
+   nao existe mais "a foto chegou cortada" nem "a foto chegou pequena".
+   ===================================================================== */
+.cpPalco{aspect-ratio:16/9;}
+.cpPalco canvas,.cpPalco>img{display:block;width:100%;height:100%;object-fit:cover;}
+.cpEfeitos{position:absolute;inset:0;pointer-events:none;}
+/* MESMO degrade do topo da pagina publica (.capa::after do 404.html) */
+.cpDeg{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(6,13,24,.55) 0%,rgba(6,13,24,0) 34%,rgba(6,13,24,.72) 82%,#060d18 100%);}
+.cpMarca{position:absolute;left:4%;bottom:5%;right:4%;display:flex;align-items:flex-end;gap:9px;}
+.cpLogo{width:17%;aspect-ratio:1;border-radius:50%;padding:2px;flex:0 0 auto;
+  background:linear-gradient(150deg,#00D4FF,#0b64ff);box-shadow:0 6px 18px rgba(0,0,0,.55);}
+.cpLogo img{width:100%;height:100%;border-radius:50%;object-fit:contain;background:#0a1524;display:block;}
+.cpNome{font-size:clamp(11px,3.4vw,20px);font-weight:800;letter-spacing:-.4px;text-transform:uppercase;
+  color:#eaf6ff;line-height:1.05;text-shadow:0 2px 10px rgba(0,0,0,.7);overflow:hidden;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;padding-bottom:2px;}
+.cpDrop{aspect-ratio:16/9!important;}
+.cpTag{position:absolute;top:8px;left:8px;background:rgba(4,11,20,.78);color:#7ff0ff;
+  font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+  padding:4px 9px;border-radius:999px;border:1px solid rgba(0,212,255,.4);}
 </style>
 </head>
 <body>
@@ -2019,6 +2043,86 @@ body.naHome #btnSalvar{margin-top:14px;}
         </div>
         </div>
       </div>
+      <div class="mvAcc" id="acc-local-capa">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-local-capa-body" onclick="mvAccToggle('acc-local-capa')">
+          <span class="mvAccIco"><img src="icones/fotos.png" alt="" loading="lazy" onerror="mvI(this,'&#128444;&#65039;')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Foto de capa da sua p&aacute;gina</span><span class="mvAccSub">A foto grande do topo, atr&aacute;s da sua logo e do seu nome.</span></span>
+          <span class="mvAccSelo" id="selo-acc-local-capa"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-local-capa-body">
+        <div class="logoCard">
+          <div class="lcHead">
+            <span class="lcIco"><img class="icoB" src="icones/fotos.png" alt="" loading="lazy" onerror="mvI(this,'&#128444;&#65039;')"></span>
+            <div>
+              <div class="lcTit">Foto de capa da sua p&aacute;gina</div>
+              <span class="lcSelo">RECURSO PREMIUM</span>
+            </div>
+          </div>
+          <p class="lcTxt">&Eacute; a <b>primeira coisa</b> que o cliente v&ecirc; ao abrir seu link. Ela ocupa o topo inteiro, com a sua logo e o seu nome por cima.</p>
+          <p class="lcTxt lcTxtFraco">Voc&ecirc; enquadra aqui e j&aacute; v&ecirc; como vai ficar no site &mdash; com degrad&ecirc;, logo e nome. O que voc&ecirc; v&ecirc; aqui &eacute; exatamente o que o cliente vai ver.</p>
+
+          <div class="lcArea">
+            <div class="lcRotulo">Sua foto de capa</div>
+
+            <!-- ESTADO 1: ainda sem capa -->
+            <div id="capaVazio">
+              <div class="lcDrop cpDrop" id="capaDrop" onclick="cpEscolher()">
+                <div class="lcDropIco"><img class="icoK" src="icones/upload.png" alt="" loading="lazy" onerror="mvI(this,'&#128228;')"></div>
+                <div class="lcDropTit">Toque aqui pra enviar sua capa</div>
+                <div class="lcDropSub">Pode ser foto do seu ponto, do seu carrinho, da equipe ou do seu carro-chefe. Deitada fica melhor, mas qualquer foto serve &mdash; voc&ecirc; enquadra no passo seguinte.</div>
+              </div>
+              <div class="lcObs">Enquanto voc&ecirc; n&atilde;o escolher uma capa, o site usa a <b>1&ordf; foto da sua galeria</b>. Escolhendo aqui, voc&ecirc; manda no que aparece.</div>
+            </div>
+
+            <!-- ESTADO 2: enquadrando (com os efeitos do site por cima) -->
+            <div id="capaEditor" class="escondido">
+              <div class="lcPalco cpPalco" id="cpPalco">
+                <canvas id="cpCanvas" width="1280" height="720"></canvas>
+                <div class="cpEfeitos">
+                  <div class="cpDeg"></div>
+                  <div class="cpMarca">
+                    <span class="cpLogo"><img id="cpLogoImg" src="" alt=""></span>
+                    <span class="cpNome" id="cpNomePrev">SEU NEG&Oacute;CIO</span>
+                  </div>
+                  <span class="cpTag">pr&eacute;-visualiza&ccedil;&atilde;o real</span>
+                </div>
+              </div>
+              <div class="lcCtrl"><span>&#128269;</span><input id="cpZoomRange" type="range" min="1" max="4" step="0.01" value="1" oninput="cpZoom(this.value)"></div>
+              <div class="lcObs"><b>Arraste a foto</b> pra posicionar &middot; pin&ccedil;a ou a barrinha pra dar zoom.<br>A parte de baixo escurece de prop&oacute;sito &mdash; &eacute; onde entram sua logo e seu nome. Deixe o assunto principal da foto <b>em cima ou no meio</b>.</div>
+              <div class="lcAcoes">
+                <button type="button" class="lcOk" onclick="cpConfirmar(this)">&#10003; Confirmar capa</button>
+                <button type="button" class="lcSec" onclick="cpEscolher()">Trocar imagem</button>
+                <button type="button" class="lcSec" onclick="cpCancelar()">Cancelar</button>
+              </div>
+            </div>
+
+            <!-- ESTADO 3: capa salva -->
+            <div id="capaSalva" class="escondido">
+              <div class="lcPalco cpPalco" style="cursor:default">
+                <img id="capaImgGrande" src="" alt="Sua foto de capa">
+                <div class="cpEfeitos">
+                  <div class="cpDeg"></div>
+                  <div class="cpMarca">
+                    <span class="cpLogo"><img id="cpLogoImg2" src="" alt=""></span>
+                    <span class="cpNome" id="cpNomePrev2">SEU NEG&Oacute;CIO</span>
+                  </div>
+                  <span class="cpTag">assim no seu site</span>
+                </div>
+              </div>
+              <div class="lcSalvaTxt"><b>&#10003; Capa pronta.</b> &Eacute; exatamente assim que o topo da sua p&aacute;gina aparece pro cliente.</div>
+              <div class="lcAcoes">
+                <button type="button" class="lcSec" onclick="cpEscolher()">&#128260; Trocar a capa</button>
+                <button type="button" class="lcSec" onclick="cpRemover()">Remover capa</button>
+              </div>
+            </div>
+
+            <input id="capaInput" type="file" accept="image/*" style="display:none" onchange="cpArquivo(this)">
+            <div id="capaMsg" style="font-size:13px;margin-top:11px;line-height:1.5"></div>
+          </div>
+        </div>
+        </div>
+      </div>
       </div>
 
       <!-- Informações (Fase 2b) -->
@@ -2395,7 +2499,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-08-31-blocos-vik-semcorte';
+  window.MOVIKI_VERSAO='2026-08-31-capapropria';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -3232,6 +3336,177 @@ body.naHome #btnSalvar{margin-top:14px;}
     }
   })();
 
+  /* ---------------------------------------------------------------------
+     FOTO DE CAPA DA PAGINA PUBLICA — 31/08/2026
+     Mesmos 3 estados da logo (vazio -> enquadrando -> salva), mas em 16:9,
+     que e a moldura exata do topo da pagina publica (.capa do 404.html).
+     POR QUE ENQUADRAR AQUI: a capa no site preenche a moldura inteira
+     (object-fit:cover) — e isso e o efeito, a foto sangrando de ponta a
+     ponta por baixo do degrade. Deixar a foto inteira com barra do lado
+     mata o efeito. Entao o enquadramento tem que acontecer ANTES, aqui,
+     com o lojista vendo o resultado. O canvas ja sai 1280x720: o que ele
+     confirma e, pixel por pixel, o que vai pro ar.
+     A pre-visualizacao mostra o degrade real, a logo real e o nome real.
+     --------------------------------------------------------------------- */
+  const CP_W=1280, CP_H=720;
+  let _cpImg=null,_cpEsc=1,_cpX=0,_cpY=0,_cpBase=1,_cpUrl='';
+  window.cpUrlAtual=function(){ return _cpUrl; };
+  function cpEstado(qual){
+    ['capaVazio','capaEditor','capaSalva'].forEach(function(id){
+      var no=el(id); if(no) no.classList.toggle('escondido', id!==qual);
+    });
+    if(window.mvAccSync) try{ window.mvAccSync(); }catch(_){}
+  }
+  /* a previa usa a logo e o nome DE VERDADE — e isso que faz o lojista
+     entender onde nao pode ter coisa importante na foto. */
+  function cpEfeitosSync(){
+    var nm=(el('nome')&&el('nome').value.trim())||'SEU NEGÓCIO';
+    ['cpNomePrev','cpNomePrev2'].forEach(function(id){var no=el(id); if(no) no.textContent=nm.toUpperCase();});
+    var lg=(el('logoImgGrande')&&el('logoImgGrande').src)||'';
+    ['cpLogoImg','cpLogoImg2'].forEach(function(id){
+      var no=el(id); if(!no)return;
+      var moldura=no.parentNode;
+      if(lg && lg.indexOf('http')===0){ no.src=lg; if(moldura)moldura.style.display=''; }
+      else { no.removeAttribute('src'); if(moldura)moldura.style.display='none'; }
+    });
+  }
+  window.cpEfeitosSync=cpEfeitosSync;
+  function mostrarCapaPreview(url){
+    _cpUrl=(typeof url==='string'&&/^https:\/\//i.test(url))?url:'';
+    var img=el('capaImgGrande');
+    cpEfeitosSync();
+    if(_cpUrl){ if(img)img.src=_cpUrl; cpEstado('capaSalva'); }
+    else{ if(img)img.removeAttribute('src'); cpEstado('capaVazio'); }
+  }
+  window.mostrarCapaPreview=mostrarCapaPreview;
+  function cpMsg(txt,cor){ var m=el('capaMsg'); if(!m)return; m.style.color=cor||'#9fb3d0'; m.textContent=txt||''; }
+  function cpDesenhar(){
+    var cv=el('cpCanvas'); if(!cv||!_cpImg)return;
+    var ctx=cv.getContext('2d');
+    ctx.fillStyle='#0b1728'; ctx.fillRect(0,0,CP_W,CP_H);
+    var s=_cpBase*_cpEsc, w=_cpImg.width*s, h=_cpImg.height*s;
+    var maxX=Math.max(0,(w-CP_W)/2), maxY=Math.max(0,(h-CP_H)/2);
+    _cpX=Math.min(maxX,Math.max(-maxX,_cpX));
+    _cpY=Math.min(maxY,Math.max(-maxY,_cpY));
+    ctx.drawImage(_cpImg,(CP_W-w)/2+_cpX,(CP_H-h)/2+_cpY,w,h);
+  }
+  window.cpZoom=function(v){ _cpEsc=Math.min(4,Math.max(1,Number(v)||1)); cpDesenhar(); };
+  window.cpEscolher=function(){ var i=el('capaInput'); if(i)i.click(); };
+  window.cpCancelar=function(){ _cpImg=null; cpMsg(''); mostrarCapaPreview(_cpUrl); };
+  window.cpRemover=function(){
+    _cpImg=null; _cpUrl=''; mostrarCapaPreview('');
+    cpMsg('Capa removida. Toque em Salvar tudo pra valer no site — sem capa, o site volta a usar a 1ª foto da sua galeria.','#ffb37a');
+    toast('Capa removida. Não esqueça de Salvar.');
+  };
+  window.cpArquivo=function(input){
+    var f=input.files&&input.files[0]; if(!f){return;}
+    if(!/^image\//.test(f.type)){ cpMsg('Escolha um arquivo de imagem (JPG ou PNG).','#ff6b6b'); input.value=''; return; }
+    var rd=new FileReader();
+    rd.onload=function(){
+      var im=new Image();
+      im.onload=function(){
+        _cpImg=im; _cpEsc=1; _cpX=0; _cpY=0;
+        /* base = COBRIR a moldura 16:9. Zoom 1 ja preenche tudo: nao existe
+           estado em que sobra barra preta, seja a foto em pe ou deitada. */
+        _cpBase=Math.max(CP_W/im.width, CP_H/im.height);
+        var z=el('cpZoomRange'); if(z)z.value=1;
+        var cv=el('cpCanvas'); if(cv){ cv.width=CP_W; cv.height=CP_H; }
+        cpEfeitosSync();
+        cpEstado('capaEditor'); cpMsg('Arraste a foto até o enquadramento que você quer e confirme.'); cpDesenhar();
+      };
+      im.onerror=function(){ cpMsg('Não consegui abrir essa imagem. Tente outra.','#ff6b6b'); };
+      im.src=rd.result;
+    };
+    rd.onerror=function(){ cpMsg('Não consegui ler o arquivo.','#ff6b6b'); };
+    rd.readAsDataURL(f);
+    input.value='';
+  };
+  window.cpConfirmar=async function(btn){
+    if(!_cpImg){ return; }
+    var origem=el('cpCanvas'); if(!origem)return;
+    var dataUrl=origem.toDataURL('image/jpeg',0.86);
+    if(btn){ btn.disabled=true; btn.textContent='Enviando...'; }
+    cpMsg('Enviando sua capa...');
+    try{
+      var idToken=await usuarioAtual.getIdToken();
+      /* tipo 'produto' = o servidor so devolve a URL e nao grava nada sozinho.
+         Quem grava negocios/{uid}.capa e o salvar() do painel, logo abaixo. */
+      var r=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
+      var j=await r.json().catch(function(){return {};});
+      if(r.ok&&j.ok&&j.url){
+        _cpImg=null;
+        mostrarCapaPreview(j.url);
+        /* publica na hora se o negocio ja tem nome (salvar() exige nome).
+           Sem isso o lojista sai da tela achando que publicou e nao publicou. */
+        if(el('nome')&&el('nome').value.trim()){
+          cpMsg('Capa enviada. Publicando...','#3ddc97');
+          try{ await window.salvar(); cpMsg('✓ Capa publicada! Já está no ar na sua página.','#3ddc97'); }
+          catch(_){ cpMsg('Capa enviada. Toque em Salvar tudo pra publicar.','#ffb37a'); }
+        } else {
+          cpMsg('Capa enviada. Dê um nome ao seu negócio (aba Perfil) e toque em Salvar tudo pra publicar.','#ffb37a');
+        }
+        toast('Capa pronta!');
+      }else{
+        var m='Não deu certo. Tente de novo.';
+        if(j.motivo==='sem_config') m='Configuração de imagem pendente no servidor.';
+        else if(r.status===413) m='Imagem muito grande. Tente uma menor.';
+        else if(r.status===401) m='Sessão expirada — saia e entre de novo.';
+        cpMsg(m,'#ff6b6b');
+      }
+    }catch(e){ cpMsg('Falha ao enviar. Verifique a conexão.','#ff6b6b'); }
+    if(btn){ btn.disabled=false; btn.textContent='✓ Confirmar capa'; }
+  };
+  (function cpInit(){
+    var palco=el('cpPalco'); if(!palco)return;
+    var pts={}, arrastando=false, lx=0, ly=0, dist0=0, esc0=1;
+    palco.addEventListener('pointerdown',function(e){
+      if(!_cpImg)return;
+      try{palco.setPointerCapture(e.pointerId);}catch(_){}
+      pts[e.pointerId]={x:e.clientX,y:e.clientY};
+      var k=Object.keys(pts);
+      if(k.length===1){ arrastando=true; lx=e.clientX; ly=e.clientY; }
+      else{ arrastando=false; dist0=lcDist(pts[k[0]],pts[k[1]]); esc0=_cpEsc; }
+    });
+    palco.addEventListener('pointermove',function(e){
+      if(!pts[e.pointerId])return;
+      pts[e.pointerId]={x:e.clientX,y:e.clientY};
+      var k=Object.keys(pts);
+      if(k.length>=2&&dist0>0){
+        var d=lcDist(pts[k[0]],pts[k[1]]);
+        _cpEsc=Math.min(4,Math.max(1,esc0*(d/dist0)));
+        var z=el('cpZoomRange'); if(z)z.value=_cpEsc;
+        cpDesenhar(); return;
+      }
+      if(!arrastando)return;
+      var r=palco.getBoundingClientRect(), f=CP_W/(r.width||1);
+      _cpX+=(e.clientX-lx)*f; _cpY+=(e.clientY-ly)*f;
+      lx=e.clientX; ly=e.clientY;
+      cpDesenhar();
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+      palco.addEventListener(ev,function(e){
+        delete pts[e.pointerId];
+        if(!Object.keys(pts).length){ arrastando=false; dist0=0; }
+      });
+    });
+    palco.addEventListener('wheel',function(e){
+      if(!_cpImg)return;
+      e.preventDefault();
+      _cpEsc=Math.min(4,Math.max(1,_cpEsc*(e.deltaY<0?1.08:0.92)));
+      var z=el('cpZoomRange'); if(z)z.value=_cpEsc;
+      cpDesenhar();
+    },{passive:false});
+    var drop=el('capaDrop');
+    if(drop){
+      ['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.classList.add('arrasta'); }); });
+      ['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev,function(e){ e.preventDefault(); drop.classList.remove('arrasta'); }); });
+      drop.addEventListener('drop',function(e){
+        var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; if(!f)return;
+        try{ var dt=new DataTransfer(); dt.items.add(f); var inp=el('capaInput'); inp.files=dt.files; window.cpArquivo(inp); }catch(_){}
+      });
+    }
+  })();
+
   window.pegarLocalizacao=function(){limparAvisoP();if(!navigator.geolocation){erroP('Seu aparelho não tem GPS no navegador.');return;}el('gpsInfo').innerHTML='📍 Pegando localização...';navigator.geolocation.getCurrentPosition((pos)=>{coords={lat:pos.coords.latitude,lng:pos.coords.longitude};el('gpsInfo').innerHTML='📍 <b>Localização capturada!</b><br>'+coords.lat.toFixed(5)+', '+coords.lng.toFixed(5)+' <span style="color:#7f95b3">(lembre de Salvar)</span>';atualizarOnboarding(false);},(err)=>{if(err.code===1)erroP('Você bloqueou a localização. Libere nas permissões do navegador.');else erroP('Não consegui pegar a localização.');el('gpsInfo').innerHTML='📍 Localização ainda não definida.';},{enableHighAccuracy:true,timeout:10000});};
 
   /* ---- ENDEREÇO ESCRITO (aba Localização) ----
@@ -3741,6 +4016,9 @@ body.naHome #btnSalvar{margin-top:14px;}
       dados.entrega=el('infoEntrega')?el('infoEntrega').value.trim().slice(0,60):'';
       var _pm=el('infoPreco')?parseFloat(String(el('infoPreco').value).replace(/[^0-9,.]/g,'').replace(',','.')):NaN;
       dados.precoMedio=(isFinite(_pm)&&_pm>0&&_pm<=100000)?Math.round(_pm*100)/100:0;
+      /* 31/08/2026: capa dedicada. Sempre gravada — string vazia = o site
+         volta a usar a 1a foto da galeria, que era a regra antiga. */
+      dados.capa=(window.cpUrlAtual?window.cpUrlAtual():'')||'';
       var _cor=el('corInput')?el('corInput').value:'';if(/^#[0-9a-fA-F]{6}$/.test(_cor))dados.cor=_cor;dados.whiteLabel=el('wlToggle')?!!el('wlToggle').checked:false;dados.autorizaDivulgacao=el('divulgaToggle')?!!el('divulgaToggle').checked:false;
       if(coords){dados.lat=coords.lat;dados.lng=coords.lng;}
       if(slug){dados.slug=slug;}
@@ -3892,8 +4170,8 @@ body.naHome #btnSalvar{margin-top:14px;}
         el('listaPromos').innerHTML='';(d.promocoes||[]).forEach(p=>adicionarPromo(p.titulo||'',p.detalhe||'',p.capa||''));vazioPromo();
         el('listaEventos').innerHTML='';(d.eventos||[]).forEach(e2=>adicionarEvento(e2.titulo||'',e2.quando||'',e2.detalhe||'',e2.capa||''));vazioEvento();
         galSet(d.fotos||[]);
-        try{if(window.mvResumo)window.mvResumo(d);}catch(_r){}try{carregarDesempenho(uid);}catch(_r2){}if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}mostrarLogoPreview(d.markerLogo||'');if(d.nome&&d.slug&&d.lat!=null&&d.lng!=null){onbDone=true;try{localStorage.setItem('moviki_onb_'+uid,'1');}catch(_){}}
-      }else{setStatus('fechado');vazioCat();vazioPromo();vazioEvento();galSet([]);mostrarLogoPreview('');try{if(window.mvResumo)window.mvResumo(null);}catch(_r){}}
+        try{if(window.mvResumo)window.mvResumo(d);}catch(_r){}try{carregarDesempenho(uid);}catch(_r2){}if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}mostrarLogoPreview(d.markerLogo||'');mostrarCapaPreview(d.capa||'');if(d.nome&&d.slug&&d.lat!=null&&d.lng!=null){onbDone=true;try{localStorage.setItem('moviki_onb_'+uid,'1');}catch(_){}}
+      }else{setStatus('fechado');vazioCat();vazioPromo();vazioEvento();galSet([]);mostrarLogoPreview('');mostrarCapaPreview('');try{if(window.mvResumo)window.mvResumo(null);}catch(_r){}}
     }catch(e){setStatus('fechado');vazioCat();vazioPromo();vazioEvento();}
   }
 
@@ -4891,6 +5169,10 @@ function mvI(img,e){var s=document.createElement('span');s.textContent=e;s.style
     var ls=$('logoSalva');
     var temLogo = ls && !ls.classList.contains('escondido');
     selo('acc-local-logo', temLogo?'\u2713 enviada':'sem logo', temLogo?'ok':'');
+
+    var cs=$('capaSalva');
+    var temCapa = cs && !cs.classList.contains('escondido');
+    selo('acc-local-capa', temCapa?'\u2713 escolhida':'usando a galeria', temCapa?'ok':'');
 
     mvBarraSync();
   };
