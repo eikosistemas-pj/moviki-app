@@ -1136,28 +1136,52 @@ body.logado .card{background:transparent;border:none;box-shadow:none;padding:0;}
 @media(min-width:760px){.mvOla{text-align:left;}}
 
 /* ---------- card do mapa ---------- */
-.mvMapaCard{position:relative;overflow:hidden;border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);
-  background:linear-gradient(160deg,#0b1c33,#071223);margin-bottom:14px;}
-.mvMapaArte{position:absolute;inset:0;opacity:.85;pointer-events:none;}
-.mvMapaArte::before{content:"";position:absolute;inset:-20% -10% 0;opacity:.5;
-  background-image:linear-gradient(rgba(0,212,255,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.16) 1px,transparent 1px);
-  background-size:42px 42px;transform:perspective(420px) rotateX(60deg) scale(1.8);transform-origin:50% 0%;}
+.mvMapaCard{position:relative;overflow:hidden;border:1px solid rgba(0,212,255,.20);border-radius:var(--mv-r-lg);
+  background:linear-gradient(160deg,#0a1a2f,#07101f);margin-bottom:14px;}
+/* Fundo do card do mapa — 31/08/2026.
+   ANTES: malha de mapa forte + pino ciano pulsante em cima. O pino ficava
+   exatamente atras do painel de status e do texto, e a malha era clara demais
+   por baixo das letras. Fundo de card e TEXTURA: se disputa atencao com a
+   informacao, esta errado.
+   AGORA: a mesma malha, bem mais fraca, mais fechada no fundo escuro, e um
+   veu azul-escuro por cima de tudo pra garantir contraste do texto em
+   qualquer ponto do card. Sem nada piscando. */
+.mvMapaArte{position:absolute;inset:0;opacity:.55;pointer-events:none;}
+.mvMapaArte::before{content:"";position:absolute;inset:-20% -10% 0;opacity:.32;
+  background-image:linear-gradient(rgba(0,212,255,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.10) 1px,transparent 1px);
+  background-size:52px 52px;transform:perspective(460px) rotateX(62deg) scale(1.9);transform-origin:50% 0%;}
 .mvMapaArte::after{content:"";position:absolute;inset:0;
-  background:radial-gradient(90% 70% at 30% 0%,rgba(0,102,255,.42),transparent 62%),linear-gradient(180deg,transparent 30%,#071223 96%);}
-.mvMapaPino{position:absolute;left:78%;top:34%;width:16px;height:16px;border-radius:50% 50% 50% 0;
-  transform:translate(-50%,-50%) rotate(-45deg);background:var(--mv-ciano);box-shadow:0 0 16px rgba(0,212,255,.85);z-index:2;}
-.mvMapaOnda{position:absolute;left:78%;top:34%;width:22px;height:22px;border-radius:50%;
-  border:1.5px solid rgba(0,212,255,.55);transform:translate(-50%,-50%);animation:mvOnda 2.6s ease-out infinite;z-index:1;}
-.mvMapaOnda.o2{animation-delay:1.3s;}
-@keyframes mvOnda{0%{opacity:.85;transform:translate(-50%,-50%) scale(.4);}100%{opacity:0;transform:translate(-50%,-50%) scale(3.6);}}
+  background:radial-gradient(95% 75% at 25% 0%,rgba(0,102,255,.26),transparent 66%),linear-gradient(180deg,rgba(7,18,35,.55) 0%,rgba(7,18,35,.86) 55%,#071223 100%);}
 .mvMapaTxt{position:relative;z-index:3;padding:18px 16px;}
-@media(min-width:560px){.mvMapaTxt{padding:22px;max-width:74%;}}
+@media(min-width:560px){.mvMapaTxt{padding:22px;}.mvMapaTxt>p{max-width:74%;}}
 .mvMapaTopo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:7px;}
 .mvMapaTopo h2{font-size:18px;font-weight:800;letter-spacing:-.4px;}
 .mvMapaTopo .selo{margin-top:0;}
 .mvMapaTxt p{font-size:13.5px;color:var(--mv-txt-2);line-height:1.55;margin-bottom:14px;}
 .mvMapaBtn{border:none;border-radius:var(--mv-r);background:var(--mv-grad);color:#02131f;font-family:inherit;
   font-weight:700;font-size:14px;padding:12px 18px;cursor:pointer;box-shadow:0 10px 26px rgba(0,102,255,.32);}
+
+/* ---- CARD UNIFICADO: mapa + status + ver pagina (31/08/2026) ----
+   A chave Aberto/Fechado agora mora DENTRO do card do mapa. Ela perde a
+   aparencia de card proprio (fundo e borda de cartao) e vira um painel
+   embutido: o assunto e o mesmo — se o negocio esta no ar e como ele esta
+   agora — entao tem que ser um bloco so. */
+.mvMapaCard .statusHome{background:rgba(6,17,31,.88);border:1px solid rgba(0,212,255,.22);
+  border-radius:var(--mv-r);padding:13px;margin:0 0 14px;text-align:left;
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);}
+.mvMapaCard .statusHome .shLabel{margin-bottom:9px;}
+.mvMapaCard .statusHome .shDica{margin-top:10px;}
+@media(min-width:560px){.mvMapaCard .statusHome{max-width:74%;}}
+/* o unico botao do card: some o estilo de pilula vazada do antigo "Ver minha
+   pagina" e fica o CTA cheio do card. Largura total no celular, natural no
+   desktop — polegar acerta o botao inteiro. */
+.mvMapaCard .shVerPagina{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;margin-top:0;padding:13px 18px;border:none;border-radius:var(--mv-r);
+  background:var(--mv-grad);color:#02131f;font-weight:700;font-size:14.5px;
+  box-shadow:0 10px 26px rgba(0,102,255,.32);animation:none;}
+.mvMapaCard .shVerPagina:hover{filter:brightness(1.06);background:var(--mv-grad);border:none;}
+.mvMapaCard .shVerPagina .icoM{width:19px;height:19px;margin:0;vertical-align:middle;}
+@media(min-width:560px){.mvMapaCard .shVerPagina{width:auto;}}
 
 /* ---------- seções e ações recomendadas ---------- */
 .mvSec{margin:18px 0 10px;}
@@ -1687,27 +1711,35 @@ body.naHome #btnSalvar{margin-top:14px;}
           <p>Aqui está o resumo do seu negócio hoje.</p>
         </div>
 
+        <!-- 31/08/2026: os dois cards viraram UM.
+             Eram dois blocos falando da mesma coisa (a presenca do negocio no ar)
+             com DOIS botoes que abriam a MESMA pagina ("Ver meu perfil publico" e
+             "Ver minha pagina"). Agora e um card so: estado no mapa em cima,
+             chave Aberto/Fechado no meio, e UM botao de ver a pagina. -->
         <div class="mvMapaCard">
-          <div class="mvMapaArte" aria-hidden="true">
-            <span class="mvMapaPino"></span><span class="mvMapaOnda"></span><span class="mvMapaOnda o2"></span>
-          </div>
+          <!-- 31/08/2026: o pino azul pulsante SAIU. Ele ficava por tras do
+               painel de status e do texto e atrapalhava a leitura — enfeite que
+               disputa espaco com a informacao nao fica. Sobrou so a malha de
+               mapa, bem mais fraca, como textura de fundo. -->
+          <div class="mvMapaArte" aria-hidden="true"></div>
           <div class="mvMapaTxt">
             <div class="mvMapaTopo">
               <h2>Seu negócio no mapa</h2>
               <span class="selo fechado" id="mvMapaSelo"><span class="bol"></span>Não aparece ainda</span>
             </div>
             <p id="mvMapaSub">Marque sua localização e escolha seu link pra aparecer no mapa e nas buscas do Moviki.</p>
-            <button type="button" class="mvMapaBtn" onclick="verMinhaPagina()">Ver meu perfil público</button>
+
+            <div class="statusHome">
+              <span class="shLabel">Seu negócio está agora:</span>
+              <div class="statusLinha">
+                <button id="btnAberto" class="statusBtn" onclick="setStatus('aberto')"><img class="icoM" src="icones/aberto.png" alt="" loading="lazy" onerror="mvI(this,'🟢')">Aberto</button>
+                <button id="btnFechado" class="statusBtn" onclick="setStatus('fechado')"><img class="icoM" src="icones/fechado.png" alt="" loading="lazy" onerror="mvI(this,'🔴')">Fechado</button>
+              </div>
+              <span class="shDica">Lembre de tocar em <b>Salvar tudo</b> pra valer no seu link.</span>
+            </div>
+
+            <button type="button" class="mvMapaBtn shVerPagina" onclick="verMinhaPagina()"><img class="icoM" src="icones/pagina.png" alt="" loading="lazy" onerror="mvI(this,'🌐')">Ver minha página</button>
           </div>
-        </div>
-        <div class="statusHome">
-          <span class="shLabel">Seu negócio está agora:</span>
-          <div class="statusLinha">
-            <button id="btnAberto" class="statusBtn" onclick="setStatus('aberto')"><img class="icoM" src="icones/aberto.png" alt="" loading="lazy" onerror="mvI(this,'🟢')">Aberto</button>
-            <button id="btnFechado" class="statusBtn" onclick="setStatus('fechado')"><img class="icoM" src="icones/fechado.png" alt="" loading="lazy" onerror="mvI(this,'🔴')">Fechado</button>
-          </div>
-          <span class="shDica">Lembre de tocar em <b>Salvar tudo</b> pra valer no seu link.</span>
-          <button type="button" class="shVerPagina" onclick="verMinhaPagina()"><img class="icoM" src="icones/pagina.png" alt="" loading="lazy" onerror="mvI(this,'🌐')">Ver minha página</button>
         </div>
         <div id="onboarding" class="onb escondido">
         <div class="onbTop">
@@ -2503,7 +2535,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-08-31-evento-destaque';
+  window.MOVIKI_VERSAO='2026-08-31-home-limpa';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
