@@ -1299,6 +1299,10 @@ body.naHome #btnSalvar{margin-top:14px;}
 .cpTag{position:absolute;top:8px;left:8px;background:rgba(4,11,20,.78);color:#7ff0ff;
   font-size:10.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
   padding:4px 9px;border-radius:999px;border:1px solid rgba(0,212,255,.4);}
+/* dica curta dentro de um item de lista (evento / promocao) */
+.mvDicaMini{font-size:12.5px;line-height:1.5;color:#9fb3d0;background:rgba(0,212,255,.07);
+  border:1px solid rgba(0,212,255,.22);border-radius:10px;padding:9px 11px;margin-top:12px;}
+.mvDicaMini b{color:#7ff0ff;}
 </style>
 </head>
 <body>
@@ -2499,7 +2503,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-08-31-capapropria';
+  window.MOVIKI_VERSAO='2026-08-31-evento-destaque';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -3864,7 +3868,8 @@ body.naHome #btnSalvar{margin-top:14px;}
       +'<span class="mvItemSeta" aria-hidden="true">&#9662;</span>'
       +'</div>'
       +'<div class="mvItemBody">'
-      +'<div class="linha2" style="margin-top:12px"><input class="pr-tit" type="text" placeholder="Título (ex.: Combo 2 por R$20)"></div><input class="pr-det" type="text" placeholder="Detalhe (opcional)"><div class="promoCapaSlot" style="margin-top:10px"></div>'
+      +'<div class="mvDicaMini">Preencha o que quiser: <b>s&oacute; a arte j&aacute; funciona</b>.</div>'
+      +'<div class="linha2" style="margin-top:10px"><input class="pr-tit" type="text" placeholder="T\u00edtulo (opcional) — ex.: Combo 2 por R$20"></div><input class="pr-det" type="text" placeholder="Detalhe (opcional)"><div class="promoCapaSlot" style="margin-top:10px"></div>'
       +'</div>';
     r.querySelector('.pr-tit').value=titulo;r.querySelector('.pr-det').value=detalhe;
     r.querySelector('.pr-tit').addEventListener('input',()=>resumoPromo(r));
@@ -3877,15 +3882,25 @@ body.naHome #btnSalvar{margin-top:14px;}
   function resumoPromo(r){
     if(!r||!r.querySelector('.promoTit'))return;
     const t=txtDe(r,'.pr-tit'), d=txtDe(r,'.pr-det');
-    r.querySelector('.promoTit').textContent=t||'Promoção sem título';
-    r.querySelector('.promoSub').textContent=d||(r._capa?'com foto':'Sem detalhe');
+    r.querySelector('.promoTit').textContent = t || (r._capa?'Promoção pela arte':'Promoção sem título');
+    r.querySelector('.promoSub').textContent = d
+      || (r._capa?'só a arte — já vale, aparece no site':'sem nada preenchido — não vai salvar');
     miniatura(r.querySelector('.promoThumb'),r._capa||'',SVG_TAG);
   }
-  function lerPromos(){const a=[];el('listaPromos').querySelectorAll('.catBloco').forEach(r=>{const t=r.querySelector('.pr-tit').value.trim();if(!t)return;const o={titulo:t,detalhe:r.querySelector('.pr-det').value.trim()};if(r._capa)o.capa=r._capa;a.push(o);});return a;}
+  /* 31/08/2026: mesma correcao do evento — promocao so com a arte tambem salva.
+     So sai o bloco que esta 100% vazio. */
+  function lerPromos(){const a=[];el('listaPromos').querySelectorAll('.catBloco').forEach(r=>{
+    const t=r.querySelector('.pr-tit').value.trim();
+    const d=r.querySelector('.pr-det').value.trim();
+    const capa=r._capa||'';
+    if(!t&&!d&&!capa)return;
+    const o={titulo:t,detalhe:d};
+    if(capa)o.capa=capa;
+    a.push(o);});return a;}
   function renderCapaPromo(r){
     const g=r.querySelector('.promoCapaSlot'); if(!g)return;
     g.innerHTML='';
-    const lbl=document.createElement('div');lbl.className='capaLbl';lbl.textContent='Foto de capa (aparece na promo, do lado esquerdo):';g.appendChild(lbl);
+    const lbl=document.createElement('div');lbl.className='capaLbl';lbl.textContent='Arte / foto da promoção (aparece inteira no site):';g.appendChild(lbl);
     if(r._capa){
       const sl=document.createElement('div');sl.className='capaSlot';
       const im=document.createElement('img');im.src=r._capa;im.alt='capa';
@@ -3930,7 +3945,8 @@ body.naHome #btnSalvar{margin-top:14px;}
       +'<span class="mvItemSeta" aria-hidden="true">&#9662;</span>'
       +'</div>'
       +'<div class="mvItemBody">'
-      +'<div class="linha2" style="margin-top:12px"><input class="ev-tit" type="text" placeholder="Nome do evento"></div><input class="ev-quando" type="text" placeholder="Quando (ex.: Sáb 26/07 às 18h)" style="margin-bottom:8px"><input class="ev-det" type="text" placeholder="Local / detalhe (opcional)"><div class="eventoCapaSlot" style="margin-top:10px"></div>'
+      +'<div class="mvDicaMini">Preencha o que quiser: <b>s&oacute; o flyer j&aacute; funciona</b>. Se a arte j&aacute; tem nome, data e local escritos, pode deixar os campos em branco.</div>'
+      +'<div class="linha2" style="margin-top:10px"><input class="ev-tit" type="text" placeholder="Nome do evento (opcional)"></div><input class="ev-quando" type="text" placeholder="Quando (opcional) — ex.: S\u00e1b 26/07 \u00e0s 18h" style="margin-bottom:8px"><input class="ev-det" type="text" placeholder="Local / detalhe (opcional)"><div class="eventoCapaSlot" style="margin-top:10px"></div>'
       +'</div>';
     r.querySelector('.ev-tit').value=titulo;r.querySelector('.ev-quando').value=quando;r.querySelector('.ev-det').value=detalhe;
     ['.ev-tit','.ev-quando','.ev-det'].forEach(c=>r.querySelector(c).addEventListener('input',()=>resumoEvento(r)));
@@ -3942,15 +3958,33 @@ body.naHome #btnSalvar{margin-top:14px;}
   function resumoEvento(r){
     if(!r||!r.querySelector('.evtTit'))return;
     const t=txtDe(r,'.ev-tit'), q=txtDe(r,'.ev-quando'), d=txtDe(r,'.ev-det');
-    r.querySelector('.evtTit').textContent=t||'Evento sem nome';
-    r.querySelector('.evtSub').textContent=[q,d].filter(Boolean).join(' · ')||'Sem data';
+    r.querySelector('.evtTit').textContent = t || (r._capa?'Evento pelo flyer':'Evento sem nome');
+    r.querySelector('.evtSub').textContent = [q,d].filter(Boolean).join(' · ')
+      || (r._capa?'só o flyer — já vale, aparece no site':'sem nada preenchido — não vai salvar');
     miniatura(r.querySelector('.evtThumb'),r._capa||'',SVG_AGENDA);
   }
-  function lerEventos(){const a=[];el('listaEventos').querySelectorAll('.catBloco').forEach(r=>{const t=r.querySelector('.ev-tit').value.trim();if(!t)return;const o={titulo:'',titulo:t,quando:r.querySelector('.ev-quando').value.trim(),detalhe:r.querySelector('.ev-det').value.trim()};if(r._capa)o.capa=r._capa;a.push(o);});return a;}
+  /* 31/08/2026 — O EVENTO SO COM FOTO AGORA SALVA.
+     ANTES: `if(!t)return;` — evento sem NOME era descartado aqui, calado. O
+     lojista subia o flyer, salvava, via "Tudo salvo!" e o evento nunca chegava
+     no banco. No desktop a tela nao e redesenhada depois de salvar, entao o
+     bloco continuava na tela e parecia ter dado certo; no celular, que carrega
+     do banco, nao havia nada. Era ESTE o "no desktop salvou, no mobile nao".
+     AGORA: guarda o evento se tiver QUALQUER coisa — nome, quando, detalhe OU
+     foto. Flyer de evento ja traz nome, data e local escritos na propria arte;
+     obrigar a redigitar tudo era trabalho repetido. */
+  function lerEventos(){const a=[];el('listaEventos').querySelectorAll('.catBloco').forEach(r=>{
+    const t=r.querySelector('.ev-tit').value.trim();
+    const q=r.querySelector('.ev-quando').value.trim();
+    const d=r.querySelector('.ev-det').value.trim();
+    const capa=r._capa||'';
+    if(!t&&!q&&!d&&!capa)return;            /* bloco totalmente vazio: so esse sai */
+    const o={titulo:t,quando:q,detalhe:d};
+    if(capa)o.capa=capa;
+    a.push(o);});return a;}
   function renderCapaEvento(r){
     const g=r.querySelector('.eventoCapaSlot'); if(!g)return;
     g.innerHTML='';
-    const lbl=document.createElement('div');lbl.className='capaLbl';lbl.textContent='Foto de capa (aparece no evento, do lado direito):';g.appendChild(lbl);
+    const lbl=document.createElement('div');lbl.className='capaLbl';lbl.textContent='Flyer / foto do evento (aparece inteiro no site):';g.appendChild(lbl);
     if(r._capa){
       const sl=document.createElement('div');sl.className='capaSlot';
       const im=document.createElement('img');im.src=r._capa;im.alt='capa';
