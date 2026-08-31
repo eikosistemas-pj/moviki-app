@@ -1138,7 +1138,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-28-vikpadrao';
+  window.MOVIKI_VERSAO = '2026-08-31-vikfiltro';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2543,8 +2543,41 @@ table.mvTab td b{font-weight:700}
     if(n < 1024*1024) return (n/1024).toFixed(0)+' KB';
     return (n/1024/1024).toFixed(1).replace('.',',')+' MB';
   }
+  /* ---- VIK BARRADO PELO FILTRO DE CONFORMIDADE ----
+     O servidor (moviki-ai/lib/segurancaVik.js) confere toda resposta do Vik
+     antes de gravar. Quando barra, a pessoa recebe "vou passar para o time" e
+     a conversa ganha os campos botFiltro / botFiltroEm.
+     Sem o aviso aqui, essa promessa não seria cumprida: a conversa não ficaria
+     marcada como não lida (quem falou por último foi o bot, não o lojista) e
+     ninguém do time saberia que tem gente esperando.
+     O MOTIVO é uma etiqueta curta; o texto barrado nunca sai do log do
+     servidor — de propósito, para a frase proibida não passar a existir por
+     escrito dentro do sistema. */
+  const CV_MOTIVO = {
+    promessa_de_ganho:'ia prometer ganho',
+    promessa_de_resultado:'ia prometer resultado',
+    projecao_de_renda:'ia projetar renda',
+    promessa_de_prazo:'ia prometer prazo',
+    garantia_indevida:'ia dar garantia',
+    enquadramento_investimento:'ia falar em investimento',
+    promessa_financeira:'ia mexer em cobrança ou saque',
+    negociacao_de_preco:'ia dar desconto',
+    vazou_tecnologia:'ia citar tecnologia interna',
+    vazou_prompt:'ia vazar texto interno',
+    fingiu_ser_humano:'ia se passar por pessoa',
+    pediu_dado_sensivel:'ia pedir dado sensível',
+    resposta_vazia:'resposta vazia',
+    filtro_falhou:'falha do filtro'
+  };
+  function cvMotivo(m){ return CV_MOTIVO[String(m||'')] || String(m||'motivo desconhecido').replace(/_/g,' '); }
+  function cvBarrado(c){
+    if(!c || !c.botFiltro) return false;
+    return ms(c.botFiltroEm) > ms(c.vistoDonoEm);
+  }
   function cvNaoLida(c){
-    if(!c || c.ultimoDe !== 'lojista') return false;
+    if(!c) return false;
+    if(cvBarrado(c)) return true;
+    if(c.ultimoDe !== 'lojista') return false;
     return ms(c.ultimaEm) > ms(c.vistoDonoEm);
   }
   // O nome do negócio muda depois que a conversa nasce, então a lista mostra
@@ -2638,7 +2671,9 @@ table.mvTab td b{font-weight:700}
       marcasNovas.set(c.uid, carimbo);
       if(CV_PRIMEIRA_CARGA || !CV_MARCAS) return;
       const antes = CV_MARCAS.get(c.uid) || 0;
-      if(c.ultimoDe === 'lojista' && carimbo > antes) avisar.push(c);
+      // Avisa em dois casos: o lojista falou, OU o filtro barrou o Vik e
+      // sobrou uma pessoa esperando resposta humana.
+      if(carimbo > antes && (c.ultimoDe === 'lojista' || cvBarrado(c))) avisar.push(c);
     });
     CV_MARCAS = marcasNovas;
     if(CV_PRIMEIRA_CARGA){ CV_PRIMEIRA_CARGA = false; return; }
@@ -2649,7 +2684,7 @@ table.mvTab td b{font-weight:700}
     const so = avisar.filter(c => !(secVisivel && c.uid === CONV_ABERTA));
     if(!so.length) return;
     const c = so[so.length - 1];
-    cvToast(cvNome(c), c.ultimaMsg, c.uid);
+    cvToast(cvNome(c), cvBarrado(c) ? ('o Vik foi barrado — ' + cvMotivo(c.botFiltro)) : c.ultimaMsg, c.uid);
     cvBipe();
   }
 
@@ -2697,6 +2732,7 @@ table.mvTab td b{font-weight:700}
           '<span class="cvItNome">'+esc(cvNome(c))+'</span>'+
           '<span class="cvItData">'+cvQuando(c.ultimaEm)+'</span></div>'+
         '<div class="cvItPrev">'+esc(quem + (c.ultimaMsg||'—'))+'</div>'+
+        (cvBarrado(c) ? '<div class="cvItPrev" style="color:#ff9b9b;font-weight:600">⚠ o Vik foi barrado aqui ('+esc(cvMotivo(c.botFiltro))+') — responda você</div>' : '')+
         (c.docsLiberado === true ? '<div class="cvItPrev" style="color:#ffcf9a">documentos liberados</div>' : '')+
       '</button>';
     }).join('');
