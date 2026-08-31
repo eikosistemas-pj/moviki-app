@@ -3123,7 +3123,7 @@ body.naHome #btnSalvar{margin-top:14px;}
     endSugTimer=setTimeout(async function(){
       try{
         var idToken=await usuarioAtual.getIdToken();
-        var r=await fetch(ROBO+'/api/endereco',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'sugestoes',texto:txt})});
+        var r=await fetch(ROBO+'/api/pontos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'sugestoes',texto:txt})});
         var j=await r.json().catch(function(){return{};});
         if(!r.ok){throw new Error('busca indisponivel');}
         var arr=(j&&j.sugestoes)||[];
@@ -3145,7 +3145,7 @@ body.naHome #btnSalvar{margin-top:14px;}
     var st=el('endStatus'); if(st){st.className='endStatus';st.textContent='Confirmando no mapa...';}
     try{
       var idToken=await usuarioAtual.getIdToken();
-      var r=await fetch(ROBO+'/api/endereco',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'detalhe',placeId:id})});
+      var r=await fetch(ROBO+'/api/pontos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,acao:'detalhe',placeId:id})});
       var j=await r.json().catch(function(){return{};});
       if(r.ok&&j.ok){
         var texto=j.endereco||endValor();
