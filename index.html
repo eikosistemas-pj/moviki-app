@@ -2640,7 +2640,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-01-tutmod-local';
+  window.MOVIKI_VERSAO='2026-09-01-tutparar';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5387,6 +5387,7 @@ function mvI(img,e){var s=document.createElement('span');s.textContent=e;s.style
 
 
 
+
 <style>
 /* ============ Tutoriais em video - 2026-09-01-tutmodulo =================
    UMA videoaula por MODULO, embutida no FIM do proprio bloco - o cliente
@@ -5434,7 +5435,6 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .mvTutTit{font-size:16px;font-weight:700;margin:0 0 4px}
 .mvTutVazio{color:#7f95b3;font-size:14px;line-height:1.5}
 </style>
-
 <script>
 /* ===================== TUTORIAIS EM VIDEO - LOJISTA =======================
    UMA videoaula por MODULO, cobrindo a tela inteira - nao um video por campo.
@@ -5486,7 +5486,6 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     { k:'mod-diaadia',    t:'Abrir, fechar, recado do dia e ver a sua página',     d:'', id:'' } ]}
 ]};
 </script>
-
 <script>
 /* Tutoriais em video - 2026-09-01-tutmodulo.
    Bloco isolado de proposito: nao depende de Firebase, nao le nada do banco e
@@ -5544,6 +5543,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
         if(alvo.querySelector(':scope > .mvTutBox')) return;      /* ja esta la */
 
         var box=document.createElement('div'); box.className='mvTutBox';
+        box.setAttribute('data-tutk', v.k);
         var topo=document.createElement('div'); topo.className='mvTutBoxTopo';
         var ico=document.createElement('span'); ico.className='mvTutBoxIco'; ico.innerHTML=PLAY;
         var txt=document.createElement('span'); txt.className='mvTutBoxTxt';
@@ -5558,8 +5558,27 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       });
     }catch(e){}
   }
+  /* Devolve a capa no lugar do player. Sem isso o iframe continua tocando
+     depois que o cliente troca de tela - e dois audios tocam juntos. */
+  function parar(box){
+    var q=box.querySelector('div.mvTutQuadro'); if(!q) return;
+    var v=achar(box.getAttribute('data-tutk')); if(!v) return;
+    box.replaceChild(moldura(v,'mvTutQuadro','data-tutinline'), q);
+  }
+  /* soEscondidos: para so o que saiu da tela (troca de aba, janela fechada).
+     Sem o filtro, para todo mundo - usado quando outro video vai comecar. */
+  function pararTodos(soEscondidos){
+    try{
+      var cx=document.querySelectorAll('.mvTutBox');
+      for(var i=0;i<cx.length;i++){
+        if(soEscondidos && cx[i].getClientRects().length) continue;
+        parar(cx[i]);
+      }
+    }catch(e){}
+  }
   function tocarNoLugar(botao,k){
     var v=achar(k); if(!v||!botao) return;
+    pararTodos();                      /* um video de cada vez, sempre */
     var q=document.createElement('div'); q.className='mvTutQuadro';
     q.appendChild(iframe(v));
     botao.parentNode.replaceChild(q,botao);
@@ -5597,6 +5616,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     return fora;
   }
   function lista(){
+    pararTodos();
     montar(); corpo.innerHTML=''; var vazio=true;
     MOD().forEach(function(m){
       var itens=prontos(m); if(!itens.length) return;
@@ -5611,6 +5631,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   }
   function tocar(k){
     var v=achar(k); if(!v) return;
+    pararTodos();
     montar();
     var volta=document.createElement('button');
     volta.type='button'; volta.className='mvTutVoltar'; volta.setAttribute('data-tutvoltar','1');
@@ -5648,9 +5669,20 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       try{ tocar(alvo.getAttribute('data-tut')); }catch(_){}
       return;
     }
+    pararTodos(true);                        /* o que ja saiu da tela, para agora */
     clearTimeout(window.__tutT);
-    window.__tutT=setTimeout(embutir,250);   /* o painel redesenha depois de clique */
+    window.__tutT=setTimeout(function(){ pararTodos(true); embutir(); },300);
   },false);
+
+  /* Cinto de seguranca: as proprias funcoes de navegacao do painel param o
+     video ANTES de trocar a tela, sem esperar os 300ms do clique. */
+  ['voltarHome','irSecao','abrirTab','mvIr','abrirPlano','fecharPlano',
+   'abrirPontos','fecharPontos','abrirMensagens','fecharMensagens','sair'
+  ].forEach(function(n){
+    var orig=window[n];
+    if(typeof orig!=='function') return;
+    window[n]=function(){ try{ pararTodos(); }catch(e){} return orig.apply(this,arguments); };
+  });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') fechar(); });
 
   function iniciar(){ entradas(); embutir(); setTimeout(function(){ entradas(); embutir(); },1400); }
