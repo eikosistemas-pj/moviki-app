@@ -931,7 +931,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-01-tutgrande';
+  window.MOVIKI_VERSAO = '2026-09-01-tutfecha';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1989,6 +1989,7 @@ input::placeholder{color:#6b7f96}
 
 
 
+
 <style>
 /* ============ Tutoriais em video - 2026-09-01-tutmodulo =================
    UMA videoaula por MODULO, embutida no FIM do proprio bloco - o cliente
@@ -2254,17 +2255,29 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   },false);
 
   /* Cinto de seguranca: as proprias funcoes de navegacao do painel param o
-     video ANTES de trocar a tela, sem esperar os 300ms do clique. */
-  ['voltarHome','irSecao','abrirTab','mvIr','abrirPlano','fecharPlano',
-   'abrirPontos','fecharPontos','abrirMensagens','fecharMensagens','sair'
-  ].forEach(function(n){
-    var orig=window[n];
-    if(typeof orig!=='function') return;
-    window[n]=function(){ try{ pararTodos(); }catch(e){} return orig.apply(this,arguments); };
-  });
+     video ANTES de trocar a tela, sem esperar os 300ms do clique.
+     Precisa rodar MAIS DE UMA VEZ: o painel e um <script type="module">, que
+     e adiado e so publica as funcoes no window DEPOIS deste bloco. Quem so
+     amarrasse agora perderia fecharPlano, fecharPontos e fecharMensagens. */
+  var AMARRAR=['voltarHome','irSecao','abrirTab','mvIr','abrirPlano','fecharPlano',
+               'abrirPontos','fecharPontos','abrirMensagens','fecharMensagens',
+               'abrirIndica','fecharIndica','sair'];
+  function amarrar(){
+    AMARRAR.forEach(function(n){
+      var orig=window[n];
+      if(typeof orig!=='function' || orig.__tut) return;
+      var novo=function(){ try{ pararTodos(); }catch(e){} return orig.apply(this,arguments); };
+      novo.__tut=true;
+      try{ window[n]=novo; }catch(e){}
+    });
+  }
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') fechar(); });
 
-  function iniciar(){ entradas(); embutir(); setTimeout(function(){ entradas(); embutir(); },1400); }
+  function iniciar(){
+    entradas(); embutir(); amarrar();
+    setTimeout(function(){ entradas(); embutir(); amarrar(); },1400);
+    setTimeout(amarrar,3500);
+  }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar);
   else iniciar();
 

@@ -2640,7 +2640,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-01-tutmod-4';
+  window.MOVIKI_VERSAO='2026-09-01-tutfecha';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5389,6 +5389,7 @@ function mvI(img,e){var s=document.createElement('span');s.textContent=e;s.style
 
 
 
+
 <style>
 /* ============ Tutoriais em video - 2026-09-01-tutmodulo =================
    UMA videoaula por MODULO, embutida no FIM do proprio bloco - o cliente
@@ -5475,7 +5476,9 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   { n:'Avaliações', sel:'#tab-avaliacoes', v:[
     { k:'mod-avaliacoes', t:'Avaliações: ver, entender e pedir nota',              d:'', id:'' } ]},
   { n:'Meu plano', sel:'#modalPlano .mpCaixa', v:[
-    { k:'mod-plano',      t:'Planos: o que cada um abre, e o teste de 30 dias',    d:'', id:'' } ]},
+    /* O teste de 30 dias e automatico (garantirTrial roda sozinho), entao
+       nao ha nada pro cliente fazer - saiu do titulo e do video. */
+    { k:'mod-plano',      t:'Planos: o que cada um abre e como assinar',           d:'0:41', id:'h-HLmvA6qj0' } ]},
   { n:'Meus pontos', sel:'#modalPontos .mpCaixa', v:[
     { k:'mod-pontos',     t:'Meus pontos: várias unidades num cadastro só',        d:'', id:'' } ]},
   { n:'Falar com o Vik', sel:'#modalMsg .mpCaixa', v:[
@@ -5677,17 +5680,29 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   },false);
 
   /* Cinto de seguranca: as proprias funcoes de navegacao do painel param o
-     video ANTES de trocar a tela, sem esperar os 300ms do clique. */
-  ['voltarHome','irSecao','abrirTab','mvIr','abrirPlano','fecharPlano',
-   'abrirPontos','fecharPontos','abrirMensagens','fecharMensagens','sair'
-  ].forEach(function(n){
-    var orig=window[n];
-    if(typeof orig!=='function') return;
-    window[n]=function(){ try{ pararTodos(); }catch(e){} return orig.apply(this,arguments); };
-  });
+     video ANTES de trocar a tela, sem esperar os 300ms do clique.
+     Precisa rodar MAIS DE UMA VEZ: o painel e um <script type="module">, que
+     e adiado e so publica as funcoes no window DEPOIS deste bloco. Quem so
+     amarrasse agora perderia fecharPlano, fecharPontos e fecharMensagens. */
+  var AMARRAR=['voltarHome','irSecao','abrirTab','mvIr','abrirPlano','fecharPlano',
+               'abrirPontos','fecharPontos','abrirMensagens','fecharMensagens',
+               'abrirIndica','fecharIndica','sair'];
+  function amarrar(){
+    AMARRAR.forEach(function(n){
+      var orig=window[n];
+      if(typeof orig!=='function' || orig.__tut) return;
+      var novo=function(){ try{ pararTodos(); }catch(e){} return orig.apply(this,arguments); };
+      novo.__tut=true;
+      try{ window[n]=novo; }catch(e){}
+    });
+  }
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') fechar(); });
 
-  function iniciar(){ entradas(); embutir(); setTimeout(function(){ entradas(); embutir(); },1400); }
+  function iniciar(){
+    entradas(); embutir(); amarrar();
+    setTimeout(function(){ entradas(); embutir(); amarrar(); },1400);
+    setTimeout(amarrar,3500);
+  }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar);
   else iniciar();
 
