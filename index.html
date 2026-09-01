@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://*.google-analytics.com; connect-src 'self' https://*.googleapis.com https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://www.youtube-nocookie.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://*.google-analytics.com; connect-src 'self' https://*.googleapis.com https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://www.youtube-nocookie.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 
@@ -2640,7 +2640,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-01-tut-t04';
+  window.MOVIKI_VERSAO='2026-09-01-tutcapas';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5385,6 +5385,7 @@ function mvI(img,e){var s=document.createElement('span');s.textContent=e;s.style
 </script>
 
 
+
 <style>
 /* ============ Tutoriais em video - 2026-09-01-tutoriais ==================
    Aba propria + botao "Ver como faz" dentro de cada modulo.
@@ -5395,27 +5396,34 @@ function mvI(img,e){var s=document.createElement('span');s.textContent=e;s.style
    O player usa youtube-nocookie.com: e o dominio de privacidade reforcada,
    nao planta cookie de publicidade em quem so abriu o tutorial. Precisou de
    uma linha no frame-src do CSP desta pagina.
+   A LISTA e uma grade de CAPAS (i.ytimg.com no img-src) - o cliente procura
+   pela imagem, nao pelo texto.
    ======================================================================= */
 .mvTutChip{display:inline-flex;align-items:center;gap:7px;margin:0 0 12px;padding:7px 12px 7px 9px;border-radius:999px;border:1px solid rgba(0,212,255,.38);background:rgba(0,212,255,.10);color:#bfe9fb;font-family:inherit;font-size:13px;font-weight:600;line-height:1;cursor:pointer}
 .mvTutChip:hover{background:rgba(0,212,255,.18);border-color:rgba(0,212,255,.6)}
 .mvTutChip svg{width:14px;height:14px;flex:none}
 .mvTutChip i{font-style:normal;color:#7f95b3;font-weight:500}
 .mvTutLinha{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
-.mvTutMod{margin:0 0 16px}
-.mvTutModTit{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:#7f95b3;font-weight:700;margin:0 0 8px}
-.mvTutIt{display:flex;align-items:center;gap:12px;width:100%;box-sizing:border-box;text-align:left;padding:11px 13px;margin:0 0 7px;border-radius:12px;border:1px solid var(--card-borda,#1c3457);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:14.5px;cursor:pointer}
-.mvTutIt:hover{border-color:var(--ciano,#00D4FF);background:#0e1d31}
-.mvTutIco{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;background:rgba(0,212,255,.14);color:var(--ciano,#00D4FF)}
-.mvTutIco svg{width:14px;height:14px}
-.mvTutIt b{display:block;font-weight:600}
-.mvTutIt em{display:block;font-style:normal;font-size:12.5px;color:#7f95b3;margin-top:2px}
+
+.mvTutMod{margin:0 0 20px}
+.mvTutModTit{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:#7f95b3;font-weight:700;margin:0 0 10px}
+.mvTutGrade{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,172px),1fr));gap:16px 12px}
+.mvTutCard{display:block;min-width:0;width:100%;padding:0;margin:0;border:0;background:transparent;color:#e6eefb;font-family:inherit;text-align:left;cursor:pointer}
+.mvTutCapa{position:relative;display:block;width:100%;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#0b1728;border:1px solid var(--card-borda,#1c3457);transition:border-color .16s,transform .16s}
+.mvTutCapa img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block}
+.mvTutCard:hover .mvTutCapa{border-color:var(--ciano,#00D4FF);transform:translateY(-2px)}
+.mvTutPlayC{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(4,10,18,.62);color:#fff;border:1.5px solid rgba(255,255,255,.55);transition:background .16s,color .16s,transform .16s}
+.mvTutPlayC svg{width:15px;height:15px;margin-left:2px}
+.mvTutCard:hover .mvTutPlayC{background:var(--ciano,#00D4FF);color:#04121f;border-color:transparent;transform:translate(-50%,-50%) scale(1.08)}
+.mvTutDurC{position:absolute;right:7px;bottom:7px;padding:2px 6px;border-radius:5px;background:rgba(4,10,18,.86);color:#fff;font-size:11.5px;font-weight:600;line-height:1.45}
+.mvTutNome{display:block;margin:9px 2px 0;font-size:14px;font-weight:600;line-height:1.35}
+
 .mvTutVideo{position:relative;width:100%;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000;margin:0 0 10px}
 .mvTutVideo iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 .mvTutVoltar{background:transparent;border:0;color:var(--ciano,#00D4FF);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:6px 0;margin:0 0 4px}
 .mvTutTit{font-size:16px;font-weight:700;margin:0 0 4px}
 .mvTutVazio{color:#7f95b3;font-size:14px;line-height:1.5}
 </style>
-
 <script>
 /* ===================== TUTORIAIS EM VIDEO - LOJISTA =======================
    COMO ATUALIZAR: cole o id do YouTube em id:'' e a duracao em d:''.
@@ -5484,7 +5492,6 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   ]}
 ]};
 </script>
-
 <script>
 /* Tutoriais em video - 2026-09-01-tutoriais.
    Bloco isolado de proposito: nao depende de Firebase, nao le nada do banco e
@@ -5495,9 +5502,8 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   function cada(fn){ T().forEach(function(m){ (m.v||[]).forEach(function(v){ fn(v,m); }); }); }
   function achar(k){ var r=null; cada(function(v){ if(v.k===k && v.id) r=v; }); return r; }
   function quantos(){ var n=0; cada(function(v){ if(v.id) n++; }); return n; }
-  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
-    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   var PLAY='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.4v13.2L19 12z"/></svg>';
+  function capa(id,q){ return 'https://i.ytimg.com/vi/'+encodeURIComponent(id)+'/'+q+'.jpg'; }
 
   /* ---------- a janela ---------- */
   var cx=null, corpo=null;
@@ -5507,7 +5513,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     cx.id='modalTut'; cx.className='modalPlano escondido';
     cx.addEventListener('click',function(e){ if(e.target===cx) fechar(); });
     var caixa=document.createElement('div');
-    caixa.className='mpCaixa'; caixa.style.maxWidth='560px';
+    caixa.className='mpCaixa'; caixa.style.maxWidth='680px';
     var x=document.createElement('button');
     x.type='button'; x.className='mpFechar'; x.setAttribute('aria-label','Fechar');
     x.textContent='✕'; x.onclick=fechar;
@@ -5520,32 +5526,61 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     caixa.appendChild(x); caixa.appendChild(head); caixa.appendChild(corpo);
     cx.appendChild(caixa); document.body.appendChild(cx);
   }
+
+  /* uma capa por video. maxres so existe quando o dono subiu miniatura
+     propria; se nao existir, o YouTube devolve uma imagem de 120px de largura
+     - por isso o teste e pela LARGURA, nao pelo onerror (que nao dispara). */
+  function imagem(v){
+    var img=document.createElement('img');
+    img.loading='lazy'; img.decoding='async'; img.alt='';
+    img.addEventListener('load',function(){
+      if(img.naturalWidth<200 && img.src.indexOf('maxres')>-1) img.src=capa(v.id,'mqdefault');
+    });
+    img.addEventListener('error',function(){
+      if(img.src.indexOf('maxres')>-1) img.src=capa(v.id,'mqdefault');
+    });
+    img.src=capa(v.id,'maxresdefault');
+    return img;
+  }
+
+  function cartao(v){
+    var b=document.createElement('button');
+    b.type='button'; b.className='mvTutCard'; b.setAttribute('data-tut',v.k);
+    var cap=document.createElement('span'); cap.className='mvTutCapa';
+    cap.appendChild(imagem(v));
+    var pl=document.createElement('span'); pl.className='mvTutPlayC'; pl.innerHTML=PLAY;
+    cap.appendChild(pl);
+    if(v.d){ var d=document.createElement('span'); d.className='mvTutDurC'; d.textContent=v.d; cap.appendChild(d); }
+    var nome=document.createElement('span'); nome.className='mvTutNome'; nome.textContent=v.t;
+    b.appendChild(cap); b.appendChild(nome);
+    return b;
+  }
+
   function lista(){
     montar();
-    var h='', vazio=true;
+    corpo.innerHTML='';
+    var vazio=true;
     T().forEach(function(m){
       var itens=(m.v||[]).filter(function(v){ return !!v.id; });
       if(!itens.length) return;            /* modulo sem video nao e listado */
       vazio=false;
-      h+='<div class="mvTutMod"><div class="mvTutModTit">'+esc(m.n)+'</div>';
-      itens.forEach(function(v){
-        h+='<button type="button" class="mvTutIt" data-tut="'+esc(v.k)+'">'+
-             '<span class="mvTutIco">'+PLAY+'</span>'+
-             '<span><b>'+esc(v.t)+'</b>'+(v.d?'<em>'+esc(v.d)+'</em>':'')+'</span></button>';
-      });
-      h+='</div>';
+      var bloco=document.createElement('div'); bloco.className='mvTutMod';
+      var tit=document.createElement('div'); tit.className='mvTutModTit'; tit.textContent=m.n;
+      var grade=document.createElement('div'); grade.className='mvTutGrade';
+      itens.forEach(function(v){ grade.appendChild(cartao(v)); });
+      bloco.appendChild(tit); bloco.appendChild(grade); corpo.appendChild(bloco);
     });
-    if(vazio) h='<p class="mvTutVazio">Os tutoriais em vídeo estão sendo gravados. Em breve eles aparecem aqui, e também dentro de cada tela do painel.</p>';
-    corpo.innerHTML=h;
+    if(vazio) corpo.innerHTML='<p class="mvTutVazio">Os tutoriais em vídeo estão sendo gravados. Em breve eles aparecem aqui, e também dentro de cada tela do painel.</p>';
   }
+
   function tocar(k){
     var v=achar(k); if(!v) return;
     montar();
     corpo.innerHTML='<button type="button" class="mvTutVoltar" data-tutvoltar="1">‹ Todos os tutoriais</button>'+
-      '<div class="mvTutTit">'+esc(v.t)+'</div>'+
+      '<div class="mvTutTit">'+String(v.t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];})+'</div>'+
       '<div class="mvTutVideo"><iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(v.id)+
-        '?rel=0&amp;modestbranding=1&amp;playsinline=1" title="'+esc(v.t)+
-        '" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>';
+        '?rel=0&amp;modestbranding=1&amp;playsinline=1" title="tutorial"'+
+        ' allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>';
     abrirJanela();
   }
   function abrirJanela(){ montar(); cx.classList.remove('escondido'); }
@@ -5591,7 +5626,8 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   function chip(v){
     var b=document.createElement('button');
     b.type='button'; b.className='mvTutChip'; b.setAttribute('data-tut',v.k);
-    b.innerHTML=PLAY+'<span>Ver como faz</span>'+(v.d?' <i>'+esc(v.d)+'</i>':'');
+    b.innerHTML=PLAY+'<span>Ver como faz</span>';
+    if(v.d){ var i=document.createElement('i'); i.textContent=v.d; b.appendChild(i); }
     return b;
   }
   function injetar(){
