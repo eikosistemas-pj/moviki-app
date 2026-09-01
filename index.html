@@ -2640,7 +2640,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-01-tutmod-whats';
+  window.MOVIKI_VERSAO='2026-09-01-tutgrande';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5388,6 +5388,7 @@ function mvI(img,e){var s=document.createElement('span');s.textContent=e;s.style
 
 
 
+
 <style>
 /* ============ Tutoriais em video - 2026-09-01-tutmodulo =================
    UMA videoaula por MODULO, embutida no FIM do proprio bloco - o cliente
@@ -5416,9 +5417,7 @@ button.mvTutQuadro{padding-top:56.25%;cursor:pointer;font:inherit;color:inherit}
 button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 
 /* --- a aba Tutoriais: grade de capas --- */
-.mvTutMod{margin:0 0 20px}
-.mvTutModTit{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:#7f95b3;font-weight:700;margin:0 0 10px}
-.mvTutGrade{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,172px),1fr));gap:16px 12px}
+.mvTutGrade{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:22px 16px}
 .mvTutCard{display:block;min-width:0;width:100%;padding:0;margin:0;border:0;background:transparent;color:#e6eefb;font-family:inherit;text-align:left;cursor:pointer}
 .mvTutCapa{position:relative;display:block;width:100%;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#0b1728;border:1px solid var(--card-borda,#1c3457);transition:border-color .16s,transform .16s}
 .mvTutCapa img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block}
@@ -5427,7 +5426,9 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .mvTutPlayC svg{width:15px;height:15px;margin-left:2px}
 .mvTutCard:hover .mvTutPlayC,button.mvTutQuadro:hover .mvTutPlayC{background:var(--ciano,#00D4FF);color:#04121f;border-color:transparent;transform:translate(-50%,-50%) scale(1.08)}
 .mvTutDurC{position:absolute;right:7px;bottom:7px;padding:2px 6px;border-radius:5px;background:rgba(4,10,18,.86);color:#fff;font-size:11.5px;font-weight:600;line-height:1.45}
-.mvTutNome{display:block;margin:9px 2px 0;font-size:14px;font-weight:600;line-height:1.35}
+.mvTutRot{display:block;margin:10px 2px 3px;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#7f95b3;font-weight:700}
+.mvTutNome{display:block;margin:0 2px;font-size:15px;font-weight:600;line-height:1.35}
+.mvTutDurC{font-size:12.5px;padding:3px 7px}
 
 .mvTutVideo{position:relative;width:100%;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000;margin:0 0 10px}
 .mvTutVideo iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
@@ -5593,7 +5594,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     cx.id='modalTut'; cx.className='modalPlano escondido';
     cx.addEventListener('click',function(e){ if(e.target===cx) fechar(); });
     var caixa=document.createElement('div');
-    caixa.className='mpCaixa'; caixa.style.maxWidth='680px';
+    caixa.className='mpCaixa'; caixa.style.maxWidth='760px';
     var x=document.createElement('button');
     x.type='button'; x.className='mpFechar'; x.setAttribute('aria-label','Fechar');
     x.textContent='✕'; x.onclick=fechar;
@@ -5606,29 +5607,31 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     caixa.appendChild(x); caixa.appendChild(head); caixa.appendChild(corpo);
     cx.appendChild(caixa); document.body.appendChild(cx);
   }
-  function cartao(v){
+  function cartao(v,rotulo){
     var b=moldura(v,'mvTutCapa','data-tutcapa');
     var fora=document.createElement('button');
     fora.type='button'; fora.className='mvTutCard'; fora.setAttribute('data-tut',v.k);
     var span=document.createElement('span'); span.className='mvTutCapa';
     while(b.firstChild) span.appendChild(b.firstChild);
+    fora.appendChild(span);
+    if(rotulo){ var r=document.createElement('span'); r.className='mvTutRot'; r.textContent=rotulo; fora.appendChild(r); }
     var nome=document.createElement('span'); nome.className='mvTutNome'; nome.textContent=v.t;
-    fora.appendChild(span); fora.appendChild(nome);
+    fora.appendChild(nome);
     return fora;
   }
+  /* UMA grade so, sem agrupar. Com um video por modulo, o agrupamento deixava
+     uma celula ocupada e duas vazias em cada linha - e a miniatura minuscula.
+     O nome do modulo virou rotulo dentro do cartao. */
   function lista(){
     pararTodos();
-    montar(); corpo.innerHTML=''; var vazio=true;
+    montar(); corpo.innerHTML='';
+    var grade=document.createElement('div'); grade.className='mvTutGrade';
+    var n=0;
     MOD().forEach(function(m){
-      var itens=prontos(m); if(!itens.length) return;
-      vazio=false;
-      var bloco=document.createElement('div'); bloco.className='mvTutMod';
-      var tit=document.createElement('div'); tit.className='mvTutModTit'; tit.textContent=m.n;
-      var grade=document.createElement('div'); grade.className='mvTutGrade';
-      itens.forEach(function(v){ grade.appendChild(cartao(v)); });
-      bloco.appendChild(tit); bloco.appendChild(grade); corpo.appendChild(bloco);
+      prontos(m).forEach(function(v){ grade.appendChild(cartao(v,m.n)); n++; });
     });
-    if(vazio) corpo.innerHTML='<p class="mvTutVazio">Os tutoriais em vídeo estão sendo gravados. Em breve eles aparecem aqui, e também no fim de cada tela do painel.</p>';
+    if(!n){ corpo.innerHTML='<p class="mvTutVazio">Os tutoriais em vídeo estão sendo gravados. Em breve eles aparecem aqui, e também no fim de cada tela do painel.</p>'; return; }
+    corpo.appendChild(grade);
   }
   function tocar(k){
     var v=achar(k); if(!v) return;
