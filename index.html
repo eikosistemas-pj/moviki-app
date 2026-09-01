@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://*.google-analytics.com; connect-src 'self' https://*.googleapis.com https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://*.google-analytics.com; connect-src 'self' https://*.googleapis.com https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://www.youtube-nocookie.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 
@@ -1483,6 +1483,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         </div>
 
         <div class="drawerSec">Ajuda</div>
+        <button type="button" id="drawerTutoriais" style="display:none" onclick="fecharMenu();abrirTutoriais()"><svg class="diImg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" style="color:var(--ciano,#00D4FF)"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg> Tutoriais em vídeo</button>
         <a href="https://wa.me/554120186848?text=Ol%C3%A1!%20Preciso%20de%20ajuda%20com%20o%20Moviki." target="_blank" rel="noopener">💬 Falar com o suporte</a>
         <a href="https://moviki.com.br" target="_blank" rel="noopener"><img class="diImg" src="icones/sobre.png" alt="" onerror="this.replaceWith(document.createTextNode('ℹ️'))"> Sobre o Moviki</a>
         <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener"><img class="diImg" src="icones/termos.png" alt="" onerror="this.replaceWith(document.createTextNode('📄'))"> Termos de uso</a>
@@ -1881,6 +1882,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
           <button type="button" class="gcard" onclick="irSecao('avaliacoes')"><img class="gcImg" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Avaliações</span></button>
           <button type="button" class="gcard" onclick="abrirPlano()"><img class="gcImg" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meu Plano</span></button>
           <button type="button" class="gcard" id="gc-mensagens" onclick="abrirMensagens()"><svg class="gcImg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ciano)"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.6 9.6 0 0 1-2.9-.4L3 21l1.6-4.5a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/></svg><span class="gcLabel">Mensagens</span></button>
+          <button type="button" class="gcard" id="gc-tutoriais" style="display:none" onclick="abrirTutoriais()"><svg class="gcImg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" style="color:var(--ciano,#00D4FF)"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg><span class="gcLabel">Tutoriais</span></button>
           <button type="button" class="gcard" id="gc-pontos" style="display:none" onclick="abrirPontos()"><img class="gcImg" src="icones/multipontos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meus pontos</span></button>
           <button type="button" class="gcard gcIndicar" id="gc-indicar" style="display:none" onclick="abrirModalParceiro()"><img class="gcImg" src="icones/indicar.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Indicar agora</span></button>
         </div>
@@ -2638,7 +2640,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-01-topo-unico';
+  window.MOVIKI_VERSAO='2026-09-01-tutoriais';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5381,5 +5383,266 @@ function mvI(img,e){var s=document.createElement('span');s.textContent=e;s.style
   else document.addEventListener('DOMContentLoaded', mvAccSync);
 })();
 </script>
+
+
+<style>
+/* ============ Tutoriais em video - 2026-09-01-tutoriais ==================
+   Aba propria + botao "Ver como faz" dentro de cada modulo.
+   Os videos ficam no YouTube como NAO LISTADOS; o unico lugar que expoe o
+   link e o proprio painel. Enquanto um video nao tem id, ele nao aparece em
+   lugar nenhum - botao que nao faz nada custa mais confianca do que botao
+   que nao existe.
+   O player usa youtube-nocookie.com: e o dominio de privacidade reforcada,
+   nao planta cookie de publicidade em quem so abriu o tutorial. Precisou de
+   uma linha no frame-src do CSP desta pagina.
+   ======================================================================= */
+.mvTutChip{display:inline-flex;align-items:center;gap:7px;margin:0 0 12px;padding:7px 12px 7px 9px;border-radius:999px;border:1px solid rgba(0,212,255,.38);background:rgba(0,212,255,.10);color:#bfe9fb;font-family:inherit;font-size:13px;font-weight:600;line-height:1;cursor:pointer}
+.mvTutChip:hover{background:rgba(0,212,255,.18);border-color:rgba(0,212,255,.6)}
+.mvTutChip svg{width:14px;height:14px;flex:none}
+.mvTutChip i{font-style:normal;color:#7f95b3;font-weight:500}
+.mvTutLinha{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.mvTutMod{margin:0 0 16px}
+.mvTutModTit{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:#7f95b3;font-weight:700;margin:0 0 8px}
+.mvTutIt{display:flex;align-items:center;gap:12px;width:100%;box-sizing:border-box;text-align:left;padding:11px 13px;margin:0 0 7px;border-radius:12px;border:1px solid var(--card-borda,#1c3457);background:#0b1728;color:#e6eefb;font-family:inherit;font-size:14.5px;cursor:pointer}
+.mvTutIt:hover{border-color:var(--ciano,#00D4FF);background:#0e1d31}
+.mvTutIco{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;background:rgba(0,212,255,.14);color:var(--ciano,#00D4FF)}
+.mvTutIco svg{width:14px;height:14px}
+.mvTutIt b{display:block;font-weight:600}
+.mvTutIt em{display:block;font-style:normal;font-size:12.5px;color:#7f95b3;margin-top:2px}
+.mvTutVideo{position:relative;width:100%;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000;margin:0 0 10px}
+.mvTutVideo iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.mvTutVoltar{background:transparent;border:0;color:var(--ciano,#00D4FF);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:6px 0;margin:0 0 4px}
+.mvTutTit{font-size:16px;font-weight:700;margin:0 0 4px}
+.mvTutVazio{color:#7f95b3;font-size:14px;line-height:1.5}
+</style>
+
+<script>
+/* ===================== TUTORIAIS EM VIDEO - LOJISTA =======================
+   COMO ATUALIZAR: cole o id do YouTube em id:'' e a duracao em d:''.
+   O id sao os 11 caracteres depois de "watch?v=" - NAO a URL inteira.
+   Video com id vazio nao aparece em lugar nenhum. Modulo sem nenhum video
+   pronto tambem nao e listado. Videos NAO LISTADOS no canal @app.moviki.
+   Mapa dos videos e roteiros: claude/moviki-videoaulas-por-modulo.md
+   ======================================================================= */
+window.MOVIKI_TUTORIAIS = { modulos: [
+  { n:'Primeiros passos', v:[
+    { k:'conta-criar',      t:'Criar sua conta no Moviki',        d:'', id:'' },
+    { k:'conta-email',      t:'Confirmar seu e-mail',             d:'', id:'' },
+    { k:'painel-tour',      t:'Conhecendo o seu painel',          d:'', id:'' }
+  ]},
+  { n:'Perfil e link', v:[
+    { k:'perfil-link',      t:'Nome do negócio e seu link',       d:'', id:'' },
+    { k:'perfil-recado',    t:'Recado do dia',                    d:'', id:'' },
+    { k:'perfil-cor',       t:'A cor da sua marca',               d:'', id:'' },
+    { k:'perfil-divulga',   t:'Divulgação e marca própria',      d:'', id:'' }
+  ]},
+  { n:'Localização e aparência', v:[
+    { k:'local-gps',        t:'Salvar sua localização',          d:'', id:'' },
+    { k:'local-endereco',   t:'Endereço escrito',                 d:'', id:'' },
+    { k:'local-logo',       t:'Sua logo no mapa',                 d:'', id:'' },
+    { k:'local-capa',       t:'Foto de capa da sua página',       d:'', id:'' }
+  ]},
+  { n:'Cardápio', v:[
+    { k:'cardapio-montar',  t:'Montar o seu cardápio',            d:'', id:'' },
+    { k:'cardapio-fotos',   t:'Foto no produto e capa da categoria', d:'', id:'' }
+  ]},
+  { n:'Promoções', v:[
+    { k:'promo-criar',      t:'Criar uma promoção',              d:'', id:'' }
+  ]},
+  { n:'Eventos', v:[
+    { k:'evento-criar',     t:'Publicar um evento',               d:'', id:'' }
+  ]},
+  { n:'Fotos', v:[
+    { k:'fotos-galeria',    t:'A galeria do seu negócio',         d:'', id:'' }
+  ]},
+  { n:'Informações', v:[
+    { k:'info-dados',       t:'Horário, entrega e preço médio',   d:'', id:'' }
+  ]},
+  { n:'WhatsApp', v:[
+    { k:'whats-cadastrar',  t:'Cadastrar o seu WhatsApp',         d:'', id:'' }
+  ]},
+  { n:'Avaliações', v:[
+    { k:'avaliacoes-ver',   t:'As suas avaliações',              d:'', id:'' }
+  ]},
+  { n:'Seu desempenho', v:[
+    { k:'desempenho-ler',   t:'Ler o card Seu desempenho',        d:'', id:'' }
+  ]},
+  { n:'Meu plano', v:[
+    { k:'plano-assinar',    t:'Escolher e assinar um plano',      d:'', id:'' },
+    { k:'plano-trial',      t:'O teste grátis de 30 dias',        d:'', id:'' }
+  ]},
+  { n:'Meus pontos', v:[
+    { k:'pontos-cadastrar', t:'Cadastrar as suas unidades',       d:'', id:'' }
+  ]},
+  { n:'Falar com o Vik', v:[
+    { k:'vik-falar',        t:'Tirar dúvida com o Vik',           d:'', id:'' },
+    { k:'vik-anexo',        t:'Enviar um documento pelo chat',    d:'', id:'' }
+  ]},
+  { n:'Seu dia a dia', v:[
+    { k:'dia-status',       t:'Abrir e fechar o seu negócio',     d:'', id:'' },
+    { k:'dia-pagina',       t:'Ver a sua página como o cliente vê', d:'', id:'' }
+  ]}
+]};
+</script>
+
+<script>
+/* Tutoriais em video - 2026-09-01-tutoriais.
+   Bloco isolado de proposito: nao depende de Firebase, nao le nada do banco e
+   falha calado. Painel nao pode cair por causa de tutorial. */
+(function(){
+  'use strict';
+  function T(){ return (window.MOVIKI_TUTORIAIS && window.MOVIKI_TUTORIAIS.modulos) || []; }
+  function cada(fn){ T().forEach(function(m){ (m.v||[]).forEach(function(v){ fn(v,m); }); }); }
+  function achar(k){ var r=null; cada(function(v){ if(v.k===k && v.id) r=v; }); return r; }
+  function quantos(){ var n=0; cada(function(v){ if(v.id) n++; }); return n; }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  var PLAY='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.4v13.2L19 12z"/></svg>';
+
+  /* ---------- a janela ---------- */
+  var cx=null, corpo=null;
+  function montar(){
+    if(cx) return;
+    cx=document.createElement('div');
+    cx.id='modalTut'; cx.className='modalPlano escondido';
+    cx.addEventListener('click',function(e){ if(e.target===cx) fechar(); });
+    var caixa=document.createElement('div');
+    caixa.className='mpCaixa'; caixa.style.maxWidth='560px';
+    var x=document.createElement('button');
+    x.type='button'; x.className='mpFechar'; x.setAttribute('aria-label','Fechar');
+    x.textContent='✕'; x.onclick=fechar;
+    var head=document.createElement('div');
+    head.className='mpHead';
+    head.innerHTML='<h2 class="mpTitulo">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" style="width:22px;height:22px;color:var(--ciano,#00D4FF)">'+
+      '<rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg>Tutoriais</h2>';
+    corpo=document.createElement('div'); corpo.id='tutCorpo';
+    caixa.appendChild(x); caixa.appendChild(head); caixa.appendChild(corpo);
+    cx.appendChild(caixa); document.body.appendChild(cx);
+  }
+  function lista(){
+    montar();
+    var h='', vazio=true;
+    T().forEach(function(m){
+      var itens=(m.v||[]).filter(function(v){ return !!v.id; });
+      if(!itens.length) return;            /* modulo sem video nao e listado */
+      vazio=false;
+      h+='<div class="mvTutMod"><div class="mvTutModTit">'+esc(m.n)+'</div>';
+      itens.forEach(function(v){
+        h+='<button type="button" class="mvTutIt" data-tut="'+esc(v.k)+'">'+
+             '<span class="mvTutIco">'+PLAY+'</span>'+
+             '<span><b>'+esc(v.t)+'</b>'+(v.d?'<em>'+esc(v.d)+'</em>':'')+'</span></button>';
+      });
+      h+='</div>';
+    });
+    if(vazio) h='<p class="mvTutVazio">Os tutoriais em vídeo estão sendo gravados. Em breve eles aparecem aqui, e também dentro de cada tela do painel.</p>';
+    corpo.innerHTML=h;
+  }
+  function tocar(k){
+    var v=achar(k); if(!v) return;
+    montar();
+    corpo.innerHTML='<button type="button" class="mvTutVoltar" data-tutvoltar="1">‹ Todos os tutoriais</button>'+
+      '<div class="mvTutTit">'+esc(v.t)+'</div>'+
+      '<div class="mvTutVideo"><iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(v.id)+
+        '?rel=0&amp;modestbranding=1&amp;playsinline=1" title="'+esc(v.t)+
+        '" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>';
+    abrirJanela();
+  }
+  function abrirJanela(){ montar(); cx.classList.remove('escondido'); }
+  function fechar(){
+    if(!cx) return;
+    cx.classList.add('escondido');
+    corpo.innerHTML='';   /* mata o iframe: sem isso o audio continua tocando */
+  }
+  function abrir(k){
+    try{
+      if(k){ tocar(k); return; }
+      lista(); abrirJanela();
+    }catch(e){}
+  }
+
+  /* ---------- onde cada video aparece dentro do painel ---------- */
+  var ONDE = [
+    {k:'perfil-link',      sel:'#acc-perfil-dados-body',   pos:'inicio'},
+    {k:'perfil-cor',       sel:'#acc-perfil-cor-body',     pos:'inicio'},
+    {k:'perfil-divulga',   sel:'#acc-perfil-divulga-body', pos:'inicio'},
+    {k:'perfil-recado',    sel:'#acc-perfil-dados-body',   pos:'inicio'},
+    {k:'local-gps',        sel:'#acc-local-gps-body',      pos:'inicio'},
+    {k:'local-endereco',   sel:'#acc-local-endereco-body', pos:'inicio'},
+    {k:'local-logo',       sel:'#acc-local-logo-body',     pos:'inicio'},
+    {k:'local-capa',       sel:'#acc-local-capa-body',     pos:'inicio'},
+    {k:'cardapio-montar',  sel:'#tab-cardapio',            pos:'inicio'},
+    {k:'cardapio-fotos',   sel:'#tab-cardapio',            pos:'inicio'},
+    {k:'promo-criar',      sel:'#tab-promocoes',           pos:'inicio'},
+    {k:'evento-criar',     sel:'#tab-eventos',             pos:'inicio'},
+    {k:'fotos-galeria',    sel:'#tab-fotos',               pos:'inicio'},
+    {k:'info-dados',       sel:'#tab-info',                pos:'inicio'},
+    {k:'whats-cadastrar',  sel:'#tab-whatsapp',            pos:'inicio'},
+    {k:'avaliacoes-ver',   sel:'#tab-avaliacoes',          pos:'inicio'},
+    {k:'desempenho-ler',   sel:'#mvDesemp',                pos:'fim'},
+    {k:'dia-status',       sel:'.statusHome',              pos:'fim'},
+    {k:'plano-assinar',    sel:'#mpStatus',                pos:'depois'},
+    {k:'plano-trial',      sel:'#mpStatus',                pos:'depois'},
+    {k:'pontos-cadastrar', sel:'#modalPontos .idxLead',    pos:'depois'},
+    {k:'vik-falar',        sel:'#modalMsg .idxLead',       pos:'depois'},
+    {k:'vik-anexo',        sel:'#msgDocsTxt',              pos:'depois'}
+  ];
+
+  function chip(v){
+    var b=document.createElement('button');
+    b.type='button'; b.className='mvTutChip'; b.setAttribute('data-tut',v.k);
+    b.innerHTML=PLAY+'<span>Ver como faz</span>'+(v.d?' <i>'+esc(v.d)+'</i>':'');
+    return b;
+  }
+  function injetar(){
+    try{
+      ONDE.forEach(function(r){
+        var v=achar(r.k); if(!v) return;
+        var alvo=document.querySelector(r.sel); if(!alvo) return;
+        var pai=(r.pos==='depois')?alvo.parentNode:alvo;
+        if(!pai) return;
+        var linha=pai.querySelector(':scope > .mvTutLinha');
+        if(!linha){
+          linha=document.createElement('div'); linha.className='mvTutLinha';
+          if(r.pos==='depois') alvo.parentNode.insertBefore(linha, alvo.nextSibling);
+          else if(r.pos==='fim') alvo.appendChild(linha);
+          else alvo.insertBefore(linha, alvo.firstChild);
+        }
+        if(linha.querySelector('[data-tut="'+r.k+'"]')) return;   /* ja esta la */
+        linha.appendChild(chip(v));
+      });
+    }catch(e){}
+  }
+
+  /* ---------- entradas do menu: so existem se houver video ---------- */
+  function entradas(){
+    var tem=quantos()>0;
+    ['gc-tutoriais','navTutoriais','drawerTutoriais'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) el.style.display = tem ? '' : 'none';
+    });
+  }
+
+  /* ---------- ligacoes ---------- */
+  document.addEventListener('click',function(e){
+    var alvo=e.target && e.target.closest ? e.target.closest('[data-tut],[data-tutvoltar]') : null;
+    if(alvo){
+      if(alvo.hasAttribute('data-tutvoltar')){ lista(); return; }
+      abrir(alvo.getAttribute('data-tut')); return;
+    }
+    clearTimeout(window.__tutT);
+    window.__tutT=setTimeout(injetar,250);   /* o painel redesenha depois de clique */
+  },false);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') fechar(); });
+
+  function iniciar(){ entradas(); injetar(); setTimeout(function(){ entradas(); injetar(); },1400); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar);
+  else iniciar();
+
+  window.abrirTutoriais=function(k){ abrir(k); };
+  window.mvTutInjetar=injetar;
+})();
+</script>
+
 </body>
 </html>
