@@ -1327,6 +1327,43 @@ body.naHome #btnSalvar{margin-top:14px;}
 .mvDicaMini{font-size:12.5px;line-height:1.5;color:#9fb3d0;background:rgba(0,212,255,.07);
   border:1px solid rgba(0,212,255,.22);border-radius:10px;padding:9px 11px;margin-top:12px;}
 .mvDicaMini b{color:#7ff0ff;}
+/* ---------- ESCOLHA GRANDE (caixa de marcar) — 31/08/2026 ----------
+   O checkbox nativo de 18px era pequeno demais pra ver e pra acertar com o
+   dedo, e o "marcado" quase nao aparecia. Agora a LINHA INTEIRA e a area de
+   toque: fica um cartao, com uma caixa de 30px que vira VERDE com um V branco
+   quando marcada, e a borda do cartao acompanha. O <input> continua existindo
+   (so escondido) — nada do JS que le .checked precisou mudar. */
+.mvEscolha{display:flex;align-items:flex-start;gap:13px;cursor:pointer;
+  background:rgba(6,17,31,.55);border:1.5px solid var(--mv-linha,rgba(255,255,255,.10));
+  border-radius:14px;padding:14px 15px;transition:border-color .16s,background .16s,box-shadow .16s;}
+.mvEscolha:hover{border-color:rgba(37,227,155,.45);background:rgba(6,17,31,.8);}
+.mvEscolha input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;}
+.mvEscolhaBox{position:relative;flex:0 0 auto;width:30px;height:30px;border-radius:9px;
+  border:2px solid rgba(255,255,255,.30);background:rgba(255,255,255,.05);
+  display:flex;align-items:center;justify-content:center;transition:.16s;margin-top:1px;}
+.mvEscolhaBox svg{width:19px;height:19px;color:#04121f;opacity:0;transform:scale(.5);
+  transition:opacity .16s,transform .18s cubic-bezier(.3,1.4,.5,1);}
+.mvEscolhaTxt{flex:1;min-width:0;}
+.mvEscolhaTit{display:block;font-size:15px;font-weight:700;color:#eaf6ff;line-height:1.3;}
+.mvEscolhaSub{display:block;font-size:12.5px;color:#9fb3d0;line-height:1.55;margin-top:5px;}
+.mvEscolhaSub b{color:#cfe0f5;}
+.mvEscolhaSelo{display:none;align-items:center;gap:5px;margin-top:9px;
+  font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  color:#25e39b;background:rgba(37,227,155,.13);border:1px solid rgba(37,227,155,.38);
+  border-radius:999px;padding:4px 10px;width:-moz-fit-content;width:fit-content;}
+/* MARCADA */
+.mvEscolha input:checked~.mvEscolhaBox{background:#25e39b;border-color:#25e39b;box-shadow:0 0 14px rgba(37,227,155,.5);}
+.mvEscolha input:checked~.mvEscolhaBox svg{opacity:1;transform:scale(1);}
+.mvEscolha:has(input:checked){border-color:rgba(37,227,155,.55);background:rgba(37,227,155,.07);}
+.mvEscolha:has(input:checked) .mvEscolhaSelo{display:inline-flex;}
+/* navegacao por teclado tem que ficar visivel */
+.mvEscolha input:focus-visible~.mvEscolhaBox{outline:2px solid var(--mv-ciano,#00D4FF);outline-offset:3px;}
+/* variante ciano (white-label) */
+.mvEscolha.ciano:hover{border-color:rgba(0,212,255,.45);}
+.mvEscolha.ciano input:checked~.mvEscolhaBox{background:#00D4FF;border-color:#00D4FF;box-shadow:0 0 14px rgba(0,212,255,.5);}
+.mvEscolha.ciano:has(input:checked){border-color:rgba(0,212,255,.55);background:rgba(0,212,255,.07);}
+.mvEscolha.ciano .mvEscolhaSelo{color:#00D4FF;background:rgba(0,212,255,.13);border-color:rgba(0,212,255,.38);}
+@media(prefers-reduced-motion:reduce){.mvEscolhaBox,.mvEscolhaBox svg,.mvEscolha{transition:none;}}
 </style>
 </head>
 <body>
@@ -1891,15 +1928,25 @@ body.naHome #btnSalvar{margin-top:14px;}
         </button>
         <div class="mvAccBody" id="acc-perfil-divulga-body">
           <div id="divulgaRow" style="border-top:1px solid rgba(255,255,255,.1);margin-top:12px;padding-top:12px">
-            <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer">
-              <input id="divulgaToggle" type="checkbox" style="margin-top:3px;width:18px;height:18px;accent-color:#25e39b;cursor:pointer">
-              <span style="font-size:14px;color:#e6eefb"><b>Quero que o Moviki divulgue meu negócio nas redes sociais</b><br><span style="font-size:12.5px;color:#9fb3d0">De vez em quando montamos um post com o nome do seu negócio, sua logo, seu segmento, sua cidade e o seu link, e publicamos no Instagram e no Facebook do Moviki. É divulgação gratuita pra você. <b>Nunca publicamos seu endereço exato</b> — só a cidade. Pode desligar quando quiser.</span></span>
+            <label class="mvEscolha">
+              <input id="divulgaToggle" type="checkbox">
+              <span class="mvEscolhaBox" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.6 4.6L19 7"/></svg></span>
+              <span class="mvEscolhaTxt">
+                <span class="mvEscolhaTit">Quero que o Moviki divulgue meu negócio nas redes sociais</span>
+                <span class="mvEscolhaSub">De vez em quando montamos um post com o nome do seu negócio, sua logo, seu segmento, sua cidade e o seu link, e publicamos no Instagram e no Facebook do Moviki. É divulgação gratuita pra você. <b>Nunca publicamos seu endereço exato</b> — só a cidade. Pode desligar quando quiser.</span>
+                <span class="mvEscolhaSelo">&#10003; Divulgação ligada</span>
+              </span>
             </label>
           </div>
           <div id="wlRow" style="display:none;border-top:1px solid rgba(255,255,255,.1);margin-top:12px;padding-top:12px">
-            <label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer">
-              <input id="wlToggle" type="checkbox" style="margin-top:3px;width:18px;height:18px;accent-color:#00D4FF;cursor:pointer">
-              <span style="font-size:14px;color:#e6eefb"><b>Usar só a minha marca (white-label)</b><br><span style="font-size:12.5px;color:#9fb3d0">Esconde a logo e o slogan do Moviki na sua página pública e usa a sua logo no lugar. Precisa ter enviado sua logo na aba <b>Localização</b>. <span style="color:#7f95b3">(recurso Enterprise)</span></span></span>
+            <label class="mvEscolha ciano">
+              <input id="wlToggle" type="checkbox">
+              <span class="mvEscolhaBox" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.6 4.6L19 7"/></svg></span>
+              <span class="mvEscolhaTxt">
+                <span class="mvEscolhaTit">Usar só a minha marca (white-label)</span>
+                <span class="mvEscolhaSub">Esconde a logo e o slogan do Moviki na sua página pública e usa a sua logo no lugar. Precisa ter enviado sua logo na aba <b>Localização</b>. <span style="color:#7f95b3">(recurso Enterprise)</span></span>
+                <span class="mvEscolhaSelo">&#10003; Marca própria ligada</span>
+              </span>
             </label>
           </div>
         </div>
@@ -2535,7 +2582,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-08-31-home-limpa';
+  window.MOVIKI_VERSAO='2026-09-01-escolhas';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
