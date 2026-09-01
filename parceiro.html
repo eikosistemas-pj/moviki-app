@@ -931,7 +931,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-01-tutcapas';
+  window.MOVIKI_VERSAO = '2026-09-01-tutmodulo';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1986,25 +1986,35 @@ input::placeholder{color:#6b7f96}
 
 
 
-<style>
-/* ============ Tutoriais em video - 2026-09-01-tutoriais ==================
-   Aba propria + botao "Ver como faz" dentro de cada modulo.
-   Os videos ficam no YouTube como NAO LISTADOS; o unico lugar que expoe o
-   link e o proprio painel. Enquanto um video nao tem id, ele nao aparece em
-   lugar nenhum - botao que nao faz nada custa mais confianca do que botao
-   que nao existe.
-   O player usa youtube-nocookie.com: e o dominio de privacidade reforcada,
-   nao planta cookie de publicidade em quem so abriu o tutorial. Precisou de
-   uma linha no frame-src do CSP desta pagina.
-   A LISTA e uma grade de CAPAS (i.ytimg.com no img-src) - o cliente procura
-   pela imagem, nao pelo texto.
-   ======================================================================= */
-.mvTutChip{display:inline-flex;align-items:center;gap:7px;margin:0 0 12px;padding:7px 12px 7px 9px;border-radius:999px;border:1px solid rgba(0,212,255,.38);background:rgba(0,212,255,.10);color:#bfe9fb;font-family:inherit;font-size:13px;font-weight:600;line-height:1;cursor:pointer}
-.mvTutChip:hover{background:rgba(0,212,255,.18);border-color:rgba(0,212,255,.6)}
-.mvTutChip svg{width:14px;height:14px;flex:none}
-.mvTutChip i{font-style:normal;color:#7f95b3;font-weight:500}
-.mvTutLinha{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
 
+<style>
+/* ============ Tutoriais em video - 2026-09-01-tutmodulo =================
+   UMA videoaula por MODULO, embutida no FIM do proprio bloco - o cliente
+   termina de preencher a tela e o video esta ali, so clicar. A aba
+   Tutoriais continua existindo como biblioteca, em grade de capas.
+   Os videos ficam no YouTube como NAO LISTADOS; o unico lugar que expoe o
+   link e o proprio painel. Video sem id nao aparece em lugar nenhum.
+   O player usa youtube-nocookie.com (privacidade reforcada) e SO carrega
+   quando alguem clica - ate la e uma capa. Sem isso seriam varios iframes
+   do YouTube pesando no painel a toa.
+   CSP: frame-src ganhou youtube-nocookie.com; img-src ganhou i.ytimg.com.
+   ======================================================================= */
+
+/* --- o player embutido no fim do bloco --- */
+.mvTutBox{margin:22px 0 6px;padding:14px;border-radius:14px;border:1px solid var(--card-borda,#1c3457);background:linear-gradient(180deg,rgba(0,212,255,.05),rgba(255,255,255,.01))}
+.mvTutBoxTopo{display:flex;align-items:center;gap:9px;margin:0 0 11px}
+.mvTutBoxIco{width:26px;height:26px;border-radius:7px;flex:none;display:grid;place-items:center;background:rgba(0,212,255,.14);color:var(--ciano,#00D4FF)}
+.mvTutBoxIco svg{width:14px;height:14px}
+.mvTutBoxTxt{min-width:0}
+.mvTutBoxTit{display:block;font-size:14.5px;font-weight:700;line-height:1.3}
+.mvTutBoxSub{display:block;font-size:12.5px;color:#7f95b3;margin-top:1px}
+.mvTutQuadro{position:relative;width:100%;padding-top:56.25%;border-radius:11px;overflow:hidden;background:#0b1728;border:1px solid var(--card-borda,#1c3457)}
+.mvTutQuadro img,.mvTutQuadro iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;display:block}
+.mvTutQuadro img{object-fit:cover}
+button.mvTutQuadro{padding-top:56.25%;cursor:pointer;font:inherit;color:inherit}
+button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
+
+/* --- a aba Tutoriais: grade de capas --- */
 .mvTutMod{margin:0 0 20px}
 .mvTutModTit{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:#7f95b3;font-weight:700;margin:0 0 10px}
 .mvTutGrade{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,172px),1fr));gap:16px 12px}
@@ -2014,7 +2024,7 @@ input::placeholder{color:#6b7f96}
 .mvTutCard:hover .mvTutCapa{border-color:var(--ciano,#00D4FF);transform:translateY(-2px)}
 .mvTutPlayC{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(4,10,18,.62);color:#fff;border:1.5px solid rgba(255,255,255,.55);transition:background .16s,color .16s,transform .16s}
 .mvTutPlayC svg{width:15px;height:15px;margin-left:2px}
-.mvTutCard:hover .mvTutPlayC{background:var(--ciano,#00D4FF);color:#04121f;border-color:transparent;transform:translate(-50%,-50%) scale(1.08)}
+.mvTutCard:hover .mvTutPlayC,button.mvTutQuadro:hover .mvTutPlayC{background:var(--ciano,#00D4FF);color:#04121f;border-color:transparent;transform:translate(-50%,-50%) scale(1.08)}
 .mvTutDurC{position:absolute;right:7px;bottom:7px;padding:2px 6px;border-radius:5px;background:rgba(4,10,18,.86);color:#fff;font-size:11.5px;font-weight:600;line-height:1.45}
 .mvTutNome{display:block;margin:9px 2px 0;font-size:14px;font-weight:600;line-height:1.35}
 
@@ -2024,52 +2034,114 @@ input::placeholder{color:#6b7f96}
 .mvTutTit{font-size:16px;font-weight:700;margin:0 0 4px}
 .mvTutVazio{color:#7f95b3;font-size:14px;line-height:1.5}
 </style>
+
 <script>
 /* ===================== TUTORIAIS EM VIDEO - PARCEIRO ======================
-   COMO ATUALIZAR: cole o id do YouTube em id:'' e a duracao em d:''.
-   O id sao os 11 caracteres depois de "watch?v=" - NAO a URL inteira.
-   Video com id vazio nao aparece em lugar nenhum. Videos NAO LISTADOS.
+   UMA videoaula por MODULO. Cole o id do YouTube em id:'' e a duracao em d:''.
    ATENCAO DE CONFORMIDADE: estes videos falam de COMISSAO condicionada a
    assinatura efetivamente paga. Nunca "renda", "garantido", "todo mes",
    "sem risco", nem numero projetando quanto o parceiro vai receber.
-   Mapa dos videos e roteiros: claude/moviki-videoaulas-por-modulo.md
+   Mapa e roteiros: claude/moviki-videoaulas-por-modulo.md
    ======================================================================= */
 window.MOVIKI_TUTORIAIS = { modulos: [
-  { n:'Começar', v:[
-    { k:'parc-oquee',       t:'O que é o Programa de Parceiros',   d:'', id:'' },
-    { k:'parc-cadastro',    t:'Criar o seu cadastro de parceiro',  d:'', id:'' },
-    { k:'parc-tour',        t:'Conhecendo o painel do parceiro',   d:'', id:'' }
-  ]},
-  { n:'Divulgar e indicar', v:[
-    { k:'parc-links',       t:'Os seus links de divulgação',     d:'', id:'' },
-    { k:'parc-indicacoes',  t:'As suas indicações',              d:'', id:'' }
-  ]},
-  { n:'Comissões e pagamento', v:[
-    { k:'parc-comissoes',   t:'Como a sua comissão é calculada',  d:'', id:'' },
-    { k:'parc-saque',       t:'Pedir o seu saque por Pix',        d:'', id:'' },
-    { k:'parc-pagamentos',  t:'Acompanhar os seus pagamentos',    d:'', id:'' },
-    { k:'parc-desempenho',  t:'O seu desempenho mês a mês',      d:'', id:'' }
-  ]},
-  { n:'Sua conta', v:[
-    { k:'parc-dados',       t:'Meus dados e a sua chave Pix',     d:'', id:'' },
-    { k:'parc-vik',         t:'Falar com o Vik',                  d:'', id:'' }
-  ]}
+  { n:'Começar', sel:'section[data-sec="visao"]', v:[
+    { k:'mod-parc-comecar',    t:'Como funciona o Programa de Parceiros',        d:'', id:'' } ]},
+  { n:'Indicações', sel:'section[data-sec="indicacoes"]', v:[
+    { k:'mod-parc-indicacoes', t:'Acompanhar quem entrou pelo seu link',         d:'', id:'' } ]},
+  { n:'Divulgação', sel:'section[data-sec="divulgacao"]', v:[
+    { k:'mod-parc-divulgacao', t:'Seus dois links e os modelos de mensagem',     d:'', id:'' } ]},
+  { n:'Comissões', sel:'section[data-sec="comissoes"]', v:[
+    { k:'mod-parc-comissoes',  t:'Como a comissão é calculada e quando libera',  d:'', id:'' } ]},
+  { n:'Pagamentos', sel:'section[data-sec="pagamentos"]', v:[
+    { k:'mod-parc-pagamentos', t:'Pedir saque por Pix e acompanhar o pagamento', d:'', id:'' } ]},
+  { n:'Desempenho', sel:'section[data-sec="desempenho"]', v:[
+    { k:'mod-parc-desempenho', t:'O seu histórico mês a mês',                    d:'', id:'' } ]},
+  { n:'Meus dados', sel:'section[data-sec="dados"]', v:[
+    { k:'mod-parc-dados',      t:'Seus dados e a sua chave Pix',                 d:'', id:'' } ]},
+  { n:'Falar com o Vik', sel:'section[data-sec="mensagens"]', v:[
+    { k:'mod-parc-vik',        t:'Tirar dúvida com o Vik',                       d:'', id:'' } ]}
 ]};
 </script>
+
 <script>
-/* Tutoriais em video - 2026-09-01-tutoriais.
+/* Tutoriais em video - 2026-09-01-tutmodulo.
    Bloco isolado de proposito: nao depende de Firebase, nao le nada do banco e
    falha calado. Painel nao pode cair por causa de tutorial. */
 (function(){
   'use strict';
-  function T(){ return (window.MOVIKI_TUTORIAIS && window.MOVIKI_TUTORIAIS.modulos) || []; }
-  function cada(fn){ T().forEach(function(m){ (m.v||[]).forEach(function(v){ fn(v,m); }); }); }
-  function achar(k){ var r=null; cada(function(v){ if(v.k===k && v.id) r=v; }); return r; }
-  function quantos(){ var n=0; cada(function(v){ if(v.id) n++; }); return n; }
+  function MOD(){ return (window.MOVIKI_TUTORIAIS && window.MOVIKI_TUTORIAIS.modulos) || []; }
+  function prontos(m){ return (m.v||[]).filter(function(v){ return !!v.id; }); }
+  function achar(k){
+    var r=null;
+    MOD().forEach(function(m){ prontos(m).forEach(function(v){ if(v.k===k) r=v; }); });
+    return r;
+  }
+  function quantos(){ var n=0; MOD().forEach(function(m){ n+=prontos(m).length; }); return n; }
   var PLAY='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.4v13.2L19 12z"/></svg>';
   function capa(id,q){ return 'https://i.ytimg.com/vi/'+encodeURIComponent(id)+'/'+q+'.jpg'; }
 
-  /* ---------- a janela ---------- */
+  /* a capa em alta so existe se o video tem miniatura propria. Sem ela o
+     YouTube NAO da erro - devolve uma imagem cinza de 120px. Por isso o
+     teste e pela LARGURA, e nao pelo onerror (que nunca dispara). */
+  function imagem(v){
+    var img=document.createElement('img');
+    img.loading='lazy'; img.decoding='async'; img.alt='';
+    function cair(){ if(img.src.indexOf('maxres')>-1) img.src=capa(v.id,'mqdefault'); }
+    img.addEventListener('load',function(){ if(img.naturalWidth<200) cair(); });
+    img.addEventListener('error',cair);
+    img.src=capa(v.id,'maxresdefault');
+    return img;
+  }
+  function moldura(v,cls,attr){
+    var b=document.createElement('button');
+    b.type='button'; b.className=cls; b.setAttribute(attr,v.k);
+    b.appendChild(imagem(v));
+    var pl=document.createElement('span'); pl.className='mvTutPlayC'; pl.innerHTML=PLAY;
+    b.appendChild(pl);
+    if(v.d){ var d=document.createElement('span'); d.className='mvTutDurC'; d.textContent=v.d; b.appendChild(d); }
+    return b;
+  }
+  function iframe(v){
+    var f=document.createElement('iframe');
+    f.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(v.id)+
+          '?rel=0&modestbranding=1&playsinline=1&autoplay=1';
+    f.title=v.t; f.allow='accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen';
+    f.setAttribute('allowfullscreen','');
+    return f;
+  }
+
+  /* ---------- o player embutido no fim de cada modulo ---------- */
+  function embutir(){
+    try{
+      MOD().forEach(function(m){
+        if(!m.sel) return;
+        var v=prontos(m)[0]; if(!v) return;
+        var alvo=document.querySelector(m.sel); if(!alvo) return;
+        if(alvo.querySelector(':scope > .mvTutBox')) return;      /* ja esta la */
+
+        var box=document.createElement('div'); box.className='mvTutBox';
+        var topo=document.createElement('div'); topo.className='mvTutBoxTopo';
+        var ico=document.createElement('span'); ico.className='mvTutBoxIco'; ico.innerHTML=PLAY;
+        var txt=document.createElement('span'); txt.className='mvTutBoxTxt';
+        var tit=document.createElement('b'); tit.className='mvTutBoxTit'; tit.textContent=v.t;
+        var sub=document.createElement('span'); sub.className='mvTutBoxSub';
+        sub.textContent='Veja como preencher esta tela' + (v.d ? ' · ' + v.d : '');
+        txt.appendChild(tit); txt.appendChild(sub);
+        topo.appendChild(ico); topo.appendChild(txt);
+        box.appendChild(topo);
+        box.appendChild(moldura(v,'mvTutQuadro','data-tutinline'));
+        alvo.appendChild(box);
+      });
+    }catch(e){}
+  }
+  function tocarNoLugar(botao,k){
+    var v=achar(k); if(!v||!botao) return;
+    var q=document.createElement('div'); q.className='mvTutQuadro';
+    q.appendChild(iframe(v));
+    botao.parentNode.replaceChild(q,botao);
+  }
+
+  /* ---------- a aba Tutoriais: a biblioteca ---------- */
   var cx=null, corpo=null;
   function montar(){
     if(cx) return;
@@ -2090,43 +2162,20 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     caixa.appendChild(x); caixa.appendChild(head); caixa.appendChild(corpo);
     cx.appendChild(caixa); document.body.appendChild(cx);
   }
-
-  /* uma capa por video. maxres so existe quando o dono subiu miniatura
-     propria; se nao existir, o YouTube devolve uma imagem de 120px de largura
-     - por isso o teste e pela LARGURA, nao pelo onerror (que nao dispara). */
-  function imagem(v){
-    var img=document.createElement('img');
-    img.loading='lazy'; img.decoding='async'; img.alt='';
-    img.addEventListener('load',function(){
-      if(img.naturalWidth<200 && img.src.indexOf('maxres')>-1) img.src=capa(v.id,'mqdefault');
-    });
-    img.addEventListener('error',function(){
-      if(img.src.indexOf('maxres')>-1) img.src=capa(v.id,'mqdefault');
-    });
-    img.src=capa(v.id,'maxresdefault');
-    return img;
-  }
-
   function cartao(v){
-    var b=document.createElement('button');
-    b.type='button'; b.className='mvTutCard'; b.setAttribute('data-tut',v.k);
-    var cap=document.createElement('span'); cap.className='mvTutCapa';
-    cap.appendChild(imagem(v));
-    var pl=document.createElement('span'); pl.className='mvTutPlayC'; pl.innerHTML=PLAY;
-    cap.appendChild(pl);
-    if(v.d){ var d=document.createElement('span'); d.className='mvTutDurC'; d.textContent=v.d; cap.appendChild(d); }
+    var b=moldura(v,'mvTutCapa','data-tutcapa');
+    var fora=document.createElement('button');
+    fora.type='button'; fora.className='mvTutCard'; fora.setAttribute('data-tut',v.k);
+    var span=document.createElement('span'); span.className='mvTutCapa';
+    while(b.firstChild) span.appendChild(b.firstChild);
     var nome=document.createElement('span'); nome.className='mvTutNome'; nome.textContent=v.t;
-    b.appendChild(cap); b.appendChild(nome);
-    return b;
+    fora.appendChild(span); fora.appendChild(nome);
+    return fora;
   }
-
   function lista(){
-    montar();
-    corpo.innerHTML='';
-    var vazio=true;
-    T().forEach(function(m){
-      var itens=(m.v||[]).filter(function(v){ return !!v.id; });
-      if(!itens.length) return;            /* modulo sem video nao e listado */
+    montar(); corpo.innerHTML=''; var vazio=true;
+    MOD().forEach(function(m){
+      var itens=prontos(m); if(!itens.length) return;
       vazio=false;
       var bloco=document.createElement('div'); bloco.className='mvTutMod';
       var tit=document.createElement('div'); tit.className='mvTutModTit'; tit.textContent=m.n;
@@ -2134,70 +2183,24 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       itens.forEach(function(v){ grade.appendChild(cartao(v)); });
       bloco.appendChild(tit); bloco.appendChild(grade); corpo.appendChild(bloco);
     });
-    if(vazio) corpo.innerHTML='<p class="mvTutVazio">Os tutoriais em vídeo estão sendo gravados. Em breve eles aparecem aqui, e também dentro de cada tela do painel.</p>';
+    if(vazio) corpo.innerHTML='<p class="mvTutVazio">Os tutoriais em vídeo estão sendo gravados. Em breve eles aparecem aqui, e também no fim de cada tela do painel.</p>';
   }
-
   function tocar(k){
     var v=achar(k); if(!v) return;
     montar();
-    corpo.innerHTML='<button type="button" class="mvTutVoltar" data-tutvoltar="1">‹ Todos os tutoriais</button>'+
-      '<div class="mvTutTit">'+String(v.t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];})+'</div>'+
-      '<div class="mvTutVideo"><iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(v.id)+
-        '?rel=0&amp;modestbranding=1&amp;playsinline=1" title="tutorial"'+
-        ' allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>';
-    abrirJanela();
+    var volta=document.createElement('button');
+    volta.type='button'; volta.className='mvTutVoltar'; volta.setAttribute('data-tutvoltar','1');
+    volta.textContent='‹ Todos os tutoriais';
+    var tit=document.createElement('div'); tit.className='mvTutTit'; tit.textContent=v.t;
+    var q=document.createElement('div'); q.className='mvTutVideo'; q.appendChild(iframe(v));
+    corpo.innerHTML='';
+    corpo.appendChild(volta); corpo.appendChild(tit); corpo.appendChild(q);
+    cx.classList.remove('escondido');
   }
-  function abrirJanela(){ montar(); cx.classList.remove('escondido'); }
   function fechar(){
     if(!cx) return;
     cx.classList.add('escondido');
     corpo.innerHTML='';   /* mata o iframe: sem isso o audio continua tocando */
-  }
-  function abrir(k){
-    try{
-      if(k){ tocar(k); return; }
-      lista(); abrirJanela();
-    }catch(e){}
-  }
-
-  /* ---------- onde cada video aparece dentro do painel ---------- */
-  var ONDE = [
-    {k:'parc-tour',        sel:'section[data-sec="visao"]',      pos:'inicio'},
-    {k:'parc-indicacoes',  sel:'section[data-sec="indicacoes"]', pos:'inicio'},
-    {k:'parc-comissoes',   sel:'section[data-sec="comissoes"]',  pos:'inicio'},
-    {k:'parc-saque',       sel:'section[data-sec="pagamentos"]', pos:'inicio'},
-    {k:'parc-pagamentos',  sel:'section[data-sec="pagamentos"]', pos:'inicio'},
-    {k:'parc-desempenho',  sel:'section[data-sec="desempenho"]', pos:'inicio'},
-    {k:'parc-links',       sel:'section[data-sec="divulgacao"]', pos:'inicio'},
-    {k:'parc-vik',         sel:'section[data-sec="mensagens"]',  pos:'inicio'},
-    {k:'parc-dados',       sel:'section[data-sec="dados"]',      pos:'inicio'}
-  ];
-
-  function chip(v){
-    var b=document.createElement('button');
-    b.type='button'; b.className='mvTutChip'; b.setAttribute('data-tut',v.k);
-    b.innerHTML=PLAY+'<span>Ver como faz</span>';
-    if(v.d){ var i=document.createElement('i'); i.textContent=v.d; b.appendChild(i); }
-    return b;
-  }
-  function injetar(){
-    try{
-      ONDE.forEach(function(r){
-        var v=achar(r.k); if(!v) return;
-        var alvo=document.querySelector(r.sel); if(!alvo) return;
-        var pai=(r.pos==='depois')?alvo.parentNode:alvo;
-        if(!pai) return;
-        var linha=pai.querySelector(':scope > .mvTutLinha');
-        if(!linha){
-          linha=document.createElement('div'); linha.className='mvTutLinha';
-          if(r.pos==='depois') alvo.parentNode.insertBefore(linha, alvo.nextSibling);
-          else if(r.pos==='fim') alvo.appendChild(linha);
-          else alvo.insertBefore(linha, alvo.firstChild);
-        }
-        if(linha.querySelector('[data-tut="'+r.k+'"]')) return;   /* ja esta la */
-        linha.appendChild(chip(v));
-      });
-    }catch(e){}
   }
 
   /* ---------- entradas do menu: so existem se houver video ---------- */
@@ -2211,22 +2214,29 @@ window.MOVIKI_TUTORIAIS = { modulos: [
 
   /* ---------- ligacoes ---------- */
   document.addEventListener('click',function(e){
-    var alvo=e.target && e.target.closest ? e.target.closest('[data-tut],[data-tutvoltar]') : null;
+    var alvo=e.target && e.target.closest
+      ? e.target.closest('[data-tutinline],[data-tut],[data-tutvoltar]') : null;
     if(alvo){
-      if(alvo.hasAttribute('data-tutvoltar')){ lista(); return; }
-      abrir(alvo.getAttribute('data-tut')); return;
+      if(alvo.hasAttribute('data-tutinline')){
+        tocarNoLugar(alvo, alvo.getAttribute('data-tutinline')); return;
+      }
+      if(alvo.hasAttribute('data-tutvoltar')){ lista(); cx.classList.remove('escondido'); return; }
+      try{ tocar(alvo.getAttribute('data-tut')); }catch(_){}
+      return;
     }
     clearTimeout(window.__tutT);
-    window.__tutT=setTimeout(injetar,250);   /* o painel redesenha depois de clique */
+    window.__tutT=setTimeout(embutir,250);   /* o painel redesenha depois de clique */
   },false);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') fechar(); });
 
-  function iniciar(){ entradas(); injetar(); setTimeout(function(){ entradas(); injetar(); },1400); }
+  function iniciar(){ entradas(); embutir(); setTimeout(function(){ entradas(); embutir(); },1400); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar);
   else iniciar();
 
-  window.abrirTutoriais=function(k){ abrir(k); };
-  window.mvTutInjetar=injetar;
+  window.abrirTutoriais=function(k){
+    try{ if(k){ tocar(k); return; } lista(); cx.classList.remove('escondido'); }catch(e){}
+  };
+  window.mvTutEmbutir=embutir;
 })();
 </script>
 
