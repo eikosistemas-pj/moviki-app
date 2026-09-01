@@ -1364,6 +1364,43 @@ body.naHome #btnSalvar{margin-top:14px;}
 .mvEscolha.ciano:has(input:checked){border-color:rgba(0,212,255,.55);background:rgba(0,212,255,.07);}
 .mvEscolha.ciano .mvEscolhaSelo{color:#00D4FF;background:rgba(0,212,255,.13);border-color:rgba(0,212,255,.38);}
 @media(prefers-reduced-motion:reduce){.mvEscolhaBox,.mvEscolhaBox svg,.mvEscolha{transition:none;}}
+
+/* ==========================================================================
+   CABECALHO LIMPO — 2026-09-01
+   Linha 1: menu (esquerda) · logo Moviki · Sair (direita).
+   Linha 2: SO o nome do negocio.
+   E-mail, selo do plano e o Vik sairam daqui e viraram o cartao da conta
+   dentro do menu suspenso. Regra: o topo mostra ONDE voce esta e como sair;
+   quem voce e fica a um toque de distancia, nao empilhado na tela.
+   ========================================================================== */
+#painel .appTopo{display:block;}
+#painel .appTopoLinha{display:flex;align-items:center;gap:11px;}
+#painel .appEspaco{flex:1 1 auto;min-width:8px;}
+/* a bolinha de mensagem nova agora mora no botao do menu */
+#painel .appMenu{position:relative;}
+/* a logo passa a aparecer em qualquer largura — sobra espaco de sobra agora */
+#painel .appLogo{display:block;width:34px;height:34px;}
+/* nome do negocio: linha propria, sem nada disputando espaco */
+#painel .appTit{display:block;width:100%;margin:7px 2px 0;font-size:16px;font-weight:700;
+  line-height:1.25;letter-spacing:-.2px;color:var(--mv-txt);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+@media(min-width:560px){#painel .appTit{font-size:17px;}}
+
+/* cartao da conta dentro do menu suspenso */
+.drawerConta{display:flex;align-items:center;gap:11px;margin:0 2px 4px;padding:12px;
+  background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);}
+.drawerConta .dcLogo{width:42px;height:42px;flex:0 0 auto;border-radius:var(--mv-r-sm);
+  object-fit:contain;background:var(--mv-campo);padding:4px;}
+.drawerConta .dcTxt{min-width:0;flex:1 1 auto;}
+.drawerConta .dcNome{font-size:15px;font-weight:700;line-height:1.2;color:var(--mv-txt);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.drawerConta .dcMail{font-size:12px;color:var(--mv-txt-3);line-height:1.35;margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.drawerConta #seloDrawer{margin-top:6px;}
+/* CONSERTO: `.drawer>button{width:100%}` esticava o X de fechar numa faixa
+   invisivel de ponta a ponta por cima do titulo "Menu" — qualquer toque ali em
+   cima fechava o menu sem querer. Volta a ser um botao redondo no canto. */
+#drawer .drawerX{width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;}
 </style>
 </head>
 <body>
@@ -1400,10 +1437,18 @@ body.naHome #btnSalvar{margin-top:14px;}
       <nav class="drawer" id="drawer" aria-label="Menu">
         <button type="button" class="drawerX" onclick="fecharMenu()" aria-label="Fechar">✕</button>
         <div class="drawerTit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Menu</div>
+        <!-- Cartao da conta: o que saiu do cabecalho (nome, e-mail e plano). -->
+        <div class="drawerConta">
+          <img class="dcLogo" id="drawerLogo" src="favicon512.png" alt="" onerror="this.style.visibility='hidden'">
+          <div class="dcTxt">
+            <div class="dcNome" id="drawerNome">Meu negócio</div>
+            <div class="dcMail" id="oExEmail"></div>
+            <div id="seloDrawer" class="seloOuro" style="display:none">Cliente Enterprise</div>
+          </div>
+        </div>
         <div class="drawerSec">Minha conta</div>
         <button type="button" onclick="fecharMenu();irSecao('perfil')"><img class="diImg" src="icones/perfil.png" alt="" onerror="this.replaceWith(document.createTextNode('👤'))"> Perfil do negócio</button>
         <button type="button" onclick="fecharMenu();abrirPlano()"><img class="diImg" src="icones/plano.png" alt="" onerror="this.replaceWith(document.createTextNode('💳'))"> Meu Plano</button>
-        <div id="seloDrawer" class="seloOuro" style="display:none">Cliente Enterprise</div>
         <button type="button" onclick="fecharMenu();verMinhaPagina()"><img class="diImg" src="icones/pagina.png" alt="" onerror="this.replaceWith(document.createTextNode('🌐'))"> Minha Página</button>
         <button type="button" id="drawerPontos" style="display:none" onclick="fecharMenu();abrirPontos()"><img class="diImg" src="icones/multipontos.png" alt="" onerror="this.replaceWith(document.createTextNode('📍'))"> Meus pontos</button>
         <button type="button" onclick="fecharMenu();abrirMensagens()"><svg class="diImg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.6 9.6 0 0 1-2.9-.4L3 21l1.6-4.5a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/></svg> Falar com o Vik<span class="msgBad escondido" id="msgBadMenu">1</span></button>
@@ -1670,15 +1715,17 @@ body.naHome #btnSalvar{margin-top:14px;}
         </div>
       </div>
 
+      <!-- Cabecalho limpo 2026-09-01: linha 1 = menu, logo Moviki e Sair.
+           Linha 2 = SO o nome do negocio. Email, plano e o Vik foram pro menu
+           suspenso. A bolinha de mensagem nova mora agora no botao do menu. -->
       <div class="appTopo">
-        <button type="button" class="appMenu" onclick="abrirMenu()" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-        <img src="favicon512.png" class="appLogo" alt="Moviki" onerror="this.style.visibility='hidden'">
-        <div class="appTitWrap">
-          <div class="appTit" id="appTit">Painel do Negócio</div>
-          <div class="appLinha2"><span class="appSub"><b id="oExEmail"></b></span><span id="seloTopo" class="seloOuro" style="display:none">Enterprise</span></div>
+        <div class="appTopoLinha">
+          <button type="button" class="appMenu" onclick="abrirMenu()" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span class="msgPt escondido" id="msgPonto"></span></button>
+          <img src="favicon512.png" class="appLogo" alt="Moviki" onerror="this.style.visibility='hidden'">
+          <span class="appEspaco"></span>
+          <button type="button" class="appSair" onclick="sair()">Sair</button>
         </div>
-        <button type="button" class="appMsg" id="btnMsgTopo" onclick="abrirMensagens()" aria-label="Mensagens" title="Mensagens"><img class="vikTopo" src="/icones/vik-avatar-headset-96.png" alt="" decoding="async"><span class="msgPt escondido" id="msgPonto"></span></button>
-        <button type="button" class="appSair" onclick="sair()">Sair</button>
+        <div class="appTit" id="appTit">Painel do Negócio</div>
       </div>
 
 
@@ -2582,7 +2629,7 @@ body.naHome #btnSalvar{margin-top:14px;}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-01-escolhas';
+  window.MOVIKI_VERSAO='2026-09-01-topo-limpo';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -4720,6 +4767,11 @@ body.naHome #btnSalvar{margin-top:14px;}
     var nome=(d.nome||'').trim();
     _txt('mvOlaTit', nome ? ('Olá, '+nome+'! 👋') : 'Olá! 👋');
     _txt('mvSideNome', nome || 'Meu negócio');
+    // cartao da conta no menu suspenso (2026-09-01): recebeu o nome, o e-mail
+    // e o selo do plano que saíram do cabeçalho.
+    _txt('drawerNome', nome || 'Meu negócio');
+    var _dl=$('drawerLogo');
+    if(_dl && d.markerLogo && /^https:\/\/(firebasestorage\.googleapis\.com|i\.ibb\.co)\//.test(d.markerLogo)) _dl.src=d.markerLogo;
     var aberto = d.status==='aberto';
     _selo('mvSideSelo', aberto, aberto?'Aberto agora':'Fechado');
 
