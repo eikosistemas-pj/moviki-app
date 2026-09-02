@@ -931,7 +931,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-02-tutrava';
+  window.MOVIKI_VERSAO = '2026-09-02-tutrava-8';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2074,7 +2074,12 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .mvAvisoBarra{flex-basis:100%;height:7px;border-radius:99px;background:rgba(255,255,255,.10);overflow:hidden}
 .mvAvisoBarra i{display:block;height:100%;border-radius:99px;background:#ff8a00;transition:width .4s}
 .mvTravado{position:relative}
-.mvTravado > *:not(.mvCadeado){filter:blur(3px);opacity:.35;pointer-events:none;user-select:none}
+.mvTravado > *:not(.mvCadeado):not(.mvTutBox){filter:blur(3px);opacity:.35;pointer-events:none;user-select:none}
+/* A AULA DESTA TELA FICA POR CIMA DO CADEADO, nitida e clicavel.
+   Sem isto acontece o absurdo: a aula "Seus dois links" mora dentro da
+   Divulgacao, que e justamente a secao trancada — o parceiro veria a aula
+   que precisa assistir borrada atras do cadeado que ela mesma destrava. */
+.mvTravado > .mvTutBox{position:relative;z-index:6;filter:none;opacity:1;pointer-events:auto}
 /* A secao Divulgacao e comprida. Se o recado ficasse CENTRALIZADO nela, ele
    cairia no meio de uma tela e meia de rolagem e o parceiro abriria a aba sem
    ver explicacao nenhuma. Por isso ele fica colado no topo, no primeiro
@@ -2109,7 +2114,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   { n:'Meus dados', sel:'section[data-sec="dados"]', v:[
     { k:'mod-parc-dados',      t:'Seus dados e a sua chave Pix',                 d:'0:23', id:'mmXpzkWlm0A' } ]},
   { n:'Falar com o Vik', sel:'section[data-sec="mensagens"]', v:[
-    { k:'mod-parc-vik',        t:'Tirar dúvida com o Vik',                       d:'', id:'' } ]}
+    { k:'mod-parc-vik',        t:'Tirar dúvida com o Vik',                       d:'0:23', id:'YP6CTBUNbuQ' } ]}
 ]};
 </script>
 <script>
