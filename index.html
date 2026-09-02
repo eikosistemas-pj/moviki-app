@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://*.google-analytics.com; connect-src 'self' https://*.googleapis.com https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://www.youtube-nocookie.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://*.google-analytics.com; connect-src 'self' https://*.googleapis.com https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://www.youtube-nocookie.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 
@@ -2640,7 +2640,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-02-tutrava-8';
+  window.MOVIKI_VERSAO='2026-09-02-boasvindas4c';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -4676,6 +4676,39 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
       aplicarPlanoNasAbas();
       mostrarBannerTrial();
       carregarParceiroPainel(user.uid);
+
+      /* ---- 02/09/2026: boas-vindas em video ----
+         O bloco de tutoriais e um script classico isolado, que de proposito
+         nao fala com o Firebase. Quem le e grava o progresso e aqui.
+         Guarda em negocios/{uid}/estado/boasvindas - subcolecao que as regras
+         ja liberam pro dono (match /{documento=**}), entao NAO precisa de
+         regra nova. */
+      try{
+        const _bvRef = doc(db,'negocios',user.uid,'estado','boasvindas');
+        let _bvVistas = [], _bvEm = '';
+        try{
+          const _bvS = await getDoc(_bvRef);
+          if(_bvS.exists()){
+            const _d = _bvS.data();
+            if(Array.isArray(_d.vistas)) _bvVistas = _d.vistas.slice();
+            _bvEm = _d.em || '';
+          }
+        }catch(_){}
+        window.__mvLojistaTut = {
+          uid: user.uid,
+          nome: (el('nome') && el('nome').value) || '',
+          vistas: _bvVistas,
+          em: _bvEm,
+          salvar: async function(lista, fim){
+            try{
+              const d = { vistas: lista };
+              if(fim) d.em = new Date().toISOString();
+              await setDoc(_bvRef, d, { merge:true });
+            }catch(_){}
+          }
+        };
+        window.dispatchEvent(new Event('mv-lojista-pronto'));
+      }catch(_){}
       try{
         var _qs=new URLSearchParams(location.search), _pl=_qs.get('plano'), _pr=_qs.get('periodo')||'mensal';
         if(_pl==='enterprise' && !ehEnterprisePainel()){ abrirPlano(); setTimeout(function(){ try{selecionarPlano('enterprise','mensal',null);}catch(_){}} ,150); }
@@ -5438,6 +5471,51 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .mvTutTit{font-size:16px;font-weight:700;margin:0 0 4px}
 .mvTutVazio{color:#7f95b3;font-size:14px;line-height:1.5}
 
+/* --- A TELA DE BOAS-VINDAS (as 3 aulas de comeco, em sequencia) ---
+   Estilo proprio, sem depender de nenhuma outra classe do painel. Foi assim
+   que o mesmo bloco quebrou no parceiro.html em 02/09: reaproveitava classes
+   de janela que la nao existiam e a tela nascia solta no rodape. */
+.mvAu{position:fixed;inset:0;z-index:300;background:rgba(3,8,16,.88);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+  display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow:auto}
+.mvAu[hidden]{display:none!important}
+.mvAuCx{width:100%;max-width:1060px;background:#0a1524;border:1px solid var(--card-borda,#1c3457);
+  border-radius:18px;padding:18px 18px 20px;position:relative;margin:auto}
+.mvAuX{position:absolute;top:13px;right:13px;width:34px;height:34px;border-radius:10px;
+  border:1px solid var(--card-borda,#1c3457);background:#0d1c30;color:#9fb4d0;font-size:16px;
+  line-height:1;cursor:pointer;font-family:inherit}
+.mvAuX:hover{color:#fff;border-color:var(--ciano,#00D4FF)}
+.mvAuTopo{margin:0 44px 14px 2px}
+.mvAuH{display:block;font-size:19px;font-weight:700;line-height:1.25}
+.mvAuSub{display:block;font-size:13.5px;color:#9fb4d0;margin-top:5px;line-height:1.5;max-width:640px}
+.mvAuProg{display:flex;align-items:center;gap:11px;margin:12px 2px 16px}
+.mvAuBarra{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.09);overflow:hidden}
+.mvAuBarra i{display:block;height:100%;width:0;border-radius:99px;background:#22c55e;transition:width .45s}
+.mvAuCont{flex:none;font-size:13px;font-weight:700;color:#9fb4d0;white-space:nowrap}
+.mvAuGrade{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:900px){.mvAuGrade{grid-template-columns:1.45fr 1fr;align-items:start}}
+.mvAuPalcoTit{font-size:15.5px;font-weight:700;margin:10px 2px 0;line-height:1.3}
+.mvAuPalcoSub{font-size:12.5px;color:#7f95b3;margin:3px 2px 0}
+.mvAuLista{display:flex;flex-direction:column;gap:8px}
+.mvAuIt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;cursor:pointer;
+  padding:10px 12px;border-radius:12px;border:1px solid var(--card-borda,#1c3457);
+  background:#0c1a2c;color:#e6eefb;font-family:inherit}
+.mvAuIt:hover{border-color:var(--ciano,#00D4FF)}
+.mvAuIt.tocando{border-color:var(--ciano,#00D4FF);background:rgba(0,212,255,.10)}
+.mvAuIt.feita .mvAuNome{color:#9fb4d0}
+.mvAuNum{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  font-size:13px;font-weight:700;background:rgba(255,255,255,.07);color:#9fb4d0;
+  border:1px solid var(--card-borda,#1c3457)}
+.mvAuNum.ok{background:#22c55e;color:#04210f;border-color:transparent}
+.mvAuNum.ok svg{width:14px;height:14px}
+.mvAuTxt{flex:1;min-width:0}
+.mvAuNome{display:block;font-size:13.8px;font-weight:600;line-height:1.32}
+.mvAuMin{display:block;font-size:11.5px;color:#7f95b3;margin-top:2px}
+.mvAuPe{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:16px 2px 0}
+.mvAuDepois{background:transparent;border:0;color:#7f95b3;font-family:inherit;font-size:13px;cursor:pointer;padding:6px 0;text-decoration:underline}
+.mvAuDepois:hover{color:#c9d6e6}
+.mvAuFim{flex:1;min-width:200px;padding:12px 14px;border-radius:12px;border:1px solid rgba(34,197,94,.45);
+  background:rgba(34,197,94,.10);font-size:13.5px;color:#bff3d0;line-height:1.45}
+
 /* --- trava das aulas do parceiro (so aparece no parceiro.html) --- */
 @keyframes mvPulsa{0%,100%{box-shadow:0 0 0 0 rgba(255,138,0,.55)}60%{box-shadow:0 0 0 12px rgba(255,138,0,0)}}
 .mvAviso{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 18px;padding:15px 17px;border-radius:14px;
@@ -5471,8 +5549,13 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
    Mapa e roteiros: claude/moviki-videoaulas-por-modulo.md
    ======================================================================= */
 window.MOVIKI_TUTORIAIS = { modulos: [
+  /* A abertura. Nao e aula de tela nenhuma: e o recado de boas-vindas, com
+     musica. Fica sempre em primeiro, e e a primeira da sequencia de comeco. */
+  { n:'Boas-vindas', sel:'', v:[
+    { k:'mod-boasvindas', t:'Bem-vindo ao Moviki',                              d:'1:46', id:'' } ]},
+
   { n:'Primeiros passos', sel:'', v:[
-    { k:'mod-inicio',     t:'Criar sua conta e conhecer o painel',                 d:'', id:'' } ]},
+    { k:'mod-inicio',     t:'Conhecer o painel: por onde começar',                 d:'', id:'' } ]},
 
   /* COMPLETO: os tres blocos da tela num video so. */
   { n:'Perfil e link', sel:'#tab-perfil', v:[
@@ -5571,7 +5654,6 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   }
   var seq=0;
   function vigiar(f,v){
-    if(typeof window.mvTutAoVer!=='function') return;   /* ninguem esta contando */
     carregarYT(function(){
       try{
         var p=new YT.Player(f.id,{ events:{ onStateChange:function(e){
@@ -5580,7 +5662,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
           f.__t=setInterval(function(){
             try{
               var d=p.getDuration(), t=p.getCurrentTime();
-              if(d>0 && t/d>=0.9){ clearInterval(f.__t); window.mvTutAoVer(v.k); }
+              if(d>0 && t/d>=0.9){ clearInterval(f.__t); marcar(v.k); }
             }catch(_){}
           },1000);
         } } });
@@ -5729,9 +5811,12 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   /* ---------- ligacoes ---------- */
   document.addEventListener('click',function(e){
     var alvo=e.target && e.target.closest
-      ? e.target.closest('[data-tutinline],[data-tut],[data-tutvoltar],[data-tutabrir]') : null;
+      ? e.target.closest('[data-tutinline],[data-tut],[data-tutvoltar],[data-tutabrir],[data-bvabrir],[data-auit],[data-auplay]') : null;
     if(alvo){
       if(alvo.hasAttribute('data-tutabrir')){ try{ window.abrirTutoriais(); }catch(_){} return; }
+      if(alvo.hasAttribute('data-bvabrir')){ try{ abrirAulas(); }catch(_){} return; }
+      if(alvo.hasAttribute('data-auplay')){ try{ porNoPalco(achar(alvo.getAttribute('data-auplay')), true); }catch(_){} return; }
+      if(alvo.hasAttribute('data-auit')){ try{ porNoPalco(achar(alvo.getAttribute('data-auit')), true); }catch(_){} return; }
       if(alvo.hasAttribute('data-tutinline')){
         tocarNoLugar(alvo, alvo.getAttribute('data-tutinline')); return;
       }
@@ -5761,7 +5846,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       try{ window[n]=novo; }catch(e){}
     });
   }
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape') fechar(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ fecharAulas(); fechar(); } });
 
   function iniciar(){
     entradas(); embutir(); amarrar(); try{ trava(); }catch(e){}
@@ -5852,6 +5937,206 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     /* o painel redesenha as secoes; repinta depois de qualquer clique */
     document.addEventListener('click',function(){ setTimeout(pintar,320); },false);
   }
+
+
+  /* =====================================================================
+     BOAS-VINDAS EM VIDEO — as tres aulas de comeco, em sequencia.
+     Pedido do Paulo em 02/09: "assim que o lojista entra, ele ja se situa".
+
+     NAO TRANCA NADA do painel, de proposito: o lojista e cliente pagante e
+     acabou de entrar - prender a tela dele na primeira visita e a pior
+     primeira impressao possivel, e atrasa justamente o que interessa (o
+     negocio no ar). O que existe e INSISTENCIA: a tela abre sozinha a cada
+     entrada enquanto as tres nao forem vistas, e uma faixa laranja fica no
+     Inicio ate acabar. Para trancar de verdade, e outra conversa - e outra
+     linha de codigo aqui.
+
+     Progresso em negocios/{uid}/estado/boasvindas. NAO precisa de regra nova:
+     o bloco match /{documento=**} de negocios/{uid} ja deixa o dono escrever
+     qualquer subdocumento. Nada pessoal e guardado ali - so quais aulas
+     foram vistas - e essa subcolecao e de leitura publica.
+     ===================================================================== */
+  var BOASVINDAS=['mod-boasvindas','mod-inicio','mod-desempenho','mod-diaadia'];
+  var ABRIR_SEMPRE=true;    /* true: reabre a cada entrada ate concluir */
+
+  var au=null, auPal=null, auLista=null, auPTit=null, auPSub=null, auCont=null, auBar=null, auFim=null, auH=null;
+  var auTocando=null, LOCAIS=[];
+  var VISTO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>';
+
+  /* so as tres de boas-vindas, e so as que ja tem video no ar */
+  function bvAulas(){
+    var r=[];
+    BOASVINDAS.forEach(function(k){ var v=achar(k); if(v) r.push(v); });
+    return r;
+  }
+  function bvPronto(){ return bvAulas().length===BOASVINDAS.length; }
+  function bvFeitas(){
+    var P=window.__mvLojistaTut;
+    var r=(P && P.vistas) ? P.vistas.slice() : [];
+    LOCAIS.forEach(function(k){ if(r.indexOf(k)<0) r.push(k); });
+    return r.filter(function(k){ return BOASVINDAS.indexOf(k)>-1; });
+  }
+  function bvConcluiu(){
+    var P=window.__mvLojistaTut;
+    if(P && P.em) return true;
+    return bvPronto() && bvFeitas().length>=BOASVINDAS.length;
+  }
+  /* chamada pelo player quando o YouTube confirma 90% */
+  function marcar(k){
+    if(BOASVINDAS.indexOf(k)>-1){
+      if(LOCAIS.indexOf(k)<0) LOCAIS.push(k);
+      var P=window.__mvLojistaTut;
+      if(P){
+        var l=bvFeitas(), fim=l.length>=BOASVINDAS.length;
+        P.vistas=l.slice();
+        if(fim && !P.em) P.em=new Date().toISOString();
+        try{ P.salvar(l, fim); }catch(e){}
+      }
+      pintarAulas(); faixa();
+      if(au && !au.hidden && auTocando===k){
+        var p=bvProxima();
+        if(p && p.k!==k) setTimeout(function(){ if(au && !au.hidden && auTocando===k) porNoPalco(p,false); },1100);
+      }
+    }
+    try{ if(typeof window.mvTutAoVer==='function') window.mvTutAoVer(k); }catch(e){}
+  }
+  function bvProxima(){
+    var f=bvFeitas(), t=bvAulas();
+    for(var i=0;i<t.length;i++){ if(f.indexOf(t[i].k)===-1) return t[i]; }
+    return t[0]||null;
+  }
+
+  function montarAulas(){
+    if(au) return;
+    au=document.createElement('div'); au.className='mvAu'; au.id='mvBoasVindas'; au.hidden=true;
+    au.addEventListener('click',function(e){ if(e.target===au) fecharAulas(); });
+    var cxa=document.createElement('div'); cxa.className='mvAuCx';
+    var x=document.createElement('button');
+    x.type='button'; x.className='mvAuX'; x.setAttribute('aria-label','Fechar'); x.textContent='✕';
+    x.addEventListener('click',fecharAulas);
+    var topo=document.createElement('div'); topo.className='mvAuTopo';
+    auH=document.createElement('b'); auH.className='mvAuH'; auH.textContent='Bem-vindo ao Moviki!';
+    var sub=document.createElement('span'); sub.className='mvAuSub';
+    sub.textContent='Um recado rápido de boas-vindas e três aulas curtas pra você se situar: '+
+      'o que tem em cada canto do painel, como ler os seus números, e o que fazer todo dia. '+
+      'Menos de cinco minutos no total.';
+    topo.appendChild(auH); topo.appendChild(sub);
+    var prog=document.createElement('div'); prog.className='mvAuProg';
+    prog.innerHTML='<span class="mvAuBarra"><i></i></span><span class="mvAuCont"></span>';
+    auBar=prog.querySelector('i'); auCont=prog.querySelector('.mvAuCont');
+    var grade=document.createElement('div'); grade.className='mvAuGrade';
+    var esq=document.createElement('div');
+    auPal=document.createElement('div'); auPal.className='mvTutVideo';
+    auPTit=document.createElement('div'); auPTit.className='mvAuPalcoTit';
+    auPSub=document.createElement('div'); auPSub.className='mvAuPalcoSub';
+    esq.appendChild(auPal); esq.appendChild(auPTit); esq.appendChild(auPSub);
+    auLista=document.createElement('div'); auLista.className='mvAuLista';
+    grade.appendChild(esq); grade.appendChild(auLista);
+    var pe=document.createElement('div'); pe.className='mvAuPe';
+    auFim=document.createElement('div'); auFim.className='mvAuFim'; auFim.hidden=true;
+    auFim.textContent='Pronto! Agora você conhece o painel. Bom trabalho.';
+    var depois=document.createElement('button');
+    depois.type='button'; depois.className='mvAuDepois'; depois.textContent='Ver depois';
+    depois.addEventListener('click',fecharAulas);
+    pe.appendChild(auFim); pe.appendChild(depois);
+    cxa.appendChild(x); cxa.appendChild(topo); cxa.appendChild(prog);
+    cxa.appendChild(grade); cxa.appendChild(pe);
+    au.appendChild(cxa); document.body.appendChild(au);
+  }
+  function limparPalco(){
+    if(!auPal) return;
+    try{ var fr=auPal.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
+    auPal.innerHTML=''; auTocando=null;
+  }
+  function porNoPalco(v, tocarJa){
+    if(!v) return;
+    limparPalco(); pararTodos();
+    auTocando=v.k;
+    if(tocarJa) auPal.appendChild(iframe(v));
+    else{
+      var bt=moldura(v,'mvTutQuadro','data-auplay');
+      bt.style.position='absolute'; bt.style.top='0'; bt.style.left='0';
+      bt.style.width='100%'; bt.style.height='100%'; bt.style.paddingTop='0';
+      auPal.appendChild(bt);
+    }
+    auPTit.textContent=v.t;
+    auPSub.textContent = v.d ? ('Duração ' + v.d) : '';
+    pintarAulas();
+  }
+  function pintarAulas(){
+    if(!au) return;
+    var t=bvAulas(), f=bvFeitas();
+    if(auH){
+      var n=(window.__mvLojistaTut && window.__mvLojistaTut.nome) || '';
+      auH.textContent = n ? ('Bem-vindo ao Moviki, ' + n + '!') : 'Bem-vindo ao Moviki!';
+    }
+    if(auCont) auCont.textContent = f.length + ' de ' + t.length;
+    if(auBar) auBar.style.width = t.length ? Math.round(f.length/t.length*100)+'%' : '0%';
+    if(auFim) auFim.hidden = !(t.length && f.length>=t.length);
+    if(!auLista) return;
+    auLista.innerHTML='';
+    t.forEach(function(v,i){
+      var ok=f.indexOf(v.k)>-1;
+      var bt=document.createElement('button');
+      bt.type='button';
+      bt.className='mvAuIt'+(ok?' feita':'')+(auTocando===v.k?' tocando':'');
+      bt.setAttribute('data-auit',v.k);
+      var nu=document.createElement('span');
+      nu.className='mvAuNum'+(ok?' ok':'');
+      nu.innerHTML = ok ? VISTO : String(i+1);
+      var tx=document.createElement('span'); tx.className='mvAuTxt';
+      var nome=document.createElement('span'); nome.className='mvAuNome'; nome.textContent=v.t;
+      var min=document.createElement('span'); min.className='mvAuMin';
+      min.textContent=(ok?'Assistida':(i===0?'Comece por aqui':'Aula '+i))+(v.d?' · '+v.d:'');
+      tx.appendChild(nome); tx.appendChild(min);
+      bt.appendChild(nu); bt.appendChild(tx);
+      auLista.appendChild(bt);
+    });
+  }
+  function abrirAulas(k){
+    if(!bvPronto()) return;
+    montarAulas(); pararTodos();
+    au.hidden=false; document.body.style.overflow='hidden';
+    porNoPalco(k ? achar(k) : bvProxima(), !!k);
+    pintarAulas();
+  }
+  function fecharAulas(){
+    if(!au || au.hidden) return;
+    limparPalco(); au.hidden=true; document.body.style.overflow='';
+    pintarAulas(); faixa();
+  }
+  window.abrirBoasVindas=function(){ try{ abrirAulas(); }catch(e){} };
+
+  /* ---- a faixa laranja no Inicio, ate concluir ---- */
+  function faixa(){
+    try{
+      var velhas=document.querySelectorAll('.mvAviso');
+      for(var i=0;i<velhas.length;i++) velhas[i].remove();
+      if(!bvPronto() || bvConcluiu() || !window.__mvLojistaTut) return;
+      var alvo=document.querySelector('.mvMapaCard'); if(!alvo) return;
+      var f=bvFeitas(), t=bvAulas(), falta=t.length-f.length;
+      var a=document.createElement('div');
+      a.className='mvAviso';
+      a.innerHTML=
+        '<span class="mvAvisoIco"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+
+        '<rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg></span>'+
+        '<span class="mvAvisoTxt"><b class="mvAvisoTit">Comece por aqui: boas-vindas e '+(t.length-1)+' aulas curtas</b>'+
+        '<span class="mvAvisoSub">'+(falta===t.length?'São menos de cinco minutos, e depois o painel inteiro faz sentido.':'Falta'+(falta>1?'m ':' ')+falta+'. Continue de onde parou.')+'</span></span>'+
+        '<button type="button" class="mvAvisoBtn" data-bvabrir="1">'+(falta===t.length?'Ver as aulas':'Continuar')+'</button>'+
+        '<span class="mvAvisoBarra"><i style="width:'+Math.round(f.length/t.length*100)+'%"></i></span>';
+      alvo.parentNode.insertBefore(a, alvo);
+    }catch(e){}
+  }
+  window.mvBvFaixa=faixa;
+
+  window.addEventListener('mv-lojista-pronto',function(){
+    try{
+      faixa();
+      if(!bvPronto() || bvConcluiu()) return;
+      if(!ABRIR_SEMPRE && window.__mvLojistaTut && (window.__mvLojistaTut.vistas||[]).length) return;
+      setTimeout(function(){ if(!bvConcluiu()) abrirAulas(); },2200);
+    }catch(e){}
+  });
 
   window.abrirTutoriais=function(k){
     try{ if(k){ tocar(k); return; } lista(); cx.classList.remove('escondido'); }catch(e){}
