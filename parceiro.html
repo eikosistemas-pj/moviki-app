@@ -931,7 +931,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-02-tutrava-8';
+  window.MOVIKI_VERSAO = '2026-09-02-aulas';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2058,6 +2058,52 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .mvTutTit{font-size:16px;font-weight:700;margin:0 0 4px}
 .mvTutVazio{color:#7f95b3;font-size:14px;line-height:1.5}
 
+/* --- A TELA DE AULAS (so no painel do parceiro) ---
+   Tudo com estilo proprio, de proposito. O parceiro.html NAO tem as classes
+   de janela do painel do lojista (.modalPlano / .mpCaixa / .escondido).
+   O bloco antigo reaproveitava aquelas classes, entao aqui a janela nascia
+   solta no fim da pagina, sem cobrir nada e sem esconder: era exatamente
+   por isso que o botao laranja parecia nao fazer nada. */
+.mvAu{position:fixed;inset:0;z-index:300;background:rgba(3,8,16,.88);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+  display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow:auto}
+.mvAu[hidden]{display:none!important}
+.mvAuCx{width:100%;max-width:1060px;background:#0a1524;border:1px solid var(--card-borda,#1c3457);
+  border-radius:18px;padding:18px 18px 20px;position:relative;margin:auto}
+.mvAuX{position:absolute;top:13px;right:13px;width:34px;height:34px;border-radius:10px;
+  border:1px solid var(--card-borda,#1c3457);background:#0d1c30;color:#9fb4d0;font-size:16px;
+  line-height:1;cursor:pointer;font-family:inherit}
+.mvAuX:hover{color:#fff;border-color:var(--ciano,#00D4FF)}
+.mvAuTopo{margin:0 44px 14px 2px}
+.mvAuH{display:block;font-size:18px;font-weight:700;line-height:1.25}
+.mvAuSub{display:block;font-size:13px;color:#7f95b3;margin-top:3px;line-height:1.45}
+.mvAuProg{display:flex;align-items:center;gap:11px;margin:12px 2px 16px}
+.mvAuBarra{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.09);overflow:hidden}
+.mvAuBarra i{display:block;height:100%;width:0;border-radius:99px;background:#22c55e;transition:width .45s}
+.mvAuCont{flex:none;font-size:13px;font-weight:700;color:#9fb4d0;white-space:nowrap}
+.mvAuGrade{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:900px){.mvAuGrade{grid-template-columns:1.45fr 1fr;align-items:start}}
+.mvAuPalcoTit{font-size:15.5px;font-weight:700;margin:10px 2px 0;line-height:1.3}
+.mvAuPalcoSub{font-size:12.5px;color:#7f95b3;margin:3px 2px 0}
+.mvAuLista{display:flex;flex-direction:column;gap:8px;max-height:none}
+@media(min-width:900px){.mvAuLista{max-height:62vh;overflow:auto;padding-right:4px}}
+.mvAuIt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;cursor:pointer;
+  padding:10px 12px;border-radius:12px;border:1px solid var(--card-borda,#1c3457);
+  background:#0c1a2c;color:#e6eefb;font-family:inherit}
+.mvAuIt:hover{border-color:var(--ciano,#00D4FF)}
+.mvAuIt.tocando{border-color:var(--ciano,#00D4FF);background:rgba(0,212,255,.10)}
+.mvAuIt.feita .mvAuNome{color:#9fb4d0}
+.mvAuNum{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  font-size:13px;font-weight:700;background:rgba(255,255,255,.07);color:#9fb4d0;
+  border:1px solid var(--card-borda,#1c3457)}
+.mvAuNum.ok{background:#22c55e;color:#04210f;border-color:transparent}
+.mvAuNum.ok svg{width:14px;height:14px}
+.mvAuTxt{flex:1;min-width:0}
+.mvAuNome{display:block;font-size:13.8px;font-weight:600;line-height:1.32}
+.mvAuMin{display:block;font-size:11.5px;color:#7f95b3;margin-top:2px}
+.mvAuFim{margin:14px 2px 0;padding:12px 14px;border-radius:12px;border:1px solid rgba(34,197,94,.45);
+  background:rgba(34,197,94,.10);font-size:13.5px;color:#bff3d0;line-height:1.45}
+.mvAuVazio{color:#7f95b3;font-size:14px;line-height:1.5;margin:0}
+
 /* --- trava das aulas do parceiro (so aparece no parceiro.html) --- */
 @keyframes mvPulsa{0%,100%{box-shadow:0 0 0 0 rgba(255,138,0,.55)}60%{box-shadow:0 0 0 12px rgba(255,138,0,0)}}
 .mvAviso{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 18px;padding:15px 17px;border-radius:14px;
@@ -2176,7 +2222,6 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   }
   var seq=0;
   function vigiar(f,v){
-    if(typeof window.mvTutAoVer!=='function') return;   /* ninguem esta contando */
     carregarYT(function(){
       try{
         var p=new YT.Player(f.id,{ events:{ onStateChange:function(e){
@@ -2185,7 +2230,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
           f.__t=setInterval(function(){
             try{
               var d=p.getDuration(), t=p.getCurrentTime();
-              if(d>0 && t/d>=0.9){ clearInterval(f.__t); window.mvTutAoVer(v.k); }
+              if(d>0 && t/d>=0.9){ clearInterval(f.__t); marcar(v.k); }
             }catch(_){}
           },1000);
         } } });
@@ -2255,71 +2300,145 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     botao.parentNode.replaceChild(q,botao);
   }
 
-  /* ---------- a aba Tutoriais: a biblioteca ---------- */
-  var cx=null, corpo=null;
-  function montar(){
-    if(cx) return;
-    cx=document.createElement('div');
-    cx.id='modalTut'; cx.className='modalPlano escondido';
-    cx.addEventListener('click',function(e){ if(e.target===cx) fechar(); });
-    var caixa=document.createElement('div');
-    caixa.className='mpCaixa'; caixa.style.maxWidth='760px';
+  /* ---------- A TELA DE AULAS ----------
+     Uma janela so: o video em cima (ou do lado, no computador) e as oito
+     aulas em sequencia ao lado. Cada aula que chega aos 90% ganha um visto
+     VERDE e o contador anda. Quando uma acaba, a proxima ja fica no palco
+     esperando um toque - nao toca sozinha de proposito, porque navegador
+     bloqueia audio sem gesto do usuario e ficaria parecendo defeito.
+
+     Estilo proprio (.mvAu*): ver o comentario na folha de estilo. Reusar as
+     classes de janela do painel do lojista aqui foi o defeito do botao
+     laranja - elas nao existem neste arquivo. */
+  var au=null, auPal=null, auLista=null, auPTit=null, auPSub=null, auCont=null, auBar=null, auFim=null;
+  var auTocando=null;          /* chave da aula que esta no palco */
+  var LOCAIS=[];               /* o que foi assistido nesta sessao */
+
+  var VISTO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>';
+
+  function todas(){ var r=[]; MOD().forEach(function(m){ prontos(m).forEach(function(v){ r.push(v); }); }); return r; }
+  function feitas(){
+    var P=window.__mvParceiroTut;
+    var r=(P && P.vistas) ? P.vistas.slice() : [];
+    LOCAIS.forEach(function(k){ if(r.indexOf(k)<0) r.push(k); });
+    var ks=todas().map(function(v){ return v.k; });
+    return r.filter(function(k){ return ks.indexOf(k)>-1; });
+  }
+  /* chamada pelo player quando o YouTube confirma 90% */
+  function marcar(k){
+    if(LOCAIS.indexOf(k)<0) LOCAIS.push(k);
+    try{ if(typeof window.mvTutAoVer==='function') window.mvTutAoVer(k); }catch(e){}
+    pintarAulas();
+    if(au && !au.hidden && auTocando===k){
+      var p=proximaAula();
+      if(p) setTimeout(function(){ if(au && !au.hidden && auTocando===k) porNoPalco(p,false); },1100);
+    }
+  }
+  function proximaAula(){
+    var f=feitas(), t=todas();
+    for(var i=0;i<t.length;i++){ if(f.indexOf(t[i].k)===-1) return t[i]; }
+    return t[0]||null;
+  }
+
+  function montarAulas(){
+    if(au) return;
+    au=document.createElement('div'); au.className='mvAu'; au.id='mvAulas'; au.hidden=true;
+    au.addEventListener('click',function(e){ if(e.target===au) fecharAulas(); });
+    var cx=document.createElement('div'); cx.className='mvAuCx';
     var x=document.createElement('button');
-    x.type='button'; x.className='mpFechar'; x.setAttribute('aria-label','Fechar');
-    x.textContent='✕'; x.onclick=fechar;
-    var head=document.createElement('div');
-    head.className='mpHead';
-    head.innerHTML='<h2 class="mpTitulo">'+
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" style="width:22px;height:22px;color:var(--ciano,#00D4FF)">'+
-      '<rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg>Tutoriais</h2>';
-    corpo=document.createElement('div'); corpo.id='tutCorpo';
-    caixa.appendChild(x); caixa.appendChild(head); caixa.appendChild(corpo);
-    cx.appendChild(caixa); document.body.appendChild(cx);
+    x.type='button'; x.className='mvAuX'; x.setAttribute('aria-label','Fechar'); x.textContent='✕';
+    x.addEventListener('click',fecharAulas);
+    var topo=document.createElement('div'); topo.className='mvAuTopo';
+    topo.innerHTML='<b class="mvAuH">Suas aulas</b>'+
+      '<span class="mvAuSub">São curtas e na ordem. Assista até o fim para a aula ficar marcada em verde.</span>';
+    var prog=document.createElement('div'); prog.className='mvAuProg';
+    prog.innerHTML='<span class="mvAuBarra"><i></i></span><span class="mvAuCont"></span>';
+    auBar=prog.querySelector('i'); auCont=prog.querySelector('.mvAuCont');
+    var grade=document.createElement('div'); grade.className='mvAuGrade';
+    var esq=document.createElement('div');
+    auPal=document.createElement('div'); auPal.className='mvTutVideo';
+    auPTit=document.createElement('div'); auPTit.className='mvAuPalcoTit';
+    auPSub=document.createElement('div'); auPSub.className='mvAuPalcoSub';
+    esq.appendChild(auPal); esq.appendChild(auPTit); esq.appendChild(auPSub);
+    auLista=document.createElement('div'); auLista.className='mvAuLista';
+    grade.appendChild(esq); grade.appendChild(auLista);
+    auFim=document.createElement('div'); auFim.className='mvAuFim'; auFim.hidden=true;
+    auFim.textContent='Pronto! Você viu todas as aulas. A sua aba Divulgação está liberada.';
+    cx.appendChild(x); cx.appendChild(topo); cx.appendChild(prog);
+    cx.appendChild(grade); cx.appendChild(auFim);
+    au.appendChild(cx); document.body.appendChild(au);
   }
-  function cartao(v,rotulo){
-    var b=moldura(v,'mvTutCapa','data-tutcapa');
-    var fora=document.createElement('button');
-    fora.type='button'; fora.className='mvTutCard'; fora.setAttribute('data-tut',v.k);
-    var span=document.createElement('span'); span.className='mvTutCapa';
-    while(b.firstChild) span.appendChild(b.firstChild);
-    fora.appendChild(span);
-    if(rotulo){ var r=document.createElement('span'); r.className='mvTutRot'; r.textContent=rotulo; fora.appendChild(r); }
-    var nome=document.createElement('span'); nome.className='mvTutNome'; nome.textContent=v.t;
-    fora.appendChild(nome);
-    return fora;
+
+  function limparPalco(){
+    if(!auPal) return;
+    try{ var fr=auPal.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
+    auPal.innerHTML=''; auTocando=null;
   }
-  /* UMA grade so, sem agrupar. Com um video por modulo, o agrupamento deixava
-     uma celula ocupada e duas vazias em cada linha - e a miniatura minuscula.
-     O nome do modulo virou rotulo dentro do cartao. */
-  function lista(){
-    pararTodos();
-    montar(); corpo.innerHTML='';
-    var grade=document.createElement('div'); grade.className='mvTutGrade';
-    var n=0;
-    MOD().forEach(function(m){
-      prontos(m).forEach(function(v){ grade.appendChild(cartao(v,m.n)); n++; });
+  /* tocarJa=false coloca a CAPA com o botao de play; true ja abre o video */
+  function porNoPalco(v, tocarJa){
+    if(!v) return;
+    limparPalco();
+    pararTodos();                         /* nunca dois audios ao mesmo tempo */
+    auTocando=v.k;
+    if(tocarJa) auPal.appendChild(iframe(v));
+    else{
+      var b=moldura(v,'mvTutQuadro','data-auplay');
+      b.style.position='absolute'; b.style.top='0'; b.style.left='0';
+      b.style.width='100%'; b.style.height='100%'; b.style.paddingTop='0';
+      auPal.appendChild(b);
+    }
+    auPTit.textContent=v.t;
+    auPSub.textContent = v.d ? ('Duração ' + v.d) : '';
+    pintarAulas();
+  }
+
+  function pintarAulas(){
+    if(!au) return;
+    var t=todas(), f=feitas();
+    if(auCont) auCont.textContent = f.length + ' de ' + t.length;
+    if(auBar) auBar.style.width = t.length ? Math.round(f.length/t.length*100)+'%' : '0%';
+    if(auFim) auFim.hidden = !(t.length && f.length>=t.length);
+    if(!auLista) return;
+    auLista.innerHTML='';
+    if(!t.length){
+      auLista.innerHTML='<p class="mvAuVazio">As aulas estão sendo gravadas. Em breve elas aparecem aqui.</p>';
+      return;
+    }
+    t.forEach(function(v,i){
+      var ok=f.indexOf(v.k)>-1;
+      var b=document.createElement('button');
+      b.type='button';
+      b.className='mvAuIt'+(ok?' feita':'')+(auTocando===v.k?' tocando':'');
+      b.setAttribute('data-auit',v.k);
+      var n=document.createElement('span');
+      n.className='mvAuNum'+(ok?' ok':'');
+      n.innerHTML = ok ? VISTO : String(i+1);
+      var tx=document.createElement('span'); tx.className='mvAuTxt';
+      var nome=document.createElement('span'); nome.className='mvAuNome'; nome.textContent=v.t;
+      var min=document.createElement('span'); min.className='mvAuMin';
+      min.textContent = (ok ? 'Assistida' : 'Aula ' + (i+1)) + (v.d ? ' · ' + v.d : '');
+      tx.appendChild(nome); tx.appendChild(min);
+      b.appendChild(n); b.appendChild(tx);
+      auLista.appendChild(b);
     });
-    if(!n){ corpo.innerHTML='<p class="mvTutVazio">Os tutoriais em vídeo estão sendo gravados. Em breve eles aparecem aqui, e também no fim de cada tela do painel.</p>'; return; }
-    corpo.appendChild(grade);
   }
-  function tocar(k){
-    var v=achar(k); if(!v) return;
+  window.mvAuPintar=pintarAulas;
+
+  function abrirAulas(k){
+    montarAulas();
     pararTodos();
-    montar();
-    var volta=document.createElement('button');
-    volta.type='button'; volta.className='mvTutVoltar'; volta.setAttribute('data-tutvoltar','1');
-    volta.textContent='‹ Todos os tutoriais';
-    var tit=document.createElement('div'); tit.className='mvTutTit'; tit.textContent=v.t;
-    var q=document.createElement('div'); q.className='mvTutVideo'; q.appendChild(iframe(v));
-    corpo.innerHTML='';
-    corpo.appendChild(volta); corpo.appendChild(tit); corpo.appendChild(q);
-    cx.classList.remove('escondido');
+    au.hidden=false;
+    document.body.style.overflow='hidden';
+    var v = k ? achar(k) : proximaAula();
+    porNoPalco(v, !!k);
+    pintarAulas();
   }
-  function fechar(){
-    if(!cx) return;
-    cx.classList.add('escondido');
-    try{ var fr=corpo.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
-    corpo.innerHTML='';   /* mata o iframe: sem isso o audio continua tocando */
+  function fecharAulas(){
+    if(!au || au.hidden) return;
+    limparPalco();
+    au.hidden=true;
+    document.body.style.overflow='';
+    pintarAulas();
   }
 
   /* ---------- entradas do menu: so existem se houver video ---------- */
@@ -2334,14 +2453,20 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   /* ---------- ligacoes ---------- */
   document.addEventListener('click',function(e){
     var alvo=e.target && e.target.closest
-      ? e.target.closest('[data-tutinline],[data-tut],[data-tutvoltar],[data-tutabrir]') : null;
+      ? e.target.closest('[data-tutinline],[data-auit],[data-auplay],[data-tutabrir]') : null;
     if(alvo){
       if(alvo.hasAttribute('data-tutabrir')){ try{ window.abrirTutoriais(); }catch(_){} return; }
       if(alvo.hasAttribute('data-tutinline')){
         tocarNoLugar(alvo, alvo.getAttribute('data-tutinline')); return;
       }
-      if(alvo.hasAttribute('data-tutvoltar')){ lista(); cx.classList.remove('escondido'); return; }
-      try{ tocar(alvo.getAttribute('data-tut')); }catch(_){}
+      if(alvo.hasAttribute('data-auplay')){          /* capa no palco -> toca */
+        try{ porNoPalco(achar(alvo.getAttribute('data-auplay')), true); }catch(_){}
+        return;
+      }
+      if(alvo.hasAttribute('data-auit')){            /* item da lista lateral */
+        try{ porNoPalco(achar(alvo.getAttribute('data-auit')), true); }catch(_){}
+        return;
+      }
       return;
     }
     pararTodos(true);                        /* o que ja saiu da tela, para agora */
@@ -2366,7 +2491,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       try{ window[n]=novo; }catch(e){}
     });
   }
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape') fechar(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') fecharAulas(); });
 
   function iniciar(){
     entradas(); embutir(); amarrar(); try{ trava(); }catch(e){}
@@ -2407,6 +2532,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       if(pub.indexOf(k)===-1 || vistas.indexOf(k)>-1) return;
       vistas.push(k);
       var fim=vistas.length>=pub.length;
+      P.vistas=vistas.slice();                    /* fonte unica do progresso */
       try{ P.salvar(vistas.slice(), fim); }catch(e){}
       if(fim){ concluiu=true; }
       pintar();
@@ -2461,9 +2587,8 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     document.addEventListener('click',function(){ setTimeout(pintar,320); },false);
   }
 
-  window.abrirTutoriais=function(k){
-    try{ if(k){ tocar(k); return; } lista(); cx.classList.remove('escondido'); }catch(e){}
-  };
+  window.abrirTutoriais=function(k){ try{ abrirAulas(k); }catch(e){} };
+  window.abrirAulas=window.abrirTutoriais;
   window.mvTutEmbutir=embutir;
 })();
 </script>
