@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki-ai.vercel.app; frame-src https://www.youtube-nocookie.com https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki-ai.vercel.app; frame-src https://www.youtube-nocookie.com https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <title>Painel do Parceiro · Moviki</title>
@@ -931,7 +931,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-01-tutfecha';
+  window.MOVIKI_VERSAO = '2026-09-02-tutrava';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1302,6 +1302,26 @@ input::placeholder{color:#6b7f96}
       const snap = await getDoc(doc(db,'parceiros',user.uid));
       if(!snap.exists()){ telas('semcadastro'); return; }
       MEU = Object.assign({ uid:user.uid, email:user.email }, snap.data());
+
+      /* ---- 02/09/2026: ponte para a trava das videoaulas ----
+         O bloco dos tutoriais é um script clássico isolado: não fala com o
+         Firebase de propósito (painel não pode cair por causa de tutorial).
+         Então quem carrega e grava o progresso é AQUI, e o bloco só lê esta
+         ponte. Requer as regras v18 (aulasVistas / aulasEm em parceiros). */
+      window.__mvParceiroTut = {
+        uid: user.uid,
+        vistas: Array.isArray(MEU.aulasVistas) ? MEU.aulasVistas.slice() : [],
+        concluiuEm: MEU.aulasEm || '',
+        salvar: async function(lista, concluiu){
+          try{
+            const d = { aulasVistas: lista };
+            if(concluiu) d.aulasEm = new Date().toISOString();
+            await updateDoc(doc(db,'parceiros',user.uid), d);
+          }catch(e){}
+        }
+      };
+      window.dispatchEvent(new Event('mv-parceiro-pronto'));
+
       render();
       telas('painel');
       colocarSaldo();
@@ -1990,6 +2010,7 @@ input::placeholder{color:#6b7f96}
 
 
 
+
 <style>
 /* ============ Tutoriais em video - 2026-09-01-tutmodulo =================
    UMA videoaula por MODULO, embutida no FIM do proprio bloco - o cliente
@@ -2036,6 +2057,33 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .mvTutVoltar{background:transparent;border:0;color:var(--ciano,#00D4FF);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:6px 0;margin:0 0 4px}
 .mvTutTit{font-size:16px;font-weight:700;margin:0 0 4px}
 .mvTutVazio{color:#7f95b3;font-size:14px;line-height:1.5}
+
+/* --- trava das aulas do parceiro (so aparece no parceiro.html) --- */
+@keyframes mvPulsa{0%,100%{box-shadow:0 0 0 0 rgba(255,138,0,.55)}60%{box-shadow:0 0 0 12px rgba(255,138,0,0)}}
+.mvAviso{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 18px;padding:15px 17px;border-radius:14px;
+  border:1.5px solid #ff8a00;background:linear-gradient(135deg,rgba(255,138,0,.16),rgba(255,138,0,.06));
+  animation:mvPulsa 2.4s ease-out infinite}
+.mvAvisoIco{width:36px;height:36px;flex:none;border-radius:10px;display:grid;place-items:center;background:rgba(255,138,0,.22);color:#ffb457}
+.mvAvisoIco svg{width:19px;height:19px}
+.mvAvisoTxt{flex:1;min-width:200px}
+.mvAvisoTit{display:block;font-size:15.5px;font-weight:700;color:#ffcf9a;line-height:1.3}
+.mvAvisoSub{display:block;font-size:13px;color:#e2c6a6;margin-top:3px;line-height:1.45}
+.mvAvisoBtn{flex:none;padding:11px 18px;border-radius:11px;border:0;cursor:pointer;font-family:inherit;
+  font-size:14px;font-weight:700;color:#2a1400;background:#ff8a00}
+.mvAvisoBtn:hover{background:#ffa032}
+.mvAvisoBarra{flex-basis:100%;height:7px;border-radius:99px;background:rgba(255,255,255,.10);overflow:hidden}
+.mvAvisoBarra i{display:block;height:100%;border-radius:99px;background:#ff8a00;transition:width .4s}
+.mvTravado{position:relative}
+.mvTravado > *:not(.mvCadeado){filter:blur(3px);opacity:.35;pointer-events:none;user-select:none}
+/* A secao Divulgacao e comprida. Se o recado ficasse CENTRALIZADO nela, ele
+   cairia no meio de uma tela e meia de rolagem e o parceiro abriria a aba sem
+   ver explicacao nenhuma. Por isso ele fica colado no topo, no primeiro
+   quadro que aparece. */
+.mvCadeado{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;gap:12px;text-align:center;padding:54px 26px 26px;border-radius:16px;
+  background:linear-gradient(to bottom,rgba(4,10,18,.93) 0,rgba(4,10,18,.93) 320px,rgba(4,10,18,.78) 100%)}
+.mvCadeadoTit{font-size:17px;font-weight:700;color:#ffcf9a;max-width:420px;line-height:1.35}
+.mvCadeadoSub{font-size:13.5px;color:#c9d6e6;max-width:440px;line-height:1.5}
 </style>
 <script>
 /* ===================== TUTORIAIS EM VIDEO - PARCEIRO ======================
@@ -2102,12 +2150,51 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     if(v.d){ var d=document.createElement('span'); d.className='mvTutDurC'; d.textContent=v.d; b.appendChild(d); }
     return b;
   }
+  /* ---------- quanto foi assistido DE VERDADE ----------
+     Sem a API oficial do YouTube, "assistiu" seria so "clicou" - e clicar
+     em oito videos leva vinte segundos. Com ela da pra medir o tempo de
+     reproducao e so contar a aula em 90%. Custa uma linha no script-src. */
+  var ytPronto=false, ytFila=[];
+  function carregarYT(cb){
+    if(ytPronto) return cb();
+    ytFila.push(cb);
+    if(document.getElementById('mvYTApi')) return;
+    var pronto=window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady=function(){
+      ytPronto=true;
+      try{ if(typeof pronto==='function') pronto(); }catch(e){}
+      ytFila.splice(0).forEach(function(f){ try{ f(); }catch(e){} });
+    };
+    var sc=document.createElement('script');
+    sc.id='mvYTApi'; sc.src='https://www.youtube.com/iframe_api';
+    document.head.appendChild(sc);
+  }
+  var seq=0;
+  function vigiar(f,v){
+    if(typeof window.mvTutAoVer!=='function') return;   /* ninguem esta contando */
+    carregarYT(function(){
+      try{
+        var p=new YT.Player(f.id,{ events:{ onStateChange:function(e){
+          if(e.data!==YT.PlayerState.PLAYING) return;
+          clearInterval(f.__t);
+          f.__t=setInterval(function(){
+            try{
+              var d=p.getDuration(), t=p.getCurrentTime();
+              if(d>0 && t/d>=0.9){ clearInterval(f.__t); window.mvTutAoVer(v.k); }
+            }catch(_){}
+          },1000);
+        } } });
+      }catch(e){}
+    });
+  }
   function iframe(v){
     var f=document.createElement('iframe');
+    f.id='mvYT'+(++seq);
     f.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(v.id)+
-          '?rel=0&modestbranding=1&playsinline=1&autoplay=1';
+          '?rel=0&modestbranding=1&playsinline=1&autoplay=1&enablejsapi=1';
     f.title=v.t; f.allow='accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen';
     f.setAttribute('allowfullscreen','');
+    vigiar(f,v);
     return f;
   }
 
@@ -2140,6 +2227,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      depois que o cliente troca de tela - e dois audios tocam juntos. */
   function parar(box){
     var q=box.querySelector('div.mvTutQuadro'); if(!q) return;
+    try{ var fr=q.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
     var v=achar(box.getAttribute('data-tutk')); if(!v) return;
     box.replaceChild(moldura(v,'mvTutQuadro','data-tutinline'), q);
   }
@@ -2225,6 +2313,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   function fechar(){
     if(!cx) return;
     cx.classList.add('escondido');
+    try{ var fr=corpo.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
     corpo.innerHTML='';   /* mata o iframe: sem isso o audio continua tocando */
   }
 
@@ -2240,8 +2329,9 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   /* ---------- ligacoes ---------- */
   document.addEventListener('click',function(e){
     var alvo=e.target && e.target.closest
-      ? e.target.closest('[data-tutinline],[data-tut],[data-tutvoltar]') : null;
+      ? e.target.closest('[data-tutinline],[data-tut],[data-tutvoltar],[data-tutabrir]') : null;
     if(alvo){
+      if(alvo.hasAttribute('data-tutabrir')){ try{ window.abrirTutoriais(); }catch(_){} return; }
       if(alvo.hasAttribute('data-tutinline')){
         tocarNoLugar(alvo, alvo.getAttribute('data-tutinline')); return;
       }
@@ -2274,12 +2364,97 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') fechar(); });
 
   function iniciar(){
-    entradas(); embutir(); amarrar();
-    setTimeout(function(){ entradas(); embutir(); amarrar(); },1400);
+    entradas(); embutir(); amarrar(); try{ trava(); }catch(e){}
+    setTimeout(function(){ entradas(); embutir(); amarrar(); try{ trava(); }catch(e){} },1400);
+    window.addEventListener('mv-parceiro-pronto',function(){ try{ trava(); }catch(e){} });
     setTimeout(amarrar,3500);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar);
   else iniciar();
+
+  /* =====================================================================
+     TRAVA DAS AULAS — so no painel do PARCEIRO.
+     O parceiro entra, ve o painel inteiro, mas a secao Divulgacao (o link,
+     que e a unica coisa que ele leva pra rua) fica coberta ate ele assistir
+     as aulas. Nao trava o resto: quem acaba de se cadastrar e nao consegue
+     ver nada vai embora.
+     Progresso vive em parceiros/{uid}.aulasVistas; concluido carimba
+     aulasEm e NUNCA mais volta a travar - aula nova nao retranca ninguem.
+     Enquanto houver menos de MIN_AULAS publicadas, nao existe trava.
+     ===================================================================== */
+  var MIN_AULAS=8;
+  function chavesPublicadas(){
+    var r=[]; MOD().forEach(function(m){ prontos(m).forEach(function(v){ r.push(v.k); }); });
+    return r;
+  }
+  function trava(){
+    var P=window.__mvParceiroTut;
+    if(!P) return;                                  /* nao e o painel do parceiro */
+    var pub=chavesPublicadas();
+    if(pub.length<MIN_AULAS) return;                /* aulas ainda incompletas */
+    if(trava.__feito){ try{ trava.__pintar(); }catch(e){} return; }  /* so monta uma vez */
+    trava.__feito=1;
+
+    var vistas=(P.vistas||[]).filter(function(k){ return pub.indexOf(k)>-1; });
+    var concluiu=!!P.concluiuEm || vistas.length>=pub.length;
+
+    window.mvTutAoVer=function(k){
+      if(pub.indexOf(k)===-1 || vistas.indexOf(k)>-1) return;
+      vistas.push(k);
+      var fim=vistas.length>=pub.length;
+      try{ P.salvar(vistas.slice(), fim); }catch(e){}
+      if(fim){ concluiu=true; }
+      pintar();
+    };
+
+    function alvoDivulgacao(){ return document.querySelector('section[data-sec="divulgacao"]'); }
+
+    function pintar(){
+      /* --- aviso laranja no topo de cada secao --- */
+      var antigos=document.querySelectorAll('.mvAviso');
+      for(var i=0;i<antigos.length;i++) antigos[i].remove();
+      var cad=document.querySelector('.mvCadeado');
+
+      if(concluiu){
+        if(cad) cad.remove();
+        var t=alvoDivulgacao(); if(t) t.classList.remove('mvTravado');
+        return;
+      }
+
+      var falta=pub.length-vistas.length;
+      var aviso=document.createElement('div');
+      aviso.className='mvAviso';
+      aviso.innerHTML=
+        '<span class="mvAvisoIco"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+
+        '<rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg></span>'+
+        '<span class="mvAvisoTxt"><b class="mvAvisoTit">Assista as '+pub.length+' aulas para liberar o seu link</b>'+
+        '<span class="mvAvisoSub">Faltam '+falta+'. São curtas, e explicam como a comissão funciona antes de você sair indicando.</span></span>'+
+        '<button type="button" class="mvAvisoBtn" data-tutabrir="1">Ver as aulas</button>'+
+        '<span class="mvAvisoBarra"><i style="width:'+Math.round(vistas.length/pub.length*100)+'%"></i></span>';
+      var visao=document.querySelector('section[data-sec="visao"]');
+      if(visao && visao.firstChild) visao.insertBefore(aviso, visao.firstChild);
+
+      /* --- cadeado sobre a Divulgacao --- */
+      var alvo=alvoDivulgacao();
+      if(alvo){
+        alvo.classList.add('mvTravado');
+        if(!alvo.querySelector('.mvCadeado')){
+          var c=document.createElement('div');
+          c.className='mvCadeado';
+          c.innerHTML='<div class="mvCadeadoTit">Seu link abre depois das aulas</div>'+
+            '<div class="mvCadeadoSub">Você já viu '+vistas.length+' de '+pub.length+'. '+
+            'A gente segura o link até aqui de propósito: indicar sem saber como a comissão funciona costuma virar promessa errada pro comerciante.</div>'+
+            '<button type="button" class="mvAvisoBtn" data-tutabrir="1">Continuar as aulas</button>';
+          alvo.appendChild(c);
+        }
+      }
+    }
+
+    trava.__pintar=pintar;
+    pintar();
+    /* o painel redesenha as secoes; repinta depois de qualquer clique */
+    document.addEventListener('click',function(){ setTimeout(pintar,320); },false);
+  }
 
   window.abrirTutoriais=function(k){
     try{ if(k){ tocar(k); return; } lista(); cx.classList.remove('escondido'); }catch(e){}
