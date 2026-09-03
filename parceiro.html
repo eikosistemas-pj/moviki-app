@@ -283,6 +283,29 @@ input::placeholder{color:#6b7f96}
 .certBtn:hover{border-color:var(--mv-ciano)}
 .certSelo.pend .certBtn{border-color:var(--mv-alerta);color:var(--mv-alerta)}
 
+/* ---------- CRACHA DO PARCEIRO (03/09/2026) ---------- */
+.crWrap{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-top:12px}
+.crCard{flex:0 0 auto;width:230px;border-radius:16px;padding:16px 14px;text-align:center;
+  background:linear-gradient(160deg,#0e2236,#0a1728);border:1px solid var(--mv-linha-forte)}
+.crFoto{width:64px;height:64px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,212,255,.10);border:2px solid var(--mv-ciano);color:var(--mv-ciano);font-weight:800;font-size:24px;
+  background-size:cover;background-position:center;overflow:hidden}
+.crFoto.temFoto{font-size:0;color:transparent}
+.crNome{font-size:15px;font-weight:800;line-height:1.2;word-break:break-word}
+.crArroba{font-size:12px;color:var(--mv-txt-3);margin-top:2px}
+.crFaixa{margin:10px 0;font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--mv-ok)}
+.crQR{width:132px;height:132px;margin:0 auto;background:#fff;border-radius:9px;padding:7px;display:block}
+.crQR canvas{width:100%;height:100%;display:block;image-rendering:pixelated}
+.crPe{margin-top:9px;font-size:10.5px;color:var(--mv-txt-3);word-break:break-all;line-height:1.4}
+.crLado{flex:1 1 250px;min-width:0}
+.crLado p{font-size:14px;color:var(--mv-txt-3);margin:0 0 12px;line-height:1.55}
+.crLado p b{color:var(--mv-txt)}
+.crBotoes{display:flex;flex-direction:column;gap:8px}
+.crBtn{border:1px solid var(--mv-linha-forte);background:var(--mv-campo);color:var(--mv-txt);border-radius:var(--mv-r-sm);
+  padding:11px 14px;font-family:var(--mv-fonte);font-size:13.5px;font-weight:600;cursor:pointer;text-align:center}
+.crBtn.prim{border-color:var(--mv-ciano);background:rgba(0,212,255,.12);color:#7fd4ff}
+.crBtn:hover{border-color:var(--mv-ciano)}
+
 /* ---------- rodapé institucional (03/09/2026) ---------- */
 .mvRodape{margin:26px 0 0;padding:18px 16px 26px;border-top:1px solid var(--mv-linha);text-align:center;
   font-size:12.5px;line-height:1.65;color:var(--mv-txt-3)}
@@ -693,6 +716,34 @@ input::placeholder{color:#6b7f96}
             <div class="aviso ok" id="avisoLink"></div>
           </div>
 
+          <!-- ============ CRACHA ============
+               Mora DENTRO da Divulgacao de proposito, e por isso fica atras da
+               mesma trava das 8 aulas. O cracha afirma "treinamento concluido":
+               deixar ele aparecer antes das aulas seria imprimir uma mentira. -->
+          <div class="cd soAprovado">
+            <div class="cdTit">Seu crachá de parceiro</div>
+            <p class="cdSub">Mostre no celular quando alguém perguntar se você é do Moviki mesmo. A pessoa aponta a câmera e confere sozinha, em três segundos.</p>
+            <div class="crWrap">
+              <div class="crCard" id="crCard">
+                <div class="crFoto" id="crFoto">P</div>
+                <div class="crNome" id="crNome">parceiro</div>
+                <div class="crArroba" id="crArroba"></div>
+                <div class="crFaixa">Parceiro autorizado</div>
+                <div class="crQR" id="crQR"></div>
+                <div class="crPe" id="crPe">moviki.com.br/v/…</div>
+              </div>
+              <div class="crLado">
+                <p>Quem aponta a câmera cai numa página do Moviki que confirma o seu nome, desde quando você é parceiro e que você concluiu o treinamento. <b>Quem não é parceiro não consegue produzir essa página.</b></p>
+                <div class="crBotoes">
+                  <button type="button" class="crBtn prim" id="crBaixar">Baixar como imagem</button>
+                  <button type="button" class="crBtn" id="crCopiar">Copiar o link de verificação</button>
+                  <button type="button" class="crBtn" id="crAbrir">Ver como o comerciante vê</button>
+                </div>
+                <div class="aviso ok" id="crAviso"></div>
+              </div>
+            </div>
+          </div>
+
           <div class="cd soAprovado">
             <div class="cdTit">Indicar outro parceiro</div>
             <p class="cdSub" style="margin-bottom:12px">Chame alguém pra ser parceiro também. Se a pessoa se cadastrar pelo seu link, você ganha bônus quando os indicados dela assinarem.</p>
@@ -981,7 +1032,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-03-espelho';
+  window.MOVIKI_VERSAO = '2026-09-03-cracha';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1486,6 +1537,392 @@ input::placeholder{color:#6b7f96}
     }catch(e){}
   }
 
+  /* =====================================================================
+     CRACHA DO PARCEIRO — 03/09/2026
+     O gerador de QR abaixo foi escrito a mao porque a CSP do painel nao deixa
+     carregar biblioteca de fora. Ele foi conferido contra uma implementacao de
+     referencia: para as versoes 3 a 6 a matriz sai IDENTICA, modulo por modulo.
+     ===================================================================== */
+  /* =====================================================================
+     mvQR — gerador de QR Code, escrito a mao.
+     Modo BYTE, correcao de erro M, versoes 1 a 6 (ate 106 caracteres).
+
+     POR QUE ESCRITO A MAO: a CSP do painel nao deixa carregar biblioteca de
+     fora, e a URL do cracha ("https://moviki.com.br/v/apelido") cabe folgada
+     na versao 3. Versoes acima da 6 exigem o bloco de informacao de versao,
+     que so serviria pra texto que a gente nunca vai gerar aqui.
+
+     Devolve { n: lado, m: matriz [linha][coluna] com true = modulo preto }.
+     ===================================================================== */
+  function mvQR(texto){
+    'use strict';
+
+    /* ---- tabelas do padrao, nivel M ----
+       [codewords de dados no total, ec por bloco, blocos grupo1, dados por bloco g1,
+        blocos grupo2, dados por bloco g2] */
+    var TAB = {
+      1:[16,10,1,16,0,0],
+      2:[28,16,1,28,0,0],
+      3:[44,26,1,44,0,0],
+      4:[64,18,2,32,0,0],
+      5:[86,24,2,43,0,0],
+      6:[108,16,4,27,0,0]
+    };
+    var ALINHA = {1:[], 2:[6,18], 3:[6,22], 4:[6,26], 5:[6,30], 6:[6,34]};
+
+    /* ---- texto -> bytes UTF-8 ---- */
+    var bytes = [];
+    (function(){
+      var s = String(texto == null ? '' : texto);
+      for(var i=0;i<s.length;i++){
+        var c = s.charCodeAt(i);
+        if(c < 0x80) bytes.push(c);
+        else if(c < 0x800){ bytes.push(0xC0|(c>>6), 0x80|(c&63)); }
+        else if(c < 0xD800 || c >= 0xE000){ bytes.push(0xE0|(c>>12), 0x80|((c>>6)&63), 0x80|(c&63)); }
+        else { /* par substituto */
+          i++;
+          var cp = 0x10000 + (((c&0x3FF)<<10) | (s.charCodeAt(i)&0x3FF));
+          bytes.push(0xF0|(cp>>18), 0x80|((cp>>12)&63), 0x80|((cp>>6)&63), 0x80|(cp&63));
+        }
+      }
+    })();
+
+    /* ---- menor versao que cabe ---- */
+    var ver = 0;
+    for(var v=1; v<=6; v++){
+      if(bytes.length <= TAB[v][0] - 2){ ver = v; break; }   /* -2 = modo + contagem */
+    }
+    if(!ver) throw new Error('texto longo demais para o QR do cracha');
+
+    var T = TAB[ver], totalDados = T[0], ecPorBloco = T[1];
+
+    /* ---- fluxo de bits: modo 0100, contagem 8 bits, dados, terminador ---- */
+    var bits = [];
+    function put(valor, n){ for(var i=n-1;i>=0;i--) bits.push((valor>>i)&1); }
+    put(4,4); put(bytes.length,8);
+    for(var i=0;i<bytes.length;i++) put(bytes[i],8);
+    var capBits = totalDados*8;
+    for(var t=0; t<4 && bits.length<capBits; t++) bits.push(0);   /* terminador */
+    while(bits.length % 8) bits.push(0);                          /* fecha o byte */
+
+    var dados = [];
+    for(var i=0;i<bits.length;i+=8){
+      var b=0; for(var k=0;k<8;k++) b = (b<<1) | bits[i+k];
+      dados.push(b);
+    }
+    var enche = [0xEC,0x11], e=0;
+    while(dados.length < totalDados) dados.push(enche[e++ % 2]);
+
+    /* ---- Reed-Solomon no corpo de Galois GF(256) ---- */
+    var EXP = new Array(512), LOG = new Array(256);
+    (function(){
+      var x=1;
+      for(var i=0;i<255;i++){ EXP[i]=x; LOG[x]=i; x<<=1; if(x&0x100) x^=0x11D; }
+      for(var i=255;i<512;i++) EXP[i]=EXP[i-255];
+    })();
+    function mul(a,b){ return (a===0||b===0) ? 0 : EXP[LOG[a]+LOG[b]]; }
+
+    function geradorRS(n){
+      var g=[1];
+      for(var i=0;i<n;i++){
+        var novo = g.concat([0]);
+        for(var j=0;j<g.length;j++) novo[j+1] ^= mul(g[j], EXP[i]);
+        g = novo;
+      }
+      return g;
+    }
+    function ecDoBloco(bloco, n){
+      var g = geradorRS(n);
+      var r = bloco.concat(new Array(n).fill(0));
+      for(var i=0;i<bloco.length;i++){
+        var c = r[i];
+        if(c === 0) continue;
+        for(var j=0;j<g.length;j++) r[i+j] ^= mul(g[j], c);
+      }
+      return r.slice(bloco.length);
+    }
+
+    /* ---- divide em blocos, calcula EC, intercala ---- */
+    var blocosD = [], blocosE = [], p = 0;
+    var grupos = [[T[2],T[3]],[T[4],T[5]]];
+    for(var gi=0; gi<2; gi++){
+      for(var b=0; b<grupos[gi][0]; b++){
+        var bl = dados.slice(p, p + grupos[gi][1]); p += grupos[gi][1];
+        blocosD.push(bl);
+        blocosE.push(ecDoBloco(bl, ecPorBloco));
+      }
+    }
+    var fluxo = [];
+    var maiorD = Math.max.apply(null, blocosD.map(function(b){return b.length;}));
+    for(var i=0;i<maiorD;i++) for(var b=0;b<blocosD.length;b++) if(i<blocosD[b].length) fluxo.push(blocosD[b][i]);
+    for(var i=0;i<ecPorBloco;i++) for(var b=0;b<blocosE.length;b++) fluxo.push(blocosE[b][i]);
+
+    /* ---- matriz ---- */
+    var n = 17 + 4*ver;
+    var m = [], reservado = [];
+    for(var r=0;r<n;r++){ m.push(new Array(n).fill(false)); reservado.push(new Array(n).fill(false)); }
+
+    function pinta(r,c,val){ if(r>=0&&r<n&&c>=0&&c<n){ m[r][c]=val; reservado[r][c]=true; } }
+
+    function finder(lr,lc){
+      for(var r=-1;r<=7;r++) for(var c=-1;c<=7;c++){
+        var dentro = (r>=0&&r<=6&&c>=0&&c<=6);
+        var preto = dentro && (r===0||r===6||c===0||c===6 || (r>=2&&r<=4&&c>=2&&c<=4));
+        pinta(lr+r, lc+c, preto);
+      }
+    }
+    finder(0,0); finder(0,n-7); finder(n-7,0);
+
+    /* temporizacao */
+    for(var i=8;i<n-8;i++){ pinta(6,i,i%2===0); pinta(i,6,i%2===0); }
+
+    /* alinhamento — pula os tres cantos, onde ja ha localizador */
+    var A = ALINHA[ver];
+    for(var a=0;a<A.length;a++) for(var b2=0;b2<A.length;b2++){
+      var rr=A[a], cc=A[b2];
+      if((rr<=8&&cc<=8) || (rr<=8&&cc>=n-9) || (rr>=n-9&&cc<=8)) continue;
+      for(var dr=-2;dr<=2;dr++) for(var dc=-2;dc<=2;dc++)
+        pinta(rr+dr, cc+dc, Math.max(Math.abs(dr),Math.abs(dc))!==1);
+    }
+
+    /* modulo escuro fixo + reserva das areas de formato */
+    pinta(n-8, 8, true);
+    for(var i=0;i<9;i++){ if(!reservado[8][i]) reservado[8][i]=true; if(!reservado[i][8]) reservado[i][8]=true; }
+    for(var i=0;i<8;i++){ reservado[8][n-1-i]=true; reservado[n-1-i][8]=true; }
+
+    /* ---- coloca os dados em ziguezague, de baixo pra direita ---- */
+    var bi = 0, subindo = true;
+    for(var col=n-1; col>0; col-=2){
+      if(col === 6) col--;                       /* a coluna 6 e so temporizacao */
+      for(var k=0;k<n;k++){
+        var row = subindo ? (n-1-k) : k;
+        for(var d=0; d<2; d++){
+          var c = col - d;
+          if(reservado[row][c]) continue;
+          var bit = 0;
+          if(bi < fluxo.length*8){ bit = (fluxo[bi>>3] >> (7-(bi&7))) & 1; }
+          m[row][c] = bit === 1;
+          bi++;
+        }
+      }
+      subindo = !subindo;
+    }
+
+    /* ---- mascaras ---- */
+    var MASCARAS = [
+      function(r,c){ return (r+c)%2===0; },
+      function(r){ return r%2===0; },
+      function(r,c){ return c%3===0; },
+      function(r,c){ return (r+c)%3===0; },
+      function(r,c){ return (Math.floor(r/2)+Math.floor(c/3))%2===0; },
+      function(r,c){ return (r*c)%2 + (r*c)%3 === 0; },
+      function(r,c){ return ((r*c)%2 + (r*c)%3)%2===0; },
+      function(r,c){ return ((r+c)%2 + (r*c)%3)%2===0; }
+    ];
+
+    function formato(mask){
+      /* Os dois bits do nivel de correcao, na ordem do padrao:
+         L=01  M=00  Q=11  H=10.  Aqui e sempre M, entao os dois bits sao ZERO.
+         (Ja errei isto uma vez escrevendo 01 = nivel L: a area de dados saia
+         perfeita e so os 15 modulos do formato ficavam errados, o que faz o
+         leitor tentar separar os blocos com os parametros do nivel errado.) */
+      var v = (0x00<<3) | mask;
+      var d = v << 10;
+      for(var i=4;i>=0;i--) if(d & (1<<(i+10))) d ^= 0x537 << i;
+      return ((v<<10) | d) ^ 0x5412;
+    }
+
+    function poeFormato(mm, mask){
+      var f = formato(mask);
+      for(var i=0;i<15;i++){
+        var bit = ((f >> i) & 1) === 1;
+        /* copia 1: em volta do localizador de cima-esquerda */
+        if(i<6)        mm[i][8] = bit;
+        else if(i===6) mm[7][8] = bit;
+        else if(i===7) mm[8][8] = bit;
+        else if(i===8) mm[8][7] = bit;
+        else           mm[8][14-i] = bit;
+        /* copia 2 */
+        if(i<8) mm[8][n-1-i] = bit;
+        else    mm[n-15+i][8] = bit;
+      }
+      mm[n-8][8] = true;                     /* modulo escuro, sempre */
+    }
+
+    function penalidade(mm){
+      var p1=0,p2=0,p3=0,escuros=0;
+      /* regra 1: 5 ou mais iguais em linha */
+      for(var eixo=0; eixo<2; eixo++){
+        for(var r=0;r<n;r++){
+          var run=1, ant=null;
+          for(var c=0;c<n;c++){
+            var val = eixo ? mm[c][r] : mm[r][c];
+            if(val===ant) run++; else { if(run>=5) p1 += 3+(run-5); run=1; ant=val; }
+          }
+          if(run>=5) p1 += 3+(run-5);
+        }
+      }
+      /* regra 2: blocos 2x2 */
+      for(var r=0;r<n-1;r++) for(var c=0;c<n-1;c++){
+        var a=mm[r][c];
+        if(a===mm[r][c+1] && a===mm[r+1][c] && a===mm[r+1][c+1]) p2 += 3;
+      }
+      /* regra 3: padrao 1011101 com 4 claros de um lado */
+      var A1=[true,false,true,true,true,false,true,false,false,false,false];
+      var A2=[false,false,false,false,true,false,true,true,true,false,true];
+      for(var r=0;r<n;r++) for(var c=0;c<=n-11;c++){
+        var okH=true, okH2=true, okV=true, okV2=true;
+        for(var i=0;i<11;i++){
+          if(mm[r][c+i]!==A1[i]) okH=false;
+          if(mm[r][c+i]!==A2[i]) okH2=false;
+          if(mm[c+i][r]!==A1[i]) okV=false;
+          if(mm[c+i][r]!==A2[i]) okV2=false;
+        }
+        if(okH) p3+=40; if(okH2) p3+=40; if(okV) p3+=40; if(okV2) p3+=40;
+      }
+      /* regra 4: desequilibrio claro/escuro */
+      for(var r=0;r<n;r++) for(var c=0;c<n;c++) if(mm[r][c]) escuros++;
+      var pct = escuros*100/(n*n);
+      var p4 = Math.floor(Math.abs(pct-50)/5)*10;
+      return p1+p2+p3+p4;
+    }
+
+    var melhor=null, melhorNota=Infinity;
+    for(var mask=0; mask<8; mask++){
+      var mm = m.map(function(l){ return l.slice(); });
+      for(var r=0;r<n;r++) for(var c=0;c<n;c++)
+        if(!reservado[r][c] && MASCARAS[mask](r,c)) mm[r][c] = !mm[r][c];
+      poeFormato(mm, mask);
+      var nota = penalidade(mm);
+      if(nota < melhorNota){ melhorNota=nota; melhor=mm; }
+    }
+
+    return { n:n, m:melhor, versao:ver };
+  }
+
+  /* Desenha o QR num canvas. `lado` e o tamanho final em pixels. */
+  function qrCanvas(texto, lado, corEscura){
+    var q;
+    try{ q = mvQR(texto); }catch(e){ return null; }
+    var px = Math.max(1, Math.floor(lado / (q.n + 8)));   /* 4 modulos de borda de cada lado */
+    var borda = px * 4;
+    var total = q.n * px + borda * 2;
+    var cv = document.createElement('canvas');
+    cv.width = total; cv.height = total;
+    var ctx = cv.getContext('2d');
+    /* A borda branca (a "zona de silencio") NAO e decoracao: sem ela, leitor
+       nenhum acha o codigo. */
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, total, total);
+    ctx.fillStyle = corEscura || '#000000';
+    for(var r = 0; r < q.n; r++)
+      for(var c = 0; c < q.n; c++)
+        if(q.m[r][c]) ctx.fillRect(borda + c*px, borda + r*px, px, px);
+    return cv;
+  }
+
+  function linkVerificacao(){
+    return 'https://moviki.com.br/v/' + String(MEU.slug || '');
+  }
+
+  function montarCracha(){
+    if(!MEU.slug) return;
+    const url = linkVerificacao();
+    txt('crNome', MEU.nome || 'parceiro');
+    txt('crArroba', MEU.arroba || '');
+    txt('crPe', url.replace(/^https:\/\//, ''));
+    const ini = el('crFoto');
+    if(ini && !ini.classList.contains('temFoto')) ini.textContent = (String(MEU.nome||'P').trim()[0]||'P').toUpperCase();
+
+    const alvo = el('crQR');
+    if(alvo && !alvo.__feito){
+      const cv = qrCanvas(url, 260, '#04121e');
+      if(cv){ alvo.innerHTML = ''; alvo.appendChild(cv); alvo.__feito = 1; }
+      else  { alvo.style.display = 'none'; }   /* nao conseguiu: some, nao mostra caixa vazia */
+    }
+  }
+
+  /* Desenha o cracha inteiro num canvas grande e entrega como .png.
+     4:5 (1080x1350) porque e o formato que o Instagram e o WhatsApp nao cortam. */
+  function baixarCracha(){
+    const aviso = el('crAviso');
+    try{
+      const L = 1080, A = 1350;
+      const cv = document.createElement('canvas'); cv.width = L; cv.height = A;
+      const x = cv.getContext('2d');
+
+      const g = x.createLinearGradient(0, 0, L, A);
+      g.addColorStop(0, '#0e2236'); g.addColorStop(1, '#050d18');
+      x.fillStyle = g; x.fillRect(0, 0, L, A);
+
+      x.textAlign = 'center';
+      x.fillStyle = '#ffffff';
+      x.font = '800 62px system-ui, sans-serif';
+      x.fillText('mo', L/2 - 46, 130);
+      x.fillStyle = '#00D4FF'; x.fillText('viki', L/2 + 62, 130);
+
+      /* foto (ou inicial) num circulo */
+      const cx = L/2, cy = 330, rr = 108;
+      x.save(); x.beginPath(); x.arc(cx, cy, rr, 0, Math.PI*2); x.closePath(); x.clip();
+      const img = window.__crImg;
+      if(img && img.complete && img.naturalWidth) x.drawImage(img, cx-rr, cy-rr, rr*2, rr*2);
+      else {
+        x.fillStyle = 'rgba(0,212,255,.12)'; x.fillRect(cx-rr, cy-rr, rr*2, rr*2);
+        x.fillStyle = '#00D4FF'; x.font = '800 96px system-ui, sans-serif';
+        x.fillText((String(MEU.nome||'P').trim()[0]||'P').toUpperCase(), cx, cy+34);
+      }
+      x.restore();
+      x.strokeStyle = '#00D4FF'; x.lineWidth = 6;
+      x.beginPath(); x.arc(cx, cy, rr, 0, Math.PI*2); x.stroke();
+
+      x.fillStyle = '#ffffff'; x.font = '800 56px system-ui, sans-serif';
+      x.fillText(String(MEU.nome || 'Parceiro Moviki').slice(0, 26), cx, 505);
+      if(MEU.arroba){
+        x.fillStyle = '#9fb3d0'; x.font = '400 34px system-ui, sans-serif';
+        x.fillText(String(MEU.arroba).slice(0, 32), cx, 552);
+      }
+
+      x.fillStyle = '#25e39b'; x.font = '800 30px system-ui, sans-serif';
+      x.fillText('PARCEIRO AUTORIZADO DO MOVIKI', cx, 622);
+
+      const q = qrCanvas(linkVerificacao(), 470, '#04121e');
+      if(q){
+        const qs = 470, qy = 680;
+        x.fillStyle = '#ffffff';
+        x.fillRect(cx - qs/2 - 12, qy - 12, qs + 24, qs + 24);
+        x.drawImage(q, cx - qs/2, qy, qs, qs);
+      }
+
+      x.fillStyle = '#c7d6ea'; x.font = '600 32px system-ui, sans-serif';
+      x.fillText(linkVerificacao().replace(/^https:\/\//, ''), cx, 1225);
+      x.fillStyle = '#7f95b3'; x.font = '400 23px system-ui, sans-serif';
+      x.fillText('Aponte a câmera para conferir', cx, 1268);
+      x.fillText('EIKO SISTEMAS · CNPJ 68.289.841/0001-02', cx, 1305);
+
+      const a = document.createElement('a');
+      a.download = 'cracha-moviki-' + (MEU.slug || 'parceiro') + '.png';
+      a.href = cv.toDataURL('image/png');
+      document.body.appendChild(a); a.click(); a.remove();
+      if(aviso){ aviso.textContent = 'Crachá salvo nas suas imagens.'; setTimeout(function(){ aviso.textContent=''; }, 4000); }
+    }catch(e){
+      if(aviso) aviso.textContent = 'Não consegui gerar a imagem agora. Tente de novo.';
+    }
+  }
+
+  function amarrarCracha(){
+    const b1 = el('crBaixar'), b2 = el('crCopiar'), b3 = el('crAbrir');
+    if(b1 && !b1.__amarrado){ b1.__amarrado = 1; b1.addEventListener('click', baixarCracha); }
+    if(b2 && !b2.__amarrado){ b2.__amarrado = 1; b2.addEventListener('click', function(){
+      const aviso = el('crAviso');
+      try{
+        navigator.clipboard.writeText(linkVerificacao());
+        if(aviso){ aviso.textContent = 'Link copiado.'; setTimeout(function(){ aviso.textContent=''; }, 3000); }
+      }catch(e){ if(aviso) aviso.textContent = linkVerificacao(); }
+    }); }
+    if(b3 && !b3.__amarrado){ b3.__amarrado = 1; b3.addEventListener('click', function(){
+      window.open(linkVerificacao(), '_blank', 'noopener');
+    }); }
+  }
+
   function mostrarVoltar(){
     const a = el('rcVoltar'); if(a) a.style.display='block';
     const b = el('linkVoltarNeg'); if(b) b.style.display='flex';
@@ -1519,11 +1956,14 @@ input::placeholder{color:#6b7f96}
           .then(j => {
             if(!j || !j.achou) return;
             if(typeof j.foto !== 'string' || j.foto.indexOf('data:image/') !== 0) return;
-            ['avatarLado','avatarTopo'].forEach(id => {
+            ['avatarLado','avatarTopo','crFoto'].forEach(id => {
               const e = el(id); if(!e) return;
               e.style.backgroundImage = 'url("' + j.foto + '")';
               e.classList.add('temFoto');
             });
+            /* Guarda a foto como <img> pronta: o canvas do crachá precisa dela
+               decodificada, e data: URI não suja o canvas (dá pra exportar). */
+            try{ const im = new Image(); im.src = j.foto; window.__crImg = im; }catch(_){}
           })
           .catch(() => {});
       }
@@ -1539,6 +1979,8 @@ input::placeholder{color:#6b7f96}
       txt('rcDesde','Parceiro Moviki');
       txt('vDesde','—');
     }
+
+    try{ montarCracha(); amarrarCracha(); }catch(e){}
 
     const link  = 'moviki.com.br/p/'  + slug;
     const linkP = 'moviki.com.br/pp/' + slug;
