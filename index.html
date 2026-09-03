@@ -537,28 +537,6 @@
   .qzCampo label{display:block;font-size:13px;font-weight:500;color:#c7d6ea;margin:0 0 6px 2px;}
   .qzCampo input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(6,14,26,.55);color:#fff;font-size:15px;outline:none;transition:.15s;}
   .qzCampo input:focus{border-color:var(--ciano);box-shadow:0 0 0 3px rgba(0,212,255,.15);}
-
-  /* ---- Cartao do @ do Instagram (quiz do parceiro) — 03/09/2026 ----
-     A foto vem do robo como data: URI, nunca como link do CDN da Meta:
-     a CSP nao libera scontent.cdninstagram.com e a URL da Meta expira em
-     poucas horas. data: ja esta liberado em img-src e nunca vence. */
-  .qzIgDica{font-size:12px;line-height:1.45;color:#8fa6c2;margin:6px 2px 0;}
-  .qzIgBusca{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#9fb3d0;margin:9px 2px 0;}
-  .qzIgSpin{width:13px;height:13px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--ciano);border-radius:50%;animation:qzIgGira .7s linear infinite;flex:0 0 auto;}
-  @keyframes qzIgGira{to{transform:rotate(360deg)}}
-  .qzIgCard{display:flex;align-items:center;gap:12px;margin:10px 0 0;padding:11px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.16);background:rgba(6,14,26,.55);animation:qzIgEntra .25s ease;}
-  @keyframes qzIgEntra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  .qzIgCard.qzIgOk{border-color:#25e39b;box-shadow:0 0 0 3px rgba(37,227,155,.13);}
-  .qzIgFoto{width:52px;height:52px;border-radius:50%;flex:0 0 auto;object-fit:cover;background:#12253f;border:2px solid rgba(255,255,255,.14);}
-  .qzIgIniciais{width:52px;height:52px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:#12253f;color:#7fd4ff;font-weight:700;font-size:18px;border:2px solid rgba(255,255,255,.14);}
-  .qzIgInfo{flex:1 1 auto;min-width:0;}
-  .qzIgNome{font-size:14.5px;font-weight:600;color:#eaf2ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .qzIgArroba{font-size:12.5px;color:#9fb3d0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .qzIgNum{font-size:12.5px;color:#25e39b;font-weight:600;margin-top:2px;}
-  .qzIgSelo{color:#3ea9ff;margin-left:4px;}
-  .qzIgSou{flex:0 0 auto;border:1px solid var(--ciano);background:rgba(0,212,255,.1);color:#7fd4ff;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;}
-  .qzIgSou:hover{background:rgba(0,212,255,.2);}
-  .qzIgFeito{flex:0 0 auto;color:#25e39b;font-size:13px;font-weight:600;white-space:nowrap;}
   .qzCampoSenha{position:relative;}
   /* Login/cadastro com Google dentro do quiz (20/08/2026) — mesmo botão/estilo já usado
      na tela de Entrar, só reaproveitado aqui pra fechar o cadastro sem digitar senha. */
@@ -1080,6 +1058,17 @@ body.logado .card{background:transparent;border:none;box-shadow:none;padding:0;}
 
 .mvShell{display:block;}
 @media(min-width:900px){
+  /* ---------- rodape institucional (03/09/2026) ----------
+     Quem paga todo mes tem o direito de ver de quem e o CNPJ que cobra.
+     E a diferenca entre "um site que me cobra" e "uma empresa que me cobra". */
+  .mvRodape{margin:26px 0 0;padding:18px 16px 26px;border-top:1px solid var(--mv-linha);text-align:center;
+    font-size:12.5px;line-height:1.65;color:var(--mv-txt-3)}
+  .mvRodape b{color:var(--mv-txt);font-weight:600}
+  .mvRodapeLinks{margin-top:7px;display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center}
+  .mvRodape a{color:var(--mv-txt-3);text-decoration:none;border-bottom:1px solid var(--mv-linha)}
+  .mvRodape a:hover{color:var(--mv-ciano);border-bottom-color:var(--mv-ciano)}
+  /* a barra inferior do celular fica por cima: reserva o espaco dela */
+  @media(max-width:1119px){.mvRodape{padding-bottom:86px}}
   .mvShell{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start;}
 }
 @media(min-width:1120px){
@@ -2359,6 +2348,17 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         </div>
       </aside>
       </div><!-- /mvShell -->
+
+      <footer class="mvRodape">
+        <div><b>EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA</b></div>
+        <div>CNPJ 68.289.841/0001-02 &middot; Curitiba/PR</div>
+        <div class="mvRodapeLinks">
+          <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener">Termos de uso</a>
+          <a href="https://moviki.com.br/privacidade.html" target="_blank" rel="noopener">Privacidade</a>
+          <a href="https://moviki.com.br/excluir-conta.html" target="_blank" rel="noopener">Excluir minha conta</a>
+          <a href="https://wa.me/554120186848" target="_blank" rel="noopener">(41) 2018-6848</a>
+        </div>
+      </footer>
     </div>
     </div>
 
@@ -2456,13 +2456,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
     <div id="qzB3" class="qzTela" style="display:none">
       <h1 class="qzTitulo">Cadastro de Parceiro</h1>
       <div class="qzCampo"><label for="qzNomeB">Seu nome</label><input id="qzNomeB" type="text" maxlength="80" placeholder="Nome completo"></div>
-      <div class="qzCampo">
-        <label for="qzArroba">Seu @ do Instagram (opcional)</label>
-        <input id="qzArroba" type="text" maxlength="40" placeholder="@seuarroba" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" oninput="mqzArrobaDigitou()">
-        <div class="qzIgDica">Digite o seu @ e a gente acha o seu perfil pra voc&ecirc; confirmar. Se o seu for do TikTok, pode digitar do mesmo jeito.</div>
-        <div id="qzIgBusca" class="qzIgBusca" style="display:none"><span class="qzIgSpin"></span> Procurando o seu perfil no Instagram&hellip;</div>
-        <div id="qzIgResultado"></div>
-      </div>
+      <div class="qzCampo"><label for="qzArroba">Seu @ do Instagram/TikTok (opcional)</label><input id="qzArroba" type="text" maxlength="40" placeholder="@seuarroba"></div>
       <div class="qzCampo"><label for="qzPix">Sua chave Pix</label><input id="qzPix" type="text" maxlength="140" placeholder="CPF, e-mail, telefone ou chave aleatória"></div>
       <label class="qzCheck"><input type="checkbox" id="qzAceiteB"> Li e concordo com o <a href="regulamento.html" target="_blank" rel="noopener">Regulamento do Programa de Parceiros</a>.</label>
       <div id="qzB3Erro" class="qzErro"></div>
@@ -2668,7 +2662,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-02-bv-completo';
+  window.MOVIKI_VERSAO='2026-09-03-rodape';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5077,7 +5071,6 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
     if(window.mqzFecharEmailA)window.mqzFecharEmailA();
     if(window.mqzFecharEmailB)window.mqzFecharEmailB();
     var ms=$('qzSlugMsg'); if(ms){ms.textContent='';ms.className='qzSlugMsg';}
-    igZerar(); // limpa o @ e o cartao do Instagram junto com o resto
     mostrarTela('qzTela1',false);
   }
 
@@ -5218,123 +5211,6 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
   // Cadastro do parceiro com Google \u2014 mesma ideia do comerciante. Se a conta Google j\u00e1 existia
   // (jaExistia), n\u00e3o for\u00e7a redirect pro painel de parceiro: fecha o quiz e deixa o
   // onAuthStateChanged decidir o painel certo (pode ser comerciante, n\u00e3o parceiro).
-  // ==========================================================
-  //  BUSCA DO @ DO INSTAGRAM — 03/09/2026
-  //
-  //  O influenciador digita o @ e a tela mostra a foto, o nome e o numero
-  //  de seguidores dele pra confirmar "sou eu". Quem busca e o robo
-  //  (api/novo-parceiro.js?instagram=...), pela API oficial da Meta.
-  //
-  //  ISTO E SO VITRINE. Nada do que aparece aqui e gravado a partir do
-  //  navegador: o numero de seguidores que vai pro cadastro e buscado DE
-  //  NOVO no servidor, logo depois do signup (Regra de Ouro #1). Se
-  //  gravasse daqui, qualquer um forjaria 500 mil seguidores no F12.
-  //
-  //  NADA AQUI PODE TRAVAR O CADASTRO. A busca depende de um servico de
-  //  fora e fica no MEIO do formulario: se a Meta cair, se o token vencer
-  //  ou se a conta for pessoal (business_discovery so le conta
-  //  profissional), o campo simplesmente volta a ser um campo de texto
-  //  comum e o @ digitado vale do mesmo jeito. Por isso nenhum caminho de
-  //  erro aqui escreve em qzB3Erro nem desabilita botao.
-  // ==========================================================
-  var ROBO_IG = 'https://moviki-robo.vercel.app/api/novo-parceiro';
-  var igTimer = null, igUltimo = '', igPedido = 0;
-
-  // Aceita "@fulano", "fulano", "instagram.com/fulano" e o link inteiro
-  // colado da barra do navegador — que e como a maioria manda o proprio @.
-  function igLimpar(bruto){
-    var s = String(bruto||'').trim().toLowerCase();
-    s = s.replace(/^https?:\/\//,'').replace(/^www\./,'').replace(/^m\./,'');
-    s = s.replace(/^instagram\.com\//,'');
-    s = s.split('?')[0].split('/')[0].replace(/^@+/,'');
-    return /^[a-z0-9._]{2,30}$/.test(s) ? s : '';
-  }
-
-  // 12400 -> "12,4 mil". Numero cheio nao diz nada pra quem le rapido.
-  function igNumero(n){
-    n = Number(n)||0;
-    if(n >= 1000000) return (n/1000000).toFixed(n>=10000000?0:1).replace('.',',').replace(',0','')+' mi';
-    if(n >= 1000)    return (n/1000).toFixed(n>=100000?0:1).replace('.',',').replace(',0','')+' mil';
-    return String(n);
-  }
-
-  function igMostrar(d){
-    var box = $('qzIgResultado'); if(!box) return;
-    // So aceita data: URI de imagem. O robo e a nossa fonte, mas conferir
-    // aqui custa uma linha e fecha a porta pra src estranho no innerHTML.
-    var foto = (typeof d.foto === 'string' && d.foto.indexOf('data:image/') === 0) ? d.foto : '';
-    var avatar = foto
-      ? '<img class="qzIgFoto" src="'+esc(foto)+'" alt="">'
-      : '<div class="qzIgIniciais">'+esc(String(d.arroba||'?').slice(0,2).toUpperCase())+'</div>';
-    box.innerHTML =
-      '<div class="qzIgCard" id="qzIgCard">'+avatar+
-        '<div class="qzIgInfo">'+
-          '<div class="qzIgNome">'+esc(d.nome || ('@'+d.arroba))+(d.verificado?'<span class="qzIgSelo">&#10004;</span>':'')+'</div>'+
-          '<div class="qzIgArroba">@'+esc(d.arroba)+'</div>'+
-          '<div class="qzIgNum">'+igNumero(d.seguidores)+' seguidores</div>'+
-        '</div>'+
-        '<button type="button" class="qzIgSou" id="qzIgSou" onclick="mqzIgSouEu()">Sou eu</button>'+
-      '</div>';
-  }
-
-  window.mqzIgSouEu = function(){
-    var c = $('qzIgCard'), b = $('qzIgSou');
-    if(c) c.classList.add('qzIgOk');
-    if(b){
-      var ok = document.createElement('span');
-      ok.className = 'qzIgFeito'; ok.textContent = '✓ é você';
-      b.parentNode.replaceChild(ok, b);
-    }
-    // Normaliza o campo pro @ que a Meta confirmou (o usuario pode ter
-    // colado o link inteiro). igUltimo nao muda, entao nao dispara busca.
-    var i = $('qzArroba'); if(i && igUltimo) i.value = '@'+igUltimo;
-    try{ if(window.mvEv) mvEv('quiz_arroba_confirmado',{}); }catch(_){}
-  };
-
-  function igBuscar(arroba){
-    var pedido = ++igPedido;                       // carimbo desta busca
-    var carr = $('qzIgBusca'); if(carr) carr.style.display = 'flex';
-    var box  = $('qzIgResultado'); if(box) box.innerHTML = '';
-    fetch(ROBO_IG+'?instagram='+encodeURIComponent(arroba))
-      .then(function(r){ return r.json(); })
-      .then(function(j){
-        // Digitou mais no meio da busca: esta resposta e velha, joga fora.
-        // Sem isso, uma resposta lenta de "@jo" sobrescreveria "@joao".
-        if(pedido !== igPedido) return;
-        if(carr) carr.style.display = 'none';
-        if(j && j.ok && j.achou){ igMostrar(j); return; }
-        if(box) box.innerHTML = '<div class="qzIgDica">N&atilde;o achei esse @ como conta profissional do Instagram &mdash; sem problema, pode seguir assim mesmo.</div>';
-      })
-      .catch(function(){
-        if(pedido !== igPedido) return;
-        if(carr) carr.style.display = 'none';
-        if(box)  box.innerHTML = '';               // caiu: campo comum, sem barulho
-      });
-  }
-
-  window.mqzArrobaDigitou = function(){
-    var i = $('qzArroba'); if(!i) return;
-    var a = igLimpar(i.value);
-    if(a === igUltimo && $('qzIgCard')) return;     // mesmo @, cartao ja na tela
-    if(igTimer) clearTimeout(igTimer);
-    igUltimo = a;
-    igPedido++;                                    // invalida resposta em voo
-    var box = $('qzIgResultado'); if(box) box.innerHTML = '';
-    var carr = $('qzIgBusca');   if(carr) carr.style.display = 'none';
-    if(!a) return;
-    // 700ms parado antes de buscar: sem isso, "joaosilva" viraria 9
-    // chamadas ao robo e 9 consultas na cota da Meta, por uma pessoa so.
-    igTimer = setTimeout(function(){ igBuscar(a); }, 700);
-  };
-
-  function igZerar(){
-    if(igTimer) clearTimeout(igTimer);
-    igTimer = null; igUltimo = ''; igPedido++;
-    var i = $('qzArroba');       if(i) i.value = '';
-    var box = $('qzIgResultado'); if(box) box.innerHTML = '';
-    var carr = $('qzIgBusca');    if(carr) carr.style.display = 'none';
-  }
-
   window.mqzGoogleParceiro=function(){
     var erro=$('qzB3Erro'); if(erro)erro.textContent='';
     if(!($('qzAceiteB')&&$('qzAceiteB').checked)){if(erro)erro.textContent='Voc\u00ea precisa aceitar o regulamento.';return;}
