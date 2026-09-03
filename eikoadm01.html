@@ -1132,13 +1132,14 @@ table.mvTab td b{font-weight:700}
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, deleteField, onSnapshot, serverTimestamp, query, orderBy, limit, documentId } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getStorage, ref as stRef, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-08-31-vikfiltro';
+  window.MOVIKI_VERSAO = '2026-09-03-appcheck';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1151,6 +1152,22 @@ table.mvTab td b{font-weight:700}
     appId: "1:451920150738:web:be458392064c964c792d0b"
   };
   const app  = initializeApp(firebaseConfig);
+  /* ---- App Check — 03/09/2026 ----
+     Prova ao Firebase que quem esta falando e ESTA pagina, num navegador de
+     verdade — e nao um script rodando por fora. As regras dizem O QUE pode ser
+     gravado; o App Check diz QUEM pode gravar. E ele que da limite de
+     velocidade contra escrita anonima (avaliacoes, metricas, newsletter).
+     AINDA SEM IMPOSICAO: so barra de verdade quando o enforcement for ligado no
+     console do Firebase — e isso so depois que TODAS as paginas estiverem no ar
+     com este bloco e o painel do Firebase mostrar o trafego verificado. Ligar
+     antes derruba, CALADA, a pagina que tiver ficado de fora.
+     try/catch de proposito: App Check com problema nunca derruba a pagina. */
+  try {
+    initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider('6LdwcHQtAAAAAJKPpfIrUr8QQ_PfvXl89uJFq9-w'),
+      isTokenAutoRefreshEnabled: true
+    });
+  } catch (e) { console.error('App Check:', e); }
   const auth = getAuth(app);
   const db   = getFirestore(app);
   const storage = getStorage(app);
