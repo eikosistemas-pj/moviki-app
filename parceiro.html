@@ -982,7 +982,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-03-appcheck';
+  window.MOVIKI_VERSAO = '2026-09-03-abertura';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2329,6 +2329,13 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
    Mapa e roteiros: claude/moviki-videoaulas-por-modulo.md
    ======================================================================= */
 window.MOVIKI_TUTORIAIS = { modulos: [
+  /* ABERTURA - 03/09/2026. Modulo SEM `sel` de proposito: a abertura nao
+     pertence a nenhuma secao do painel, entao ela nao e embutida em lugar
+     nenhum. Aparece na tela de aulas e conta para a trava, que e o que
+     importa - `todas()` percorre os modulos e ignora o `sel`, enquanto o
+     `embutir()` pula todo modulo que nao tem um. */
+  { n:'Comece por aqui', v:[
+    { k:'mod-parc-abertura',   t:'Bem-vindo ao Programa de Parceiros',           d:'2:54', id:'fQqR9ae5vnI' } ]},
   { n:'Começar', sel:'section[data-sec="visao"]', v:[
     { k:'mod-parc-comecar',    t:'Como funciona o Programa de Parceiros',        d:'0:28', id:'vWj5K8RdSdY' } ]},
   { n:'Indicações', sel:'section[data-sec="indicacoes"]', v:[
