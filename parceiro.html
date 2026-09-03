@@ -693,6 +693,45 @@ input::placeholder{color:#6b7f96}
             <div class="aviso ok" id="avisoLink"></div>
           </div>
 
+          <!-- ====================== CRACHA DE PARCEIRO ======================
+               Mora AQUI dentro, atras da mesma trava das aulas, e nao por
+               simetria: o cracha afirma "treinamento concluido". Mostra-lo
+               antes seria imprimir uma mentira.
+               O QR e so um endereco escrito em quadradinhos - nao guarda
+               informacao. Por isso o destino pode mudar depois sem reimprimir
+               nada, e por isso o endereco precisa ser um que nunca seja
+               aposentado: /v/ e /p/ sao exatamente isso.
+               =============================================================== -->
+          <div class="cd soAprovado" id="crachaCard">
+            <div class="cdTit">Seu crachá de parceiro</div>
+            <p class="cdSub" style="margin-bottom:14px">Mostre esta tela quando alguém perguntar se você é do Moviki mesmo. A pessoa aponta a câmera do celular dela, cai numa página do Moviki e confere sozinha — na sua frente, em três segundos.</p>
+
+            <div class="crBox" id="crBox">
+              <div class="crTopo">
+                <span class="crMarca">mo<b>viki</b></span>
+                <span class="crChapeu">Programa de Parceiros</span>
+              </div>
+              <div class="crCorpo">
+                <div class="crEsq">
+                  <div class="crFoto" id="crFoto">P</div>
+                  <div class="crNome" id="crNome">—</div>
+                  <div class="crArroba" id="crArroba"></div>
+                  <div class="crSelo" id="crSelo">Parceiro autorizado do Moviki</div>
+                  <div class="crDesde" id="crDesde"></div>
+                </div>
+                <div class="crDir">
+                  <canvas class="crQR" id="crQR" width="280" height="280" role="img" aria-label="Código de verificação do parceiro"></canvas>
+                  <div class="crQRTxt">Aponte a câmera</div>
+                </div>
+              </div>
+              <div class="crPe" id="crUrl">moviki.com.br/v/…</div>
+            </div>
+
+            <button type="button" class="btn sec" id="btnCrachaBaixar" style="margin-top:12px">Baixar como imagem</button>
+            <p class="cdSub" style="margin-top:10px;font-size:12.5px">Serve para o story, para o grupo do WhatsApp ou para o seu perfil. É a sua credencial, e ela é sua.</p>
+            <div class="aviso ok" id="avisoCracha"></div>
+          </div>
+
           <div class="cd soAprovado">
             <div class="cdTit">Indicar outro parceiro</div>
             <p class="cdSub" style="margin-bottom:12px">Chame alguém pra ser parceiro também. Se a pessoa se cadastrar pelo seu link, você ganha bônus quando os indicados dela assinarem.</p>
@@ -982,7 +1021,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-03-abertura';
+  window.MOVIKI_VERSAO = '2026-09-03-cracha';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1451,6 +1490,19 @@ input::placeholder{color:#6b7f96}
             if(concluiu) espelharParceiro(user, true);
           }catch(e){}
         }
+      };
+      /* Dados do CRACHA para o bloco classico la embaixo. O modulo e o unico
+         que enxerga MEU; sem esta ponte o cracha teria que reler o banco. */
+      window.__mvCracha = {
+        nome:   MEU.nome || '',
+        slug:   MEU.slug || '',
+        arroba: MEU.arroba || '',
+        /* ms() so entende Timestamp do Firestore. Em producao e sempre isso,
+           mas uma data que chegue como texto nao pode zerar o "autorizado
+           desde" - o cracha e a unica tela que mostra esse dado ao estranho. */
+        criadoEm: ms(MEU.criadoEm) || (MEU.criadoEm ? (Date.parse(MEU.criadoEm) || 0) : 0),
+        treinado: !!MEU.aulasEm,
+        aprovado: (MEU.status || '') === 'aprovado'
       };
       window.dispatchEvent(new Event('mv-parceiro-pronto'));
 
@@ -2319,6 +2371,40 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
   background:linear-gradient(to bottom,rgba(4,10,18,.93) 0,rgba(4,10,18,.93) 320px,rgba(4,10,18,.78) 100%)}
 .mvCadeadoTit{font-size:17px;font-weight:700;color:#ffcf9a;max-width:420px;line-height:1.35}
 .mvCadeadoSub{font-size:13.5px;color:#c9d6e6;max-width:440px;line-height:1.5}
+
+/* ===================== CRACHA DE PARCEIRO - 03/09/2026 =====================
+   Estilo PROPRIO, sem reusar classe de outro arquivo. Reusar foi como o botao
+   laranja das aulas do parceiro nasceu quebrado. */
+.crBox{border:1px solid var(--mv-linha-forte);border-radius:18px;overflow:hidden;
+  background:linear-gradient(150deg,rgba(0,212,255,.07),rgba(0,102,255,.05)),var(--mv-fundo-2, #0d1b2a)}
+.crTopo{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 16px;border-bottom:1px solid var(--mv-linha)}
+.crMarca{font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--mv-txt-1)}
+.crMarca b{color:var(--mv-ciano)}
+.crChapeu{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--mv-txt-3)}
+.crCorpo{display:flex;gap:16px;padding:18px 16px;align-items:center}
+.crEsq{flex:1 1 auto;min-width:0}
+.crDir{flex:0 0 auto;text-align:center}
+.crFoto{width:66px;height:66px;border-radius:50%;margin-bottom:10px;display:flex;
+  align-items:center;justify-content:center;font-size:26px;font-weight:800;color:var(--mv-ciano);
+  background:rgba(0,212,255,.10);border:2px solid var(--mv-linha-forte);
+  background-size:cover;background-position:center;overflow:hidden}
+.crFoto.temFoto{font-size:0;color:transparent;border-color:var(--mv-ok)}
+.crNome{font-size:20px;font-weight:800;line-height:1.2;word-break:break-word;color:var(--mv-txt-1)}
+.crArroba{font-size:13.5px;color:var(--mv-txt-3);margin-top:2px}
+.crSelo{display:inline-block;margin-top:10px;padding:7px 13px;border-radius:999px;
+  font-size:12.5px;font-weight:700;line-height:1.25;
+  background:rgba(37,227,155,.13);border:1px solid rgba(37,227,155,.42);color:var(--mv-ok)}
+.crDesde{font-size:12px;color:var(--mv-txt-3);margin-top:8px}
+.crQR{width:130px;height:130px;display:block;border-radius:10px;background:#fff;padding:7px}
+.crQRTxt{font-size:11px;color:var(--mv-txt-3);margin-top:7px;letter-spacing:.04em}
+.crPe{padding:11px 16px;border-top:1px solid var(--mv-linha);font-size:12.5px;
+  color:var(--mv-txt-2);text-align:center;word-break:break-all}
+@media(max-width:430px){
+  .crCorpo{flex-direction:column;text-align:center;gap:14px}
+  .crFoto{margin-left:auto;margin-right:auto}
+  .crQR{width:150px;height:150px}
+}
 </style>
 <script>
 /* ===================== TUTORIAIS EM VIDEO - PARCEIRO ======================
@@ -2859,6 +2945,480 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   window.abrirTutoriais=function(k){ try{ abrirAulas(k); }catch(e){} };
   window.abrirAulas=window.abrirTutoriais;
   window.mvTutEmbutir=embutir;
+})();
+</script>
+
+
+<script>
+/* ========================= CRACHA DE PARCEIRO - 03/09/2026 ==================
+   Bloco isolado: nao depende do Firebase, nao le nada do banco e falha calado.
+   Painel de parceiro nao pode cair por causa de um cracha.
+
+   O gerador de QR e escrito a mao porque a CSP do painel nao deixa carregar
+   biblioteca de fora. Modo byte, correcao M, versoes 1 a 6 - cobre com folga
+   o endereco /v/<apelido> com apelido de ate 40 caracteres.
+   ========================================================================= */
+(function(){
+  'use strict';
+
+/* mvQR - gerador de QR code, modo byte, correcao M, versoes 1 a 6.
+   Escrito a mao porque a CSP do painel nao deixa carregar biblioteca de fora.
+   Devolve { tam, mods } onde mods[r*tam+c] === 1 significa modulo ESCURO. */
+function mvQR(texto){
+  'use strict';
+
+  /* ---- capacidade e blocos, nivel M, versoes 1 a 6 ----
+     [ total de codewords, EC por bloco, blocos g1, dados por bloco g1,
+       blocos g2, dados por bloco g2 ] */
+  var TAB = {
+    1: [26,  10, 1, 16, 0, 0],
+    2: [44,  16, 1, 28, 0, 0],
+    3: [70,  26, 1, 44, 0, 0],
+    4: [100, 18, 2, 32, 0, 0],
+    5: [134, 24, 2, 43, 0, 0],
+    6: [172, 16, 4, 27, 0, 0]
+  };
+  var ALINHA = { 1:[], 2:[6,18], 3:[6,22], 4:[6,26], 5:[6,30], 6:[6,34] };
+
+  /* ---- bytes UTF-8 ---- */
+  var bytes = [];
+  (function(){
+    var s = unescape(encodeURIComponent(String(texto)));
+    for (var i=0;i<s.length;i++) bytes.push(s.charCodeAt(i) & 255);
+  })();
+
+  /* ---- menor versao que cabe ---- */
+  var ver = 0;
+  for (var v=1; v<=6; v++){
+    var t = TAB[v];
+    var dados = t[2]*t[3] + t[4]*t[5];
+    if (bytes.length + 2 <= dados){ ver = v; break; }   /* +2 = modo(4b)+contador(8b) */
+  }
+  if (!ver) return null;                                 /* texto grande demais */
+
+  var T = TAB[ver], ECN = T[1], TOTDADOS = T[2]*T[3] + T[4]*T[5];
+
+  /* ---- fluxo de bits ---- */
+  var bits = [];
+  function por(valor, n){ for (var i=n-1;i>=0;i--) bits.push((valor>>i) & 1); }
+  por(4, 4);                       /* modo byte */
+  por(bytes.length, 8);            /* contador: 8 bits nas versoes 1 a 9 */
+  for (var i=0;i<bytes.length;i++) por(bytes[i], 8);
+  var falta = TOTDADOS*8 - bits.length;
+  por(0, Math.min(4, falta));      /* terminador */
+  while (bits.length % 8) bits.push(0);
+  var pad = [0xEC, 0x11], k = 0;
+  while (bits.length < TOTDADOS*8){ por(pad[k++ & 1], 8); }
+
+  var dados = [];
+  for (var i=0;i<bits.length;i+=8){
+    var b = 0; for (var j=0;j<8;j++) b = (b<<1) | bits[i+j];
+    dados.push(b);
+  }
+
+  /* ---- GF(256), primitivo 0x11D ---- */
+  var EXP = new Uint8Array(512), LOG = new Uint8Array(256);
+  (function(){
+    var x = 1;
+    for (var i=0;i<255;i++){ EXP[i]=x; LOG[x]=i; x<<=1; if (x & 256) x ^= 0x11D; }
+    for (var i=255;i<512;i++) EXP[i]=EXP[i-255];
+  })();
+  function mul(a,b){ return (a===0||b===0) ? 0 : EXP[LOG[a]+LOG[b]]; }
+
+  function geradorRS(n){
+    var g = [1];
+    for (var i=0;i<n;i++){
+      var novo = new Array(g.length+1).fill(0);
+      for (var j=0;j<g.length;j++){
+        novo[j]   ^= mul(g[j], 1);
+        novo[j+1] ^= mul(g[j], EXP[i]);
+      }
+      g = novo;
+    }
+    return g;
+  }
+  function ec(bloco, n){
+    var g = geradorRS(n);
+    var r = bloco.slice().concat(new Array(n).fill(0));
+    for (var i=0;i<bloco.length;i++){
+      var c = r[i]; if (c === 0) continue;
+      for (var j=0;j<g.length;j++) r[i+j] ^= mul(g[j], c);
+    }
+    return r.slice(bloco.length);
+  }
+
+  /* ---- blocos e intercalacao ---- */
+  var blocos = [], ecs = [], p = 0;
+  function fatiar(qtd, tam){
+    for (var i=0;i<qtd;i++){
+      var b = dados.slice(p, p+tam); p += tam;
+      blocos.push(b); ecs.push(ec(b, ECN));
+    }
+  }
+  fatiar(T[2], T[3]);
+  if (T[4]) fatiar(T[4], T[5]);
+
+  var fluxo = [];
+  var maiorD = Math.max.apply(null, blocos.map(function(b){ return b.length; }));
+  for (var i=0;i<maiorD;i++)
+    for (var j=0;j<blocos.length;j++)
+      if (i < blocos[j].length) fluxo.push(blocos[j][i]);
+  for (var i=0;i<ECN;i++)
+    for (var j=0;j<ecs.length;j++) fluxo.push(ecs[j][i]);
+
+  /* ---- matriz ---- */
+  var tam = ver*4 + 17;
+  var m = new Int8Array(tam*tam).fill(-1);   /* -1 = livre */
+  function pos(r,c,v){ m[r*tam+c] = v; }
+  function ler(r,c){ return m[r*tam+c]; }
+
+  function finder(r,c){
+    for (var i=-1;i<=7;i++) for (var j=-1;j<=7;j++){
+      var rr=r+i, cc=c+j;
+      if (rr<0||cc<0||rr>=tam||cc>=tam) continue;
+      var dentro = (i>=0&&i<=6&&(j===0||j===6)) || (j>=0&&j<=6&&(i===0||i===6)) ||
+                   (i>=2&&i<=4&&j>=2&&j<=4);
+      pos(rr,cc, dentro?1:0);
+    }
+  }
+  finder(0,0); finder(0,tam-7); finder(tam-7,0);
+
+  /* alinhamento: todas as combinacoes menos as que caem sobre os finders */
+  var A = ALINHA[ver];
+  for (var a=0;a<A.length;a++) for (var b=0;b<A.length;b++){
+    var r=A[a], c=A[b];
+    if ((r===6&&c===6) || (r===6&&c===tam-7) || (r===tam-7&&c===6)) continue;
+    for (var i=-2;i<=2;i++) for (var j=-2;j<=2;j++)
+      pos(r+i, c+j, (Math.max(Math.abs(i),Math.abs(j))!==1) ? 1 : 0);
+  }
+
+  /* temporizacao */
+  for (var i=8;i<tam-8;i++){ var v2 = (i%2===0)?1:0; pos(6,i,v2); pos(i,6,v2); }
+
+  /* modulo escuro fixo */
+  pos(4*ver+9, 8, 1);
+
+  /* reserva das areas de formato */
+  for (var i=0;i<9;i++){ if (ler(8,i)===-1) pos(8,i,0); if (ler(i,8)===-1) pos(i,8,0); }
+  for (var i=0;i<8;i++){ if (ler(8,tam-1-i)===-1) pos(8,tam-1-i,0); if (ler(tam-1-i,8)===-1) pos(tam-1-i,8,0); }
+
+  var reservado = m.slice();   /* quem ja estava ocupado antes dos dados */
+
+  /* dados em zigue-zague, pulando a coluna 6 */
+  var bi = 0, total = fluxo.length*8;
+  function bitEm(n){ return n<total ? (fluxo[n>>3] >> (7-(n&7))) & 1 : 0; }
+  var sobe = true;
+  for (var col=tam-1; col>0; col-=2){
+    if (col === 6) col--;
+    for (var q=0;q<tam;q++){
+      var r = sobe ? (tam-1-q) : q;
+      for (var s=0;s<2;s++){
+        var c = col - s;
+        if (reservado[r*tam+c] !== -1) continue;
+        pos(r, c, bitEm(bi++));
+      }
+    }
+    sobe = !sobe;
+  }
+
+  /* ---- mascaras ---- */
+  function regra(r,c,n){
+    switch(n){
+      case 0: return (r+c)%2===0;
+      case 1: return r%2===0;
+      case 2: return c%3===0;
+      case 3: return (r+c)%3===0;
+      case 4: return (Math.floor(r/2)+Math.floor(c/3))%2===0;
+      case 5: return ((r*c)%2)+((r*c)%3)===0;
+      case 6: return (((r*c)%2)+((r*c)%3))%2===0;
+      case 7: return (((r+c)%2)+((r*c)%3))%2===0;
+    }
+  }
+  function aplicar(base, n){
+    var out = base.slice();
+    for (var r=0;r<tam;r++) for (var c=0;c<tam;c++){
+      if (reservado[r*tam+c] !== -1) continue;
+      if (regra(r,c,n)) out[r*tam+c] ^= 1;
+    }
+    return out;
+  }
+  function formato(n, alvo){
+    /* EC nivel M = 00. BCH(15,5) com gerador 0x537 e mascara 0x5412. */
+    var v3 = (0 << 3) | n;
+    var d = v3 << 10;
+    for (var i=4;i>=0;i--) if (d & (1<<(i+10))) d ^= 0x537 << i;
+    var f = ((v3 << 10) | d) ^ 0x5412;
+    for (var i=0;i<15;i++){
+      var b = (f >> i) & 1;
+      /* copia 1, em volta do finder de cima a esquerda */
+      if (i<6)        alvo[8*tam+i]        = b;
+      else if (i===6) alvo[8*tam+7]        = b;
+      else if (i===7) alvo[8*tam+8]        = b;
+      else if (i===8) alvo[7*tam+8]        = b;
+      else            alvo[(14-i)*tam+8]   = b;
+      /* copia 2: os 7 primeiros descem pela coluna 8, os 8 ultimos correm
+         pela linha 8. O corte e em 7, nao em 8 - o oitavo modulo dessa
+         coluna e o MODULO ESCURO fixo, e escrever nele o apaga. */
+      if (i<7) alvo[(tam-1-i)*tam+8]      = b;
+      else     alvo[8*tam+(tam-15+i)]     = b;
+    }
+  }
+  function penal(g){
+    var p1=0,p2=0,p3=0,escuros=0;
+    function corrida(get){
+      var t=0;
+      for (var a=0;a<tam;a++){
+        var n=1;
+        for (var b=1;b<tam;b++){
+          if (get(a,b)===get(a,b-1)) n++;
+          else { if (n>=5) t += 3+(n-5); n=1; }
+        }
+        if (n>=5) t += 3+(n-5);
+      }
+      return t;
+    }
+    p1 = corrida(function(r,c){ return g[r*tam+c]; }) + corrida(function(c,r){ return g[r*tam+c]; });
+    for (var r=0;r<tam-1;r++) for (var c=0;c<tam-1;c++){
+      var a=g[r*tam+c];
+      if (a===g[r*tam+c+1] && a===g[(r+1)*tam+c] && a===g[(r+1)*tam+c+1]) p2 += 3;
+    }
+    var A1=[1,0,1,1,1,0,1,0,0,0,0], A2=[0,0,0,0,1,0,1,1,1,0,1];
+    function bate(v2,i,P){ for (var k=0;k<11;k++) if (v2[i+k]!==P[k]) return false; return true; }
+    for (var r=0;r<tam;r++){
+      var lin=[], col=[];
+      for (var c=0;c<tam;c++){ lin.push(g[r*tam+c]); col.push(g[c*tam+r]); }
+      for (var i=0;i+11<=tam;i++){
+        if (bate(lin,i,A1)||bate(lin,i,A2)) p3 += 40;
+        if (bate(col,i,A1)||bate(col,i,A2)) p3 += 40;
+      }
+    }
+    for (var i=0;i<g.length;i++) if (g[i]===1) escuros++;
+    var pct = escuros*100/(tam*tam);
+    var p4 = Math.floor(Math.abs(pct-50)/5)*10;
+    return p1+p2+p3+p4;
+  }
+
+  var melhor=null, melhorN=0, menor=Infinity;
+  for (var n=0;n<8;n++){
+    var g = aplicar(m, n);
+    formato(n, g);
+    var pe = penal(g);
+    if (pe < menor){ menor=pe; melhor=g; melhorN=n; }
+  }
+  return { tam: tam, mods: melhor, versao: ver, mascara: melhorN };
+}
+
+  /* ------------------------------------------------------------------ tela */
+  function el(id){ return document.getElementById(id); }
+  var URL_BASE = 'https://moviki.com.br/v/';
+  var __dados = null;
+
+  function desenhar(cv, q, lado, claro, escuro){
+    var ctx = cv.getContext('2d');
+    var borda = 4;                                  /* zona de silencio, em modulos */
+    var n = q.tam + borda*2;
+    var p = Math.floor(lado / n);
+    var sobra = lado - p*n;
+    var off = Math.floor(sobra/2);
+    cv.width = lado; cv.height = lado;
+    ctx.fillStyle = claro; ctx.fillRect(0,0,lado,lado);
+    ctx.fillStyle = escuro;
+    for (var r=0;r<q.tam;r++) for (var c=0;c<q.tam;c++){
+      if (!q.mods[r*q.tam+c]) continue;
+      ctx.fillRect(off + (c+borda)*p, off + (r+borda)*p, p, p);
+    }
+  }
+
+  function pintar(){
+    var d = __dados; if (!d || !d.slug) return;
+    var cv = el('crQR'); if (!cv) return;
+
+    var url = URL_BASE + d.slug;
+    var q = mvQR(url);
+    if (!q) return;                                  /* apelido absurdo: sem QR */
+    desenhar(cv, q, 280, '#ffffff', '#0b1220');
+
+    var nome = d.nome || 'Parceiro Moviki';
+    if (el('crNome')) el('crNome').textContent = nome;
+    if (el('crFoto'))  el('crFoto').textContent = (nome.trim()[0] || 'P').toUpperCase();
+    if (el('crArroba')) el('crArroba').textContent = d.arroba ? ('@' + String(d.arroba).replace(/^@+/,'')) : '';
+    if (el('crUrl'))   el('crUrl').textContent = 'moviki.com.br/v/' + d.slug;
+
+    if (el('crDesde') && d.criadoEm){
+      var dt = new Date(d.criadoEm);
+      var M = ['janeiro','fevereiro','março','abril','maio','junho','julho',
+               'agosto','setembro','outubro','novembro','dezembro'];
+      el('crDesde').textContent = 'Autorizado desde ' + M[dt.getMonth()] + ' de ' + dt.getFullYear();
+    }
+    /* O selo do treinamento so aparece se ele CONCLUIU. Um cracha que afirma
+       treinamento sem treinamento e uma mentira impressa. */
+    if (el('crSelo')) el('crSelo').textContent = d.treinado
+      ? 'Parceiro autorizado · treinamento concluído'
+      : 'Parceiro autorizado do Moviki';
+
+    /* a foto e a mesma que o painel ja buscou; se ainda nao chegou, tenta de novo */
+    var lado = el('avatarLado');
+    if (lado && lado.classList.contains('temFoto')){
+      var f = el('crFoto');
+      if (f){ f.style.backgroundImage = lado.style.backgroundImage; f.classList.add('temFoto'); }
+    }
+  }
+
+  /* --------------------------------------------------- baixar como imagem */
+  /* 1080x1350 e o formato que o Instagram e o WhatsApp nao cortam. Desenhado
+     do zero no canvas: nao existe biblioteca de captura de tela aqui, e a CSP
+     nao deixaria carregar uma. */
+  function baixar(){
+    var d = __dados; if (!d || !d.slug) return;
+    var L = 1080, A = 1350;
+    var cv = document.createElement('canvas'); cv.width = L; cv.height = A;
+    var x = cv.getContext('2d');
+
+    var fundo = x.createLinearGradient(0,0,L,A);
+    fundo.addColorStop(0,'#0d1b2a'); fundo.addColorStop(1,'#050b14');
+    x.fillStyle = fundo; x.fillRect(0,0,L,A);
+    x.strokeStyle = 'rgba(0,212,255,.30)'; x.lineWidth = 3;
+    x.strokeRect(28,28,L-56,A-56);
+
+    x.textAlign = 'center';
+    x.fillStyle = '#F2F5F9';
+    x.font = '800 62px Poppins, system-ui, sans-serif';
+    x.fillText('mo', L/2 - 44, 132);
+    var w = x.measureText('mo').width;
+    x.fillStyle = '#00D4FF';
+    x.fillText('viki', L/2 - 44 + w/2 + x.measureText('viki').width/2, 132);
+
+    x.fillStyle = '#9fb2c6';
+    x.font = '700 22px Poppins, system-ui, sans-serif';
+    x.fillText('PROGRAMA DE PARCEIROS', L/2, 176);
+
+    /* foto ou inicial */
+    var cy = 300, raio = 84;
+    x.save(); x.beginPath(); x.arc(L/2, cy, raio, 0, Math.PI*2); x.closePath();
+    x.fillStyle = 'rgba(0,212,255,.10)'; x.fill();
+    x.strokeStyle = 'rgba(0,212,255,.45)'; x.lineWidth = 5; x.stroke();
+    var foto = el('crFoto');
+    var bg = foto ? (foto.style.backgroundImage || '') : '';
+    var m = bg.match(/url\(["']?(data:image\/[^"')]+)["']?\)/);
+    x.restore();
+
+    function resto(){
+      var nome = (d.nome || 'Parceiro Moviki');
+      x.textAlign = 'center';
+      x.fillStyle = '#F2F5F9';
+      x.font = '800 54px Poppins, system-ui, sans-serif';
+      x.fillText(nome.length > 22 ? nome.slice(0,21) + '…' : nome, L/2, 452);
+
+      if (d.arroba){
+        x.fillStyle = '#9fb2c6';
+        x.font = '500 30px Poppins, system-ui, sans-serif';
+        x.fillText('@' + String(d.arroba).replace(/^@+/,''), L/2, 496);
+      }
+
+      /* selo */
+      var txt = d.treinado ? 'Parceiro autorizado · treinamento concluído'
+                           : 'Parceiro autorizado do Moviki';
+      x.font = '700 26px Poppins, system-ui, sans-serif';
+      var lw = x.measureText(txt).width + 56, lx = (L-lw)/2, ly = 534;
+      x.fillStyle = 'rgba(37,227,155,.14)';
+      x.beginPath();
+      if (x.roundRect) x.roundRect(lx, ly, lw, 56, 28); else x.rect(lx, ly, lw, 56);
+      x.fill();
+      x.strokeStyle = 'rgba(37,227,155,.5)'; x.lineWidth = 2; x.stroke();
+      x.fillStyle = '#25e39b'; x.fillText(txt, L/2, ly + 37);
+
+      /* QR */
+      var q = mvQR(URL_BASE + d.slug);
+      if (q){
+        var qc = document.createElement('canvas');
+        desenhar(qc, q, 440, '#ffffff', '#0b1220');
+        var qx = (L-440)/2, qy = 640;
+        x.fillStyle = '#fff';
+        x.beginPath();
+        if (x.roundRect) x.roundRect(qx-16, qy-16, 472, 472, 26); else x.rect(qx-16, qy-16, 472, 472);
+        x.fill();
+        x.drawImage(qc, qx, qy);
+      }
+
+      x.fillStyle = '#F2F5F9';
+      x.font = '600 30px Poppins, system-ui, sans-serif';
+      x.fillText('Aponte a câmera do celular', L/2, 1170);
+      x.fillStyle = '#9fb2c6';
+      x.font = '400 26px Poppins, system-ui, sans-serif';
+      x.fillText('moviki.com.br/v/' + d.slug, L/2, 1212);
+      x.font = '400 21px Poppins, system-ui, sans-serif';
+      x.fillStyle = '#7d90a5';
+      x.fillText('Você não paga nada ao parceiro. A comissão sai do Moviki.', L/2, 1268);
+
+      salvar(cv, d.slug);
+    }
+
+    if (m){
+      var img = new Image();
+      img.onload = function(){
+        x.save(); x.beginPath(); x.arc(L/2, cy, raio, 0, Math.PI*2); x.closePath(); x.clip();
+        x.drawImage(img, L/2-raio, cy-raio, raio*2, raio*2);
+        x.restore();
+        x.beginPath(); x.arc(L/2, cy, raio, 0, Math.PI*2);
+        x.strokeStyle = 'rgba(37,227,155,.6)'; x.lineWidth = 5; x.stroke();
+        resto();
+      };
+      /* imagem que nao carrega nao pode travar o download: cai na inicial */
+      img.onerror = function(){ inicial(); resto(); };
+      img.src = m[1];
+    } else { inicial(); resto(); }
+
+    function inicial(){
+      x.fillStyle = '#00D4FF';
+      x.font = '800 76px Poppins, system-ui, sans-serif';
+      x.textAlign = 'center';
+      x.fillText(((d.nome||'P').trim()[0]||'P').toUpperCase(), L/2, cy + 27);
+    }
+  }
+
+  function salvar(cv, slug){
+    var nome = 'cracha-moviki-' + slug + '.png';
+    function pelaUrl(url, revogar){
+      var a = document.createElement('a');
+      a.href = url; a.download = nome;
+      document.body.appendChild(a); a.click(); a.remove();
+      if (revogar) setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+      var av = el('avisoCracha');
+      if (av){ av.textContent = 'Imagem salva na sua galeria.';
+               setTimeout(function(){ av.textContent = ''; }, 4000); }
+    }
+    if (cv.toBlob) cv.toBlob(function(b){
+      if (b) pelaUrl(URL.createObjectURL(b), true);
+      else   pelaUrl(cv.toDataURL('image/png'), false);
+    }, 'image/png');
+    else pelaUrl(cv.toDataURL('image/png'), false);
+  }
+
+  /* ------------------------------------------------------------- amarracao */
+  /* O modulo e adiado: quando este script roda, __mvCracha pode nao existir
+     ainda. Por isso amarra mais de uma vez, de forma idempotente - mesma
+     licao do bloco de tutoriais. */
+  function tentar(){
+    var d = window.__mvCracha;
+    if (!d || !d.slug) return false;
+    __dados = d;
+    try{ pintar(); }catch(e){}
+    return true;
+  }
+  window.addEventListener('mv-parceiro-pronto', function(){ setTimeout(tentar, 60); });
+  [400, 1500, 3600].forEach(function(t){ setTimeout(tentar, t); });
+
+  document.addEventListener('click', function(e){
+    var b = e.target && e.target.closest ? e.target.closest('#btnCrachaBaixar') : null;
+    if (!b) return;
+    try{ baixar(); }catch(err){
+      var av = el('avisoCracha');
+      if (av) av.textContent = 'Não deu para gerar a imagem agora. Tente de novo.';
+    }
+  });
+
+  /* util para a suite de teste conferir o QR sem abrir a tela */
+  window.__mvQR = mvQR;
 })();
 </script>
 
