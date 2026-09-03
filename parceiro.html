@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki-ai.vercel.app; frame-src https://www.youtube-nocookie.com https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki-ai.vercel.app https://moviki-robo.vercel.app; frame-src https://www.youtube-nocookie.com https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <title>Painel do Parceiro · Moviki</title>
@@ -259,6 +259,38 @@ input::placeholder{color:#6b7f96}
 .rcPerfil .lAv{width:42px;height:42px;border-radius:12px;font-size:16px}
 .rcPerfilNome{font-size:14.5px;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rcPerfilSub{font-size:12.5px;color:var(--mv-txt-3);margin-top:2px}
+
+/* ---------- SELO DO CERTIFICADO (03/09/2026) ----------
+   A foto entra como BACKGROUND, nunca como <img> dentro do .lAv: o render()
+   escreve a inicial com textContent naquele mesmo elemento e apagaria a
+   imagem toda vez que rodasse. Com background, os dois convivem. */
+.lAv.temFoto{background-size:cover;background-position:center;font-size:0;color:transparent}
+.certSelo{margin-top:13px;padding-top:13px;border-top:1px solid var(--mv-linha);display:flex;gap:11px;align-items:flex-start}
+.certCarimbo{flex:0 0 auto;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid;position:relative}
+.certCarimbo svg{width:20px;height:20px}
+.certSelo.ok .certCarimbo{border-color:var(--mv-ok);color:var(--mv-ok);background:rgba(37,227,155,.10)}
+.certSelo.pend .certCarimbo{border-color:var(--mv-alerta);color:var(--mv-alerta);background:rgba(255,168,74,.10)}
+.certSelo.andando .certCarimbo{border-color:var(--mv-linha-forte);color:var(--mv-txt-3);background:var(--mv-campo)}
+.certTxt{flex:1 1 auto;min-width:0}
+/* certTit/certSub sao <span> dentro de um <span>: sem display:block eles saem
+   grudados numa linha so ("Aulas em diaCertificado em..."). */
+.certTit{display:block;font-size:13.5px;font-weight:700;line-height:1.25}
+.certSelo.ok .certTit{color:var(--mv-ok)}
+.certSelo.pend .certTit{color:var(--mv-alerta)}
+.certSub{display:block;font-size:12px;color:var(--mv-txt-3);margin-top:3px;line-height:1.4}
+.certBtn{margin-top:8px;border:1px solid var(--mv-linha-forte);background:var(--mv-campo);color:var(--mv-txt);
+  border-radius:var(--mv-r-sm);padding:6px 11px;font-family:var(--mv-fonte);font-size:12.5px;font-weight:600;cursor:pointer}
+.certBtn:hover{border-color:var(--mv-ciano)}
+.certSelo.pend .certBtn{border-color:var(--mv-alerta);color:var(--mv-alerta)}
+
+/* ---------- rodapé institucional (03/09/2026) ---------- */
+.mvRodape{margin:26px 0 0;padding:18px 16px 26px;border-top:1px solid var(--mv-linha);text-align:center;
+  font-size:12.5px;line-height:1.65;color:var(--mv-txt-3)}
+.mvRodape b{color:var(--mv-txt-2,var(--mv-txt));font-weight:600}
+.mvRodapeLinks{margin-top:7px;display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center}
+.mvRodape a{color:var(--mv-txt-3);text-decoration:none;border-bottom:1px solid var(--mv-linha)}
+.mvRodape a:hover{color:var(--mv-ciano);border-bottom-color:var(--mv-ciano)}
+@media(max-width:900px){.mvRodape{padding-bottom:86px}}
 .rcBarra{height:8px;border-radius:var(--mv-r-pill);background:var(--mv-campo);overflow:hidden;border:1px solid var(--mv-linha)}
 .rcBarra i{display:block;height:100%;width:0;background:var(--mv-grad);transition:width .45s}
 .rcBarraNota{font-size:12.5px;color:var(--mv-txt-3);margin-top:9px;line-height:1.5}
@@ -795,6 +827,10 @@ input::placeholder{color:#6b7f96}
               <div class="rcPerfilSub" id="rcDesde">Parceiro Moviki</div>
             </div>
           </div>
+          <!-- Selo do certificado. Nasce escondido e some se as aulas nao
+               carregarem: bloco vazio no topo da coluna e pior que bloco
+               nenhum. Quem preenche e a funcao selo(), la embaixo. -->
+          <div class="certSelo" id="certSelo" style="display:none"></div>
         </div>
         <div class="rc soAprovado" id="rcProx">
           <div class="rcTit">Próximo saque</div>
@@ -830,6 +866,20 @@ input::placeholder{color:#6b7f96}
       </aside>
 
     </div><!-- /mvShell -->
+
+      <!-- Rodape institucional (03/09/2026). O parceiro vai por o nome dele na
+           rua defendendo o Moviki: ver de quem e o CNPJ que vai pagar a
+           comissao dele muda o tamanho da decisao. -->
+      <footer class="mvRodape">
+        <div><b>EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA</b></div>
+        <div>CNPJ 68.289.841/0001-02 &middot; Curitiba/PR</div>
+        <div class="mvRodapeLinks">
+          <a href="regulamento.html" target="_blank" rel="noopener">Regulamento</a>
+          <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener">Termos de uso</a>
+          <a href="https://moviki.com.br/privacidade.html" target="_blank" rel="noopener">Privacidade</a>
+          <a href="https://wa.me/554120186848" target="_blank" rel="noopener">(41) 2018-6848</a>
+        </div>
+      </footer>
   </div><!-- /mvWrap -->
 
   <!-- barra inferior (celular) — 5 lugares, o do meio é compartilhar -->
@@ -931,7 +981,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-02-aulas';
+  window.MOVIKI_VERSAO = '2026-09-03-selo-cert';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1315,7 +1365,15 @@ input::placeholder{color:#6b7f96}
         salvar: async function(lista, concluiu){
           try{
             const d = { aulasVistas: lista };
-            if(concluiu) d.aulasEm = new Date().toISOString();
+            /* 03/09/2026: so carimba na PRIMEIRA vez. Sem esta guarda, assistir
+               a uma aula nova reescrevia a data e o certificado parecia ter
+               sido emitido hoje. A data e do dia em que ele se formou; quem
+               diz se ele esta em dia HOJE e a contagem viva do selo. */
+            if(concluiu && !MEU.aulasEm){
+              d.aulasEm = new Date().toISOString();
+              MEU.aulasEm = d.aulasEm;
+              if(window.__mvParceiroTut) window.__mvParceiroTut.concluiuEm = d.aulasEm;
+            }
             await updateDoc(doc(db,'parceiros',user.uid), d);
           }catch(e){}
         }
@@ -1361,6 +1419,29 @@ input::placeholder{color:#6b7f96}
     txt('vPix', MEU.pix || '—');
     txt('avatarTopo', inicial);
     txt('avatarLado', inicial);
+
+    /* Foto do parceiro no cracha — vem da MESMA busca do @ que o quiz usa
+       (api/novo-parceiro?instagram=). Nao custa chamada nova a Meta: aquele
+       endpoint guarda cache de 7 dias, e este @ foi consultado no cadastro.
+       Falha calada e uma vez so por sessao: sem foto, ficam as iniciais. */
+    if(MEU.arroba && !render.__foto){
+      render.__foto = 1;
+      const arr = String(MEU.arroba).trim().replace(/^@+/,'');
+      if(/^[a-zA-Z0-9._]{2,30}$/.test(arr)){
+        fetch('https://moviki-robo.vercel.app/api/novo-parceiro?instagram=' + encodeURIComponent(arr))
+          .then(r => r.json())
+          .then(j => {
+            if(!j || !j.achou) return;
+            if(typeof j.foto !== 'string' || j.foto.indexOf('data:image/') !== 0) return;
+            ['avatarLado','avatarTopo'].forEach(id => {
+              const e = el(id); if(!e) return;
+              e.style.backgroundImage = 'url("' + j.foto + '")';
+              e.classList.add('temFoto');
+            });
+          })
+          .catch(() => {});
+      }
+    }
 
     const desdeMs = ms(MEU.criadoEm);
     if(desdeMs){
@@ -2494,9 +2575,9 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') fecharAulas(); });
 
   function iniciar(){
-    entradas(); embutir(); amarrar(); try{ trava(); }catch(e){}
-    setTimeout(function(){ entradas(); embutir(); amarrar(); try{ trava(); }catch(e){} },1400);
-    window.addEventListener('mv-parceiro-pronto',function(){ try{ trava(); }catch(e){} });
+    entradas(); embutir(); amarrar(); try{ trava(); }catch(e){} try{ selo(); }catch(e){}
+    setTimeout(function(){ entradas(); embutir(); amarrar(); try{ trava(); }catch(e){} try{ selo(); }catch(e){} },1400);
+    window.addEventListener('mv-parceiro-pronto',function(){ try{ trava(); }catch(e){} try{ selo(); }catch(e){} });
     setTimeout(amarrar,3500);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar);
@@ -2536,6 +2617,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       try{ P.salvar(vistas.slice(), fim); }catch(e){}
       if(fim){ concluiu=true; }
       pintar();
+      try{ selo(); }catch(e){}   /* o selo anda junto: 7 de 8 vira 8 de 8 na hora */
     };
 
     function alvoDivulgacao(){ return document.querySelector('section[data-sec="divulgacao"]'); }
@@ -2584,8 +2666,85 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     trava.__pintar=pintar;
     pintar();
     /* o painel redesenha as secoes; repinta depois de qualquer clique */
-    document.addEventListener('click',function(){ setTimeout(pintar,320); },false);
+    document.addEventListener('click',function(){ setTimeout(function(){ pintar(); try{ selo(); }catch(e){} },320); },false);
   }
+
+  /* =====================================================================
+     SELO DO CERTIFICADO — 03/09/2026 (ideia do Paulo).
+
+     A DIFERENCA QUE FAZ ELE EXISTIR: a DESTRAVA e permanente, o SELO e vivo.
+     Quando uma aula nova entra no ar, o link do parceiro NAO e retrancado —
+     retrancar quem ja trabalha seria punir o parceiro bom. Mas o selo, que
+     compara o que ele viu com o que esta publicado AGORA, vira pendencia na
+     hora. E assim que a gente sabe que ele viu as novidades, sem tirar dele
+     nada do que ja conquistou.
+
+     Os tres estados:
+       em dia   — viu tudo que existe hoje. Mostra a data em que se formou.
+       pendencia— ja tem certificado, mas entrou aula nova. Link continua livre.
+       andando  — ainda nao concluiu a primeira vez. E o estado de quem chegou.
+
+     Roda de proposito FORA do trava(): aquela funcao sai cedo quando ha menos
+     de 8 aulas publicadas e trava mais uma vez quando conclui. O selo tem que
+     continuar respondendo depois disso — e justamente do "depois" que ele trata.
+     ===================================================================== */
+  function dataCurtaBR(iso){
+    try{
+      var d=new Date(iso);
+      if(isNaN(d.getTime())) return '';
+      return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+    }catch(e){ return ''; }
+  }
+
+  function selo(){
+    var P=window.__mvParceiroTut; if(!P) return;      /* nao e o painel do parceiro */
+    var caixa=document.getElementById('certSelo'); if(!caixa) return;
+
+    var pub=chavesPublicadas();
+    if(!pub.length){ caixa.style.display='none'; return; }  /* aulas nao carregaram */
+
+    var vistas=(P.vistas||[]).filter(function(k){ return pub.indexOf(k)>-1; });
+    var n=vistas.length, t=pub.length;
+    var formado=!!P.concluiuEm;
+    var novas=t-n;
+
+    var CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6.5L9.4 17.2 4 11.8"/></svg>';
+    var SINO ='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6-2.2 7.5-2.2 7.5h16.4S18 14.5 18 8.5"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg>';
+    var PLAY ='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10.2 8.6l5.4 3.4-5.4 3.4z" fill="currentColor" stroke="none"/></svg>';
+
+    var classe, icone, tit, sub, botao='';
+
+    if(n>=t){
+      classe='ok'; icone=CHECK;
+      tit='Aulas em dia';
+      var quando=formado?dataCurtaBR(P.concluiuEm):'';
+      sub= quando ? ('Certificado em '+quando+' &middot; '+t+' de '+t+' aulas')
+                  : (t+' de '+t+' aulas assistidas');
+    } else if(formado){
+      classe='pend'; icone=SINO;
+      tit= novas===1 ? '1 aula nova' : (novas+' aulas novas');
+      sub='Assista para o seu selo voltar a ficar em dia. <b>Seu link continua liberado</b> &mdash; nada foi trancado.';
+      botao='<button type="button" class="certBtn" data-tutabrir="1">Ver o que mudou</button>';
+    } else {
+      classe='andando'; icone=PLAY;
+      tit=n+' de '+t+' aulas';
+      sub='Conclua as '+t+' para liberar o seu link e receber o certificado.';
+      botao='<button type="button" class="certBtn" data-tutabrir="1">Continuar as aulas</button>';
+    }
+
+    var html='<span class="certCarimbo">'+icone+'</span>'+
+             '<span class="certTxt"><span class="certTit">'+tit+'</span>'+
+             '<span class="certSub">'+sub+'</span>'+botao+'</span>';
+
+    /* So mexe no DOM quando muda de verdade: o painel repinta a cada clique e
+       redesenhar a toa faria o bloco piscar debaixo do dedo do parceiro. */
+    if(caixa.__html===html && caixa.__cls===classe) return;
+    caixa.__html=html; caixa.__cls=classe;
+    caixa.className='certSelo '+classe;
+    caixa.innerHTML=html;
+    caixa.style.display='flex';
+  }
+  window.mvSeloCertificado=selo;
 
   window.abrirTutoriais=function(k){ try{ abrirAulas(k); }catch(e){} };
   window.abrirAulas=window.abrirTutoriais;
