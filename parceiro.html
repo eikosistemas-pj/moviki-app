@@ -981,7 +981,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-03-selo-atendentes';
+  window.MOVIKI_VERSAO = '2026-09-03-espelho';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1003,6 +1003,7 @@ input::placeholder{color:#6b7f96}
   const esc  = s => (s==null?'':String(s)).replace(/[<>&"]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
   const brl  = n => 'R$ ' + (Number(n)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 
+  const ROBO_ESPELHO = 'https://moviki-robo.vercel.app/api/novo-parceiro?espelho=1';
   let MEU = {};
   let COM = { aReceber:0, retido:0, total:0, pago:0, porMes:{}, porNivel:{1:0,2:0,3:0}, lista:[] };
   let IND = [];            // indicações já enriquecidas
@@ -1428,6 +1429,9 @@ input::placeholder{color:#6b7f96}
               if(window.__mvParceiroTut) window.__mvParceiroTut.concluiuEm = d.aulasEm;
             }
             await updateDoc(doc(db,'parceiros',user.uid), d);
+            /* Concluiu: o espelho publico precisa saber, senao a pagina de
+               verificacao continua dizendo que ele nao fez o treinamento. */
+            if(concluiu) espelharParceiro(user, true);
           }catch(e){}
         }
       };
@@ -1436,6 +1440,7 @@ input::placeholder{color:#6b7f96}
       render();
       telas('painel');
       colocarSaldo();
+      if(MEU.status === 'aprovado') espelharParceiro(user, false);
       // lojista que virou parceiro (mesma conta) -> oferece volta ao painel do negócio.
       // Se a checagem falhar, mostra o atalho assim mesmo: melhor um link a mais do
       // que deixar o lojista preso sem volta pro painel principal.
@@ -1452,6 +1457,34 @@ input::placeholder{color:#6b7f96}
       txt('avisoLogin','Não foi possível carregar seus dados. Tente entrar de novo.');
     }
   });
+
+  /* ---------- ESPELHO PUBLICO (03/09/2026) ----------
+     Pede ao robo pra reescrever `parceiros_publicos/{slug}` — o documento que
+     a pagina moviki.com.br/v/apelido le pra confirmar que ele e parceiro.
+
+     Chamado em dois momentos, e so nesses dois:
+       - ao abrir o painel, se ele estiver aprovado. E como os parceiros
+         antigos (aprovados antes desta data) ganham espelho, um por um,
+         conforme entram — sem migracao nenhuma e sem varredura paga.
+       - ao concluir as 8 aulas, que e quando `treinado` muda de valor.
+
+     Fire-and-forget: o painel NAO espera e NAO mostra erro. Espelho e vitrine;
+     se falhar, o parceiro nem fica sabendo e a proxima abertura tenta de novo. */
+  let __espelhoPedido = false;
+  function espelharParceiro(user, forcar){
+    if(!user) return;
+    if(__espelhoPedido && !forcar) return;
+    __espelhoPedido = true;
+    try{
+      user.getIdToken().then(function(tk){
+        fetch(ROBO_ESPELHO, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ idToken: tk })
+        }).catch(function(){});
+      }).catch(function(){});
+    }catch(e){}
+  }
 
   function mostrarVoltar(){
     const a = el('rcVoltar'); if(a) a.style.display='block';
