@@ -2662,7 +2662,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-03-rodape';
+  window.MOVIKI_VERSAO='2026-09-03-atendentes';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -2693,6 +2693,59 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
 
   function msgEsc(v){return String(v==null?'':v).replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});}
   function msgMs(t){ try{ return t&&t.toMillis?t.toMillis():(t?new Date(t).getTime():0); }catch(e){ return 0; } }
+  /* =====================================================================
+     ATENDENTE DA VEZ — 03/09/2026
+     Cinco nomes de atendimento em vez de um "Moviki" sem rosto. Quem escreve
+     continua sendo a mesma pessoa; o que muda e o cliente perceber que existe
+     um atendimento, e nao um formulario.
+
+     A REGRA, nas palavras do Paulo: mesmo dia e mesmo turno = mesmo atendente;
+     virou a noite = outro; virou o dia = outro; de vez em quando repete.
+
+     DETERMINISTICO, NUNCA SORTEADO. O nome sai de (data da mensagem + uid) e
+     nada mais. Se fosse sorteio, o nome mudaria a cada F5 e — pior — o lojista
+     veria "Karina" enquanto o dono veria "Miguel" na MESMA mensagem. Assim
+     cada mensagem carrega o mesmo atendente pra sempre, em qualquer painel.
+
+     O turno anda de 1 em 1 e sao 5 nomes: turnos seguidos NUNCA caem no mesmo
+     atendente, e a volta acontece a cada 5 turnos (dois dias e meio) — que e
+     exatamente o "de vez em quando coincide".
+
+     ISTO NAO VALE PRO ROBO. de:'bot' continua assinando "Vik · assistente".
+     Dar nome de gente a uma resposta automatica seria enganar o cliente sobre
+     com quem ele falou, e ai o nome deixa de construir autoridade e passa a
+     destruir. A regra e dos atendentes humanos, e so deles.
+     ===================================================================== */
+  var MV_ATENDENTES = ['Pamella','Mateus','Miguel','Karina','Júnior'];
+
+  function mvAtendente(t, salt){
+    var ms = 0;
+    try{
+      if(t && typeof t.toMillis === 'function') ms = t.toMillis();
+      else if(t && typeof t.seconds === 'number') ms = t.seconds * 1000;
+      else if(typeof t === 'number') ms = t;
+      else if(typeof t === 'string') ms = Date.parse(t) || 0;
+    }catch(e){ ms = 0; }
+    if(!ms) ms = Date.now();   /* mensagem recem-enviada, carimbo ainda a caminho */
+
+    /* Horario de Brasilia FIXO (UTC-3), nunca o relogio do aparelho: o lojista
+       e o dono tem que ler o mesmo nome na mesma linha, esteja quem estiver
+       com o fuso trocado. */
+    var br = new Date(ms - 3 * 3600000);
+    var dia = Math.floor(br.getTime() / 86400000);
+    var h = br.getUTCHours();
+    var noite = (h < 6 || h >= 18) ? 1 : 0;      /* dia 06h-17h59 · noite 18h-05h59 */
+    var turno = dia * 2 + noite;
+
+    /* A uid da conversa gira a lista de cada cliente pra um ponto diferente —
+       sem isso, todo mundo falaria com o mesmo atendente no mesmo turno. */
+    var acc = 0, s = String(salt || '');
+    for(var i = 0; i < s.length; i++){ acc = (acc * 31 + s.charCodeAt(i)) % 100000; }
+
+    var n = MV_ATENDENTES.length;
+    return MV_ATENDENTES[ ((turno + acc) % n + n) % n ];
+  }
+
   function msgQuando(t){
     var ms=msgMs(t); if(!ms)return 'agora';
     var d=new Date(ms), hoje=new Date();
@@ -2769,7 +2822,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
       }
       var txt=m.texto?msgEsc(m.texto).replace(/\n/g,'<br>'):'';
       var classe=eu?'msgEu':(ehBot?'msgBot':'msgEle');
-      var quem=eu?'você':(ehBot?'Vik · assistente':'Moviki');
+      var quem=eu?'você':(ehBot?'Vik · assistente':(mvAtendente(m.criadoEm,MSG_UID)+' · Moviki'));
       var bolha='<div class="msgBolha '+classe+'">'+txt+anexo+
         '<span class="msgQuando">'+quem+' · '+msgQuando(m.criadoEm)+'</span></div>';
       return ehBot
