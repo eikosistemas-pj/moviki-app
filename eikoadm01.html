@@ -504,6 +504,17 @@ table.mvTab td b{font-weight:700}
 .crAtalho:hover{border-color:var(--mv-ciano)}
 .crAtalho svg{width:22px;height:22px;color:var(--mv-ciano);flex:0 0 auto}
 .crAtalho b{display:block;font-size:14.5px}
+.crEsc{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:var(--mv-campo);
+  border:1px solid var(--mv-linha);border-radius:12px;padding:11px 12px;cursor:pointer;color:inherit;margin-top:8px}
+.crEsc:hover{border-color:var(--mv-ciano)}
+.crEsc .crEscAv{width:34px;height:34px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;
+  justify-content:center;font-weight:800;background:rgba(0,212,255,.14);color:var(--mv-ciano)}
+.crEsc .crEscTx{min-width:0;flex:1}
+.crEsc .crEscTx b{display:block;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crEsc .crEscTx small{display:block;font-size:12.3px;color:var(--mv-txt-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crEscPill{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;flex:0 0 auto}
+.crEscPill.ok{color:#25e39b;background:rgba(37,227,155,.13);border:1px solid rgba(37,227,155,.4)}
+.crEscPill.no{color:#ffb020;background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.4)}
 .crAtalho span small{display:block;font-size:12.5px;color:var(--mv-txt-3);margin-top:2px}
 </style>
 </head>
@@ -1005,16 +1016,17 @@ table.mvTab td b{font-weight:700}
 
             <div id="crDonoCarregando" class="vazio">Procurando o seu apelido de parceiro…</div>
 
-            <!-- sem apelido: deixa escolher na mão -->
+            <!-- sem apelido: escolher na lista de parceiros que já existem -->
             <div id="crDonoSem" class="hide">
-              <div class="avisoOk" style="margin-top:4px">O crachá aponta para <b>moviki.com.br/v/apelido</b>, que é a página de verificação de parceiro. Para ter uma, a sua conta precisa de um cadastro de parceiro aprovado — ou você usa aqui o apelido de um cadastro que já exista.</div>
-              <div class="convLinha">
-                <input id="crDonoApelido" type="text" placeholder="apelido de parceiro (ex.: paulo)" autocomplete="off" maxlength="40">
-                <button type="button" class="btnMini" id="btnCrDonoUsar">Usar este apelido</button>
+              <div class="avisoOk" style="margin-top:4px">O crachá aponta para <b>moviki.com.br/v/apelido</b>, a página de verificação de parceiro. Só existe página para parceiro <b>aprovado</b>. Escolha abaixo de quem é o crachá — ou crie o seu cadastro de parceiro, se ainda não tiver.</div>
+              <div class="ferr">
+                <input type="search" id="crDonoBusca" placeholder="Buscar por nome, e-mail, apelido ou @…" autocomplete="off">
               </div>
+              <div id="crDonoLista"><div class="vazio">Carregando os parceiros…</div></div>
               <div class="crDAviso" id="crDonoErro" style="color:var(--mv-alerta)"></div>
-              <div class="gridAcoes">
+              <div class="gridAcoes" style="margin-top:12px">
                 <a class="linkFora" href="seja-parceiro.html" target="_blank" rel="noopener"><img src="icones/convidar-parceiro.png" alt="" onerror="this.style.display='none'"><span>Criar meu cadastro de parceiro</span></a>
+                <button type="button" class="linkFora" data-ir="parceiros"><img src="icones/parceiros.png" alt="" onerror="this.style.display='none'"><span>Aprovar um parceiro</span></button>
               </div>
             </div>
 
@@ -1212,7 +1224,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-04-cracha-dono';
+  window.MOVIKI_VERSAO = '2026-09-04-cracha-busca';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1644,6 +1656,10 @@ table.mvTab td b{font-weight:700}
     badge('badParc', pend); badge('badParcM', pend);
     txt('parcChip', PARC.length + (PARC.length === 1 ? ' cadastro' : ' cadastros'));
     pintarParceiros();
+    /* O crachá tem a própria lista de escolha e ela vem daqui: sem isto, quem
+       abrisse a seção antes de os parceiros chegarem veria "Carregando…" para
+       sempre. */
+    try{ if(typeof crachaLista === 'function') crachaLista(); }catch(e){}
   }
 
   function badge(id, n){
@@ -3443,18 +3459,78 @@ table.mvTab td b{font-weight:700}
       }catch(e){}
     }
 
-    if(escolhido) cr.mostrar(escolhido); else cr.semCadastro();
+    if(escolhido){ cr.mostrar(escolhido); return; }
+    cr.semCadastro();
+    crachaLista();
   }
 
-  el('btnCrDonoUsar').addEventListener('click', async ()=>{
-    const campo = el('crDonoApelido'), erro = el('crDonoErro');
-    const alvo = (campo.value||'').trim();
-    erro.textContent = '';
-    if(alvo.length < 3){ erro.textContent = 'Digite o apelido do parceiro.'; return; }
+  /* A LISTA, e não um campo em branco.
+     O campo antigo pedia o apelido e só sabia responder "não achei" — sem
+     dizer se o apelido não existia, se o parceiro não estava aprovado, ou se
+     era e-mail em vez de apelido. E o espelho público nem guarda e-mail, então
+     buscar por e-mail ali era impossível por construção.
+     Aqui a busca é na coleção `parceiros`, que ESTE painel já lê por ser
+     admin: acha por nome, e-mail, apelido ou @, e mostra o status de cada um.
+     Aprovado ou não, a pessoa aparece — e o que muda é a explicação. */
+  function crachaLista(){
+    const cx = el('crDonoLista'); if(!cx) return;
+    const termo = ((el('crDonoBusca')||{}).value || '').toLowerCase().trim();
+
+    if(!PARC.length){
+      cx.innerHTML = '<div class="vazio">Carregando os parceiros…</div>';
+      return;
+    }
+
+    let lista = PARC.slice();
+    if(termo){
+      lista = lista.filter(p => (((p.nome||'')+' '+(p.email||'')+' '+(p.slug||'')+' '+(p.arroba||''))
+        .toLowerCase().indexOf(termo) >= 0));
+    } else {
+      /* sem busca, mostra só quem pode virar crachá hoje */
+      lista = lista.filter(p => (p.status||'') === 'aprovado');
+    }
+
+    if(!lista.length){
+      cx.innerHTML = termo
+        ? '<div class="vazio">Nenhum parceiro com esse nome, e-mail ou apelido. Se o cadastro é seu e ainda não existe, use o botão abaixo para criar.</div>'
+        : '<div class="vazio">Nenhum parceiro aprovado ainda. Crie o seu cadastro abaixo, ou aprove alguém em Parceiros.</div>';
+      return;
+    }
+
+    cx.innerHTML = lista.slice(0,12).map(p=>{
+      const ok = (p.status||'') === 'aprovado' && !!p.slug;
+      const ini = ((p.nome||p.email||'P').trim()[0]||'P').toUpperCase();
+      const sub = (p.slug ? ('/v/'+p.slug) : 'sem apelido') + ' · ' + (p.email||'');
+      return '<button type="button" class="crEsc" data-crslug="'+esc(p.slug||'')+'" data-crstatus="'+esc(p.status||'')+'">'
+        + '<span class="crEscAv">'+esc(ini)+'</span>'
+        + '<span class="crEscTx"><b>'+esc(p.nome||'(sem nome)')+'</b><small>'+esc(sub)+'</small></span>'
+        + '<span class="crEscPill '+(ok?'ok':'no')+'">'+(ok?'aprovado':(p.status||'sem status'))+'</span>'
+        + '</button>';
+    }).join('');
+  }
+
+  el('crDonoBusca').addEventListener('input', crachaLista);
+
+  el('crDonoLista').addEventListener('click', async (ev)=>{
+    const b = ev.target.closest ? ev.target.closest('[data-crslug]') : null;
+    if(!b) return;
+    const erro = el('crDonoErro');
+    const slug = b.getAttribute('data-crslug');
+    const status = b.getAttribute('data-crstatus');
+
+    if(status !== 'aprovado'){
+      erro.textContent = 'Este parceiro está como "' + (status||'sem status') + '". A página /v/ só existe depois de aprovado — aprove em Parceiros e volte aqui.';
+      return;
+    }
+    if(!slug){ erro.textContent = 'Este cadastro não tem apelido definido.'; return; }
+
     erro.textContent = 'Conferindo…';
-    const d = await crachaEspelho(alvo);
+    const d = await crachaEspelho(slug);
     if(!d){
-      erro.textContent = 'Não achei uma página de verificação com esse apelido. O parceiro precisa estar aprovado.';
+      /* Aprovado mas sem espelho: acontece quando a cópia pública não foi
+         gerada. Dizer isso é diferente de dizer "não achei" — o conserto é
+         outro. */
+      erro.textContent = 'O cadastro está aprovado, mas a cópia pública dele ainda não existe — e é ela que a página /v/ lê. Quem gera essa cópia é o robô, no momento da aprovação. Reaprove este parceiro em Parceiros e volte aqui.';
       return;
     }
     try{ localStorage.setItem(CR_CHAVE, d.slug); }catch(e){}
