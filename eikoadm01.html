@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="mvqr.js"></script>
 <link rel="stylesheet" href="movikiui.css">
 <style>
 /* ==========================================================================
@@ -481,6 +482,29 @@ table.mvTab td b{font-weight:700}
   .mvBar button{font-size:9.5px;letter-spacing:-.2px}
   .btnMini{font-size:12.5px;padding:9px 11px}
 }
+
+/* ============ CRACHÁ DO DONO (04/09/2026) ============
+   Mesma estratégia de funil do parceiro: o QR NÃO leva direto ao cadastro.
+   Leva à página de verificação /v/<apelido>, onde o lojista lê quem é a
+   pessoa na frente dele e escolhe entre conhecer o Moviki ou se cadastrar
+   já com a indicação. Levar direto ao formulário economiza um toque e
+   perde a única página que responde "quem é você e por que eu confiaria". */
+.crD{background:linear-gradient(160deg,#0d1b2a,#050b14);border:1px solid rgba(0,212,255,.30);
+  border-radius:var(--mv-r);padding:20px;text-align:center;margin-top:14px}
+.crDNome{font-size:20px;font-weight:800;letter-spacing:-.4px;margin-top:2px}
+.crDArroba{font-size:13.5px;color:var(--mv-txt-3);margin-top:3px}
+.crDSelo{display:inline-block;margin-top:10px;padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:700;
+  color:#25e39b;background:rgba(37,227,155,.12);border:1px solid rgba(37,227,155,.42)}
+.crDQR{display:block;margin:16px auto 0;width:210px;height:210px;background:#fff;border-radius:14px;padding:10px}
+.crDUrl{font-size:13px;color:var(--mv-txt-3);margin-top:10px;word-break:break-all}
+.crDAcoes{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.crDAviso{font-size:12.5px;color:#25e39b;min-height:17px;margin-top:9px}
+.crAtalho{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:var(--mv-campo);
+  border:1px solid rgba(0,212,255,.34);border-radius:var(--mv-r);padding:13px 14px;cursor:pointer;color:inherit}
+.crAtalho:hover{border-color:var(--mv-ciano)}
+.crAtalho svg{width:22px;height:22px;color:var(--mv-ciano);flex:0 0 auto}
+.crAtalho b{display:block;font-size:14.5px}
+.crAtalho span small{display:block;font-size:12.5px;color:var(--mv-txt-3);margin-top:2px}
 </style>
 </head>
 <body>
@@ -591,6 +615,15 @@ table.mvTab td b{font-weight:700}
           <div class="cd hide" id="cardPend">
             <div class="cdTopo"><div class="cdTit">Precisa da sua atenção</div><span class="cdChip" id="pendChip">0</span></div>
             <div class="gridAcoes" id="pendAcoes"></div>
+          </div>
+
+          <!-- Atalho do crachá, igual ao do painel do parceiro: quem vai para a
+               rua precisa achar isto em um toque, não em três. -->
+          <div class="cd" style="padding:14px">
+            <button type="button" class="crAtalho" data-ir="atalhos" id="btnCrachaAtalho">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM20 14h1M14 20h3M20 17v4"/></svg>
+              <span><b>Meu crachá com QR code</b><small>Para cadastrar lojista na rua</small></span>
+            </button>
           </div>
 
           <div class="cd">
@@ -965,6 +998,45 @@ table.mvTab td b{font-weight:700}
 
         <!-- ============ SEÇÃO: ATALHOS DO DONO ============ -->
         <section data-sec="atalhos" class="hide">
+
+          <!-- ============ MEU CRACHÁ ============ -->
+          <div class="cd" id="cardCrachaDono">
+            <div class="cdTopo"><div><div class="cdTit">Meu crachá com QR code</div><div class="cdSub">Para usar em campo. O lojista aponta a câmera, cai na sua página de verificação e decide ali: conhecer o Moviki ou se cadastrar já com a sua indicação.</div></div></div>
+
+            <div id="crDonoCarregando" class="vazio">Procurando o seu apelido de parceiro…</div>
+
+            <!-- sem apelido: deixa escolher na mão -->
+            <div id="crDonoSem" class="hide">
+              <div class="avisoOk" style="margin-top:4px">O crachá aponta para <b>moviki.com.br/v/apelido</b>, que é a página de verificação de parceiro. Para ter uma, a sua conta precisa de um cadastro de parceiro aprovado — ou você usa aqui o apelido de um cadastro que já exista.</div>
+              <div class="convLinha">
+                <input id="crDonoApelido" type="text" placeholder="apelido de parceiro (ex.: paulo)" autocomplete="off" maxlength="40">
+                <button type="button" class="btnMini" id="btnCrDonoUsar">Usar este apelido</button>
+              </div>
+              <div class="crDAviso" id="crDonoErro" style="color:var(--mv-alerta)"></div>
+              <div class="gridAcoes">
+                <a class="linkFora" href="seja-parceiro.html" target="_blank" rel="noopener"><img src="icones/convidar-parceiro.png" alt="" onerror="this.style.display='none'"><span>Criar meu cadastro de parceiro</span></a>
+              </div>
+            </div>
+
+            <!-- com apelido: o crachá -->
+            <div id="crDonoCard" class="hide">
+              <div class="crD">
+                <div class="crDNome" id="crDonoNome">—</div>
+                <div class="crDArroba" id="crDonoAt"></div>
+                <div class="crDSelo">Equipe Moviki</div>
+                <canvas class="crDQR" id="crDonoQR" width="280" height="280" role="img" aria-label="Código da minha página de verificação"></canvas>
+                <div class="crDUrl" id="crDonoUrl">moviki.com.br/v/</div>
+                <div class="crDAcoes">
+                  <button type="button" class="btnMini" id="btnCrDonoPNG">Baixar imagem</button>
+                  <button type="button" class="btnMini" id="btnCrDonoCopiar">Copiar link</button>
+                  <a class="btnMini" id="btnCrDonoAbrir" href="#" target="_blank" rel="noopener">Abrir a página</a>
+                  <button type="button" class="btnMini" id="btnCrDonoTrocar">Trocar apelido</button>
+                </div>
+                <div class="crDAviso" id="crDonoAviso"></div>
+              </div>
+            </div>
+          </div>
+
           <div class="cd">
             <div class="cdTopo"><div><div class="cdTit">Páginas do Moviki</div><div class="cdSub">Abre em outra aba.</div></div></div>
             <div class="gridAcoes">
@@ -1112,6 +1184,7 @@ table.mvTab td b{font-weight:700}
     <button type="button" data-ir="convCom"><img src="icones/convidar-comerciante.png" alt="" onerror="this.style.display='none'">Convidar comerciante</button>
     <button type="button" data-ir="convPar"><img src="icones/convidar-parceiro.png" alt="" onerror="this.style.display='none'">Convidar parceiro</button>
     <button type="button" data-ir="atalhos"><img src="icones/foguete.png" alt="" onerror="this.style.display='none'">Atalhos do dono</button>
+    <button type="button" data-ir="atalhos"><img src="icones/parceiros.png" alt="" onerror="this.style.display='none'">Meu crachá com QR</button>
     <div class="menuSec">Administração</div>
     <button type="button" data-ir="exclusoes"><img src="icones/exclusoes.png" alt="" onerror="this.style.display='none'">Exclusões de conta<span class="bad hide" id="badExcM">0</span></button>
     <button type="button" data-ir="config"><img src="icones/escudo.png" alt="" onerror="this.style.display='none'">Configurações</button>
@@ -1139,7 +1212,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-03-appcheck';
+  window.MOVIKI_VERSAO = '2026-09-04-cracha-dono';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1341,6 +1414,7 @@ table.mvTab td b{font-weight:700}
     telas('painel');
     irSec('visao');
     carregarTudo(false);
+    crachaDonoIniciar();
     // A caixa de mensagens liga sozinha no login: sem isso o número vermelho de
     // "não lidas" só apareceria depois de entrar na seção — que é justamente o
     // que ele existe pra evitar.
@@ -3328,9 +3402,226 @@ table.mvTab td b{font-weight:700}
     if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)){ e.preventDefault(); cvEnviar(); }
   });
 
+  /* ============================================================
+     CRACHÁ DO DONO — ponte para o bloco de desenho (fora do module)
+     O desenho e o PNG vivem num bloco de script comum no fim da pagina, porque
+     dependem do gerador de QR (mvqr.js), que é script clássico. Aqui fica
+     só o que precisa do banco.
+     ============================================================ */
+  const CR_CHAVE = 'mv_cracha_slug';
+
+  /* Lê o espelho público parceiros_publicos/{slug}. É ele que a página /v/
+     lê — se o apelido não estiver ali, o QR levaria a uma página que diz
+     "não encontrado" na frente do lojista. Conferir aqui é o que impede
+     isso. Não lemos parceiros/{uid} para exibir: aquele documento guarda a
+     chave Pix. */
+  async function crachaEspelho(slug){
+    slug = String(slug||'').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,40);
+    if(slug.length < 3) return null;
+    try{
+      const sn = await getDoc(doc(db,'parceiros_publicos',slug));
+      if(!sn.exists()) return null;
+      const d = sn.data() || {};
+      if(d.ativo === false) return null;
+      return { slug: slug, nome: d.nome || '', arroba: d.arroba || '' };
+    }catch(e){ return null; }
+  }
+
+  async function crachaDonoIniciar(){
+    const cr = window.mvCrachaDono; if(!cr) return;
+    let escolhido = null;
+
+    /* 1) o apelido que o dono já fixou neste aparelho */
+    let salvo = ''; try{ salvo = localStorage.getItem(CR_CHAVE) || ''; }catch(e){}
+    if(salvo) escolhido = await crachaEspelho(salvo);
+
+    /* 2) o cadastro de parceiro da PRÓPRIA conta, se existir */
+    if(!escolhido && USER){
+      try{
+        const sn = await getDoc(doc(db,'parceiros',USER.uid));
+        if(sn.exists() && sn.data() && sn.data().slug) escolhido = await crachaEspelho(sn.data().slug);
+      }catch(e){}
+    }
+
+    if(escolhido) cr.mostrar(escolhido); else cr.semCadastro();
+  }
+
+  el('btnCrDonoUsar').addEventListener('click', async ()=>{
+    const campo = el('crDonoApelido'), erro = el('crDonoErro');
+    const alvo = (campo.value||'').trim();
+    erro.textContent = '';
+    if(alvo.length < 3){ erro.textContent = 'Digite o apelido do parceiro.'; return; }
+    erro.textContent = 'Conferindo…';
+    const d = await crachaEspelho(alvo);
+    if(!d){
+      erro.textContent = 'Não achei uma página de verificação com esse apelido. O parceiro precisa estar aprovado.';
+      return;
+    }
+    try{ localStorage.setItem(CR_CHAVE, d.slug); }catch(e){}
+    erro.textContent = '';
+    window.mvCrachaDono.mostrar(d);
+  });
+
   /* custo das métricas recalculado quando os negócios chegam */
   const _obsCusto = setInterval(()=>{ if(NEG.length){ atualizarCusto(); clearInterval(_obsCusto); } }, 800);
   setTimeout(()=>clearInterval(_obsCusto), 20000);
+</script>
+
+<!-- ==========================================================================
+     CRACHÁ DO DONO — desenho, QR e PNG (04/09/2026)
+     Fora do bloco de modulo de proposito: usa o gerador mvqr.js, que e
+     script clássico, e não precisa de nada do Firebase. Se este bloco falhar,
+     o painel inteiro continua de pé — um crachá não derruba um painel.
+     ========================================================================== -->
+<script>
+(function(){
+  'use strict';
+  var URL_BASE = 'https://moviki.com.br/v/';
+  var dados = null;
+
+  function el(id){ return document.getElementById(id); }
+  function mostrarBloco(id){ var n = el(id); if(n) n.classList.remove('hide'); }
+  function esconder(id){ var n = el(id); if(n) n.classList.add('hide'); }
+
+  function aviso(txt){
+    var a = el('crDonoAviso'); if(!a) return;
+    a.textContent = txt || '';
+    if(txt) setTimeout(function(){ if(a.textContent===txt) a.textContent=''; }, 4000);
+  }
+
+  function mostrar(d){
+    dados = d;
+    esconder('crDonoCarregando'); esconder('crDonoSem'); mostrarBloco('crDonoCard');
+    var url = URL_BASE + d.slug;
+    if(el('crDonoNome')) el('crDonoNome').textContent = d.nome || 'Equipe Moviki';
+    if(el('crDonoAt'))   el('crDonoAt').textContent = d.arroba ? ('@' + String(d.arroba).replace(/^@+/,'')) : '';
+    if(el('crDonoUrl'))  el('crDonoUrl').textContent = 'moviki.com.br/v/' + d.slug;
+    var a = el('btnCrDonoAbrir'); if(a) a.href = url;
+    try{
+      var q = window.mvQR ? window.mvQR(url) : null;
+      if(q && window.mvQRDesenhar) window.mvQRDesenhar(el('crDonoQR'), q, 280, '#ffffff', '#0b1220');
+    }catch(e){}
+  }
+
+  function semCadastro(){
+    dados = null;
+    esconder('crDonoCarregando'); esconder('crDonoCard'); mostrarBloco('crDonoSem');
+  }
+
+  /* PNG 1080x1350 — o formato do story. O crachá é para ser mostrado na tela
+     do celular ou impresso; sai como imagem para caber nos dois. */
+  function baixar(){
+    var d = dados; if(!d || !d.slug) return;
+    var L = 1080, A = 1350;
+    var cv = document.createElement('canvas'); cv.width = L; cv.height = A;
+    var x = cv.getContext('2d');
+
+    var fundo = x.createLinearGradient(0,0,L,A);
+    fundo.addColorStop(0,'#0d1b2a'); fundo.addColorStop(1,'#050b14');
+    x.fillStyle = fundo; x.fillRect(0,0,L,A);
+    x.strokeStyle = 'rgba(0,212,255,.30)'; x.lineWidth = 3;
+    x.strokeRect(28,28,L-56,A-56);
+
+    x.textAlign = 'center';
+    x.fillStyle = '#F2F5F9';
+    x.font = '800 62px Poppins, system-ui, sans-serif';
+    x.fillText('mo', L/2 - 44, 138);
+    var w = x.measureText('mo').width;
+    x.fillStyle = '#00D4FF';
+    x.fillText('viki', L/2 - 44 + w/2 + x.measureText('viki').width/2, 138);
+
+    var nome = d.nome || 'Equipe Moviki';
+    x.fillStyle = '#F2F5F9';
+    x.font = '800 54px Poppins, system-ui, sans-serif';
+    x.fillText(nome.length > 22 ? nome.slice(0,21) + '…' : nome, L/2, 300);
+
+    if(d.arroba){
+      x.fillStyle = '#9fb2c6';
+      x.font = '500 30px Poppins, system-ui, sans-serif';
+      x.fillText('@' + String(d.arroba).replace(/^@+/,''), L/2, 344);
+    }
+
+    var txt = 'Equipe Moviki';
+    x.font = '700 26px Poppins, system-ui, sans-serif';
+    var lw = x.measureText(txt).width + 56, lx = (L-lw)/2, ly = 386;
+    x.fillStyle = 'rgba(37,227,155,.14)';
+    x.beginPath();
+    if(x.roundRect) x.roundRect(lx, ly, lw, 56, 28); else x.rect(lx, ly, lw, 56);
+    x.fill();
+    x.strokeStyle = 'rgba(37,227,155,.5)'; x.lineWidth = 2; x.stroke();
+    x.fillStyle = '#25e39b'; x.fillText(txt, L/2, ly + 37);
+
+    try{
+      var q = window.mvQR ? window.mvQR(URL_BASE + d.slug) : null;
+      if(q && window.mvQRDesenhar){
+        var qc = document.createElement('canvas');
+        window.mvQRDesenhar(qc, q, 440, '#ffffff', '#0b1220');
+        var qx = (L-440)/2, qy = 560;
+        x.fillStyle = '#fff';
+        x.beginPath();
+        if(x.roundRect) x.roundRect(qx-16, qy-16, 472, 472, 26); else x.rect(qx-16, qy-16, 472, 472);
+        x.fill();
+        x.drawImage(qc, qx, qy);
+      }
+    }catch(e){}
+
+    x.fillStyle = '#F2F5F9';
+    x.font = '600 30px Poppins, system-ui, sans-serif';
+    x.fillText('Aponte a câmera do celular', L/2, 1130);
+    x.fillStyle = '#9fb2c6';
+    x.font = '400 26px Poppins, system-ui, sans-serif';
+    x.fillText('moviki.com.br/v/' + d.slug, L/2, 1174);
+    x.font = '400 21px Poppins, system-ui, sans-serif';
+    x.fillStyle = '#7d90a5';
+    x.fillText('Coloque o seu negócio no mapa, em tempo real.', L/2, 1232);
+
+    salvar(cv, d.slug);
+  }
+
+  function salvar(cv, slug){
+    var nome = 'cracha-moviki-' + slug + '.png';
+    function pelaUrl(url, revogar){
+      var a = document.createElement('a');
+      a.href = url; a.download = nome;
+      document.body.appendChild(a); a.click(); a.remove();
+      if(revogar) setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+      aviso('Imagem salva.');
+    }
+    if(cv.toBlob) cv.toBlob(function(b){
+      if(b) pelaUrl(URL.createObjectURL(b), true);
+      else pelaUrl(cv.toDataURL('image/png'), false);
+    }, 'image/png');
+    else pelaUrl(cv.toDataURL('image/png'), false);
+  }
+
+  function ligar(){
+    var b;
+    if((b = el('btnCrDonoPNG'))) b.onclick = baixar;
+    if((b = el('btnCrDonoCopiar'))) b.onclick = function(){
+      if(!dados) return;
+      var url = URL_BASE + dados.slug;
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(url).then(function(){ aviso('Link copiado.'); },
+                                                function(){ aviso('Não deu para copiar.'); });
+      } else {
+        var t = document.createElement('textarea');
+        t.value = url; document.body.appendChild(t); t.select();
+        try{ document.execCommand('copy'); aviso('Link copiado.'); }catch(e){ aviso('Não deu para copiar.'); }
+        t.remove();
+      }
+    };
+    if((b = el('btnCrDonoTrocar'))) b.onclick = function(){
+      try{ localStorage.removeItem('mv_cracha_slug'); }catch(e){}
+      semCadastro();
+      var c = el('crDonoApelido'); if(c){ c.value = ''; c.focus(); }
+    };
+  }
+
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ligar);
+  else ligar();
+
+  window.mvCrachaDono = { mostrar: mostrar, semCadastro: semCadastro, aviso: aviso, baixar: baixar };
+})();
 </script>
 </body>
 </html>

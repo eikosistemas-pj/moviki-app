@@ -437,7 +437,48 @@ input::placeholder{color:#6b7f96}
 .rcAcao{font-size:10.5px;letter-spacing:-.2px}
 
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+/* ================= SIGILO DOS VALORES (04/09/2026) =================
+   O olhinho dos aplicativos de banco. Existe por um motivo pratico: o
+   parceiro abre o painel na rua, no balcao do lojista, com gente do lado —
+   e o saldo dele nao e assunto de ninguem.
+
+   Embaca TUDO que e dinheiro, nao so o saldo: KPIs, extrato, grafico e as
+   duas notas que dizem quanto falta para o saque. Esconder so o numero
+   grande e teatro — quem esta do lado le o resto.
+
+   A classe fica no <html>, nao no <body>, e e aplicada por um script que
+   roda ANTES da pintura: se fosse depois, o valor apareceria por um quadro
+   e so entao sumiria — que e exatamente o que a pessoa nao quer.
+
+   Isto e privacidade visual, nao seguranca: o valor continua no aparelho.
+   Quem quiser esconder de verdade, sai da conta. */
+html.mvSigilo .sdV,
+html.mvSigilo .kV,
+html.mvSigilo .lVal,
+html.mvSigilo #graf,
+html.mvSigilo #grafNota,
+html.mvSigilo #rcBarraNota,
+html.mvSigilo #saqueNota{
+  filter:blur(8px);
+  user-select:none;
+  pointer-events:none;
+}
+.sdV,.kV,.lVal,#graf,#grafNota,#rcBarraNota,#saqueNota{transition:filter .18s ease}
+.cdOlho{background:none;border:none;color:var(--mv-txt-3);cursor:pointer;padding:4px;line-height:0;border-radius:8px;display:inline-flex}
+.cdOlho:hover{color:var(--mv-ciano)}
+.cdOlho svg{width:20px;height:20px}
+.cdOlho .olhoOff{display:none}
+html.mvSigilo .cdOlho{color:var(--mv-ciano)}
+html.mvSigilo .cdOlho .olhoOn{display:none}
+html.mvSigilo .cdOlho .olhoOff{display:block}
+.cdTopoAcoes{display:flex;align-items:center;gap:10px}
 </style>
+<script>
+  /* Aplicado aqui, no <head>, de proposito: qualquer coisa depois disto
+     deixaria o saldo aparecer por um instante antes de sumir. */
+  try{ if(localStorage.getItem('mv_sigilo')==='1') document.documentElement.classList.add('mvSigilo'); }catch(e){}
+</script>
 </head>
 <body>
 
@@ -584,7 +625,13 @@ input::placeholder{color:#6b7f96}
           <div class="cd soAprovado" id="cardSaldo">
             <div class="cdTopo">
               <div class="cdTit">Saldo disponível</div>
-              <button type="button" class="cdLink" id="btnComoFunciona">Como funciona?</button>
+              <div class="cdTopoAcoes">
+                <button type="button" class="cdOlho" id="btnOlho" aria-pressed="false" title="Ocultar valores" aria-label="Ocultar valores">
+                  <svg class="olhoOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/></svg>
+                  <svg class="olhoOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a17 17 0 0 1-3.3 4"/><path d="M6.2 8.1A17.4 17.4 0 0 0 2 12s3.6 6.5 10 6.5a9.9 9.9 0 0 0 3.9-.77"/><path d="M9.6 9.7a2.8 2.8 0 0 0 3.9 3.9"/></svg>
+                </button>
+                <button type="button" class="cdLink" id="btnComoFunciona">Como funciona?</button>
+              </div>
             </div>
             <div class="sdLinha">
               <div style="min-width:0">
@@ -1066,7 +1113,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-04-qrformato-p09';
+  window.MOVIKI_VERSAO = '2026-09-04-sigilo';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2238,6 +2285,30 @@ input::placeholder{color:#6b7f96}
   el('avatarTopo').onclick = ()=> irSec('dados');
   el('btnSaque').onclick = solicitarSaque;
   el('btnComoFunciona').onclick = ()=> abrirOv('ovSaldo');
+
+  /* ---------- olhinho: esconder os valores ----------
+     O estado vive no localStorage DESTE aparelho, nao no banco: e uma
+     preferencia de tela, e escrever no Firestore a cada toque seria pagar
+     leitura e escrita por uma coisa que nem precisa atravessar aparelhos.
+     Efeito colateral bem-vindo: o celular emprestado nao herda a escolha
+     feita no computador. */
+  (function(){
+    const b = el('btnOlho'); if(!b) return;
+    const raiz = document.documentElement;
+    function pintar(){
+      const oculto = raiz.classList.contains('mvSigilo');
+      b.setAttribute('aria-pressed', oculto ? 'true' : 'false');
+      const rot = oculto ? 'Mostrar valores' : 'Ocultar valores';
+      b.setAttribute('title', rot); b.setAttribute('aria-label', rot);
+    }
+    b.onclick = function(){
+      const oculto = raiz.classList.toggle('mvSigilo');
+      try{ localStorage.setItem('mv_sigilo', oculto ? '1' : '0'); }catch(e){}
+      pintar();
+      try{ if(window.mvEv) mvEv('sigilo_valores', { estado: oculto ? 'oculto' : 'visivel' }); }catch(e){}
+    };
+    pintar();
+  })();
   el('btnConvidarLado').onclick = ()=> irSec('divulgacao');
   el('btnCopiar').onclick = copiarLink;
   el('btnWpp').onclick    = compartilharWpp;
