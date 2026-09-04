@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <title>Seja um Parceiro Moviki</title>
-<script>window.MOVIKI_VERSAO='2026-09-03-appcheck';</script>
+<script>window.MOVIKI_VERSAO='2026-09-04-conta-existente';</script>
 <script src="/mvmetrica.js"></script>
 <link rel="icon" href="favicon512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,8 +73,9 @@
       <label for="email">E-mail</label>
       <input id="email" type="email" placeholder="voce@email.com" autocomplete="email">
 
-      <label for="senha">Crie uma senha</label>
-      <input id="senha" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password">
+      <label for="senha">Senha</label>
+      <input id="senha" type="password" placeholder="mínimo 6 caracteres" autocomplete="current-password">
+      <p class="dica">Se você já tem conta no Moviki, use a senha dela — o cadastro de parceiro entra na mesma conta.</p>
 
       <label for="pix">Chave Pix (onde você recebe as comissões)</label>
       <input id="pix" type="text" placeholder="CPF, e-mail, telefone ou chave aleatória" maxlength="140">
@@ -114,7 +115,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
-  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -212,9 +213,44 @@
       const jaExiste=await getDoc(doc(db,'parceiro_slugs',slug));
       if(jaExiste.exists()){ b.disabled=false; b.textContent=t; return erro('Esse apelido acabou de ser escolhido. Tente outro.'); }
 
-      // 2) cria a conta
-      const cred=await createUserWithEmailAndPassword(auth, email, senha);
+      /* 2) a conta
+         ---------------------------------------------------------------
+         CORRIGIDO EM 04/09/2026. Antes, e-mail que já tinha conta era o fim
+         da linha: "use outro ou entre no seu painel". Só que o sistema SEMPRE
+         permitiu ser lojista e parceiro na MESMA conta — a caixa de mensagens
+         do painel é a mesma justamente por isso. Quem já era lojista, ou o
+         próprio dono, simplesmente não conseguia virar parceiro, e a saída
+         que restava era criar um segundo e-mail: duas contas para a mesma
+         pessoa, comissão numa e negócio na outra.
+
+         Agora, se a conta já existe, a gente ENTRA nela com a senha digitada
+         e adiciona o cadastro de parceiro. A senha do campo passa a valer
+         como "a senha da sua conta" nesse caso — e é por isso que senha
+         errada tem mensagem própria, e não a genérica. */
+      let cred = null, contaNova = true;
+      try{
+        cred = await createUserWithEmailAndPassword(auth, email, senha);
+      }catch(eConta){
+        if((eConta && eConta.code) !== 'auth/email-already-in-use') throw eConta;
+        contaNova = false;
+        try{
+          cred = await signInWithEmailAndPassword(auth, email, senha);
+        }catch(eLogin){
+          b.disabled=false; b.textContent=t;
+          return erro('Este e-mail já tem uma conta no Moviki. Digite a SENHA dessa conta aqui para adicionar o cadastro de parceiro a ela.');
+        }
+      }
       const uid=cred.user.uid;
+
+      /* Já é parceiro? Não sobrescrever: o documento guarda chave Pix,
+         status e o aceite do regulamento com data. */
+      if(!contaNova){
+        const jaParceiro = await getDoc(doc(db,'parceiros',uid));
+        if(jaParceiro.exists()){
+          b.disabled=false; b.textContent=t;
+          return erro('Esta conta já tem cadastro de parceiro. Entre no seu painel de parceiro.');
+        }
+      }
 
       // 3) reserva o apelido
       await setDoc(doc(db,'parceiro_slugs',slug), { uid });
@@ -230,7 +266,9 @@
       if (refUpline && refUpline !== slug) dadosParceiro.indicadoPor = refUpline;
       await setDoc(doc(db,'parceiros',uid), dadosParceiro);
 
-      try{ await sendEmailVerification(cred.user); }catch(_){}
+      /* Só faz sentido em conta nova: quem já usava o Moviki não precisa
+         confirmar de novo o mesmo e-mail. */
+      if(contaNova){ try{ await sendEmailVerification(cred.user); }catch(_){} }
 
       // 5) avisa o dono na hora, no Telegram (fire-and-forget: NUNCA trava o cadastro)
       try{
@@ -243,7 +281,8 @@
       }catch(_){}
 
       window.mvSignup && window.mvSignup('parceiro_email');
-      mvEv('parceiro_cadastrado', { tem_upline: refUpline ? 'sim' : 'nao', metodo: 'email' });
+      mvEv('parceiro_cadastrado', { tem_upline: refUpline ? 'sim' : 'nao',
+                                    metodo: contaNova ? 'email' : 'conta_existente' });
 
       el('form').style.display='none';
       el('sucesso').style.display='block';
@@ -251,7 +290,9 @@
     }catch(e){
       b.disabled=false; b.textContent=t;
       const c=(e&&e.code)||'';
-      if(c==='auth/email-already-in-use') erro('Este e-mail já tem uma conta. Use outro ou entre no seu painel.');
+      if(c==='auth/email-already-in-use') erro('Este e-mail já tem uma conta no Moviki. Digite a SENHA dessa conta para adicionar o cadastro de parceiro a ela.');
+      else if(c==='auth/wrong-password' || c==='auth/invalid-credential') erro('Senha incorreta para esta conta. Use a senha que você já usa no Moviki.');
+      else if(c==='auth/too-many-requests') erro('Muitas tentativas seguidas. Espere um minuto e tente de novo.');
       else if(c==='auth/weak-password') erro('Senha muito fraca. Use ao menos 6 caracteres.');
       else if(c==='auth/invalid-email') erro('E-mail inválido.');
       else if(c==='permission-denied') erro('Esse apelido acabou de ser escolhido. Tente outro.');
