@@ -1434,6 +1434,15 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
    invisivel de ponta a ponta por cima do titulo "Menu" — qualquer toque ali em
    cima fechava o menu sem querer. Volta a ser um botao redondo no canto. */
 #drawer .drawerX{width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;}
+
+/* rodape institucional - 03/09/2026. Estilo proprio; a margem de baixo e por
+   causa da barra inferior do celular, que flutua por cima do conteudo. */
+.mvRodape{margin:26px 0 0;padding:18px 16px 96px;border-top:1px solid rgba(255,255,255,.09);
+  text-align:center;font-size:12px;line-height:1.75;color:#8fa6c4}
+.mvRodape b{color:#cfe0f5;font-weight:600}
+.mvRodapeLinks{margin-top:7px;display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center}
+.mvRodape a{color:#8fa6c4;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.14)}
+@media(min-width:900px){ .mvRodape{padding-bottom:28px} }
 </style>
 </head>
 <body>
@@ -1577,52 +1586,19 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
           </div>
           <a href="parceiro.html" target="_blank" rel="noopener" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5">Abrir meu painel completo</a>
 
-          <!-- SIMULADOR DE GANHOS INTERATIVO -->
-          <div class="mkSim" id="mkSim">
-            <div class="mkSimTitulo"><img class="icoT" src="icones/foguete.png" alt="" loading="lazy" onerror="mvI(this,'🚀')">Simule seus ganhos</div>
-            <div class="mkSimTabs">
-              <button type="button" class="mkSimTab active" onclick="mkSimSelecionarPlano('pro',this)">Pró<span class="mkSimTabPreco">R$ 37,90</span></button>
-              <button type="button" class="mkSimTab" onclick="mkSimSelecionarPlano('premium',this)">Premium<span class="mkSimTabPreco">R$ 49,90</span></button>
-              <button type="button" class="mkSimTab" onclick="mkSimSelecionarPlano('enterprise',this)">Enterprise<span class="mkSimTabPreco">R$ 99,90</span></button>
-            </div>
-            <div class="mkSimGrupo">
-              <div class="mkSimLabel"><span>Quantos negócios você vai indicar direto?</span><span class="mkSimValor" id="mkValor1">3</span></div>
-              <input type="range" min="0" max="100" value="3" id="slider1" class="mkSimRange" oninput="mkSimAtualizar()">
-              <div class="mkSimSub">Ganho recorrente todo mês enquanto o negócio ficar ativo.</div>
-            </div>
-            <div class="mkSimGrupo">
-              <div class="mkSimLabel"><span>Se cada um deles indicar quantos amigos?</span><span class="mkSimValor" id="mkValor2">2</span></div>
-              <input type="range" min="0" max="100" value="2" id="slider2" class="mkSimRange" oninput="mkSimAtualizar()">
-              <div class="mkSimSub">Bônus único no 1º pagamento de cada um.</div>
-            </div>
-            <div class="mkSimGrupo">
-              <div class="mkSimLabel"><span>E se os amigos deles trouxerem quantas pessoas?</span><span class="mkSimValor" id="mkValor3">2</span></div>
-              <input type="range" min="0" max="100" value="2" id="slider3" class="mkSimRange" oninput="mkSimAtualizar()">
-              <div class="mkSimSub">Bônus único no 1º pagamento de cada um.</div>
-            </div>
-            <div class="mkEqWrap">
-              <div class="mkEqBloco mkEqBloco--laranja balao-resultado" id="blocoFixo">
-                <span class="mkEqTitulo">Seu Ganho Fixo Mensal (Suas Indicações)</span>
-                <span class="mkEqValor" id="valorBloco1">R$ 0,00</span>
-              </div>
-              <div class="mkEqOp mkEqOp--mais" aria-hidden="true">+</div>
-              <div class="mkEqBloco mkEqBloco--azul balao-resultado" id="blocoN2">
-                <span class="mkEqTitulo">Bônus de Equipe - Nível 2 (Apenas no 1º Mês)</span>
-                <span class="mkEqValor" id="valorBloco2">R$ 0,00</span>
-              </div>
-              <div class="mkEqOp mkEqOp--mais" aria-hidden="true">+</div>
-              <div class="mkEqBloco mkEqBloco--verde balao-resultado" id="blocoN3">
-                <span class="mkEqTitulo">Bônus de Equipe - Nível 3 (Apenas no 1º Mês)</span>
-                <span class="mkEqValor" id="valorBloco3">R$ 0,00</span>
-              </div>
-              <div class="mkEqOp mkEqOp--igual" aria-hidden="true">=</div>
-              <div class="mkEqBloco mkEqBloco--vermelho balao-resultado" id="blocoTotal">
-                <span class="mkEqTitulo">Previsão do Seu 1º Saque Total</span>
-                <span class="mkEqValor" id="valorBloco4">R$ 0,00</span>
-                <span class="mkEqLegenda">⚠️ Observação: Este valor maior representa o somatório do seu ganho fixo mais os bônus únicos da sua equipe no primeiro mês. A partir do segundo mês, os bônus únicos expiram e o seu saque mensal será estritamente o valor fixo exibido no primeiro bloco (Laranja).</span>
-              </div>
-            </div>
-          </div>
+          <!-- ====================== CONFORMIDADE - 03/09/2026 ==================
+               Aqui existia um "Simule seus ganhos": tres controles deslizantes
+               e quatro caixas de valor, terminando em "Previsao do Seu 1o Saque
+               Total". Isso projeta QUANTO a pessoa vai receber, que e
+               exatamente o que saiu do ar da landing em 27/08 - e usava
+               "Bonus de Equipe - Nivel 2/3", a linguagem que o projeto proibiu
+               por ser a estetica do multinivel.
+               Painel logado nao e anuncio, mas print de tela e. E nao existe
+               defesa tecnica contra print: a defesa e o conteudo.
+               O bloco "Como voce ganha", logo acima, ja descreve a REGRA
+               inteira e correta. Nao foi preciso por nada no lugar - so a
+               frase que faltava. ================================================ -->
+          <p class="idxNota" style="margin-top:14px">A comissão só existe sobre assinatura <b>efetivamente paga</b>. Não há pagamento por cadastrar pessoas nem por montar equipe — e se ninguém que você indicar assinar um plano pago, a comissão é <b>zero</b>. As regras completas estão no <a href="regulamento.html" target="_blank" rel="noopener">Regulamento</a>.</p>
 
           <p class="idxNota">Comissões liberadas via Pix a partir de R$ 20. O saque é feito no seu painel completo.</p>
           <button type="button" class="mkSimFechar" onclick="fecharParceiro()">✕ Fechar e voltar ao mapa</button>
@@ -1760,6 +1736,23 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
            Menu e Sair subiram pra barra de marca, la em cima. -->
 
 
+
+      <!-- ============= RODAPE INSTITUCIONAL - 03/09/2026 =============
+           O painel do lojista nao tinha uma unica mencao ao CNPJ ou a razao
+           social. Quem paga uma assinatura todo mes precisa saber, sem sair
+           da tela, para qual empresa esta pagando. Mesmo rodape do
+           parceiro.html. A margem de baixo existe por causa da barra
+           inferior do celular, que fica por cima. ===================== -->
+      <footer class="mvRodape">
+        <div><b>EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA</b></div>
+        <div>CNPJ 68.289.841/0001-02 &middot; Curitiba/PR</div>
+        <div class="mvRodapeLinks">
+          <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener">Termos de uso</a>
+          <a href="https://moviki.com.br/privacidade.html" target="_blank" rel="noopener">Privacidade</a>
+          <a href="https://moviki.com.br/regulamento.html" target="_blank" rel="noopener">Regulamento</a>
+          <a href="https://wa.me/554120186848" target="_blank" rel="noopener">(41) 2018-6848</a>
+        </div>
+      </footer>
 
       <!-- barra inferior (celular) — 5 lugares, o do meio é a ação rápida -->
       <nav class="mvBar" id="mvBar" aria-label="Atalhos">
@@ -2668,7 +2661,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-03-authdominio';
+  window.MOVIKI_VERSAO='2026-09-03-atendentes';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -2720,6 +2713,49 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
     if(MSG_CONV.ultimoDe!=='admin'&&MSG_CONV.ultimoDe!=='bot')return false;
     return msgMs(MSG_CONV.ultimaEm) > msgMs(MSG_CONV.vistoLojistaEm);
   }
+  /* ================== OS CINCO ATENDENTES - 03/09/2026 ==================
+     A resposta do dono deixou de chegar como um "Moviki" sem rosto. Mesma
+     funcao que ja roda no parceiro.html e no eikoadm01.html - o lojista tinha
+     ficado de fora, e o efeito era o pior possivel: o dono via "voce - Karina"
+     enquanto o cliente recebia sem nome nenhum.
+
+     DETERMINISTICO, nunca sorteado. O nome sai de (data da mensagem + uid da
+     conversa). Sorteio mudaria o nome a cada F5 e - pior - o lojista veria um
+     nome enquanto o dono veria outro na MESMA mensagem.
+
+     A trava que nao se negocia: isto vale so para de:'admin'. O robo continua
+     assinando "Vik - assistente". Dar nome de gente a resposta automatica e a
+     pessoa achar que falou com alguem quando nao falou. */
+  var MV_ATENDENTES = ['Pamella','Mateus','Miguel','Karina','Júnior'];
+
+  function mvAtendente(t, salt){
+    var ms = 0;
+    try{
+      if(t && typeof t.toMillis === 'function') ms = t.toMillis();
+      else if(t && typeof t.seconds === 'number') ms = t.seconds * 1000;
+      else if(typeof t === 'number') ms = t;
+      else if(typeof t === 'string') ms = Date.parse(t) || 0;
+    }catch(e){ ms = 0; }
+    if(!ms) ms = Date.now();   /* mensagem recem-enviada, carimbo ainda a caminho */
+
+    /* Horario de Brasilia FIXO (UTC-3), nunca o relogio do aparelho: o lojista
+       e o dono tem que ler o mesmo nome na mesma linha, esteja quem estiver
+       com o fuso trocado. */
+    var br = new Date(ms - 3 * 3600000);
+    var dia = Math.floor(br.getTime() / 86400000);
+    var h = br.getUTCHours();
+    var noite = (h < 6 || h >= 18) ? 1 : 0;      /* dia 06h-17h59 · noite 18h-05h59 */
+    var turno = dia * 2 + noite;
+
+    /* A uid da conversa gira a lista de cada cliente pra um ponto diferente —
+       sem isso, todo mundo falaria com o mesmo atendente no mesmo turno. */
+    var acc = 0, s = String(salt || '');
+    for(var i = 0; i < s.length; i++){ acc = (acc * 31 + s.charCodeAt(i)) % 100000; }
+
+    var n = MV_ATENDENTES.length;
+    return MV_ATENDENTES[ ((turno + acc) % n + n) % n ];
+  }
+
   function msgPintarSino(){
     var tem=msgTemNaoLida();
     var p=el('msgPonto'); if(p)p.classList.toggle('escondido',!tem);
@@ -2775,7 +2811,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
       }
       var txt=m.texto?msgEsc(m.texto).replace(/\n/g,'<br>'):'';
       var classe=eu?'msgEu':(ehBot?'msgBot':'msgEle');
-      var quem=eu?'você':(ehBot?'Vik · assistente':'Moviki');
+      var quem=eu?'você':(ehBot?'Vik · assistente':(mvAtendente(m.criadoEm, MSG_UID) + ' · Moviki'));
       var bolha='<div class="msgBolha '+classe+'">'+txt+anexo+
         '<span class="msgQuando">'+quem+' · '+msgQuando(m.criadoEm)+'</span></div>';
       return ehBot
@@ -4970,77 +5006,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
 })();
 </script>
 <script>window.falarEnterprise=function(){window.open('https://wa.me/554120186848?text='+encodeURIComponent('Olá! Tenho interesse no plano Enterprise do Moviki (vários pontos). Pode me explicar como funciona?'),'_blank');};</script>
-<script>
-(function(){
-  var planos = {
-    pro:        { valor: 37.90, p1: 0.15, p2: 0.075, p3: 0.05 },
-    premium:    { valor: 49.90, p1: 0.15, p2: 0.075, p3: 0.05 },
-    enterprise: { valor: 99.90, p1: 0.15, p2: 0.075, p3: 0.05 }
-  };
-  var mkPlanoAtual = 'pro';
-
-  function mkFmtBRL(v){
-    return 'R$ ' + (Math.round(v*100)/100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-  }
-
-  function mkPopEfeito(elId){
-    var elx = document.getElementById(elId);
-    if(!elx) return;
-    elx.classList.add('mkPop');
-    setTimeout(function(){ elx.classList.remove('mkPop'); }, 100);
-  }
-
-  window.mkSimSelecionarPlano = function(id, btn){
-    mkPlanoAtual = id;
-    var tabs = document.querySelectorAll('#mkSim .mkSimTab');
-    for(var i=0;i<tabs.length;i++){ tabs[i].classList.remove('active'); }
-    if(btn) btn.classList.add('active');
-    window.mkSimAtualizar();
-  };
-
-  window.mkSimAtualizar = function(){
-    var s1 = document.getElementById('slider1');
-    var s2 = document.getElementById('slider2');
-    var s3 = document.getElementById('slider3');
-    if(!s1||!s2||!s3) return;
-
-    var q1 = parseInt(s1.value,10)||0;
-    var q2 = parseInt(s2.value,10)||0;
-    var q3 = parseInt(s3.value,10)||0;
-
-    document.getElementById('mkValor1').textContent = q1;
-    document.getElementById('mkValor2').textContent = q2;
-    document.getElementById('mkValor3').textContent = q3;
-
-    var planoAtivo = planos[mkPlanoAtual];
-
-    var totalBloco1 = q1 * (planoAtivo.valor * planoAtivo.p1);
-    var totalBloco2 = q2 * (planoAtivo.valor * planoAtivo.p2);
-    var totalBloco3 = q3 * (planoAtivo.valor * planoAtivo.p3);
-    var totalBloco4 = totalBloco1 + totalBloco2 + totalBloco3;
-
-    var elB1 = document.getElementById('valorBloco1');
-    var elB2 = document.getElementById('valorBloco2');
-    var elB3 = document.getElementById('valorBloco3');
-    var elB4 = document.getElementById('valorBloco4');
-    if(elB1) elB1.textContent = mkFmtBRL(totalBloco1);
-    if(elB2) elB2.textContent = mkFmtBRL(totalBloco2);
-    if(elB3) elB3.textContent = mkFmtBRL(totalBloco3);
-    if(elB4) elB4.textContent = mkFmtBRL(totalBloco4);
-
-    mkPopEfeito('blocoFixo');
-    mkPopEfeito('blocoN2');
-    mkPopEfeito('blocoN3');
-    mkPopEfeito('blocoTotal');
-  };
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded', window.mkSimAtualizar);
-  } else {
-    window.mkSimAtualizar();
-  }
-})();
-</script>
+<!-- o script do simulador de ganhos saiu junto com o bloco (conformidade, 03/09/2026) -->
 <script src="quiz/quiz-segmentos.js"></script>
 <script>
 /* ===== ONBOARDING QUIZ — Hyper-Personalização (padrão Duolingo) =====
@@ -5799,20 +5765,41 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     document.head.appendChild(sc);
   }
   var seq=0;
+  /* ---------- POR QUE ESTA ESPERA EXISTE (conserto de 03/09/2026) ----------
+     `iframe(v)` chama `vigiar()` e SO DEPOIS quem chamou anexa o elemento na
+     pagina. Enquanto a API do YouTube ainda estava carregando, o callback do
+     `carregarYT` caia tarde e o elemento ja estava la - por acidente.
+     Da SEGUNDA aula em diante a API ja esta pronta, o callback roda na hora,
+     e `new YT.Player(f.id)` procura um id que ainda nao existe no documento.
+     O player nunca nascia, `onStateChange` nunca disparava, e a aula nunca
+     ficava verde. Sintoma exato relatado: so a primeira contava.
+     Conserto: esperar o elemento aparecer antes de montar o player.
+     Falha calada e com teto - tutorial nao derruba painel. */
   function vigiar(f,v){
     carregarYT(function(){
-      try{
-        var p=new YT.Player(f.id,{ events:{ onStateChange:function(e){
-          if(e.data!==YT.PlayerState.PLAYING) return;
-          clearInterval(f.__t);
-          f.__t=setInterval(function(){
-            try{
-              var d=p.getDuration(), t=p.getCurrentTime();
-              if(d>0 && t/d>=0.9){ clearInterval(f.__t); marcar(v.k); }
-            }catch(_){}
-          },1000);
-        } } });
-      }catch(e){}
+      var tentativas = 0;
+      (function esperar(){
+        if(!document.getElementById(f.id)){
+          if(++tentativas > 60) return;          /* 3 s e desiste, sem quebrar nada */
+          setTimeout(esperar, 50);
+          return;
+        }
+        montar();
+      })();
+      function montar(){
+        try{
+          var p=new YT.Player(f.id,{ events:{ onStateChange:function(e){
+            if(e.data!==YT.PlayerState.PLAYING) return;
+            clearInterval(f.__t);
+            f.__t=setInterval(function(){
+              try{
+                var d=p.getDuration(), t=p.getCurrentTime();
+                if(d>0 && t/d>=0.9){ clearInterval(f.__t); marcar(v.k); }
+              }catch(_){}
+            },1000);
+          } } });
+        }catch(e){}
+      }
     });
   }
   function iframe(v){

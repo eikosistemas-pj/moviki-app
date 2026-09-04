@@ -753,39 +753,58 @@ input::placeholder{color:#6b7f96}
             </ul>
           </div>
 
-          <div class="mkSim" id="mkSim">
-            <div class="mkSimTitulo">Simule seus ganhos</div>
-            <div class="mkSimTabs">
-              <button type="button" class="mkSimTab active" data-plano="pro">Pró<span class="mkSimTabPreco">R$ 37,90</span></button>
-              <button type="button" class="mkSimTab" data-plano="premium">Premium<span class="mkSimTabPreco">R$ 49,90</span></button>
-              <button type="button" class="mkSimTab" data-plano="enterprise">Enterprise<span class="mkSimTabPreco">R$ 99,90</span></button>
+          <!-- ================== COMO A COMISSAO E CALCULADA ==================
+               03/09/2026 - substitui o "Simule seus ganhos", que tinha tres
+               controles deslizantes e quatro caixas terminando em "Previsao do
+               seu 1o saque total". Aquilo projetava QUANTO a pessoa vai
+               receber - a mesma coisa que saiu da landing em 27/08 - e usava
+               "Bonus de equipe / nivel 2 / nivel 3", a linguagem que o projeto
+               proibiu por ser a estetica do multinivel.
+
+               Painel logado nao e anuncio, mas print de tela e. E nao existe
+               defesa tecnica contra print nem contra foto da tela feita por
+               outra pessoa: a unica defesa e o CONTEUDO. Uma tela que nao
+               promete nada nao vira problema quando alguem fotografa.
+
+               O que ficou continua respondendo a pergunta que interessa - o
+               quanto vale cada assinatura - mas com a REGRA, nunca com o
+               RESULTADO. E o recorrente, que e o argumento forte de verdade,
+               ficou em destaque. =============================================== -->
+          <div class="cvCalc" id="cvCalc">
+            <div class="cvTit">Como a sua comissão é calculada</div>
+            <p class="cvSub">A conta é a mesma para todo mundo e está inteira no Regulamento. Escolha um plano para ver quanto vale uma assinatura.</p>
+
+            <div class="cvAbas" id="cvAbas">
+              <button type="button" class="cvAba" data-cvplano="basico">Básico<span>Grátis</span></button>
+              <button type="button" class="cvAba ativa" data-cvplano="pro">Pró<span>R$ 37,90</span></button>
+              <button type="button" class="cvAba" data-cvplano="premium">Premium<span>R$ 49,90</span></button>
+              <button type="button" class="cvAba" data-cvplano="enterprise">Enterprise<span>R$ 99,90</span></button>
             </div>
-            <div class="mkSimGrupo">
-              <div class="mkSimLabel"><span>Quantos negócios você vai indicar direto?</span><span class="mkSimValor" id="mkValor1">3</span></div>
-              <input type="range" min="0" max="100" value="3" id="slider1" class="mkSimRange">
-              <div class="mkSimSub">Ganho recorrente todo mês enquanto o negócio ficar ativo.</div>
+
+            <div class="cvDestaque">
+              <div class="cvDestTopo">Sua comissão por assinatura desse plano</div>
+              <div class="cvDestValor" id="cvValor">R$ 5,69</div>
+              <div class="cvDestPe" id="cvPe">por mês, enquanto essa pessoa continuar cliente pagante</div>
             </div>
-            <div class="mkSimGrupo">
-              <div class="mkSimLabel"><span>Se cada um deles indicar quantos amigos?</span><span class="mkSimValor" id="mkValor2">2</span></div>
-              <input type="range" min="0" max="100" value="2" id="slider2" class="mkSimRange">
-              <div class="mkSimSub">Bônus único no 1º pagamento de cada um.</div>
-            </div>
-            <div class="mkSimGrupo">
-              <div class="mkSimLabel"><span>E se os amigos deles trouxerem quantas pessoas?</span><span class="mkSimValor" id="mkValor3">2</span></div>
-              <input type="range" min="0" max="100" value="2" id="slider3" class="mkSimRange">
-              <div class="mkSimSub">Bônus único no 1º pagamento de cada um.</div>
-            </div>
-            <div class="mkEqWrap">
-              <div class="mkEqBloco mkEqBloco--laranja"><span class="mkEqTitulo">Seu ganho fixo mensal (suas indicações)</span><span class="mkEqValor" id="valorBloco1">R$ 0,00</span></div>
-              <div class="mkEqOp mkEqOp--mais" aria-hidden="true">+</div>
-              <div class="mkEqBloco mkEqBloco--azul"><span class="mkEqTitulo">Bônus de equipe — nível 2 (só no 1º mês)</span><span class="mkEqValor" id="valorBloco2">R$ 0,00</span></div>
-              <div class="mkEqOp mkEqOp--mais" aria-hidden="true">+</div>
-              <div class="mkEqBloco mkEqBloco--verde"><span class="mkEqTitulo">Bônus de equipe — nível 3 (só no 1º mês)</span><span class="mkEqValor" id="valorBloco3">R$ 0,00</span></div>
-              <div class="mkEqOp mkEqOp--igual" aria-hidden="true">=</div>
-              <div class="mkEqBloco mkEqBloco--vermelho">
-                <span class="mkEqTitulo">Previsão do seu 1º saque total</span><span class="mkEqValor" id="valorBloco4">R$ 0,00</span>
-                <span class="mkEqLegenda">Este valor maior é o somatório do seu ganho fixo mais os bônus únicos da sua equipe no primeiro mês. A partir do segundo mês, os bônus únicos expiram e o seu saque mensal passa a ser o valor fixo do primeiro bloco.</span>
+
+            <div class="cvNiveis">
+              <div class="cvNivel">
+                <span class="cvPct">15%</span>
+                <span class="cvTxt"><b>Quem você indica.</b> Da mensalidade paga, todo mês, enquanto a pessoa continuar cliente pagante.</span>
               </div>
+              <div class="cvNivel">
+                <span class="cvPct">7,5%</span>
+                <span class="cvTxt"><b>Quem essa pessoa indica.</b> Uma vez só, no primeiro pagamento dela.</span>
+              </div>
+              <div class="cvNivel">
+                <span class="cvPct">5%</span>
+                <span class="cvTxt"><b>E quem essa segunda pessoa indica.</b> Uma vez só, no primeiro pagamento dela.</span>
+              </div>
+            </div>
+
+            <div class="cvAviso">
+              A comissão só existe sobre assinatura <b>efetivamente paga</b>. Não há pagamento por cadastrar pessoas nem por montar equipe — e se ninguém que você indicar assinar um plano pago, a comissão é <b>zero</b>.
+              <a href="regulamento.html" target="_blank" rel="noopener">Ler o Regulamento</a>
             </div>
           </div>
         </section>
@@ -1021,7 +1040,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-03-cracha';
+  window.MOVIKI_VERSAO = '2026-09-03-cracha-aulas';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2195,47 +2214,42 @@ input::placeholder{color:#6b7f96}
 </script>
 
 <script>
-/* ===== Simulador de ganhos — componente isolado, sem dependência do módulo ===== */
+/* ============ Como a comissao e calculada - componente isolado ============
+   Nao depende do modulo, nao le nada do banco e falha calado.
+   NAO projeta valor: mostra a comissao de UMA assinatura daquele plano, que
+   e a regra aplicada, nao uma previsao. */
 (function(){
-  var planos = {
-    pro:        { valor: 37.90, p1: 0.15, p2: 0.075, p3: 0.05 },
-    premium:    { valor: 49.90, p1: 0.15, p2: 0.075, p3: 0.05 },
-    enterprise: { valor: 99.90, p1: 0.15, p2: 0.075, p3: 0.05 }
+  'use strict';
+  var PLANOS = {
+    basico:     { preco: 0,     pe: 'o plano gratuito não gera comissão' },
+    pro:        { preco: 37.90, pe: 'por mês, enquanto essa pessoa continuar cliente pagante' },
+    premium:    { preco: 49.90, pe: 'por mês, enquanto essa pessoa continuar cliente pagante' },
+    enterprise: { preco: 99.90, pe: 'por mês, enquanto essa pessoa continuar cliente pagante' }
   };
-  var atual = 'pro';
-  function fmt(v){ return 'R$ ' + (Math.round(v*100)/100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-  function atualizar(){
-    var s1 = document.getElementById('slider1'), s2 = document.getElementById('slider2'), s3 = document.getElementById('slider3');
-    if(!s1 || !s2 || !s3) return;
-    var q1 = parseInt(s1.value,10) || 0, q2 = parseInt(s2.value,10) || 0, q3 = parseInt(s3.value,10) || 0;
-    document.getElementById('mkValor1').textContent = q1;
-    document.getElementById('mkValor2').textContent = q2;
-    document.getElementById('mkValor3').textContent = q3;
-    var p = planos[atual];
-    var b1 = q1 * p.valor * p.p1, b2 = q2 * p.valor * p.p2, b3 = q3 * p.valor * p.p3;
-    document.getElementById('valorBloco1').textContent = fmt(b1);
-    document.getElementById('valorBloco2').textContent = fmt(b2);
-    document.getElementById('valorBloco3').textContent = fmt(b3);
-    document.getElementById('valorBloco4').textContent = fmt(b1 + b2 + b3);
+  var N1 = 0.15;
+  function brl(v){
+    return 'R$ ' + (Math.round(v*100)/100).toLocaleString('pt-BR',
+      { minimumFractionDigits:2, maximumFractionDigits:2 });
+  }
+  function pintar(id){
+    var p = PLANOS[id] || PLANOS.pro;
+    var v = document.getElementById('cvValor'), pe = document.getElementById('cvPe');
+    if (v)  v.textContent  = brl(p.preco * N1);
+    if (pe) pe.textContent = p.pe;
   }
   function ligar(){
-    var tabs = document.querySelectorAll('#mkSim .mkSimTab');
-    for(var i=0;i<tabs.length;i++){
-      (function(t){
-        t.onclick = function(){
-          atual = t.getAttribute('data-plano') || 'pro';
-          for(var j=0;j<tabs.length;j++){ tabs[j].classList.remove('active'); }
-          t.classList.add('active');
-          atualizar();
-        };
-      })(tabs[i]);
+    var abas = document.querySelectorAll('#cvAbas .cvAba');
+    if (!abas.length) return;
+    for (var i=0;i<abas.length;i++){
+      abas[i].addEventListener('click', function(){
+        for (var j=0;j<abas.length;j++) abas[j].classList.remove('ativa');
+        this.classList.add('ativa');
+        pintar(this.getAttribute('data-cvplano'));
+      });
     }
-    ['slider1','slider2','slider3'].forEach(function(id){
-      var s = document.getElementById(id); if(s) s.oninput = atualizar;
-    });
-    atualizar();
+    pintar('pro');
   }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ligar);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ligar);
   else ligar();
 })();
 </script>
@@ -2405,6 +2419,42 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
   .crFoto{margin-left:auto;margin-right:auto}
   .crQR{width:150px;height:150px}
 }
+
+/* ============ COMO A COMISSAO E CALCULADA - 03/09/2026 ============
+   Estilo proprio. Substituiu o simulador de ganhos: descreve a REGRA, nunca
+   projeta RESULTADO. Os tres niveis ficam em cards IGUAIS, sem hierarquia e
+   sem cor de "melhor" - hierarquia visual entre niveis e a estetica do
+   multinivel, e foi por isso que a landing perdeu a piramide em 27/08. */
+.cvCalc{margin-top:14px;padding:18px 16px 20px;border-radius:18px;
+  border:1px solid var(--mv-linha-forte);
+  background:linear-gradient(160deg,rgba(0,212,255,.06),rgba(0,102,255,.04))}
+.cvTit{font-size:15px;font-weight:800;color:var(--mv-txt-1);margin-bottom:6px}
+.cvSub{font-size:13px;color:var(--mv-txt-3);line-height:1.55;margin-bottom:14px}
+.cvAbas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-bottom:14px}
+.cvAba{min-width:0;background:rgba(255,255,255,.04);border:1px solid var(--mv-linha);
+  border-radius:11px;padding:9px 5px;color:var(--mv-txt-2);font-family:inherit;
+  font-size:12.5px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.cvAba span{font-size:10.5px;font-weight:600;color:var(--mv-txt-3)}
+.cvAba.ativa{border-color:var(--mv-ciano);background:rgba(0,212,255,.11);color:var(--mv-txt-1)}
+.cvAba.ativa span{color:var(--mv-ciano)}
+.cvDestaque{text-align:center;padding:16px 12px;border-radius:14px;
+  border:1px solid var(--mv-linha);background:rgba(255,255,255,.03)}
+.cvDestTopo{font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  font-weight:700;color:var(--mv-txt-3)}
+.cvDestValor{font-size:40px;font-weight:800;letter-spacing:-.03em;margin:6px 0 4px;
+  background:var(--mv-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cvDestPe{font-size:12.5px;color:var(--mv-txt-3);line-height:1.5}
+.cvNiveis{margin-top:14px;display:flex;flex-direction:column;gap:9px}
+.cvNivel{display:flex;gap:12px;align-items:flex-start;padding:12px 13px;border-radius:12px;
+  border:1px solid var(--mv-linha);background:rgba(255,255,255,.03)}
+.cvPct{flex:0 0 auto;font-size:17px;font-weight:800;color:var(--mv-ciano);min-width:44px}
+.cvTxt{font-size:13px;line-height:1.5;color:var(--mv-txt-2)}
+.cvTxt b{color:var(--mv-txt-1);font-weight:700}
+.cvAviso{margin-top:13px;padding:12px 13px;border-radius:12px;font-size:12.5px;line-height:1.55;
+  color:var(--mv-txt-2);border:1px solid rgba(255,168,74,.32);background:rgba(255,168,74,.07)}
+.cvAviso b{color:var(--mv-txt-1)}
+.cvAviso a{display:inline-block;margin-top:6px;color:var(--mv-ciano);text-decoration:underline}
+@media(max-width:420px){ .cvAbas{grid-template-columns:repeat(2,minmax(0,1fr))} }
 </style>
 <script>
 /* ===================== TUTORIAIS EM VIDEO - PARCEIRO ======================
@@ -2498,20 +2548,41 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     document.head.appendChild(sc);
   }
   var seq=0;
+  /* ---------- POR QUE ESTA ESPERA EXISTE (conserto de 03/09/2026) ----------
+     `iframe(v)` chama `vigiar()` e SO DEPOIS quem chamou anexa o elemento na
+     pagina. Enquanto a API do YouTube ainda estava carregando, o callback do
+     `carregarYT` caia tarde e o elemento ja estava la - por acidente.
+     Da SEGUNDA aula em diante a API ja esta pronta, o callback roda na hora,
+     e `new YT.Player(f.id)` procura um id que ainda nao existe no documento.
+     O player nunca nascia, `onStateChange` nunca disparava, e a aula nunca
+     ficava verde. Sintoma exato relatado: so a primeira contava.
+     Conserto: esperar o elemento aparecer antes de montar o player.
+     Falha calada e com teto - tutorial nao derruba painel. */
   function vigiar(f,v){
     carregarYT(function(){
-      try{
-        var p=new YT.Player(f.id,{ events:{ onStateChange:function(e){
-          if(e.data!==YT.PlayerState.PLAYING) return;
-          clearInterval(f.__t);
-          f.__t=setInterval(function(){
-            try{
-              var d=p.getDuration(), t=p.getCurrentTime();
-              if(d>0 && t/d>=0.9){ clearInterval(f.__t); marcar(v.k); }
-            }catch(_){}
-          },1000);
-        } } });
-      }catch(e){}
+      var tentativas = 0;
+      (function esperar(){
+        if(!document.getElementById(f.id)){
+          if(++tentativas > 60) return;          /* 3 s e desiste, sem quebrar nada */
+          setTimeout(esperar, 50);
+          return;
+        }
+        montar();
+      })();
+      function montar(){
+        try{
+          var p=new YT.Player(f.id,{ events:{ onStateChange:function(e){
+            if(e.data!==YT.PlayerState.PLAYING) return;
+            clearInterval(f.__t);
+            f.__t=setInterval(function(){
+              try{
+                var d=p.getDuration(), t=p.getCurrentTime();
+                if(d>0 && t/d>=0.9){ clearInterval(f.__t); marcar(v.k); }
+              }catch(_){}
+            },1000);
+          } } });
+        }catch(e){}
+      }
     });
   }
   function iframe(v){
