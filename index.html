@@ -2523,11 +2523,51 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
   let dadosAssinatura=null;
   const RESERVADOS=['index','mapa','404','assets','www','painel','login','moviki'];
   // Rastreio do Programa de Parceiros: captura ?ref da URL (limpo) e guarda no navegador.
+  /* ORDEM DE PRIORIDADE — 04/09/2026: URL > cookie do dominio pai > localStorage.
+     O cookie mv_ref (.moviki.com.br) e a peca que faltava: o localStorage deste
+     app NAO enxerga o do moviki.com.br, entao quem lia a landing, fechava a aba
+     e voltava depois direto no app chegava sem indicacao nenhuma e a comissao
+     do parceiro se perdia. O cookie e gravado em /p/, na landing e na pagina de
+     verificacao do cracha, e atravessa os dois dominios.
+     JANELA DE 90 DIAS: indicacao nao vale para sempre. O localStorage nunca
+     expirava sozinho — creditava um parceiro por um cadastro feito um ano
+     depois. Agora carimba a data; sem carimbo (quem ja tinha o valor guardado),
+     carimba hoje em vez de descartar, para nao punir indicacao em andamento.
+     Ultimo clique vence: um ref novo na URL sobrescreve o guardado. */
   let refParceiro='';
+  const REF_DIAS=90, REF_MS=REF_DIAS*24*60*60*1000;
+  const limpaRef = v => String(v||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,40);
+  function refDoCookie(){
+    try{
+      const m=document.cookie.match(/(?:^|;\s*)mv_ref=([^;]*)/);
+      return m ? limpaRef(decodeURIComponent(m[1])) : '';
+    }catch(_){ return ''; }
+  }
+  function guardarRef(r){
+    try{
+      localStorage.setItem('moviki_ref', r);
+      localStorage.setItem('moviki_ref_em', String(Date.now()));
+    }catch(_){}
+    try{ document.cookie='mv_ref='+encodeURIComponent(r)+
+      '; Max-Age=7776000; Path=/; Domain=.moviki.com.br; SameSite=Lax; Secure'; }catch(_){}
+  }
+  function refGuardado(){
+    let r='';
+    try{ r=limpaRef(localStorage.getItem('moviki_ref')); }catch(_){}
+    if(r.length<3) return '';
+    let em=0;
+    try{ em=parseInt(localStorage.getItem('moviki_ref_em')||'0',10)||0; }catch(_){}
+    if(!em){ try{ localStorage.setItem('moviki_ref_em', String(Date.now())); }catch(_){} return r; }
+    return (Date.now()-em > REF_MS) ? '' : r;
+  }
   try{
-    const r=(new URLSearchParams(location.search).get('ref')||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,40);
-    if(r.length>=3){ refParceiro=r; try{localStorage.setItem('moviki_ref',r);}catch(_){}}
-    else { try{refParceiro=(localStorage.getItem('moviki_ref')||'').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,40);}catch(_){} }
+    const r=limpaRef(new URLSearchParams(location.search).get('ref'));
+    if(r.length>=3){ refParceiro=r; guardarRef(r); }
+    else {
+      const c=refDoCookie();
+      if(c.length>=3){ refParceiro=c; guardarRef(c); }   /* renova a janela e espelha no localStorage */
+      else refParceiro=refGuardado();
+    }
   }catch(e){}
   // Grava, 1x, de qual parceiro veio este lojista (só no cadastro; a regra do Firestore impede alterar depois).
   async function registrarIndicacao(uid){
@@ -2661,7 +2701,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-03-atendentes';
+  window.MOVIKI_VERSAO='2026-09-04-ref-cookie';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
