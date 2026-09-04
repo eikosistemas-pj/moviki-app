@@ -748,6 +748,40 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
 
         <!-- ============ SEÇÃO: DIVULGAÇÃO ============ -->
         <section data-sec="divulgacao" class="hide">
+
+          <!-- ============ CONDUTA DO DIVULGADOR - 04/09/2026 ============
+               Aula ensina, aceite registra, aviso chega a tempo. Este e o
+               "chega a tempo": fica no ponto exato onde o parceiro pega o
+               link e o cracha pra levar pra fora.
+               NAO cobre a secao e NAO retranca ninguem - so os botoes de
+               copiar e baixar esperam o aceite. Quem ja divulga mantem o
+               painel inteiro; o que ele precisa e de um clique. -->
+          <div class="mvCond soAprovado" id="condBox" hidden>
+            <div class="mvCondTit"><span id="condIco">⚠️</span> <span id="condTit">Antes de postar</span></div>
+            <p class="mvCondL">Marque como publicidade: <b>#publi no início</b>, visível sem clicar em “ver mais”. Você recebe comissão, então a sua publicação é publicidade.</p>
+            <p class="mvCondL"><b>Nunca prometa</b> ganho, valor, prazo, “garantido” ou “sem risco”.</p>
+            <p class="mvCondL">Fale <b>do que a ferramenta faz</b>, não do que vai acontecer com o negócio dele.</p>
+            <div class="mvCondPe">
+              <button type="button" class="mvCondBtn" id="condAceitar">Li e concordo</button>
+              <button type="button" class="mvCondLink" id="condVerTermo">Ver o compromisso completo</button>
+              <button type="button" class="mvCondLink" id="condVerAula">Ver a aula</button>
+              <span class="mvCondData" id="condData"></span>
+            </div>
+            <div class="mvCondTermo" id="condTermo" hidden>
+              <b>Compromisso de quem divulga o Moviki</b>
+              <ol>
+                <li><b>Não prometer ganho, renda, valor ou prazo</b> — nem sobre a comissão de parceiro, nem sobre o resultado do negócio de quem eu indicar.</li>
+                <li><b>Não usar “garantido”, “sem risco”, “para sempre” ou “investimento”</b> ao falar do Programa de Parceiros.</li>
+                <li><b>Explicar a regra, nunca o resultado.</b> Posso dizer como a comissão funciona; não posso dizer quanto alguém vai receber.</li>
+                <li><b>Não prometer que clientes vão encontrar o negócio pelo mapa.</b> Posso mostrar o que a ferramenta faz hoje: o link próprio, o cardápio, o botão de WhatsApp, o status de aberto, e a ausência de comissão por venda.</li>
+                <li><b>Identificar como publicidade</b> todo conteúdo meu que fale do Moviki, usando a marcação da própria rede ou #publi visível no início, sem precisar clicar para ver.</li>
+                <li><b>Não me apresentar como funcionário do Moviki</b> nem falar em nome da empresa. Sou parceiro divulgador.</li>
+                <li><b>Retirar do ar</b>, quando o Moviki pedir, conteúdo meu que esteja fora destas regras.</li>
+              </ol>
+              <div class="fim">O descumprimento pode suspender o link de indicação e as comissões pendentes.</div>
+            </div>
+          </div>
+
           <div class="cd soAprovado">
             <div class="cdTit">Seu link de indicação</div>
             <p class="cdSub" style="margin-bottom:12px">Todo negócio que assinar por este link te dá 15% de comissão todo mês, enquanto ele continuar pagando.</p>
@@ -1113,7 +1147,7 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-04-sigilo';
+  window.MOVIKI_VERSAO = '2026-09-04-conduta';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1564,6 +1598,26 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
         uid: user.uid,
         vistas: Array.isArray(MEU.aulasVistas) ? MEU.aulasVistas.slice() : [],
         concluiuEm: MEU.aulasEm || '',
+        /* 04/09/2026 - aceite do compromisso de divulgacao. A aula ensina, o
+           aceite REGISTRA. Guia CONAR 2026: conteudo comissionado e
+           publicidade, e o anunciante responde junto pelo que o divulgador
+           publica. Este campo e a prova de que o dever de informar foi
+           cumprido. Campo NOVO e OPCIONAL na regra do Firestore - painel
+           antigo continua funcionando sem ele. */
+        conduta: (MEU.aceiteConduta && MEU.aceiteConduta.versao) || '',
+        condutaEm: (MEU.aceiteConduta && MEU.aceiteConduta.em) || '',
+        salvarAceite: async function(versao){
+          try{
+            const a = { versao: String(versao), em: new Date().toISOString() };
+            await updateDoc(doc(db,'parceiros',user.uid), { aceiteConduta: a });
+            MEU.aceiteConduta = a;
+            if(window.__mvParceiroTut){
+              window.__mvParceiroTut.conduta = a.versao;
+              window.__mvParceiroTut.condutaEm = a.em;
+            }
+            return true;
+          }catch(e){ return false; }
+        },
         salvar: async function(lista, concluiu){
           try{
             const d = { aulasVistas: lista };
@@ -2483,6 +2537,34 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
    cairia no meio de uma tela e meia de rolagem e o parceiro abriria a aba sem
    ver explicacao nenhuma. Por isso ele fica colado no topo, no primeiro
    quadro que aparece. */
+/* ---------- conduta do divulgador (04/09/2026) ----------
+   Lembrete de tres linhas no ponto exato de saida do material, mais o
+   aceite. Nao cobre a secao e nao retranca ninguem: quem ja divulga
+   continua com o painel inteiro. O que ele segura sao os BOTOES que
+   levam o link e o cracha pra fora - e so isso. */
+.mvCond{margin:0 0 18px;padding:16px 18px;border-radius:14px;border:1px solid rgba(255,176,32,.42);
+  background:linear-gradient(180deg,rgba(255,176,32,.13),rgba(255,176,32,.05))}
+.mvCond.ok{border-color:rgba(37,227,155,.4);background:linear-gradient(180deg,rgba(37,227,155,.11),rgba(37,227,155,.04))}
+.mvCondTit{font-weight:700;font-size:15.5px;color:var(--mv-alerta);margin-bottom:9px;display:flex;align-items:center;gap:8px}
+.mvCond.ok .mvCondTit{color:var(--mv-ok)}
+.mvCondL{font-size:13.5px;line-height:1.55;color:var(--mv-txt-2);margin:0 0 6px;padding-left:16px;position:relative}
+.mvCondL::before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--mv-alerta)}
+.mvCond.ok .mvCondL::before{background:var(--mv-ok)}
+.mvCondL b{color:var(--mv-txt)}
+.mvCondPe{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:13px}
+.mvCondBtn{padding:11px 18px;border-radius:11px;border:0;cursor:pointer;font-family:inherit;font-size:14px;
+  font-weight:700;color:#04121f;background:var(--mv-grad)}
+.mvCondBtn[disabled]{opacity:.55;cursor:default}
+.mvCondLink{background:none;border:0;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--mv-ciano);
+  text-decoration:underline;padding:6px 2px}
+.mvCondData{font-size:12.5px;color:var(--mv-txt-3)}
+.mvCondTermo{margin-top:12px;padding:14px 16px;border-radius:12px;border:1px solid var(--mv-linha);
+  background:var(--mv-campo);font-size:13.5px;line-height:1.6;color:var(--mv-txt-2)}
+.mvCondTermo ol{margin:8px 0 0;padding-left:20px}
+.mvCondTermo li{margin-bottom:7px}
+.mvCondTermo b{color:var(--mv-txt)}
+.mvCondTermo .fim{margin-top:10px;color:var(--mv-txt-3);font-size:12.5px}
+.rcAcao[disabled],.btn[disabled]{opacity:.42;cursor:default;filter:grayscale(.5)}
 .mvCadeado{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;
   justify-content:flex-start;gap:12px;text-align:center;padding:54px 26px 26px;border-radius:16px;
   background:linear-gradient(to bottom,rgba(4,10,18,.93) 0,rgba(4,10,18,.93) 320px,rgba(4,10,18,.78) 100%)}
@@ -2574,7 +2656,12 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      importa - `todas()` percorre os modulos e ignora o `sel`, enquanto o
      `embutir()` pula todo modulo que nao tem um. */
   { n:'Comece por aqui', v:[
-    { k:'mod-parc-abertura',   t:'Bem-vindo ao Programa de Parceiros',           d:'2:54', id:'fQqR9ae5vnI' } ]},
+    { k:'mod-parc-abertura',   t:'Bem-vindo ao Programa de Parceiros',           d:'2:54', id:'fQqR9ae5vnI' },
+    /* CONDUTA - 04/09/2026. Mora aqui, e nao em Divulgacao, de proposito: e a
+       aula que diz o que NAO pode ser falado, e isso precisa ser sabido antes
+       de qualquer coisa sobre como divulgar. Ela tambem e o par da tela de
+       aceite que fica na Divulgacao - a aula ensina, o aceite registra. */
+    { k:'mod-parc-conduta',    t:'Como falar do Moviki sem prometer o que não pode', d:'2:29', id:'T5QdBjl9Y1k' } ]},
   { n:'Começar', sel:'section[data-sec="visao"]', v:[
     { k:'mod-parc-comecar',    t:'Como funciona o Programa de Parceiros',        d:'0:28', id:'vWj5K8RdSdY' } ]},
   { n:'Indicações', sel:'section[data-sec="indicacoes"]', v:[
@@ -2950,13 +3037,132 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') fecharAulas(); });
 
   function iniciar(){
-    entradas(); embutir(); amarrar(); try{ trava(); }catch(e){} try{ selo(); }catch(e){}
-    setTimeout(function(){ entradas(); embutir(); amarrar(); try{ trava(); }catch(e){} try{ selo(); }catch(e){} },1400);
-    window.addEventListener('mv-parceiro-pronto',function(){ try{ trava(); }catch(e){} try{ selo(); }catch(e){} });
+    entradas(); embutir(); amarrar(); try{ trava(); }catch(e){} try{ selo(); }catch(e){} try{ conduta(); }catch(e){}
+    setTimeout(function(){ entradas(); embutir(); amarrar(); try{ trava(); }catch(e){} try{ selo(); }catch(e){} try{ conduta(); }catch(e){} },1400);
+    window.addEventListener('mv-parceiro-pronto',function(){ try{ trava(); }catch(e){} try{ selo(); }catch(e){} try{ conduta(); }catch(e){} });
     setTimeout(amarrar,3500);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',iniciar);
   else iniciar();
+
+  /* =====================================================================
+     CONDUTA DO DIVULGADOR — 04/09/2026.
+
+     POR QUE ISTO EXISTE, E POR QUE NAO E SO A AULA:
+     o Guia CONAR 2026 trata conteudo COMISSIONADO como publicidade, exige
+     identificacao ostensiva (visivel sem clicar em "ver mais") e poe sobre o
+     ANUNCIANTE o dever de informar o divulgador e de monitorar o que ele
+     publica, sob risco de responsabilizacao solidaria. Todo parceiro daqui e
+     comissionado. Entao a aula ensina, este aceite REGISTRA que o dever de
+     informar foi cumprido, e o lembrete de tres linhas chega no minuto em que
+     ele vai pegar o material.
+
+     O QUE ELE NAO FAZ: nao cobre a secao, nao retranca ninguem e nao mexe na
+     trava das aulas. Quem ja divulga continua com o painel inteiro. O unico
+     efeito e segurar os botoes que levam o link e o cracha PARA FORA - copiar,
+     compartilhar e baixar - ate um clique em "Li e concordo".
+
+     Falha calada: sem a ponte do Firebase, o bloco some e nada e travado.
+     Painel nao pode cair por causa de conformidade mal carregada.
+     ===================================================================== */
+  var CONDUTA_VERSAO = '1.0';
+  var COND_BOTOES = ['btnCopiar','btnWpp','btnFace','btnShare','btnCopiarP','btnWppP','btnCrachaBaixar'];
+
+  function conduta(){
+    var P = window.__mvParceiroTut;
+    var box = document.getElementById('condBox');
+    if(!box) return;
+    if(!P){ box.hidden = true; return; }          /* nao e o painel do parceiro */
+
+    /* O estado mora em UM lugar so: a ponte P. conduta() e chamada varias
+       vezes (na entrada, no timeout de 1400ms e no evento do painel), e cada
+       chamada criava um escopo novo. Um `var aceito` local fazia o listener
+       do clique fechar sobre o escopo VELHO enquanto o repintar do clique
+       global lia o escopo NOVO - o aceite gravava no banco e a tela voltava
+       a pedir aceite. Ler sempre de P resolve na raiz. */
+    function aceito(){ return String(P.conduta || '') === CONDUTA_VERSAO; }
+    box.hidden = false;
+
+    function botoes(liberar){
+      COND_BOTOES.forEach(function(id){
+        var b = document.getElementById(id);
+        if(!b) return;
+        if(liberar) b.removeAttribute('disabled');
+        else b.setAttribute('disabled','disabled');
+      });
+    }
+
+    function pintar(){
+      var tit = document.getElementById('condTit');
+      var ico = document.getElementById('condIco');
+      var bt  = document.getElementById('condAceitar');
+      var dt  = document.getElementById('condData');
+      if(aceito()){
+        box.classList.add('ok');
+        if(ico) ico.textContent = '✓';
+        if(tit) tit.textContent = 'Combinado. Lembre destas três antes de cada post';
+        if(bt){ bt.hidden = true; }
+        if(dt){
+          var q = '';
+          try{
+            var a = P.condutaEm || '';
+            if(a) q = ' em ' + new Date(a).toLocaleDateString('pt-BR');
+          }catch(e){}
+          dt.textContent = 'Compromisso aceito' + q + '.';
+        }
+        botoes(true);
+      }else{
+        box.classList.remove('ok');
+        if(ico) ico.textContent = '⚠️';
+        if(tit) tit.textContent = 'Antes de postar';
+        if(bt){ bt.hidden = false; bt.removeAttribute('disabled'); bt.textContent = 'Li e concordo'; }
+        if(dt) dt.textContent = 'O link e o crachá liberam com este aceite.';
+        botoes(false);
+      }
+    }
+
+    var btAceitar = document.getElementById('condAceitar');
+    if(btAceitar && !btAceitar.__mv){
+      btAceitar.__mv = 1;
+      btAceitar.addEventListener('click', function(){
+        var b = this;
+        b.setAttribute('disabled','disabled');
+        b.textContent = 'Salvando…';
+        Promise.resolve()
+          .then(function(){ return P.salvarAceite ? P.salvarAceite(CONDUTA_VERSAO) : false; })
+          .then(function(ok){
+            if(ok){
+              pintar();                      /* P.conduta ja foi atualizado por salvarAceite */
+            }else{
+              /* Nao mente pra tela: se nao gravou, o aceite nao existe. */
+              b.removeAttribute('disabled');
+              b.textContent = 'Não deu certo — tentar de novo';
+            }
+          });
+      });
+    }
+    var btTermo = document.getElementById('condVerTermo');
+    if(btTermo && !btTermo.__mv){
+      btTermo.__mv = 1;
+      btTermo.addEventListener('click', function(){
+        var t = document.getElementById('condTermo');
+        if(!t) return;
+        t.hidden = !t.hidden;
+        this.textContent = t.hidden ? 'Ver o compromisso completo' : 'Fechar o compromisso';
+      });
+    }
+    var btAula = document.getElementById('condVerAula');
+    if(btAula && !btAula.__mv){
+      btAula.__mv = 1;
+      btAula.addEventListener('click', function(){
+        try{ window.abrirTutoriais('mod-parc-conduta'); }
+        catch(e){ try{ window.abrirTutoriais(); }catch(_){} }
+      });
+    }
+
+    pintar();
+    conduta.__pintar = pintar;
+  }
 
   /* =====================================================================
      TRAVA DAS AULAS — so no painel do PARCEIRO.
@@ -3041,7 +3247,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     trava.__pintar=pintar;
     pintar();
     /* o painel redesenha as secoes; repinta depois de qualquer clique */
-    document.addEventListener('click',function(){ setTimeout(function(){ pintar(); try{ selo(); }catch(e){} },320); },false);
+    document.addEventListener('click',function(){ setTimeout(function(){ pintar(); try{ selo(); }catch(e){} try{ if(conduta.__pintar) conduta.__pintar(); }catch(e){} },320); },false);
   }
 
   /* =====================================================================
