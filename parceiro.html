@@ -1040,7 +1040,7 @@ input::placeholder{color:#6b7f96}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-03-cracha-aulas';
+  window.MOVIKI_VERSAO = '2026-09-04-qrformato-p09';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1612,6 +1612,12 @@ input::placeholder{color:#6b7f96}
               e.style.backgroundImage = 'url("' + j.foto + '")';
               e.classList.add('temFoto');
             });
+            /* O cracha copia a foto do avatarLado, e ele repinta em 400, 1500
+               e 3600 ms. Quando a Meta demora mais que isso (o timeout do robo
+               e de 6 s), a foto chegava tarde e o cracha ficava com a inicial
+               ate o parceiro recarregar a pagina. O aviso resolve sem timer
+               novo: quem chegou primeiro avisa quem estava esperando. */
+            try{ window.dispatchEvent(new Event('mv-foto-parceiro')); }catch(_){}
           })
           .catch(() => {});
       }
@@ -2476,8 +2482,13 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     { k:'mod-parc-comecar',    t:'Como funciona o Programa de Parceiros',        d:'0:28', id:'vWj5K8RdSdY' } ]},
   { n:'Indicações', sel:'section[data-sec="indicacoes"]', v:[
     { k:'mod-parc-indicacoes', t:'Acompanhar quem entrou pelo seu link',         d:'0:25', id:'sxt5FSp24kQ' } ]},
+  /* Divulgacao tem DUAS aulas: a do link (que e a embutida na secao, porque
+     embutir() usa sempre o primeiro video do modulo) e a do cracha, publicada
+     em 04/09/2026. As duas aparecem na tela de aulas e as duas contam para a
+     trava e para o selo. */
   { n:'Divulgação', sel:'section[data-sec="divulgacao"]', v:[
-    { k:'mod-parc-divulgacao', t:'Seus dois links e os modelos de mensagem',     d:'0:24', id:'h0_nSO4-DWo' } ]},
+    { k:'mod-parc-divulgacao', t:'Seus dois links e os modelos de mensagem',     d:'0:24', id:'h0_nSO4-DWo' },
+    { k:'mod-parc-cracha',     t:'Seu crachá e a página de verificação',         d:'1:18', id:'mkQFsp6ggf0' } ]},
   { n:'Comissões', sel:'section[data-sec="comissoes"]', v:[
     { k:'mod-parc-comissoes',  t:'Como a comissão é calculada e quando libera',  d:'0:29', id:'1zCmsg5Okp0' } ]},
   { n:'Pagamentos', sel:'section[data-sec="pagamentos"]', v:[
@@ -3214,24 +3225,26 @@ function mvQR(texto){
     return out;
   }
   function formato(n, alvo){
-    /* EC nivel M = 00. BCH(15,5) com gerador 0x537 e mascara 0x5412. */
+    /* EC nivel M = 00. BCH(15,5) com gerador 0x537 e mascara 0x5412.
+       Ordem dos 15 modulos conforme ISO/IEC 18004: a primeira copia sobe pela
+       coluna 8 e vira na linha 8; a segunda corre pela linha 8 a direita e
+       desce pela coluna 8. Escrito transposto, o QR sai com dados corretos e
+       formato ilegivel - nenhum leitor abre. */
     var v3 = (0 << 3) | n;
     var d = v3 << 10;
     for (var i=4;i>=0;i--) if (d & (1<<(i+10))) d ^= 0x537 << i;
     var f = ((v3 << 10) | d) ^ 0x5412;
     for (var i=0;i<15;i++){
       var b = (f >> i) & 1;
-      /* copia 1, em volta do finder de cima a esquerda */
-      if (i<6)        alvo[8*tam+i]        = b;
-      else if (i===6) alvo[8*tam+7]        = b;
-      else if (i===7) alvo[8*tam+8]        = b;
-      else if (i===8) alvo[7*tam+8]        = b;
-      else            alvo[(14-i)*tam+8]   = b;
-      /* copia 2: os 7 primeiros descem pela coluna 8, os 8 ultimos correm
-         pela linha 8. O corte e em 7, nao em 8 - o oitavo modulo dessa
-         coluna e o MODULO ESCURO fixo, e escrever nele o apaga. */
-      if (i<7) alvo[(tam-1-i)*tam+8]      = b;
-      else     alvo[8*tam+(tam-15+i)]     = b;
+      /* copia 1: coluna 8 (linhas 0..5, 7, 8) e linha 8 (colunas 7..0) */
+      if (i<6)        alvo[i*tam+8]        = b;
+      else if (i<8)   alvo[(i+1)*tam+8]    = b;
+      else if (i===8) alvo[8*tam+7]        = b;
+      else            alvo[8*tam+(14-i)]   = b;
+      /* copia 2: linha 8 a direita (8 modulos) e coluna 8 embaixo (7 modulos).
+         O corte em 8 preserva o MODULO ESCURO fixo em (tam-8, 8). */
+      if (i<8) alvo[8*tam+(tam-1-i)]       = b;
+      else     alvo[(tam-15+i)*tam+8]      = b;
     }
   }
   function penal(g){
@@ -3477,6 +3490,8 @@ function mvQR(texto){
     return true;
   }
   window.addEventListener('mv-parceiro-pronto', function(){ setTimeout(tentar, 60); });
+  /* a foto do Instagram chega quando chega: repinta na hora em que ela cai */
+  window.addEventListener('mv-foto-parceiro', function(){ setTimeout(tentar, 30); });
   [400, 1500, 3600].forEach(function(t){ setTimeout(tentar, t); });
 
   document.addEventListener('click', function(e){
