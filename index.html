@@ -1737,22 +1737,6 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
 
 
 
-      <!-- ============= RODAPE INSTITUCIONAL - 03/09/2026 =============
-           O painel do lojista nao tinha uma unica mencao ao CNPJ ou a razao
-           social. Quem paga uma assinatura todo mes precisa saber, sem sair
-           da tela, para qual empresa esta pagando. Mesmo rodape do
-           parceiro.html. A margem de baixo existe por causa da barra
-           inferior do celular, que fica por cima. ===================== -->
-      <footer class="mvRodape">
-        <div><b>EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA</b></div>
-        <div>CNPJ 68.289.841/0001-02 &middot; Curitiba/PR</div>
-        <div class="mvRodapeLinks">
-          <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener">Termos de uso</a>
-          <a href="https://moviki.com.br/privacidade.html" target="_blank" rel="noopener">Privacidade</a>
-          <a href="https://moviki.com.br/regulamento.html" target="_blank" rel="noopener">Regulamento</a>
-          <a href="https://wa.me/554120186848" target="_blank" rel="noopener">(41) 2018-6848</a>
-        </div>
-      </footer>
 
       <!-- barra inferior (celular) — 5 lugares, o do meio é a ação rápida -->
       <nav class="mvBar" id="mvBar" aria-label="Atalhos">
@@ -2352,6 +2336,32 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         </div>
       </aside>
       </div><!-- /mvShell -->
+
+      <!-- ============= RODAPE INSTITUCIONAL =============
+           Criado em 03/09/2026 e MOVido para cá em 05/09/2026. Ele tinha sido
+           colocado no espaço que sobrou do cabeçalho antigo do painel — ou
+           seja, ANTES de todo o conteúdo. Resultado: o lojista abria o painel
+           e a primeira coisa que lia era o CNPJ da EIKO, antes do próprio
+           negócio dele. Rodapé é o fim da leitura, não o começo.
+           Agora fica onde já ficava no parceiro.html: depois do shell.
+           A margem de baixo existe por causa da barra inferior do celular,
+           que fica por cima. ===================== -->
+      <!-- ============= RODAPE INSTITUCIONAL - 03/09/2026 =============
+           O painel do lojista nao tinha uma unica mencao ao CNPJ ou a razao
+           social. Quem paga uma assinatura todo mes precisa saber, sem sair
+           da tela, para qual empresa esta pagando. Mesmo rodape do
+           parceiro.html. A margem de baixo existe por causa da barra
+           inferior do celular, que fica por cima. ===================== -->
+      <footer class="mvRodape">
+        <div><b>EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA</b></div>
+        <div>CNPJ 68.289.841/0001-02 &middot; Curitiba/PR</div>
+        <div class="mvRodapeLinks">
+          <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener">Termos de uso</a>
+          <a href="https://moviki.com.br/privacidade.html" target="_blank" rel="noopener">Privacidade</a>
+          <a href="https://moviki.com.br/regulamento.html" target="_blank" rel="noopener">Regulamento</a>
+          <a href="https://wa.me/554120186848" target="_blank" rel="noopener">(41) 2018-6848</a>
+        </div>
+      </footer>
     </div>
     </div>
 
@@ -2701,7 +2711,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-04-ref-cookie';
+  window.MOVIKI_VERSAO='2026-09-05-rodape';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
