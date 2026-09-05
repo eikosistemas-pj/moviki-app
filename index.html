@@ -958,6 +958,29 @@ input[type=checkbox]{width:auto;padding:0;}
 .avalResumo{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);padding:16px;text-align:center;}
 .avalItem{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:13px;margin-top:10px;}
 
+/* ---- resposta do lojista (05/09/2026) ----
+   O cliente reclama em publico; sem direito de resposta, a versao dele e a
+   unica que existe na pagina. Isto e o que o Google faz — e o que muda uma
+   nota ruim de sentenca para conversa. */
+.avalResp{margin:10px 0 0;padding:9px 12px;border-left:2px solid var(--mv-ciano);
+  background:rgba(0,212,255,.06);border-radius:0 10px 10px 0;}
+.avalRespQuem{font-size:12px;font-weight:700;color:var(--mv-ciano);letter-spacing:-.2px;}
+.avalRespTxt{margin-top:4px;font-size:13.5px;line-height:1.5;color:var(--mv-txt-2);white-space:pre-wrap;}
+.avalAcoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.avalBtn{background:var(--mv-campo);border:1px solid var(--mv-linha);color:var(--mv-txt-2);
+  font-family:inherit;font-size:12.5px;font-weight:600;border-radius:var(--mv-r);padding:7px 12px;cursor:pointer;}
+.avalBtn:hover{border-color:var(--mv-ciano);color:var(--mv-ciano);}
+.avalBtn.prim{background:rgba(0,212,255,.12);border-color:var(--mv-ciano);color:var(--mv-ciano);}
+.avalBtn:disabled{opacity:.5;cursor:default;}
+.avalForm{margin-top:10px;}
+.avalForm textarea{width:100%;min-height:82px;resize:vertical;background:var(--mv-campo);
+  border:1px solid var(--mv-linha);border-radius:var(--mv-r);color:var(--mv-txt);
+  font-family:inherit;font-size:14px;padding:10px 12px;line-height:1.5;}
+.avalForm textarea:focus{outline:none;border-color:var(--mv-ciano);}
+.avalConta{font-size:11.5px;color:var(--mv-txt-3);margin-top:5px;text-align:right;}
+.avalDica{font-size:11.5px;color:var(--mv-txt-3);margin-top:6px;line-height:1.5;}
+.avalMsg{font-size:12.5px;margin-top:7px;min-height:16px;}
+
 /* ---------- modais: folha que sobe no celular ---------- */
 .modalPlano{position:fixed;inset:0;z-index:120;background:rgba(3,8,16,.72);backdrop-filter:blur(4px);
   display:flex;align-items:flex-end;justify-content:center;padding:0;}
@@ -2711,7 +2734,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-05-rodape';
+  window.MOVIKI_VERSAO='2026-09-05-resposta';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -3447,7 +3470,9 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
     try{
       const qs=await getDocs(collection(db,'negocios',usuarioAtual.uid,'avaliacoes'));
       let n=0,soma=0;const itens=[];
-      qs.forEach(dd=>{const a=dd.data();const r=Number(a.nota||0);if(r>=1&&r<=5){n++;soma+=r;itens.push(a);}});
+      /* O id do documento passa a viajar junto: sem ele nao ha como
+         responder a avaliacao certa. Antes so o conteudo era guardado. */
+      qs.forEach(dd=>{const a=dd.data();const r=Number(a.nota||0);if(r>=1&&r<=5){n++;soma+=r;itens.push(Object.assign({__id:dd.id},a));}});
       if(n===0){resumo.innerHTML='Você ainda não recebeu avaliações.<br><span class="avalQtd">Divulgue seu link e peça pros clientes avaliarem.</span>';return;}
       const media=soma/n,cheias=Math.round(media);
       const estrelaCheia='<svg class="full" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.26-.36L12 2z"/></svg>';
@@ -3457,8 +3482,116 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
       /* regrava o resumo público: é ele que a página pública lê (1 leitura em vez de N) */
       try{ await setDoc(doc(db,'negocios',usuarioAtual.uid,'resumo','avaliacoes'),{n:n,soma:soma},{merge:true}); }catch(_){}
       itens.sort((a,b)=>((b.criadoEm&&b.criadoEm.seconds||0)-(a.criadoEm&&a.criadoEm.seconds||0)));
-      lista.innerHTML=itens.slice(0,50).map(a=>{const r=Number(a.nota||0);let e='';for(let i=1;i<=5;i++) e+=(i<=r?estrelaCheia:estrelaVazia);const nm=(a.nome||'Cliente').toString().slice(0,40).replace(/[<>]/g,'');const tx=(a.comentario||'').toString().slice(0,300).replace(/[<>]/g,'');return '<div class="avalItem"><div class="avalTopo"><span class="avalEst">'+e+'</span> <b>'+nm+'</b></div>'+(tx?'<div class="avalTxt">'+tx+'</div>':'')+'</div>';}).join('');
+      AVAL_ITENS = itens.slice(0,50);
+      lista.innerHTML = AVAL_ITENS.map(a=>avalCartao(a, estrelaCheia, estrelaVazia)).join('');
     }catch(e){resumo.innerHTML='⭐ As avaliações ainda não estão ativadas no servidor. Me avise que eu ativo (regras do Firebase).';}
+  };
+
+  /* ==========================================================
+     RESPONDER A AVALIACAO — 05/09/2026
+     Igual ao Google: o cliente avalia em publico, o dono responde embaixo,
+     em publico. Sem isso, uma nota ruim vira a unica versao da historia na
+     pagina que o lojista usa para vender.
+
+     NAO PRECISOU DE REGRA NOVA no Firestore: dentro de negocios/{uid} ja
+     existe o match recursivo que da escrita ao dono do negocio. E a regra de
+     CREATE da avaliacao tem hasOnly(['nota','nome','comentario','criadoEm']),
+     entao visitante nenhum consegue nascer com o campo `resposta` — quem
+     assina a resposta na pagina publica e mesmo o dono.
+
+     Guardamos `resposta` e `respostaEm` no proprio documento da avaliacao:
+     uma leitura a mais nao existe, e a pagina publica ja le esses documentos
+     quando o visitante abre a aba.
+     ========================================================== */
+  const AVAL_MAX = 500;
+  let AVAL_ITENS = [];
+
+  function avalEsc(t){ return (t==null?'':String(t)).replace(/[<>&"]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+
+  function avalCartao(a, cheia, vazia){
+    const r = Number(a.nota||0);
+    let e=''; for(let i=1;i<=5;i++) e += (i<=r?cheia:vazia);
+    const nm = avalEsc((a.nome||'Cliente').toString().slice(0,40));
+    const tx = avalEsc((a.comentario||'').toString().slice(0,300));
+    const resp = (typeof a.resposta === 'string') ? a.resposta.trim() : '';
+    const id = avalEsc(a.__id||'');
+
+    let h = '<div class="avalItem" id="aval_'+id+'">'
+          + '<div class="avalTopo"><span class="avalEst">'+e+'</span> <b>'+nm+'</b></div>'
+          + (tx?'<div class="avalTxt">'+tx+'</div>':'');
+
+    if(resp){
+      h += '<div class="avalResp"><div class="avalRespQuem">Sua resposta</div>'
+        +  '<div class="avalRespTxt">'+avalEsc(resp)+'</div></div>'
+        +  '<div class="avalAcoes">'
+        +  '<button type="button" class="avalBtn" onclick="avalAbrirResposta(\''+id+'\')">Editar resposta</button>'
+        +  '<button type="button" class="avalBtn" onclick="avalApagarResposta(\''+id+'\')">Apagar resposta</button>'
+        +  '</div>';
+    } else {
+      h += '<div class="avalAcoes">'
+        +  '<button type="button" class="avalBtn prim" onclick="avalAbrirResposta(\''+id+'\')">Responder</button>'
+        +  '</div>';
+    }
+    h += '<div id="avalForm_'+id+'"></div><div class="avalMsg" id="avalMsg_'+id+'"></div></div>';
+    return h;
+  }
+
+  window.avalAbrirResposta = function(id){
+    const cx = el('avalForm_'+id); if(!cx) return;
+    if(cx.innerHTML){ cx.innerHTML=''; return; }          /* toca de novo: fecha */
+    const item = AVAL_ITENS.find(x=>x.__id===id) || {};
+    const atual = (typeof item.resposta==='string') ? item.resposta : '';
+    cx.innerHTML =
+      '<div class="avalForm">'
+      + '<textarea id="avalTxt_'+id+'" maxlength="'+AVAL_MAX+'" placeholder="Agradeça, explique ou convide a pessoa a voltar."></textarea>'
+      + '<div class="avalConta"><span id="avalConta_'+id+'">0</span>/'+AVAL_MAX+'</div>'
+      + '<div class="avalDica">Sua resposta aparece na sua página pública, embaixo da avaliação, com o nome do seu negócio. Responder bem uma crítica convence mais que dez elogios.</div>'
+      + '<div class="avalAcoes">'
+      + '<button type="button" class="avalBtn prim" id="avalSalvar_'+id+'" onclick="avalSalvarResposta(\''+id+'\')">Publicar resposta</button>'
+      + '<button type="button" class="avalBtn" onclick="avalAbrirResposta(\''+id+'\')">Cancelar</button>'
+      + '</div></div>';
+    const ta = el('avalTxt_'+id);
+    if(ta){
+      ta.value = atual;
+      const conta = ()=>{ const c = el('avalConta_'+id); if(c) c.textContent = String(ta.value.length); };
+      ta.addEventListener('input', conta); conta(); ta.focus();
+    }
+  };
+
+  async function avalGravar(id, texto){
+    const msg = el('avalMsg_'+id);
+    if(!usuarioAtual){ if(msg){msg.style.color='var(--mv-erro)';msg.textContent='Faça login de novo para responder.';} return false; }
+    try{
+      await updateDoc(doc(db,'negocios',usuarioAtual.uid,'avaliacoes',id),
+                      { resposta: texto, respostaEm: serverTimestamp() });
+      const item = AVAL_ITENS.find(x=>x.__id===id); if(item) item.resposta = texto;
+      return true;
+    }catch(e){
+      if(msg){ msg.style.color='var(--mv-erro)'; msg.textContent='Não deu para salvar agora. Tente de novo.'; }
+      return false;
+    }
+  }
+
+  window.avalSalvarResposta = async function(id){
+    const ta = el('avalTxt_'+id), b = el('avalSalvar_'+id), msg = el('avalMsg_'+id);
+    if(!ta) return;
+    const texto = (ta.value||'').trim().slice(0,AVAL_MAX);
+    if(texto.length < 2){ if(msg){ msg.style.color='var(--mv-erro)'; msg.textContent='Escreva a sua resposta.'; } return; }
+    if(b){ b.disabled=true; b.textContent='Publicando…'; }
+    if(msg){ msg.textContent=''; }
+    const ok = await avalGravar(id, texto);
+    if(b){ b.disabled=false; b.textContent='Publicar resposta'; }
+    if(ok){
+      if(window.mvEv) try{ mvEv('avaliacao_respondida',{}); }catch(_){}
+      window.carregarAvaliacoesPainel();
+    }
+  };
+
+  window.avalApagarResposta = async function(id){
+    /* Some da pagina publica na hora. O campo fica vazio em vez de ser
+       removido: menos caso de borda para quem le. */
+    const ok = await avalGravar(id, '');
+    if(ok) window.carregarAvaliacoesPainel();
   };
   /* ---- LOGO NO MAPA: 3 estados (vazio -> editor de enquadramento -> salva) ---- */
   const LC_SIZE=560, LC_OUT=384;
