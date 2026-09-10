@@ -10,9 +10,11 @@
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Poppins',system-ui,sans-serif;background:#eef2f7;color:#1c2a3a;line-height:1.65}
-  .topo{background:linear-gradient(120deg,#0c2138,#0e2d54);color:#fff;padding:22px 20px;text-align:center}
+  .topo{background:linear-gradient(120deg,#0c2138,#0e2d54);color:#fff;padding:22px 20px;text-align:center;position:relative}
   .topo img{height:30px;vertical-align:middle}
-  .wrap{max-width:820px;margin:0 auto;padding:30px 22px 70px}
+  .topo .voltar{position:absolute;left:18px;top:50%;transform:translateY(-50%);color:#9cc4ff;font-size:14px;font-weight:600;text-decoration:none}
+  .topo .voltar:hover{color:#fff}
+  .wrap{max-width:820px;margin:0 auto;padding:30px 22px 40px}
   .doc{background:#fff;border:1px solid #e4e9f0;border-radius:16px;padding:34px 30px;box-shadow:0 8px 30px rgba(20,40,80,.06)}
   .doc h1{font-size:24px;font-weight:800;margin-bottom:6px;color:#0e2d54}
   .doc h2{font-size:18px;font-weight:700;margin:26px 0 10px;color:#0e2d54;border-bottom:1px solid #e4e9f0;padding-bottom:6px}
@@ -27,14 +29,24 @@
   .doc th{background:#f4f7fb;font-weight:700}
   .doc blockquote{background:#f0f6ff;border-left:4px solid #0066FF;padding:12px 16px;margin:16px 0;border-radius:8px;color:#41546a;font-size:14px}
   .doc em{color:#64748b}
+  .rodape{max-width:820px;margin:0 auto;padding:6px 22px 60px;text-align:center;color:#64748b;font-size:13px}
+  .rodape a{color:#0066FF;font-weight:600;text-decoration:none}
+  .rodape a:hover{text-decoration:underline}
+  /* tabela rola sozinha no celular em vez de empurrar a pagina (10/09/2026) */
+  .doc .tab{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:14px 0}
+  .doc .tab table{margin:0;min-width:460px}
+  @media(max-width:560px){ .doc table{font-size:13px} .doc th,.doc td{padding:8px 9px} }
 </style>
 </head>
 <body>
-  <div class="topo"><img src="logo.png" alt="Moviki" onerror="this.outerHTML='Moviki'"></div>
+  <div class="topo">
+    <a class="voltar" href="parceiro.html">&larr; Voltar</a>
+    <img src="logo.png" alt="Moviki" onerror="this.outerHTML='Moviki'">
+  </div>
   <div class="wrap"><div class="doc"><h1>Regulamento do Programa de Parceiros Moviki</h1>
-<p><strong>Versão 1.0</strong></p>
+<p><strong>Versão 1.1</strong> — 10 de setembro de 2026</p>
 <p><em>Este Regulamento vigora, para cada Parceiro, a partir da data de seu </em><em>aceite</em><em> no cadastro, por prazo indeterminado, até que uma das partes decida encerrar a parceria mediante comunicado prévio.</em></p>
-<p>Este Regulamento estabelece as regras do <strong>Programa de Parceiros Moviki</strong>, uma iniciativa de indicação e recompensa operada por <strong>EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA</strong>, inscrita no CNPJ sob nº <strong>68.289.841/0001-02</strong>, com sede na Rua Visconde do Rio Branco, 1488, conj. 909, Centro, Curitiba/PR, CEP 80.420-210, doravante denominada <strong>"Moviki"</strong>.</p>
+<p>Este Regulamento estabelece as regras do <strong>Programa de Parceiros Moviki</strong>, uma iniciativa de indicação e recompensa operada por <strong>EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA</strong>, inscrita no CNPJ sob nº <strong>68.289.841/0001-02</strong>, com sede na Rua Visconde do Rio Branco, 1488, conj. 909, Centro, Curitiba/PR, CEP 80.420-210, telefone <strong>(41) 2018-6848</strong>, doravante denominada <strong>"Moviki"</strong>.</p>
 <p>Ao se cadastrar como Parceiro e assinalar a opção <strong>"Li e concordo com o Regulamento do Programa de Parceiros"</strong>, você (doravante <strong>"Parceiro"</strong>) declara ter lido, compreendido e aceito integralmente todas as condições aqui descritas. O aceite é registrado eletronicamente, com data, hora e demais dados técnicos, para fins de comprovação.</p>
 <hr />
 <h2>1. Objeto</h2>
@@ -56,7 +68,7 @@
 <h2>4. Comissões</h2>
 <p>4.1. As comissões incidem <strong>exclusivamente sobre assinaturas pagas</strong> por comerciantes ativos, ou seja, que estejam efetivamente adimplentes com a Moviki. <strong>Não há qualquer remuneração pelo simples cadastro</strong> de comerciantes ou de outros parceiros.</p>
 <p>4.2. <strong>Estrutura de comissionamento (3 níveis):</strong></p>
-<table>
+<div class="tab"><table>
 <thead>
 <tr>
 <th>Nível</th>
@@ -69,7 +81,7 @@
 <tr>
 <td><strong>Nível 1</strong></td>
 <td>Comerciante indicado diretamente pelo Parceiro</td>
-<td><strong>15% da mensalidade</strong></td>
+<td><strong>15% a 18% da mensalidade</strong>, conforme o nível do Parceiro (Cláusula 4.6)</td>
 <td><strong>Recorrente</strong> — todo mês, enquanto o comerciante permanecer pagante</td>
 </tr>
 <tr>
@@ -85,10 +97,33 @@
 <td><strong>Bônus único</strong>, apenas no 1º mês pago</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>4.3. A comissão é calculada sobre o <strong>valor efetivamente pago</strong> pelo comerciante em cada mensalidade. O <strong>preço pago pelo comerciante não é alterado</strong> em razão da existência de comissão — o valor da recompensa é custeado pela Moviki, a partir da própria receita da assinatura.</p>
 <p>4.4. A comissão recorrente do Nível 1 permanece devida <strong>enquanto o comerciante indicado continuar sendo cliente pagante</strong>. Caso o comerciante cancele, fique inadimplente ou seja reembolsado, a comissão correspondente àquele período <strong>deixa de ser gerada</strong>.</p>
 <p>4.5. Períodos de teste grátis, cortesias, reembolsos, estornos (chargebacks) e cancelamentos <strong>não geram comissão</strong>. Comissões eventualmente pagas sobre valores posteriormente estornados poderão ser <strong>compensadas</strong> em pagamentos futuros.</p>
+<p>4.6. <strong>Plano de Níveis do Parceiro.</strong> O Parceiro é classificado, mês a mês, em um dos cinco níveis abaixo, conforme a quantidade de <strong>comerciantes indicados diretamente por ele (Nível 1) que tenham pago a mensalidade no mês de referência</strong>. Comerciantes de Nível 2 e Nível 3 (indiretos) <strong>não são considerados</strong> nesta contagem.</p>
+<div class="tab"><table>
+<thead>
+<tr>
+<th>Nível</th>
+<th>Comerciantes diretos pagantes no mês</th>
+<th>Comissão de Nível 1</th>
+<th>Bônus de alcance</th>
+</tr>
+</thead>
+<tbody>
+<tr><td><strong>Bronze</strong></td><td>1 a 10</td><td>15%</td><td>—</td></tr>
+<tr><td><strong>Prata</strong></td><td>11 a 25</td><td>15%</td><td>R$ 25,00</td></tr>
+<tr><td><strong>Ouro</strong></td><td>26 a 50</td><td>16%</td><td>R$ 50,00</td></tr>
+<tr><td><strong>Diamante</strong></td><td>51 a 100</td><td>17%</td><td>R$ 150,00</td></tr>
+<tr><td><strong>Esmeralda</strong></td><td>101 ou mais</td><td>18%</td><td>R$ 300,00</td></tr>
+</tbody>
+</table></div>
+<p>4.7. O percentual do nível aplica-se <strong>exclusivamente à comissão de Nível 1</strong>. Os percentuais de Nível 2 (7,5%) e Nível 3 (5%) permanecem inalterados em qualquer nível.</p>
+<p>4.8. O nível é apurado <strong>a cada mensalidade paga</strong>, e o percentual aplicado é o do nível vigente <strong>no momento em que aquele pagamento é confirmado</strong>. Comissões já geradas não são recalculadas em razão de mudança de nível posterior.</p>
+<p>4.9. O nível <strong>não é permanente</strong>: como a contagem considera apenas comerciantes pagantes no mês de referência, o Parceiro cujos indicados deixem de pagar passa automaticamente ao nível correspondente à nova contagem, sem necessidade de aviso prévio. Comissões e bônus já creditados <strong>não são retirados</strong> em razão de queda de nível.</p>
+<p>4.10. O <strong>bônus de alcance</strong> é pago <strong>uma única vez por nível, por Parceiro</strong>, na primeira vez em que o nível é alcançado, e não é pago novamente em caso de queda e retorno ao mesmo nível. O bônus segue as mesmas regras de liberação e saque das demais comissões.</p>
+<p>4.11. Os valores, faixas e percentuais deste Plano de Níveis poderão ser alterados na forma da Cláusula 9, sem efeito retroativo sobre comissões já geradas.</p>
 <hr />
 <h2>5. Pagamento das comissões</h2>
 <p>5.1. Os pagamentos são realizados exclusivamente via <strong>Pix</strong>, para a chave informada pelo Parceiro em seu cadastro.</p>
@@ -132,12 +167,12 @@
 <h2>13. Disposições gerais e foro</h2>
 <p>13.1. Este Regulamento é regido pelas leis da República Federativa do Brasil.</p>
 <p>13.2. Fica eleito o <strong>foro da Comarca de Curitiba/PR</strong> para dirimir quaisquer questões dele decorrentes, com renúncia a qualquer outro, por mais privilegiado que seja.</p>
-<p>13.3. Dúvidas sobre o Programa podem ser encaminhadas para <strong>suporte@moviki.com.br</strong>.</p>
+<p>13.3. Dúvidas sobre o Programa podem ser encaminhadas para <strong>(41) 2018-6848</strong> ou <strong>suporte@moviki.com.br</strong>.</p>
 <hr />
 <p><em>Ao assinalar "Li e concordo com o Regulamento do Programa de Parceiros", o Parceiro manifesta seu aceite livre, informado e inequívoco a todas as condições acima, registrado eletronicamente com data e hora.</em></p>
-<hr />
-<blockquote>
-<p><strong>Nota:</strong> este documento é uma minuta preparada para uso comercial e deve passar por <strong>revisão de um advogado</strong> antes de entrar em vigor, para adequação final às normas aplicáveis.</p>
-</blockquote></div></div>
+</div></div>
+  <div class="rodape">
+    <a href="parceiro.html">&larr; Voltar para o meu painel</a> &nbsp;·&nbsp; <a href="https://moviki.com.br" target="_blank" rel="noopener">Ir para o site</a>
+  </div>
 </body>
 </html>
