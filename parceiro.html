@@ -468,31 +468,77 @@ input::placeholder{color:#6b7f96}
 
    Isto e privacidade visual, nao seguranca: o valor continua no aparelho.
    Quem quiser esconder de verdade, sai da conta. */
-html.mvSigilo .sdV,
-html.mvSigilo .kV,
-html.mvSigilo .lVal,
-html.mvSigilo #graf,
-html.mvSigilo #grafNota,
-html.mvSigilo #rcBarraNota,
-html.mvSigilo #saqueNota{
+/* --- 10/09/2026: virou TRES olhinhos independentes ---------------------
+   Um olhinho so obrigava a esconder tudo junto. Na rua o parceiro mostra
+   a equipe dele para um candidato sem querer mostrar o saldo — e vice-versa.
+
+   .mvSigDin  = dinheiro: saldo, a receber, ganhos do mes, extrato, saques,
+                notas de saque e os ROTULOS DE VALOR do grafico (senao o
+                eixo entrega justamente o que o saldo escondeu).
+   .mvSigPes  = pessoas: quantas ha na equipe, a lista de indicados e a
+                contagem do card "Seu nivel".
+   .mvSigGraf = o desenho do grafico inteiro. */
+html.mvSigDin .sdV,
+html.mvSigDin .kDin .kV,
+html.mvSigDin .kDin .kN,
+html.mvSigDin #listaComissoes .lVal,
+html.mvSigDin #listaNiveis .lVal,
+html.mvSigDin #listaMeses .lVal,
+html.mvSigDin #listaRecentes .lVal,
+html.mvSigDin #listaIndicacoes .lVal,
+html.mvSigDin #vPix,
+html.mvSigDin #listaSaques .lNome,
+html.mvSigDin #listaMeses .lSub,
+html.mvSigDin #rcBarraI,
+html.mvSigDin #rcBarraNota,
+html.mvSigDin #saqueNota,
+html.mvSigDin .gVal,
+html.mvSigDin .gTipV,
+html.mvSigPes .kPes .kV,
+html.mvSigPes #listaRecentes,
+html.mvSigPes #listaIndicacoes,
+html.mvSigPes #nvAtivos,
+html.mvSigPes #nvBarraI,
+html.mvSigPes #nvFalta,
+html.mvSigGraf #graf,
+html.mvSigGraf #grafNota{
   filter:blur(8px);
   user-select:none;
   pointer-events:none;
 }
-.sdV,.kV,.lVal,#graf,#grafNota,#rcBarraNota,#saqueNota{transition:filter .18s ease}
+.sdV,.kV,.kN,.lVal,.lNome,.lSub,#graf,#grafNota,#rcBarraI,#rcBarraNota,#saqueNota,
+#listaRecentes,#listaIndicacoes,#nvAtivos,#nvBarraI,#nvFalta{transition:filter .18s ease}
 .cdOlho{background:none;border:none;color:var(--mv-txt-3);cursor:pointer;padding:4px;line-height:0;border-radius:8px;display:inline-flex}
 .cdOlho:hover{color:var(--mv-ciano)}
 .cdOlho svg{width:20px;height:20px}
 .cdOlho .olhoOff{display:none}
-html.mvSigilo .cdOlho{color:var(--mv-ciano)}
-html.mvSigilo .cdOlho .olhoOn{display:none}
-html.mvSigilo .cdOlho .olhoOff{display:block}
-.cdTopoAcoes{display:flex;align-items:center;gap:10px}
+.cdOlho.on{color:var(--mv-ciano)}
+.cdOlho.on .olhoOn{display:none}
+.cdOlho.on .olhoOff{display:block}
+.cdTopoAcoes{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.kGrid.k1{grid-template-columns:minmax(0,1fr);margin-bottom:13px}
+@media(min-width:1120px){.kGrid.k1{grid-template-columns:minmax(0,1fr)}}
+@media(min-width:1120px){.kGrid.k3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1119px){.kGrid.k3 > .kTile:last-child{grid-column:span 2}}
 </style>
 <script>
   /* Aplicado aqui, no <head>, de proposito: qualquer coisa depois disto
      deixaria o saldo aparecer por um instante antes de sumir. */
-  try{ if(localStorage.getItem('mv_sigilo')==='1') document.documentElement.classList.add('mvSigilo'); }catch(e){}
+  try{
+    var LS = localStorage, r = document.documentElement;
+    /* migracao do olhinho unico antigo: quem tinha tudo escondido continua
+       com tudo escondido, agora nos tres interruptores. */
+    var velho = LS.getItem('mv_sigilo');
+    if(velho !== null){
+      ['mv_sigilo_din','mv_sigilo_pes','mv_sigilo_graf'].forEach(function(k){
+        if(LS.getItem(k) === null) LS.setItem(k, velho);
+      });
+      LS.removeItem('mv_sigilo');
+    }
+    if(LS.getItem('mv_sigilo_din')  === '1') r.classList.add('mvSigDin');
+    if(LS.getItem('mv_sigilo_pes')  === '1') r.classList.add('mvSigPes');
+    if(LS.getItem('mv_sigilo_graf') === '1') r.classList.add('mvSigGraf');
+  }catch(e){}
 </script>
 </head>
 <body>
@@ -606,32 +652,29 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
           <div class="cd soAprovado">
             <div class="cdTopo">
               <div class="cdTit">Resumo dos seus ganhos</div>
-              <span class="cdChip" id="chipMes">Este mês</span>
+              <div class="cdTopoAcoes">
+                <span class="cdChip" id="chipMes">Este mês</span>
+                <span data-olho="din"></span>
+              </div>
             </div>
-            <div class="kGrid">
-              <div class="kTile">
+            <div class="kGrid k3">
+              <div class="kTile kDin">
                 <div class="kIco azul"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h6v6"/></svg></div>
                 <div class="kV" id="kMes">R$ 0,00</div>
                 <div class="kR">Ganhos neste mês</div>
                 <div class="kN" id="kVar">Primeiro mês de ganhos</div>
               </div>
-              <div class="kTile">
+              <div class="kTile kDin">
                 <div class="kIco roxo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h14a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H5a2 2 0 0 1-2-2z"/><path d="M3 7V6a2 2 0 0 1 2-2h11"/><circle cx="16.5" cy="13.5" r="1.2"/></svg></div>
                 <div class="kV" id="kTotal">R$ 0,00</div>
                 <div class="kR">Ganhos totais</div>
                 <div class="kN">Todas as comissões</div>
               </div>
-              <div class="kTile">
+              <div class="kTile kDin">
                 <div class="kIco verde"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div>
                 <div class="kV" id="kRec">R$ 0,00</div>
                 <div class="kR">Comissões recorrentes</div>
                 <div class="kN">Neste mês, nível 1</div>
-              </div>
-              <div class="kTile">
-                <div class="kIco ciano"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20v-1.6a3.4 3.4 0 0 0-3.4-3.4H6.4A3.4 3.4 0 0 0 3 18.4V20"/><circle cx="9.5" cy="8" r="3.4"/><path d="M21 20v-1.6a3.4 3.4 0 0 0-2.6-3.3"/><path d="M15.5 4.7a3.4 3.4 0 0 1 0 6.6"/></svg></div>
-                <div class="kV" id="kAtivos">0</div>
-                <div class="kR">Indicações ativas</div>
-                <div class="kN">Gerando comissão neste mês</div>
               </div>
             </div>
           </div>
@@ -649,7 +692,10 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
                 <div class="cdTit">Seu nível</div>
                 <p class="cdSub">Conta os clientes que você indicou e que estão pagando a mensalidade neste mês.</p>
               </div>
-              <span class="nvSelo" id="nvSelo">Bronze</span>
+              <div class="cdTopoAcoes" style="margin-left:auto">
+                <span class="nvSelo" id="nvSelo">Bronze</span>
+                <span data-olho="pes"></span>
+              </div>
             </div>
             <div class="nvTopo">
               <div class="nvAtivosBloco">
@@ -668,10 +714,7 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
             <div class="cdTopo">
               <div class="cdTit">Saldo disponível</div>
               <div class="cdTopoAcoes">
-                <button type="button" class="cdOlho" id="btnOlho" aria-pressed="false" title="Ocultar valores" aria-label="Ocultar valores">
-                  <svg class="olhoOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/></svg>
-                  <svg class="olhoOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a17 17 0 0 1-3.3 4"/><path d="M6.2 8.1A17.4 17.4 0 0 0 2 12s3.6 6.5 10 6.5a9.9 9.9 0 0 0 3.9-.77"/><path d="M9.6 9.7a2.8 2.8 0 0 0 3.9 3.9"/></svg>
-                </button>
+                <span data-olho="din"></span>
                 <button type="button" class="cdLink" id="btnComoFunciona">Como funciona?</button>
               </div>
             </div>
@@ -697,7 +740,10 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
           <div class="cd soAprovado">
             <div class="cdTopo">
               <div class="cdTit">Evolução dos seus ganhos</div>
-              <span class="cdChip">Últimos 8 meses</span>
+              <div class="cdTopoAcoes">
+                <span class="cdChip">Últimos 8 meses</span>
+                <span data-olho="graf"></span>
+              </div>
             </div>
             <div class="gLeg">
               <span><i style="background:#3b9dff"></i>Ganhos totais</span>
@@ -713,7 +759,18 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
           <div class="cd soAprovado">
             <div class="cdTopo">
               <div class="cdTit">Suas indicações recentes</div>
-              <button type="button" class="cdLink" data-ir="indicacoes">Ver todas</button>
+              <div class="cdTopoAcoes">
+                <button type="button" class="cdLink" data-ir="indicacoes">Ver todas</button>
+                <span data-olho="pes"></span>
+              </div>
+            </div>
+            <div class="kGrid k1">
+              <div class="kTile kPes">
+                <div class="kIco ciano"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 20v-1.6a3.4 3.4 0 0 0-3.4-3.4H6.4A3.4 3.4 0 0 0 3 18.4V20"/><circle cx="9.5" cy="8" r="3.4"/><path d="M21 20v-1.6a3.4 3.4 0 0 0-2.6-3.3"/><path d="M15.5 4.7a3.4 3.4 0 0 1 0 6.6"/></svg></div>
+                <div class="kV" id="kAtivos">0</div>
+                <div class="kR">Indicações ativas</div>
+                <div class="kN">Gerando comissão neste mês</div>
+              </div>
             </div>
             <div class="lCab"><span></span><span>Negócio</span><span>Plano</span><span>Situação</span><span>Cadastro</span><span>Sua comissão</span></div>
             <div class="lLista tab" id="listaRecentes"><div class="vazio">Carregando…</div></div>
@@ -724,10 +781,11 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
         <section data-sec="indicacoes" class="hide">
           <div class="cd soAprovado">
             <div class="cdTopo">
-              <div>
+              <div style="flex:1 1 200px;min-width:0">
                 <div class="cdTit">Todas as suas indicações</div>
                 <p class="cdSub" id="indContagem">Negócios que se cadastraram pelo seu link. O plano e a situação vêm da conta de cada um.</p>
               </div>
+              <span data-olho="pes" style="margin-left:auto"></span>
             </div>
             <div class="lCab">
               <span></span><span>Negócio</span><span>Plano</span><span>Situação</span><span>Cadastro</span><span>Sua comissão</span>
@@ -1257,7 +1315,7 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-10-niveis';
+  window.MOVIKI_VERSAO = '2026-09-10-niveis-olhinhos';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2316,7 +2374,7 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
     for(let g=0; g<=4; g++){
       const v = topo * g / 4, y = py(v);
       partes.push('<line x1="'+mE+'" y1="'+y.toFixed(1)+'" x2="'+(mE+larg)+'" y2="'+y.toFixed(1)+'" stroke="#1c3457" stroke-width="1" stroke-dasharray="3 4"/>');
-      partes.push('<text x="'+(mE-8)+'" y="'+(y+4).toFixed(1)+'" text-anchor="end" font-size="'+(L<420?10:11)+'" fill="#8fa6c4">'+curto(v)+'</text>');
+      partes.push('<text class="gVal" x="'+(mE-8)+'" y="'+(y+4).toFixed(1)+'" text-anchor="end" font-size="'+(L<420?10:11)+'" fill="#8fa6c4">'+curto(v)+'</text>');
     }
     // rótulos de mês
     const salto = (L < 520 && meses.length > 5) ? 2 : 1;
@@ -2353,8 +2411,8 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
       if(marca){ marca.setAttribute('x1', px(i)); marca.setAttribute('x2', px(i)); marca.setAttribute('opacity','.7'); }
       const tip = el('gTip');
       tip.innerHTML = '<div class="gTipT">'+rotuloMesLongo(meses[i])+'</div>'
-        + '<div class="gTipL"><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3b9dff;margin-right:6px"></i>Ganhos totais</span><b>'+brl(serieA[i])+'</b></div>'
-        + '<div class="gTipL"><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#25e39b;margin-right:6px"></i>Recorrentes</span><b>'+brl(serieB[i])+'</b></div>';
+        + '<div class="gTipL"><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#3b9dff;margin-right:6px"></i>Ganhos totais</span><b class="gTipV">'+brl(serieA[i])+'</b></div>'
+        + '<div class="gTipL"><span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#25e39b;margin-right:6px"></i>Recorrentes</span><b class="gTipV">'+brl(serieB[i])+'</b></div>';
       tip.classList.add('on');
       const tw = tip.offsetWidth || 160;
       let left = (px(i) / L) * r.width - tw/2;
@@ -2670,29 +2728,9 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
   el('btnSaque').onclick = solicitarSaque;
   el('btnComoFunciona').onclick = ()=> abrirOv('ovSaldo');
 
-  /* ---------- olhinho: esconder os valores ----------
-     O estado vive no localStorage DESTE aparelho, nao no banco: e uma
-     preferencia de tela, e escrever no Firestore a cada toque seria pagar
-     leitura e escrita por uma coisa que nem precisa atravessar aparelhos.
-     Efeito colateral bem-vindo: o celular emprestado nao herda a escolha
-     feita no computador. */
-  (function(){
-    const b = el('btnOlho'); if(!b) return;
-    const raiz = document.documentElement;
-    function pintar(){
-      const oculto = raiz.classList.contains('mvSigilo');
-      b.setAttribute('aria-pressed', oculto ? 'true' : 'false');
-      const rot = oculto ? 'Mostrar valores' : 'Ocultar valores';
-      b.setAttribute('title', rot); b.setAttribute('aria-label', rot);
-    }
-    b.onclick = function(){
-      const oculto = raiz.classList.toggle('mvSigilo');
-      try{ localStorage.setItem('mv_sigilo', oculto ? '1' : '0'); }catch(e){}
-      pintar();
-      try{ if(window.mvEv) mvEv('sigilo_valores', { estado: oculto ? 'oculto' : 'visivel' }); }catch(e){}
-    };
-    pintar();
-  })();
+  /* Os tres olhinhos moram num script proprio no fim da pagina (fora deste
+     modulo), para continuarem funcionando mesmo se o Firebase nao carregar —
+     senao a tela ficaria borrada sem botao para desborrar. */
   el('btnConvidarLado').onclick = ()=> irSec('divulgacao');
   el('btnCopiar').onclick = copiarLink;
   el('btnWpp').onclick    = compartilharWpp;
@@ -4321,6 +4359,78 @@ function mvQR(texto){
   window.addEventListener('mv-parceiro-pronto', function(){ setTimeout(pintarAtalhos, 500); });
   document.addEventListener('click', function(){ setTimeout(pintarAtalhos, 430); }, false);
   [700, 1800, 3800].forEach(function(t){ setTimeout(pintarAtalhos, t); });
+})();
+</script>
+
+<script>
+/* ============ OS TRES OLHINHOS (10/09/2026) ==========================
+   Antes era um interruptor so: escondia saldo, equipe e grafico juntos.
+   Agora sao tres, independentes, cada um no cabecalho do que ele esconde:
+
+     din  -> Saldo disponivel + Resumo dos seus ganhos (mes, total,
+             recorrentes, variacao), extrato, saques, notas de saque,
+             barra do proximo saque e os rotulos de valor do grafico.
+     pes  -> Quantas pessoas ha na equipe, a lista de indicados e a
+             contagem do card "Seu nivel".
+     graf -> O desenho do grafico.
+
+   Estado por aparelho (localStorage), nao no banco: e preferencia de tela,
+   e gravar no Firestore a cada toque seria pagar leitura/escrita a toa.
+   Efeito colateral bem-vindo: celular emprestado nao herda a escolha do PC.
+
+   Este bloco e proposital fora do modulo do Firebase: se o modulo quebrar,
+   os botoes continuam funcionando e ninguem fica preso com a tela borrada. */
+(function(){
+  'use strict';
+  var CLASSE = { din:'mvSigDin', pes:'mvSigPes', graf:'mvSigGraf' };
+  var CHAVE  = { din:'mv_sigilo_din', pes:'mv_sigilo_pes', graf:'mv_sigilo_graf' };
+  var ROT    = {
+    din:  ['Ocultar valores', 'Mostrar valores'],
+    pes:  ['Ocultar sua equipe', 'Mostrar sua equipe'],
+    graf: ['Ocultar o gráfico', 'Mostrar o gráfico']
+  };
+  var OLHO_ON  = '<svg class="olhoOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/></svg>';
+  var OLHO_OFF = '<svg class="olhoOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 6.1A9.8 9.8 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a17 17 0 0 1-3.3 4"/><path d="M6.2 8.1A17.4 17.4 0 0 0 2 12s3.6 6.5 10 6.5a9.9 9.9 0 0 0 3.9-.77"/><path d="M9.6 9.7a2.8 2.8 0 0 0 3.9 3.9"/></svg>';
+  var raiz = document.documentElement;
+
+  function pintar(escopo){
+    var oculto = raiz.classList.contains(CLASSE[escopo]);
+    var lista = document.querySelectorAll('.cdOlho[data-sig="' + escopo + '"]');
+    for(var i=0;i<lista.length;i++){
+      var b = lista[i], rot = oculto ? ROT[escopo][1] : ROT[escopo][0];
+      if(oculto) b.classList.add('on'); else b.classList.remove('on');
+      b.setAttribute('aria-pressed', oculto ? 'true' : 'false');
+      b.setAttribute('title', rot);
+      b.setAttribute('aria-label', rot);
+    }
+  }
+
+  function alternar(escopo){
+    if(!CLASSE[escopo]) return;
+    var oculto = raiz.classList.toggle(CLASSE[escopo]);
+    try{ localStorage.setItem(CHAVE[escopo], oculto ? '1' : '0'); }catch(e){}
+    pintar(escopo);
+    try{ if(window.mvEv) mvEv('sigilo_valores', { alvo: escopo, estado: oculto ? 'oculto' : 'visivel' }); }catch(e){}
+  }
+
+  /* cada <span data-olho="..."> vira um botao — assim o SVG nao precisa
+     ser repetido a cada cabecalho do HTML. */
+  var vagas = document.querySelectorAll('[data-olho]');
+  for(var i=0;i<vagas.length;i++){
+    (function(vaga){
+      var escopo = vaga.getAttribute('data-olho');
+      if(!CLASSE[escopo] || vaga.getAttribute('data-pronto') === '1') return;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'cdOlho';
+      b.setAttribute('data-sig', escopo);
+      b.innerHTML = OLHO_ON + OLHO_OFF;
+      b.onclick = function(){ alternar(escopo); };
+      vaga.appendChild(b);
+      vaga.setAttribute('data-pronto','1');
+    })(vagas[i]);
+  }
+  pintar('din'); pintar('pes'); pintar('graf');
 })();
 </script>
 
