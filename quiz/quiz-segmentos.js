@@ -34,6 +34,9 @@
            — 3 subtipos novos, ver ESTRUTURA/árvore abaixo); servicos.png
            também foi SUBSTITUÍDO nesta rodada (mesmo nome de arquivo, brilho
            especular corrigido)
+           sushi.png, suplementos.png, naturais.png (rodada 9, 10/09/2026 —
+           1 subtipo novo em Alimentação + o macro novo Suplementos & Nutrição
+           com seus 2 subtipos; mesmo pipeline dos anteriores)
 
    OBJETIVO
    Fonte única de verdade dos macro-segmentos e sub-tipos do quiz. O motor do
@@ -198,6 +201,31 @@ window.MOVIKI_SEGMENTOS = [
         cardapioExemplo: [
           { categoria: '🍕 Pizzas Salgadas', produtos: [
             { nome: 'Pizza de Calabresa', preco: '35,00', acabando: false, descricao: 'Molho de tomate, calabresa fatiada, cebola e orégano.' }
+          ] },
+          { categoria: '🥤 Bebidas', produtos: [
+            { nome: 'Refrigerante Lata', preco: '6,00', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'sushi',
+        label: 'Sushi / Comida Japonesa',
+        emoji: '🍣',
+        icone: 'quiz/icones/sushi.png', // NOVO, 10/09/2026 — gerado nesta rodada
+        molde: 'simples',
+        moldeId: null,
+        // NOVO SUBTIPO (10/09/2026, Eiko pediu): delivery/quiosque de sushi é
+        // itinerante clássico (rodízio de bairro, sushiman em evento, delivery de
+        // combinado). Fica 'simples': combinado já é um item fechado com preço
+        // próprio, não precisa de molde de montagem como pizza.
+        cardapioExemplo: [
+          { categoria: '🍣 Combinados', produtos: [
+            { nome: 'Combinado 20 Peças', preco: '59,90', acabando: false, descricao: 'Mix de sashimi, uramaki, niguiri e hot roll. Serve 1 a 2 pessoas.' },
+            { nome: 'Combinado 40 Peças', preco: '109,90', acabando: false }
+          ] },
+          { categoria: '🍱 Temaki e Porções', produtos: [
+            { nome: 'Temaki de Salmão', preco: '28,00', acabando: false },
+            { nome: 'Hot Roll (8 unidades)', preco: '25,00', acabando: false }
           ] },
           { categoria: '🥤 Bebidas', produtos: [
             { nome: 'Refrigerante Lata', preco: '6,00', acabando: false }
@@ -380,6 +408,68 @@ window.MOVIKI_SEGMENTOS = [
           ] },
           { categoria: '🍹 Drinks', produtos: [
             { nome: 'Caipirinha', preco: '18,00', acabando: false }
+          ] }
+        ]
+      }
+    ]
+  },
+
+  {
+    id: 'suplementos',
+    label: 'Suplementos & Nutrição',
+    emoji: '💪',
+    icone: 'quiz/icones/suplementos.png',
+    // NOVO MACRO (10/09/2026, Eiko pediu "aba exclusiva pra suplementos"): é VAREJO de
+    // produto embalado (o lojista revende pote/cápsula/barra), então não cabe dentro de
+    // Alimentação (comida preparada na hora) nem de Bebidas. Ganhou aba própria com 2
+    // subtipos: nutrição esportiva (whey/creatina/pré-treino) e naturais/vitaminas.
+    //
+    // ⚠️ REGRA DE CONFORMIDADE — VALE PRA TODO O CARDÁPIO DESTE MACRO
+    // Suplemento alimentar no Brasil (ANVISA, RDC 243/2018) NÃO pode ser anunciado com
+    // promessa terapêutica, e Meta e Google barram anúncio com alegação de saúde,
+    // emagrecimento ou ganho de desempenho. Por isso os seeds abaixo descrevem só o que
+    // é FATO do produto (peso do pote, quantidade de cápsulas, sabor, porção) — nunca
+    // "queima gordura", "ganha massa", "emagrece", "cura", "imunidade". Ao criar/editar
+    // seed deste macro no futuro, manter esse padrão: fato do produto, nunca promessa de
+    // resultado. (O filtro de conformidade do Vik e do robô social segue a mesma linha.)
+    subtipos: [
+      {
+        id: 'suplementosesportivos',
+        label: 'Suplementos / Nutrição Esportiva',
+        emoji: '💪',
+        icone: 'quiz/icones/suplementos.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '💪 Proteínas', produtos: [
+            { nome: 'Whey Protein Concentrado (900g)', preco: '129,90', acabando: false, descricao: 'Pote de 900g, cerca de 30 porções. Pergunte os sabores disponíveis.' },
+            { nome: 'Whey Protein Isolado (900g)', preco: '179,90', acabando: false }
+          ] },
+          { categoria: '⚡ Creatina e Pré-treino', produtos: [
+            { nome: 'Creatina Monoidratada (300g)', preco: '89,90', acabando: false, descricao: 'Pote de 300g, porção de 3g.' },
+            { nome: 'Pré-treino (300g)', preco: '99,90', acabando: false }
+          ] },
+          { categoria: '🍫 Prontos para Levar', produtos: [
+            { nome: 'Barra de Proteína (unidade)', preco: '12,00', acabando: false },
+            { nome: 'Whey Pronto para Beber (250ml)', preco: '15,00', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'naturaisvitaminas',
+        label: 'Produtos Naturais / Vitaminas',
+        emoji: '🌿',
+        icone: 'quiz/icones/naturais.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '💊 Vitaminas e Minerais', produtos: [
+            { nome: 'Vitamina C (60 cápsulas)', preco: '29,90', acabando: false, descricao: 'Frasco com 60 cápsulas. Consulte a tabela nutricional no rótulo.' },
+            { nome: 'Multivitamínico (60 cápsulas)', preco: '39,90', acabando: false }
+          ] },
+          { categoria: '🌿 Naturais e Integrais', produtos: [
+            { nome: 'Pasta de Amendoim Integral (500g)', preco: '24,90', acabando: false },
+            { nome: 'Óleo de Coco Extra Virgem (200ml)', preco: '22,90', acabando: false }
           ] }
         ]
       }
