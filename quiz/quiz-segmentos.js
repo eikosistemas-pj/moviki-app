@@ -34,9 +34,13 @@
            — 3 subtipos novos, ver ESTRUTURA/árvore abaixo); servicos.png
            também foi SUBSTITUÍDO nesta rodada (mesmo nome de arquivo, brilho
            especular corrigido)
-           sushi.png, suplementos.png, naturais.png (rodada 9, 10/09/2026 —
-           1 subtipo novo em Alimentação + o macro novo Suplementos & Nutrição
-           com seus 2 subtipos; mesmo pipeline dos anteriores)
+           sushi.png, suplementos.png, naturais.png, otica.png (rodada 9,
+           10/09/2026 — 1 subtipo novo em Alimentação, o macro novo Suplementos
+           & Nutrição com seus 2 subtipos e Ótica dentro de Serviços)
+           ⚠️ ESSES 4 ÍCONES AINDA NÃO EXISTEM na pasta: o CDN do Kairogen está
+           bloqueado na sessão em nuvem, então não deu pra baixar a imagem e
+           tirar o fundo. Enquanto não subirem, o quiz mostra o emoji do
+           registro (🍣 💪 🌿 👓) via onerror do iconeHtml() — não quebra.
 
    OBJETIVO
    Fonte única de verdade dos macro-segmentos e sub-tipos do quiz. O motor do
@@ -699,6 +703,39 @@ window.MOVIKI_SEGMENTOS = [
           { categoria: '🧰 Consertos Rápidos', produtos: [
             { nome: 'Troca de Zíper', preco: '20,00', acabando: false },
             { nome: 'Ajuste de Fecho/Fivela', preco: '15,00', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'otica',
+        label: 'Ótica / Óculos',
+        emoji: '👓',
+        icone: 'quiz/icones/otica.png', // PENDENTE — enquanto não existir, cai no emoji 👓
+        molde: 'simples',
+        moldeId: null,
+        // NOVO SUBTIPO (10/09/2026, Eiko pediu): ótica de rua/quiosque — vende óculos de
+        // sol e de grau e faz ajuste na hora. Ficou dentro de SERVIÇOS a pedido dele,
+        // ainda que também venda produto (o seed cobre os dois: venda + ajuste).
+        //
+        // ⚠️ CONFORMIDADE — NÃO COLOCAR EXAME DE VISTA NO SEED
+        // "Exame de vista", "medimos seu grau", "teste de vista grátis" são atendimento
+        // de saúde: dependem de profissional habilitado e de registro sanitário, e
+        // anúncio com isso é derrubado no Meta e no Google (política de saúde) além do
+        // risco com a vigilância sanitária. O padrão do seed é: VENDE óculos (com
+        // receita do oftalmologista quando for de grau) e AJUSTA armação. Se o lojista
+        // quiser oferecer exame, é ele quem assume — não sai de fábrica no cardápio.
+        cardapioExemplo: [
+          { categoria: '🕶️ Óculos de Sol', produtos: [
+            { nome: 'Óculos de Sol', preco: '79,90', acabando: false, descricao: 'Lente com proteção UV400. Vários modelos — pergunte o que tem em estoque.' },
+            { nome: 'Óculos de Sol Polarizado', preco: '129,90', acabando: false }
+          ] },
+          { categoria: '👓 Óculos de Grau', produtos: [
+            { nome: 'Armação de Grau', preco: '99,00', acabando: false },
+            { nome: 'Óculos de Grau Completo (armação + lentes)', preco: '199,00', acabando: false, descricao: 'Traga a receita do oftalmologista. Prazo de entrega combinado na hora.' }
+          ] },
+          { categoria: '🔧 Ajustes e Acessórios', produtos: [
+            { nome: 'Ajuste de Armação', preco: '15,00', acabando: false },
+            { nome: 'Troca de Plaquetas', preco: '10,00', acabando: false }
           ] }
         ]
       }
