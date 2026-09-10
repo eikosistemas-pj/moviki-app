@@ -626,7 +626,7 @@ html.mvSigGraf #grafNota{
         <div class="mvOla">
           <div class="mvOlaTopo">
             <div>
-              <h1>Olá, <span id="pNome">parceiro</span> 👋</h1>
+              <h1>Olá, <span id="pNome">parceiro</span><img class="pSelo soAprovado hide" id="pSelo" src="icones/selo-parceiro-48.png" alt="Parceiro verificado" title="Parceiro verificado do Moviki" loading="lazy" onerror="this.style.display='none'"> 👋</h1>
               <p>Acompanhe suas indicações, ganhos e comissões recorrentes.</p>
             </div>
             <div class="mvOlaAcoes">
@@ -1316,7 +1316,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-10-linkfechado';
+  window.MOVIKI_VERSAO = '2026-09-10-icones-nivel';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2288,7 +2288,11 @@ html.mvSigGraf #grafNota{
     const atual = nivelDe(ativos);
     const proximo = NIVEIS.find(n => n.min > ativos) || null;
 
-    selo.textContent = atual ? atual.nome : 'Sem nível ainda';
+    /* o chip do card mostra a medalha do nivel + o nome; sem nivel, so o texto */
+    selo.innerHTML = atual
+      ? '<img class="nvSeloIco" src="icones/nivel-' + atual.chave + '-48.png" alt="" loading="lazy" ' +
+        'onerror="this.style.display=\'none\'">' + atual.nome
+      : 'Sem nível ainda';
     selo.setAttribute('data-nivel', atual ? atual.chave : 'nenhum');
     txt('nvAtivos', String(ativos));
 
@@ -2321,7 +2325,8 @@ html.mvSigGraf #grafNota{
       const faixa = n.max === Infinity ? (n.min + ' ou mais clientes') : (n.min + ' a ' + n.max + ' clientes');
       const premio = n.pct + '%' + (n.marco > 0 ? ' + R$ ' + n.marco : '');
       html += '<div class="nvLinha' + (eAtual ? ' atual' : (feito ? ' feito' : '')) + '">' +
-                '<span class="nvPonto"></span>' +
+                '<img class="nvIco" src="icones/nivel-' + n.chave + '.png" alt="" loading="lazy" ' +
+                  'onerror="this.style.display=\'none\'">' +
                 '<span class="nvNomeL">' + n.nome + '</span>' +
                 '<span class="nvFaixa">' + faixa + '</span>' +
                 '<span class="nvPremio">' + premio + '</span>' +
@@ -3139,11 +3144,25 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
   border:1px solid var(--mv-linha);background:rgba(255,255,255,.03)}
 .nvLinha.atual{border-color:var(--mv-ciano);background:rgba(0,212,255,.09)}
 .nvPonto{flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:var(--mv-linha-forte)}
+/* .nvPonto saiu da escada em 10/09/2026: quem marca o degrau agora e a propria
+   medalha (colorida no alcancado, cinza no que falta) + a borda ciano no atual.
+   A regra fica no arquivo porque o ponto ainda e usado em outros lugares. */
 .nvLinha.atual .nvPonto{background:var(--mv-ciano)}
 .nvLinha.feito .nvPonto{background:var(--mv-ok)}
 .nvNomeL{flex:0 0 auto;font-size:13px;font-weight:800;color:var(--mv-txt-1);min-width:74px}
 .nvFaixa{flex:1 1 auto;min-width:0;font-size:12px;color:var(--mv-txt-3);line-height:1.4}
 .nvPremio{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--mv-ok);text-align:right}
+/* ---- icones dos niveis e selo do parceiro (10/09/2026) ----
+   Arquivos em icones/: nivel-<chave>.png (256px) e nivel-<chave>-48.png.
+   Se um deles faltar, o onerror esconde a imagem e a tela segue igual — o
+   nome do nivel continua escrito do lado, nunca depende do desenho. */
+.pSelo{width:27px;height:27px;margin-left:9px;vertical-align:-5px;flex:0 0 auto}
+@media(max-width:520px){ .pSelo{width:21px;height:21px;margin-left:7px;vertical-align:-4px} }
+.nvSelo{display:inline-flex;align-items:center;gap:6px}
+.nvSeloIco{width:18px;height:18px;flex:0 0 auto}
+.nvIco{width:26px;height:26px;flex:0 0 auto;filter:grayscale(1);opacity:.42;transition:filter .2s ease,opacity .2s ease}
+.nvLinha.atual .nvIco{filter:none;opacity:1}
+.nvLinha.feito .nvIco{filter:none;opacity:.85}
 @media(max-width:400px){
   .nvNomeL{min-width:0}
   .nvFaixa{flex-basis:100%;order:3}
