@@ -636,6 +636,33 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
             </div>
           </div>
 
+          <!-- ============ SEU NÍVEL (10/09/2026) ============
+               O nível conta SÓ indicado direto pagando a mensalidade no mês
+               corrente, recalculado todo mês — sobe e desce. Indireto (nível
+               2 e 3) NÃO conta, de propósito: contar rede seria classificar
+               por tamanho de downline, que é a estrutura que o projeto não
+               usa. O progresso mostra quantos CLIENTES faltam, nunca quanto
+               a pessoa vai receber. =================================== -->
+          <div class="cd soAprovado" id="nvCard">
+            <div class="cdTopo">
+              <div>
+                <div class="cdTit">Seu nível</div>
+                <p class="cdSub">Conta os clientes que você indicou e que estão pagando a mensalidade neste mês.</p>
+              </div>
+              <span class="nvSelo" id="nvSelo">Bronze</span>
+            </div>
+            <div class="nvTopo">
+              <div class="nvAtivosBloco">
+                <div class="nvAtivos" id="nvAtivos">0</div>
+                <div class="nvAtivosR">clientes seus pagando este mês</div>
+              </div>
+            </div>
+            <div class="nvBarra"><i id="nvBarraI"></i></div>
+            <div class="nvFalta" id="nvFalta">Sua primeira indicação pagante abre o nível Bronze.</div>
+            <div class="nvEscada" id="nvEscada"></div>
+            <p class="cdSub" style="margin-top:12px">O nível é recalculado todo mês. Se um cliente seu deixar de pagar, ele sai da conta — por isso manter o cliente ativo vale tanto quanto trazer um novo. As regras estão no <a href="regulamento.html" target="_blank" rel="noopener" style="color:var(--mv-ciano)">Regulamento</a>.</p>
+          </div>
+
           <!-- saldo: no celular fica aqui; no desktop o script leva pra coluna da direita -->
           <div class="cd soAprovado" id="cardSaldo">
             <div class="cdTopo">
@@ -921,19 +948,19 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
 
               <div class="mkSimGrupo">
                 <div class="mkSimLabel"><span>Pessoas que <b>você</b> indicou e que assinarem este plano e pagarem: <b id="cvN1Qtd">3</b></span><span class="mkSimValor" id="cvN1Val">R$ 17,07</span></div>
-                <input type="range" class="mkSimRange" id="cvN1" min="0" max="50" step="1" value="3" aria-label="Indicados diretos que assinaram e pagaram">
+                <input type="range" class="mkSimRange" id="cvN1" min="0" max="56" step="1" value="3" aria-label="Indicados diretos que assinaram e pagaram">
                 <div class="mkSimSub">15% de cada mensalidade paga — a cada mês em que essa pessoa pagar.</div>
               </div>
 
               <div class="mkSimGrupo">
                 <div class="mkSimLabel"><span>Pessoas que <b>os seus indicados</b> trouxeram e que assinarem e pagarem: <b id="cvN2Qtd">0</b></span><span class="mkSimValor" id="cvN2Val">R$ 0,00</span></div>
-                <input type="range" class="mkSimRange" id="cvN2" min="0" max="50" step="1" value="0" aria-label="Indicados dos seus indicados que assinaram e pagaram">
+                <input type="range" class="mkSimRange" id="cvN2" min="0" max="36" step="1" value="0" aria-label="Indicados dos seus indicados que assinaram e pagaram">
                 <div class="mkSimSub">7,5% uma vez só, no primeiro pagamento de cada uma.</div>
               </div>
 
               <div class="mkSimGrupo" style="margin-bottom:6px">
                 <div class="mkSimLabel"><span>E as que <b>essas</b> trouxeram e que assinarem e pagarem: <b id="cvN3Qtd">0</b></span><span class="mkSimValor" id="cvN3Val">R$ 0,00</span></div>
-                <input type="range" class="mkSimRange" id="cvN3" min="0" max="50" step="1" value="0" aria-label="Terceiro nivel de indicados que assinaram e pagaram">
+                <input type="range" class="mkSimRange" id="cvN3" min="0" max="36" step="1" value="0" aria-label="Terceiro nivel de indicados que assinaram e pagaram">
                 <div class="mkSimSub">5% uma vez só, no primeiro pagamento de cada uma.</div>
               </div>
 
@@ -1230,7 +1257,7 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-10-barras-comissao';
+  window.MOVIKI_VERSAO = '2026-09-10-niveis';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2095,6 +2122,7 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
       txt('kTotal', brl(total));
       txt('kRec', brl(porMes[mesAtual] ? porMes[mesAtual].n1 : 0));
       txt('kAtivos', String(ativosMes.size));
+      renderNivel(ativosMes.size);
       const nv = el('kVar');
       if(nv){
         if(gAnt > 0){
@@ -2126,6 +2154,74 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
       const b = el('btnSaque'); if(b){ b.disabled = true; }
       txt('saqueNota','Não foi possível carregar suas comissões agora. Atualize a página em alguns instantes.');
     }
+  }
+
+  /* ==========================================================
+     SEU NÍVEL — 10/09/2026
+     Conta clientes DIRETOS pagando no mês corrente (mesma conta do tile
+     "Indicações ativas"). Indireto não entra. A mesma tabela existe no
+     motor (webhook.js) e no Regulamento — se mexer aqui, mexe lá.
+     ========================================================== */
+  const NIVEIS = [
+    { chave:'bronze',    nome:'Bronze',    min:1,   max:10,       pct:15, marco:0   },
+    { chave:'prata',     nome:'Prata',     min:11,  max:25,       pct:15, marco:25  },
+    { chave:'ouro',      nome:'Ouro',      min:26,  max:50,       pct:16, marco:50  },
+    { chave:'diamante',  nome:'Diamante',  min:51,  max:100,      pct:17, marco:150 },
+    { chave:'esmeralda', nome:'Esmeralda', min:101, max:Infinity, pct:18, marco:300 }
+  ];
+
+  function nivelDe(ativos){
+    let atual = null;
+    for(const n of NIVEIS){ if(ativos >= n.min) atual = n; }
+    return atual;
+  }
+
+  function renderNivel(ativos){
+    const selo = el('nvSelo'), barra = el('nvBarraI'), falta = el('nvFalta'), escada = el('nvEscada');
+    if(!selo || !escada) return;
+    const atual = nivelDe(ativos);
+    const proximo = NIVEIS.find(n => n.min > ativos) || null;
+
+    selo.textContent = atual ? atual.nome : 'Sem nível ainda';
+    selo.setAttribute('data-nivel', atual ? atual.chave : 'nenhum');
+    txt('nvAtivos', String(ativos));
+
+    /* progresso DENTRO do degrau atual: de onde ele começou até onde o
+       próximo começa. Sem nível ainda, a régua é de 0 a 1. */
+    let pct = 100;
+    if(proximo){
+      const piso = atual ? atual.min : 0;
+      const vao = proximo.min - piso;
+      pct = vao > 0 ? Math.max(0, Math.min(100, ((ativos - piso) / vao) * 100)) : 0;
+    }
+    if(barra) barra.style.width = pct + '%';
+
+    if(falta){
+      if(!atual){
+        falta.innerHTML = 'Sua <b>primeira</b> indicação pagante abre o nível Bronze.';
+      } else if(proximo){
+        const n = proximo.min - ativos;
+        falta.innerHTML = 'Faltam <b>' + n + '</b> ' + (n === 1 ? 'cliente pagando' : 'clientes pagando') +
+          ' para o nível <b>' + proximo.nome + '</b>.';
+      } else {
+        falta.innerHTML = 'Você está no <b>topo da escada</b>. O nível se mantém enquanto os clientes continuarem pagando.';
+      }
+    }
+
+    let html = '';
+    for(const n of NIVEIS){
+      const feito = atual && NIVEIS.indexOf(n) < NIVEIS.indexOf(atual);
+      const eAtual = atual && n.chave === atual.chave;
+      const faixa = n.max === Infinity ? (n.min + ' ou mais clientes') : (n.min + ' a ' + n.max + ' clientes');
+      const premio = n.pct + '%' + (n.marco > 0 ? ' + R$ ' + n.marco : '');
+      html += '<div class="nvLinha' + (eAtual ? ' atual' : (feito ? ' feito' : '')) + '">' +
+                '<span class="nvPonto"></span>' +
+                '<span class="nvNomeL">' + n.nome + '</span>' +
+                '<span class="nvFaixa">' + faixa + '</span>' +
+                '<span class="nvPremio">' + premio + '</span>' +
+              '</div>';
+    }
+    escada.innerHTML = html;
   }
 
   function atualizarBarraSaque(){
@@ -2624,10 +2720,26 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
       { minimumFractionDigits:2, maximumFractionDigits:2 });
   }
   function el(id){ return document.getElementById(id); }
+
+  /* ESCALA DAS BARRAS (10/09/2026) — o range anda de 1 em 1 ate 20 e de 5 em
+     5 dai pra cima. Isso existe porque o teto subiu (200 nos diretos, 100 nos
+     indiretos) junto com o plano de niveis, e 200 posicoes num trilho de
+     celular dao menos de 2 pixels por pessoa: ninguem acerta no dedo. O valor
+     do input e o INDICE da escala, nao a quantidade. */
+  function montarEscala(teto){
+    var a = [], i;
+    for (i = 0; i <= 20 && i <= teto; i++) a.push(i);
+    for (i = 25; i <= teto; i += 5) a.push(i);
+    return a;
+  }
+  var ESCALA = { cvN1: montarEscala(200), cvN2: montarEscala(100), cvN3: montarEscala(100) };
   function num(id){
     var r = el(id); if (!r) return 0;
-    var n = parseInt(r.value, 10);
-    return (isNaN(n) || n < 0) ? 0 : n;
+    var i = parseInt(r.value, 10);
+    if (isNaN(i) || i < 0) i = 0;
+    var esc = ESCALA[id] || [];
+    var v = esc[Math.min(i, esc.length - 1)];
+    return (typeof v === 'number') ? v : 0;
   }
   /* As tres barras: aplicam a conta do plano escolhido. Recorrente e bonus
      unico ficam separados de proposito — nao existe caixa somando tudo. */
@@ -2670,7 +2782,12 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
     var ids = ['cvN1','cvN2','cvN3'];
     for (var k=0;k<ids.length;k++){
       var r = el(ids[k]);
-      if (r){ r.addEventListener('input', barras); r.addEventListener('change', barras); }
+      if (r){
+        var esc = ESCALA[ids[k]] || [0];
+        r.max = String(esc.length - 1);           /* o teto do range segue a escala */
+        r.addEventListener('input', barras);
+        r.addEventListener('change', barras);
+      }
     }
     pintar('pro');
   }
@@ -2908,6 +3025,42 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .cvAviso b{color:var(--mv-txt-1)}
 .cvAviso a{display:inline-block;margin-top:6px;color:var(--mv-ciano);text-decoration:underline}
 @media(max-width:420px){ .cvAbas{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+/* ============ SEU NIVEL (10/09/2026) ============
+   Escada de reconhecimento por clientes ativos. Cada degrau tem cor propria,
+   mas o degrau NAO cresce de tamanho nem vira piramide: sao linhas iguais. */
+.nvSelo{flex:0 0 auto;padding:6px 13px;border-radius:999px;font-size:12.5px;font-weight:800;
+  letter-spacing:.02em;border:1px solid;white-space:nowrap}
+.nvSelo[data-nivel="nenhum"]  {color:var(--mv-txt-3);border-color:var(--mv-linha);background:rgba(255,255,255,.04)}
+.nvSelo[data-nivel="bronze"]  {color:#e0a274;border-color:rgba(201,140,90,.5);background:rgba(201,140,90,.14)}
+.nvSelo[data-nivel="prata"]   {color:#dfe8f2;border-color:rgba(195,206,217,.5);background:rgba(195,206,217,.14)}
+.nvSelo[data-nivel="ouro"]    {color:#ffd979;border-color:rgba(255,201,77,.5);background:rgba(255,201,77,.14)}
+.nvSelo[data-nivel="diamante"]{color:#9fefff;border-color:rgba(0,212,255,.5);background:rgba(0,212,255,.13)}
+.nvSelo[data-nivel="esmeralda"]{color:#7cf6c6;border-color:rgba(37,227,155,.5);background:rgba(37,227,155,.14)}
+.nvTopo{display:flex;align-items:flex-end;gap:14px;margin:14px 0 10px}
+.nvAtivosBloco{min-width:0}
+.nvAtivos{font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1;
+  background:var(--mv-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nvAtivosR{font-size:12.5px;color:var(--mv-txt-3);margin-top:5px;line-height:1.4}
+.nvBarra{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.nvBarra i{display:block;height:100%;width:0;border-radius:999px;background:var(--mv-grad);transition:width .4s ease}
+.nvFalta{font-size:12.5px;color:var(--mv-txt-2);line-height:1.5;margin-top:9px}
+.nvFalta b{color:var(--mv-txt-1)}
+.nvEscada{margin-top:14px;display:flex;flex-direction:column;gap:7px}
+.nvLinha{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;
+  border:1px solid var(--mv-linha);background:rgba(255,255,255,.03)}
+.nvLinha.atual{border-color:var(--mv-ciano);background:rgba(0,212,255,.09)}
+.nvPonto{flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:var(--mv-linha-forte)}
+.nvLinha.atual .nvPonto{background:var(--mv-ciano)}
+.nvLinha.feito .nvPonto{background:var(--mv-ok)}
+.nvNomeL{flex:0 0 auto;font-size:13px;font-weight:800;color:var(--mv-txt-1);min-width:74px}
+.nvFaixa{flex:1 1 auto;min-width:0;font-size:12px;color:var(--mv-txt-3);line-height:1.4}
+.nvPremio{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--mv-ok);text-align:right}
+@media(max-width:400px){
+  .nvNomeL{min-width:0}
+  .nvFaixa{flex-basis:100%;order:3}
+  .nvLinha{flex-wrap:wrap;row-gap:4px}
+}
 
 /* ---- as tres barras (10/09/2026) — reusam .mkSimGrupo/.mkSimRange do CSS acima ---- */
 .cvBarras{margin-top:16px;padding:15px 14px 16px;border-radius:14px;
