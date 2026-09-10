@@ -645,6 +645,7 @@ html.mvSigGraf #grafNota{
           <div class="cdTopo"><div class="cdTit">Situação do seu cadastro</div><span class="badge pendente" id="badge">Em análise</span></div>
           <p class="cdSub" id="statusNota"></p>
           <button type="button" class="btn sec" id="btnConheca" style="margin-top:14px">Conheça o Moviki e o programa de parceiros</button>
+          <button type="button" class="btn" id="btnAulasLink" data-tutabrir="1" style="margin-top:10px;display:none">Ver as aulas e liberar meu link</button>
         </div>
 
         <!-- ============ SEÇÃO: VISÃO GERAL ============ -->
@@ -1315,7 +1316,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-10-niveis-olhinhos';
+  window.MOVIKI_VERSAO = '2026-09-10-linkfechado';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1864,7 +1865,19 @@ html.mvSigGraf #grafNota{
           method:'POST',
           headers:{'Content-Type':'application/json'},
           body: JSON.stringify({ idToken: tk })
-        }).catch(function(){});
+        })
+        .then(function(r){ return r.json(); })
+        .then(function(j){
+          /* 10/09/2026: este mesmo endpoint virou a SEGUNDA PORTA da aprovacao —
+             quem termina o treinamento entra na hora, sem esperar a varredura
+             de 5 em 5 minutos. Aprovou agora? O painel repinta sozinho:
+             esperar um F5 que ninguem mandou dar e o mesmo que nao aprovar. */
+          if(j && j.aprovado === true && MEU.status !== 'aprovado'){
+            MEU.status = 'aprovado';
+            render();
+          }
+        })
+        .catch(function(){});
       }).catch(function(){});
     }catch(e){}
   }
@@ -2085,13 +2098,49 @@ html.mvSigGraf #grafNota{
     ['meuLink','meuLink2','meuLink3'].forEach(id=>txt(id, link));
     txt('meuLinkParc', linkP);
 
+    document.querySelectorAll('.soAprovado').forEach(n=>n.classList.toggle('hide', status !== 'aprovado'));
+    pintarCardStatus();
+    atualizarPonto();
+  }
+
+  /* ---------- 10/09/2026: "APROVADO" NAO E "LINK LIBERADO" ----------
+     Baixar a analise para 5 minutos criou um problema novo: o parceiro entra
+     num painel inteiro liberado sem ter assistido nada. E o cartao de situacao
+     SUMIA na aprovacao — e, antes de sumir, dizia "Tudo certo! Divulgue seu
+     link" com o link ainda borrado atras do cadeado.
+     Agora ele FICA na tela enquanto as duas portas nao estiverem abertas.
+     Quem avisa que a porta das aulas continua fechada e o bloco classico da
+     trava, por esta ponte. */
+  let __linkFechado = false;
+  window.mvLinkFechado = function(fechado){
+    const novo = !!fechado;
+    if(novo === __linkFechado) return;
+    __linkFechado = novo;
+    try{ pintarCardStatus(); }catch(e){}
+  };
+
+  function pintarCardStatus(){
+    const cs = el('cardStatus'); if(!cs) return;
+    const status = MEU.status || 'pendente';
     const aprovado = status === 'aprovado';
-    document.querySelectorAll('.soAprovado').forEach(n=>n.classList.toggle('hide', !aprovado));
-    const cs = el('cardStatus');
-    if(cs) cs.classList.toggle('hide', aprovado);
+    const badge = el('badge');
+    const bConheca = el('btnConheca');
+    const bAulas = el('btnAulasLink');
+
+    if(aprovado && __linkFechado){
+      cs.classList.remove('hide');
+      if(badge){ badge.className = 'badge pendente'; badge.textContent = 'Aprovado · link fechado'; }
+      txt('statusNota','Seu cadastro foi aprovado e o painel é todo seu. Falta uma porta: o LINK de indicação abre quando você terminar as aulas.');
+      if(bConheca) bConheca.style.display = 'none';
+      if(bAulas) bAulas.style.display = '';
+      return;
+    }
+
+    if(bConheca) bConheca.style.display = '';
+    if(bAulas) bAulas.style.display = 'none';
+    cs.classList.toggle('hide', aprovado);
 
     const rot = { pendente:'Em análise', aprovado:'Aprovado', recusado:'Não aprovado', suspenso:'Suspenso' };
-    const badge = el('badge');
     if(badge){ badge.className = 'badge ' + status; badge.textContent = rot[status] || status; }
     const notas = {
       pendente:'Recebemos seu cadastro e ele está em análise. Assim que for aprovado, seu link é ativado e você já pode divulgar.',
@@ -2100,7 +2149,6 @@ html.mvSigGraf #grafNota{
       suspenso:'Seu acesso está suspenso no momento. Fale com a gente pelo WhatsApp do suporte para regularizar.'
     };
     txt('statusNota', notas[status] || '');
-    atualizarPonto();
   }
 
   /* ---------- o card de saldo mora no centro no celular e na coluna da direita no desktop ---------- */
@@ -2949,6 +2997,8 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .mvAvisoBtn:hover{background:#ffa032}
 .mvAvisoBarra{flex-basis:100%;height:7px;border-radius:99px;background:rgba(255,255,255,.10);overflow:hidden}
 .mvAvisoBarra i{display:block;height:100%;border-radius:99px;background:#ff8a00;transition:width .4s}
+.mvSelinho{margin-left:7px;font-size:12px;line-height:1;display:inline-block;animation:mvPisca 1.6s ease-in-out infinite}
+@keyframes mvPisca{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.88)}}
 .mvTravado{position:relative}
 .mvTravado > *:not(.mvCadeado):not(.mvTutBox){filter:blur(3px);opacity:.35;pointer-events:none;user-select:none}
 /* A AULA DESTA TELA FICA POR CIMA DO CADEADO, nitida e clicavel.
@@ -3227,6 +3277,31 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      ficava verde. Sintoma exato relatado: so a primeira contava.
      Conserto: esperar o elemento aparecer antes de montar o player.
      Falha calada e com teto - tutorial nao derruba painel. */
+  /* ---------- 10/09/2026: O PLAYER QUE NAO PERDE EVENTO ----------
+     Tres defeitos moravam aqui, e os tres so apareciam da SEGUNDA aula em
+     diante — que e quando ninguem esta mais olhando:
+
+     1. O `YT.Player` antigo NUNCA era destruido. Ao apagar o iframe, a API do
+        YouTube continua falando com uma janela que nao existe mais e PARA de
+        entregar eventos aos players seguintes: `onStateChange` nunca mais
+        dispara, a medicao nunca comeca e a aula nunca fica verde. No painel do
+        parceiro isso e fatal — a Divulgacao so abre com TODAS vistas.
+        Conserto: `matar()`, com `destroy()` de verdade.
+     2. A troca de aula acontecia 1,1 s depois dos 90%, e por a proxima no
+        palco APAGA o iframe da que ainda estava tocando: a aula morria antes
+        do fim. Agora quem troca e `acabou()`, chamada so no estado ENDED.
+     3. Valia a POSICAO da agulha: arrastar a barrinha ate o fim marcava a aula
+        em dois segundos. Agora vale o CAMINHO PERCORRIDO — a cada 500 ms
+        anota-se o segundo que esta tocando, e so conta se o salto couber no
+        tempo real decorrido. 2x continua valendo de proposito. */
+  function matar(f){
+    if(!f) return;
+    try{ clearInterval(f.__t); }catch(_){}
+    f.__t=null;
+    try{ if(f.__p && typeof f.__p.destroy==='function') f.__p.destroy(); }catch(_){}
+    f.__p=null;
+  }
+
   function vigiar(f,v){
     carregarYT(function(){
       var tentativas = 0;
@@ -3240,20 +3315,54 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       })();
       function montar(){
         try{
-          var p=new YT.Player(f.id,{ events:{ onStateChange:function(e){
-            if(e.data!==YT.PlayerState.PLAYING) return;
+          var vistos={}, nVistos=0, ultimo=-1, ultimoMs=0, dur=0;
+
+          function relogio(p){
             clearInterval(f.__t);
             f.__t=setInterval(function(){
               try{
-                var d=p.getDuration(), t=p.getCurrentTime();
-                if(d>0 && t/d>=0.9){ clearInterval(f.__t); marcar(v.k); }
+                if(!dur){ try{ dur=p.getDuration()||0; }catch(_){ dur=0; } }
+                var tt=p.getCurrentTime();
+                if(!(tt>=0)) return;
+                var agora=Date.now();
+                var real=ultimoMs ? ((agora-ultimoMs)/1000) : 0;
+                ultimoMs=agora;
+                var s=Math.floor(tt);
+                if(ultimo>=0 && (tt-ultimo) <= real*1.6 + 0.6){
+                  for(var i=Math.floor(ultimo); i<=s; i++){
+                    if(i>=0 && !vistos[i]){ vistos[i]=1; nVistos++; }
+                  }
+                } else if(s>=0 && !vistos[s]){ vistos[s]=1; nVistos++; }
+                ultimo=tt;
+                if(dur>0 && !f.__contado && nVistos >= dur*0.9){
+                  f.__contado=1;                       /* uma gravacao por iframe */
+                  clearInterval(f.__t); f.__t=null;
+                  marcar(v.k);
+                }
               }catch(_){}
-            },1000);
-          } } });
+            },500);
+          }
+
+          f.__p=new YT.Player(f.id,{ events:{
+            onReady:function(e){
+              try{ dur=e.target.getDuration()||0; }catch(_){}
+              relogio(f.__p);
+            },
+            onStateChange:function(e){
+              if(e.data===YT.PlayerState.PLAYING){ ultimoMs=0; relogio(f.__p); return; }
+              if(e.data===YT.PlayerState.ENDED){
+                try{ clearInterval(f.__t); }catch(_){}
+                f.__t=null;
+                if(!f.__contado){ f.__contado=1; marcar(v.k); }
+                acabou(v.k);
+              }
+            }
+          } });
         }catch(e){}
       }
     });
   }
+
   function iframe(v){
     var f=document.createElement('iframe');
     f.id='mvYT'+(++seq);
@@ -3294,7 +3403,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      depois que o cliente troca de tela - e dois audios tocam juntos. */
   function parar(box){
     var q=box.querySelector('div.mvTutQuadro'); if(!q) return;
-    try{ var fr=q.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
+    try{ matar(q.querySelector('iframe')); }catch(e){}
     var v=achar(box.getAttribute('data-tutk')); if(!v) return;
     box.replaceChild(moldura(v,'mvTutQuadro','data-tutinline'), q);
   }
@@ -3346,9 +3455,18 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     if(LOCAIS.indexOf(k)<0) LOCAIS.push(k);
     try{ if(typeof window.mvTutAoVer==='function') window.mvTutAoVer(k); }catch(e){}
     pintarAulas();
-    if(au && !au.hidden && auTocando===k){
-      var p=proximaAula();
-      if(p) setTimeout(function(){ if(au && !au.hidden && auTocando===k) porNoPalco(p,false); },1100);
+  }
+  /* So o FIM do video troca a aula do palco. Marcar aos 90% e trocar junto
+     matava o iframe da aula que ainda estava tocando os ultimos segundos. */
+  function acabou(k){
+    if(!(au && !au.hidden && auTocando===k)) return;
+    var f=feitas(), t=todas();
+    for(var i=0;i<t.length;i++){
+      if(f.indexOf(t[i].k)===-1){
+        var prox=t[i];
+        setTimeout(function(){ if(au && !au.hidden && auTocando===k) porNoPalco(prox,false); },700);
+        return;
+      }
     }
   }
   function proximaAula(){
@@ -3388,7 +3506,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
 
   function limparPalco(){
     if(!auPal) return;
-    try{ var fr=auPal.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
+    try{ matar(auPal.querySelector('iframe')); }catch(e){}
     auPal.innerHTML=''; auTocando=null;
   }
   /* tocarJa=false coloca a CAPA com o botao de play; true ja abre o video */
@@ -3678,29 +3796,54 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     function alvoDivulgacao(){ return document.querySelector('section[data-sec="divulgacao"]'); }
 
     function pintar(){
-      /* --- aviso laranja no topo de cada secao --- */
+      /* --- 10/09/2026: o aviso passa a existir em TODA secao ---
+         Antes ele morava so na Visao geral: bastava clicar em Indicacoes ou
+         Comissoes e sumia. Aviso que some quando a pessoa troca de aba nao e
+         aviso. A Divulgacao fica de fora porque ja tem o cadeado com recado
+         proprio — dois recados na mesma tela viram ruido. */
       var antigos=document.querySelectorAll('.mvAviso');
       for(var i=0;i<antigos.length;i++) antigos[i].remove();
+      var selinhos=document.querySelectorAll('.mvSelinho');
+      for(var j=0;j<selinhos.length;j++) selinhos[j].remove();
       var cad=document.querySelector('.mvCadeado');
 
       if(concluiu){
         if(cad) cad.remove();
-        var t=alvoDivulgacao(); if(t) t.classList.remove('mvTravado');
+        var t0=alvoDivulgacao(); if(t0) t0.classList.remove('mvTravado');
+        try{ if(typeof window.mvLinkFechado==='function') window.mvLinkFechado(false); }catch(e){}
         return;
       }
+      /* avisa o painel: aprovado nao quer dizer link liberado */
+      try{ if(typeof window.mvLinkFechado==='function') window.mvLinkFechado(true); }catch(e){}
 
       var falta=pub.length-vistas.length;
-      var aviso=document.createElement('div');
-      aviso.className='mvAviso';
-      aviso.innerHTML=
+      var HTML=
         '<span class="mvAvisoIco"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+
         '<rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg></span>'+
         '<span class="mvAvisoTxt"><b class="mvAvisoTit">Assista as '+pub.length+' aulas para liberar o seu link</b>'+
         '<span class="mvAvisoSub">Faltam '+falta+'. São curtas, e explicam como a comissão funciona antes de você sair indicando.</span></span>'+
         '<button type="button" class="mvAvisoBtn" data-tutabrir="1">Ver as aulas</button>'+
         '<span class="mvAvisoBarra"><i style="width:'+Math.round(vistas.length/pub.length*100)+'%"></i></span>';
-      var visao=document.querySelector('section[data-sec="visao"]');
-      if(visao && visao.firstChild) visao.insertBefore(aviso, visao.firstChild);
+
+      var secoes=document.querySelectorAll('section[data-sec]');
+      for(var s=0;s<secoes.length;s++){
+        if(secoes[s].getAttribute('data-sec')==='divulgacao') continue;
+        var aviso=document.createElement('div');
+        aviso.className='mvAviso';
+        aviso.innerHTML=HTML;
+        secoes[s].insertBefore(aviso, secoes[s].firstChild);
+      }
+
+      /* --- cadeadinho no menu lateral e no menu do celular --- */
+      var itens=document.querySelectorAll('[data-nav="divulgacao"],[data-ir="divulgacao"]');
+      for(var m=0;m<itens.length;m++){
+        if(itens[m].querySelector('.mvSelinho')) continue;
+        var lock=document.createElement('span');
+        lock.className='mvSelinho';
+        lock.setAttribute('aria-hidden','true');
+        lock.textContent='\uD83D\uDD12';
+        itens[m].appendChild(lock);
+      }
 
       /* --- cadeado sobre a Divulgacao --- */
       var alvo=alvoDivulgacao();
