@@ -1147,7 +1147,7 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-04-conduta';
+  window.MOVIKI_VERSAO = '2026-09-10-player';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2753,6 +2753,18 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      ficava verde. Sintoma exato relatado: so a primeira contava.
      Conserto: esperar o elemento aparecer antes de montar o player.
      Falha calada e com teto - tutorial nao derruba painel. */
+  /* ---------- DOIS CONSERTOS DE 10/09/2026 (relatados no uso real) ----------
+     (1) "O video para uns segundos antes de acabar." Aos 90% a aula era
+         marcada e, 1,1s depois, a proxima entrava no palco - e por a proxima
+         no palco APAGA o iframe da que ainda estava tocando. Agora a troca so
+         acontece no estado ENDED, quando o video acaba de verdade.
+     (2) "Da segunda aula em diante o visto verde nao aparece mais" - e, como
+         a Divulgacao so abre com TODAS as aulas vistas, o link do parceiro
+         nunca era liberado. Causa: o YT.Player antigo nunca era destruido; ao
+         apagar o iframe, a API do YouTube fica falando com uma janela morta e
+         para de entregar eventos aos players seguintes. Agora todo player e
+         destruido (matar()) e a medicao roda em relogio proprio, que nao
+         depende de onStateChange ter disparado. */
   function vigiar(f,v){
     carregarYT(function(){
       var tentativas = 0;
@@ -2764,21 +2776,45 @@ window.MOVIKI_TUTORIAIS = { modulos: [
         }
         montar();
       })();
+      function pararRelogio(){ try{ clearInterval(f.__t); }catch(_){} f.__t=null; }
+      /* uma aula so conta UMA vez por iframe - senao os 90% e o fim do video
+         gravariam a mesma aula duas vezes no Firestore */
+      function contar(){ if(f.__contado) return; f.__contado=1; pararRelogio(); marcar(v.k); }
+      function relogio(){
+        if(f.__t) return;                         /* um relogio so por iframe */
+        f.__t=setInterval(function(){
+          try{
+            if(!document.body.contains(f)){ pararRelogio(); return; }  /* saiu da tela */
+            if(!f.__p) return;
+            var d=f.__p.getDuration(), t=f.__p.getCurrentTime();
+            if(d>0 && t/d>=0.9) contar();
+          }catch(_){}
+        },1000);
+      }
       function montar(){
         try{
-          var p=new YT.Player(f.id,{ events:{ onStateChange:function(e){
-            if(e.data!==YT.PlayerState.PLAYING) return;
-            clearInterval(f.__t);
-            f.__t=setInterval(function(){
-              try{
-                var d=p.getDuration(), t=p.getCurrentTime();
-                if(d>0 && t/d>=0.9){ clearInterval(f.__t); marcar(v.k); }
-              }catch(_){}
-            },1000);
-          } } });
+          f.__p=new YT.Player(f.id,{ events:{
+            onReady: relogio,
+            onStateChange:function(e){
+              if(e.data===YT.PlayerState.ENDED){
+                contar();
+                try{ acabou(v.k); }catch(_){}
+                return;
+              }
+              if(e.data===YT.PlayerState.PLAYING) relogio();
+            }
+          } });
         }catch(e){}
       }
     });
+  }
+  /* Encerra de verdade um iframe de aula: para o relogio E destroi o player. */
+  function matar(fr){
+    if(!fr) return;
+    try{ clearInterval(fr.__t); }catch(e){}
+    fr.__t=null;
+    try{ if(fr.__p && typeof fr.__p.destroy==='function') fr.__p.destroy(); }catch(e){}
+    fr.__p=null;
   }
   function iframe(v){
     var f=document.createElement('iframe');
@@ -2820,7 +2856,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      depois que o cliente troca de tela - e dois audios tocam juntos. */
   function parar(box){
     var q=box.querySelector('div.mvTutQuadro'); if(!q) return;
-    try{ var fr=q.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
+    try{ matar(q.querySelector('iframe')); }catch(e){}
     var v=achar(box.getAttribute('data-tutk')); if(!v) return;
     box.replaceChild(moldura(v,'mvTutQuadro','data-tutinline'), q);
   }
@@ -2872,10 +2908,16 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     if(LOCAIS.indexOf(k)<0) LOCAIS.push(k);
     try{ if(typeof window.mvTutAoVer==='function') window.mvTutAoVer(k); }catch(e){}
     pintarAulas();
-    if(au && !au.hidden && auTocando===k){
-      var p=proximaAula();
-      if(p) setTimeout(function(){ if(au && !au.hidden && auTocando===k) porNoPalco(p,false); },1100);
-    }
+  }
+  /* A troca de aula mora AQUI, e nao no marcar(): marcar acontece aos 90% e
+     trocar de aula apaga o iframe - era isso que cortava o fim do video.
+     acabou() so roda quando o YouTube avisa que o video terminou. */
+  function acabou(k){
+    if(!au || au.hidden || auTocando!==k) return;
+    var f=feitas(), t=todas(), p=null;
+    for(var i=0;i<t.length;i++){ if(f.indexOf(t[i].k)===-1){ p=t[i]; break; } }
+    if(!p || p.k===k) return;            /* viu tudo: nao volta pro comeco sozinho */
+    setTimeout(function(){ if(au && !au.hidden && auTocando===k) porNoPalco(p,false); },900);
   }
   function proximaAula(){
     var f=feitas(), t=todas();
@@ -2914,7 +2956,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
 
   function limparPalco(){
     if(!auPal) return;
-    try{ var fr=auPal.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
+    try{ matar(auPal.querySelector('iframe')); }catch(e){}
     auPal.innerHTML=''; auTocando=null;
   }
   /* tocarJa=false coloca a CAPA com o botao de play; true ja abre o video */

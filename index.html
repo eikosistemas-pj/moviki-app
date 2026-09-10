@@ -2734,7 +2734,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-05-resposta';
+  window.MOVIKI_VERSAO='2026-09-10-player';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5957,7 +5957,21 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      O player nunca nascia, `onStateChange` nunca disparava, e a aula nunca
      ficava verde. Sintoma exato relatado: so a primeira contava.
      Conserto: esperar o elemento aparecer antes de montar o player.
-     Falha calada e com teto - tutorial nao derruba painel. */
+     Falha calada e com teto - tutorial nao derruba painel.
+
+     ---------- DOIS CONSERTOS DE 10/09/2026 (relatados no uso real) ----------
+     (1) "O video para uns segundos antes de acabar." Nao era o YouTube: aos
+         90% a aula era marcada e, 1,1s depois, a proxima entrava no palco -
+         e por o proximo no palco APAGA o iframe da que ainda estava tocando.
+         Numa aula de 1:46 isso corta 10 segundos. Agora a troca so acontece
+         no estado ENDED, ou seja, quando o video acaba de verdade.
+     (2) "Da segunda/terceira aula em diante o visto verde nao aparece mais."
+         O YT.Player antigo nunca era destruido. Ao apagar o iframe, a API do
+         YouTube continua tentando falar com uma janela que nao existe mais,
+         e para de entregar eventos aos players seguintes - o onStateChange
+         nunca mais dispara e a aula nunca chega aos 90%. Agora todo player e
+         destruido (funcao matar()) e a medicao roda em relogio proprio, que
+         nao depende de onStateChange ter disparado. */
   function vigiar(f,v){
     carregarYT(function(){
       var tentativas = 0;
@@ -5969,21 +5983,47 @@ window.MOVIKI_TUTORIAIS = { modulos: [
         }
         montar();
       })();
+      function pararRelogio(){ try{ clearInterval(f.__t); }catch(_){} f.__t=null; }
+      /* uma aula so conta UMA vez por iframe - senao os 90% e o fim do video
+         gravariam a mesma aula duas vezes no Firestore */
+      function contar(){ if(f.__contado) return; f.__contado=1; pararRelogio(); marcar(v.k); }
+      function relogio(){
+        if(f.__t) return;                         /* um relogio so por iframe */
+        f.__t=setInterval(function(){
+          try{
+            if(!document.body.contains(f)){ pararRelogio(); return; }  /* saiu da tela */
+            if(!f.__p) return;
+            var d=f.__p.getDuration(), t=f.__p.getCurrentTime();
+            if(d>0 && t/d>=0.9) contar();
+          }catch(_){}
+        },1000);
+      }
       function montar(){
         try{
-          var p=new YT.Player(f.id,{ events:{ onStateChange:function(e){
-            if(e.data!==YT.PlayerState.PLAYING) return;
-            clearInterval(f.__t);
-            f.__t=setInterval(function(){
-              try{
-                var d=p.getDuration(), t=p.getCurrentTime();
-                if(d>0 && t/d>=0.9){ clearInterval(f.__t); marcar(v.k); }
-              }catch(_){}
-            },1000);
-          } } });
+          f.__p=new YT.Player(f.id,{ events:{
+            onReady: relogio,
+            onStateChange:function(e){
+              if(e.data===YT.PlayerState.ENDED){
+                contar();
+                try{ acabou(v.k); }catch(_){}
+                return;
+              }
+              if(e.data===YT.PlayerState.PLAYING) relogio();
+            }
+          } });
         }catch(e){}
       }
     });
+  }
+  /* Encerra de verdade um iframe de aula: para o relogio E destroi o player.
+     Sem o destroy() a API do YouTube fica presa a uma janela que ja saiu da
+     pagina - foi o que travava o visto verde da segunda aula em diante. */
+  function matar(fr){
+    if(!fr) return;
+    try{ clearInterval(fr.__t); }catch(e){}
+    fr.__t=null;
+    try{ if(fr.__p && typeof fr.__p.destroy==='function') fr.__p.destroy(); }catch(e){}
+    fr.__p=null;
   }
   function iframe(v){
     var f=document.createElement('iframe');
@@ -6025,7 +6065,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      depois que o cliente troca de tela - e dois audios tocam juntos. */
   function parar(box){
     var q=box.querySelector('div.mvTutQuadro'); if(!q) return;
-    try{ var fr=q.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
+    try{ matar(q.querySelector('iframe')); }catch(e){}
     var v=achar(box.getAttribute('data-tutk')); if(!v) return;
     box.replaceChild(moldura(v,'mvTutQuadro','data-tutinline'), q);
   }
@@ -6309,12 +6349,19 @@ window.MOVIKI_TUTORIAIS = { modulos: [
         try{ P.salvar(l, fim); }catch(e){}
       }
       pintarAulas(); faixa();
-      if(au && !au.hidden && auTocando===k){
-        var p=bvProxima();
-        if(p && p.k!==k) setTimeout(function(){ if(au && !au.hidden && auTocando===k) porNoPalco(p,false); },1100);
-      }
     }
     try{ if(typeof window.mvTutAoVer==='function') window.mvTutAoVer(k); }catch(e){}
+  }
+  /* A troca de aula mora AQUI, e nao no marcar(): marcar acontece aos 90% e
+     trocar de aula apaga o iframe - era isso que cortava o fim do video.
+     acabou() so e chamada quando o YouTube avisa que o video terminou. */
+  function acabou(k){
+    if(BOASVINDAS.indexOf(k)===-1) return;
+    if(!au || au.hidden || auTocando!==k) return;
+    var f=bvFeitas(), t=bvAulas(), p=null;
+    for(var i=0;i<t.length;i++){ if(f.indexOf(t[i].k)===-1){ p=t[i]; break; } }
+    if(!p || p.k===k) return;            /* viu tudo: nao volta pro comeco sozinho */
+    setTimeout(function(){ if(au && !au.hidden && auTocando===k) porNoPalco(p,false); },900);
   }
   function bvProxima(){
     var f=bvFeitas(), t=bvAulas();
@@ -6361,7 +6408,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   }
   function limparPalco(){
     if(!auPal) return;
-    try{ var fr=auPal.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
+    try{ matar(auPal.querySelector('iframe')); }catch(e){}
     auPal.innerHTML=''; auTocando=null;
   }
   function porNoPalco(v, tocarJa){
