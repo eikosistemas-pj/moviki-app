@@ -1147,7 +1147,7 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-10-player';
+  window.MOVIKI_VERSAO = '2026-09-10-linkfechado';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1696,7 +1696,20 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
           method:'POST',
           headers:{'Content-Type':'application/json'},
           body: JSON.stringify({ idToken: tk })
-        }).catch(function(){});
+        })
+        .then(function(r){ return r.json(); })
+        /* 10/09/2026: quem conclui as aulas e aprovado NA HORA pelo robo.
+           Sem isto o painel continuaria dizendo "em analise" ate ele
+           recarregar a pagina - e o link liberado ficaria escondido atras de
+           um F5 que ninguem mandou ele dar. */
+        .then(function(j){
+          if(j && j.aprovado === true && MEU.status !== 'aprovado'){
+            MEU.status = 'aprovado';
+            if(window.__mvCracha) window.__mvCracha.aprovado = true;
+            try{ render(); }catch(e){}
+          }
+        })
+        .catch(function(){});
       }).catch(function(){});
     }catch(e){}
   }
@@ -1767,20 +1780,46 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
     txt('meuLinkParc', linkP);
 
     const aprovado = status === 'aprovado';
+    /* 10/09/2026: APROVADO NAO QUER DIZER LINK LIBERADO.
+       Sao duas portas. A aprovacao agora sai em 5 minutos e abre o painel
+       inteiro; o LINK so abre quando as aulas terminam. Enquanto as duas nao
+       estiverem abertas, o cartao de situacao FICA na tela dizendo qual falta
+       - antes ele sumia na aprovacao e o parceiro lia "Tudo certo! Divulgue
+       seu link" com o link ainda fechado atras do cadeado. */
+    const treinado = !!MEU.aulasEm;
     document.querySelectorAll('.soAprovado').forEach(n=>n.classList.toggle('hide', !aprovado));
     const cs = el('cardStatus');
-    if(cs) cs.classList.toggle('hide', aprovado);
+    if(cs) cs.classList.toggle('hide', aprovado && treinado);
 
     const rot = { pendente:'Em análise', aprovado:'Aprovado', recusado:'Não aprovado', suspenso:'Suspenso' };
     const badge = el('badge');
-    if(badge){ badge.className = 'badge ' + status; badge.textContent = rot[status] || status; }
+    if(badge){
+      badge.className = 'badge ' + status;
+      badge.textContent = (aprovado && !treinado) ? 'Aprovado · link fechado' : (rot[status] || status);
+    }
     const notas = {
-      pendente:'Recebemos seu cadastro e ele está em análise. Assim que for aprovado, seu link é ativado e você já pode divulgar.',
-      aprovado:'Tudo certo! Divulgue seu link. A cada negócio que assinar por ele, você ganha comissão recorrente.',
+      pendente:'Recebemos seu cadastro e ele está em análise. Assim que for aprovado, o painel abre — e o seu link de indicação é ativado quando você terminar as aulas.',
+      aprovado: treinado
+        ? 'Tudo certo! Divulgue seu link. A cada negócio que assinar por ele, você ganha comissão recorrente.'
+        : 'Cadastro aprovado: o painel é todo seu, pode mexer à vontade. Falta uma coisa só — o seu link de indicação ainda está fechado, e ele abre no minuto em que você terminar as aulas. São curtas, e explicam como a comissão funciona antes de você sair indicando.',
       recusado:'Seu cadastro não foi aprovado no momento. Se tiver dúvidas, fale com a gente pelo WhatsApp do suporte.',
       suspenso:'Seu acesso está suspenso no momento. Fale com a gente pelo WhatsApp do suporte para regularizar.'
     };
     txt('statusNota', notas[status] || '');
+    /* o botao do cartao vira "Ver as aulas" enquanto o link estiver fechado */
+    const bc = el('btnConheca');
+    if(bc){
+      /* guarda o clique original UMA vez. O bloco classico que amarra esse
+         botao roda antes deste modulo, entao aqui ele ja existe. */
+      if(!bc.__acaoOriginal) bc.__acaoOriginal = bc.onclick;
+      if(aprovado && !treinado){
+        bc.textContent = 'Ver as aulas e liberar meu link';
+        bc.onclick = function(){ try{ window.abrirTutoriais(); }catch(e){} };
+      } else {
+        bc.textContent = 'Conheça o Moviki e o programa de parceiros';
+        if(bc.__acaoOriginal) bc.onclick = bc.__acaoOriginal;
+      }
+    }
     atualizarPonto();
   }
 
@@ -2526,6 +2565,8 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .mvAvisoBtn:hover{background:#ffa032}
 .mvAvisoBarra{flex-basis:100%;height:7px;border-radius:99px;background:rgba(255,255,255,.10);overflow:hidden}
 .mvAvisoBarra i{display:block;height:100%;border-radius:99px;background:#ff8a00;transition:width .4s}
+/* cadeadinho no item Divulgacao do menu, enquanto as aulas nao terminam */
+.mvSelinho{margin-left:auto;font-size:13px;line-height:1;opacity:.95;animation:mvPulsa 2.4s ease-out infinite;border-radius:99px}
 .mvTravado{position:relative}
 .mvTravado > *:not(.mvCadeado):not(.mvTutBox){filter:blur(3px);opacity:.35;pointer-events:none;user-select:none}
 /* A AULA DESTA TELA FICA POR CIMA DO CADEADO, nitida e clicavel.
@@ -2780,16 +2821,39 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       /* uma aula so conta UMA vez por iframe - senao os 90% e o fim do video
          gravariam a mesma aula duas vezes no Firestore */
       function contar(){ if(f.__contado) return; f.__contado=1; pararRelogio(); marcar(v.k); }
+
+      /* ---------- NAO VALE ADIANTAR O VIDEO (10/09/2026) ----------
+         Antes valia a POSICAO da agulha: arrastar a barrinha ate o fim marcava
+         a aula em dois segundos. Agora vale o CAMINHO PERCORRIDO. A cada meio
+         segundo o relogio anota qual segundo do video esta tocando - e so
+         anota se o salto desde a ultima olhada couber no tempo real que
+         passou. Arrastou pra frente: o pedaco pulado nao entra na conta e a
+         aula nunca fecha. Voltou e reviu: nao soma de novo, cada segundo do
+         video vale uma vez so - entao rever o comeco dez vezes tambem nao
+         fecha. Travou pra carregar: o limite acompanha o relogio de verdade,
+         ninguem e punido por internet ruim. */
+      var VIS={}, nVis=0, ultT=-1, ultMs=0;
       function relogio(){
         if(f.__t) return;                         /* um relogio so por iframe */
         f.__t=setInterval(function(){
           try{
             if(!document.body.contains(f)){ pararRelogio(); return; }  /* saiu da tela */
             if(!f.__p) return;
-            var d=f.__p.getDuration(), t=f.__p.getCurrentTime();
-            if(d>0 && t/d>=0.9) contar();
+            var d=f.__p.getDuration(), t=f.__p.getCurrentTime(), agora=Date.now();
+            if(!(d>0)) return;                    /* video ainda carregando */
+            if(ultT>=0){
+              var real=(agora-ultMs)/1000;        /* tempo real desde a ultima olhada */
+              var pulo=t-ultT;                    /* quanto o video andou */
+              if(pulo>0 && pulo<=real*1.6+0.6){
+                for(var sg=Math.floor(ultT); sg<=Math.floor(t); sg++){
+                  if(sg>=0 && !VIS[sg]){ VIS[sg]=1; nVis++; }
+                }
+              }
+            }
+            ultT=t; ultMs=agora;
+            if(nVis>=Math.floor(d*0.9)) contar();
           }catch(_){}
-        },1000);
+        },500);
       }
       function montar(){
         try{
@@ -3254,6 +3318,8 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       if(concluiu){
         if(cad) cad.remove();
         var t=alvoDivulgacao(); if(t) t.classList.remove('mvTravado');
+        var sel=document.querySelectorAll('.mvSelinho');
+        for(var z=0;z<sel.length;z++) sel[z].remove();
         return;
       }
 
@@ -3267,8 +3333,28 @@ window.MOVIKI_TUTORIAIS = { modulos: [
         '<span class="mvAvisoSub">Faltam '+falta+'. São curtas, e explicam como a comissão funciona antes de você sair indicando.</span></span>'+
         '<button type="button" class="mvAvisoBtn" data-tutabrir="1">Ver as aulas</button>'+
         '<span class="mvAvisoBarra"><i style="width:'+Math.round(vistas.length/pub.length*100)+'%"></i></span>';
-      var visao=document.querySelector('section[data-sec="visao"]');
-      if(visao && visao.firstChild) visao.insertBefore(aviso, visao.firstChild);
+      /* 10/09/2026 — O AVISO AGORA VAI EM TODAS AS TELAS.
+         Motivo: a aprovacao passou a sair em 5 minutos, entao o parceiro entra
+         num painel inteiro liberado e sai passeando por Indicacoes, Comissoes,
+         Pagamentos... e nada ali dizia que o LINK dele ainda esta fechado. O
+         aviso morava so na Visao geral: bastava trocar de aba pra ele sumir.
+         Fora a Divulgacao, que tem o cadeado com o recado proprio. */
+      var secoes=document.querySelectorAll('section[data-sec]');
+      for(var j=0;j<secoes.length;j++){
+        if(secoes[j].getAttribute('data-sec')==='divulgacao') continue;
+        var copia = j===0 ? aviso : aviso.cloneNode(true);
+        if(secoes[j].firstChild) secoes[j].insertBefore(copia, secoes[j].firstChild);
+        else secoes[j].appendChild(copia);
+      }
+
+      /* --- selo de cadeado no menu, no item Divulgacao --- */
+      var itens=document.querySelectorAll('[data-nav="divulgacao"],[data-ir="divulgacao"]');
+      for(var m=0;m<itens.length;m++){
+        if(itens[m].querySelector('.mvSelinho')) continue;
+        var sel=document.createElement('span');
+        sel.className='mvSelinho'; sel.textContent='🔒'; sel.title='Abre depois das aulas';
+        itens[m].appendChild(sel);
+      }
 
       /* --- cadeado sobre a Divulgacao --- */
       var alvo=alvoDivulgacao();
