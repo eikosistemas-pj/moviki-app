@@ -265,6 +265,21 @@ input::placeholder{color:#6b7f96}
    escreve a inicial com textContent naquele mesmo elemento e apagaria a
    imagem toda vez que rodasse. Com background, os dois convivem. */
 .lAv.temFoto{background-size:cover;background-position:center;font-size:0;color:transparent}
+
+/* ---------- FOTO DO PERFIL (10/09/2026) ----------
+   O parceiro escolhe a foto dele aqui. No celular o seletor abre a galeria e
+   a camera; no computador, os arquivos. Mesma logica de fundo do .lAv: a
+   imagem entra como background para conviver com a inicial escrita por cima. */
+.fotoBloco{display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+  padding:14px;margin-bottom:14px;border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);background:var(--mv-campo)}
+.fotoPrev{flex:0 0 auto;width:74px;height:74px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:var(--mv-surf);border:2px solid var(--mv-linha-forte);font-size:27px;font-weight:800;color:var(--mv-ciano);overflow:hidden}
+.fotoPrev.temFoto{background-size:cover;background-position:center;font-size:0;color:transparent;border-color:var(--mv-ok)}
+.fotoLado{flex:1 1 190px;min-width:0}
+.fotoTit{font-size:14.5px;font-weight:700}
+.fotoSub{font-size:12.5px;color:var(--mv-txt-3);margin-top:3px;line-height:1.45}
+.fotoBtns{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px}
+.fotoBtns .btn{width:auto;margin:0;padding:9px 15px;font-size:13.5px}
 .certSelo{margin-top:13px;padding-top:13px;border-top:1px solid var(--mv-linha);display:flex;gap:11px;align-items:flex-start}
 .certCarimbo{flex:0 0 auto;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid;position:relative}
 .certCarimbo svg{width:20px;height:20px}
@@ -952,6 +967,26 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
         <section data-sec="dados" class="hide">
           <div class="cd">
             <div class="cdTit" style="margin-bottom:12px">Meus dados</div>
+
+            <!-- FOTO DO PERFIL — 10/09/2026.
+                 Fica ANTES dos dados de propósito: é a única coisa desta tela
+                 que o comerciante vê do outro lado, ao ler o QR Code. -->
+            <div class="fotoBloco">
+              <span class="fotoPrev" id="fotoPrev">P</span>
+              <div class="fotoLado">
+                <div class="fotoTit">Sua foto</div>
+                <div class="fotoSub" id="fotoSub">É a foto que aparece no seu crachá e para quem lê o seu QR Code.</div>
+                <div class="fotoBtns">
+                  <button type="button" class="btn sec" id="btnTrocarFoto">Trocar foto</button>
+                  <button type="button" class="btn sec hide" id="btnTirarFoto">Remover</button>
+                </div>
+              </div>
+            </div>
+            <!-- capture NÃO é usado: com ele o Android abre direto a câmera e
+                 tira do parceiro a opção de pegar uma foto que ele já tem. -->
+            <input type="file" id="arqFoto" accept="image/jpeg,image/png,image/webp,image/*" style="display:none">
+            <div class="aviso" id="avisoFoto"></div>
+
             <div id="dadosView">
               <div class="lRow" style="grid-template-columns:minmax(0,1fr) auto"><span class="lSub" style="display:block">Nome</span><span class="lVal" id="vNome">—</span></div>
               <div class="lRow" style="grid-template-columns:minmax(0,1fr) auto"><span class="lSub" style="display:block">E-mail</span><span class="lVal" id="vEmail" style="white-space:normal;word-break:break-all">—</span></div>
@@ -1147,7 +1182,7 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-10-linkfechado';
+  window.MOVIKI_VERSAO = '2026-09-10-foto-parceiro';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1696,20 +1731,7 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
           method:'POST',
           headers:{'Content-Type':'application/json'},
           body: JSON.stringify({ idToken: tk })
-        })
-        .then(function(r){ return r.json(); })
-        /* 10/09/2026: quem conclui as aulas e aprovado NA HORA pelo robo.
-           Sem isto o painel continuaria dizendo "em analise" ate ele
-           recarregar a pagina - e o link liberado ficaria escondido atras de
-           um F5 que ninguem mandou ele dar. */
-        .then(function(j){
-          if(j && j.aprovado === true && MEU.status !== 'aprovado'){
-            MEU.status = 'aprovado';
-            if(window.__mvCracha) window.__mvCracha.aprovado = true;
-            try{ render(); }catch(e){}
-          }
-        })
-        .catch(function(){});
+        }).catch(function(){});
       }).catch(function(){});
     }catch(e){}
   }
@@ -1718,6 +1740,153 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
     const a = el('rcVoltar'); if(a) a.style.display='block';
     const b = el('linkVoltarNeg'); if(b) b.style.display='flex';
   }
+
+  /* ==========================================================
+     FOTO DO PERFIL DO PARCEIRO — 10/09/2026
+     ==========================================================
+     O parceiro passa a mandar na propria foto. Antes ela era, obrigatoriamente,
+     a do Instagram do @ dele — quem nao tem Instagram ficava so com a inicial,
+     e quem tem uma foto pessoal melhor nao podia usar.
+
+     COMO A FOTO VIAJA: o navegador reduz a imagem para um quadrado de 320px e
+     transforma em texto (data: URI). Esse texto vai para o robo, que grava em
+     `parceiros/{uid}.foto` e copia na hora para o espelho publico — o
+     documento que a pagina do QR Code le. Nao passa pelo Storage de proposito:
+     imagem de outro dominio dentro do <canvas> impediria o download do cracha.
+
+     POR QUE 320px: e o dobro do maior lugar onde a foto aparece (o cracha
+     baixado, 168px de diametro), entao ela fica nitida em tela retina, e ainda
+     assim o arquivo fica em poucas dezenas de KB. */
+  const FOTO_LADO = 320;
+  const FOTO_TETO = 180000;   // teto do texto final; o robo recusa acima de 200 mil
+
+  function fotoPropria(v){
+    return typeof v === 'string' && /^data:image\/(jpeg|png|webp);base64,/.test(v);
+  }
+
+  /* Pinta a foto nos tres lugares de uma vez e avisa o cracha. */
+  function pintarFoto(url){
+    ['avatarLado','avatarTopo','fotoPrev'].forEach(id => {
+      const e = el(id); if(!e) return;
+      if(url){ e.style.backgroundImage = 'url("' + url + '")'; e.classList.add('temFoto'); }
+      else   { e.style.backgroundImage = '';                   e.classList.remove('temFoto'); }
+    });
+    /* O cracha copia a foto do avatarLado, e ele repinta em 400, 1500 e
+       3600 ms. Quando a foto chega depois disso, o cracha ficava com a inicial
+       ate o parceiro recarregar a pagina. O aviso resolve sem timer novo:
+       quem chegou primeiro avisa quem estava esperando. */
+    try{ window.dispatchEvent(new Event('mv-foto-parceiro')); }catch(_){}
+  }
+
+  /* Le o arquivo, corta no centro e devolve o texto da imagem ja reduzida.
+     O corte e no CENTRO e QUADRADO porque a foto e sempre mostrada dentro de
+     um circulo: sem isso, foto deitada apareceria com a cabeca fora do quadro. */
+  function prepararFoto(arquivo){
+    return new Promise((ok, erro) => {
+      const leitor = new FileReader();
+      leitor.onerror = () => erro(new Error('leitura'));
+      leitor.onload = () => {
+        const img = new Image();
+        /* iPhone antigo grava em HEIC: nenhum navegador abre, e o unico sinal
+           e este onerror. Mensagem propria la embaixo — sem ela o parceiro
+           tentaria a mesma foto varias vezes sem entender o que houve. */
+        img.onerror = () => erro(new Error('formato'));
+        img.onload = () => {
+          try{
+            const lado = Math.min(img.naturalWidth, img.naturalHeight) || 1;
+            const sx = (img.naturalWidth  - lado) / 2;
+            const sy = (img.naturalHeight - lado) / 2;
+            const cv = document.createElement('canvas');
+            cv.width = FOTO_LADO; cv.height = FOTO_LADO;
+            const x = cv.getContext('2d');
+            x.fillStyle = '#0d1b2a'; x.fillRect(0,0,FOTO_LADO,FOTO_LADO);
+            x.drawImage(img, sx, sy, lado, lado, 0, 0, FOTO_LADO, FOTO_LADO);
+            /* Vai baixando a qualidade so ate caber. Foto de rosto quase
+               sempre passa de primeira, em 0.82. */
+            let q = 0.82, saida = cv.toDataURL('image/jpeg', q);
+            while(saida.length > FOTO_TETO && q > 0.4){
+              q -= 0.12; saida = cv.toDataURL('image/jpeg', q);
+            }
+            if(saida.length > FOTO_TETO) return erro(new Error('grande'));
+            ok(saida);
+          }catch(e){ erro(new Error('canvas')); }
+        };
+        img.src = leitor.result;
+      };
+      leitor.readAsDataURL(arquivo);
+    });
+  }
+
+  /* Manda para o robo. Ele grava no cadastro e no espelho publico — e por isso
+     que a foto aparece na pagina do QR Code sem o parceiro fazer mais nada. */
+  async function salvarFoto(texto){
+    const user = auth.currentUser;
+    if(!user) throw new Error('sessao');
+    const tk = await user.getIdToken();
+    const r = await fetch('https://moviki-robo.vercel.app/api/upload-imagem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: tk, tipo: 'parceiro', imagemBase64: texto })
+    });
+    const j = await r.json().catch(() => null);
+    if(!j || j.ok !== true) throw new Error((j && j.erro) || 'falha');
+    return j;
+  }
+
+  function avisoFoto(msg, bom){
+    const a = el('avisoFoto'); if(!a) return;
+    a.className = 'aviso' + (bom ? ' ok' : '');
+    a.textContent = msg || '';
+  }
+
+  function ligarFoto(){
+    const btn = el('btnTrocarFoto'), arq = el('arqFoto'), tirar = el('btnTirarFoto');
+    if(!btn || !arq) return;
+
+    btn.onclick = () => { avisoFoto(''); arq.value = ''; arq.click(); };
+
+    arq.onchange = async () => {
+      const f = arq.files && arq.files[0];
+      if(!f) return;
+      /* Teto largo de propósito: quem reduz e o navegador, logo abaixo. Isto
+         so evita travar o aparelho com um arquivo absurdo. */
+      if(f.size > 20 * 1024 * 1024){ avisoFoto('Essa imagem é muito grande. Escolha uma foto menor.'); return; }
+
+      btn.disabled = true; btn.textContent = 'Enviando…';
+      avisoFoto('');
+      try{
+        const texto = await prepararFoto(f);
+        await salvarFoto(texto);
+        MEU.foto = texto;
+        pintarFoto(texto);
+        if(tirar) tirar.classList.remove('hide');
+        avisoFoto('Foto atualizada. Já é ela que aparece para quem lê o seu QR Code.', true);
+      }catch(e){
+        const m = String(e && e.message || '');
+        if(m === 'formato')      avisoFoto('Não conseguimos abrir essa imagem. Se for foto de iPhone, tente salvar como JPG antes (Ajustes › Câmera › Formatos › “Mais compatível”).');
+        else if(m === 'grande')  avisoFoto('Não deu para reduzir essa imagem o bastante. Tente outra foto.');
+        else if(m === 'sessao')  avisoFoto('Sua sessão expirou. Entre de novo e tente outra vez.');
+        else                     avisoFoto('Não foi possível enviar a foto agora. Tente de novo em instantes.');
+      }
+      btn.disabled = false; btn.textContent = 'Trocar foto';
+    };
+
+    if(tirar) tirar.onclick = async () => {
+      if(!confirm('Remover a sua foto?\n\nSe você tiver Instagram no cadastro, a foto de lá volta a aparecer.')) return;
+      tirar.disabled = true; tirar.textContent = 'Removendo…';
+      try{
+        await salvarFoto('');
+        MEU.foto = '';
+        pintarFoto('');
+        render.__foto = 0;      // libera a busca do Instagram de novo
+        tirar.classList.add('hide');
+        render();
+        avisoFoto('Foto removida.', true);
+      }catch(e){ avisoFoto('Não foi possível remover a foto agora. Tente de novo.'); }
+      tirar.disabled = false; tirar.textContent = 'Remover';
+    };
+  }
+  ligarFoto();
 
   /* ---------- cabeçalho / estado do cadastro ---------- */
   function render(){
@@ -1733,12 +1902,24 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
     txt('vPix', MEU.pix || '—');
     txt('avatarTopo', inicial);
     txt('avatarLado', inicial);
+    txt('fotoPrev', inicial);
 
-    /* Foto do parceiro no cracha — vem da MESMA busca do @ que o quiz usa
-       (api/novo-parceiro?instagram=). Nao custa chamada nova a Meta: aquele
-       endpoint guarda cache de 7 dias, e este @ foi consultado no cadastro.
-       Falha calada e uma vez so por sessao: sem foto, ficam as iniciais. */
-    if(MEU.arroba && !render.__foto){
+    /* ---------- QUAL FOTO MANDA (10/09/2026) ----------
+       1o) a que ELE escolheu no painel (MEU.foto). Ganha sempre.
+       2o) se ele nunca escolheu, a do Instagram, como era antes.
+       A ordem tem que ser essa: quem trocou a foto na mao nao pode ver a do
+       Instagram voltar sozinha na proxima vez que abrir o painel. */
+    const temPropria = fotoPropria(MEU.foto);
+    const btnTirar = el('btnTirarFoto');
+    if(btnTirar) btnTirar.classList[temPropria ? 'remove' : 'add']('hide');
+
+    if(temPropria){
+      pintarFoto(MEU.foto);
+    } else if(MEU.arroba && !render.__foto){
+      /* Foto do parceiro no cracha — vem da MESMA busca do @ que o quiz usa
+         (api/novo-parceiro?instagram=). Nao custa chamada nova a Meta: aquele
+         endpoint guarda cache de 7 dias, e este @ foi consultado no cadastro.
+         Falha calada e uma vez so por sessao: sem foto, ficam as iniciais. */
       render.__foto = 1;
       const arr = String(MEU.arroba).trim().replace(/^@+/,'');
       if(/^[a-zA-Z0-9._]{2,30}$/.test(arr)){
@@ -1747,17 +1928,9 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
           .then(j => {
             if(!j || !j.achou) return;
             if(typeof j.foto !== 'string' || j.foto.indexOf('data:image/') !== 0) return;
-            ['avatarLado','avatarTopo'].forEach(id => {
-              const e = el(id); if(!e) return;
-              e.style.backgroundImage = 'url("' + j.foto + '")';
-              e.classList.add('temFoto');
-            });
-            /* O cracha copia a foto do avatarLado, e ele repinta em 400, 1500
-               e 3600 ms. Quando a Meta demora mais que isso (o timeout do robo
-               e de 6 s), a foto chegava tarde e o cracha ficava com a inicial
-               ate o parceiro recarregar a pagina. O aviso resolve sem timer
-               novo: quem chegou primeiro avisa quem estava esperando. */
-            try{ window.dispatchEvent(new Event('mv-foto-parceiro')); }catch(_){}
+            /* Chegou tarde e nesse meio tempo ele subiu a dele? A dele fica. */
+            if(fotoPropria(MEU.foto)) return;
+            pintarFoto(j.foto);
           })
           .catch(() => {});
       }
@@ -1780,46 +1953,20 @@ html.mvSigilo .cdOlho .olhoOff{display:block}
     txt('meuLinkParc', linkP);
 
     const aprovado = status === 'aprovado';
-    /* 10/09/2026: APROVADO NAO QUER DIZER LINK LIBERADO.
-       Sao duas portas. A aprovacao agora sai em 5 minutos e abre o painel
-       inteiro; o LINK so abre quando as aulas terminam. Enquanto as duas nao
-       estiverem abertas, o cartao de situacao FICA na tela dizendo qual falta
-       - antes ele sumia na aprovacao e o parceiro lia "Tudo certo! Divulgue
-       seu link" com o link ainda fechado atras do cadeado. */
-    const treinado = !!MEU.aulasEm;
     document.querySelectorAll('.soAprovado').forEach(n=>n.classList.toggle('hide', !aprovado));
     const cs = el('cardStatus');
-    if(cs) cs.classList.toggle('hide', aprovado && treinado);
+    if(cs) cs.classList.toggle('hide', aprovado);
 
     const rot = { pendente:'Em análise', aprovado:'Aprovado', recusado:'Não aprovado', suspenso:'Suspenso' };
     const badge = el('badge');
-    if(badge){
-      badge.className = 'badge ' + status;
-      badge.textContent = (aprovado && !treinado) ? 'Aprovado · link fechado' : (rot[status] || status);
-    }
+    if(badge){ badge.className = 'badge ' + status; badge.textContent = rot[status] || status; }
     const notas = {
-      pendente:'Recebemos seu cadastro e ele está em análise. Assim que for aprovado, o painel abre — e o seu link de indicação é ativado quando você terminar as aulas.',
-      aprovado: treinado
-        ? 'Tudo certo! Divulgue seu link. A cada negócio que assinar por ele, você ganha comissão recorrente.'
-        : 'Cadastro aprovado: o painel é todo seu, pode mexer à vontade. Falta uma coisa só — o seu link de indicação ainda está fechado, e ele abre no minuto em que você terminar as aulas. São curtas, e explicam como a comissão funciona antes de você sair indicando.',
+      pendente:'Recebemos seu cadastro e ele está em análise. Assim que for aprovado, seu link é ativado e você já pode divulgar.',
+      aprovado:'Tudo certo! Divulgue seu link. A cada negócio que assinar por ele, você ganha comissão recorrente.',
       recusado:'Seu cadastro não foi aprovado no momento. Se tiver dúvidas, fale com a gente pelo WhatsApp do suporte.',
       suspenso:'Seu acesso está suspenso no momento. Fale com a gente pelo WhatsApp do suporte para regularizar.'
     };
     txt('statusNota', notas[status] || '');
-    /* o botao do cartao vira "Ver as aulas" enquanto o link estiver fechado */
-    const bc = el('btnConheca');
-    if(bc){
-      /* guarda o clique original UMA vez. O bloco classico que amarra esse
-         botao roda antes deste modulo, entao aqui ele ja existe. */
-      if(!bc.__acaoOriginal) bc.__acaoOriginal = bc.onclick;
-      if(aprovado && !treinado){
-        bc.textContent = 'Ver as aulas e liberar meu link';
-        bc.onclick = function(){ try{ window.abrirTutoriais(); }catch(e){} };
-      } else {
-        bc.textContent = 'Conheça o Moviki e o programa de parceiros';
-        if(bc.__acaoOriginal) bc.onclick = bc.__acaoOriginal;
-      }
-    }
     atualizarPonto();
   }
 
@@ -2565,8 +2712,6 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .mvAvisoBtn:hover{background:#ffa032}
 .mvAvisoBarra{flex-basis:100%;height:7px;border-radius:99px;background:rgba(255,255,255,.10);overflow:hidden}
 .mvAvisoBarra i{display:block;height:100%;border-radius:99px;background:#ff8a00;transition:width .4s}
-/* cadeadinho no item Divulgacao do menu, enquanto as aulas nao terminam */
-.mvSelinho{margin-left:auto;font-size:13px;line-height:1;opacity:.95;animation:mvPulsa 2.4s ease-out infinite;border-radius:99px}
 .mvTravado{position:relative}
 .mvTravado > *:not(.mvCadeado):not(.mvTutBox){filter:blur(3px);opacity:.35;pointer-events:none;user-select:none}
 /* A AULA DESTA TELA FICA POR CIMA DO CADEADO, nitida e clicavel.
@@ -2794,18 +2939,6 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      ficava verde. Sintoma exato relatado: so a primeira contava.
      Conserto: esperar o elemento aparecer antes de montar o player.
      Falha calada e com teto - tutorial nao derruba painel. */
-  /* ---------- DOIS CONSERTOS DE 10/09/2026 (relatados no uso real) ----------
-     (1) "O video para uns segundos antes de acabar." Aos 90% a aula era
-         marcada e, 1,1s depois, a proxima entrava no palco - e por a proxima
-         no palco APAGA o iframe da que ainda estava tocando. Agora a troca so
-         acontece no estado ENDED, quando o video acaba de verdade.
-     (2) "Da segunda aula em diante o visto verde nao aparece mais" - e, como
-         a Divulgacao so abre com TODAS as aulas vistas, o link do parceiro
-         nunca era liberado. Causa: o YT.Player antigo nunca era destruido; ao
-         apagar o iframe, a API do YouTube fica falando com uma janela morta e
-         para de entregar eventos aos players seguintes. Agora todo player e
-         destruido (matar()) e a medicao roda em relogio proprio, que nao
-         depende de onStateChange ter disparado. */
   function vigiar(f,v){
     carregarYT(function(){
       var tentativas = 0;
@@ -2817,68 +2950,21 @@ window.MOVIKI_TUTORIAIS = { modulos: [
         }
         montar();
       })();
-      function pararRelogio(){ try{ clearInterval(f.__t); }catch(_){} f.__t=null; }
-      /* uma aula so conta UMA vez por iframe - senao os 90% e o fim do video
-         gravariam a mesma aula duas vezes no Firestore */
-      function contar(){ if(f.__contado) return; f.__contado=1; pararRelogio(); marcar(v.k); }
-
-      /* ---------- NAO VALE ADIANTAR O VIDEO (10/09/2026) ----------
-         Antes valia a POSICAO da agulha: arrastar a barrinha ate o fim marcava
-         a aula em dois segundos. Agora vale o CAMINHO PERCORRIDO. A cada meio
-         segundo o relogio anota qual segundo do video esta tocando - e so
-         anota se o salto desde a ultima olhada couber no tempo real que
-         passou. Arrastou pra frente: o pedaco pulado nao entra na conta e a
-         aula nunca fecha. Voltou e reviu: nao soma de novo, cada segundo do
-         video vale uma vez so - entao rever o comeco dez vezes tambem nao
-         fecha. Travou pra carregar: o limite acompanha o relogio de verdade,
-         ninguem e punido por internet ruim. */
-      var VIS={}, nVis=0, ultT=-1, ultMs=0;
-      function relogio(){
-        if(f.__t) return;                         /* um relogio so por iframe */
-        f.__t=setInterval(function(){
-          try{
-            if(!document.body.contains(f)){ pararRelogio(); return; }  /* saiu da tela */
-            if(!f.__p) return;
-            var d=f.__p.getDuration(), t=f.__p.getCurrentTime(), agora=Date.now();
-            if(!(d>0)) return;                    /* video ainda carregando */
-            if(ultT>=0){
-              var real=(agora-ultMs)/1000;        /* tempo real desde a ultima olhada */
-              var pulo=t-ultT;                    /* quanto o video andou */
-              if(pulo>0 && pulo<=real*1.6+0.6){
-                for(var sg=Math.floor(ultT); sg<=Math.floor(t); sg++){
-                  if(sg>=0 && !VIS[sg]){ VIS[sg]=1; nVis++; }
-                }
-              }
-            }
-            ultT=t; ultMs=agora;
-            if(nVis>=Math.floor(d*0.9)) contar();
-          }catch(_){}
-        },500);
-      }
       function montar(){
         try{
-          f.__p=new YT.Player(f.id,{ events:{
-            onReady: relogio,
-            onStateChange:function(e){
-              if(e.data===YT.PlayerState.ENDED){
-                contar();
-                try{ acabou(v.k); }catch(_){}
-                return;
-              }
-              if(e.data===YT.PlayerState.PLAYING) relogio();
-            }
-          } });
+          var p=new YT.Player(f.id,{ events:{ onStateChange:function(e){
+            if(e.data!==YT.PlayerState.PLAYING) return;
+            clearInterval(f.__t);
+            f.__t=setInterval(function(){
+              try{
+                var d=p.getDuration(), t=p.getCurrentTime();
+                if(d>0 && t/d>=0.9){ clearInterval(f.__t); marcar(v.k); }
+              }catch(_){}
+            },1000);
+          } } });
         }catch(e){}
       }
     });
-  }
-  /* Encerra de verdade um iframe de aula: para o relogio E destroi o player. */
-  function matar(fr){
-    if(!fr) return;
-    try{ clearInterval(fr.__t); }catch(e){}
-    fr.__t=null;
-    try{ if(fr.__p && typeof fr.__p.destroy==='function') fr.__p.destroy(); }catch(e){}
-    fr.__p=null;
   }
   function iframe(v){
     var f=document.createElement('iframe');
@@ -2920,7 +3006,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      depois que o cliente troca de tela - e dois audios tocam juntos. */
   function parar(box){
     var q=box.querySelector('div.mvTutQuadro'); if(!q) return;
-    try{ matar(q.querySelector('iframe')); }catch(e){}
+    try{ var fr=q.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
     var v=achar(box.getAttribute('data-tutk')); if(!v) return;
     box.replaceChild(moldura(v,'mvTutQuadro','data-tutinline'), q);
   }
@@ -2972,16 +3058,10 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     if(LOCAIS.indexOf(k)<0) LOCAIS.push(k);
     try{ if(typeof window.mvTutAoVer==='function') window.mvTutAoVer(k); }catch(e){}
     pintarAulas();
-  }
-  /* A troca de aula mora AQUI, e nao no marcar(): marcar acontece aos 90% e
-     trocar de aula apaga o iframe - era isso que cortava o fim do video.
-     acabou() so roda quando o YouTube avisa que o video terminou. */
-  function acabou(k){
-    if(!au || au.hidden || auTocando!==k) return;
-    var f=feitas(), t=todas(), p=null;
-    for(var i=0;i<t.length;i++){ if(f.indexOf(t[i].k)===-1){ p=t[i]; break; } }
-    if(!p || p.k===k) return;            /* viu tudo: nao volta pro comeco sozinho */
-    setTimeout(function(){ if(au && !au.hidden && auTocando===k) porNoPalco(p,false); },900);
+    if(au && !au.hidden && auTocando===k){
+      var p=proximaAula();
+      if(p) setTimeout(function(){ if(au && !au.hidden && auTocando===k) porNoPalco(p,false); },1100);
+    }
   }
   function proximaAula(){
     var f=feitas(), t=todas();
@@ -3020,7 +3100,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
 
   function limparPalco(){
     if(!auPal) return;
-    try{ matar(auPal.querySelector('iframe')); }catch(e){}
+    try{ var fr=auPal.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
     auPal.innerHTML=''; auTocando=null;
   }
   /* tocarJa=false coloca a CAPA com o botao de play; true ja abre o video */
@@ -3318,8 +3398,6 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       if(concluiu){
         if(cad) cad.remove();
         var t=alvoDivulgacao(); if(t) t.classList.remove('mvTravado');
-        var sel=document.querySelectorAll('.mvSelinho');
-        for(var z=0;z<sel.length;z++) sel[z].remove();
         return;
       }
 
@@ -3333,28 +3411,8 @@ window.MOVIKI_TUTORIAIS = { modulos: [
         '<span class="mvAvisoSub">Faltam '+falta+'. São curtas, e explicam como a comissão funciona antes de você sair indicando.</span></span>'+
         '<button type="button" class="mvAvisoBtn" data-tutabrir="1">Ver as aulas</button>'+
         '<span class="mvAvisoBarra"><i style="width:'+Math.round(vistas.length/pub.length*100)+'%"></i></span>';
-      /* 10/09/2026 — O AVISO AGORA VAI EM TODAS AS TELAS.
-         Motivo: a aprovacao passou a sair em 5 minutos, entao o parceiro entra
-         num painel inteiro liberado e sai passeando por Indicacoes, Comissoes,
-         Pagamentos... e nada ali dizia que o LINK dele ainda esta fechado. O
-         aviso morava so na Visao geral: bastava trocar de aba pra ele sumir.
-         Fora a Divulgacao, que tem o cadeado com o recado proprio. */
-      var secoes=document.querySelectorAll('section[data-sec]');
-      for(var j=0;j<secoes.length;j++){
-        if(secoes[j].getAttribute('data-sec')==='divulgacao') continue;
-        var copia = j===0 ? aviso : aviso.cloneNode(true);
-        if(secoes[j].firstChild) secoes[j].insertBefore(copia, secoes[j].firstChild);
-        else secoes[j].appendChild(copia);
-      }
-
-      /* --- selo de cadeado no menu, no item Divulgacao --- */
-      var itens=document.querySelectorAll('[data-nav="divulgacao"],[data-ir="divulgacao"]');
-      for(var m=0;m<itens.length;m++){
-        if(itens[m].querySelector('.mvSelinho')) continue;
-        var sel=document.createElement('span');
-        sel.className='mvSelinho'; sel.textContent='🔒'; sel.title='Abre depois das aulas';
-        itens[m].appendChild(sel);
-      }
+      var visao=document.querySelector('section[data-sec="visao"]');
+      if(visao && visao.firstChild) visao.insertBefore(aviso, visao.firstChild);
 
       /* --- cadeado sobre a Divulgacao --- */
       var alvo=alvoDivulgacao();
@@ -3773,9 +3831,15 @@ function mvQR(texto){
 
     /* a foto e a mesma que o painel ja buscou; se ainda nao chegou, tenta de novo */
     var lado = el('avatarLado');
-    if (lado && lado.classList.contains('temFoto')){
-      var f = el('crFoto');
-      if (f){ f.style.backgroundImage = lado.style.backgroundImage; f.classList.add('temFoto'); }
+    var f = el('crFoto');
+    if (f){
+      if (lado && lado.classList.contains('temFoto')){
+        f.style.backgroundImage = lado.style.backgroundImage; f.classList.add('temFoto');
+      } else {
+        /* 10/09/2026: sem este else, quem REMOVIA a foto continuava vendo a
+           foto antiga no cracha ate recarregar a pagina. */
+        f.style.backgroundImage = ''; f.classList.remove('temFoto');
+      }
     }
   }
 
