@@ -954,6 +954,52 @@ input[type=checkbox]{width:auto;padding:0;}
 .linkRow button{border:1px solid var(--mv-linha-forte);background:var(--mv-campo);color:var(--mv-txt-2);
   font-family:inherit;font-weight:600;font-size:13px;border-radius:var(--mv-r-pill);padding:8px 14px;cursor:pointer;}
 
+/* ---------- VIDEOS DO NEGOCIO (10/09/2026) ----------
+   O lojista cola o link do Reels / Shorts / TikTok que ele ja tem. O painel
+   nao hospeda nem converte video nenhum: guarda o link e o titulo.
+   O cartao mostra a MINIATURA REAL quando e YouTube (i.ytimg.com, ja liberado
+   na CSP por causa das videoaulas). Instagram e TikTok nao entregam miniatura
+   por link -- esses ficam com a arte na cor da rede.
+   Nenhuma logo de rede: o nome vai escrito. */
+.vdAdd{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r);
+  padding:13px;margin-bottom:12px;}
+.vdAdd label{display:block;font-size:12.5px;font-weight:600;color:var(--mv-txt-2);margin:0 0 5px;}
+.vdAdd label+label{margin-top:10px;}
+.vdAdd input{width:100%;}
+.vdAdd .vdBtn{width:100%;margin-top:11px;background:var(--mv-grad);color:#04121f;border:none;
+  border-radius:var(--mv-r);padding:12px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;}
+.vdAdd .vdBtn:disabled{opacity:.5;cursor:default;}
+.vdAviso{font-size:12.5px;line-height:1.5;margin-top:9px;min-height:1px;}
+.vdAviso.ruim{color:#ff9a8a;}
+.vdAviso.bom{color:#7ee2a8;}
+.vdAjuda{font-size:12.5px;color:var(--mv-txt-3);line-height:1.55;margin:9px 0 0;}
+.vdLista{display:grid;gap:10px;}
+.vdIt{display:flex;align-items:center;gap:11px;background:var(--mv-surf);
+  border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:10px;}
+.vdIt .vdMini{position:relative;flex:0 0 54px;width:54px;height:72px;border-radius:9px;
+  overflow:hidden;border:1px solid var(--mv-linha);background:var(--mv-campo);
+  display:flex;align-items:center;justify-content:center;}
+.vdIt .vdMini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.vdIt .vdMini svg{width:22px;height:22px;opacity:.55;}
+.vdMini.yt{background:linear-gradient(155deg,#20101a,#4a1520);color:#ff8a8a;}
+.vdMini.ig{background:linear-gradient(155deg,#3b1d6e,#a8437a 55%,#e2854a);color:#fff;}
+.vdMini.tt{background:linear-gradient(155deg,#08121c,#123a44 65%,#0d2b33);color:#7ff3ee;}
+.vdIt .vdTxt{flex:1;min-width:0;}
+.vdIt .vdRede{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.3px;
+  color:var(--mv-ciano);text-transform:uppercase;}
+.vdIt .vdNome{font-size:13.5px;font-weight:600;color:var(--mv-txt);margin-top:2px;
+  overflow-wrap:anywhere;}
+.vdIt .vdUrl{font-size:11.5px;color:var(--mv-txt-3);margin-top:3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vdIt .vdRm{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:rgba(231,76,60,.16);
+  border:1px solid rgba(231,76,60,.5);color:#ff9a8a;font-size:13px;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;padding:0;font-family:inherit;}
+.vdIt .vdSetas{flex:0 0 auto;display:grid;gap:4px;}
+.vdIt .vdSetas button{width:26px;height:24px;border-radius:7px;background:var(--mv-campo);
+  border:1px solid var(--mv-linha);color:var(--mv-txt-2);font-size:11px;line-height:1;
+  cursor:pointer;padding:0;font-family:inherit;}
+.vdIt .vdSetas button:disabled{opacity:.3;cursor:default;}
+
 /* ---------- avaliações ---------- */
 .avalResumo{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);padding:16px;text-align:center;}
 .avalItem{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:13px;margin-top:10px;}
@@ -1805,7 +1851,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         <button type="button" class="mvNavIt" data-sec="cardapio" onclick="mvIr('cardapio')"><img class="mvNavIco" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Cardápio</span></button>
         <button type="button" class="mvNavIt" data-sec="promocoes" onclick="mvIr('promocoes')"><img class="mvNavIco" src="icones/promocoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Promoções</span></button>
         <button type="button" class="mvNavIt" data-sec="eventos" onclick="mvIr('eventos')"><img class="mvNavIco" src="icones/eventos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Eventos</span></button>
-        <button type="button" class="mvNavIt" data-sec="fotos" onclick="mvIr('fotos')"><img class="mvNavIco" src="icones/fotos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Fotos</span></button>
+        <button type="button" class="mvNavIt" data-sec="fotos" onclick="mvIr('fotos')"><img class="mvNavIco" src="icones/fotos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Fotos e vídeos</span></button>
         <button type="button" class="mvNavIt" data-sec="local" onclick="mvIr('local')"><img class="mvNavIco" src="icones/localizacao.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Localização</span></button>
         <button type="button" class="mvNavIt" data-sec="info" onclick="mvIr('info')"><img class="mvNavIco" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Informações</span></button>
         <button type="button" class="mvNavIt" data-sec="whatsapp" onclick="mvIr('whatsapp')"><img class="mvNavIco" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>WhatsApp</span></button>
@@ -1897,7 +1943,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
           <button type="button" class="gcard" id="gc-cardapio" onclick="irSecao('cardapio')"><img class="gcImg" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Cardápio</span></button>
           <button type="button" class="gcard" id="gc-promocoes" onclick="irSecao('promocoes')"><img class="gcImg" src="icones/promocoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Promoções</span></button>
           <button type="button" class="gcard" id="gc-eventos" onclick="irSecao('eventos')"><img class="gcImg" src="icones/eventos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Eventos</span></button>
-          <button type="button" class="gcard" id="gc-fotos" onclick="irSecao('fotos')"><img class="gcImg" src="icones/fotos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Fotos</span></button>
+          <button type="button" class="gcard" id="gc-fotos" onclick="irSecao('fotos')"><img class="gcImg" src="icones/fotos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Fotos e vídeos</span></button>
           <button type="button" class="gcard" onclick="irSecao('local')"><img class="gcImg" src="icones/localizacao.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Localização</span></button>
           <button type="button" class="gcard" onclick="irSecao('info')"><img class="gcImg" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Informações</span></button>
           <button type="button" class="gcard" onclick="irSecao('whatsapp')"><img class="gcImg" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">WhatsApp</span></button>
@@ -1915,7 +1961,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         <button class="tab" data-tab="cardapio" onclick="abrirTab('cardapio')">Cardápio</button>
         <button class="tab" data-tab="promocoes" onclick="abrirTab('promocoes')">Promoções</button>
         <button class="tab" data-tab="eventos" onclick="abrirTab('eventos')">Eventos</button>
-        <button class="tab" data-tab="fotos" onclick="abrirTab('fotos')">Fotos</button>
+        <button class="tab" data-tab="fotos" onclick="abrirTab('fotos')">Fotos e vídeos</button>
         <button class="tab" data-tab="local" onclick="abrirTab('local')">Localização</button>
         <button class="tab" data-tab="info" onclick="abrirTab('info')">Informações</button>
         <button class="tab" data-tab="whatsapp" onclick="abrirTab('whatsapp')">WhatsApp</button>
@@ -2059,10 +2105,25 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         <div id="vazioEvento" class="vazioCard">Nenhum evento ainda.</div>
       </div>
 
-      <!-- Fotos (galeria do negócio) -->
+      <!-- Fotos e vídeos (galeria do negócio) -->
       <div class="tabConteudo escondido" id="tab-fotos">
+        <div id="notaVideos" class="notaFotos"></div>
+        <div class="secTitulo"><label>Vídeos do negócio</label><span id="vdContador" style="font-size:12.5px;color:#8fa6c4"></span></div>
+        <p style="font-size:13px;color:#9fb3d0;margin:0 0 12px;line-height:1.5">Cole o link de um vídeo que você já postou. Ele aparece numa faixa de <b>Vídeos</b> no alto da sua página, antes das fotos. Até <b>6</b> vídeos.</p>
+        <div class="vdAdd">
+          <label for="vdLink">Link do vídeo</label>
+          <input id="vdLink" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="Cole aqui o link" maxlength="300">
+          <label for="vdTitulo">Título curto (aparece no cartão)</label>
+          <input id="vdTitulo" type="text" autocomplete="off" placeholder="Ex.: Nosso caldinho saindo da panela" maxlength="90">
+          <button type="button" class="vdBtn" onclick="adicionarVideoPainel()">+ Adicionar vídeo</button>
+          <div id="vdAviso" class="vdAviso"></div>
+          <p class="vdAjuda">Vale link de <b>YouTube</b> (vídeo ou Shorts), <b>Instagram</b> (Reels ou publicação de vídeo) e <b>TikTok</b>. No Instagram e no TikTok o vídeo abre no aplicativo — é regra deles, não dá pra tocar dentro da sua página. Vídeo do YouTube toca ali mesmo, sem sair.</p>
+        </div>
+        <div id="vdLista" class="vdLista"></div>
+        <div id="vdVazio" class="vazioCard">Nenhum vídeo ainda.</div>
+
+        <div class="secTitulo" style="margin-top:22px"><label>Fotos do negócio</label><span id="galContador" style="font-size:12.5px;color:#8fa6c4"></span></div>
         <div id="notaGaleria" class="notaFotos"></div>
-        <div class="secTitulo"><label>Galeria do negócio</label><span id="galContador" style="font-size:12.5px;color:#8fa6c4"></span></div>
         <p style="font-size:13px;color:#9fb3d0;margin:0 0 12px;line-height:1.5">Mostre seu ambiente, sua equipe, seus pratos, seu ponto. Essas fotos aparecem numa aba <b>Fotos</b> na sua página pública. Até <b>12</b> fotos.</p>
         <div id="galGrade" class="galGrade"></div>
       </div>
@@ -2720,6 +2781,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
     try{ if(window.pintarDesempenho) window.pintarDesempenho(); }catch(_){}
     atualizarNotaFotos();
     atualizarNotaGaleria();
+    atualizarNotaVideos();
   }
   let _avisoPlanoTimer=null;
   function mostrarAvisoPlano(){const av=el('avisoPlano');if(!av)return;av.classList.remove('escondido');if(_avisoPlanoTimer)clearTimeout(_avisoPlanoTimer);_avisoPlanoTimer=setTimeout(()=>av.classList.add('escondido'),5000);}
@@ -2734,7 +2796,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-10-player';
+  window.MOVIKI_VERSAO='2026-09-10-videos';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -4112,6 +4174,127 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
     else { n.innerHTML='📸 <b>Fotos são um recurso do Premium.</b> Pode adicionar as fotos agora — elas passam a aparecer no seu site assim que você assinar o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
   }
 
+  /* =====================================================================
+     VIDEOS DO NEGOCIO -- 10/09/2026
+     Campo `videos` em negocios/{uid}: lista de {url, titulo}, ate 6.
+     Mesmo direito das fotos (estadoFotos): Premium/Enterprise, e no teste
+     gratis. Dois gates diferentes para a mesma galeria viravam duas
+     explicacoes diferentes na tela.
+
+     A LISTA FECHADA DE DOMINIOS NAO E FIRULA: este texto e digitado pelo
+     lojista e a pagina publica o joga dentro de um href. Sem o filtro, um
+     `javascript:...` colado aqui executaria na pagina do CLIENTE dele.
+     A conferencia e feita nos DOIS lados -- aqui, pra avisar na hora que o
+     link nao serve, e no 404.html, que e quem de fato publica.
+     A query string cai fora (`?igsh=`, `?is_from_webapp=`): e rastreio da
+     rede, e o video abre igual sem ela.
+     ===================================================================== */
+  const VD_MAX=6;
+  const VD_NOME={yt:'YouTube',ig:'Instagram',tt:'TikTok'};
+  let _videos=[];
+  function vdLer(cru){
+    const u=String(cru||'').trim();
+    if(!/^https:\/\//i.test(u))return null;
+    const nu=u.split('#')[0];
+    let m;
+    m=nu.match(/^https:\/\/(?:www\.|m\.)?youtube\.com\/shorts\/([A-Za-z0-9_-]{6,20})/i);
+    if(m)return {p:'yt',id:m[1],url:'https://www.youtube.com/shorts/'+m[1]};
+    m=nu.match(/^https:\/\/(?:www\.|m\.)?youtu\.be\/([A-Za-z0-9_-]{6,20})/i);
+    if(m)return {p:'yt',id:m[1],url:'https://youtu.be/'+m[1]};
+    m=nu.match(/^https:\/\/(?:www\.|m\.)?youtube\.com\/(?:watch\?(?:[^\s]*&)?v=|embed\/|live\/)([A-Za-z0-9_-]{6,20})/i);
+    if(m)return {p:'yt',id:m[1],url:'https://www.youtube.com/watch?v='+m[1]};
+    m=nu.match(/^https:\/\/(?:www\.)?instagram\.com\/(?:reels?|p|tv)\/([A-Za-z0-9_-]{5,40})/i);
+    if(m)return {p:'ig',id:m[1],url:'https://www.instagram.com/reel/'+m[1]+'/'};
+    const semQ=nu.split('?')[0];
+    m=semQ.match(/^https:\/\/(?:www\.|vm\.|vt\.)?tiktok\.com\/[A-Za-z0-9@._\/-]{3,120}$/i);
+    if(m)return {p:'tt',id:'',url:semQ};
+    return null;
+  }
+  function vdSet(arr){
+    _videos=[];
+    (Array.isArray(arr)?arr:[]).forEach(function(v){
+      const i=vdLer(v&&v.url); if(!i)return;
+      if(_videos.length>=VD_MAX)return;
+      _videos.push({url:i.url,titulo:String((v&&v.titulo)||'').trim().slice(0,90)});
+    });
+    renderVideos();
+  }
+  function lerVideos(){ return _videos.map(function(v){return {url:v.url,titulo:v.titulo||''};}); }
+  function atualizarNotaVideos(){
+    const n=el('notaVideos'); if(!n)return;
+    const e=estadoFotos();
+    if(e==='premium'){ n.innerHTML='🎬 <b>Vídeos ativos.</b> A faixa de vídeos aparece no alto da sua página pública. Vídeo prende o cliente muito mais que foto — vale caprichar.'; }
+    else if(e==='trial'){ n.innerHTML='🎬 <b>No teste grátis seus vídeos já aparecem no site!</b> Pra continuarem no ar depois do teste, assine o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
+    else { n.innerHTML='🎬 <b>Vídeos são um recurso do Premium.</b> Pode montar a lista agora — ela passa a aparecer no site assim que você assinar o <b>Premium</b>. <button type="button" onclick="abrirPlano()">Ver Premium</button>'; }
+  }
+  function vdIcone(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M7 4.5v15M17 4.5v15"/></svg>'; }
+  function renderVideos(){
+    const g=el('vdLista'); if(!g)return;
+    atualizarNotaVideos();
+    const c=el('vdContador'); if(c)c.textContent=_videos.length+' / '+VD_MAX;
+    const vz=el('vdVazio'); if(vz)vz.style.display=_videos.length?'none':'';
+    const btn=document.querySelector('.vdAdd .vdBtn'); if(btn)btn.disabled=_videos.length>=VD_MAX;
+    let h='';
+    _videos.forEach(function(v,i){
+      const inf=vdLer(v.url)||{p:'yt',id:''};
+      /* miniatura real quando e YouTube; se o video for apagado ou virar
+         privado a imagem morre e o onerror devolve a arte de fundo. */
+      const mini=(inf.p==='yt'&&inf.id)
+        ? '<img src="https://i.ytimg.com/vi/'+inf.id+'/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">'
+        : '';
+      h+='<div class="vdIt">'+
+         '<div class="vdMini '+inf.p+'">'+vdIcone()+mini+'</div>'+
+         '<div class="vdTxt">'+
+           '<span class="vdRede">'+(VD_NOME[inf.p]||'Vídeo')+'</span>'+
+           '<div class="vdNome">'+(v.titulo?vdEsc(v.titulo):'<span style="color:#8fa6c4;font-weight:500">Sem título</span>')+'</div>'+
+           '<div class="vdUrl">'+vdEsc(v.url)+'</div>'+
+         '</div>'+
+         '<div class="vdSetas">'+
+           '<button type="button" title="Subir" onclick="moverVideo('+i+',-1)"'+(i===0?' disabled':'')+'>&#9650;</button>'+
+           '<button type="button" title="Descer" onclick="moverVideo('+i+',1)"'+(i===_videos.length-1?' disabled':'')+'>&#9660;</button>'+
+         '</div>'+
+         '<button type="button" class="vdRm" title="Remover" onclick="removerVideo('+i+')">&#10005;</button>'+
+         '</div>';
+    });
+    g.innerHTML=h;
+  }
+  function vdEsc(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function vdDizer(txt,ruim){
+    const a=el('vdAviso'); if(!a)return;
+    a.className='vdAviso '+(ruim?'ruim':'bom');
+    a.innerHTML=txt;
+  }
+  window.adicionarVideoPainel=function(){
+    const ci=el('vdLink'), ti=el('vdTitulo');
+    if(!ci)return;
+    if(_videos.length>=VD_MAX){ vdDizer('Você já tem '+VD_MAX+' vídeos. Remova um pra colocar outro.',true); return; }
+    const inf=vdLer(ci.value);
+    if(!inf){
+      vdDizer('Não reconheci esse link. Cole o link de um vídeo do <b>YouTube</b>, do <b>Instagram</b> (Reels) ou do <b>TikTok</b> — começando com https://',true);
+      try{ci.focus();}catch(_){}
+      return;
+    }
+    if(_videos.some(function(v){return v.url===inf.url;})){
+      vdDizer('Esse vídeo já está na lista.',true); return;
+    }
+    _videos.push({url:inf.url,titulo:String(ti?ti.value:'').trim().slice(0,90)});
+    ci.value=''; if(ti)ti.value='';
+    renderVideos();
+    vdDizer('Vídeo do <b>'+(VD_NOME[inf.p]||'')+'</b> adicionado. Não esqueça de <b>Salvar tudo</b>.',false);
+    toast('Vídeo adicionado. Não esqueça de Salvar.');
+  };
+  window.removerVideo=function(i){
+    _videos.splice(i,1); renderVideos();
+    vdDizer('',false);
+    toast('Vídeo removido. Não esqueça de Salvar.');
+  };
+  window.moverVideo=function(i,passo){
+    const j=i+passo;
+    if(j<0||j>=_videos.length)return;
+    const t=_videos[i]; _videos[i]=_videos[j]; _videos[j]=t;
+    renderVideos();
+  };
+
   /* ---- GALERIA DO NEGÓCIO (aba Fotos) ---- */
   const GAL_MAX=12;
   let _galeria=[];
@@ -4418,7 +4601,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
     btn.disabled=true;const t=btn.textContent;btn.textContent='Salvando...';
     try{
       if(slug){const ref=doc(db,'slugs',slug);const snap=await getDoc(ref);if(snap.exists()&&snap.data().uid!==usuarioAtual.uid){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('O apelido "'+slug+'" já está em uso. Escolha outro.');btn.disabled=false;btn.textContent=t;return;}if(!snap.exists()){await setDoc(ref,{uid:usuarioAtual.uid});}el('apelido').value=slug;}
-      const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),fotos:lerGaleria(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
+      const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),fotos:lerGaleria(),videos:lerVideos(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
       /* Fase 2b: informações do negócio. Sempre gravados (texto vazio = some da página pública). */
       dados.horario=el('infoHorario')?el('infoHorario').value.trim().slice(0,120):'';
       /* Endereço só entra se veio do mapa (ver endEscolher). Texto solto trava o
@@ -4588,8 +4771,9 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         el('listaPromos').innerHTML='';(d.promocoes||[]).forEach(p=>adicionarPromo(p.titulo||'',p.detalhe||'',p.capa||''));vazioPromo();
         el('listaEventos').innerHTML='';(d.eventos||[]).forEach(e2=>adicionarEvento(e2.titulo||'',e2.quando||'',e2.detalhe||'',e2.capa||''));vazioEvento();
         galSet(d.fotos||[]);
+        vdSet(d.videos||[]);
         try{if(window.mvResumo)window.mvResumo(d);}catch(_r){}try{carregarDesempenho(uid);}catch(_r2){}if(d.lat&&d.lng){coords={lat:d.lat,lng:d.lng};el('gpsInfo').innerHTML='📍 <b>Localização salva:</b><br>'+d.lat.toFixed(5)+', '+d.lng.toFixed(5);}mostrarLogoPreview(d.markerLogo||'');mostrarCapaPreview(d.capa||'');if(d.nome&&d.slug&&d.lat!=null&&d.lng!=null){onbDone=true;try{localStorage.setItem('moviki_onb_'+uid,'1');}catch(_){}}
-      }else{setStatus('fechado');vazioCat();vazioPromo();vazioEvento();galSet([]);mostrarLogoPreview('');mostrarCapaPreview('');try{if(window.mvResumo)window.mvResumo(null);}catch(_r){}}
+      }else{setStatus('fechado');vazioCat();vazioPromo();vazioEvento();galSet([]);vdSet([]);mostrarLogoPreview('');mostrarCapaPreview('');try{if(window.mvResumo)window.mvResumo(null);}catch(_r){}}
     }catch(e){setStatus('fechado');vazioCat();vazioPromo();vazioEvento();}
   }
 
