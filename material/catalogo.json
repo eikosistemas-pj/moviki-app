@@ -1,0 +1,189 @@
+{
+ "versao": "2026-09-11-1",
+ "atualizado": "2026-09-11",
+ "itens": [
+  {
+   "id": "panfleto-a5-na-hora",
+   "tipo": "panfleto",
+   "titulo": "Panfleto A5 com o seu QR code",
+   "formato": "A5 · para imprimir",
+   "arquivo": "material/panfletos/panfleto-a5-no-mapa-na-hora.jpg",
+   "capa": "material/capas/panfleto-a5-no-mapa-na-hora.webp",
+   "w": 2110,
+   "h": 2982,
+   "peso": "1,2 MB",
+   "legenda": "#publi Oi! Te mando o panfleto do Moviki, o mapa dos negócios em movimento. Seu cliente vê onde você está hoje, o seu cardápio e fala com você no WhatsApp.\n\nDá para começar grátis. É só apontar a câmera para o QR code ou entrar pelo meu link: {link}",
+   "novo": true,
+   "qr": {
+    "x": 1587,
+    "y": 2253,
+    "l": 388
+   },
+   "texto": {
+    "x": 1780,
+    "y": 2656,
+    "w": 372,
+    "cor": "#0b1220"
+   },
+   "destaque": true,
+   "dica": "Imprima em A5 (14,8 x 21 cm), papel couché 115 g ou mais. O QR code já é o seu."
+  },
+  {
+   "id": "feed-na-hora-foodtruck",
+   "tipo": "feed",
+   "titulo": "Seu negócio no mapa. Na hora.",
+   "formato": "Feed 4:5",
+   "arquivo": "material/feed/feed-no-mapa-na-hora-foodtruck.jpg",
+   "capa": "material/capas/feed-no-mapa-na-hora-foodtruck.webp",
+   "w": 1080,
+   "h": 1350,
+   "peso": "349 KB",
+   "legenda": "#publi Seu cliente não te acha porque não sabe onde você está hoje.\n\nNo Moviki você atualiza a sua localização e aparece no mapa na hora, para quem está por perto. Página própria com cardápio, fotos e WhatsApp.\n\nComece grátis pelo meu link: {link}",
+   "novo": true
+  },
+  {
+   "id": "feed-quem-se-move",
+   "tipo": "feed",
+   "titulo": "Para quem se move e para quem tem ponto fixo",
+   "formato": "Feed 4:5",
+   "arquivo": "material/feed/feed-quem-se-move-e-ponto-fixo.jpg",
+   "capa": "material/capas/feed-quem-se-move-e-ponto-fixo.webp",
+   "w": 1080,
+   "h": 1350,
+   "peso": "404 KB",
+   "legenda": "#publi Food truck, feira, barraca, entrega, loja ou escritório: o Moviki é para quem se move e para quem tem ponto fixo.\n\nSeu negócio ganha uma página própria com localização, cardápio, fotos, horários e WhatsApp.\n\nComece grátis pelo meu link: {link}",
+   "novo": true
+  },
+  {
+   "id": "feed-tudo-em-um-lugar",
+   "tipo": "feed",
+   "titulo": "Tudo sobre o seu negócio em um só lugar",
+   "formato": "Feed 4:5",
+   "arquivo": "material/feed/feed-tudo-em-um-so-lugar.jpg",
+   "capa": "material/capas/feed-tudo-em-um-so-lugar.webp",
+   "w": 1080,
+   "h": 1350,
+   "peso": "348 KB",
+   "legenda": "#publi Cardápio, promoções, fotos, vídeos, horários e WhatsApp. Tudo sobre o seu negócio num link só, para você mandar para o cliente e pôr na bio.\n\nComece grátis pelo meu link: {link}",
+   "novo": true
+  },
+  {
+   "id": "quadrado-zero-comissao",
+   "tipo": "feed",
+   "titulo": "0% de comissão sobre as vendas",
+   "formato": "Feed 1:1",
+   "arquivo": "material/feed/quadrado-zero-comissao.jpg",
+   "capa": "material/capas/quadrado-zero-comissao.webp",
+   "w": 1080,
+   "h": 1080,
+   "peso": "257 KB",
+   "legenda": "#publi O Moviki não cobra comissão sobre as suas vendas. O que você vende é do seu negócio.\n\nVocê põe o negócio no mapa, com página própria, cardápio e WhatsApp.\n\nComece grátis pelo meu link: {link}",
+   "novo": true
+  },
+  {
+   "id": "feed-na-hora-cidade",
+   "tipo": "feed",
+   "titulo": "Seu negócio no mapa (versão cidade)",
+   "formato": "Feed 4:5",
+   "arquivo": "material/feed/feed-no-mapa-na-hora-cidade.jpg",
+   "capa": "material/capas/feed-no-mapa-na-hora-cidade.webp",
+   "w": 1080,
+   "h": 1350,
+   "peso": "344 KB",
+   "legenda": "#publi Seu cliente não te acha porque não sabe onde você está hoje.\n\nNo Moviki você atualiza a sua localização e aparece no mapa na hora, para quem está por perto. Página própria com cardápio, fotos e WhatsApp.\n\nComece grátis pelo meu link: {link}",
+   "novo": true
+  },
+  {
+   "id": "feed-quem-se-move-2",
+   "tipo": "feed",
+   "titulo": "Para quem se move (versão 2)",
+   "formato": "Feed 4:5",
+   "arquivo": "material/feed/feed-quem-se-move-e-ponto-fixo-2.jpg",
+   "capa": "material/capas/feed-quem-se-move-e-ponto-fixo-2.webp",
+   "w": 1080,
+   "h": 1350,
+   "peso": "391 KB",
+   "legenda": "#publi Food truck, feira, barraca, entrega, loja ou escritório: o Moviki é para quem se move e para quem tem ponto fixo.\n\nSeu negócio ganha uma página própria com localização, cardápio, fotos, horários e WhatsApp.\n\nComece grátis pelo meu link: {link}",
+   "novo": true
+  },
+  {
+   "id": "quadrado-na-hora",
+   "tipo": "feed",
+   "titulo": "Seu negócio no mapa (quadrado)",
+   "formato": "Feed 1:1",
+   "arquivo": "material/feed/quadrado-no-mapa-na-hora.jpg",
+   "capa": "material/capas/quadrado-no-mapa-na-hora.webp",
+   "w": 1080,
+   "h": 1080,
+   "peso": "302 KB",
+   "legenda": "#publi Seu cliente não te acha porque não sabe onde você está hoje.\n\nNo Moviki você atualiza a sua localização e aparece no mapa na hora, para quem está por perto. Página própria com cardápio, fotos e WhatsApp.\n\nComece grátis pelo meu link: {link}",
+   "novo": true
+  },
+  {
+   "id": "story-na-hora",
+   "tipo": "story",
+   "titulo": "No mapa, na hora",
+   "formato": "Story 9:16",
+   "arquivo": "material/stories/story-no-mapa-na-hora.jpg",
+   "capa": "material/capas/story-no-mapa-na-hora.webp",
+   "w": 1080,
+   "h": 1920,
+   "peso": "397 KB",
+   "legenda": "#publi Seu cliente não te acha porque não sabe onde você está hoje.\n\nNo Moviki você atualiza a sua localização e aparece no mapa na hora, para quem está por perto. Página própria com cardápio, fotos e WhatsApp.\n\nComece grátis pelo meu link: {link}",
+   "novo": true,
+   "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
+  },
+  {
+   "id": "story-tudo-em-um-lugar",
+   "tipo": "story",
+   "titulo": "Tudo em um só lugar",
+   "formato": "Story 9:16",
+   "arquivo": "material/stories/story-tudo-em-um-so-lugar.jpg",
+   "capa": "material/capas/story-tudo-em-um-so-lugar.webp",
+   "w": 1080,
+   "h": 1920,
+   "peso": "376 KB",
+   "legenda": "#publi Cardápio, promoções, fotos, vídeos, horários e WhatsApp. Tudo sobre o seu negócio num link só, para você mandar para o cliente e pôr na bio.\n\nComece grátis pelo meu link: {link}",
+   "novo": true,
+   "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
+  },
+  {
+   "id": "story-quem-se-move",
+   "tipo": "story",
+   "titulo": "Quem se move e ponto fixo",
+   "formato": "Story 9:16",
+   "arquivo": "material/stories/story-quem-se-move-e-ponto-fixo.jpg",
+   "capa": "material/capas/story-quem-se-move-e-ponto-fixo.webp",
+   "w": 1080,
+   "h": 1920,
+   "peso": "434 KB",
+   "legenda": "#publi Food truck, feira, barraca, entrega, loja ou escritório: o Moviki é para quem se move e para quem tem ponto fixo.\n\nSeu negócio ganha uma página própria com localização, cardápio, fotos, horários e WhatsApp.\n\nComece grátis pelo meu link: {link}",
+   "novo": true,
+   "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
+  },
+  {
+   "id": "texto-abordagem-whats",
+   "tipo": "texto",
+   "titulo": "Primeira mensagem para o comerciante",
+   "formato": "WhatsApp",
+   "novo": true,
+   "texto": "Oi! Tudo bem? Aqui é {meu_nome}, parceiro do Moviki (#publi: recebo comissão pela indicação).\n\nO Moviki põe o seu negócio no mapa: o cliente vê onde você está hoje, o cardápio, as fotos e fala com você no WhatsApp. Não cobra comissão sobre as suas vendas e dá para começar grátis.\n\nSe quiser conhecer: {link}"
+  },
+  {
+   "id": "texto-quem-e-voce",
+   "tipo": "texto",
+   "titulo": "Quando perguntarem se você é mesmo do Moviki",
+   "formato": "WhatsApp",
+   "novo": true,
+   "texto": "Pode conferir: esta é a minha página de parceiro autorizado do Moviki, com o meu nome e a minha situação: {verificacao}\n\nVocê não paga nada para mim. A minha comissão sai do Moviki."
+  },
+  {
+   "id": "texto-bio",
+   "tipo": "texto",
+   "titulo": "Texto curto para a bio do Instagram",
+   "formato": "Bio",
+   "novo": true,
+   "texto": "Parceiro Moviki (#publi) · ponha seu negócio no mapa 👇\n{link}"
+  }
+ ]
+}
