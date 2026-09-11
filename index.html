@@ -2812,7 +2812,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-11-criarconta';
+  window.MOVIKI_VERSAO='2026-09-11-abalogin';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5751,7 +5751,11 @@ window.mvAbaInicial=function(){
     }).catch(function(){ if(erro)erro.textContent='Não consegui concluir agora. Tente de novo.'; btn.disabled=false; btn.textContent=t; });
   };
 
-  window.mqzIrLogin=function(){ window.mqzEsconder(); var b=$('box'); if(b)b.style.display='block'; };
+  window.mqzIrLogin=function(){ window.mqzEsconder(); var b=$('box'); if(b)b.style.display='block';
+    /* 11/09/2026: quem clica em "Ja tenho uma conta" quer ENTRAR. Sem esta linha,
+       um link com ?criar=1 deixava a aba Criar conta ativa nessa tela — o oposto
+       do que a pessoa pediu. A URL manda no boot; este botao manda em si mesmo. */
+    try{ trocarAba('entrar'); }catch(_){} };
   window.mqzIrQuiz=function(){ var b=$('box'); if(b)b.style.display='none'; resetarQuiz(); window.mqzMostrar(); };
   window.mqzMostrar=function(){ var m=$('quizModal'); if(m)m.classList.remove('qzEscondido'); };
   window.mqzEsconder=function(){ var m=$('quizModal'); if(m)m.classList.add('qzEscondido'); };
