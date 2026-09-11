@@ -2675,6 +2675,22 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
   function erroAcesso(t){aviso.className='aviso erro';aviso.textContent=t;}
   function avisoOk(t){aviso.className='aviso ok';aviso.textContent=t;}
   window.trocarAba=function(n){modo=n;el('abaEntrar').classList.toggle('ativa',n==='entrar');el('abaCriar').classList.toggle('ativa',n==='criar');el('btnAcao').textContent=n==='entrar'?'Entrar':'Criar conta';el('dica').textContent=n==='criar'?'Vai criar uma conta de teste. Use um e-mail seu e uma senha simples.':'';var le=el('linhaEsqueci');if(le)le.style.display=n==='entrar'?'block':'none';limparAviso();};
+/* ---- Aba inicial pela URL (11/09/2026) ----
+   O anuncio promete "Comecar gratis" e caia na aba Entrar, pedindo senha que a
+   pessoa nunca criou. Agora ?criar=1 (ou ?novo=1 / ?cadastro=1) abre a aba
+   Criar conta. Vale UMA vez por carregamento: logout de verdade continua indo
+   pra Entrar, mesmo que o parametro ainda esteja na barra de endereco. */
+var mvAbaUrlUsada=false;
+window.mvAbaInicial=function(){
+  if(mvAbaUrlUsada) return 'entrar';
+  mvAbaUrlUsada=true;
+  try{
+    var q=new URLSearchParams(location.search);
+    var v=(q.get('criar')||q.get('novo')||q.get('cadastro')||'').toLowerCase();
+    if(v==='1'||v==='true'||v==='sim') return 'criar';
+  }catch(_){}
+  return 'entrar';
+};
   window.verSenha=function(){const s=el('senha'),b=document.querySelector('.verSenha');if(s.type==='password'){s.type='text';b.textContent='ocultar';}else{s.type='password';b.textContent='mostrar';}};
   function msgErro(c){const m={'auth/invalid-email':'E-mail inválido.','auth/missing-password':'Digite uma senha.','auth/weak-password':'A senha precisa ter pelo menos 6 caracteres.','auth/email-already-in-use':'Esse e-mail já tem conta. Tente "Entrar".','auth/invalid-credential':'E-mail ou senha incorretos.','auth/user-not-found':'Não encontrei conta com esse e-mail.','auth/wrong-password':'Senha incorreta.','auth/too-many-requests':'Muitas tentativas. Espere um pouco.','auth/network-request-failed':'Sem conexão. Confira a internet.','auth/popup-blocked':'Seu navegador bloqueou a janela do Google. Permita pop-ups e tente de novo.','auth/account-exists-with-different-credential':'Esse e-mail já tem conta criada com senha. Entre com e-mail e senha, ou clique em "Esqueci minha senha".','auth/unauthorized-domain':'Este endereço ainda não está autorizado no Firebase para login com Google.','auth/internal-error':'Não consegui falar com o login do Google agora. Tente de novo — ou crie sua conta com e-mail e senha, que funciona do mesmo jeito.','auth/operation-not-allowed':'O login com Google está desativado nesta conta do sistema. Use e-mail e senha por enquanto.'};return m[c]||('Erro: '+c);}
   window.acao=async function(){const email=el('email').value.trim(),senha=el('senha').value,btn=el('btnAcao');limparAviso();if(!email){erroAcesso('Digite seu e-mail.');return;}if(!senha){erroAcesso('Digite uma senha.');return;}btn.disabled=true;const t=btn.textContent;btn.textContent='Aguarde...';try{if(modo==='criar'){await createUserWithEmailAndPassword(auth,email,senha);try{ if(window.mvSignup) mvSignup('email'); }catch(_){}try{await sendEmailVerification(auth.currentUser);}catch(_){}try{await registrarIndicacao(auth.currentUser.uid);}catch(_){}garantirTrial();try{auth.currentUser.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:auth.currentUser.uid})}).catch(function(){});}).catch(function(){});}catch(_){}}else await signInWithEmailAndPassword(auth,email,senha);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.textContent=t;}};
@@ -2796,7 +2812,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-10-videos';
+  window.MOVIKI_VERSAO='2026-09-11-criarconta';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5155,7 +5171,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
       }catch(_){}
     }else{
       el('painel').style.display='none';el('formArea').style.display='block';el('box').classList.remove('largo');
-      el('email').value='';el('senha').value='';el('btnAcao').disabled=false;trocarAba('entrar');
+      el('email').value='';el('senha').value='';el('btnAcao').disabled=false;trocarAba(mvAbaInicial());
       el('box').style.display='none';
       // Só reseta o quiz pra Tela 1 numa transição real de logout — no boot inicial (1ª checagem
       // do Firebase) o quiz já nasce na Tela 1 por padrão, então resetar aqui perderia à toa o
