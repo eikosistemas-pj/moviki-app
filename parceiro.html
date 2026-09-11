@@ -1334,7 +1334,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-11-material';
+  window.MOVIKI_VERSAO = '2026-09-11-postar';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -4678,7 +4678,32 @@ function mvQR(texto){
 .matLegTit{font-size:12px;font-weight:700;color:var(--mv-txt-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
 .matMsg{font-size:12.5px;color:var(--mv-ok);min-height:18px;margin-top:8px}
 .matCarregando{padding:22px;text-align:center;color:var(--mv-txt-3);font-size:13px}
+/* 11/09/2026: botoes de postar direto em cada material */
+.matAbre{display:flex;flex-direction:column;gap:6px;width:100%;background:transparent;border:none;padding:0;margin:0;text-align:left;cursor:pointer;font-family:inherit;color:inherit;min-width:0}
+.matCard{cursor:default}
+.matCard.dest{flex-direction:column}
+.matCard.dest .matAbre{flex-direction:row;align-items:center;gap:12px}
+.matRedes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:4px}
+.matRedes button{display:flex;align-items:center;justify-content:center;gap:5px;min-width:0;height:34px;border-radius:10px;border:none;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:11.5px;color:#fff;padding:0 6px;white-space:nowrap;overflow:hidden}
+.matRedes button svg{width:16px;height:16px;flex:0 0 auto}
+.matRedes button span{overflow:hidden;text-overflow:ellipsis}
+.matRedes .ig{background:linear-gradient(45deg,#f9a825,#e91e63 45%,#8e24aa)}
+.matRedes .fb{background:#1877F2}
+.matRedes .wa{background:#25D366;color:#04210f}
+.matRedes button[disabled]{opacity:.35;cursor:not-allowed;filter:grayscale(.6)}
+.matRedes button.armado{box-shadow:0 0 0 2px #fff inset;animation:matPisca 1s ease-in-out infinite}
+@keyframes matPisca{50%{opacity:.7}}
+.matRedes.grande{margin-top:12px;gap:8px}
+.matRedes.grande button{height:44px;font-size:12.5px;border-radius:12px;padding:0 4px;gap:6px}
+.matRedes.grande button svg{width:19px;height:19px}
+.matRedesTit{grid-column:1/-1;font-size:11px;font-weight:700;color:var(--mv-txt-3);text-transform:uppercase;letter-spacing:.06em}
+.matCard:not(.dest) .matRedes button span{display:none}
+.matCard:not(.dest) .matRedes button svg{width:18px;height:18px}
+.matToast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:120;max-width:92vw;width:max-content;
+  background:#0b1728;border:1px solid var(--mv-ciano);color:var(--mv-txt);font-size:13.5px;line-height:1.45;padding:11px 16px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.45);text-align:center}
 </style>
+<div class="matToast" id="matToast" hidden></div>
 
 <!-- folha de previa do material -->
 <div class="ov centro hide" id="ovMat"><div class="folha">
@@ -4687,9 +4712,9 @@ function mvQR(texto){
   <div class="matPrev" id="matOvPrev"></div>
   <p class="matDica" id="matOvDica"></p>
   <div id="matOvPorta"></div>
+  <div class="matRedes grande" id="matOvRedes"></div>
   <div class="matAcoes" id="matOvAcoes">
     <button type="button" class="pri" id="matBaixar">Baixar</button>
-    <button type="button" class="wpp" id="matEnviar" hidden>Enviar</button>
     <button type="button" id="matCopiarLeg">Copiar legenda</button>
   </div>
   <div class="matMsg" id="matOvMsg"></div>
@@ -4854,13 +4879,14 @@ function mvQR(texto){
       var tag = it.qr ? '<span class="matTag qr">SEU QR CODE</span>' : (it.novo ? '<span class="matTag">NOVO</span>' : '');
       var play = it.tipo === 'video' ? '<span class="matPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>' : '';
       var sub = [it.formato, it.duracao, it.peso].filter(Boolean).join(' · ');
-      h += '<button type="button" class="matCard' + (it.destaque ? ' dest' : '') + '" data-mat="' + esc(it.id) + '">' + tag +
+      h += '<div class="matCard' + (it.destaque ? ' dest' : '') + '">' + tag +
+           '<button type="button" class="matAbre" data-mat="' + esc(it.id) + '">' +
            '<span class="matThumb" style="aspect-ratio:' + ar + '">' +
            (it.capa ? '<img src="' + esc(it.capa) + '" alt="" loading="lazy" decoding="async" onerror="this.style.visibility=\'hidden\'">' : '') + play + '</span>' +
            '<span style="display:flex;flex-direction:column;gap:5px;min-width:0"><span class="matCardTit">' + esc(it.titulo) + '</span>' +
            '<span class="matCardSub">' + esc(sub) + '</span>' +
            (it.destaque ? '<span class="matCardSub" style="color:var(--mv-ok)">Toque para ver com o seu QR e baixar pronto para imprimir.</span>' : '') +
-           '</span></button>';
+           '</span></button>' + redesHTML(it.id, lib, false) + '</div>';
     });
     g.innerHTML = h;
   }
@@ -4947,7 +4973,8 @@ function mvQR(texto){
     el('matOvLegBox').hidden = !leg;
     el('matOvAcoes').hidden = !p.ok;
     el('matCopiarLeg').hidden = !leg;
-    var bEnv = el('matEnviar'); bEnv.hidden = true; bEnv.disabled = true;
+    el('matOvRedes').innerHTML = redesHTML(it.id, p.ok, true);
+    el('matOvRedes').hidden = !p.ok;
     var bBx = el('matBaixar'); bBx.disabled = false;
     bBx.textContent = it.qr ? 'Baixar com o meu QR' : (it.tipo === 'video' ? 'Baixar vídeo' : 'Baixar');
     msg('');
@@ -4995,18 +5022,7 @@ function mvQR(texto){
   }
 
   function prepararBlob(it, pr){
-    pr.then(function(b){
-      if(ATUAL !== it || !b) return;
-      BLOB = b;
-      if(!podeCompartilhar()) return;
-      try{
-        var f = new File([b], BLOBNOME, { type: b.type || 'image/jpeg' });
-        if(navigator.canShare({ files:[f] })){
-          var bEnv = el('matEnviar'); bEnv.hidden = false; bEnv.disabled = false;
-          bEnv.textContent = it.tipo === 'video' ? 'Enviar vídeo' : 'Enviar';
-        }
-      }catch(e){}
-    }).catch(function(){});
+    pr.then(function(b){ if(b) BLOBS[it.id] = { blob: b, nome: nomeDe(it) }; if(ATUAL === it) BLOB = b; }).catch(function(){});
   }
 
   function fechar(){
@@ -5043,24 +5059,118 @@ function mvQR(texto){
     ev('baixar', it.id);
   }
 
-  function enviar(){
-    var it = ATUAL; if(!it || !BLOB || !porta().ok) return;
-    var leg = it.legenda ? trocar(it.legenda) : '';
-    /* a legenda vai para a area de transferencia ANTES: o Instagram ignora o
-       texto que acompanha o arquivo, e o parceiro so precisa colar */
-    if(leg){ try{ copiar(leg).catch(function(){}); }catch(e){} }
-    var f;
-    try{ f = new File([BLOB], BLOBNOME, { type: BLOB.type || 'image/jpeg' }); }catch(e){ return; }
-    var pacote = { files:[f] };
-    if(leg) pacote.text = leg;
-    navigator.share(pacote).then(function(){
-      msg(leg ? 'Enviado. A legenda também ficou copiada.' : 'Enviado.');
-      ev('enviar', it.id);
-    }).catch(function(e){
-      if(e && e.name === 'AbortError') return;
-      /* alguns apps recusam arquivo + texto juntos: tenta so o arquivo */
-      navigator.share({ files:[f] }).then(function(){ msg('Enviado. A legenda ficou copiada, é só colar.'); ev('enviar', it.id); }).catch(function(){});
+  /* ---------------------------------------------------- POSTAR NAS REDES
+     Instagram e Facebook NAO aceitam receber uma imagem por link vindo de um
+     site: nao existe "postar com um clique" pela web. O caminho mais curto
+     que existe e o compartilhar do proprio celular com o ARQUIVO junto: o
+     parceiro toca em Instagram, a lista de apps abre, ele toca no Instagram
+     e cai na tela de postar com a imagem ja carregada. A legenda vai para a
+     area de transferencia no mesmo toque — so colar.
+     No computador (sem esse compartilhar): baixa o arquivo, copia a legenda
+     e abre a rede numa aba nova.
+     Safari: o compartilhar so abre DENTRO do toque. Se o arquivo ainda nao
+     estava em maos, o primeiro toque prepara e o botao pisca "toque de novo".
+     ---------------------------------------------------------------------- */
+  var BLOBS = {};
+  var REDES = {
+    ig: { nome:'Instagram', url:'https://www.instagram.com/',
+          svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg>' },
+    fb: { nome:'Facebook', url:'https://www.facebook.com/',
+          svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.4 8.4h-2V6.9c0-.6.4-.8.7-.8h1.3V3.5l-1.9 0c-2.1 0-2.6 1.6-2.6 2.6v2.3H8.6v2.7h2.3V21h2.5v-9.9h1.7l.3-2.7z"/></svg>' },
+    wa: { nome:'WhatsApp', url:'',
+          svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.2 14.8l-.4-.2-2.6.7.7-2.5-.2-.4A8 8 0 0 1 12 4z"/></svg>' }
+  };
+  function redesHTML(id, lib, grande){
+    var h = grande ? '<span class="matRedesTit">Postar agora</span>' : '';
+    ['ig','fb','wa'].forEach(function(k){
+      h += '<button type="button" class="' + k + '" data-matrede="' + k + '" data-matid="' + esc(id) + '"' + (lib ? '' : ' disabled') +
+           ' aria-label="Postar no ' + REDES[k].nome + '" title="Postar no ' + REDES[k].nome + '">' + REDES[k].svg + '<span>' + REDES[k].nome + '</span></button>';
     });
+    return grande ? h : '<div class="matRedes">' + h + '</div>';
+  }
+  var __toastT = 0;
+  function toast(t, ms){
+    var e = el('matToast'); if(!e) return;
+    e.textContent = t; e.hidden = false;
+    clearTimeout(__toastT); __toastT = setTimeout(function(){ e.hidden = true; }, ms || 5000);
+  }
+  function acharItem(id){ return CAT ? (CAT.itens.filter(function(i){ return i.id === id; })[0] || null) : null; }
+  function nomeDe(it){
+    if(it.qr){ var d = dados() || {}; return 'panfleto-moviki-' + (d.slug || 'parceiro') + '.jpg'; }
+    return nomeArq(it.arquivo);
+  }
+  function obter(it){
+    if(BLOBS[it.id]) return Promise.resolve(BLOBS[it.id]);
+    var pr = it.qr ? compor(it).then(function(r){ return r.blob; })
+                   : fetch(it.arquivo).then(function(r){ if(!r.ok) throw new Error('http'); return r.blob(); });
+    return pr.then(function(b){ var o = { blob: b, nome: nomeDe(it) }; BLOBS[it.id] = o; return o; });
+  }
+  function arquivoDe(o){
+    try{ return new File([o.blob], o.nome, { type: o.blob.type || (/\.mp4$/i.test(o.nome) ? 'video/mp4' : 'image/jpeg') }); }catch(e){ return null; }
+  }
+  function baixarObj(o){
+    var u = URL.createObjectURL(o.blob), a = document.createElement('a');
+    a.href = u; a.download = o.nome; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ try{ URL.revokeObjectURL(u); }catch(e){} }, 8000);
+  }
+  function rotulo(b, txt){ var sp = b.querySelector('span'); if(sp) sp.textContent = txt; }
+  function desarmar(b){ b.classList.remove('armado'); rotulo(b, REDES[b.getAttribute('data-matrede')].nome); b.disabled = false; }
+
+  function compartilhar(b, rede, it, o, leg){
+    var f = arquivoDe(o);
+    if(!f || !navigator.canShare({ files:[f] })){ toast('Este celular não deixa enviar o arquivo direto. Use Baixar e poste pela galeria.'); return; }
+    /* Instagram e Facebook ignoram o texto que vai junto (e alguns somem da
+       lista quando ha texto): so o arquivo. WhatsApp leva a legenda junto. */
+    var pacote = { files:[f] };
+    if(rede === 'wa' && leg) pacote.text = leg;
+    toast(rede === 'wa' ? 'Escolha o WhatsApp na lista.' : 'Escolha o ' + REDES[rede].nome + ' na lista. A legenda já está copiada: é só colar.', 7000);
+    navigator.share(pacote).then(function(){
+      desarmar(b); ev('postar_' + rede, it.id);
+    }).catch(function(e){
+      if(e && e.name === 'AbortError'){ desarmar(b); return; }
+      if(e && e.name === 'NotAllowedError'){
+        /* Safari: o toque "venceu" enquanto o arquivo descia. Agora ele esta
+           em maos; o proximo toque abre na hora. */
+        b.classList.add('armado'); rotulo(b, 'Toque de novo'); b.disabled = false;
+        toast('Pronto! Toque de novo em ' + REDES[rede].nome + '.');
+        return;
+      }
+      if(rede === 'wa' && pacote.text){
+        navigator.share({ files:[f] }).then(function(){ desarmar(b); ev('postar_' + rede, it.id); }).catch(function(){ desarmar(b); });
+        return;
+      }
+      desarmar(b);
+    });
+  }
+
+  function postar(b){
+    var rede = b.getAttribute('data-matrede'), it = acharItem(b.getAttribute('data-matid'));
+    if(!it || !REDES[rede] || !porta().ok) return;
+    var leg = it.legenda ? trocar(it.legenda) : '';
+    if(leg){ try{ copiar(leg).catch(function(){}); }catch(e){} }   /* dentro do toque */
+
+    if(podeCompartilhar()){
+      var pronto = BLOBS[it.id];
+      if(pronto){ compartilhar(b, rede, it, pronto, leg); return; }
+      b.disabled = true; rotulo(b, 'Preparando…');
+      obter(it).then(function(o){ compartilhar(b, rede, it, o, leg); })
+        .catch(function(){ desarmar(b); toast('Não deu para preparar o arquivo. Tente de novo.'); });
+      return;
+    }
+
+    /* computador: a aba da rede abre AGORA (senao o bloqueador de janela
+       barra), o arquivo desce em seguida */
+    var url = rede === 'wa' ? 'https://wa.me/?text=' + encodeURIComponent(leg || trocar('{link}')) : REDES[rede].url;
+    var jan = null; try{ jan = window.open(url, '_blank', 'noopener'); }catch(e){}
+    b.disabled = true; rotulo(b, 'Baixando…');
+    obter(it).then(function(o){
+      baixarObj(o); desarmar(b);
+      var oque = it.tipo === 'video' ? 'o vídeo' : 'a imagem';
+      toast(rede === 'wa'
+        ? 'Arquivo baixado e texto no WhatsApp. Anexe ' + oque + ' na conversa.'
+        : 'Arquivo baixado e legenda copiada. No ' + REDES[rede].nome + ', crie a publicação, escolha ' + oque + ' e cole a legenda.', 8000);
+      ev('postar_' + rede, it.id);
+    }).catch(function(){ desarmar(b); toast('Não deu para baixar agora. Tente de novo.'); });
   }
 
   function acharTexto(id){
@@ -5081,6 +5191,7 @@ function mvQR(texto){
       for(var i=0;i<bs.length;i++) bs[i].classList.toggle('on', bs[i] === b);
       grade(); return;
     }
+    if((b = t.closest('[data-matrede]'))){ if(!b.disabled) postar(b); return; }
     if((b = t.closest('[data-mat]'))){ abrir(b.getAttribute('data-mat')); ev('abrir', b.getAttribute('data-mat')); return; }
     if((b = t.closest('[data-matrecarregar]'))){ montar(); return; }
     if((b = t.closest('[data-matcopiar]'))){
@@ -5104,7 +5215,6 @@ function mvQR(texto){
     if(t.closest('[data-matfecha]')){ fechar(); return; }
     if(t.id === 'ovMat' || t.closest('[data-fechar="ovMat"]')){ fechar(); return; }
     if(t.closest('#matBaixar')){ baixar(); return; }
-    if(t.closest('#matEnviar')){ enviar(); return; }
     if(t.closest('#matCopiarLeg')){
       if(!ATUAL || !ATUAL.legenda || !porta().ok) return;
       copiar(trocar(ATUAL.legenda)).then(function(){ msg('Legenda copiada. É só colar no post.'); ev('copiar_legenda', ATUAL && ATUAL.id); })
