@@ -1,5 +1,5 @@
 {
- "versao": "2026-09-11-1",
+ "versao": "2026-09-11-2",
  "atualizado": "2026-09-11",
  "itens": [
   {
@@ -27,6 +27,21 @@
    },
    "destaque": true,
    "dica": "Imprima em A5 (14,8 x 21 cm), papel couché 115 g ou mais. O QR code já é o seu."
+  },
+  {
+   "id": "video-cada-negocio",
+   "tipo": "video",
+   "titulo": "Cada negócio tem sua rotina",
+   "formato": "Reels/Story 9:16",
+   "duracao": "0:18",
+   "peso": "6,4 MB",
+   "arquivo": "material/video-cada-negocio-tem-sua-rotina.mp4",
+   "capa": "material/video-cada-negocio-tem-sua-rotina-capa.webp",
+   "w": 1080,
+   "h": 1920,
+   "novo": true,
+   "legenda": "#publi Cada negócio tem sua rotina: food truck, feira, loja ou escritório. No Moviki o cliente vê onde você está, o cardápio, as promoções, os horários e fala com você no WhatsApp. Tudo num lugar só.\n\nComece grátis pelo meu link: {link}",
+   "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link."
   },
   {
    "id": "feed-na-hora-foodtruck",
