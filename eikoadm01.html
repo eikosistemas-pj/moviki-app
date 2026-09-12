@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://unpkg.com https://*.tile.openstreetmap.org; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki-robo.vercel.app https://moviki-ai.vercel.app; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://unpkg.com https://*.tile.openstreetmap.org; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="robots" content="noindex,nofollow">
@@ -516,6 +516,32 @@ table.mvTab td b{font-weight:700}
 .crEscPill.ok{color:#25e39b;background:rgba(37,227,155,.13);border:1px solid rgba(37,227,155,.4)}
 .crEscPill.no{color:#ffb020;background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.4)}
 .crAtalho span small{display:block;font-size:12.5px;color:var(--mv-txt-3);margin-top:2px}
+/* ---- LIVES e moderacao (11/09/2026) ---- */
+.lvK{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media(min-width:760px){.lvK{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.lvK div{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px}
+.lvK small{display:block;font-size:11.5px;color:var(--mv-txt-3)}
+.lvK b{font-size:21px;font-weight:800}
+.lvK div.al b{color:var(--mv-erro)}
+.lvItem{border:1px solid var(--mv-linha);border-radius:12px;padding:11px 12px;margin-top:9px;background:var(--mv-campo)}
+.lvItem .t{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lvItem .t strong{font-size:14px}
+.lvItem .s{font-size:12.5px;color:var(--mv-txt-3);margin-top:4px;line-height:1.5}
+.lvItem .a{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.lvVivo{display:inline-flex;align-items:center;gap:5px;background:#ff2d55;color:#fff;border-radius:6px;font-size:11px;font-weight:800;padding:2px 7px}
+.lvAlerta{display:inline-flex;background:rgba(255,107,107,.15);color:var(--mv-erro);border-radius:6px;font-size:11px;font-weight:800;padding:2px 7px}
+.lvBtnPerigo{border:1px solid rgba(255,107,107,.55)!important;color:var(--mv-erro)!important}
+.lvBarras{display:flex;align-items:flex-end;gap:4px;height:90px;margin-top:10px}
+.lvBarras div{flex:1;background:var(--mv-grad);border-radius:4px 4px 0 0;min-height:2px;position:relative}
+.lvBarras div span{position:absolute;top:-16px;left:0;right:0;text-align:center;font-size:10px;color:var(--mv-txt-3)}
+.lvEixo{display:flex;gap:4px;font-size:9.5px;color:var(--mv-txt-3);margin-top:3px}
+.lvEixo span{flex:1;text-align:center}
+.lvTab{width:100%;border-collapse:collapse;font-size:12.5px;min-width:720px}
+.lvTab th,.lvTab td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--mv-linha);white-space:nowrap}
+.lvTab th{color:var(--mv-txt-3);font-weight:600}
+.lvMod{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:16px}
+.lvMod .cx{width:100%;max-width:460px;background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:16px;padding:18px}
+.lvMod select,.lvMod input,.lvMod textarea{width:100%;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:10px;font:inherit;margin-top:8px}
 </style>
 </head>
 <body>
@@ -582,6 +608,7 @@ table.mvTab td b{font-weight:700}
           <button type="button" class="mvNavIt" data-nav="comissoes"><img class="mvNavIco" src="icones/comissoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Comissões e saques</span><span class="bad hide" id="badCom">0</span></button>
           <button type="button" class="mvNavIt" data-nav="mensagens"><img class="mvNavIco" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Mensagens</span><span class="bad hide" id="badMsg">0</span></button>
           <button type="button" class="mvNavIt" data-nav="metricas"><img class="mvNavIco" src="icones/alvo.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Métricas</span></button>
+          <button type="button" class="mvNavIt" data-nav="lives"><img class="mvNavIco" src="icones/live.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Lives</span><span class="bad hide" id="badLive">0</span></button>
           <button type="button" class="mvNavIt" data-nav="newsletter"><img class="mvNavIco" src="icones/recorrente.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Newsletter</span></button>
           <button type="button" class="mvNavIt" data-nav="relatorios"><img class="mvNavIco" src="icones/relatorios.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Relatórios</span></button>
           <button type="button" class="mvNavIt" data-nav="convCom"><img class="mvNavIco" src="icones/convidar-comerciante.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Convidar comerciante</span></button>
@@ -982,6 +1009,77 @@ table.mvTab td b{font-weight:700}
           </div>
         </section>
 
+        <!-- ============ SEÇÃO: LIVES E MODERAÇÃO (11/09/2026) ============ -->
+        <section data-sec="lives" class="hide">
+          <div class="cd">
+            <div class="cdTopo"><div><div class="cdTit">Lives agora</div><div class="cdSub">Tudo contado de verdade: sessões gravadas pelo estúdio, pedidos gravados pelo robô, denúncias feitas por quem assiste.</div></div><button type="button" class="btnMini" id="lvRecarregar">Atualizar</button></div>
+            <div class="lvK">
+              <div><small>Ao vivo agora</small><b id="lvKAgora">—</b></div>
+              <div><small>Assistindo agora</small><b id="lvKAssist">—</b></div>
+              <div><small>Lives hoje</small><b id="lvKHoje">—</b></div>
+              <div><small>Vendido pelo Pix hoje</small><b id="lvKVendaHoje">—</b></div>
+              <div class="al"><small>Denúncias abertas</small><b id="lvKDen">—</b></div>
+              <div class="al"><small>Lojistas bloqueados</small><b id="lvKBloq">—</b></div>
+              <div><small>Pedidos pagos hoje</small><b id="lvKPedHoje">—</b></div>
+              <div><small>Lives em 7 dias</small><b id="lvK7">—</b></div>
+            </div>
+            <div id="lvAtivas"><div class="vazio" style="margin-top:10px">Carregando…</div></div>
+          </div>
+
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo"><div><div class="cdTit">Denúncias abertas</div><div class="cdSub">Anônimas, feitas na página da live. Criança em risco vem primeiro.</div></div><span class="cdChip" id="lvDenChip">0</span></div>
+            <div id="lvDen"><div class="vazio">Nenhuma denúncia aberta.</div></div>
+          </div>
+
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo"><div><div class="cdTit">Análises — últimos 30 dias</div><div class="cdSub">Sessões de live e vendas pelo Pix na live.</div></div></div>
+            <div class="lvK" id="lvK30"></div>
+            <div style="margin-top:14px;font-size:12.5px;color:var(--mv-txt-3)">Lives por dia (14 dias)</div>
+            <div class="lvBarras" id="lvBarLives"></div><div class="lvEixo" id="lvEixoLives"></div>
+            <div style="margin-top:16px;font-size:12.5px;color:var(--mv-txt-3)">Vendido pelo Pix por dia (14 dias)</div>
+            <div class="lvBarras" id="lvBarVendas"></div><div class="lvEixo" id="lvEixoVendas"></div>
+            <div style="margin-top:16px;font-size:12.5px;color:var(--mv-txt-3)">Quem mais vendeu na live (30 dias)</div>
+            <div id="lvTop"></div>
+            <div style="margin-top:16px;font-size:12.5px;color:var(--mv-txt-3)">Últimas lives</div>
+            <div class="tabRola"><table class="lvTab"><thead><tr><th>Início</th><th>Negócio</th><th>Plano</th><th>Duração</th><th>Pico</th><th>Mensagens</th><th>Quero</th><th>Pedidos pagos</th><th>Vendido</th><th></th></tr></thead><tbody id="lvHist"><tr><td colspan="10" class="vazio">Carregando…</td></tr></tbody></table></div>
+          </div>
+
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo"><div><div class="cdTit">Lojistas bloqueados</div><div class="cdSub">Não conseguem iniciar live nem vender pelo Pix enquanto o bloqueio vale.</div></div></div>
+            <div id="lvBloq"><div class="vazio">Ninguém bloqueado.</div></div>
+          </div>
+
+          <div class="cd" style="margin-top:14px" id="lvBetaCard">
+            <div class="cdTopo"><div><div class="cdTit">Quem pode fazer live</div><div class="cdSub">Com a lista <b>vazia</b>, a live está aberta a todo lojista Premium e Enterprise. Com pelo menos um nome, <b>só quem está na lista</b> vê o botão "Fazer live", consegue transmitir e consegue abrir conta no Pix. Serve para subir o módulo sem ninguém ver, testar no ar e abrir quando quiser.</div></div><span class="cdChip" id="lvBetaChip">—</span></div>
+            <div id="lvBetaAtuais" style="margin:10px 0"></div>
+            <input class="campo" id="lvBetaBusca" maxlength="60" placeholder="Buscar negócio por nome ou e-mail" style="width:100%;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:10px;font:inherit">
+            <div id="lvBetaLista" style="margin-top:8px"></div>
+          </div>
+
+          <div class="cd" style="margin-top:14px" id="lvAsaasCard">
+            <div class="cdTopo"><div><div class="cdTit">Limite regulatório do Asaas</div><div class="cdSub">Conta nova que cria subconta entra em avaliação: no máximo <b>10 subcontas</b>, <b>R$ 2.000 em cobranças por subconta</b> e <b>60 dias</b>. Estourou, o Asaas trava — peça a homologação ANTES de chegar no limite.</div></div><span class="cdChip" id="lvAsaasChip">—</span></div>
+            <button type="button" class="btnMini" id="lvAsaasBtn" style="margin:4px 0 10px">Conferir no Asaas</button>
+            <div id="lvAsaasResp" class="escondido" style="margin-bottom:10px"></div>
+            <div id="lvAsaasLista"><div class="vazio">Nenhuma subconta ainda.</div></div>
+          </div>
+
+          <div class="cd" style="margin-top:14px" id="lvMestraCard">
+            <div class="cdTopo"><div><div class="cdTit">Chave-mestra das lives</div><div class="cdSub">Desliga TODA transmissão do Moviki de uma vez, na hora, sem subir arquivo e sem mexer em variável de ambiente. Quem está no ar cai, quem tentar entrar recebe aviso de manutenção e nenhuma cobrança nova nasce. Use em incidente, manutenção ou problema no Cloudflare.</div></div><span class="cdChip" id="lvMestraChip">—</span></div>
+            <button type="button" class="btnMini" id="lvMestraBtn" style="margin-top:8px">Carregando…</button>
+          </div>
+
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo"><div><div class="cdTit">Termos proibidos extras</div><div class="cdSub">A lista-base (drogas, armas, sexual, remédios, cigarro, fraude, apostas, animais, golpe) já vale em todo lugar. Aqui você acrescenta termos novos, um por linha — valem na hora, sem subir arquivo.</div></div><span class="cdChip" id="lvTermChip">—</span></div>
+            <textarea id="lvTermos" rows="5" style="width:100%;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:10px;font:inherit" placeholder="um termo por linha"></textarea>
+            <button type="button" class="btnMini" id="lvTermSalvar" style="margin-top:8px">Salvar termos</button>
+          </div>
+
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo"><div><div class="cdTit">Registro de moderação</div><div class="cdSub">Toda ação de encerrar, bloquear e liberar fica gravada aqui, com data e motivo.</div></div></div>
+            <div id="lvModLog"><div class="vazio">Nada registrado.</div></div>
+          </div>
+        </section>
+
         <!-- ============ SEÇÃO: EXCLUSÕES ============ -->
         <section data-sec="exclusoes" class="hide">
           <div class="cd">
@@ -1198,6 +1296,7 @@ table.mvTab td b{font-weight:700}
     <button type="button" data-ir="atalhos"><img src="icones/foguete.png" alt="" onerror="this.style.display='none'">Atalhos do dono</button>
     <button type="button" data-ir="atalhos"><img src="icones/parceiros.png" alt="" onerror="this.style.display='none'">Meu crachá com QR</button>
     <div class="menuSec">Administração</div>
+    <button type="button" data-ir="lives"><img src="icones/live.png" alt="" onerror="this.style.display='none'">Lives e moderação<span class="bad hide" id="badLiveM">0</span></button>
     <button type="button" data-ir="exclusoes"><img src="icones/exclusoes.png" alt="" onerror="this.style.display='none'">Exclusões de conta<span class="bad hide" id="badExcM">0</span></button>
     <button type="button" data-ir="config"><img src="icones/escudo.png" alt="" onerror="this.style.display='none'">Configurações</button>
     <a href="https://moviki.com.br" target="_blank" rel="noopener"><img src="icones/ver-site.png" alt="" onerror="this.style.display='none'">Ver o site</a>
@@ -1219,12 +1318,12 @@ table.mvTab td b{font-weight:700}
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, deleteField, onSnapshot, serverTimestamp, query, orderBy, limit, documentId } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, deleteField, onSnapshot, serverTimestamp, query, orderBy, limit, documentId, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getStorage, ref as stRef, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-04-cracha-busca';
+  window.MOVIKI_VERSAO = '2026-09-12-beta1';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1313,6 +1412,7 @@ table.mvTab td b{font-weight:700}
     if(nome === 'exclusoes'){ carregarExclusoes(); excDelRender(); }
     if(nome === 'newsletter' && SAUDE.newsletter === undefined) carregarNewsletter();
     if(nome === 'mensagens') ouvirConversas();
+    if(nome === 'lives') livesAbrir();
   }
   window.mvIrSec = irSec;
 
@@ -1408,7 +1508,10 @@ table.mvTab td b{font-weight:700}
     // a tela de Configurações diz qual das duas está valendo.
     EH_ADMIN_BANCO = false;
     try{ const s = await getDoc(doc(db,'admins',user.uid)); EH_ADMIN_BANCO = s.exists(); }catch(e){ EH_ADMIN_BANCO = false; }
-    const naLista = ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email);
+    /* 11/09/2026: a porta do e-mail so vale com o e-mail VERIFICADO. Sem isso,
+       qualquer um criaria uma conta de e-mail e senha com o endereco do dono e
+       veria a casca do painel (os dados continuavam fechados pelas regras). */
+    const naLista = user.emailVerified === true && ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email);
     if(!naLista && !EH_ADMIN_BANCO){ txt('restritoEmail', user.email||''); telas('restrito'); return; }
 
     USER = user;
@@ -1431,6 +1534,7 @@ table.mvTab td b{font-weight:700}
     // "não lidas" só apareceria depois de entrar na seção — que é justamente o
     // que ele existe pra evitar.
     ouvirConversas();
+    try{ livesOuvir(); }catch(e){}
   });
 
   async function carregarTudo(recarregando){
@@ -3541,6 +3645,296 @@ table.mvTab td b{font-weight:700}
   /* custo das métricas recalculado quando os negócios chegam */
   const _obsCusto = setInterval(()=>{ if(NEG.length){ atualizarCusto(); clearInterval(_obsCusto); } }, 800);
   setTimeout(()=>clearInterval(_obsCusto), 20000);
+  /* ======================= LIVES E MODERAÇÃO (11/09/2026) =======================
+     Fontes: lives/{uid_inicio} (sessão gravada pelo estúdio), pedidos (robô),
+     denuncias (página da live), live_bloqueios, moderacao, configuracoes/liveTermos.
+     Encerrar = apaga a entrada de vídeo no Cloudflare (moviki.com.br/api/live,
+     admin conferido no servidor) + marca a live encerrada + bloqueio opcional. */
+  /* ---- FILTRO DE CONTEUDO DA LIVE — 11/09/2026 ----
+     Mesma lista, byte a byte, em 4 lugares: estudio (moviki-app/live.html),
+     pagina publica (moviki/live.html), painel do dono (eikoadm01.html) e
+     servidor (moviki/api/live.js). A fonte e uma so; mudou aqui, muda nos 4.
+     Termos EXTRAS o dono cadastra no painel (configuracoes/liveTermos) sem
+     precisar de deploy. Filtro de palavra nao pega tudo: e a primeira
+     barreira. As outras sao o aceite das regras, a denuncia e o botao de
+     encerrar do dono. */
+  const MV_TERMOS={"grupos":{"drogas":["maconha","cocaina","crack","oxi","lsd","ecstasy","mdma","haxixe","skunk","heroina","ketamina","lanca perfume","cogumelo magico","cogumelos magicos","psilocibina","thc","cbd","entorpecente","entorpecentes"],"armas":["arma de fogo","armas de fogo","pistola","pistolas","revolver","revolveres","fuzil","fuzis","espingarda","espingardas","carabina","metralhadora","submetralhadora","municao","municoes","simulacro","explosivo","explosivos","dinamite","granada","soco ingles","taser","arma de choque","spray de pimenta","silenciador"],"sexual":["sexo","porno","pornografia","conteudo adulto","nude","nudes","pack de fotos","acompanhante","acompanhantes","garota de programa","garoto de programa","programa sexual","onlyfans","xvideos","sexo ao vivo","erotico","erotica","sex shop","vibrador","novinha","novinhas"],"medicamentos":["anabolizante","anabolizantes","esteroide","esteroides","sibutramina","ozempic","mounjaro","semaglutida","tirzepatida","tarja preta","receita controlada","rivotril","clonazepam","ritalina","zolpidem","viagra","cytotec","misoprostol","abortivo"],"tabaco":["vape","vapes","pod descartavel","cigarro eletronico","cigarros eletronicos","juul","cigarro","cigarros","tabaco"],"fraude":["dinheiro falso","nota falsa","notas falsas","cedula falsa","cartao clonado","cartoes clonados","documento falso","cnh falsa","rg falso","diploma falso","atestado falso","conta hackeada","dados de cartao","roubado","roubada","roubados","furtado","furtada"],"apostas":["bet365","rifa","rifas","sorteio","sorteios","jogo do bicho","aposta","apostas","bet","cassino","tigrinho","fortune tiger","bingo"],"animais":["animal silvestre","animais silvestres","trafico de animais"],"golpe":["piramide financeira","renda garantida","lucro garantido","dinheiro facil"]},"excecoes":["pistola de agua","pistola de cola","pistola de pintura","pistola de ar","pistola de solda","sexo do bebe","beijo roubado","beijos roubados","bingo de sabores"]};
+  let MV_TERMOS_EXTRAS=[];
+  const MV_LEET={'0':'o','@':'a','4':'a','1':'i','!':'i','3':'e','$':'s'};
+  /* digito vira letra so ENTRE letras (c0caina -> cocaina), sem estragar bet365 */
+  function mvNormaliza(s){return (' '+String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/([a-z])([0@41!3$]+)(?=[a-z]|[^a-z0-9]|$)/g,(m,a,d)=>a+d.split('').map(c=>MV_LEET[c]).join('')).replace(/[^a-z0-9]+/g,' ')+' ');}
+  function mvProibido(s){
+    let n=mvNormaliza(s);
+    MV_TERMOS.excecoes.forEach(e=>{n=n.split(' '+e+' ').join(' ');});
+    for(const g in MV_TERMOS.grupos)for(const t of MV_TERMOS.grupos[g])if(n.includes(' '+t+' '))return {grupo:g,termo:t};
+    for(const t of MV_TERMOS_EXTRAS){const x=mvNormaliza(t).trim();if(x&&n.includes(' '+x+' '))return {grupo:'extra',termo:x};}
+    return null;
+  }
+
+  const LV_API='https://moviki.com.br/api/live';
+  const LV_MOTIVOS={proibido:'Produto proibido',sexual:'Conteúdo sexual',menor:'Criança/adolescente em risco',violencia:'Violência/ódio',golpe:'Golpe/preço enganoso',outro:'Outro'};
+  const brlLv=v=>'R$ '+Number(v||0).toFixed(2).replace('.',',');
+  const diaSP=(m)=>new Date((m||Date.now())-3*3600000).toISOString().slice(0,10);
+  let LV_ATIVAS=[],LV_HIST=[],LV_PED=[],LV_DEN=[],LV_BLOQ=[],LV_CONTAS=[],lvOuvindo=false;
+  var LV_ASAAS_TOTAL=-1;   // -1 = ainda nao conferido no Asaas
+  function lvAtivaDeVerdade(l){return l.ativa===true&&(Date.now()-Number(l.pulsoMs||0))<180000;}
+  /* Liga no login (para o número de denúncias aparecer no menu sem abrir a
+     seção) e de novo, sem duplicar, ao abrir a seção. */
+  function livesOuvir(){
+    if(!lvOuvindo){lvOuvindo=true;
+      onSnapshot(query(collection(db,'lives'),where('ativa','==',true)),s=>{LV_ATIVAS=[];s.forEach(d=>LV_ATIVAS.push(Object.assign({id:d.id},d.data())));lvPintarAtivas();lvKpis();},()=>{el('lvAtivas').innerHTML='<div class="vazio">Não consegui ler as lives. Confira se as regras v23 estão publicadas.</div>';});
+      onSnapshot(query(collection(db,'denuncias'),where('status','==','aberta')),s=>{LV_DEN=[];s.forEach(d=>LV_DEN.push(Object.assign({id:d.id},d.data())));lvPintarDen();lvKpis();lvPintarAtivas();},()=>{});
+    }
+  }
+  async function livesAbrir(){
+    livesOuvir();
+    await lvCarregarHist();
+  }
+  async function lvCarregarHist(){
+    const desde=Date.now()-30*86400000;
+    try{const s=await getDocs(query(collection(db,'lives'),where('inicioMs','>=',desde),orderBy('inicioMs','desc'),limit(400)));LV_HIST=[];s.forEach(d=>LV_HIST.push(Object.assign({id:d.id},d.data())));}catch(e){LV_HIST=[];}
+    try{const s=await getDocs(query(collection(db,'pedidos'),where('dia','>=',diaSP(desde))));LV_PED=[];s.forEach(d=>LV_PED.push(Object.assign({id:d.id},d.data())));}catch(e){LV_PED=[];}
+    try{const s=await getDocs(collection(db,'live_bloqueios'));LV_BLOQ=[];s.forEach(d=>LV_BLOQ.push(Object.assign({uid:d.id},d.data())));}catch(e){LV_BLOQ=[];}
+    try{const t=await getDoc(doc(db,'configuracoes','liveTermos'));const d=t.exists()?(t.data()||{}):{};const ex=Array.isArray(d.extras)?d.extras:[];MV_TERMOS_EXTRAS=ex;el('lvTermos').value=ex.join('\n');txt('lvTermChip',ex.length+' extras');lvPintarMestra(d.liveDesligada===true);LV_BETA=Array.isArray(d.liveBeta)?d.liveBeta.filter(function(x){return typeof x==='string';}):[];lvPintarBeta();}catch(e){txt('lvTermChip','—');txt('lvMestraChip','—');}
+    try{const s=await getDocs(query(collection(db,'moderacao'),orderBy('criadoEm','desc'),limit(25)));const l=[];s.forEach(d=>l.push(d.data()));
+      el('lvModLog').innerHTML=l.length?l.map(m=>'<div class="lvItem"><div class="t"><strong>'+esc(m.acao==='liberar'?'Liberado':'Encerrada'+(m.dias===0?'':' e bloqueado'))+'</strong><span class="cdChip">'+esc(m.nome||m.lojistaUid||'')+'</span></div><div class="s">'+esc(m.motivo||'')+(m.dias>0?' · '+m.dias+' dia(s)':(m.dias===-1?' · permanente':''))+' · '+(m.criadoEm&&m.criadoEm.toDate?m.criadoEm.toDate().toLocaleString('pt-BR'):'')+'</div></div>').join(''):'<div class="vazio">Nada registrado.</div>';
+    }catch(e){}
+    try{const s=await getDocs(collection(db,'checkout_publico'));LV_CONTAS=[];s.forEach(d=>LV_CONTAS.push(Object.assign({uid:d.id},d.data())));}catch(e){LV_CONTAS=[];}
+    lvPintarBloq(); lvPintarAnalises(); lvKpis(); lvPintarAtivas(); lvPintarAsaas();
+  }
+
+  /* Limite regulatorio do Asaas: 10 subcontas, R$ 2.000 por subconta, 60 dias.
+     O painel so carrega 30 dias de pedidos, entao o valor abaixo e do periodo,
+     nao desde a criacao da subconta. Serve de alerta, nao de contabilidade. */
+  function lvPintarAsaas(){
+    const cx=el('lvAsaasLista'); if(!cx)return;
+    const n=(LV_ASAAS_TOTAL>=0?LV_ASAAS_TOTAL:LV_CONTAS.length);
+    txt('lvAsaasChip',n+' de 10 subcontas'+(LV_ASAAS_TOTAL>=0?'':' (ligadas)'));
+    el('lvAsaasChip').style.color=n>=8?'#ff6b6b':(n>=5?'#ffc107':'');
+    if(!n){cx.innerHTML='<div class="vazio">Nenhuma subconta ainda.</div>';return;}
+    const linhas=LV_CONTAS.map(c=>{
+      const pagos=pagosDe(c.uid), tot=pagos.reduce((t,p)=>t+Number(p.total||0),0);
+      const nome=(LV_HIST.find(l=>l.uid===c.uid)||{}).nome||(LV_ATIVAS.find(l=>l.uid===c.uid)||{}).nome||c.uid;
+      const perto=tot>=1500, meio=tot>=1000;
+      return {tot,html:'<div class="lvItem"><div class="t"><strong>'+esc(nome)+'</strong>'
+        +'<span class="cdChip">'+(c.ativo===true?'ligado':'desligado')+'</span>'
+        +(perto?'<span class="lvAlerta">perto do teto de R$ 2.000</span>':(meio?'<span class="lvAlerta" style="opacity:.75">metade do teto</span>':''))
+        +'</div><div class="s">'+brlLv(tot)+' em 30 dias · '+pagos.length+' pedido(s) pago(s)</div></div>'};
+    }).sort((a,b)=>b.tot-a.tot);
+    cx.innerHTML=linhas.map(l=>l.html).join('')
+      +'<p class="cdSub" style="margin-top:10px">O teto de R$ 2.000 do Asaas conta desde a criação da subconta; aqui aparecem só os últimos 30 dias. Ao chegar perto, peça a homologação ao Asaas antes de o lojista ser travado.</p>';
+  }
+  function pagosDe(uid,liveId){return LV_PED.filter(p=>p.lojistaUid===uid&&(!liveId||p.liveId===liveId)&&(p.status==='pago'||p.status==='entregue'));}
+  function lvKpis(){
+    const at=LV_ATIVAS.filter(lvAtivaDeVerdade), hoje=diaSP(), pagosHoje=LV_PED.filter(p=>p.dia===hoje&&(p.status==='pago'||p.status==='entregue'));
+    const bloq=LV_BLOQ.filter(b=>!b.ate||ms(b.ate)>Date.now());
+    txt('lvKAgora',at.length); txt('lvKAssist',at.reduce((t,l)=>t+Number(l.assistindo||0),0));
+    txt('lvKHoje',LV_HIST.filter(l=>diaSP(l.inicioMs)===hoje).length); txt('lvK7',LV_HIST.filter(l=>l.inicioMs>=Date.now()-7*86400000).length);
+    txt('lvKVendaHoje',brlLv(pagosHoje.reduce((t,p)=>t+Number(p.total||0),0))); txt('lvKPedHoje',pagosHoje.length);
+    txt('lvKDen',LV_DEN.length); txt('lvKBloq',bloq.length); txt('lvDenChip',LV_DEN.length);
+    ['badLive','badLiveM'].forEach(id=>{const b=el(id);if(!b)return;const n=LV_DEN.length;b.textContent=n;b.classList.toggle('hide',!n);});
+  }
+  async function lvPintarAtivas(){
+    const at=LV_ATIVAS.filter(lvAtivaDeVerdade).sort((a,b)=>Number(b.assistindo||0)-Number(a.assistindo||0));
+    if(!at.length){el('lvAtivas').innerHTML='<div class="vazio" style="margin-top:10px">Nenhuma live no ar agora.</div>';return;}
+    const htm=await Promise.all(at.map(async l=>{
+      let alerta=mvProibido(l.titulo);
+      if(!alerta){try{const e=await getDoc(doc(db,'negocios',l.lojistaUid,'estado','live'));const d=e.exists()?e.data():{};
+        for(const x of [].concat(Array.isArray(d.sacola)?d.sacola:[],d.fixado?[d.fixado]:[])){if(x&&(alerta=mvProibido(x.nome)))break;}}catch(_){}}
+      const den=LV_DEN.filter(d=>d.lojistaUid===l.lojistaUid).length, min=Math.round((Date.now()-Number(l.inicioMs||Date.now()))/60000);
+      const pg=pagosDe(l.lojistaUid,l.liveId);
+      return '<div class="lvItem"><div class="t"><span class="lvVivo">AO VIVO</span><strong>'+esc(l.nome||'')+'</strong><span class="cdChip">'+esc(l.nivel||'')+'</span>'+(den?'<span class="lvAlerta">'+den+' denúncia(s)</span>':'')+(alerta?'<span class="lvAlerta">termo proibido: '+esc(alerta.termo)+'</span>':'')+'</div>'+
+        '<div class="s">'+esc(l.titulo||'sem título')+' · '+min+' min · '+Number(l.assistindo||0)+' assistindo (pico '+Number(l.pico||0)+') · '+Number(l.mensagens||0)+' mensagens · '+Number(l.queros||0)+' "quero" · '+pg.length+' pedido(s) pago(s) '+brlLv(pg.reduce((t,p)=>t+Number(p.total||0),0))+'</div>'+
+        '<div class="a"><a class="btnMini" target="_blank" rel="noopener" href="https://moviki.com.br/live/'+encodeURIComponent(l.slug||'')+'">Assistir</a><button type="button" class="btnMini lvBtnPerigo" data-enc="'+esc(l.lojistaUid)+'" data-live="'+esc(l.id)+'" data-nome="'+esc(l.nome||'')+'">Encerrar live</button></div></div>';
+    }));
+    el('lvAtivas').innerHTML=htm.join('');
+    el('lvAtivas').querySelectorAll('[data-enc]').forEach(b=>b.onclick=()=>lvModal(b.dataset.enc,b.dataset.live,b.dataset.nome));
+  }
+  function lvPintarDen(){
+    const ordem={menor:0,sexual:1,proibido:2,violencia:3,golpe:4,outro:5};
+    const l=LV_DEN.slice().sort((a,b)=>(ordem[a.motivo]??9)-(ordem[b.motivo]??9)||ms(b.criadoEm)-ms(a.criadoEm));
+    if(!l.length){el('lvDen').innerHTML='<div class="vazio">Nenhuma denúncia aberta.</div>';return;}
+    el('lvDen').innerHTML=l.map(d=>{const ativa=LV_ATIVAS.find(x=>x.lojistaUid===d.lojistaUid&&lvAtivaDeVerdade(x));const n=(NEG.find(x=>x.uid===d.lojistaUid)||{}).nome||d.slug||d.lojistaUid;
+      return '<div class="lvItem"><div class="t"><span class="lvAlerta">'+esc(LV_MOTIVOS[d.motivo]||d.motivo)+'</span><strong>'+esc(n)+'</strong>'+(ativa?'<span class="lvVivo">AO VIVO</span>':'')+'</div>'+
+      '<div class="s">'+esc(d.detalhe||'sem detalhe')+' · '+(d.criadoEm&&d.criadoEm.toDate?d.criadoEm.toDate().toLocaleString('pt-BR'):'')+'</div>'+
+      '<div class="a">'+(d.slug?'<a class="btnMini" target="_blank" rel="noopener" href="https://moviki.com.br/live/'+encodeURIComponent(d.slug)+'">Ver a live</a>':'')+
+      '<button type="button" class="btnMini lvBtnPerigo" data-enc="'+esc(d.lojistaUid)+'" data-live="'+esc(ativa?ativa.id:'')+'" data-nome="'+esc(n)+'" data-den="'+esc(d.id)+'">Encerrar e bloquear</button>'+
+      '<button type="button" class="btnMini" data-res="'+esc(d.id)+'">Resolver sem ação</button></div></div>';}).join('');
+    el('lvDen').querySelectorAll('[data-enc]').forEach(b=>b.onclick=()=>lvModal(b.dataset.enc,b.dataset.live,b.dataset.nome,b.dataset.den));
+    el('lvDen').querySelectorAll('[data-res]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await updateDoc(doc(db,'denuncias',b.dataset.res),{status:'resolvida',resolucao:'sem_acao',resolvidaEm:serverTimestamp()});}catch(e){b.disabled=false;alert('Não salvou.');}});
+  }
+  function lvPintarBloq(){
+    const l=LV_BLOQ.filter(b=>!b.ate||ms(b.ate)>Date.now());
+    el('lvBloq').innerHTML=l.length?l.map(b=>{const n=(NEG.find(x=>x.uid===b.uid)||{}).nome||b.uid;
+      return '<div class="lvItem"><div class="t"><strong>'+esc(n)+'</strong><span class="cdChip">'+(b.ate?'até '+new Date(ms(b.ate)).toLocaleDateString('pt-BR'):'permanente')+'</span></div><div class="s">'+esc(b.motivo||'')+'</div><div class="a"><button type="button" class="btnMini" data-lib="'+esc(b.uid)+'" data-nome="'+esc(n)+'">Liberar</button></div></div>';}).join(''):'<div class="vazio">Ninguém bloqueado.</div>';
+    el('lvBloq').querySelectorAll('[data-lib]').forEach(b=>b.onclick=async()=>{
+      if(!confirm('Liberar '+b.dataset.nome+' para fazer live de novo?'))return; b.disabled=true;
+      try{await deleteDoc(doc(db,'live_bloqueios',b.dataset.lib));await addDoc(collection(db,'moderacao'),{acao:'liberar',lojistaUid:b.dataset.lib,nome:b.dataset.nome.slice(0,80),motivo:'',dias:0,por:USER.uid,criadoEm:serverTimestamp()});lvCarregarHist();}
+      catch(e){b.disabled=false;alert('Não liberou: '+(e&&e.code||'erro'));}
+    });
+  }
+  function lvBarras(idB,idE,dias,valorDe,fmt){
+    const vs=dias.map(valorDe), mx=Math.max(1,...vs);
+    el(idB).innerHTML=vs.map(v=>'<div style="height:'+Math.round(v/mx*100)+'%"><span>'+(v?fmt(v):'')+'</span></div>').join('');
+    el(idE).innerHTML=dias.map(d=>'<span>'+d.slice(8)+'</span>').join('');
+  }
+  function lvPintarAnalises(){
+    const pagos=LV_PED.filter(p=>p.status==='pago'||p.status==='entregue'), venda=pagos.reduce((t,p)=>t+Number(p.total||0),0);
+    const mins=LV_HIST.reduce((t,l)=>t+Number(l.duracaoMin||0),0), picos=LV_HIST.map(l=>Number(l.pico||0));
+    const lojas=new Set(LV_HIST.map(l=>l.lojistaUid)).size;
+    const k=[['Lives',LV_HIST.length],['Minutos ao vivo',mins],['Pico médio',picos.length?Math.round(picos.reduce((a,b)=>a+b,0)/picos.length):0],['Lojistas que fizeram live',lojas],
+      ['Mensagens no chat',LV_HIST.reduce((t,l)=>t+Number(l.mensagens||0),0)],['Toques em "Quero"',LV_HIST.reduce((t,l)=>t+Number(l.queros||0),0)],['Pedidos pagos',pagos.length],['Vendido pelo Pix',brlLv(venda)],
+      ['Ticket médio',brlLv(pagos.length?venda/pagos.length:0)],['Pix gerados',LV_PED.length],['Conversão Pix gerado → pago',LV_PED.length?Math.round(pagos.length/LV_PED.length*100)+'%':'—'],['Encerradas pela moderação',LV_HIST.filter(l=>l.encerradaPor==='moviki').length]];
+    el('lvK30').innerHTML=k.map(([t,v])=>'<div><small>'+esc(t)+'</small><b>'+esc(String(v))+'</b></div>').join('');
+    const dias=[];for(let i=13;i>=0;i--)dias.push(diaSP(Date.now()-i*86400000));
+    lvBarras('lvBarLives','lvEixoLives',dias,d=>LV_HIST.filter(l=>diaSP(l.inicioMs)===d).length,v=>v);
+    lvBarras('lvBarVendas','lvEixoVendas',dias,d=>pagos.filter(p=>p.dia===d).reduce((t,p)=>t+Number(p.total||0),0),v=>Math.round(v));
+    const porLoja={};pagos.forEach(p=>{porLoja[p.lojistaUid]=(porLoja[p.lojistaUid]||0)+Number(p.total||0);});
+    const top=Object.entries(porLoja).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    el('lvTop').innerHTML=top.length?top.map(([u,v])=>'<div class="lvItem" style="padding:8px 12px"><div class="t"><strong>'+esc((NEG.find(x=>x.uid===u)||{}).nome||u)+'</strong><span class="cdChip">'+brlLv(v)+'</span><span class="cdChip">'+pagos.filter(p=>p.lojistaUid===u).length+' pedido(s)</span></div></div>').join(''):'<div class="vazio">Nenhuma venda pelo Pix ainda.</div>';
+    el('lvHist').innerHTML=LV_HIST.length?LV_HIST.slice(0,60).map(l=>{const pg=pagosDe(l.lojistaUid,l.liveId);
+      return '<tr><td>'+new Date(Number(l.inicioMs)).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</td><td>'+esc(l.nome||'')+'</td><td>'+esc(l.nivel||'')+'</td><td>'+Number(l.duracaoMin||0)+' min</td><td>'+Number(l.pico||0)+'</td><td>'+Number(l.mensagens||0)+'</td><td>'+Number(l.queros||0)+'</td><td>'+pg.length+'</td><td>'+brlLv(pg.reduce((t,p)=>t+Number(p.total||0),0))+'</td><td>'+(l.encerradaPor==='moviki'?'<span class="lvAlerta">moderada</span>':(lvAtivaDeVerdade(l)?'<span class="lvVivo">AO VIVO</span>':''))+'</td></tr>';}).join(''):'<tr><td colspan="10" class="vazio">Nenhuma live nos últimos 30 dias.</td></tr>';
+  }
+  function lvModal(lojistaUid,liveDocId,nome,denId){
+    const ov=document.createElement('div'); ov.className='lvMod';
+    ov.innerHTML='<div class="cx"><div class="cdTit">Encerrar a live de '+esc(nome)+'</div><div class="cdSub" style="margin-top:4px">A transmissão cai na hora (a entrada de vídeo é apagada no Cloudflare) e o estúdio do lojista mostra o motivo.</div>'+
+      '<select id="lvMotivo">'+Object.entries(LV_MOTIVOS).map(([k,v])=>'<option value="'+k+'">'+esc(v)+'</option>').join('')+'</select>'+
+      '<input id="lvMotTxt" maxlength="160" placeholder="Detalhe do motivo (aparece para o lojista)">'+
+      '<select id="lvDias"><option value="0">Só encerrar, sem bloquear</option><option value="1">Bloquear por 1 dia</option><option value="7" selected>Bloquear por 7 dias</option><option value="30">Bloquear por 30 dias</option><option value="-1">Bloquear sem prazo</option></select>'+
+      '<div style="display:flex;gap:8px;margin-top:14px"><button type="button" class="btnMini" id="lvCancelar" style="flex:1">Cancelar</button><button type="button" class="btnMini lvBtnPerigo" id="lvConfirmar" style="flex:1">Encerrar agora</button></div><div id="lvModMsg" class="vazio"></div></div>';
+    document.body.appendChild(ov);
+    ov.querySelector('#lvCancelar').onclick=()=>ov.remove();
+    ov.querySelector('#lvConfirmar').onclick=async()=>{
+      const b=ov.querySelector('#lvConfirmar'); b.disabled=true; const msg=ov.querySelector('#lvModMsg');
+      const motivoK=ov.querySelector('#lvMotivo').value, motivo=(LV_MOTIVOS[motivoK]+(ov.querySelector('#lvMotTxt').value.trim()?': '+ov.querySelector('#lvMotTxt').value.trim():'')).slice(0,200), dias=Number(ov.querySelector('#lvDias').value);
+      let avisoCf='';
+      try{const tk=await USER.getIdToken();const r=await (await fetch(LV_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,acao:'adm_encerrar',uid:lojistaUid})})).json();
+        if(!r.ok)avisoCf='O vídeo não foi cortado no Cloudflare ('+(r.erro||'erro')+'). ';}catch(e){avisoCf='Sem resposta do servidor de vídeo. ';}
+      try{
+        await setDoc(doc(db,'negocios',lojistaUid,'estado','live'),{ativa:false,fim:serverTimestamp(),encerradaPor:'moviki',motivoModeracao:motivo,oferta:null,cupom:null,brinde:null},{merge:true});
+        if(liveDocId)await updateDoc(doc(db,'lives',liveDocId),{ativa:false,fimMs:Date.now(),encerradaPor:'moviki',motivo:motivo});
+        if(dias!==0)await setDoc(doc(db,'live_bloqueios',lojistaUid),{motivo:motivo,ate:dias>0?Timestamp.fromMillis(Date.now()+dias*86400000):null,por:USER.uid,criadoEm:serverTimestamp()});
+        await addDoc(collection(db,'moderacao'),{acao:'encerrar',lojistaUid:lojistaUid,nome:String(nome||'').slice(0,80),motivo:motivo,dias:dias,por:USER.uid,criadoEm:serverTimestamp()});
+        if(denId)await updateDoc(doc(db,'denuncias',denId),{status:'resolvida',resolucao:'encerrada',resolvidaEm:serverTimestamp()});
+        msg.textContent=avisoCf+'Feito.'; setTimeout(()=>{ov.remove();lvCarregarHist();},avisoCf?2600:700);
+      }catch(e){msg.textContent=avisoCf+'Falhou ao gravar: '+(e&&e.code||'erro')+'. Confira se as regras v23 estão publicadas.';b.disabled=false;}
+    };
+  }
+  el('lvRecarregar').addEventListener('click',()=>lvCarregarHist());
+  el('lvTermSalvar').addEventListener('click',async()=>{
+    const l=el('lvTermos').value.split('\n').map(x=>x.replace(/\s+/g,' ').trim().toLowerCase()).filter(x=>x.length>=3).slice(0,300);
+    try{await setDoc(doc(db,'configuracoes','liveTermos'),{extras:Array.from(new Set(l)),atualizadoEm:serverTimestamp()},{merge:true});txt('lvTermChip',l.length+' extras');alert('Termos salvos. Já valem no estúdio, na live e no servidor.');}
+    catch(e){alert('Não salvou: '+(e&&e.code||'erro'));}
+  });
+
+  /* ---------- chave-mestra: desliga toda live do Moviki ----------
+     Grava configuracoes/liveTermos.liveDesligada. O api/live.js recusa
+     iniciar, o lib/checkout.js recusa cobranca nova, o estudio derruba quem
+     esta no ar e a pagina publica mostra manutencao. Sem deploy. */
+  var lvMestra=false;
+  function lvPintarMestra(off){
+    lvMestra=!!off;
+    const b=el('lvMestraBtn'); if(!b)return;
+    txt('lvMestraChip',off?'DESLIGADAS':'no ar');
+    el('lvMestraChip').style.color=off?'var(--mv-erro,#ff6b6b)':'';
+    b.textContent=off?'Religar as lives':'Desligar todas as lives agora';
+    b.style.borderColor=off?'':'rgba(255,107,107,.6)';
+    b.style.color=off?'':'#ff6b6b';
+    b.disabled=false;
+  }
+  /* ---------- lista de liberacao do beta ----------
+     Grava configuracoes/liveTermos.liveBeta (array de uid). Vazia = aberto.
+     O painel escreve com merge para nao apagar extras nem a chave-mestra. */
+  var LV_BETA=[];
+  function lvPintarBeta(){
+    const chip=el('lvBetaChip'); if(!chip)return;
+    txt('lvBetaChip',LV_BETA.length?(LV_BETA.length+' liberado(s) · fechado'):'aberto a todos');
+    chip.style.color=LV_BETA.length?'#ffc107':'#2ecc71';
+    const at=el('lvBetaAtuais');
+    at.innerHTML=LV_BETA.length
+      ? LV_BETA.map(function(u){const n=NEG.find(function(x){return x.uid===u;});
+          return '<div class="lvItem"><div class="t"><strong>'+esc((n&&n.nome)||u)+'</strong>'+(n&&n.email?'<span class="cdChip">'+esc(n.email)+'</span>':'')+'<button type="button" class="btnMini" data-betaout="'+esc(u)+'" style="margin-left:auto">Tirar</button></div></div>';}).join('')
+      : '<div class="vazio">Lista vazia — a live está <b>aberta a todos</b>. Para manter escondida, libere pelo menos um negócio (o seu, para testar).</div>';
+    lvPintarBetaLista();
+  }
+  function lvPintarBetaLista(){
+    const cx=el('lvBetaLista'); if(!cx)return;
+    const f=(el('lvBetaBusca').value||'').trim().toLowerCase();
+    if(!f){cx.innerHTML='<div class="s" style="opacity:.7">Digite para buscar um negócio e liberar.</div>';return;}
+    const achados=NEG.filter(function(n){return LV_BETA.indexOf(n.uid)<0 && ((n.nome||'')+' '+(n.email||'')).toLowerCase().includes(f);}).slice(0,12);
+    cx.innerHTML=achados.length?achados.map(function(n){
+      return '<div class="lvItem"><div class="t"><strong>'+esc(n.nome||'(sem nome)')+'</strong>'+(n.email?'<span class="cdChip">'+esc(n.email)+'</span>':'')+'<button type="button" class="btnMini" data-betain="'+esc(n.uid)+'" style="margin-left:auto">Liberar</button></div></div>';
+    }).join(''):'<div class="vazio">Nenhum negócio com esse nome.</div>';
+  }
+  async function lvSalvarBeta(nova){
+    const antes=LV_BETA.slice(); LV_BETA=nova;
+    lvPintarBeta();
+    try{
+      await setDoc(doc(db,'configuracoes','liveTermos'),{liveBeta:nova,atualizadoEm:serverTimestamp()},{merge:true});
+      await addDoc(collection(db,'moderacao'),{acao:nova.length?'beta_lista':'beta_aberto',lojistaUid:'-',nome:'Liberação da live',motivo:nova.length+' liberado(s)',dias:0,por:(USER&&USER.uid)||'',criadoEm:serverTimestamp()}).catch(function(){});
+      lvCarregarHist();
+    }catch(e){ LV_BETA=antes; lvPintarBeta(); alert('Não gravou: '+(e&&e.code||'erro')+'. Confira se as regras v23 estão publicadas.'); }
+  }
+  el('lvBetaBusca').addEventListener('input',lvPintarBetaLista);
+  el('lvBetaCard').addEventListener('click',function(ev){
+    const inn=ev.target.closest('[data-betain]'), out=ev.target.closest('[data-betaout]');
+    if(inn){ lvSalvarBeta(LV_BETA.concat([inn.dataset.betain])); el('lvBetaBusca').value=''; }
+    if(out){ if(LV_BETA.length===1&&!confirm('Tirar o último da lista ABRE a live para todos os lojistas Premium e Enterprise. Confirma?'))return;
+      lvSalvarBeta(LV_BETA.filter(function(u){return u!==out.dataset.betaout;})); }
+  });
+
+  /* Conferencia no Asaas: chamada SO DE LEITURA (lista subcontas). Responde
+     em portugues se a conta ja pode criar subconta por API e quantas existem
+     de verdade — o `checkout_publico` so conta as que chegaram a ser ligadas. */
+  el('lvAsaasBtn').addEventListener('click',async()=>{
+    const b=el('lvAsaasBtn'), cx=el('lvAsaasResp');
+    b.disabled=true; b.textContent='Consultando…';
+    cx.classList.remove('escondido'); cx.innerHTML='<div class="lvItem"><div class="s">Falando com o Asaas…</div></div>';
+    try{
+      const idToken=await auth.currentUser.getIdToken();
+      const rq=await fetch('https://moviki-robo.vercel.app/api/pontos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({acao:'adm_asaas',idToken})});
+      const r=await rq.json().catch(()=>({}));
+      if(!r||r.ok!==true){
+        const m={sem_chave:'O robô está sem a chave do Asaas (ASAAS_API_KEY). Confira as variáveis do projeto moviki-robo na Vercel.',
+          rede:'O Asaas não respondeu. Tente de novo em um minuto.',
+          nao_admin:'Sua conta não está na lista de administradores.',
+          sessao:'Sua sessão venceu. Saia e entre de novo.'}[r&&r.erro]||('Não deu para conferir ('+((r&&r.erro)||'erro')+').');
+        cx.innerHTML='<div class="lvItem"><div class="t"><strong style="color:#ff6b6b">Falhou</strong></div><div class="s">'+esc(m)+'</div></div>';
+        return;
+      }
+      if(r.liberado!==true){
+        const porq=r.motivo==='permissao'
+          ? 'A conta da Eiko ainda NÃO está liberada para criar subconta por API. Fale com o Asaas e peça a liberação de subcontas (BaaS) para a conta.'
+          : 'O Asaas recusou a consulta'+(r.status?' (HTTP '+r.status+')':'')+'. Pode ser liberação pendente ou chave sem permissão.';
+        cx.innerHTML='<div class="lvItem"><div class="t"><strong style="color:#ff6b6b">Não liberado</strong></div><div class="s">'+esc(porq)+(r.mensagem?'<br><span style="opacity:.7">Asaas: '+esc(r.mensagem)+'</span>':'')+'</div></div>';
+        return;
+      }
+      LV_ASAAS_TOTAL=Number(r.total)||0;
+      const sobra=Math.max(0,(r.teto||10)-LV_ASAAS_TOTAL);
+      const cor=LV_ASAAS_TOTAL>=8?'#ff6b6b':(LV_ASAAS_TOTAL>=5?'#ffc107':'#2ecc71');
+      cx.innerHTML='<div class="lvItem"><div class="t"><strong style="color:'+cor+'">Liberado</strong>'
+        +'<span class="cdChip">'+LV_ASAAS_TOTAL+' de '+(r.teto||10)+' subcontas</span></div>'
+        +'<div class="s">A conta pode criar subconta por API. '+(sobra>0?('Ainda cabem '+sobra+' antes do teto do período de avaliação.'):'Teto atingido — peça a homologação ao Asaas antes de cadastrar mais alguém.')+'</div></div>'
+        +(r.contas&&r.contas.length?('<div class="s" style="margin-top:8px;opacity:.85">'+r.contas.map(c=>esc(c.nome||c.email||c.id)+(c.doc?' · final '+esc(c.doc):'')).join('<br>')+'</div>'):'');
+      lvPintarAsaas();
+    }catch(e){
+      cx.innerHTML='<div class="lvItem"><div class="t"><strong style="color:#ff6b6b">Falhou</strong></div><div class="s">Sem resposta do robô. Confira se o lib/checkout.js já está no ar.</div></div>';
+    }finally{ b.disabled=false; b.textContent='Conferir no Asaas'; }
+  });
+
+  el('lvMestraBtn').addEventListener('click',async()=>{
+    const ligar=lvMestra;
+    if(!ligar&&!confirm('Desligar TODAS as lives do Moviki agora?\n\nQuem está transmitindo cai na hora, ninguém consegue entrar ao vivo e nenhum Pix novo é gerado na live. Você religa por aqui.'))return;
+    if(ligar&&!confirm('Religar as lives do Moviki?'))return;
+    const b=el('lvMestraBtn'); b.disabled=true; b.textContent='Gravando…';
+    try{
+      await setDoc(doc(db,'configuracoes','liveTermos'),{liveDesligada:!ligar,atualizadoEm:serverTimestamp()},{merge:true});
+      try{await addDoc(collection(db,'moderacao'),{acao:ligar?'religar_lives':'desligar_lives',lojistaUid:'-',nome:'TODAS as lives',motivo:ligar?'religar':'desligar',dias:0,por:(USER&&USER.uid)||'',criadoEm:serverTimestamp()});}catch(_){}
+      lvCarregarHist();
+      lvPintarMestra(!ligar);
+      alert(ligar?'Lives religadas.':'Lives desligadas. Vale na hora, em todo mundo.');
+    }catch(e){alert('Não gravou: '+(e&&e.code||'erro')+'. Confira se as regras v23 estão publicadas.');lvPintarMestra(lvMestra);}
+  });
 </script>
 
 <!-- ==========================================================================

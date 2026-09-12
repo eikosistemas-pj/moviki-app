@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<!-- MOVIKI live.html (estudio do lojista) | versao no window.MOVIKI_VERSAO -->
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://i.ibb.co https://*.google-analytics.com; media-src 'self' blob:; connect-src 'self' https://*.googleapis.com https://moviki.com.br https://moviki-robo.vercel.app https://*.cloudflarestream.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src 'self' https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#060d18">
+<meta name="robots" content="noindex">
+<title>Moviki — Estúdio ao vivo</title>
+<link rel="icon" href="favicon512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="mvmetrica.js"></script>
+<style>
+:root{
+  --mv-ciano:#00D4FF;--mv-azul:#0066FF;--mv-grad:linear-gradient(135deg,#00D4FF,#0066FF);
+  --mv-bg:#060d18;--mv-bg-2:#0a1424;--mv-surf:#0e1c30;--mv-surf-2:#13263d;--mv-campo:#0b1728;--mv-linha:#1c3457;--mv-linha-forte:#284a78;
+  --mv-txt:#eaf6ff;--mv-txt-2:#c6d8ee;--mv-txt-3:#8fa6c4;
+  --mv-ok:#25e39b;--mv-alerta:#ffb020;--mv-erro:#ff6b6b;--mv-laranja:#ff8a00;--mv-whats:#25D366;--mv-roxo:#a855f7;
+  --mv-ouro:linear-gradient(135deg,#ffd76a,#d99b12);
+  --mv-fonte:'Poppins',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --vivo:#ff2d55;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--mv-bg);color:var(--mv-txt);font-family:var(--mv-fonte);-webkit-font-smoothing:antialiased}
+button,input,select{font-family:inherit}
+button{cursor:pointer}
+.escondido{display:none !important}
+svg{display:block}
+.lv{max-width:1100px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 10px) 14px calc(env(safe-area-inset-bottom) + 24px)}
+.lvTopo{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.lvVoltar{display:inline-flex;align-items:center;gap:6px;color:var(--mv-txt-2);text-decoration:none;font-size:14px;font-weight:600}
+.lvVoltar svg{width:18px;height:18px}
+.lvTit{font-size:17px;font-weight:800;margin:0}
+.lvNivel{margin-left:auto;font-size:11.5px;font-weight:800;letter-spacing:.5px;border-radius:999px;padding:4px 10px;background:var(--mv-surf-2);color:var(--mv-txt-2)}
+.lvNivel.enterprise{background:var(--mv-ouro);color:#2a1c00}
+.lvNivel.premium{background:var(--mv-grad);color:#001428}
+
+.lvGrade{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+@media(min-width:900px){.lvGrade{grid-template-columns:minmax(0,380px) minmax(0,1fr)}.lvCam{position:sticky;top:12px;align-self:start}}
+
+/* ---- camera ---- */
+.lvCam{position:relative;border-radius:18px;overflow:hidden;background:#000;aspect-ratio:9/16;max-height:62vh;margin:0 auto;width:100%;max-width:420px}
+#prev{width:100%;height:100%;object-fit:cover;background:#000}
+/* no ar, no celular: a camera encolhe para o chat e as ferramentas caberem na tela */
+@media(max-width:899px){body.noAr .lvCam{max-height:44vh;aspect-ratio:auto;height:44vh}}
+#prev.espelho{transform:scaleX(-1)}
+.camTopo{position:absolute;top:10px;left:10px;right:10px;display:flex;gap:8px;align-items:center;z-index:2}
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:6px;padding:4px 9px;font-size:12px;font-weight:700;background:rgba(0,0,0,.5)}
+.pill.vivo{background:var(--vivo)}
+.pill.vivo i{width:7px;height:7px;border-radius:50%;background:#fff;animation:pisca 1.2s infinite}
+@keyframes pisca{50%{opacity:.25}}
+.pill svg{width:14px;height:14px}
+.camBase{position:absolute;left:10px;right:10px;bottom:10px;display:flex;gap:8px;justify-content:center;z-index:2}
+.camBtn{width:46px;height:46px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center}
+.camBtn svg{width:21px;height:21px}
+.camBtn.off{background:var(--mv-erro)}
+.camVazia{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--mv-txt-2);font-size:14px;gap:12px}
+.camAviso{position:absolute;left:10px;right:10px;top:48px;z-index:2;background:rgba(255,176,32,.92);color:#2a1c00;font-weight:700;font-size:13px;border-radius:10px;padding:8px 10px;text-align:center}
+
+/* ---- cartoes ---- */
+.card{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:16px;padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 4px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.card p.sub{margin:0 0 12px;font-size:12.5px;color:var(--mv-txt-3);line-height:1.45}
+.campo{width:100%;border:1px solid var(--mv-linha);background:var(--mv-campo);color:#fff;border-radius:11px;padding:11px 12px;font-size:14.5px;outline:none}
+.campo:focus{border-color:var(--mv-ciano)}
+.linha2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.rot{display:block;font-size:12px;color:var(--mv-txt-3);margin:10px 0 5px}
+.btnGrad{border:0;border-radius:12px;background:var(--mv-grad);color:#001428;font-weight:800;font-size:15px;padding:13px 16px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;text-decoration:none}
+.btnGrad:disabled{opacity:.55;cursor:default}
+.btnGrad svg{width:18px;height:18px}
+.btnVivo{background:var(--vivo);color:#fff}
+.btnSec{border:1px solid var(--mv-linha-forte);border-radius:11px;background:transparent;color:var(--mv-txt);font-weight:600;font-size:13.5px;padding:10px 12px;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
+.btnSec svg{width:16px;height:16px}
+.btnMini{border:1px solid var(--mv-linha-forte);border-radius:9px;background:transparent;color:var(--mv-txt);font-weight:600;font-size:12.5px;padding:6px 10px;white-space:nowrap}
+.btnMini.on{background:var(--mv-ciano);border-color:var(--mv-ciano);color:#001428}
+.btnMini.perigo{border-color:rgba(255,107,107,.5);color:var(--mv-erro)}
+.dicas{margin:10px 0 0;padding-left:18px;font-size:12.5px;color:var(--mv-txt-2);line-height:1.6}
+.msgErro{background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.4);color:#ffd0d0;border-radius:11px;padding:10px 12px;font-size:13px;margin-top:10px}
+.msgOk{background:rgba(37,227,155,.1);border:1px solid rgba(37,227,155,.35);color:#c9ffe6;border-radius:11px;padding:10px 12px;font-size:13px;margin-top:10px}
+
+/* ---- abas ---- */
+.abas{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px;scrollbar-width:none}
+.abas::-webkit-scrollbar{display:none}
+.aba{flex:0 0 auto;border:1px solid var(--mv-linha);background:var(--mv-surf);color:var(--mv-txt-2);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.aba.on{background:var(--mv-grad);color:#001428;border-color:transparent}
+.aba .cad{width:13px;height:13px}
+.aba b{background:var(--vivo);color:#fff;border-radius:999px;font-size:10.5px;padding:1px 6px}
+.painelAba{display:none}
+.painelAba.on{display:block}
+.avisoTarifa{background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.35);border-radius:12px;padding:12px 14px;margin:10px 0 12px}
+.avisoTarifa>b{color:#ffc107;font-size:13.5px}
+.avisoTarifa p{margin:6px 0 0;font-size:13px;line-height:1.55;color:var(--mv-sub,#9fb2c6)}
+
+/* ---- produtos ---- */
+.prod{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--mv-linha)}
+.prod:first-child{border-top:0}
+.pFoto{width:48px;height:48px;border-radius:10px;background:var(--mv-surf-2) center/cover no-repeat;flex:0 0 48px}
+.pInfo{min-width:0;flex:1}
+.pNome{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pPreco{font-size:12.5px;color:var(--mv-txt-3)}
+.pAcoes{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:600px){.prod{flex-wrap:wrap}.pAcoes{flex:1 1 100%;justify-content:flex-start;padding-left:58px}}
+.prodEdit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:8px;padding:0 0 10px 58px}
+.prodEdit .campo{padding:8px 10px;font-size:13px}
+
+/* ---- chat / fila ---- */
+.chatLista{max-height:46vh;overflow:auto;display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.cm{background:var(--mv-surf-2);border-radius:12px;padding:7px 10px;font-size:13.5px;display:flex;gap:8px;align-items:flex-start}
+.cm.quero{background:rgba(37,211,102,.14)}
+.cm.dono{background:rgba(0,102,255,.25)}
+.cm .t{flex:1;min-width:0;overflow-wrap:anywhere}
+.cm b{color:#9fe8ff;font-weight:600;margin-right:4px}
+.cm .x{border:0;background:none;color:var(--mv-txt-3);font-size:12px;padding:2px 4px}
+.cm .h{font-size:11px;color:var(--mv-txt-3);white-space:nowrap}
+.envio{display:flex;gap:8px}
+.fila .cm input{margin-top:3px}
+.fila .cm.feito{opacity:.45}
+
+/* ---- dados ---- */
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media(min-width:600px){.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.kpi{background:var(--mv-surf-2);border-radius:12px;padding:10px 12px}
+.kpi small{display:block;font-size:11.5px;color:var(--mv-txt-3)}
+.kpi strong{font-size:22px;font-weight:800}
+.barraP{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:8px}
+.barraP span{flex:0 0 40%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.barraP i{display:block;height:8px;border-radius:8px;background:var(--mv-grad)}
+.barraP em{font-style:normal;color:var(--mv-txt-3);margin-left:auto}
+
+/* ---- trava do Enterprise ---- */
+.trava{border:1px dashed rgba(255,215,106,.55);background:linear-gradient(160deg,rgba(255,215,106,.08),transparent);border-radius:16px;padding:16px;text-align:center}
+.trava h4{margin:6px 0 4px;font-size:15px}
+.trava p{margin:0 0 12px;font-size:13px;color:var(--mv-txt-2);line-height:1.5}
+.trava ul{text-align:left;margin:0 auto 14px;padding-left:18px;font-size:13px;color:var(--mv-txt-2);line-height:1.7;max-width:420px}
+.trava svg{width:28px;height:28px;margin:0 auto;color:#ffd76a}
+.btnOuro{border:0;border-radius:12px;background:var(--mv-ouro);color:#2a1c00;font-weight:800;font-size:14px;padding:11px 16px;text-decoration:none;display:inline-flex}
+
+.cortes{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.corte{display:flex;align-items:center;gap:8px;background:var(--mv-surf-2);border-radius:12px;padding:8px 10px;font-size:13px}
+.corte span{flex:1}
+.resumo{display:grid;gap:8px}
+/* ---- checkout Pix (Enterprise) ---- */
+.pxEtapas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.pxEt{background:var(--mv-surf-2);border-radius:12px;padding:9px 11px;font-size:12.5px}
+.pxEt b{display:block;font-size:13.5px;margin-top:2px}
+.pxEt.ok b{color:var(--mv-ok)}.pxEt.nao b{color:var(--mv-erro)}.pxEt.esp b{color:var(--mv-alerta)}
+.pxDoc{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--mv-linha);font-size:13px}
+.pxDoc span{flex:1;min-width:0}
+.pxForm .linha2{margin-top:8px}
+.pxTipo{display:flex;gap:8px;margin-bottom:6px}
+.pxTipo label{flex:1;border:1px solid var(--mv-linha);border-radius:11px;padding:10px;font-size:13.5px;display:flex;gap:8px;align-items:center;cursor:pointer}
+.pxAceite{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--mv-txt-2);margin:12px 0;line-height:1.45}
+.pxAceite input{margin-top:3px}
+.pxSwitch{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--mv-surf-2);border-radius:12px;padding:11px 12px;margin:10px 0;font-size:14px;font-weight:600}
+.ped{background:var(--mv-surf-2);border-radius:12px;padding:10px 12px;margin-top:8px;font-size:13px}
+.ped .l1{display:flex;gap:8px;align-items:center}
+.ped .l1 strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ped .st{font-size:11px;font-weight:800;border-radius:6px;padding:2px 7px}
+.st.aguardando{background:rgba(255,176,32,.2);color:var(--mv-alerta)}.st.pago{background:rgba(37,227,155,.2);color:var(--mv-ok)}
+.st.entregue{background:rgba(0,212,255,.18);color:var(--mv-ciano)}.st.expirado,.st.cancelado,.st.estornado{background:rgba(255,107,107,.15);color:var(--mv-erro)}
+.ped .l2{color:var(--mv-txt-3);margin-top:3px}
+.ped .l3{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.cm.venda{background:rgba(37,227,155,.16)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:50;background:rgba(0,0,0,.88);color:#fff;border-radius:10px;padding:10px 14px;font-size:13.5px;max-width:90%;text-align:center}
+</style>
+</head>
+<body>
+<div class="lv">
+  <div class="lvTopo">
+    <a class="lvVoltar" href="/" id="lnkVoltar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>Painel</a>
+    <h1 class="lvTit">Estúdio ao vivo</h1>
+    <span class="lvNivel escondido" id="lvNivel"></span>
+  </div>
+
+  <!-- estados de entrada -->
+  <div class="card" id="stCarregando">Carregando…</div>
+  <div class="card escondido" id="stSemLogin"><h3>Entre na sua conta</h3><p class="sub">O estúdio da live abre depois do login no painel.</p><a class="btnGrad" href="/">Ir para o painel</a></div>
+  <div class="card escondido" id="stSemPlano">
+    <div class="trava">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3"/></svg>
+      <h4>A live faz parte do Premium e do Enterprise</h4>
+      <p>Transmita do seu celular, mostre o produto na tela com o botão de pedido e converse com quem está assistindo.</p>
+      <ul>
+        <li><b>Premium:</b> transmissão, produto em destaque, sacolinha, chat, agendamento.</li>
+        <li><b>Enterprise:</b> tudo isso e mais pagamento por Pix dentro da live, oferta relâmpago com contagem, estoque ao vivo, cupom da live, brinde, fila de pedidos, dados ao vivo e cortes para Reels.</li>
+      </ul>
+      <a class="btnGrad" href="/?plano=premium&periodo=mensal" style="margin-bottom:8px">Ver o Premium</a>
+      <a class="btnOuro" href="/?plano=enterprise&periodo=mensal">Ver o Enterprise</a>
+    </div>
+  </div>
+
+  <div class="lvGrade escondido" id="stPronto">
+    <!-- coluna da camera -->
+    <div>
+      <div class="lvCam">
+        <video id="prev" playsinline autoplay muted></video>
+        <div class="camVazia" id="camVazia">
+          <div>Sua câmera aparece aqui.</div>
+          <button type="button" class="btnGrad" id="btnCamera" style="width:auto">Ligar câmera</button>
+        </div>
+        <div class="camTopo">
+          <span class="pill vivo escondido" id="pillVivo"><i></i>AO VIVO <span id="tempo">00:00</span></span>
+          <span class="pill escondido" id="pillOlho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg><span id="nOlho">0</span></span>
+        </div>
+        <div class="camAviso escondido" id="camAviso"></div>
+        <div class="camBase escondido" id="camBase">
+          <button type="button" class="camBtn" id="btnVirar" title="Trocar câmera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-3l-2-3H9L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M9 13a3 3 0 0 1 5-2.2M15 13a3 3 0 0 1-5 2.2"/><path d="M14 9v2h-2M10 17v-2h2"/></svg></button>
+          <button type="button" class="camBtn" id="btnMic" title="Microfone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></button>
+        </div>
+      </div>
+      <div style="max-width:420px;margin:12px auto 0">
+        <div id="boxAntes">
+          <label class="rot" for="titulo">Título da live (aparece para quem entra)</label>
+          <input class="campo" id="titulo" maxlength="60" placeholder="Ex.: Pastel de queijo saindo agora!">
+          <button type="button" class="btnGrad btnVivo" id="btnIniciar" style="margin-top:10px" disabled><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>Entrar ao vivo</button>
+          <div id="erroIniciar" class="msgErro escondido"></div>
+          <ul class="dicas">
+            <li>Segure o celular em pé e deixe a luz de frente para você.</li>
+            <li>Use o Wi-Fi ou 4G com sinal cheio. A live usa a internet do celular.</li>
+            <li>Escolha os produtos na aba <b>Produtos</b> antes de começar.</li>
+            <li>Preço anunciado na live vale como oferta. Anuncie só o que você vai cumprir.</li>
+          </ul>
+        </div>
+        <div id="boxDurante" class="escondido">
+          <div style="display:flex;gap:8px">
+            <button type="button" class="btnSec" id="btnAvisar" style="flex:1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Avisar clientes</button>
+            <button type="button" class="btnSec" id="btnEncerrar" style="flex:1;border-color:rgba(255,107,107,.6);color:var(--mv-erro)">Encerrar live</button>
+          </div>
+          <p class="sub" style="font-size:12px;color:var(--mv-txt-3);margin:8px 0 0">Limite desta live: <b id="limiteTxt"></b>. Mantenha esta tela aberta — sair dela encerra a transmissão.</p>
+        </div>
+        <div id="boxResumo" class="card escondido" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <!-- coluna das ferramentas -->
+    <div>
+      <div class="abas" id="abas"></div>
+
+      <div class="painelAba on" data-aba="produtos">
+        <div class="card">
+          <h3>Sacolinha e produto em destaque</h3>
+          <p class="sub">Marque o que entra na sacolinha da live e toque em <b>Destacar</b> para o produto aparecer grande na tela, com o botão <b>Quero este</b> (abre o seu WhatsApp com a mensagem pronta). Preço da live e link são opcionais.</p>
+          <div id="listaProd"></div>
+          <details style="margin-top:10px"><summary style="cursor:pointer;font-size:13px;color:var(--mv-ciano);font-weight:600">Adicionar um produto que não está no cardápio</summary>
+            <div class="linha2" style="margin-top:8px"><input class="campo" id="npNome" maxlength="60" placeholder="Nome"><input class="campo" id="npPreco" maxlength="12" placeholder="Preço (ex.: 12,00)"></div>
+            <input class="campo" id="npLink" maxlength="500" placeholder="Link do produto (opcional, https://…)" style="margin-top:8px">
+            <button type="button" class="btnSec" id="btnNovoProd" style="margin-top:8px">Adicionar à lista</button>
+          </details>
+        </div>
+      </div>
+
+      <div class="painelAba" data-aba="chat">
+        <div class="card">
+          <h3>Chat da live</h3>
+          <p class="sub">Toque no <b>×</b> para apagar uma mensagem. Suas respostas aparecem em azul.</p>
+          <div class="chatLista" id="chatLista"><div class="pPreco">O chat abre quando a live começa.</div></div>
+          <form class="envio" id="formDono" autocomplete="off"><input class="campo" id="txtDono" maxlength="140" placeholder="Responder no chat"><button class="btnMini on" type="submit">Enviar</button></form>
+        </div>
+      </div>
+
+      <div class="painelAba" data-aba="pix" data-ent="1">
+        <div class="card">
+          <h3>Receber no Pix, dentro da live</h3>
+          <p class="sub">O cliente paga pelo Pix sem sair da live, e o dinheiro cai numa conta de pagamento <b>em seu nome</b> no Asaas — nunca na conta do Moviki. Taxa do Moviki: <b>0%</b> no lançamento.</p>
+          <div class="avisoTarifa">
+            <b>O que você recebe, na prática</b>
+            <p>O Asaas desconta <b>R$ 1,99 por Pix recebido</b> — é tarifa dele, não do Moviki, e vale por pedido, não por real vendido. Num pedido de R$ 20 você fica com R$ 18,01; num de R$ 50, com R$ 48,01. Por isso o <b>pedido mínimo é R$ 20</b>: quanto maior a sacolinha, menor o peso da tarifa.</p>
+          </div>
+          <div id="pxCarregando" class="pPreco">Carregando…</div>
+          <div id="pxSemConta" class="pxForm escondido">
+            <div class="pxTipo"><label><input type="radio" name="pxTipo" value="pf" checked> Pessoa física (CPF)</label><label><input type="radio" name="pxTipo" value="pj"> Empresa (CNPJ)</label></div>
+            <input class="campo" id="pxNome" maxlength="80" placeholder="Nome completo (ou razão social)">
+            <div class="linha2"><input class="campo" id="pxDoc" maxlength="18" inputmode="numeric" placeholder="CPF"><input class="campo" id="pxNasc" type="date" title="Data de nascimento"></div>
+            <select class="campo escondido" id="pxTipoEmp" style="margin-top:8px"><option value="MEI">MEI</option><option value="LIMITED">Limitada (LTDA)</option><option value="INDIVIDUAL">Empresário individual</option><option value="ASSOCIATION">Associação</option></select>
+            <div class="linha2"><input class="campo" id="pxEmail" maxlength="120" type="email" placeholder="E-mail da conta"><input class="campo" id="pxCel" maxlength="16" inputmode="tel" placeholder="Celular com DDD"></div>
+            <div class="linha2"><input class="campo" id="pxRenda" maxlength="12" inputmode="decimal" placeholder="Faturamento por mês (R$)"><input class="campo" id="pxCep" maxlength="9" inputmode="numeric" placeholder="CEP"></div>
+            <input class="campo" id="pxEnd" maxlength="120" placeholder="Rua / avenida" style="margin-top:8px">
+            <div class="linha2"><input class="campo" id="pxNum" maxlength="12" placeholder="Número"><input class="campo" id="pxBairro" maxlength="60" placeholder="Bairro"></div>
+            <input class="campo" id="pxComp" maxlength="60" placeholder="Complemento (opcional)" style="margin-top:8px">
+            <label class="pxAceite"><input type="checkbox" id="pxAceite"><span>Autorizo o Moviki a abrir uma conta de pagamento no Asaas em meu nome. Sei que o dinheiro das vendas cai nessa conta, que os saques são feitos pelo app ou site do Asaas, e aceito os termos de uso do Asaas. Os dados acima são meus e verdadeiros.</span></label>
+            <button type="button" class="btnGrad" id="pxCriar">Abrir minha conta de recebimento</button>
+            <div id="pxErro" class="msgErro escondido"></div>
+          </div>
+          <div id="pxComConta" class="escondido">
+            <div id="pxResumo" class="pPreco"></div>
+            <div class="pxEtapas" id="pxEtapas"></div>
+            <div id="pxDocs"></div>
+            <div class="pxSwitch"><span id="pxSwTxt">Pix na live desligado</span><button type="button" class="btnMini" id="pxLigar">Ligar</button></div>
+            <p class="sub" id="pxDica" style="margin:0"></p>
+            <button type="button" class="btnMini" id="pxAtualizar" style="margin-top:8px">Conferir de novo</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Pedidos de hoje</h3>
+          <p class="sub">Todo pedido pago aparece aqui na hora. Combine a retirada ou a entrega pelo WhatsApp do cliente e marque como entregue.</p>
+          <div class="kpis"><div class="kpi"><small>Pagos hoje</small><strong id="pxQtd">0</strong></div><div class="kpi"><small>Recebido hoje</small><strong id="pxTotal">R$ 0</strong></div></div>
+          <div id="pxPedidos"><div class="pPreco" style="margin-top:8px">Nenhum pedido hoje.</div></div>
+        </div>
+      </div>
+
+      <div class="painelAba" data-aba="agendar">
+        <div class="card">
+          <h3>Agendar a próxima live</h3>
+          <p class="sub">Quem abrir o link da sua live antes da hora vê o dia e o botão <b>Lembrar na minha agenda</b>. Divulgue o link com antecedência.</p>
+          <div class="linha2"><input class="campo" type="datetime-local" id="agQuando"><input class="campo" id="agTitulo" maxlength="60" placeholder="Sobre o que vai ser"></div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button type="button" class="btnSec" id="btnAgendar">Salvar agendamento</button><button type="button" class="btnMini perigo" id="btnDesagendar">Cancelar agendamento</button><button type="button" class="btnMini" id="btnCopiarLink">Copiar link da live</button></div>
+          <div id="agMsg" class="msgOk escondido"></div>
+        </div>
+      </div>
+
+      <!-- ===== Enterprise ===== -->
+      <div class="painelAba" data-aba="oferta" data-ent="1">
+        <div class="card">
+          <h3>Oferta relâmpago</h3>
+          <p class="sub">Um produto com preço da live e contagem regressiva no topo da tela. Com estoque, aparece <b>"Restam N"</b> — e quem baixa o número é você, a cada venda. Nunca invente escassez: o que a tela diz tem que ser verdade.</p>
+          <label class="rot">Produto</label><select class="campo" id="ofProd"></select>
+          <div class="linha2"><div><label class="rot">Preço normal</label><input class="campo" id="ofDe" maxlength="12" placeholder="20,00"></div><div><label class="rot">Preço da live</label><input class="campo" id="ofPor" maxlength="12" placeholder="15,00"></div></div>
+          <div class="linha2"><div><label class="rot">Duração</label><select class="campo" id="ofMin"><option value="5">5 min</option><option value="10" selected>10 min</option><option value="15">15 min</option><option value="30">30 min</option></select></div><div><label class="rot">Quantidade (opcional)</label><input class="campo" id="ofEstoque" type="number" min="0" max="999" placeholder="sem limite"></div></div>
+          <button type="button" class="btnGrad" id="btnOferta" style="margin-top:12px">Lançar oferta</button>
+          <div id="ofAtiva" class="escondido" style="margin-top:12px">
+            <div class="kpis"><div class="kpi"><small>Vendidos</small><strong id="ofVend">0</strong></div><div class="kpi"><small>Restam</small><strong id="ofResta">—</strong></div></div>
+            <div style="display:flex;gap:8px;margin-top:10px"><button type="button" class="btnGrad" id="btnVendeu" style="flex:2">Vendi +1</button><button type="button" class="btnSec" id="btnDesvendeu" style="flex:1">−1</button><button type="button" class="btnMini perigo" id="btnFimOferta">Encerrar</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="painelAba" data-aba="cupom" data-ent="1">
+        <div class="card">
+          <h3>Cupom da live</h3>
+          <p class="sub">O cupom aparece na tela e é liberado depois de alguns minutos assistindo — prende a pessoa na live. Ele entra sozinho na mensagem do WhatsApp; quem honra o desconto é você.</p>
+          <div class="linha2"><input class="campo" id="cuCodigo" maxlength="16" placeholder="Código (ex.: LIVE10)"><input class="campo" id="cuTexto" maxlength="40" placeholder="O que vale (ex.: 10% no pastel)"></div>
+          <label class="rot">Liberar depois de</label><select class="campo" id="cuMin"><option value="0">Na hora</option><option value="1">1 minuto assistindo</option><option value="3" selected>3 minutos assistindo</option><option value="5">5 minutos assistindo</option></select>
+          <div style="display:flex;gap:8px;margin-top:10px"><button type="button" class="btnSec" id="btnCupom">Mostrar cupom</button><button type="button" class="btnMini perigo" id="btnSemCupom">Tirar</button></div>
+        </div>
+        <div class="card">
+          <h3>Brinde garantido</h3>
+          <p class="sub">Brinde para quem pedir — por ordem de chegada, nunca por sorteio. Sorteio exige autorização do Ministério da Fazenda (Lei 5.768/71).</p>
+          <div class="linha2"><input class="campo" id="brTexto" maxlength="60" placeholder="Ex.: um caldo de cana grátis"><input class="campo" id="brN" type="number" min="0" max="999" placeholder="Para os N primeiros"></div>
+          <div style="display:flex;gap:8px;margin-top:10px"><button type="button" class="btnSec" id="btnBrinde">Mostrar brinde</button><button type="button" class="btnMini perigo" id="btnSemBrinde">Tirar</button></div>
+        </div>
+        <div class="card">
+          <h3>Estou aqui agora</h3>
+          <p class="sub">Mostra na live um botão <b>Como chegar</b> até a localização do seu negócio. É o que nenhuma live de marketplace tem: quem assiste pode ir até você.</p>
+          <button type="button" class="btnMini" id="btnLocal">Mostrar localização na live</button>
+        </div>
+      </div>
+
+      <div class="painelAba" data-aba="fila" data-ent="1">
+        <div class="card fila">
+          <h3>Fila de pedidos</h3>
+          <p class="sub">Cada toque em <b>Quero este</b> vira uma linha aqui, em ordem de chegada. Marque quando atender no WhatsApp.</p>
+          <div class="chatLista" id="filaLista"><div class="pPreco">Nenhum pedido ainda.</div></div>
+        </div>
+      </div>
+
+      <div class="painelAba" data-aba="dados" data-ent="1">
+        <div class="card">
+          <h3>Dados ao vivo</h3>
+          <p class="sub">Números contados de verdade, nesta live.</p>
+          <div class="kpis"><div class="kpi"><small>Assistindo agora</small><strong id="kAgora">0</strong></div><div class="kpi"><small>Pico</small><strong id="kPico">0</strong></div><div class="kpi"><small>Toques em "Quero"</small><strong id="kQuero">0</strong></div><div class="kpi"><small>Mensagens</small><strong id="kMsg">0</strong></div></div>
+          <div id="kPorProd" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <div class="painelAba" data-aba="cortes" data-ent="1">
+        <div class="card">
+          <h3>Cortes para Reels e Status</h3>
+          <p class="sub">Grave trechos de até 60 segundos durante a live e baixe no celular para postar no Instagram, TikTok e Status do WhatsApp. O vídeo fica só no seu aparelho.</p>
+          <button type="button" class="btnGrad" id="btnCorte">Gravar corte</button>
+          <div class="cortes" id="listaCortes"></div>
+        </div>
+      </div>
+
+      <div class="painelAba" data-aba="trava">
+        <div class="trava">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+          <h4>Ferramenta do Enterprise</h4>
+          <p>As ferramentas que mais vendem nas lives da China ficam no Enterprise:</p>
+          <ul>
+            <li>Pagamento por Pix dentro da live, direto na sua conta</li>
+            <li>Oferta relâmpago com contagem regressiva</li>
+            <li>Estoque ao vivo: "Restam 7"</li>
+            <li>Cupom da live liberado por tempo assistindo</li>
+            <li>Brinde garantido para os primeiros pedidos</li>
+            <li>Fila de pedidos em ordem de chegada</li>
+            <li>Dados ao vivo: pico, pedidos por produto</li>
+            <li>Cortes de 60 s para Reels e Status</li>
+            <li>"Estou aqui agora" com botão Como chegar</li>
+            <li>Lives de até 3 horas e sacolinha com 20 produtos</li>
+          </ul>
+          <a class="btnOuro" href="/?plano=enterprise&periodo=mensal">Conhecer o Enterprise</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="aceiteOv" class="escondido" style="position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center">
+  <div style="width:100%;max-width:560px;max-height:88vh;overflow:auto;background:var(--mv-surf);border-radius:20px 20px 0 0;padding:18px 16px calc(env(safe-area-inset-bottom) + 18px)">
+    <h3 style="margin:0 0 6px;font-size:17px">Regras da Live — leia antes da primeira</h3>
+    <p class="sub" style="margin:0 0 10px">O Moviki é um ambiente seguro para quem vende e para quem compra. Na live é <b>proibido</b> anunciar, mostrar ou vender:</p>
+    <ul class="dicas" style="margin:0 0 10px">
+      <li>Drogas, entorpecentes e qualquer coisa para usá-los.</li>
+      <li>Armas de fogo, munição, simulacros, explosivos, armas de choque e spray de pimenta.</li>
+      <li>Conteúdo sexual, nudez, serviços sexuais e produtos adultos.</li>
+      <li>Qualquer conteúdo com criança ou adolescente em situação sexual, de risco ou apresentando a venda.</li>
+      <li>Remédios, anabolizantes e emagrecedores de receita; cigarro, cigarro eletrônico e vape.</li>
+      <li>Rifa, sorteio, aposta e jogo de azar; pirâmide e promessa de lucro.</li>
+      <li>Produto roubado, falsificado, documento, dinheiro ou cartão falso.</li>
+      <li>Animais silvestres e qualquer produto proibido por lei.</li>
+    </ul>
+    <p class="sub" style="margin:0 0 10px">Também vale: preço anunciado é oferta e tem que ser cumprido; nada de escassez inventada; não filmar quem não autorizou. Quem descumprir tem a live encerrada na hora e pode perder a permissão de transmitir. Regras completas em <a href="https://moviki.com.br/regras-da-live.html" target="_blank" rel="noopener" style="color:var(--mv-ciano)">moviki.com.br/regras-da-live.html</a>.</p>
+    <label class="pxAceite"><input type="checkbox" id="aceiteChk"><span>Li e concordo com as Regras da Live (versão 1.0). Sou responsável pelo que transmito e pelo que vendo.</span></label>
+    <button type="button" class="btnGrad" id="aceiteOk">Concordo e quero fazer live</button>
+    <button type="button" class="btnSec" id="aceiteNao" style="width:100%;margin-top:8px">Agora não</button>
+  </div>
+</div>
+<div id="toast" class="escondido"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  window.MOVIKI_VERSAO='2026-09-12-beta1';
+  const API='https://moviki.com.br/api/live';
+  const app=initializeApp({
+    apiKey:"AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",authDomain:"app.moviki.com.br",projectId:"moviki-app",
+    storageBucket:"moviki-app.firebasestorage.app",messagingSenderId:"451920150738",appId:"1:451920150738:web:be458392064c964c792d0b"
+  });
+  try{initializeAppCheck(app,{provider:new ReCaptchaV3Provider('6LdwcHQtAAAAAJKPpfIrUr8QQ_PfvXl89uJFq9-w'),isTokenAutoRefreshEnabled:true});}catch(e){console.error('App Check:',e);}
+  const auth=getAuth(app); const db=getFirestore(app);
+
+  const el=id=>document.getElementById(id);
+  const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const ev=(n,p)=>{try{if(window.mvEv)window.mvEv(n,p||{});}catch(_){}};
+  const fotoOk=u=>typeof u==='string'&&/^https:\/\/[a-z0-9.-]*(ibb\.co|firebasestorage\.googleapis\.com|firebasestorage\.app)\//i.test(u);
+  const linkOk=u=>typeof u==='string'&&u.length<=500&&/^https:\/\/[a-z0-9.-]+\.[a-z]{2,}(\/|$|\?)/i.test(u);
+  function fmtPreco(v){var s=String(v==null?'':v).trim();if(!s)return '';var t=s.replace(/^R\$\s*/i,'').trim();if(/^\d{1,5}([.,]\d{1,2})?$/.test(t)){var n=parseFloat(t.replace(',','.'));if(!isNaN(n))return 'R$ '+n.toFixed(2).replace('.',',');}return 'R$ '+t;}
+  const precoLimpo=v=>String(v||'').replace(/[^\d.,]/g,'').slice(0,10);
+  const ms=t=>!t?0:(typeof t.toMillis==='function'?t.toMillis():(typeof t==='number'?t:(Date.parse(t)||0)));
+  function toast(t){const x=el('toast');x.textContent=t;x.classList.remove('escondido');clearTimeout(toast._t);toast._t=setTimeout(()=>x.classList.add('escondido'),3000);}
+  function mostrar(id){['stCarregando','stSemLogin','stSemPlano','stPronto'].forEach(k=>el(k).classList.toggle('escondido',k!==id));}
+
+  let user=null,uid='',neg={},nivel=null,produtos=[],sacola=[],fixado=null,est={};
+  let stream=null,modoCam='user',pc=null,noAr=false,inicioMs=0,tickT=null,pulsoT=null,contaT=null,chatDes=null,wake=null;
+  let pico=0,assistindo=0,msgs=[],encerrando=false;
+  const refLive=()=>doc(db,'negocios',uid,'estado','live');
+  /* ---- FILTRO DE CONTEUDO DA LIVE — 11/09/2026 ----
+     Mesma lista, byte a byte, em 4 lugares: estudio (moviki-app/live.html),
+     pagina publica (moviki/live.html), painel do dono (eikoadm01.html) e
+     servidor (moviki/api/live.js). A fonte e uma so; mudou aqui, muda nos 4.
+     Termos EXTRAS o dono cadastra no painel (configuracoes/liveTermos) sem
+     precisar de deploy. Filtro de palavra nao pega tudo: e a primeira
+     barreira. As outras sao o aceite das regras, a denuncia e o botao de
+     encerrar do dono. */
+  const MV_TERMOS={"grupos":{"drogas":["maconha","cocaina","crack","oxi","lsd","ecstasy","mdma","haxixe","skunk","heroina","ketamina","lanca perfume","cogumelo magico","cogumelos magicos","psilocibina","thc","cbd","entorpecente","entorpecentes"],"armas":["arma de fogo","armas de fogo","pistola","pistolas","revolver","revolveres","fuzil","fuzis","espingarda","espingardas","carabina","metralhadora","submetralhadora","municao","municoes","simulacro","explosivo","explosivos","dinamite","granada","soco ingles","taser","arma de choque","spray de pimenta","silenciador"],"sexual":["sexo","porno","pornografia","conteudo adulto","nude","nudes","pack de fotos","acompanhante","acompanhantes","garota de programa","garoto de programa","programa sexual","onlyfans","xvideos","sexo ao vivo","erotico","erotica","sex shop","vibrador","novinha","novinhas"],"medicamentos":["anabolizante","anabolizantes","esteroide","esteroides","sibutramina","ozempic","mounjaro","semaglutida","tirzepatida","tarja preta","receita controlada","rivotril","clonazepam","ritalina","zolpidem","viagra","cytotec","misoprostol","abortivo"],"tabaco":["vape","vapes","pod descartavel","cigarro eletronico","cigarros eletronicos","juul","cigarro","cigarros","tabaco"],"fraude":["dinheiro falso","nota falsa","notas falsas","cedula falsa","cartao clonado","cartoes clonados","documento falso","cnh falsa","rg falso","diploma falso","atestado falso","conta hackeada","dados de cartao","roubado","roubada","roubados","furtado","furtada"],"apostas":["bet365","rifa","rifas","sorteio","sorteios","jogo do bicho","aposta","apostas","bet","cassino","tigrinho","fortune tiger","bingo"],"animais":["animal silvestre","animais silvestres","trafico de animais"],"golpe":["piramide financeira","renda garantida","lucro garantido","dinheiro facil"]},"excecoes":["pistola de agua","pistola de cola","pistola de pintura","pistola de ar","pistola de solda","sexo do bebe","beijo roubado","beijos roubados","bingo de sabores"]};
+  let MV_TERMOS_EXTRAS=[];
+  const MV_LEET={'0':'o','@':'a','4':'a','1':'i','!':'i','3':'e','$':'s'};
+  /* digito vira letra so ENTRE letras (c0caina -> cocaina), sem estragar bet365 */
+  function mvNormaliza(s){return (' '+String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/([a-z])([0@41!3$]+)(?=[a-z]|[^a-z0-9]|$)/g,(m,a,d)=>a+d.split('').map(c=>MV_LEET[c]).join('')).replace(/[^a-z0-9]+/g,' ')+' ');}
+  function mvProibido(s){
+    let n=mvNormaliza(s);
+    MV_TERMOS.excecoes.forEach(e=>{n=n.split(' '+e+' ').join(' ');});
+    for(const g in MV_TERMOS.grupos)for(const t of MV_TERMOS.grupos[g])if(n.includes(' '+t+' '))return {grupo:g,termo:t};
+    for(const t of MV_TERMOS_EXTRAS){const x=mvNormaliza(t).trim();if(x&&n.includes(' '+x+' '))return {grupo:'extra',termo:x};}
+    return null;
+  }
+
+  const ACEITE_VERSAO='1.0';
+  let aceiteOk=false, liveDocId='', liveIdServidor='';
+  function barrar(texto,onde){const p=mvProibido(texto);if(!p)return false;
+    toast('"'+String(texto).slice(0,40)+'" não pode ir para a live ('+p.termo+'). Veja as Regras da Live.');ev('live_termo_barrado',{grupo:p.grupo,onde});return true;}
+
+  const ent=()=>nivel&&nivel.nivel==='enterprise';
+
+  /* ================= entrada ================= */
+  onAuthStateChanged(auth,async u=>{
+    if(!u){mostrar('stSemLogin');return;}
+    user=u; uid=u.uid;
+    try{
+      const [n,s]=await Promise.all([getDoc(doc(db,'negocios',uid)),getDoc(refLive()).catch(()=>null)]);
+      neg=n.exists()?n.data():{}; est=s&&s.exists()?s.data():{};
+      const r=await chamarApi('nivel');
+      if(r.erro==='plano'){mostrar('stSemPlano');ev('live_sem_plano');return;}
+      if(!r.ok){el('stCarregando').innerHTML='Não deu para abrir o estúdio agora ('+esc(r.erro||'rede')+'). Tente de novo em instantes.';return;}
+      nivel=r; montar();
+    }catch(e){el('stCarregando').textContent='Não deu para abrir o estúdio agora. Tente de novo em instantes.';}
+  });
+
+  async function chamarApi(acao,extra){
+    try{
+      const tk=await user.getIdToken();
+      const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({idToken:tk,acao},extra||{}))});
+      const j=await r.json().catch(()=>({}));
+      return Object.assign({status:r.status},j);
+    }catch(e){return {erro:'rede'};}
+  }
+
+  function montar(){
+    mostrar('stPronto');
+    el('lvNivel').textContent=ent()?'ENTERPRISE':'PREMIUM'; el('lvNivel').className='lvNivel '+nivel.nivel;
+    el('limiteTxt').textContent=nivel.limiteMin>=60?(nivel.limiteMin/60)+' h':nivel.limiteMin+' min';
+    /* cardapio = lista de categorias {categoria, produtos:[{nome,preco,fotos,descricao}]} */
+    (Array.isArray(neg.cardapio)?neg.cardapio:[]).forEach(c=>(c&&Array.isArray(c.produtos)?c.produtos:[]).forEach(p=>{
+      if(p&&p.nome)produtos.push({nome:String(p.nome).slice(0,60),preco:String(p.preco||'').slice(0,12),foto:(Array.isArray(p.fotos)&&fotoOk(p.fotos[0]))?p.fotos[0]:'',link:'',precoLive:''});
+    }));
+    /* o que ja estava na sacola da ultima live volta marcado */
+    if(Array.isArray(est.sacola))est.sacola.forEach(s=>{const p=produtos.find(x=>x.nome===s.nome);if(p){p.link=s.link||'';p.precoLive=s.precoLive||'';}else if(s&&s.nome)produtos.push({nome:s.nome,preco:s.preco||'',foto:fotoOk(s.foto)?s.foto:'',link:s.link||'',precoLive:s.precoLive||''});
+      if(s&&s.nome)sacola.push(s.nome);});
+    sacola=sacola.slice(0,nivel.sacolaMax);
+    el('titulo').value=est.titulo||'';
+    if(est.agendada&&est.agendada.em){const d=new Date(ms(est.agendada.em));el('agQuando').value=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);el('agTitulo').value=est.agendada.titulo||'';}
+    montarAbas(); pintarProdutos(); pintarOfertaSelect(); ouvirPedidos();
+    getDoc(doc(db,'negocios',uid,'estado','liveAceite')).then(a=>{aceiteOk=!!(a.exists()&&a.data().versao===ACEITE_VERSAO);}).catch(()=>{});
+    onSnapshot(doc(db,'configuracoes','liveTermos'),t=>{const d=t.exists()?(t.data()||{}):{};
+      MV_TERMOS_EXTRAS=Array.isArray(d.extras)?d.extras.filter(x=>typeof x==='string').slice(0,300):[];
+      aplicarChaveMestra(d.liveDesligada===true);},()=>{});
+    /* moderacao: se o dono do Moviki encerrar a live, o estudio para na hora */
+    onSnapshot(refLive(),sn=>{const d=sn.exists()?sn.data():{};if(noAr&&d.encerradaPor==='moviki')encerradaPeloMoviki(d.motivoModeracao||'');},()=>{});
+    el('lnkVoltar').href='/';
+  }
+
+  /* ================= abas ================= */
+  const ABAS=[['produtos','Produtos'],['chat','Chat'],['pix','Receber no Pix',1],['agendar','Agendar'],['oferta','Oferta relâmpago',1],['cupom','Cupom e brinde',1],['fila','Fila de pedidos',1],['dados','Dados',1],['cortes','Cortes',1]];
+  const CAD='<svg class="cad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+  function montarAbas(){
+    const box=el('abas'); box.innerHTML='';
+    ABAS.forEach(([k,t,e])=>{const b=document.createElement('button');b.type='button';b.className='aba'+(k==='produtos'?' on':'');b.dataset.k=k;
+      b.innerHTML=esc(t)+(e&&!ent()?CAD:'')+(k==='fila'?' <b id="nFila" class="escondido">0</b>':'')+(k==='pix'?' <b id="nPix" class="escondido">0</b>':'');
+      b.onclick=()=>{abrirAba(k,e&&!ent());if(k==='pix'&&ent())pixAbrir();};box.appendChild(b);});
+  }
+  function abrirAba(k,trava){
+    document.querySelectorAll('.aba').forEach(b=>b.classList.toggle('on',b.dataset.k===k));
+    document.querySelectorAll('.painelAba').forEach(p=>p.classList.toggle('on',trava?p.dataset.aba==='trava':p.dataset.aba===k));
+    if(trava)ev('live_trava_enterprise',{aba:k});
+  }
+
+  /* ================= produtos ================= */
+  function pintarProdutos(){
+    const box=el('listaProd'); box.innerHTML='';
+    if(!produtos.length){box.innerHTML='<div class="pPreco">Seu cardápio está vazio. Adicione um produto aqui embaixo ou cadastre no painel.</div>';return;}
+    produtos.forEach((p,i)=>{
+      const naSac=sacola.includes(p.nome), dest=fixado===p.nome;
+      const w=document.createElement('div');
+      w.innerHTML='<div class="prod"><div class="pFoto"'+(p.foto?' style="background-image:url(&quot;'+esc(p.foto)+'&quot;)"':'')+'></div><div class="pInfo"><div class="pNome">'+esc(p.nome)+'</div><div class="pPreco">'+esc(fmtPreco(p.preco)||'sem preço')+(p.precoLive?' · live '+esc(fmtPreco(p.precoLive)):'')+(p.link?' · com link':'')+'</div></div>'+
+        '<div class="pAcoes"><button type="button" class="btnMini'+(naSac?' on':'')+'" data-a="sac">'+(naSac?'Na sacolinha':'+ Sacolinha')+'</button><button type="button" class="btnMini'+(dest?' on':'')+'" data-a="dest">'+(dest?'Em destaque':'Destacar')+'</button><button type="button" class="btnMini" data-a="edit">Editar</button></div></div>'+
+        '<div class="prodEdit escondido"><input class="campo" data-c="precoLive" maxlength="12" placeholder="Preço da live" value="'+esc(p.precoLive)+'"><input class="campo" data-c="link" maxlength="500" placeholder="Link do produto (https://…)" value="'+esc(p.link)+'"></div>';
+      w.querySelector('[data-a="sac"]').onclick=()=>{
+        if(naSac){sacola=sacola.filter(n=>n!==p.nome);if(fixado===p.nome)fixado=null;}
+        else{if(barrar(p.nome,'sacola'))return;if(sacola.length>=nivel.sacolaMax){toast('Sua sacolinha aceita até '+nivel.sacolaMax+' produtos'+(ent()?'.':'. No Enterprise, 20.'));return;}sacola.push(p.nome);}
+        pintarProdutos();pintarOfertaSelect();publicarProdutos();};
+      w.querySelector('[data-a="dest"]').onclick=()=>{
+        if(dest){fixado=null;}else{if(barrar(p.nome,'destaque'))return;fixado=p.nome;if(!sacola.includes(p.nome)){if(sacola.length>=nivel.sacolaMax)sacola.shift();sacola.push(p.nome);}ev('live_destacar');}
+        pintarProdutos();pintarOfertaSelect();publicarProdutos();};
+      w.querySelector('[data-a="edit"]').onclick=()=>w.querySelector('.prodEdit').classList.toggle('escondido');
+      w.querySelectorAll('[data-c]').forEach(inp=>inp.addEventListener('change',()=>{
+        const c=inp.dataset.c, v=inp.value.trim();
+        if(c==='link'&&v&&!linkOk(v)){toast('O link precisa começar com https://');inp.value=p.link;return;}
+        p[c]=c==='precoLive'?precoLimpo(v):v; pintarProdutos(); publicarProdutos();}));
+      box.appendChild(w);
+    });
+  }
+  el('btnNovoProd').onclick=()=>{
+    const nome=el('npNome').value.trim().slice(0,60), preco=precoLimpo(el('npPreco').value), link=el('npLink').value.trim();
+    if(nome.length<2){toast('Dê um nome ao produto.');return;}
+    if(barrar(nome,'produto_novo'))return;
+    if(link&&!linkOk(link)){toast('O link precisa começar com https://');return;}
+    if(produtos.some(p=>p.nome===nome)){toast('Já existe um produto com esse nome.');return;}
+    produtos.unshift({nome,preco,foto:'',link,precoLive:''});
+    el('npNome').value='';el('npPreco').value='';el('npLink').value='';pintarProdutos();pintarOfertaSelect();
+  };
+  const itemPub=n=>{const p=produtos.find(x=>x.nome===n);if(!p)return null;const o={nome:p.nome,preco:p.preco};if(p.foto)o.foto=p.foto;if(p.link)o.link=p.link;if(p.precoLive)o.precoLive=p.precoLive;return o;};
+  let pubT=null;
+  function publicarProdutos(){
+    clearTimeout(pubT);
+    pubT=setTimeout(()=>{
+      const dados={sacola:sacola.map(itemPub).filter(Boolean),fixado:fixado?itemPub(fixado):null,atualizadoEm:serverTimestamp()};
+      setDoc(refLive(),dados,{merge:true}).catch(()=>toast('Não salvou. Confira a internet.'));
+    },350);
+  }
+
+  /* ================= camera ================= */
+  async function ligarCamera(){
+    try{
+      const novo=await navigator.mediaDevices.getUserMedia({
+        audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},
+        video:{facingMode:modoCam,width:{ideal:720},height:{ideal:1280},frameRate:{ideal:30,max:30}}
+      });
+      if(stream)stream.getTracks().forEach(t=>t.stop());
+      stream=novo; const v=el('prev'); v.srcObject=stream; v.classList.toggle('espelho',modoCam==='user');
+      el('camVazia').classList.add('escondido'); el('camBase').classList.remove('escondido'); el('btnIniciar').disabled=false;
+      return true;
+    }catch(e){
+      el('camVazia').classList.remove('escondido');
+      el('camVazia').firstElementChild.textContent=(e&&e.name==='NotAllowedError')?'O navegador bloqueou a câmera. Toque no cadeado ao lado do endereço e permita câmera e microfone.':'Não achamos uma câmera neste aparelho.';
+      return false;
+    }
+  }
+  el('btnCamera').onclick=ligarCamera;
+  el('btnVirar').onclick=async()=>{
+    modoCam=modoCam==='user'?'environment':'user';
+    try{
+      const nv=await navigator.mediaDevices.getUserMedia({video:{facingMode:modoCam,width:{ideal:720},height:{ideal:1280},frameRate:{ideal:30,max:30}}});
+      const trilha=nv.getVideoTracks()[0], velha=stream.getVideoTracks()[0];
+      if(pc){const s=pc.getSenders().find(x=>x.track&&x.track.kind==='video');if(s)await s.replaceTrack(trilha);}
+      stream.removeTrack(velha);velha.stop();stream.addTrack(trilha);
+      el('prev').srcObject=stream; el('prev').classList.toggle('espelho',modoCam==='user');
+    }catch(e){modoCam=modoCam==='user'?'environment':'user';toast('Não deu para trocar a câmera.');}
+  };
+  el('btnMic').onclick=()=>{const a=stream&&stream.getAudioTracks()[0];if(!a)return;a.enabled=!a.enabled;el('btnMic').classList.toggle('off',!a.enabled);toast(a.enabled?'Microfone ligado':'Microfone desligado — ninguém te ouve');};
+
+  /* ================= transmissao (WHIP) ================= */
+  async function esperarIce(p){
+    if(p.iceGatheringState==='complete')return;
+    await new Promise(r=>{const t=setTimeout(r,2500);p.addEventListener('icegatheringstatechange',()=>{if(p.iceGatheringState==='complete'){clearTimeout(t);r();}});});
+  }
+  async function conectar(whip){
+    const p=new RTCPeerConnection({iceServers:[{urls:'stun:stun.cloudflare.com:3478'}],bundlePolicy:'max-bundle'});
+    stream.getTracks().forEach(t=>p.addTransceiver(t,{direction:'sendonly'}));
+    await p.setLocalDescription(await p.createOffer());
+    await esperarIce(p);
+    const r=await fetch(whip,{method:'POST',headers:{'Content-Type':'application/sdp'},body:p.localDescription.sdp});
+    if(!r.ok)throw new Error('whip '+r.status);
+    await p.setRemoteDescription({type:'answer',sdp:await r.text()});
+    /* teto de 1,8 Mbps no video: cabe no 4G da feira sem travar */
+    try{const s=p.getSenders().find(x=>x.track&&x.track.kind==='video');const pr=s.getParameters();pr.encodings=pr.encodings&&pr.encodings.length?pr.encodings:[{}];pr.encodings[0].maxBitrate=1800000;await s.setParameters(pr);}catch(_){}
+    return p;
+  }
+  let whipAtual='',whepAtual='';
+  el('btnIniciar').onclick=async()=>{
+    const b=el('btnIniciar'); b.disabled=true; b.lastChild.textContent='Conectando…'; el('erroIniciar').classList.add('escondido');
+    const volta=()=>{b.disabled=false;b.lastChild.textContent='Entrar ao vivo';};
+    if(!aceiteOk){volta();abrirAceite();return;}
+    const titulo=el('titulo').value.trim().slice(0,60);
+    if(barrar(titulo,'titulo')){volta();return;}
+    for(const n of sacola.concat(fixado?[fixado]:[])){if(barrar(n,'inicio')){volta();return;}}
+    if(!stream&&!(await ligarCamera())){volta();return;}
+    const r=await chamarApi('iniciar',{titulo,produtos:sacola.concat(fixado?[fixado]:[])});
+    if(!r.ok){
+      if(r.erro==='aceite'){aceiteOk=false;volta();abrirAceite();return;}
+      const txt={plano:'A live faz parte do Premium e do Enterprise.',config:'A live ainda está sendo ligada do nosso lado. Tente mais tarde.',cloudflare:'O serviço de vídeo não respondeu. Tente de novo em 1 minuto.',token:'Sua sessão venceu. Volte ao painel e entre de novo.',rede:'Sem internet. Confira o sinal.',firestore:'Falha do nosso lado. Tente de novo em instantes.',
+        bloqueado:'Sua conta está sem permissão para fazer live'+(r.ate?' até '+new Date(r.ate).toLocaleDateString('pt-BR'):'')+', por descumprir as Regras da Live. Fale com o suporte do Moviki pela caixa de mensagens.',
+        conteudo:'"'+(r.texto||'')+'" não pode ir para a live ('+(r.termo||'')+'). Tire da sacolinha ou do título e tente de novo.',
+        desligada:'As transmissões ao vivo estão temporariamente desligadas para manutenção. Volte daqui a pouco.',
+        beta:'A live ainda está em preparação e será liberada em breve. Você vai ser avisado quando abrir.'}[r.erro]||'Não deu para começar agora.';
+      el('erroIniciar').textContent=txt; el('erroIniciar').classList.remove('escondido'); b.disabled=false; b.lastChild.textContent='Entrar ao vivo'; return;
+    }
+    whipAtual=r.whip; whepAtual=r.whep;
+    try{pc=await conectar(whipAtual);}catch(e){
+      el('erroIniciar').textContent='A conexão de vídeo falhou. Troque de Wi-Fi para 4G (ou o contrário) e tente de novo.';el('erroIniciar').classList.remove('escondido');b.disabled=false;b.lastChild.textContent='Entrar ao vivo';return;}
+    vigiar(pc);
+    noAr=true; inicioMs=Date.now(); pico=0; msgs=[]; document.body.classList.add('noAr');
+    await setDoc(refLive(),{
+      ativa:true,titulo:el('titulo').value.trim().slice(0,60),inicio:serverTimestamp(),pulso:serverTimestamp(),fim:null,
+      whep:whepAtual,nivel:nivel.nivel,assistindo:0,sacola:sacola.map(itemPub).filter(Boolean),fixado:fixado?itemPub(fixado):null,
+      oferta:null,cupom:null,brinde:null,local:false,agendada:null,atualizadoEm:serverTimestamp()
+    },{merge:true}).catch(()=>{});
+    ev('live_iniciar',{nivel:nivel.nivel});
+    /* sessao da live para o painel do dono: o id usa o INICIO gravado pelo
+       servidor, o mesmo que o robo poe nos pedidos (liveId) */
+    try{const lv=await getDoc(refLive());const im=lv.exists()&&lv.data().inicio&&lv.data().inicio.toMillis?lv.data().inicio.toMillis():Date.now();
+      liveIdServidor=String(im); liveDocId=uid+'_'+im;
+      await setDoc(doc(db,'lives',liveDocId),{lojistaUid:uid,slug:String(neg.slug||'').slice(0,40),nome:String(neg.nome||'').slice(0,80),nivel:nivel.nivel,titulo:el('titulo').value.trim().slice(0,60),
+        liveId:liveIdServidor,inicioMs:im,pulsoMs:Date.now(),ativa:true,pico:0,assistindo:0,mensagens:0,queros:0,duracaoMin:0});
+    }catch(_){}
+    el('boxAntes').classList.add('escondido'); el('boxDurante').classList.remove('escondido'); el('boxResumo').classList.add('escondido');
+    el('pillVivo').classList.remove('escondido'); el('pillOlho').classList.remove('escondido');
+    try{wake=await navigator.wakeLock.request('screen');}catch(_){}
+    tickT=setInterval(tick,1000); pulsoT=setInterval(pulso,45000); contaT=setInterval(contar,30000); setTimeout(contar,8000);
+    ouvirChat(); abrirAba('chat',false);
+  };
+  function vigiar(p){
+    p.onconnectionstatechange=async()=>{
+      if(!noAr||p!==pc)return;
+      if(p.connectionState==='failed'||p.connectionState==='disconnected'){
+        aviso('Sinal fraco — reconectando…');
+        setTimeout(async()=>{ if(!noAr||p!==pc||p.connectionState==='connected')return;
+          try{try{p.close();}catch(_){} pc=await conectar(whipAtual);vigiar(pc);aviso('');}catch(e){aviso('Sem conexão com o vídeo. Confira a internet.');} },3000);
+      }else if(p.connectionState==='connected')aviso('');
+    };
+  }
+  function aviso(t){el('camAviso').textContent=t;el('camAviso').classList.toggle('escondido',!t);}
+  function tick(){
+    const s=Math.floor((Date.now()-inicioMs)/1000), lim=nivel.limiteMin*60;
+    el('tempo').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+    if(s===lim-300)aviso('Faltam 5 minutos para o limite desta live.');
+    if(s===lim-290)setTimeout(()=>aviso(''),8000);
+    if(s>=lim&&!encerrando){toast('A live chegou ao limite do seu plano.');encerrar();}
+  }
+  function statsSessao(){const q=msgs.filter(m=>m.tipo==='quero').length,c=msgs.filter(m=>m.tipo==='msg').length;
+    return {pulsoMs:Date.now(),assistindo,pico,mensagens:c,queros:q,duracaoMin:Math.round((Date.now()-inicioMs)/60000)};}
+  function pulso(){if(!noAr)return;updateDoc(refLive(),{pulso:serverTimestamp(),assistindo}).catch(()=>{});
+    if(liveDocId)updateDoc(doc(db,'lives',liveDocId),statsSessao()).catch(()=>{});}
+  async function contar(){
+    if(!noAr)return;
+    try{
+      const q=query(collection(db,'negocios',uid,'livepresenca'),where('em','>=',Timestamp.fromMillis(Date.now()-100000)));
+      const c=await getCountFromServer(q); assistindo=c.data().count||0; pico=Math.max(pico,assistindo);
+      el('nOlho').textContent=assistindo; el('kAgora').textContent=assistindo; el('kPico').textContent=pico;
+      updateDoc(refLive(),{assistindo}).catch(()=>{});
+    }catch(_){}
+  }
+  el('btnEncerrar').onclick=()=>{if(confirm('Encerrar a live agora?'))encerrar();};
+  async function encerrar(){
+    if(encerrando)return; encerrando=true;
+    noAr=false; clearInterval(tickT);clearInterval(pulsoT);clearInterval(contaT); document.body.classList.remove('noAr');
+    if(gravador&&gravador.state==='recording')gravador.stop();
+    try{pc&&pc.close();}catch(_){} pc=null;
+    try{wake&&wake.release();}catch(_){}
+    await updateDoc(refLive(),{ativa:false,fim:serverTimestamp(),oferta:null,cupom:null,brinde:null,local:false,assistindo:0}).catch(()=>{});
+    if(liveDocId)await updateDoc(doc(db,'lives',liveDocId),Object.assign(statsSessao(),{ativa:false,fimMs:Date.now()})).catch(()=>{});
+    ev('live_encerrar',{nivel:nivel.nivel,min:Math.round((Date.now()-inicioMs)/60000)});
+    el('pillVivo').classList.add('escondido'); el('pillOlho').classList.add('escondido'); aviso('');
+    el('boxDurante').classList.add('escondido'); el('boxAntes').classList.remove('escondido');
+    el('btnIniciar').disabled=false; el('btnIniciar').lastChild.textContent='Entrar ao vivo de novo';
+    mostrarResumo(); encerrando=false;
+  }
+  /* Encerrada pelo dono do Moviki: para camera e transmissao, nao grava nada
+     (o estado ja foi gravado pelo dono) e explica o motivo. */
+  function encerradaPeloMoviki(motivo){
+    noAr=false; clearInterval(tickT);clearInterval(pulsoT);clearInterval(contaT); document.body.classList.remove('noAr');
+    try{pc&&pc.close();}catch(_){} pc=null; try{wake&&wake.release();}catch(_){}
+    if(stream)stream.getTracks().forEach(t=>t.stop()); stream=null; el('prev').srcObject=null;
+    el('pillVivo').classList.add('escondido'); el('pillOlho').classList.add('escondido'); aviso('');
+    el('boxDurante').classList.add('escondido'); el('boxAntes').classList.remove('escondido'); el('btnIniciar').disabled=true;
+    el('erroIniciar').textContent='Sua live foi encerrada pela equipe do Moviki por descumprir as Regras da Live'+(motivo?' ('+motivo+')':'')+'. Fale com o suporte pela caixa de mensagens do painel.';
+    el('erroIniciar').classList.remove('escondido'); ev('live_encerrada_moviki');
+  }
+  /* Chave-mestra do dono (configuracoes/liveTermos.liveDesligada): desliga a
+     live inteira sem deploy. Quem ja esta no ar cai; quem nao esta, nao entra.
+     O servidor recusa de qualquer jeito — isto aqui so evita o susto. */
+  let mestraOff=false;
+  function aplicarChaveMestra(off){
+    if(off===mestraOff)return; mestraOff=off;
+    const b=el('btnIniciar');
+    if(off){
+      if(noAr){encerrar().then(()=>{b.disabled=true;el('erroIniciar').classList.remove('escondido');}).catch(()=>{});}
+      b.disabled=true;
+      el('erroIniciar').textContent='As transmissões ao vivo estão temporariamente desligadas para manutenção. Volte daqui a pouco.';
+      el('erroIniciar').classList.remove('escondido'); ev('live_desligada_moviki');
+    }else{
+      b.disabled=false; el('erroIniciar').classList.add('escondido');
+    }
+  }
+  window.addEventListener('beforeunload',e=>{if(noAr){e.preventDefault();e.returnValue='';}});
+  window.addEventListener('pagehide',()=>{if(noAr){try{updateDoc(refLive(),{ativa:false,fim:serverTimestamp()});}catch(_){}}});
+
+  function mostrarResumo(){
+    const min=Math.max(1,Math.round((Date.now()-inicioMs)/60000));
+    const q=msgs.filter(m=>m.tipo==='quero'), c=msgs.filter(m=>m.tipo==='msg');
+    let h='<h3>Resumo da live</h3><div class="kpis" style="margin-top:8px"><div class="kpi"><small>Duração</small><strong>'+min+' min</strong></div><div class="kpi"><small>Pico assistindo</small><strong>'+pico+'</strong></div>';
+    if(ent())h+='<div class="kpi"><small>Toques em "Quero"</small><strong>'+q.length+'</strong></div><div class="kpi"><small>Mensagens</small><strong>'+c.length+'</strong></div>';
+    h+='</div>';
+    if(ent())h+=porProduto(q);
+    else h+='<p class="sub" style="margin-top:10px">No Enterprise, este resumo mostra os pedidos por produto e a fila de quem tocou em "Quero".</p>';
+    el('boxResumo').innerHTML=h; el('boxResumo').classList.remove('escondido');
+  }
+  function porProduto(q){
+    const m={}; q.forEach(x=>{m[x.texto]=(m[x.texto]||0)+1;});
+    const l=Object.entries(m).sort((a,b)=>b[1]-a[1]); if(!l.length)return '';
+    const mx=l[0][1];
+    return l.slice(0,8).map(([n,v])=>'<div class="barraP"><span>'+esc(n)+'</span><i style="width:'+Math.max(6,Math.round(v/mx*45))+'%"></i><em>'+v+'</em></div>').join('');
+  }
+
+  /* ================= chat, fila e dados ================= */
+  let feitos={}; try{feitos=JSON.parse(sessionStorage.getItem('mv_live_fila')||'{}');}catch(_){}
+  function ouvirChat(){
+    if(chatDes)chatDes();
+    const q=query(collection(db,'negocios',uid,'livechat'),where('criadoEm','>=',Timestamp.fromMillis(inicioMs-60000)),orderBy('criadoEm','desc'),limit(200));
+    chatDes=onSnapshot(q,s=>{
+      msgs=[]; s.forEach(d=>{const m=d.data()||{};m.id=d.id;msgs.push(m);});
+      const box=el('chatLista'); box.innerHTML='';
+      if(!msgs.length)box.innerHTML='<div class="pPreco">Ninguém escreveu ainda.</div>';
+      msgs.slice(0,80).forEach(m=>{const x=document.createElement('div');x.className='cm'+(m.tipo==='quero'?' quero':'')+(m.tipo==='dono'?' dono':'')+(m.tipo==='venda'?' venda':'');
+        x.innerHTML='<div class="t"><b>'+esc(m.nome)+'</b>'+(m.tipo==='quero'?'quer: ':'')+(m.tipo==='venda'?'comprou ':'')+esc(m.texto)+'</div><button type="button" class="x" title="Apagar">×</button>';
+        x.querySelector('.x').onclick=()=>deleteDoc(doc(db,'negocios',uid,'livechat',m.id)).catch(()=>toast('Não apagou.'));
+        box.appendChild(x);});
+      /* fila (Enterprise): ordem de CHEGADA, a mais antiga no topo */
+      const q2=msgs.filter(m=>m.tipo==='quero').reverse();
+      const f=el('filaLista'); f.innerHTML='';
+      if(!q2.length)f.innerHTML='<div class="pPreco">Nenhum pedido ainda.</div>';
+      q2.forEach((m,i)=>{const x=document.createElement('label');x.className='cm quero'+(feitos[m.id]?' feito':'');
+        const h=m.criadoEm&&m.criadoEm.toDate?m.criadoEm.toDate().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
+        x.innerHTML='<input type="checkbox"'+(feitos[m.id]?' checked':'')+'><div class="t"><b>'+(i+1)+'. '+esc(m.nome)+'</b>'+esc(m.texto)+'</div><span class="h">'+h+'</span>';
+        x.querySelector('input').onchange=e=>{feitos[m.id]=e.target.checked;x.classList.toggle('feito',e.target.checked);try{sessionStorage.setItem('mv_live_fila',JSON.stringify(feitos));}catch(_){}};
+        f.appendChild(x);});
+      const abertos=q2.filter(m=>!feitos[m.id]).length, nf=el('nFila'); if(nf){nf.textContent=abertos;nf.classList.toggle('escondido',!abertos||!ent());}
+      el('kQuero').textContent=q2.length; el('kMsg').textContent=msgs.filter(m=>m.tipo==='msg').length;
+      el('kPorProd').innerHTML=porProduto(q2);
+    },()=>{});
+  }
+  el('formDono').addEventListener('submit',async e=>{
+    e.preventDefault(); const t=el('txtDono').value.replace(/\s+/g,' ').trim(); if(!t)return;
+    if(barrar(t,'chat_dono'))return;
+    if(!noAr){toast('O chat abre quando a live começa.');return;}
+    el('txtDono').value='';
+    try{await addDoc(collection(db,'negocios',uid,'livechat'),{nome:String(neg.nome||'Loja').slice(0,30),texto:t.slice(0,140),tipo:'dono',criadoEm:serverTimestamp(),expiraEm:Timestamp.fromMillis(Date.now()+30*86400000)});}
+    catch(_){toast('Não enviou.');el('txtDono').value=t;}
+  });
+
+  /* ================= agendar ================= */
+  el('btnAgendar').onclick=async()=>{
+    const v=el('agQuando').value; const d=v?new Date(v):null;
+    if(!d||isNaN(d)||d.getTime()<Date.now()-60000){toast('Escolha uma data e hora no futuro.');return;}
+    try{await setDoc(refLive(),{agendada:{em:d.toISOString(),titulo:el('agTitulo').value.trim().slice(0,60)}},{merge:true});
+      el('agMsg').textContent='Agendado. Link para divulgar: '+linkLive();el('agMsg').classList.remove('escondido');ev('live_agendar');}
+    catch(_){toast('Não salvou.');}
+  };
+  el('btnDesagendar').onclick=()=>setDoc(refLive(),{agendada:null},{merge:true}).then(()=>{el('agMsg').classList.add('escondido');toast('Agendamento cancelado.');}).catch(()=>{});
+  const linkLive=()=>'https://moviki.com.br/live/'+(neg.slug||'');
+  el('btnCopiarLink').onclick=async()=>{try{await navigator.clipboard.writeText(linkLive());toast('Link copiado.');}catch(_){toast(linkLive());}};
+  el('btnAvisar').onclick=async()=>{
+    const t=(neg.nome||'Estamos')+' ao vivo agora no Moviki! '+(el('titulo').value.trim()?el('titulo').value.trim()+' ':'')+'Entre: '+linkLive();
+    try{if(navigator.share){await navigator.share({text:t});return;}}catch(_){return;}
+    window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener');
+  };
+
+  /* ================= Enterprise: oferta ================= */
+  function pintarOfertaSelect(){
+    const s=el('ofProd'); const atual=s.value; s.innerHTML='';
+    const lista=sacola.length?sacola:produtos.map(p=>p.nome);
+    lista.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;s.appendChild(o);});
+    if(lista.includes(atual))s.value=atual; preencherPrecoDe();
+  }
+  function preencherPrecoDe(){const p=produtos.find(x=>x.nome===el('ofProd').value);if(p&&!el('ofDe').value)el('ofDe').value=p.preco||'';}
+  el('ofProd').onchange=()=>{el('ofDe').value='';preencherPrecoDe();};
+  let oferta=null;
+  el('btnOferta').onclick=async()=>{
+    if(!ent())return; if(!noAr){toast('Lance a oferta com a live no ar.');return;}
+    const nome=el('ofProd').value, de=precoLimpo(el('ofDe').value), por=precoLimpo(el('ofPor').value);
+    if(!nome||!por){toast('Escolha o produto e o preço da live.');return;}
+    if(barrar(nome,'oferta'))return;
+    const est_=Math.max(0,Math.min(999,parseInt(el('ofEstoque').value||'0',10)||0));
+    oferta={nome,precoDe:de,precoPor:por,fimEm:Date.now()+Number(el('ofMin').value)*60000,estoque:est_,vendidos:0};
+    await updateDoc(refLive(),{oferta}).catch(()=>toast('Não lançou.'));
+    if(fixado!==nome){fixado=nome;if(!sacola.includes(nome))sacola.push(nome);pintarProdutos();publicarProdutos();}
+    pintarOferta(); ev('live_oferta');
+  };
+  function pintarOferta(){
+    el('ofAtiva').classList.toggle('escondido',!oferta);
+    if(!oferta)return;
+    el('ofVend').textContent=oferta.vendidos; el('ofResta').textContent=oferta.estoque?Math.max(0,oferta.estoque-oferta.vendidos):'—';
+  }
+  function mudarVenda(d){if(!oferta)return;oferta.vendidos=Math.max(0,oferta.vendidos+d);if(oferta.estoque)oferta.vendidos=Math.min(oferta.vendidos,oferta.estoque);updateDoc(refLive(),{'oferta.vendidos':oferta.vendidos}).catch(()=>{});pintarOferta();}
+  el('btnVendeu').onclick=()=>mudarVenda(1); el('btnDesvendeu').onclick=()=>mudarVenda(-1);
+  el('btnFimOferta').onclick=()=>{oferta=null;updateDoc(refLive(),{oferta:null}).catch(()=>{});pintarOferta();};
+
+  /* ================= Enterprise: cupom, brinde, local ================= */
+  el('btnCupom').onclick=()=>{
+    if(!ent())return;
+    const codigo=el('cuCodigo').value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,16);
+    if(codigo.length<3){toast('O código precisa de pelo menos 3 letras ou números.');return;}
+    el('cuCodigo').value=codigo;
+    if(barrar(codigo+' '+el('cuTexto').value,'cupom'))return;
+    updateDoc(refLive(),{cupom:{codigo,texto:el('cuTexto').value.trim().slice(0,40),minutos:Number(el('cuMin').value)}}).then(()=>toast('Cupom na tela.')).catch(()=>toast('Só com a live no ar.'));
+  };
+  el('btnSemCupom').onclick=()=>updateDoc(refLive(),{cupom:null}).catch(()=>{});
+  el('btnBrinde').onclick=()=>{
+    if(!ent())return; const t=el('brTexto').value.trim().slice(0,60); if(t.length<3){toast('Diga qual é o brinde.');return;}
+    if(barrar(t,'brinde'))return;
+    const n=Math.max(0,Math.min(999,parseInt(el('brN').value||'0',10)||0));
+    updateDoc(refLive(),{brinde:{texto:t,primeiros:n}}).then(()=>toast('Brinde na tela.')).catch(()=>toast('Só com a live no ar.'));
+  };
+  el('btnSemBrinde').onclick=()=>updateDoc(refLive(),{brinde:null}).catch(()=>{});
+  let localOn=false;
+  el('btnLocal').onclick=()=>{
+    if(!ent())return;
+    if(typeof neg.lat!=='number'){toast('Ligue a localização do negócio no painel primeiro.');return;}
+    localOn=!localOn; el('btnLocal').classList.toggle('on',localOn); el('btnLocal').textContent=localOn?'Localização aparecendo na live':'Mostrar localização na live';
+    updateDoc(refLive(),{local:localOn}).catch(()=>{localOn=!localOn;toast('Só com a live no ar.');});
+  };
+
+  /* ================= Enterprise: cortes ================= */
+  let gravador=null,pedacos=[],corteT=null;
+  el('btnCorte').onclick=()=>{
+    if(!ent())return;
+    if(!stream){toast('Ligue a câmera primeiro.');return;}
+    if(gravador&&gravador.state==='recording'){gravador.stop();return;}
+    if(typeof MediaRecorder==='undefined'){toast('Este navegador não grava vídeo. Use o Chrome ou o Safari atualizado.');return;}
+    const tipos=['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9,opus','video/webm'];
+    const tipo=tipos.find(t=>MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t))||'';
+    try{gravador=new MediaRecorder(stream,tipo?{mimeType:tipo,videoBitsPerSecond:2500000}:undefined);}catch(e){toast('Não deu para gravar neste aparelho.');return;}
+    pedacos=[]; gravador.ondataavailable=e=>{if(e.data&&e.data.size)pedacos.push(e.data);};
+    const t0=Date.now();
+    gravador.onstop=()=>{
+      clearInterval(corteT); el('btnCorte').textContent='Gravar corte';
+      const b=new Blob(pedacos,{type:gravador.mimeType||'video/mp4'}); const ext=(gravador.mimeType||'').includes('webm')?'webm':'mp4';
+      const nome='corte-'+(neg.slug||'live')+'-'+new Date().toTimeString().slice(0,5).replace(':','h')+'.'+ext;
+      const url=URL.createObjectURL(b); const s=Math.round((Date.now()-t0)/1000);
+      const d=document.createElement('div');d.className='corte';
+      d.innerHTML='<span>'+esc(nome)+' · '+s+' s</span><a class="btnMini on" href="'+url+'" download="'+esc(nome)+'">Baixar</a>';
+      if(navigator.canShare){try{const f=new File([b],nome,{type:b.type});if(navigator.canShare({files:[f]})){const bt=document.createElement('button');bt.type='button';bt.className='btnMini';bt.textContent='Postar';bt.onclick=()=>navigator.share({files:[f]}).catch(()=>{});d.appendChild(bt);}}catch(_){}}
+      el('listaCortes').prepend(d); ev('live_corte',{s});
+    };
+    gravador.start(1000);
+    corteT=setInterval(()=>{const s=Math.round((Date.now()-t0)/1000);el('btnCorte').textContent='Parar ('+s+' s)';if(s>=60&&gravador.state==='recording')gravador.stop();},500);
+  };
+  /* ================= Enterprise: checkout Pix (11/09/2026) =================
+     A conta de recebimento e uma SUBCONTA Asaas em nome do lojista, aberta
+     pelo robo (moviki-robo, acoes loja_* dentro do api/pontos.js). A chave
+     dela nunca chega ao navegador. Os pedidos sao escritos so pelo servidor;
+     aqui o lojista le os proprios (regra v23). */
+  const ROBO='https://moviki-robo.vercel.app/api/pontos';
+  const hojeSP=()=>new Date(Date.now()-3*3600000).toISOString().slice(0,10);
+  const brl=v=>'R$ '+Number(v||0).toFixed(2).replace('.',',');
+  const ERR_PIX={sessao:'Sua sessão venceu. Volte ao painel e entre de novo.',nao_enterprise:'O Pix na live faz parte do Enterprise.',documento:'CPF ou CNPJ inválido.',nome:'Escreva o nome completo.',email:'E-mail inválido.',celular:'Celular com DDD, 11 dígitos.',cep:'CEP com 8 dígitos.',renda:'Informe o faturamento por mês.',nascimento:'Informe a data de nascimento.',tipoEmpresa:'Escolha o tipo de empresa.',endereco:'Preencha rua, número e bairro.',ja_existe:'Você já tem conta de recebimento.',config:'O recebimento ainda está sendo ligado do nosso lado. Tente mais tarde.',rede:'Sem internet. Confira o sinal.',interno:'Falha do nosso lado. Tente de novo em instantes.'};
+  async function chamarRobo(acao,extra){
+    try{const tk=await user.getIdToken();
+      const r=await fetch(ROBO,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({idToken:tk,acao},extra||{}))});
+      return await r.json().catch(()=>({ok:false,erro:'interno'}));
+    }catch(_){return {ok:false,erro:'rede'};}
+  }
+  let pixCarregado=false;
+  async function pixAbrir(forcar){
+    if(!ent()||(pixCarregado&&!forcar))return;
+    el('pxCarregando').classList.remove('escondido');
+    const r=await chamarRobo('loja_estado');
+    el('pxCarregando').classList.add('escondido');
+    if(!r.ok){el('pxCarregando').classList.remove('escondido');el('pxCarregando').textContent=ERR_PIX[r.erro]||'Não deu para carregar agora.';return;}
+    pixCarregado=true; pintarPix(r);
+  }
+  function pintarPix(r){
+    el('pxSemConta').classList.toggle('escondido',!!r.temConta);
+    el('pxComConta').classList.toggle('escondido',!r.temConta);
+    if(!r.temConta){if(!el('pxEmail').value)el('pxEmail').value=(user&&user.email)||'';if(!el('pxNome').value)el('pxNome').value='';return;}
+    el('pxResumo').textContent='Conta em nome de '+(r.nome||'—')+(r.documento?' · '+r.documento:'');
+    const e=r.etapas||{}, cls=v=>v==='aprovado'?'ok':(v==='recusado'?'nao':'esp');
+    el('pxEtapas').innerHTML=[['Dados comerciais',e.comercial],['Documentos',e.documentos],['Conta bancária (para saque)',e.bancario],['Aprovação geral',e.geral]]
+      .map(([t,v])=>'<div class="pxEt '+cls(v)+'">'+esc(t)+'<b>'+esc(v||'pendente')+'</b></div>').join('');
+    const docs=(r.docs||[]).filter(d=>d.status!=='aprovado');
+    el('pxDocs').innerHTML=docs.map(d=>'<div class="pxDoc"><span><b>'+esc(d.titulo)+'</b><br><small style="color:var(--mv-txt-3)">'+esc(d.status)+'</small></span>'+(d.link?'<a class="btnMini on" href="'+esc(d.link)+'" target="_blank" rel="noopener">Enviar</a>':'')+'</div>').join('');
+    el('pxLigar').textContent=r.ligado?'Desligar':'Ligar'; el('pxLigar').classList.toggle('on',!r.ligado);
+    el('pxSwTxt').textContent=r.ativo?'Pix na live LIGADO':(r.ligado?'Ligado — esperando a aprovação do Asaas':'Pix na live desligado');
+    el('pxDica').innerHTML=r.aprovada
+      ?'Para sacar, entre no app ou no site do Asaas com o e-mail desta conta (no primeiro acesso, use <b>Esqueci minha senha</b>).'
+      :'Envie os documentos pedidos acima. O Asaas analisa e aprova; enquanto isso o botão de compra não aparece na live.';
+    if(r.aprovada&&r.webhookOk===false)el('pxDica').innerHTML+='<br><b>Atenção:</b> o aviso automático de pagamento não ficou configurado. Os pedidos continuam funcionando, mas use <b>Conferir pagamento</b> em cada pedido. Fale com o suporte do Moviki.';
+  }
+  document.querySelectorAll('input[name="pxTipo"]').forEach(x=>x.addEventListener('change',()=>{
+    const pj=document.querySelector('input[name="pxTipo"]:checked').value==='pj';
+    el('pxDoc').placeholder=pj?'CNPJ':'CPF'; el('pxNasc').classList.toggle('escondido',pj); el('pxTipoEmp').classList.toggle('escondido',!pj);
+    el('pxNome').placeholder=pj?'Razão social':'Nome completo';
+  }));
+  el('pxCriar').onclick=async()=>{
+    const erroEl=el('pxErro'); erroEl.classList.add('escondido');
+    if(!el('pxAceite').checked){erroEl.textContent='Marque a autorização para abrir a conta.';erroEl.classList.remove('escondido');return;}
+    const pj=document.querySelector('input[name="pxTipo"]:checked').value==='pj';
+    const dados={tipo:pj?'pj':'pf',nome:el('pxNome').value,documento:el('pxDoc').value,nascimento:el('pxNasc').value,tipoEmpresa:el('pxTipoEmp').value,
+      email:el('pxEmail').value,celular:el('pxCel').value,renda:el('pxRenda').value,cep:el('pxCep').value,endereco:el('pxEnd').value,numero:el('pxNum').value,bairro:el('pxBairro').value,complemento:el('pxComp').value};
+    const b=el('pxCriar'); b.disabled=true; b.textContent='Abrindo a conta…';
+    const r=await chamarRobo('loja_criar',{dados});
+    b.disabled=false; b.textContent='Abrir minha conta de recebimento';
+    if(!r.ok){erroEl.textContent=r.erro==='asaas'?('O Asaas recusou: '+(r.mensagem||'confira os dados.')):(ERR_PIX[r.erro]||'Não deu certo. Confira os dados.');erroEl.classList.remove('escondido');return;}
+    ev('live_pix_conta'); pintarPix(r); toast('Conta aberta. Agora envie os documentos pedidos.');
+  };
+  el('pxLigar').onclick=async()=>{
+    const ligar=el('pxLigar').textContent==='Ligar';
+    const r=await chamarRobo('loja_ligar',{ligado:ligar});
+    if(!r.ok){toast(ERR_PIX[r.erro]||'Não mudou.');return;} pintarPix(r);
+  };
+  el('pxAtualizar').onclick=()=>pixAbrir(true);
+
+  let pedDes=null,pedVistos=null;
+  function ouvirPedidos(){
+    if(!ent()||pedDes)return;
+    const q=query(collection(db,'pedidos'),where('lojistaUid','==',uid),where('dia','==',hojeSP()));
+    pedDes=onSnapshot(q,s=>{
+      const l=[]; s.forEach(d=>{const x=d.data()||{};x.id=d.id;l.push(x);});
+      l.sort((a,b)=>ms(b.criadoEm)-ms(a.criadoEm));
+      const pagos=l.filter(x=>x.status==='pago'||x.status==='entregue');
+      el('pxQtd').textContent=pagos.length; el('pxTotal').textContent=brl(pagos.reduce((t,x)=>t+Number(x.total||0),0));
+      const abertos=l.filter(x=>x.status==='pago').length, nb=el('nPix'); if(nb){nb.textContent=abertos;nb.classList.toggle('escondido',!abertos);}
+      if(pedVistos){pagos.forEach(x=>{if(!pedVistos.has(x.id+x.status)&&x.status==='pago'){toast('Pedido pago: '+((x.itens&&x.itens[0]&&x.itens[0].nome)||'')+' — '+brl(x.total));}});}
+      pedVistos=new Set(l.map(x=>x.id+x.status));
+      const box=el('pxPedidos'); box.innerHTML='';
+      if(!l.length){box.innerHTML='<div class="pPreco" style="margin-top:8px">Nenhum pedido hoje.</div>';return;}
+      l.slice(0,60).forEach(x=>{
+        const it=(x.itens&&x.itens[0])||{}, c=x.comprador||{}, en=x.entrega||{};
+        const d=document.createElement('div'); d.className='ped';
+        const w=String(c.whatsapp||'').replace(/\D/g,'');
+        const msg='Oi, '+String(c.nome||'').split(' ')[0]+'! Aqui é '+(neg.nome||'a loja')+'. Recebi seu pedido #'+x.id.slice(-6).toUpperCase()+' ('+(it.qtd>1?it.qtd+'x ':'')+(it.nome||'')+'). '+(en.tipo==='entrega'?'Vamos combinar a entrega?':'Pode retirar aqui comigo.');
+        d.innerHTML='<div class="l1"><strong>'+esc((it.qtd>1?it.qtd+'x ':'')+(it.nome||''))+'</strong><span>'+esc(brl(x.total))+'</span><span class="st '+esc(x.status)+'">'+esc(x.status)+'</span></div>'+
+          '<div class="l2">'+esc(c.nome||'')+' · #'+esc(x.id.slice(-6).toUpperCase())+' · '+(en.tipo==='entrega'?'Entrega: '+esc(en.detalhe||''):'Retirada no local')+'</div>'+
+          '<div class="l3">'+(w&&x.status!=='aguardando'?'<a class="btnMini on" target="_blank" rel="noopener" href="https://wa.me/55'+w+'?text='+encodeURIComponent(msg)+'">WhatsApp do cliente</a>':'')+
+          (x.status==='pago'?'<button type="button" class="btnMini" data-p="entregue">Marcar entregue</button>':'')+
+          (x.status==='aguardando'?'<button type="button" class="btnMini" data-p="conferir">Conferir pagamento</button><button type="button" class="btnMini perigo" data-p="cancelado">Cancelar</button>':'')+'</div>';
+        d.querySelectorAll('[data-p]').forEach(b=>b.onclick=async()=>{
+          if(b.dataset.p==='cancelado'&&!confirm('Cancelar este Pix que ainda não foi pago?'))return;
+          b.disabled=true; const r=await chamarRobo('loja_pedido',{pedidoId:x.id,status:b.dataset.p});
+          if(!r.ok){b.disabled=false;toast(r.erro==='asaas'?('Asaas: '+(r.mensagem||'sem resposta')):'Não mudou.');return;}
+          if(b.dataset.p==='conferir'){b.disabled=false;toast(r.status==='pago'?'Pago! Pedido atualizado.':(r.status==='expirado'?'Este Pix venceu.':'Ainda não caiu.'));}
+        });
+        box.appendChild(d);
+      });
+    },()=>{});
+  }
+  /* ================= aceite das Regras da Live ================= */
+  function abrirAceite(){el('aceiteChk').checked=false;el('aceiteOv').classList.remove('escondido');ev('live_aceite_aberto');}
+  el('aceiteNao').onclick=()=>el('aceiteOv').classList.add('escondido');
+  el('aceiteOk').onclick=async()=>{
+    if(!el('aceiteChk').checked){toast('Marque que leu e concorda.');return;}
+    try{await setDoc(doc(db,'negocios',uid,'estado','liveAceite'),{versao:ACEITE_VERSAO,em:serverTimestamp(),email:String((user&&user.email)||'').slice(0,120)});
+      aceiteOk=true;el('aceiteOv').classList.add('escondido');toast('Pronto. Agora é só entrar ao vivo.');ev('live_aceite');}
+    catch(_){toast('Não salvou. Confira a internet.');}
+  };
+</script>
+</body>
+</html>
