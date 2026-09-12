@@ -1,5 +1,5 @@
 {
- "versao": "2026-09-11-2",
+ "versao": "2026-09-12-1",
  "atualizado": "2026-09-11",
  "itens": [
   {
@@ -27,6 +27,21 @@
    },
    "destaque": true,
    "dica": "Imprima em A5 (14,8 x 21 cm), papel couché 115 g ou mais. O QR code já é o seu."
+  },
+  {
+   "id": "video-influencer-lojista",
+   "tipo": "video",
+   "titulo": "Seu cliente saiu pra te procurar. Ele te achou?",
+   "formato": "Reels/Story 9:16",
+   "duracao": "1:07",
+   "peso": "17 MB",
+   "arquivo": "material/video-influencer-parceiro.mp4",
+   "capa": "material/video-influencer-parceiro-capa.webp",
+   "w": 1080,
+   "h": 1920,
+   "novo": true,
+   "legenda": "#publi Ninguém compra de quem não acha.\n\nNo Moviki o comerciante marca onde está hoje, monta a página com cardápio, fotos e promoções, e quem está por perto encontra. Vale para quem se move e para quem tem ponto fixo.\n\nTeste grátis por 30 dias, sem cartão. Comece pelo meu link: {link}",
+   "dica": "Vídeo apresentado, de 1 minuto. Bom para Reels e para mandar direto no WhatsApp do comerciante."
   },
   {
    "id": "video-cada-negocio",
