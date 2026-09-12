@@ -427,7 +427,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-12-beta1';
+  window.MOVIKI_VERSAO='2026-09-12-cors1';
   const API='https://moviki.com.br/api/live';
   const app=initializeApp({
     apiKey:"AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",authDomain:"app.moviki.com.br",projectId:"moviki-app",
@@ -496,7 +496,14 @@ svg{display:block}
   async function chamarApi(acao,extra){
     try{
       const tk=await user.getIdToken();
-      const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({idToken:tk,acao},extra||{}))});
+      /* text/plain de proposito: com application/json o navegador manda um
+         OPTIONS de checagem previa antes do POST, e o moviki.com.br responde
+         com redirecionamento de dominio — que o CORS proibe na checagem
+         previa ("Redirect is not allowed for a preflight request").
+         text/plain e valor seguro de CORS: vai direto, sem OPTIONS, e
+         atravessa o redirecionamento 308 sem perder metodo nem corpo.
+         O servidor ja trata corpo em texto (JSON.parse em api/live.js). */
+      const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(Object.assign({idToken:tk,acao},extra||{}))});
       const j=await r.json().catch(()=>({}));
       return Object.assign({status:r.status},j);
     }catch(e){return {erro:'rede'};}
