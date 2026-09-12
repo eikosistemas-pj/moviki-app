@@ -3,7 +3,7 @@
 <head>
 <!-- MOVIKI live.html (estudio do lojista) | versao no window.MOVIKI_VERSAO -->
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://i.ibb.co https://*.google-analytics.com; media-src 'self' blob:; connect-src 'self' https://*.googleapis.com https://moviki.com.br https://moviki-robo.vercel.app https://*.cloudflarestream.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src 'self' https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://i.ibb.co https://*.google-analytics.com; media-src 'self' blob:; connect-src 'self' https://*.googleapis.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://*.cloudflarestream.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src 'self' https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -427,8 +427,15 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-12-cors1';
-  const API='https://moviki.com.br/api/live';
+  window.MOVIKI_VERSAO='2026-09-12-www1';
+  /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
+     moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
+     Redirecionamento entre origens troca a origem do pedido por "null", o
+     servidor deixa de reconhecer e o navegador bloqueia por CORS. Chamando
+     o www direto nao ha salto nenhum. O apex fica de reserva, caso um dia
+     a configuracao de dominio mude de lado. */
+  const APIS=['https://www.moviki.com.br/api/live','https://moviki.com.br/api/live'];
+  let API=null;
   const app=initializeApp({
     apiKey:"AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",authDomain:"app.moviki.com.br",projectId:"moviki-app",
     storageBucket:"moviki-app.firebasestorage.app",messagingSenderId:"451920150738",appId:"1:451920150738:web:be458392064c964c792d0b"
@@ -496,16 +503,16 @@ svg{display:block}
   async function chamarApi(acao,extra){
     try{
       const tk=await user.getIdToken();
-      /* text/plain de proposito: com application/json o navegador manda um
-         OPTIONS de checagem previa antes do POST, e o moviki.com.br responde
-         com redirecionamento de dominio — que o CORS proibe na checagem
-         previa ("Redirect is not allowed for a preflight request").
-         text/plain e valor seguro de CORS: vai direto, sem OPTIONS, e
-         atravessa o redirecionamento 308 sem perder metodo nem corpo.
-         O servidor ja trata corpo em texto (JSON.parse em api/live.js). */
-      const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify(Object.assign({idToken:tk,acao},extra||{}))});
-      const j=await r.json().catch(()=>({}));
-      return Object.assign({status:r.status},j);
+      const corpo=JSON.stringify(Object.assign({idToken:tk,acao},extra||{}));
+      for(const url of (API?[API]:APIS)){
+        try{
+          const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:corpo});
+          const j=await r.json().catch(()=>({}));
+          API=url;
+          return Object.assign({status:r.status},j);
+        }catch(e){ /* tenta o proximo endereco */ }
+      }
+      return {erro:'rede'};
     }catch(e){return {erro:'rede'};}
   }
 
