@@ -607,6 +607,7 @@ html.mvSigGraf #grafNota{
           <button type="button" class="mvNavIt" data-nav="pagamentos"><img class="mvNavIco" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Pagamentos</span></button>
           <button type="button" class="mvNavIt" data-nav="desempenho"><img class="mvNavIco" src="icones/relatorios.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Desempenho</span></button>
           <button type="button" class="mvNavIt" data-nav="divulgacao"><img class="mvNavIco" src="icones/indicar.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Divulgação</span></button>
+          <button type="button" class="mvNavIt mvNavMat" data-nav="material"><img class="mvNavIco" src="icones/material.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Material de apoio</span><span class="mvNovo" data-matnovo="1" hidden>NOVO</span></button>
           <button type="button" class="mvNavIt" data-nav="mensagens"><img class="mvNavIco" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Falar com o Vik</span><span class="bad hide" id="badMsgP">1</span></button>
           <button type="button" class="mvNavIt" data-nav="dados"><img class="mvNavIco" src="icones/perfil.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meus dados</span></button>
           <button type="button" class="mvNavIt" id="navTutoriais" style="display:none" onclick="abrirTutoriais()"><svg class="mvNavIco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" style="color:var(--ciano,#00D4FF)"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg><span>Tutoriais</span></button>
@@ -650,6 +651,15 @@ html.mvSigGraf #grafNota{
 
         <!-- ============ SEÇÃO: VISÃO GERAL ============ -->
         <section data-sec="visao">
+          <!-- 11/09/2026: a barra de baixo ja tem 5 lugares. O material entra
+               como o botao mais visivel da Visao geral, em vez de espremer
+               um sexto icone na barra. -->
+          <button type="button" class="matDest" data-ir="material">
+            <img src="icones/material.png" alt="" onerror="this.style.display='none'">
+            <span class="matDestTxt"><b>Material de apoio</b><span>Artes, panfleto com o SEU QR code, vídeos e textos prontos para divulgar.</span></span>
+            <span class="mvNovo" data-matnovo="1" hidden>NOVO</span>
+            <svg class="matSeta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
           <div class="cd soAprovado">
             <div class="cdTopo">
               <div class="cdTit">Resumo dos seus ganhos</div>
@@ -1062,6 +1072,13 @@ html.mvSigGraf #grafNota{
 
         <!-- ============ SEÇÃO: MEUS DADOS ============ -->
         <!-- ============ SEÇÃO: FALAR COM O MOVIKI ============ -->
+        <!-- ============ SEÇÃO: MATERIAL DE APOIO (11/09/2026) ============
+             Conteudo montado pelo bloco classico do fim da pagina, a partir
+             de material/catalogo.json. Material novo nao mexe neste HTML. -->
+        <section data-sec="material" class="hide">
+          <div id="matRaiz"><div class="matCarregando">Carregando o material…</div></div>
+        </section>
+
         <section data-sec="mensagens" class="hide">
           <div class="cd">
             <div class="cdTopo">
@@ -1247,6 +1264,7 @@ html.mvSigGraf #grafNota{
   <div class="menuLista">
     <div class="menuSec">Painel</div>
     <button type="button" data-ir="visao"><img src="icones/inicio.png" alt="" onerror="this.style.display='none'">Visão geral</button>
+    <button type="button" data-ir="material" style="color:var(--mv-txt);font-weight:700"><img src="icones/material.png" alt="" onerror="this.style.display='none'">Material de apoio<span class="mvNovo" data-matnovo="1" hidden>NOVO</span></button>
     <button type="button" data-ir="pagamentos"><img src="icones/plano.png" alt="" onerror="this.style.display='none'">Pagamentos</button>
     <button type="button" data-ir="desempenho"><img src="icones/relatorios.png" alt="" onerror="this.style.display='none'">Desempenho</button>
     <button type="button" data-ir="divulgacao"><img src="icones/indicar.png" alt="" onerror="this.style.display='none'">Divulgação</button>
@@ -1316,7 +1334,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-11-aula-niveis-id';
+  window.MOVIKI_VERSAO = '2026-09-11-material-aulaniveis';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -4620,6 +4638,632 @@ function mvQR(texto){
     })(vagas[i]);
   }
   pintar('din'); pintar('pes'); pintar('graf');
+})();
+</script>
+
+<style>
+/* ============ MATERIAL DE APOIO (11/09/2026) ============ */
+.mvNovo{margin-left:auto;font-size:9.5px;font-weight:800;letter-spacing:.6px;padding:3px 7px;border-radius:999px;
+  background:linear-gradient(135deg,#25e39b,#00D4FF);color:#02131f;line-height:1}
+.mvNavMat{border-color:rgba(37,227,155,.35)!important;background:linear-gradient(90deg,rgba(37,227,155,.10),rgba(0,212,255,.06))!important;color:var(--mv-txt)!important}
+.mvNavMat.ativo{border-color:rgba(0,212,255,.55)!important;color:var(--mv-ciano)!important}
+.matDest{display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;font-family:inherit;color:var(--mv-txt);
+  margin:0 0 14px;padding:14px 16px;border-radius:var(--mv-r-lg);border:1px solid transparent;
+  background:linear-gradient(var(--mv-surf),var(--mv-surf)) padding-box,linear-gradient(135deg,#25e39b,#00D4FF,#0066FF) border-box;
+  box-shadow:0 0 0 0 rgba(0,212,255,.0);animation:matPulso 3.2s ease-in-out infinite}
+@keyframes matPulso{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,0)}50%{box-shadow:0 0 22px 0 rgba(0,212,255,.22)}}
+@media (prefers-reduced-motion:reduce){.matDest{animation:none}}
+.matDest img{width:58px;height:58px;object-fit:contain;flex:0 0 auto}
+.matDestTxt{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.matDestTxt b{font-size:16.5px;font-weight:800;letter-spacing:-.3px}
+.matDestTxt span{font-size:12.5px;color:var(--mv-txt-3);line-height:1.45}
+.matDest .matSeta{width:22px;height:22px;color:var(--mv-ciano);flex:0 0 auto}
+.matTopo{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.matTopo img{width:46px;height:46px;object-fit:contain}
+.matTopo h2{font-size:19px;font-weight:800;letter-spacing:-.4px;margin:0}
+.matTopo p{font-size:12.5px;color:var(--mv-txt-3);margin:2px 0 0;line-height:1.45}
+.matPorta{border-radius:var(--mv-r);padding:12px 14px;margin:12px 0;font-size:13px;line-height:1.5;
+  background:rgba(255,176,32,.08);border:1px solid rgba(255,176,32,.35);color:var(--mv-txt-2)}
+.matPorta b{color:var(--mv-txt)}
+.matPorta button{margin-top:10px;background:var(--mv-alerta);color:#231500;border:none;border-radius:var(--mv-r);padding:9px 14px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer}
+.matLembre{border-radius:var(--mv-r);padding:10px 13px;margin:12px 0;font-size:12.5px;line-height:1.5;
+  background:rgba(37,227,155,.07);border:1px solid rgba(37,227,155,.3);color:var(--mv-txt-2)}
+.matFiltros{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;margin:4px 0 4px;scrollbar-width:none}
+.matFiltros::-webkit-scrollbar{display:none}
+.matFiltros button{flex:0 0 auto;border:1px solid var(--mv-linha);background:var(--mv-campo);color:var(--mv-txt-2);font-family:inherit;
+  font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;cursor:pointer}
+.matFiltros button.on{border-color:var(--mv-ciano);background:rgba(0,212,255,.12);color:var(--mv-ciano)}
+.matGrade{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(min-width:620px){.matGrade{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.matCard{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--mv-surf);border:1px solid var(--mv-linha);
+  border-radius:var(--mv-r-lg);padding:8px 8px 11px;cursor:pointer;font-family:inherit;color:var(--mv-txt);position:relative;min-width:0}
+.matCard:hover{border-color:var(--mv-ciano)}
+.matCard.dest{grid-column:1/-1;flex-direction:row;align-items:center;gap:12px;border-color:rgba(37,227,155,.45)}
+.matCard.dest .matThumb{width:38%;max-width:190px;flex:0 0 auto}
+.matThumb{display:block;width:100%;border-radius:var(--mv-r);overflow:hidden;background:var(--mv-campo);position:relative}
+.matThumb img{display:block;width:100%;height:100%;object-fit:cover}
+.matThumb .matPlay{position:absolute;inset:0;margin:auto;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center}
+.matThumb .matPlay svg{width:20px;height:20px;color:#fff;margin-left:3px}
+.matCardTit{font-size:13px;font-weight:700;line-height:1.3;padding:0 3px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.matCard.dest .matCardTit{font-size:15.5px;-webkit-line-clamp:3}
+.matCardSub{font-size:11.5px;color:var(--mv-txt-3);padding:0 3px}
+.matTag{position:absolute;top:13px;right:13px;font-size:9.5px;font-weight:800;letter-spacing:.5px;padding:3px 7px;border-radius:999px;background:#25e39b;color:#02131f;z-index:2}
+.matTag.qr{background:#00D4FF}
+.matTexto{grid-column:1/-1;background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);padding:13px 14px}
+.matTexto .matCardTit{padding:0;margin-bottom:8px;-webkit-line-clamp:unset}
+.matTextoCorpo{white-space:pre-wrap;font-size:13px;line-height:1.55;color:var(--mv-txt-2);background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:10px 12px;word-break:break-word}
+.matAcoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.matAcoes button{flex:1 1 auto;min-width:120px;border-radius:var(--mv-r);padding:11px 12px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;border:1px solid var(--mv-linha-forte);background:transparent;color:var(--mv-txt)}
+.matAcoes button.pri{background:var(--mv-grad);color:#02131f;border:none}
+.matAcoes button.wpp{background:var(--mv-whats);color:#04210f;border:none}
+.matAcoes button[disabled]{opacity:.45;cursor:not-allowed}
+.matVazio{padding:26px 10px;text-align:center;color:var(--mv-txt-3);font-size:13.5px}
+.matPrev{width:100%;border-radius:var(--mv-r);overflow:hidden;background:var(--mv-campo);display:flex;justify-content:center;max-height:56vh}
+.matPrev img,.matPrev canvas,.matPrev video{display:block;max-width:100%;max-height:56vh;width:auto;height:auto;object-fit:contain}
+.matDica{font-size:12.5px;color:var(--mv-txt-3);margin:10px 0 0;line-height:1.5}
+.matLeg{margin-top:12px}
+.matLegTit{font-size:12px;font-weight:700;color:var(--mv-txt-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.matMsg{font-size:12.5px;color:var(--mv-ok);min-height:18px;margin-top:8px}
+.matCarregando{padding:22px;text-align:center;color:var(--mv-txt-3);font-size:13px}
+/* 11/09/2026: botoes de postar direto em cada material */
+.matAbre{display:flex;flex-direction:column;gap:6px;width:100%;background:transparent;border:none;padding:0;margin:0;text-align:left;cursor:pointer;font-family:inherit;color:inherit;min-width:0}
+.matCard{cursor:default}
+.matCard.dest{flex-direction:column}
+.matCard.dest .matAbre{flex-direction:row;align-items:center;gap:12px}
+.matRedes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:4px}
+.matRedes button{display:flex;align-items:center;justify-content:center;gap:5px;min-width:0;height:34px;border-radius:10px;border:none;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:11.5px;color:#fff;padding:0 6px;white-space:nowrap;overflow:hidden}
+.matRedes button svg{width:16px;height:16px;flex:0 0 auto}
+.matRedes button span{overflow:hidden;text-overflow:ellipsis}
+.matRedes .ig{background:linear-gradient(45deg,#f9a825,#e91e63 45%,#8e24aa)}
+.matRedes .fb{background:#1877F2}
+.matRedes .wa{background:#25D366;color:#04210f}
+.matRedes button[disabled]{opacity:.35;cursor:not-allowed;filter:grayscale(.6)}
+.matRedes button.armado{box-shadow:0 0 0 2px #fff inset;animation:matPisca 1s ease-in-out infinite}
+@keyframes matPisca{50%{opacity:.7}}
+.matRedes.grande{margin-top:12px;gap:8px}
+.matRedes.grande button{height:44px;font-size:12.5px;border-radius:12px;padding:0 4px;gap:6px}
+.matRedes.grande button svg{width:19px;height:19px}
+.matRedesTit{grid-column:1/-1;font-size:11px;font-weight:700;color:var(--mv-txt-3);text-transform:uppercase;letter-spacing:.06em}
+.matCard:not(.dest) .matRedes button span{display:none}
+.matCard:not(.dest) .matRedes button svg{width:18px;height:18px}
+.matToast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:120;max-width:92vw;width:max-content;
+  background:#0b1728;border:1px solid var(--mv-ciano);color:var(--mv-txt);font-size:13.5px;line-height:1.45;padding:11px 16px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.45);text-align:center}
+</style>
+<div class="matToast" id="matToast" hidden></div>
+
+<!-- folha de previa do material -->
+<div class="ov centro hide" id="ovMat"><div class="folha">
+  <button type="button" class="folhaX" data-fechar="ovMat" aria-label="Fechar">✕</button>
+  <div class="folhaTit" id="matOvTit" style="padding-right:40px">Material</div>
+  <div class="matPrev" id="matOvPrev"></div>
+  <p class="matDica" id="matOvDica"></p>
+  <div id="matOvPorta"></div>
+  <div class="matRedes grande" id="matOvRedes"></div>
+  <div class="matAcoes" id="matOvAcoes">
+    <button type="button" class="pri" id="matBaixar">Baixar</button>
+    <button type="button" id="matCopiarLeg">Copiar legenda</button>
+  </div>
+  <div class="matMsg" id="matOvMsg"></div>
+  <div class="matLeg" id="matOvLegBox">
+    <div class="matLegTit">Legenda sugerida</div>
+    <div class="matTextoCorpo" id="matOvLeg"></div>
+  </div>
+</div></div>
+
+<script>
+/* =====================================================================
+   MATERIAL DE APOIO — 11/09/2026
+
+   O catalogo mora num arquivo estatico: material/catalogo.json, no mesmo
+   repositorio. Nada disso passa pelo Firestore: zero leitura paga, zero
+   regra nova, zero escrita. Anexar material = subir o arquivo na pasta
+   material/ e acrescentar uma entrada no catalogo. Este HTML nao muda.
+
+   PESO: nada carrega na abertura do painel alem do catalogo (5 KB, 6 s
+   depois, so para acender o "NOVO"). As capas sao WebP de 320 px e so
+   descem quando a aba abre, com loading=lazy. O arquivo cheio so desce
+   quando o parceiro abre a previa daquele item.
+
+   PANFLETO COM QR: a arte do panfleto e UMA so para todos. O QR de cada
+   parceiro e desenhado por cima, no navegador dele, na posicao que o
+   catalogo diz (qr:{x,y,l} em pixels da arte). Nao existe um arquivo por
+   parceiro guardado em lugar nenhum. O QR e o mesmo do cracha
+   (moviki.com.br/v/apelido), com utm_source=panfleto para o GA4 separar
+   quem chegou pelo papel.
+
+   PORTAS: baixar e enviar obedecem as MESMAS portas do link — cadastro
+   aprovado, aulas concluidas e compromisso de divulgacao aceito. Material
+   comissionado e publicidade (Guia CONAR 2026). O estado e lido do que ja
+   esta pintado na tela (.mvTravado e #condBox.ok), para nao duplicar a
+   regra em dois lugares que podem divergir.
+
+   Bloco isolado: falha calado. Painel nao cai por causa de material.
+   ===================================================================== */
+(function(){
+  'use strict';
+  var CAT_URL = 'material/catalogo.json';
+  var FILTROS = [['tudo','Tudo'],['panfleto','Panfletos'],['feed','Feed'],['story','Stories'],['video','Vídeos'],['texto','Textos']];
+  var CAT = null, FILTRO = 'tudo', PEDINDO = null;
+  var ATUAL = null, BLOB = null, BLOBNOME = '', BLOBURL = '';
+  var cacheComposto = {};
+
+  function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function ev(acao, id){ try{ if(window.mvEv) window.mvEv('material_' + acao, { item: id || '' }); }catch(e){} }
+  function dados(){ return window.__mvCracha || null; }
+  function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
+  /* caminho aceito: relativo dentro de material/ ou https. Evita que um
+     erro de digitacao no catalogo vire javascript: ou caminho estranho. */
+  function urlOk(u){ return typeof u === 'string' && (/^material\/[A-Za-z0-9_\-\/\.]+$/.test(u) || /^https:\/\/[^\s"'<>]+$/.test(u)); }
+  function nomeArq(u){ var p = String(u).split('?')[0].split('/'); return p[p.length-1] || 'material-moviki'; }
+
+  /* ------------------------------------------------------------ portas */
+  function porta(){
+    var d = dados();
+    if(!d) return { ok:false, tipo:'carregando' };
+    if(!d.aprovado) return { ok:false, tipo:'pendente' };
+    var div = document.querySelector('section[data-sec="divulgacao"]');
+    if(div && div.classList.contains('mvTravado')) return { ok:false, tipo:'aulas' };
+    var cb = el('condBox');
+    if(cb && !cb.hidden && !cb.classList.contains('ok')) return { ok:false, tipo:'conduta' };
+    if(!d.slug) return { ok:false, tipo:'pendente' };
+    return { ok:true, tipo:'livre' };
+  }
+  function portaHTML(p){
+    if(p.tipo === 'pendente') return '<div class="matPorta"><b>O material abre quando o seu cadastro for aprovado.</b><br>Você já pode ver tudo o que está aqui.</div>';
+    if(p.tipo === 'aulas') return '<div class="matPorta"><b>Termine as aulas para baixar o material.</b><br>A mesma porta do seu link: quem posta precisa saber como a comissão funciona.<br><button type="button" data-tutabrir="1" data-matfecha="1">Continuar as aulas</button></div>';
+    if(p.tipo === 'conduta') return '<div class="matPorta"><b>Falta um clique: o compromisso de divulgação.</b><br>Todo post com o seu link é publicidade e leva #publi no início.<br><button type="button" data-matconduta="1">Ler e aceitar</button></div>';
+    if(p.tipo === 'carregando') return '<div class="matPorta">Carregando os seus dados…</div>';
+    return '';
+  }
+
+  /* ------------------------------------------------------- placeholders */
+  function trocar(txt){
+    var d = dados() || {};
+    var slug = d.slug || '';
+    var nome = String(d.nome || '').trim().split(/\s+/)[0] || 'eu';
+    return String(txt || '')
+      .replace(/\{link\}/g, slug ? 'https://moviki.com.br/p/' + slug : 'moviki.com.br')
+      .replace(/\{verificacao\}/g, slug ? 'https://moviki.com.br/v/' + slug : 'moviki.com.br')
+      .replace(/\{meu_nome\}/g, nome);
+  }
+
+  /* ------------------------------------------------------------ catalogo */
+  function pedir(){
+    if(CAT) return Promise.resolve(CAT);
+    if(PEDINDO) return PEDINDO;
+    PEDINDO = fetch(CAT_URL, { cache:'no-cache' })
+      .then(function(r){ if(!r.ok) throw new Error('http ' + r.status); return r.json(); })
+      .then(function(j){
+        var itens = (j && Array.isArray(j.itens)) ? j.itens : [];
+        itens = itens.filter(function(it){
+          if(!it || !it.id || !it.tipo) return false;
+          if(it.tipo === 'texto') return typeof it.texto === 'string';
+          return urlOk(it.arquivo) && (!it.capa || urlOk(it.capa));
+        });
+        CAT = { versao: String((j && j.versao) || ''), itens: itens };
+        return CAT;
+      })
+      .catch(function(e){ PEDINDO = null; throw e; });
+    return PEDINDO;
+  }
+
+  /* "NOVO" no menu enquanto ele nao abrir a versao atual do catalogo */
+  function pintarNovo(){
+    var visto = lsGet('mv_mat_visto');
+    var mostrar = !CAT || !CAT.versao || visto !== CAT.versao;
+    if(!visto && !CAT) mostrar = true;
+    var bs = document.querySelectorAll('[data-matnovo]');
+    for(var i=0;i<bs.length;i++) bs[i].hidden = !mostrar;
+  }
+
+  /* --------------------------------------------------------------- tela */
+  function montar(){
+    var raiz = el('matRaiz'); if(!raiz) return;
+    var p = porta();
+    var h = '';
+    h += '<div class="matTopo"><img src="icones/material.png" alt="" onerror="this.style.display=\'none\'">' +
+         '<div><h2>Material de apoio</h2><p>Artes, panfleto com o seu QR code, vídeos e textos prontos para divulgar.</p></div></div>';
+    h += '<div id="matPortaBox">' + portaHTML(p) + '</div>';
+    if(p.ok) h += '<div class="matLembre"><b>#publi no início</b> de todo post, visível sem “ver mais”. A legenda sugerida já vem assim, com o seu link.</div>';
+    h += '<div class="matFiltros" role="tablist">';
+    FILTROS.forEach(function(f){
+      h += '<button type="button" data-matfiltro="' + f[0] + '" class="' + (FILTRO === f[0] ? 'on' : '') + '">' + f[1] + '</button>';
+    });
+    h += '</div><div class="matGrade" id="matGrade"><div class="matCarregando">Carregando o material…</div></div>';
+    raiz.innerHTML = h;
+    var bx = el('matPortaBox'); if(bx) bx.__ult = p.tipo;
+
+    pedir().then(function(c){
+      lsSet('mv_mat_visto', c.versao); pintarNovo();
+      grade();
+    }).catch(function(){
+      var g = el('matGrade');
+      if(g) g.innerHTML = '<div class="matVazio" style="grid-column:1/-1">Não deu para carregar o material agora.<br><button type="button" class="btn sec" data-matrecarregar="1" style="max-width:220px">Tentar de novo</button></div>';
+    });
+  }
+
+  function grade(){
+    var g = el('matGrade'); if(!g || !CAT) return;
+    var lib = porta().ok;
+    var itens = CAT.itens.filter(function(it){ return FILTRO === 'tudo' || it.tipo === FILTRO; });
+    /* o panfleto com QR sempre primeiro: e o que so existe aqui */
+    itens.sort(function(a,b){ return (b.destaque?1:0) - (a.destaque?1:0); });
+    if(!itens.length){ g.innerHTML = '<div class="matVazio" style="grid-column:1/-1">Nada aqui ainda. Material novo chega sempre.</div>'; return; }
+    var h = '';
+    itens.forEach(function(it){
+      if(it.tipo === 'texto'){
+        h += '<div class="matTexto"><div class="matCardTit">' + esc(it.titulo) + '</div>' +
+             '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto) : it.texto.replace(/\{link\}|\{verificacao\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
+             '<div class="matAcoes"><button type="button" class="pri" data-matcopiar="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Copiar texto</button>' +
+             '<button type="button" class="wpp" data-matwpp="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Mandar no WhatsApp</button></div></div>';
+        return;
+      }
+      var ar = (it.w && it.h) ? (it.w + '/' + it.h) : '4/5';
+      var tag = it.qr ? '<span class="matTag qr">SEU QR CODE</span>' : (it.novo ? '<span class="matTag">NOVO</span>' : '');
+      var play = it.tipo === 'video' ? '<span class="matPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>' : '';
+      var sub = [it.formato, it.duracao, it.peso].filter(Boolean).join(' · ');
+      h += '<div class="matCard' + (it.destaque ? ' dest' : '') + '">' + tag +
+           '<button type="button" class="matAbre" data-mat="' + esc(it.id) + '">' +
+           '<span class="matThumb" style="aspect-ratio:' + ar + '">' +
+           (it.capa ? '<img src="' + esc(it.capa) + '" alt="" loading="lazy" decoding="async" onerror="this.style.visibility=\'hidden\'">' : '') + play + '</span>' +
+           '<span style="display:flex;flex-direction:column;gap:5px;min-width:0"><span class="matCardTit">' + esc(it.titulo) + '</span>' +
+           '<span class="matCardSub">' + esc(sub) + '</span>' +
+           (it.destaque ? '<span class="matCardSub" style="color:var(--mv-ok)">Toque para ver com o seu QR e baixar pronto para imprimir.</span>' : '') +
+           '</span></button>' + redesHTML(it.id, lib, false) + '</div>';
+    });
+    g.innerHTML = h;
+  }
+
+  function pintarPorta(){
+    var box = el('matPortaBox'); if(!box) return;
+    var p = porta(), novo = portaHTML(p);
+    if(box.__ult === p.tipo) return;
+    var antes = box.__ult; box.__ult = p.tipo;
+    box.innerHTML = novo;
+    if(antes) montar();                 /* a porta abriu ou fechou: refaz botoes */
+  }
+
+  /* --------------------------------------------------------- QR no papel */
+  function carregarImg(src){
+    return new Promise(function(ok, falha){
+      var i = new Image(); i.decoding = 'async';
+      i.onload = function(){ ok(i); }; i.onerror = function(){ falha(new Error('img')); };
+      i.src = src;
+    });
+  }
+  function urlQR(slug){
+    var base = 'https://moviki.com.br/v/' + slug;
+    return [base + '?utm_source=panfleto&utm_medium=qr', base];
+  }
+  function compor(it){
+    if(cacheComposto[it.id]) return Promise.resolve(cacheComposto[it.id]);
+    var d = dados();
+    if(!d || !d.slug || typeof window.__mvQR !== 'function') return Promise.reject(new Error('sem qr'));
+    var fontes = Promise.resolve();
+    try{ if(document.fonts && document.fonts.load) fontes = Promise.all([document.fonts.load('800 40px Poppins'), document.fonts.load('600 28px Poppins')]).catch(function(){}); }catch(e){}
+    return Promise.all([carregarImg(it.arquivo), fontes]).then(function(r){
+      var img = r[0];
+      var cv = document.createElement('canvas');
+      cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+      var x = cv.getContext('2d');
+      x.drawImage(img, 0, 0);
+
+      var q = null, urls = urlQR(d.slug);
+      for(var u=0; u<urls.length && !q; u++){ try{ q = window.__mvQR(urls[u]); }catch(e){ q = null; } }
+      if(!q) throw new Error('qr');
+      var Q = it.qr, n = q.tam + 8, p = Math.floor(Q.l / n), off = Math.floor((Q.l - p*n)/2);
+      if(Q.fundo){ x.fillStyle = Q.fundo; x.fillRect(Q.x, Q.y, Q.l, Q.l); }
+      x.fillStyle = Q.cor || '#0b1220';
+      for(var rr=0; rr<q.tam; rr++) for(var cc=0; cc<q.tam; cc++){
+        if(q.mods[rr*q.tam+cc]) x.fillRect(Q.x + off + (cc+4)*p, Q.y + off + (rr+4)*p, p, p);
+      }
+
+      if(it.texto && it.texto.w){
+        var T = it.texto, cx = T.x, w = T.w;
+        var pq = Math.round(w * 0.072), gd = Math.round(w * 0.11);
+        x.textAlign = 'center'; x.textBaseline = 'alphabetic';
+        x.fillStyle = '#5b6b7f';
+        x.font = '600 ' + pq + 'px Poppins, system-ui, sans-serif';
+        x.fillText('moviki.com.br/v/', cx, T.y + pq);
+        x.fillStyle = T.cor || '#0b1220';
+        do{ x.font = '800 ' + gd + 'px Poppins, system-ui, sans-serif'; gd -= 1; }
+        while(gd > 12 && x.measureText(d.slug).width > w);
+        x.fillText(d.slug, cx, T.y + pq + Math.round(gd * 1.25));
+      }
+      return new Promise(function(ok){
+        cv.toBlob(function(b){ var res = { cv: cv, blob: b }; cacheComposto[it.id] = res; ok(res); }, 'image/jpeg', 0.9);
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------ previa */
+  function msg(t){ var m = el('matOvMsg'); if(m){ m.textContent = t || ''; if(t) setTimeout(function(){ if(m.textContent === t) m.textContent = ''; }, 4500); } }
+  function liberarBlobUrl(){ if(BLOBURL){ try{ URL.revokeObjectURL(BLOBURL); }catch(e){} BLOBURL = ''; } }
+  function podeCompartilhar(){ return !!(navigator.canShare && navigator.share && window.File); }
+
+  function abrir(id){
+    if(!CAT) return;
+    var it = CAT.itens.filter(function(i){ return i.id === id; })[0];
+    if(!it) return;
+    ATUAL = it; BLOB = null; BLOBNOME = ''; liberarBlobUrl();
+    var p = porta();
+    el('matOvTit').textContent = it.titulo || 'Material';
+    el('matOvDica').textContent = it.dica || '';
+    el('matOvDica').hidden = !it.dica;
+    el('matOvPorta').innerHTML = p.ok ? '' : portaHTML(p);
+    var leg = it.legenda ? (p.ok ? trocar(it.legenda) : it.legenda.replace(/\{link\}|\{verificacao\}/g,'(seu link aparece aqui)')) : '';
+    el('matOvLeg').textContent = leg;
+    el('matOvLegBox').hidden = !leg;
+    el('matOvAcoes').hidden = !p.ok;
+    el('matCopiarLeg').hidden = !leg;
+    el('matOvRedes').innerHTML = redesHTML(it.id, p.ok, true);
+    el('matOvRedes').hidden = !p.ok;
+    var bBx = el('matBaixar'); bBx.disabled = false;
+    bBx.textContent = it.qr ? 'Baixar com o meu QR' : (it.tipo === 'video' ? 'Baixar vídeo' : 'Baixar');
+    msg('');
+
+    var prev = el('matOvPrev'); prev.innerHTML = '';
+    var ov = el('ovMat'); ov.classList.remove('hide'); document.body.style.overflow = 'hidden';
+
+    /* travado: so a capa, nada de arquivo cheio nem QR */
+    if(!p.ok){
+      if(it.capa) prev.innerHTML = '<img src="' + esc(it.capa) + '" alt="">';
+      return;
+    }
+
+    if(it.tipo === 'video'){
+      prev.innerHTML = '<video controls playsinline preload="metadata"' + (it.capa ? ' poster="' + esc(it.capa) + '"' : '') + ' src="' + esc(it.arquivo) + '"></video>';
+      BLOBNOME = nomeArq(it.arquivo);
+      /* celular: o arquivo precisa estar em maos ANTES do toque em Enviar —
+         o Safari so abre o compartilhar dentro do proprio toque. */
+      if(podeCompartilhar() && !/^https:/.test(it.arquivo)) prepararBlob(it, fetch(it.arquivo).then(function(r){ return r.blob(); }));
+      return;
+    }
+
+    if(it.qr){
+      prev.innerHTML = '<div class="matCarregando">Montando o seu panfleto…</div>';
+      bBx.disabled = true;
+      var d = dados() || {};
+      BLOBNOME = 'panfleto-moviki-' + (d.slug || 'parceiro') + '.jpg';
+      compor(it).then(function(r){
+        if(ATUAL !== it) return;
+        prev.innerHTML = '';
+        r.cv.style.width = '100%'; r.cv.style.height = 'auto';
+        prev.appendChild(r.cv);
+        bBx.disabled = false;
+        prepararBlob(it, Promise.resolve(r.blob));
+      }).catch(function(){
+        if(ATUAL !== it) return;
+        prev.innerHTML = '<div class="matVazio">Não deu para montar o panfleto agora. Tente de novo em instantes.</div>';
+      });
+      return;
+    }
+
+    prev.innerHTML = '<img src="' + esc(it.arquivo) + '" alt="">';
+    BLOBNOME = nomeArq(it.arquivo);
+    if(podeCompartilhar()) prepararBlob(it, fetch(it.arquivo).then(function(r){ return r.blob(); }));
+  }
+
+  function prepararBlob(it, pr){
+    pr.then(function(b){ if(b) BLOBS[it.id] = { blob: b, nome: nomeDe(it) }; if(ATUAL === it) BLOB = b; }).catch(function(){});
+  }
+
+  function fechar(){
+    var ov = el('ovMat'); if(ov) ov.classList.add('hide');
+    document.body.style.overflow = '';
+    var v = document.querySelector('#matOvPrev video'); if(v){ try{ v.pause(); }catch(e){} }
+    ATUAL = null; BLOB = null; liberarBlobUrl();
+  }
+
+  function copiar(t){
+    if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t);
+    return new Promise(function(ok, falha){
+      try{
+        var ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select(); var r = document.execCommand('copy'); ta.remove();
+        r ? ok() : falha();
+      }catch(e){ falha(e); }
+    });
+  }
+
+  function baixar(){
+    var it = ATUAL; if(!it || !porta().ok) return;
+    var a = document.createElement('a');
+    if(it.qr){
+      if(!BLOB){ msg('Aguarde, o panfleto ainda está sendo montado.'); return; }
+      liberarBlobUrl(); BLOBURL = URL.createObjectURL(BLOB);
+      a.href = BLOBURL; a.download = BLOBNOME;
+    } else {
+      a.href = it.arquivo; a.download = BLOBNOME || nomeArq(it.arquivo);
+      if(/^https:/.test(it.arquivo)){ a.target = '_blank'; a.rel = 'noopener'; }
+    }
+    document.body.appendChild(a); a.click(); a.remove();
+    msg(it.qr ? 'Panfleto salvo com o seu QR code.' : 'Download iniciado.');
+    ev('baixar', it.id);
+  }
+
+  /* ---------------------------------------------------- POSTAR NAS REDES
+     Instagram e Facebook NAO aceitam receber uma imagem por link vindo de um
+     site: nao existe "postar com um clique" pela web. O caminho mais curto
+     que existe e o compartilhar do proprio celular com o ARQUIVO junto: o
+     parceiro toca em Instagram, a lista de apps abre, ele toca no Instagram
+     e cai na tela de postar com a imagem ja carregada. A legenda vai para a
+     area de transferencia no mesmo toque — so colar.
+     No computador (sem esse compartilhar): baixa o arquivo, copia a legenda
+     e abre a rede numa aba nova.
+     Safari: o compartilhar so abre DENTRO do toque. Se o arquivo ainda nao
+     estava em maos, o primeiro toque prepara e o botao pisca "toque de novo".
+     ---------------------------------------------------------------------- */
+  var BLOBS = {};
+  var REDES = {
+    ig: { nome:'Instagram', url:'https://www.instagram.com/',
+          svg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg>' },
+    fb: { nome:'Facebook', url:'https://www.facebook.com/',
+          svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.4 8.4h-2V6.9c0-.6.4-.8.7-.8h1.3V3.5l-1.9 0c-2.1 0-2.6 1.6-2.6 2.6v2.3H8.6v2.7h2.3V21h2.5v-9.9h1.7l.3-2.7z"/></svg>' },
+    wa: { nome:'WhatsApp', url:'',
+          svg:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.2 14.8l-.4-.2-2.6.7.7-2.5-.2-.4A8 8 0 0 1 12 4z"/></svg>' }
+  };
+  function redesHTML(id, lib, grande){
+    var h = grande ? '<span class="matRedesTit">Postar agora</span>' : '';
+    ['ig','fb','wa'].forEach(function(k){
+      h += '<button type="button" class="' + k + '" data-matrede="' + k + '" data-matid="' + esc(id) + '"' + (lib ? '' : ' disabled') +
+           ' aria-label="Postar no ' + REDES[k].nome + '" title="Postar no ' + REDES[k].nome + '">' + REDES[k].svg + '<span>' + REDES[k].nome + '</span></button>';
+    });
+    return grande ? h : '<div class="matRedes">' + h + '</div>';
+  }
+  var __toastT = 0;
+  function toast(t, ms){
+    var e = el('matToast'); if(!e) return;
+    e.textContent = t; e.hidden = false;
+    clearTimeout(__toastT); __toastT = setTimeout(function(){ e.hidden = true; }, ms || 5000);
+  }
+  function acharItem(id){ return CAT ? (CAT.itens.filter(function(i){ return i.id === id; })[0] || null) : null; }
+  function nomeDe(it){
+    if(it.qr){ var d = dados() || {}; return 'panfleto-moviki-' + (d.slug || 'parceiro') + '.jpg'; }
+    return nomeArq(it.arquivo);
+  }
+  function obter(it){
+    if(BLOBS[it.id]) return Promise.resolve(BLOBS[it.id]);
+    var pr = it.qr ? compor(it).then(function(r){ return r.blob; })
+                   : fetch(it.arquivo).then(function(r){ if(!r.ok) throw new Error('http'); return r.blob(); });
+    return pr.then(function(b){ var o = { blob: b, nome: nomeDe(it) }; BLOBS[it.id] = o; return o; });
+  }
+  function arquivoDe(o){
+    try{ return new File([o.blob], o.nome, { type: o.blob.type || (/\.mp4$/i.test(o.nome) ? 'video/mp4' : 'image/jpeg') }); }catch(e){ return null; }
+  }
+  function baixarObj(o){
+    var u = URL.createObjectURL(o.blob), a = document.createElement('a');
+    a.href = u; a.download = o.nome; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ try{ URL.revokeObjectURL(u); }catch(e){} }, 8000);
+  }
+  function rotulo(b, txt){ var sp = b.querySelector('span'); if(sp) sp.textContent = txt; }
+  function desarmar(b){ b.classList.remove('armado'); rotulo(b, REDES[b.getAttribute('data-matrede')].nome); b.disabled = false; }
+
+  function compartilhar(b, rede, it, o, leg){
+    var f = arquivoDe(o);
+    if(!f || !navigator.canShare({ files:[f] })){ toast('Este celular não deixa enviar o arquivo direto. Use Baixar e poste pela galeria.'); return; }
+    /* Instagram e Facebook ignoram o texto que vai junto (e alguns somem da
+       lista quando ha texto): so o arquivo. WhatsApp leva a legenda junto. */
+    var pacote = { files:[f] };
+    if(rede === 'wa' && leg) pacote.text = leg;
+    toast(rede === 'wa' ? 'Escolha o WhatsApp na lista.' : 'Escolha o ' + REDES[rede].nome + ' na lista. A legenda já está copiada: é só colar.', 7000);
+    navigator.share(pacote).then(function(){
+      desarmar(b); ev('postar_' + rede, it.id);
+    }).catch(function(e){
+      if(e && e.name === 'AbortError'){ desarmar(b); return; }
+      if(e && e.name === 'NotAllowedError'){
+        /* Safari: o toque "venceu" enquanto o arquivo descia. Agora ele esta
+           em maos; o proximo toque abre na hora. */
+        b.classList.add('armado'); rotulo(b, 'Toque de novo'); b.disabled = false;
+        toast('Pronto! Toque de novo em ' + REDES[rede].nome + '.');
+        return;
+      }
+      if(rede === 'wa' && pacote.text){
+        navigator.share({ files:[f] }).then(function(){ desarmar(b); ev('postar_' + rede, it.id); }).catch(function(){ desarmar(b); });
+        return;
+      }
+      desarmar(b);
+    });
+  }
+
+  function postar(b){
+    var rede = b.getAttribute('data-matrede'), it = acharItem(b.getAttribute('data-matid'));
+    if(!it || !REDES[rede] || !porta().ok) return;
+    var leg = it.legenda ? trocar(it.legenda) : '';
+    if(leg){ try{ copiar(leg).catch(function(){}); }catch(e){} }   /* dentro do toque */
+
+    if(podeCompartilhar()){
+      var pronto = BLOBS[it.id];
+      if(pronto){ compartilhar(b, rede, it, pronto, leg); return; }
+      b.disabled = true; rotulo(b, 'Preparando…');
+      obter(it).then(function(o){ compartilhar(b, rede, it, o, leg); })
+        .catch(function(){ desarmar(b); toast('Não deu para preparar o arquivo. Tente de novo.'); });
+      return;
+    }
+
+    /* computador: a aba da rede abre AGORA (senao o bloqueador de janela
+       barra), o arquivo desce em seguida */
+    var url = rede === 'wa' ? 'https://wa.me/?text=' + encodeURIComponent(leg || trocar('{link}')) : REDES[rede].url;
+    var jan = null; try{ jan = window.open(url, '_blank', 'noopener'); }catch(e){}
+    b.disabled = true; rotulo(b, 'Baixando…');
+    obter(it).then(function(o){
+      baixarObj(o); desarmar(b);
+      var oque = it.tipo === 'video' ? 'o vídeo' : 'a imagem';
+      toast(rede === 'wa'
+        ? 'Arquivo baixado e texto no WhatsApp. Anexe ' + oque + ' na conversa.'
+        : 'Arquivo baixado e legenda copiada. No ' + REDES[rede].nome + ', crie a publicação, escolha ' + oque + ' e cole a legenda.', 8000);
+      ev('postar_' + rede, it.id);
+    }).catch(function(){ desarmar(b); toast('Não deu para baixar agora. Tente de novo.'); });
+  }
+
+  function acharTexto(id){
+    if(!CAT) return null;
+    return CAT.itens.filter(function(i){ return i.id === id && i.tipo === 'texto'; })[0] || null;
+  }
+
+  /* ---------------------------------------------------------- amarracao */
+  document.addEventListener('click', function(e){
+    var t = e.target; if(!t || !t.closest) return;
+    /* qualquer clique pode ter aberto uma porta (aceite, aula): repinta */
+    var secM = document.querySelector('section[data-sec="material"]');
+    if(secM && !secM.classList.contains('hide')) setTimeout(pintarPorta, 450);
+    var b;
+    if((b = t.closest('[data-matfiltro]'))){
+      FILTRO = b.getAttribute('data-matfiltro');
+      var bs = document.querySelectorAll('[data-matfiltro]');
+      for(var i=0;i<bs.length;i++) bs[i].classList.toggle('on', bs[i] === b);
+      grade(); return;
+    }
+    if((b = t.closest('[data-matrede]'))){ if(!b.disabled) postar(b); return; }
+    if((b = t.closest('[data-mat]'))){ abrir(b.getAttribute('data-mat')); ev('abrir', b.getAttribute('data-mat')); return; }
+    if((b = t.closest('[data-matrecarregar]'))){ montar(); return; }
+    if((b = t.closest('[data-matcopiar]'))){
+      var it = acharTexto(b.getAttribute('data-matcopiar')); if(!it || !porta().ok) return;
+      var bb = b;
+      copiar(trocar(it.texto)).then(function(){ bb.textContent = 'Copiado ✓'; setTimeout(function(){ bb.textContent = 'Copiar texto'; }, 2200); ev('copiar', it.id); })
+        .catch(function(){ bb.textContent = 'Não deu — segure o texto e copie'; });
+      return;
+    }
+    if((b = t.closest('[data-matwpp]'))){
+      var it2 = acharTexto(b.getAttribute('data-matwpp')); if(!it2 || !porta().ok) return;
+      window.open('https://wa.me/?text=' + encodeURIComponent(trocar(it2.texto)), '_blank', 'noopener');
+      ev('whatsapp', it2.id); return;
+    }
+    if((b = t.closest('[data-matconduta]'))){
+      fechar();
+      try{ window.mvIrSec('divulgacao'); }catch(_){}
+      setTimeout(function(){ var c = el('condBox'); if(c){ try{ c.scrollIntoView({ behavior:'smooth', block:'center' }); }catch(_){ c.scrollIntoView(); } } }, 400);
+      return;
+    }
+    if(t.closest('[data-matfecha]')){ fechar(); return; }
+    if(t.id === 'ovMat' || t.closest('[data-fechar="ovMat"]')){ fechar(); return; }
+    if(t.closest('#matBaixar')){ baixar(); return; }
+    if(t.closest('#matCopiarLeg')){
+      if(!ATUAL || !ATUAL.legenda || !porta().ok) return;
+      copiar(trocar(ATUAL.legenda)).then(function(){ msg('Legenda copiada. É só colar no post.'); ev('copiar_legenda', ATUAL && ATUAL.id); })
+        .catch(function(){ msg('Não deu para copiar. Segure o texto e copie.'); });
+      return;
+    }
+    /* entrou na aba: monta na primeira vez */
+    if(t.closest('[data-nav="material"],[data-ir="material"],[data-bar="material"]')){
+      setTimeout(function(){ var r = el('matRaiz'); if(r && !r.__montado){ r.__montado = 1; montar(); } else { pintarPorta(); } }, 30);
+      return;
+    }
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && ATUAL) fechar(); });
+
+  window.addEventListener('mv-parceiro-pronto', function(){
+    setTimeout(function(){ var r = el('matRaiz'); if(r && r.__montado) montar(); }, 600);
+  });
+  /* 6 s depois: so o catalogo (5 KB), para saber se ha versao nova */
+  pintarNovo();
+  setTimeout(function(){ pedir().then(pintarNovo).catch(function(){}); }, 6000);
+
+  window.mvMaterial = { abrir: function(){ try{ window.mvIrSec('material'); }catch(e){} var r = el('matRaiz'); if(r && !r.__montado){ r.__montado = 1; montar(); } } };
 })();
 </script>
 
