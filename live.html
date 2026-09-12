@@ -137,7 +137,7 @@ svg{display:block}
 .trava p{margin:0 0 12px;font-size:13px;color:var(--mv-txt-2);line-height:1.5}
 .trava ul{text-align:left;margin:0 auto 14px;padding-left:18px;font-size:13px;color:var(--mv-txt-2);line-height:1.7;max-width:420px}
 .trava svg{width:28px;height:28px;margin:0 auto;color:#ffd76a}
-.btnOuro{border:0;border-radius:12px;background:var(--mv-ouro);color:#2a1c00;font-weight:800;font-size:14px;padding:11px 16px;text-decoration:none;display:inline-flex}
+.btnOuro{border:0;border-radius:12px;background:var(--mv-ouro);color:#2a1c00;font-weight:800;font-size:15px;padding:13px 16px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;width:100%}
 
 .cortes{display:flex;flex-direction:column;gap:8px;margin-top:10px}
 .corte{display:flex;align-items:center;gap:8px;background:var(--mv-surf-2);border-radius:12px;padding:8px 10px;font-size:13px}
@@ -188,8 +188,8 @@ svg{display:block}
         <li><b>Premium:</b> transmissão, produto em destaque, sacolinha, chat, agendamento.</li>
         <li><b>Enterprise:</b> tudo isso e mais pagamento por Pix dentro da live, oferta relâmpago com contagem, estoque ao vivo, cupom da live, brinde, fila de pedidos, dados ao vivo e cortes para Reels.</li>
       </ul>
-      <a class="btnGrad" href="/?plano=premium&periodo=mensal" style="margin-bottom:8px">Ver o Premium</a>
-      <a class="btnOuro" href="/?plano=enterprise&periodo=mensal">Ver o Enterprise</a>
+      <a class="btnOuro" href="/?plano=enterprise&periodo=mensal" style="margin-bottom:8px">Ver o Enterprise</a>
+      <a class="btnGrad" href="/?plano=premium&periodo=mensal">Ver o Premium</a>
     </div>
   </div>
 
@@ -427,7 +427,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-12-www1';
+  window.MOVIKI_VERSAO='2026-09-12-www2';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
