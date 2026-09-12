@@ -193,17 +193,14 @@
   .prodLinha2 .acabLbl{flex:1;}
   .prodLinha2 .rmv{margin-left:auto;}
   .prodRow .p-desc{width:100%;box-sizing:border-box;padding:10px 13px;font-size:13.5px;line-height:1.4;min-height:44px;margin-top:9px;color:#cfe0f5;}
-  /* 11/09/2026: fotos do produto cresceram de 56px para uma grade de 3
-     quadrados que ocupa a largura do card (≈100-120px cada no celular). */
-  .prodGaleria{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:start;margin-top:11px;max-width:390px;}
-  .fSlot{width:auto;height:auto;aspect-ratio:1/1;border-radius:11px;position:relative;min-width:0;}
-  .fSlot img{width:100%;height:100%;object-fit:cover;background:#0b1728;border-radius:11px;display:block;}
-  .fSlot .rmF{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:#e74c3c;color:#fff;border:2px solid rgba(0,0,0,.35);font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:2;}
-  .fSlot .fPrinc{position:absolute;left:6px;bottom:6px;z-index:2;background:rgba(4,11,20,.8);color:#7ff0ff;font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 7px;border-radius:999px;border:1px solid rgba(0,212,255,.4);pointer-events:none;}
-  .fAdd{width:auto;height:auto;aspect-ratio:1/1;border-radius:11px;border:1.5px solid #ff8a3d;background:rgba(255,138,61,.16);color:#ffb37a;font-size:12.5px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;font-family:inherit;}
+  .prodGaleria{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:9px;}
+  .fSlot{width:56px;height:56px;border-radius:9px;position:relative;flex-shrink:0;}
+  .fSlot img{width:100%;height:100%;object-fit:contain;background:#0b1728;border-radius:9px;border:1px solid #2b405a;display:block;}
+  .fSlot .rmF{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:#e74c3c;color:#fff;border:2px solid var(--campo);font-size:11px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .fAdd{width:56px;height:56px;border-radius:9px;border:1.5px solid #ff8a3d;background:rgba(255,138,61,.16);color:#ffb37a;font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;flex-shrink:0;font-family:inherit;}
   .fAdd:hover{background:rgba(255,138,61,.28);border-color:#ffa15c;}
   .fAdd:disabled{opacity:.55;cursor:default;}
-  .fHint{font-size:12px;color:#7f95b3;grid-column:1/-1;line-height:1.45;}
+  .fHint{font-size:11.5px;color:#7f95b3;width:100%;}
   .galGrade{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px;}
   .galCel{position:relative;aspect-ratio:1/1;border-radius:11px;overflow:hidden;border:1px solid #2b405a;background:#0b1728;}
   .galCel img{width:100%;height:100%;object-fit:contain;background:#0b1728;display:block;}
@@ -353,13 +350,13 @@
   .voltarFim:hover{background:rgba(255,159,64,.26);}
   .catCapa{margin:2px 0 10px;}
   .capaLbl{font-size:11.5px;color:#8fa6c4;margin-bottom:6px;}
-  .capaSlot{position:relative;width:100%;max-width:260px;aspect-ratio:4/3;border-radius:9px;}
+  .capaSlot{position:relative;width:100%;max-width:240px;aspect-ratio:16/9;border-radius:9px;}
   /* contain, nao cover: o lojista tem que ver a imagem INTEIRA aqui, igual o
      cliente vai ver na pagina publica. Com cover, um flyer em pe aparecia
      cortado no painel e ele so descobria depois de publicar. */
   .capaSlot img{width:100%;height:100%;object-fit:contain;background:#0b1728;border-radius:9px;border:1px solid #2b405a;display:block;}
-  .capaSlot .rmF{position:absolute;top:6px;right:6px;z-index:2;width:26px;height:26px;border-radius:50%;background:#e74c3c;color:#fff;border:2px solid var(--campo);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
-  .capaAdd{width:100%;max-width:260px;aspect-ratio:4/3;border-radius:9px;border:1.5px solid #ff8a3d;background:rgba(255,138,61,.14);color:#ffb37a;font-weight:700;font-size:12.5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:inherit;}
+  .capaSlot .rmF{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:#e74c3c;color:#fff;border:2px solid var(--campo);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+  .capaAdd{width:100%;max-width:240px;aspect-ratio:16/9;border-radius:9px;border:1.5px solid #ff8a3d;background:rgba(255,138,61,.14);color:#ffb37a;font-weight:700;font-size:12.5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:inherit;}
   .capaAdd:hover{background:rgba(255,138,61,.26);}
   .editorTit{font-size:20px;font-weight:700;margin:12px 2px 16px;}
   @media(max-width:380px){.grid{gap:9px}.gcIcon{width:46px;height:46px;font-size:23px}.gcLabel{font-size:12px}}
@@ -1348,9 +1345,9 @@ body.naHome #btnSalvar{margin-top:14px;}
 .mvItem{overflow:hidden;}
 .mvItemHead{display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-user-select:none;user-select:none;}
 .mvItemHead:hover .mvItemTit{color:var(--mv-ciano);}
-.mvItemThumb{flex:0 0 auto;width:50px;height:50px;border-radius:10px;background:var(--mv-campo);
+.mvItemThumb{flex:0 0 auto;width:42px;height:42px;border-radius:10px;background:var(--mv-campo);
   border:1px solid var(--mv-linha);display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.mvItemThumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.mvItemThumb img{width:100%;height:100%;object-fit:contain;display:block;}
 .mvItemThumb svg{width:20px;height:20px;color:var(--mv-txt-3);}
 .mvItemTxt{flex:1 1 auto;min-width:0;}
 .mvItemTit{display:block;font-weight:700;font-size:14.5px;letter-spacing:-.2px;color:var(--mv-txt);
@@ -1384,7 +1381,7 @@ body.naHome #btnSalvar{margin-top:14px;}
   border-radius:999px;padding:5px 13px;font-size:12px;font-family:inherit;cursor:pointer;}
 .mvListaBarra button:hover{border-color:var(--mv-ciano);color:var(--mv-ciano);}
 @media(max-width:600px){
-  .mvItemThumb{width:46px;height:46px;}
+  .mvItemThumb{width:38px;height:38px;}
   .mvItemTit{font-size:14px;}
   .mvItem.catBloco{padding:10px 11px;}
 }
@@ -1392,47 +1389,6 @@ body.naHome #btnSalvar{margin-top:14px;}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
 }
-
-/* =====================================================================
-   AJUSTE DE FOTO DO CARDAPIO — 11/09/2026
-   Antes, a foto do produto era cortada no centro em quadrado na hora do
-   envio (comprimirQuadrado) — foto deitada perdia as pontas, foto em pe
-   perdia o topo e a base. Agora toda foto do cardapio passa por este
-   editor: o lojista ve o quadro exato, arrasta, da zoom, gira, e escolhe
-   entre "Foto inteira" (nada cortado; a sobra e preenchida pela propria
-   foto desfocada) e "Preencher". O canvas ja sai no tamanho final: o que
-   ele confirma e, pixel por pixel, o que vai pro ar.
-   ===================================================================== */
-.afFundo{position:fixed;inset:0;z-index:99990;background:rgba(2,7,14,.84);display:flex;align-items:center;justify-content:center;padding:14px;
-  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
-.afCaixa{width:100%;max-width:460px;max-height:100%;overflow:auto;background:#0d1a2c;border:1px solid rgba(0,212,255,.25);border-radius:18px;
-  padding:16px 16px 14px;box-shadow:0 24px 60px rgba(0,0,0,.6);color:#eaf6ff;font-family:inherit;}
-.afTopo{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-.afTopo b{flex:1;font-size:16.5px;font-weight:800;}
-.afX{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#cfe0f5;font-size:15px;cursor:pointer;font-family:inherit;}
-.afPalco{position:relative;margin:0 auto;width:min(100%,calc(100vh - 320px));min-width:220px;border-radius:14px;overflow:hidden;background:#0b1728;
-  touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none;box-shadow:0 0 0 1px rgba(0,212,255,.35);}
-@supports(height:100dvh){.afPalco{width:min(100%,calc(100dvh - 320px));}}
-.afPalco:active{cursor:grabbing;}
-.afPalco canvas{display:block;width:100%;height:100%;}
-/* margem de seguranca: o que fica dentro da linha tracejada nunca encosta
-   na borda arredondada nem some em nenhuma moldura da pagina publica */
-.afGuia{position:absolute;inset:6%;border:1.5px dashed rgba(127,240,255,.55);border-radius:10px;pointer-events:none;}
-.afGuia::before,.afGuia::after{content:"";position:absolute;pointer-events:none;border-color:rgba(255,255,255,.14);border-style:solid;}
-.afGuia::before{left:33.33%;right:33.33%;top:0;bottom:0;border-width:0 1px;}
-.afGuia::after{top:33.33%;bottom:33.33%;left:0;right:0;border-width:1px 0;}
-.afModos{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
-.afModos button{flex:1 1 0;min-width:88px;padding:10px 8px;border-radius:11px;border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);
-  color:#cfe0f5;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
-.afModos button.on{border-color:#00d4ff;background:rgba(0,212,255,.12);color:#7ff0ff;}
-.afZoom{display:flex;align-items:center;gap:10px;margin-top:12px;color:#9fb3d0;font-size:13px;}
-.afZoom input{flex:1;accent-color:#00d4ff;}
-.afDica{font-size:12.5px;line-height:1.5;color:#9fb3d0;margin-top:10px;}
-.afDica b{color:#cfe0f5;}
-.afAcoes{display:flex;gap:9px;margin-top:14px;}
-.afAcoes button{padding:12px 14px;border-radius:12px;font-size:14.5px;font-weight:800;cursor:pointer;font-family:inherit;}
-.afOk{flex:1;border:0;background:linear-gradient(135deg,#00D4FF,#0b64ff);color:#04121f;}
-.afSec{border:1px solid rgba(255,255,255,.16);background:transparent;color:#cfe0f5;}
 
 /* =====================================================================
    FOTO DE CAPA DA PAGINA PUBLICA — 31/08/2026
@@ -1866,6 +1822,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
           <button type="button" class="mpFechar" onclick="mvFecharRapida()" aria-label="Fechar">✕</button>
           <h2 class="mpTitulo">Ação rápida</h2>
           <div class="mvRapGrid">
+            <button type="button" class="mvBtnLive escondido" style="grid-column:1/-1;border-color:rgba(255,45,85,.55)" onclick="mvFecharRapida();location.href='live.html'"><img src="icones/live.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Fazer live</span></button>
             <button type="button" onclick="mvFecharRapida();irSecao('fotos')"><img src="icones/fotos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Adicionar fotos</span></button>
             <button type="button" onclick="mvFecharRapida();irSecao('promocoes')"><img src="icones/promocoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Criar promoção</span></button>
             <button type="button" onclick="mvFecharRapida();irSecao('cardapio')"><img src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Atualizar cardápio</span></button>
@@ -1983,6 +1940,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
           <p class="mvSecSub">Tudo que o seu negócio precisa, num lugar só.</p>
         </section>
         <div class="grid">
+          <button type="button" class="gcard mvBtnLive escondido" onclick="location.href='live.html'"><img class="gcImg" src="icones/live.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Fazer live</span></button>
           <button type="button" class="gcard" onclick="irSecao('perfil')"><img class="gcImg" src="icones/perfil.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Perfil</span></button>
           <button type="button" class="gcard" id="gc-cardapio" onclick="irSecao('cardapio')"><img class="gcImg" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Cardápio</span></button>
           <button type="button" class="gcard" id="gc-promocoes" onclick="irSecao('promocoes')"><img class="gcImg" src="icones/promocoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Promoções</span></button>
@@ -2827,6 +2785,15 @@ window.mvAbaInicial=function(){
 
   let planoPainel='basico';
   async function carregarPlanoPainel(uid){
+    /* Botao "Fazer live": so aparece se a lista de liberacao estiver VAZIA
+       (live aberta a todos) ou se este lojista estiver nela. Enquanto o beta
+       estiver fechado, o lojista nao ve que a ferramenta existe. */
+    onSnapshot(doc(db,'configuracoes','liveTermos'),function(t){
+      var d=t.exists()?(t.data()||{}):{};
+      var l=Array.isArray(d.liveBeta)?d.liveBeta:[];
+      var pode=(!l.length||l.indexOf(uid)>=0)&&d.liveDesligada!==true;
+      document.querySelectorAll('.mvBtnLive').forEach(function(b){b.classList.toggle('escondido',!pode);});
+    },function(){});
     try{const a=await getDoc(doc(db,'assinaturas',uid));const d=a.exists()?a.data():null;dadosAssinatura=d;
       const ok=d&&d.ativo===true&&(!d.vence_em||d.vence_em.toMillis()>Date.now());
       planoPainel=ok?(d.plano||'basico'):'basico';}
@@ -2856,7 +2823,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-11-fotoajuste';
+  window.MOVIKI_VERSAO='2026-09-12-beta1';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -4155,18 +4122,16 @@ window.mvAbaInicial=function(){
       const im=document.createElement('img');im.src=url;im.alt='foto do produto';
       const rm=document.createElement('button');rm.type='button';rm.className='rmF';rm.title='Remover';rm.textContent='✕';
       rm.onclick=()=>{r._fotos.splice(i,1);renderFotos(r);};
-      s.appendChild(im);s.appendChild(rm);
-      if(i===0&&r._fotos.length>1){const pc=document.createElement('span');pc.className='fPrinc';pc.textContent='Principal';s.appendChild(pc);}
-      g.appendChild(s);
+      s.appendChild(im);s.appendChild(rm);g.appendChild(s);
     });
     if((r._fotos||[]).length<3){
       const add=document.createElement('button');add.type='button';add.className='fAdd';
-      add.innerHTML='<span style="font-size:26px;line-height:1">＋</span><span>Foto</span>';
+      add.innerHTML='<span style="font-size:17px;line-height:1">＋</span><span>Foto</span>';
       add.onclick=()=>escolherFoto(r,add);
       g.appendChild(add);
     }
     const hint=document.createElement('div');hint.className='fHint';
-    hint.textContent=(r._fotos&&r._fotos.length)?(r._fotos.length+' de 3 fotos · a 1ª é a que aparece primeiro no site'):'📷 Toque no ＋ e ponha a foto do seu produto (até 3). Você ajusta o enquadramento antes de enviar.';
+    hint.textContent=(r._fotos&&r._fotos.length)?(r._fotos.length+' de 3 fotos'):'📷 Toque no ＋ e ponha a foto do seu produto aqui (até 3)';
     g.appendChild(hint);
     resumoProd(r);
   }
@@ -4175,10 +4140,9 @@ window.mvAbaInicial=function(){
     inp.onchange=async function(){
       const file=inp.files&&inp.files[0]; if(!file)return;
       if(!/^image\//.test(file.type)){toast('Escolha um arquivo de imagem.',true);return;}
-      const dataUrl=await mvAjustarFoto(file,{w:1080,h:1080,titulo:'Ajuste a foto do produto'});
-      if(!dataUrl)return;
-      if(addBtn){addBtn.disabled=true;addBtn.innerHTML='<span style="font-size:12px">Enviando…</span>';}
+      if(addBtn){addBtn.disabled=true;addBtn.innerHTML='<span style="font-size:10.5px">Enviando…</span>';}
       try{
+        const dataUrl=await comprimirQuadrado(file,640);
         const idToken=await usuarioAtual.getIdToken();
         const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
         const j=await resp.json().catch(function(){return {};});
@@ -4188,134 +4152,6 @@ window.mvAbaInicial=function(){
     };
     inp.click();
   }
-  /* ---- AJUSTE DE FOTO DO CARDAPIO — 11/09/2026 ----
-     mvAjustarFoto(file,{w,h,titulo}) abre o editor e devolve uma Promise:
-     dataURL JPEG no tamanho final (w x h) quando o lojista confirma, ou
-     null quando cancela. Zoom 1 = "Foto inteira" (a foto toda cabe no
-     quadro; a sobra e a propria foto desfocada, como na pagina publica).
-     O zoom vai ate 3x o "Preencher". Nada aqui toca rede nem Firestore. */
-  function afCarregar(file){
-    return new Promise(function(ok,falha){
-      var rd=new FileReader();
-      rd.onload=function(){ var im=new Image(); im.onload=function(){ok(im);}; im.onerror=function(){falha(new Error('img'));}; im.src=rd.result; };
-      rd.onerror=function(){falha(new Error('read'));};
-      rd.readAsDataURL(file);
-    });
-  }
-  /* copia reduzida (lado maior 2000px) e ja girada: deixa o arrasto leve
-     mesmo com foto de 12 MP do celular */
-  function afFonte(img,giro){
-    var M=2000, w=img.naturalWidth||img.width, h=img.naturalHeight||img.height;
-    var k=Math.min(1,M/Math.max(w,h)); w=Math.max(1,Math.round(w*k)); h=Math.max(1,Math.round(h*k));
-    var de=(giro%2)?true:false, cv=document.createElement('canvas');
-    cv.width=de?h:w; cv.height=de?w:h;
-    var c=cv.getContext('2d'); c.imageSmoothingQuality='high';
-    c.translate(cv.width/2,cv.height/2); c.rotate(giro*Math.PI/2);
-    c.drawImage(img,-w/2,-h/2,w,h);
-    return cv;
-  }
-  /* desfoque sem ctx.filter (o Safari nao tem): reduz para 24px e amplia
-     em dois passos — o proprio alisamento do navegador vira o desfoque */
-  function afDesfoque(src){
-    var a=document.createElement('canvas'), k=24/Math.max(src.width,src.height);
-    a.width=Math.max(1,Math.round(src.width*k)); a.height=Math.max(1,Math.round(src.height*k));
-    a.getContext('2d').drawImage(src,0,0,a.width,a.height);
-    var b=document.createElement('canvas'); b.width=a.width*6; b.height=a.height*6;
-    var cb=b.getContext('2d'); cb.imageSmoothingQuality='high'; cb.drawImage(a,0,0,b.width,b.height);
-    return b;
-  }
-  window.mvAjustarFoto=function(file,opt){
-    opt=opt||{};
-    var W=opt.w||1080, H=opt.h||1080;
-    return afCarregar(file).then(function(img){
-      return new Promise(function(fim){
-        var giro=0, src=afFonte(img,0), borrao=afDesfoque(src);
-        var z=1, x=0, y=0, zCob=1, zMax=3;
-        var fundo=document.createElement('div'); fundo.className='afFundo';
-        fundo.setAttribute('role','dialog'); fundo.setAttribute('aria-modal','true');
-        fundo.innerHTML='<div class="afCaixa">'
-          +'<div class="afTopo"><b></b><button type="button" class="afX" aria-label="Fechar">✕</button></div>'
-          +'<div class="afPalco" style="aspect-ratio:'+W+'/'+H+'"><canvas width="'+W+'" height="'+H+'"></canvas><div class="afGuia"></div></div>'
-          +'<div class="afModos"><button type="button" data-m="inteira">Foto inteira</button><button type="button" data-m="preencher">Preencher</button><button type="button" data-m="girar">↻ Girar</button></div>'
-          +'<div class="afZoom"><span>Zoom</span><input type="range" min="1" max="3" step="0.01" value="1" aria-label="Zoom"></div>'
-          +'<div class="afDica"><b>Arraste</b> a foto para posicionar · <b>pinça</b> ou a barrinha para o zoom. Deixe o produto <b>dentro da linha tracejada</b>. O quadro é exatamente o que o cliente vê no seu site.</div>'
-          +'<div class="afAcoes"><button type="button" class="afOk">✓ Usar esta foto</button><button type="button" class="afSec">Cancelar</button></div>'
-          +'</div>';
-        fundo.querySelector('.afTopo b').textContent=opt.titulo||'Ajuste a foto';
-        document.body.appendChild(fundo);
-        var ovAntes=document.documentElement.style.overflow; document.documentElement.style.overflow='hidden';
-        var cv=fundo.querySelector('canvas'), ctx=cv.getContext('2d'), palco=fundo.querySelector('.afPalco');
-        var rng=fundo.querySelector('.afZoom input');
-        function base(){ return Math.min(W/src.width,H/src.height); }
-        function medir(){
-          zCob=Math.max(W/src.width,H/src.height)/base();
-          zMax=Math.max(3,zCob*3); rng.max=zMax.toFixed(2);
-        }
-        function marcar(){
-          var b=fundo.querySelectorAll('.afModos button');
-          b[0].classList.toggle('on',Math.abs(z-1)<0.01);
-          b[1].classList.toggle('on',zCob>1.01&&Math.abs(z-zCob)<0.01);
-        }
-        function desenhar(){
-          var s=base()*z, w=src.width*s, h=src.height*s;
-          var mx=Math.abs(w-W)/2, my=Math.abs(h-H)/2;
-          x=Math.min(mx,Math.max(-mx,x)); y=Math.min(my,Math.max(-my,y));
-          ctx.imageSmoothingQuality='high';
-          ctx.fillStyle='#0b1728'; ctx.fillRect(0,0,W,H);
-          var ex=(W-w)/2+x, ey=(H-h)/2+y;
-          if(ex>0.5||ey>0.5||ex+w<W-0.5||ey+h<H-0.5){
-            var k=Math.max(W/borrao.width,H/borrao.height)*1.15, bw=borrao.width*k, bh=borrao.height*k;
-            ctx.drawImage(borrao,(W-bw)/2,(H-bh)/2,bw,bh);
-            ctx.fillStyle='rgba(6,13,24,.5)'; ctx.fillRect(0,0,W,H);
-          }
-          ctx.drawImage(src,ex,ey,w,h);
-          rng.value=z; marcar();
-        }
-        function zoom(v){ z=Math.min(zMax,Math.max(1,Number(v)||1)); desenhar(); }
-        function fechar(res){
-          document.removeEventListener('keydown',tecla);
-          document.documentElement.style.overflow=ovAntes;
-          fundo.remove(); fim(res);
-        }
-        function tecla(e){ if(e.key==='Escape')fechar(null); }
-        document.addEventListener('keydown',tecla);
-        fundo.querySelector('.afX').onclick=function(){fechar(null);};
-        fundo.querySelector('.afSec').onclick=function(){fechar(null);};
-        fundo.querySelector('.afOk').onclick=function(){ desenhar(); fechar(cv.toDataURL('image/jpeg',0.84)); };
-        fundo.querySelector('[data-m="inteira"]').onclick=function(){ x=0;y=0; zoom(1); };
-        fundo.querySelector('[data-m="preencher"]').onclick=function(){ x=0;y=0; zoom(zCob); };
-        fundo.querySelector('[data-m="girar"]').onclick=function(){
-          giro=(giro+1)%4; src=afFonte(img,giro); borrao=afDesfoque(src);
-          medir(); x=0; y=0; zoom(Math.min(z,zMax));
-        };
-        rng.oninput=function(){ zoom(rng.value); };
-        var pts={}, arr=false, lx=0, ly=0, d0=0, z0=1;
-        function dist(a,b){ return Math.hypot(a.x-b.x,a.y-b.y); }
-        palco.addEventListener('pointerdown',function(e){
-          try{palco.setPointerCapture(e.pointerId);}catch(_){}
-          pts[e.pointerId]={x:e.clientX,y:e.clientY};
-          var k=Object.keys(pts);
-          if(k.length===1){ arr=true; lx=e.clientX; ly=e.clientY; }
-          else{ arr=false; d0=dist(pts[k[0]],pts[k[1]]); z0=z; }
-        });
-        palco.addEventListener('pointermove',function(e){
-          if(!pts[e.pointerId])return;
-          pts[e.pointerId]={x:e.clientX,y:e.clientY};
-          var k=Object.keys(pts);
-          if(k.length>=2&&d0>0){ zoom(z0*(dist(pts[k[0]],pts[k[1]])/d0)); return; }
-          if(!arr)return;
-          var r=palco.getBoundingClientRect(), f=W/(r.width||1);
-          x+=(e.clientX-lx)*f; y+=(e.clientY-ly)*f; lx=e.clientX; ly=e.clientY;
-          desenhar();
-        });
-        ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
-          palco.addEventListener(ev,function(e){ delete pts[e.pointerId]; if(!Object.keys(pts).length){arr=false;d0=0;} });
-        });
-        palco.addEventListener('wheel',function(e){ e.preventDefault(); zoom(z*(e.deltaY<0?1.08:1/1.08)); },{passive:false});
-        medir(); desenhar();
-      });
-    }).catch(function(){ toast('Não consegui abrir essa imagem. Tente outra.',true); return null; });
-  };
   function comprimirQuadrado(file,size){
     return new Promise(function(resolve,reject){
       var img=new Image(), rd=new FileReader();
@@ -4571,7 +4407,7 @@ window.mvAbaInicial=function(){
   function renderCapaCat(b){
     const g=b.querySelector('.catCapa'); if(!g)return;
     g.innerHTML='';
-    const lbl=document.createElement('div');lbl.className='capaLbl';lbl.textContent='Foto de capa da categoria (aparece na grade do cardápio) — você ajusta o enquadramento antes de enviar:';g.appendChild(lbl);
+    const lbl=document.createElement('div');lbl.className='capaLbl';lbl.textContent='Foto de capa da categoria (aparece na grade do cardápio):';g.appendChild(lbl);
     if(b._capa){
       const sl=document.createElement('div');sl.className='capaSlot';
       const im=document.createElement('img');im.src=b._capa;im.alt='capa';
@@ -4591,10 +4427,9 @@ window.mvAbaInicial=function(){
     inp.onchange=async function(){
       const file=inp.files&&inp.files[0]; if(!file)return;
       if(!/^image\//.test(file.type)){toast('Escolha uma imagem.',true);return;}
-      const dataUrl=await mvAjustarFoto(file,{w:1200,h:900,titulo:'Ajuste a capa da categoria'});
-      if(!dataUrl)return;
       if(addBtn){addBtn.disabled=true;addBtn.innerHTML='<span style="font-size:12px">Enviando…</span>';}
       try{
+        const dataUrl=await comprimirQuadrado(file,640);
         const idToken=await usuarioAtual.getIdToken();
         const resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
         const j=await resp.json().catch(function(){return {};});
