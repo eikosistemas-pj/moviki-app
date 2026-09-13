@@ -2823,7 +2823,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-12-beta1';
+  window.MOVIKI_VERSAO='2026-09-13-vikpainel';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -3018,7 +3018,12 @@ window.mvAbaInicial=function(){
       var u=auth.currentUser;
       if(u){
         var tk=await u.getIdToken();
-        var _r=await fetch(MSG_BOT_URL,{method:'POST',headers:{'Authorization':'Bearer '+tk}});
+        // 13/09: o corpo diz de QUAL painel veio a pergunta e em que versao
+        // este arquivo esta. Sem isso o Vik descreve o painel do lojista para
+        // o parceiro, e nao tem como saber que o painel andou na frente da
+        // descricao que ele carrega. Nada aqui e dado de confianca: o uid
+        // continua vindo so do token.
+        var _r=await fetch(MSG_BOT_URL,{method:'POST',headers:{'Authorization':'Bearer '+tk,'Content-Type':'application/json'},body:JSON.stringify({painel:'lojista',versao:(window.MOVIKI_VERSAO||'')})});
         // Se o endpoint ja disse que nao vai responder (bot desligado, limite
         // do dia, humano no atendimento), a barra "escrevendo" some na hora em
         // vez de ficar 1,5s mentindo que vem resposta.

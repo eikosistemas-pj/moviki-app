@@ -1334,7 +1334,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-11-material-aulaniveis';
+  window.MOVIKI_VERSAO = '2026-09-13-vikpainel';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1637,7 +1637,11 @@ html.mvSigGraf #grafNota{
       const u = auth.currentUser;
       if(u){
         const tk = await u.getIdToken();
-        const _r = await fetch(PM_BOT_URL, {method:'POST', headers:{'Authorization':'Bearer '+tk}});
+        // 13/09: o corpo diz de QUAL painel veio a pergunta e em que versao
+        // este arquivo esta. Sem isso o Vik responde ao parceiro com as telas
+        // do painel do lojista, que foi o que aconteceu em 09/09 na pergunta
+        // sobre o cracha. O uid continua vindo so do token.
+        const _r = await fetch(PM_BOT_URL, {method:'POST', headers:{'Authorization':'Bearer '+tk,'Content-Type':'application/json'}, body:JSON.stringify({painel:'parceiro',versao:(window.MOVIKI_VERSAO||'')})});
         // Endpoint ja disse que nao vai responder: a barra some na hora.
         try{ const _j = await _r.json(); if(_j && _j.pulado){ PM_BOT_PENSANDO=false; pmPintarPensando(false); return; } }catch(_e){}
       }
