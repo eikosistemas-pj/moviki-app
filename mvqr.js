@@ -1,50 +1,79 @@
 /*!
- * MOVIKI mvqr.js | versao 2026-09-04-mvqr1 | repo: moviki-app
+ * MOVIKI mvqr.js | versao 2026-09-14-mvqr2 | repos: moviki-app e moviki
  *
  * POR QUE ESTE ARQUIVO EXISTE
  * O gerador de QR code nasceu dentro do parceiro.html porque a CSP do painel
- * nao deixa carregar biblioteca de fora. Agora o painel do dono precisa do
- * MESMO gerador para o cracha dele. Copiar 250 linhas para dentro de um
- * segundo arquivo de 3 mil linhas seria criar dois lugares para consertar o
- * mesmo bug — e este gerador JA teve um: em 04/09/2026 os 15 modulos do
- * format info estavam escritos transpostos (linha 8 x coluna 8), com dados e
- * mascara certos e nenhum leitor abrindo.
+ * nao deixa carregar biblioteca de fora. Depois o painel do dono precisou do
+ * MESMO gerador para o cracha. Copiar 250 linhas para dentro de um segundo
+ * arquivo de 3 mil linhas seria criar dois lugares para consertar o mesmo bug
+ * — e este gerador JA teve um: em 04/09/2026 os 15 modulos do format info
+ * estavam escritos transpostos (linha 8 x coluna 8), com dados e mascara
+ * certos e nenhum leitor abrindo.
  *
- * O codigo aqui e o MESMO que esta no ar no parceiro.html, extraido sem uma
- * virgula de diferenca e conferido saida-a-saida contra ele.
+ * ---- 14/09/2026: VERSOES 7 A 13, por causa do Pix ----
+ * Ate aqui o gerador ia da versao 1 a 6, nivel M: teto de 108 bytes. Isso
+ * cobria o endereco /v/<apelido> com folga e NAO cobre um BR Code Pix, que
+ * fica entre 130 e 190 bytes mesmo com chave curta — a chave aleatoria sozinha
+ * tem 36 caracteres. Na pratica o QR do pagamento NUNCA cabia: mvQR devolvia
+ * null em toda venda.
  *
- * DIVIDA REGISTRADA: o parceiro.html continua com a copia interna, de
- * proposito — ele acabou de ser validado no ar e nao se mexe no que esta
- * funcionando na vespera de ligar o App Check. Quando for mexer nele por
- * outro motivo, trocar o bloco interno por este arquivo.
+ * Subir para a versao 13 (331 bytes) trouxe tres coisas que nao existiam:
+ *   1) tabela de blocos e correcao das versoes 7 a 13;
+ *   2) CONTADOR DE 16 BITS a partir da versao 10 (ate a 9 sao 8 bits) — errar
+ *      isso gera um codigo que fecha o CRC e nenhum leitor abre;
+ *   3) BLOCO DE VERSION INFO, 18 bits BCH(18,6) em DOIS cantos, obrigatorio
+ *      da versao 7 em diante. Sem ele o leitor nao sabe o tamanho do simbolo.
+ *
+ * COMO FOI VALIDADO (nao existe biblioteca de referencia no ambiente: PyPI e
+ * npm recusam os pacotes de QR):
+ *   - DECODIFICADOR INDEPENDENTE, escrito do lado inverso da especificacao,
+ *     sem compartilhar funcao nenhuma com o gerador: reconstroi o mapa de
+ *     modulos reservados, le as DUAS copias do format info e do version info
+ *     separadamente, desmascara, desintercala os blocos e calcula as sindromes
+ *     de Reed-Solomon.
+ *   - REGRESSAO: para as versoes 1 a 6 a matriz gerada e IDENTICA, modulo a
+ *     modulo, a do gerador que ja esta no ar desde 03/09/2026. O cracha do
+ *     parceiro nao muda de desenho.
  *
  * PUBLICA: window.mvQR(texto) -> { tam, mods, versao, mascara } ou null
  *          window.mvQRDesenhar(canvas, q, lado, claro, escuro)
  *
- * Modo byte, correcao M, versoes 1 a 6 — cobre com folga o endereco
- * /v/<apelido> com apelido de ate 40 caracteres.
+ * Modo byte, correcao M, versoes 1 a 13 — de um apelido curto ao copia-e-cola
+ * do Pix.
  */
 (function(){
   'use strict';
 
-/* mvQR - gerador de QR code, modo byte, correcao M, versoes 1 a 6.
+/* mvQR - gerador de QR code, modo byte, correcao M, versoes 1 a 13.
    Escrito a mao porque a CSP do painel nao deixa carregar biblioteca de fora.
    Devolve { tam, mods } onde mods[r*tam+c] === 1 significa modulo ESCURO. */
 function mvQR(texto){
   'use strict';
 
-  /* ---- capacidade e blocos, nivel M, versoes 1 a 6 ----
+  /* ---- capacidade e blocos, nivel M, versoes 1 a 13 ----
      [ total de codewords, EC por bloco, blocos g1, dados por bloco g1,
-       blocos g2, dados por bloco g2 ] */
+       blocos g2, dados por bloco g2 ]
+     Confere sozinho: g1*d1 + g2*d2 + EC*(g1+g2) = total. */
   var TAB = {
-    1: [26,  10, 1, 16, 0, 0],
-    2: [44,  16, 1, 28, 0, 0],
-    3: [70,  26, 1, 44, 0, 0],
-    4: [100, 18, 2, 32, 0, 0],
-    5: [134, 24, 2, 43, 0, 0],
-    6: [172, 16, 4, 27, 0, 0]
+    1:  [26,  10, 1, 16, 0, 0],
+    2:  [44,  16, 1, 28, 0, 0],
+    3:  [70,  26, 1, 44, 0, 0],
+    4:  [100, 18, 2, 32, 0, 0],
+    5:  [134, 24, 2, 43, 0, 0],
+    6:  [172, 16, 4, 27, 0, 0],
+    7:  [196, 18, 4, 31, 0, 0],
+    8:  [242, 22, 2, 38, 2, 39],
+    9:  [292, 22, 3, 36, 2, 37],
+    10: [346, 26, 4, 43, 1, 44],
+    11: [404, 30, 1, 50, 4, 51],
+    12: [466, 22, 6, 36, 2, 37],
+    13: [532, 22, 8, 37, 1, 38]
   };
-  var ALINHA = { 1:[], 2:[6,18], 3:[6,22], 4:[6,26], 5:[6,30], 6:[6,34] };
+  var ALINHA = {
+    1:[], 2:[6,18], 3:[6,22], 4:[6,26], 5:[6,30], 6:[6,34],
+    7:[6,22,38], 8:[6,24,42], 9:[6,26,46], 10:[6,28,50],
+    11:[6,30,54], 12:[6,32,58], 13:[6,34,62]
+  };
 
   /* ---- bytes UTF-8 ---- */
   var bytes = [];
@@ -53,12 +82,16 @@ function mvQR(texto){
     for (var i=0;i<s.length;i++) bytes.push(s.charCodeAt(i) & 255);
   })();
 
-  /* ---- menor versao que cabe ---- */
+  /* ---- menor versao que cabe ----
+     O contador do modo byte muda de tamanho na versao 10: 8 bits ate a 9,
+     16 bits da 10 em diante. Por isso o cabecalho entra na conta AQUI, e nao
+     como um "+2" fixo: na fronteira ele decide se cabe ou nao. */
+  function cabecalhoBits(v){ return 4 + (v >= 10 ? 16 : 8); }
   var ver = 0;
-  for (var v=1; v<=6; v++){
+  for (var v=1; v<=13; v++){
     var t = TAB[v];
-    var dados = t[2]*t[3] + t[4]*t[5];
-    if (bytes.length + 2 <= dados){ ver = v; break; }   /* +2 = modo(4b)+contador(8b) */
+    var dadosBits = (t[2]*t[3] + t[4]*t[5]) * 8;
+    if (bytes.length*8 + cabecalhoBits(v) <= dadosBits){ ver = v; break; }
   }
   if (!ver) return null;                                 /* texto grande demais */
 
@@ -67,11 +100,11 @@ function mvQR(texto){
   /* ---- fluxo de bits ---- */
   var bits = [];
   function por(valor, n){ for (var i=n-1;i>=0;i--) bits.push((valor>>i) & 1); }
-  por(4, 4);                       /* modo byte */
-  por(bytes.length, 8);            /* contador: 8 bits nas versoes 1 a 9 */
+  por(4, 4);                                  /* modo byte */
+  por(bytes.length, ver >= 10 ? 16 : 8);      /* contador */
   for (var i=0;i<bytes.length;i++) por(bytes[i], 8);
   var falta = TOTDADOS*8 - bits.length;
-  por(0, Math.min(4, falta));      /* terminador */
+  por(0, Math.min(4, falta));                 /* terminador */
   while (bits.length % 8) bits.push(0);
   var pad = [0xEC, 0x11], k = 0;
   while (bits.length < TOTDADOS*8){ por(pad[k++ & 1], 8); }
@@ -167,6 +200,24 @@ function mvQR(texto){
   /* reserva das areas de formato */
   for (var i=0;i<9;i++){ if (ler(8,i)===-1) pos(8,i,0); if (ler(i,8)===-1) pos(i,8,0); }
   for (var i=0;i<8;i++){ if (ler(8,tam-1-i)===-1) pos(8,tam-1-i,0); if (ler(tam-1-i,8)===-1) pos(tam-1-i,8,0); }
+
+  /* VERSION INFO — so da versao 7 em diante.
+     18 bits: 6 da versao + 12 de BCH(18,6) com gerador 0x1F25. Vai em DOIS
+     blocos, um 3x6 no canto de baixo a esquerda e o espelho dele 6x3 no canto
+     de cima a direita. Entra ANTES do zigue-zague porque estes modulos sao
+     area reservada: escrever depois apagaria dado. */
+  if (ver >= 7){
+    var vd = ver << 12;
+    var resto = ver << 12;
+    for (var i=5;i>=0;i--) if (resto & (1<<(i+12))) resto ^= 0x1F25 << i;
+    vd = (ver << 12) | (resto & 0xFFF);
+    for (var i=0;i<18;i++){
+      var bit = (vd >> i) & 1;
+      var aa = tam - 11 + (i % 3), bb = Math.floor(i / 3);
+      pos(aa, bb, bit);
+      pos(bb, aa, bit);
+    }
+  }
 
   var reservado = m.slice();   /* quem ja estava ocupado antes dos dados */
 
