@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -1857,6 +1857,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         <button type="button" class="mvNavIt" data-sec="info" onclick="mvIr('info')"><img class="mvNavIco" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Informações</span></button>
         <button type="button" class="mvNavIt" data-sec="whatsapp" onclick="mvIr('whatsapp')"><img class="mvNavIco" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>WhatsApp</span></button>
         <button type="button" class="mvNavIt" data-sec="avaliacoes" onclick="mvIr('avaliacoes')"><img class="mvNavIco" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Avaliações</span></button>
+        <button type="button" class="mvNavIt" data-sec="financeiro" onclick="mvIr('financeiro')"><svg class="mvNavIco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ciano,#00D4FF)"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H18a2 2 0 0 1 2 2v1"/><path d="M3 7.5V17a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/><path d="M21 10.5h-4a2.25 2.25 0 0 0 0 4.5h4z"/><circle cx="17.4" cy="12.75" r=".9" fill="currentColor" stroke="none"/></svg><span>Financeiro</span></button>
         <button type="button" class="mvNavIt" onclick="abrirPlano()"><img class="mvNavIco" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meu Plano</span></button>
           <button type="button" class="mvNavIt" id="mvNavPontos" style="display:none" onclick="abrirPontos()"><img class="mvNavIco" src="icones/multipontos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meus pontos</span></button>
         </nav>
@@ -1950,6 +1951,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
           <button type="button" class="gcard" onclick="irSecao('info')"><img class="gcImg" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Informações</span></button>
           <button type="button" class="gcard" onclick="irSecao('whatsapp')"><img class="gcImg" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">WhatsApp</span></button>
           <button type="button" class="gcard" onclick="irSecao('avaliacoes')"><img class="gcImg" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Avaliações</span></button>
+          <button type="button" class="gcard" id="gc-financeiro" onclick="irSecao('financeiro')"><svg class="gcImg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ciano,#00D4FF)"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H18a2 2 0 0 1 2 2v1"/><path d="M3 7.5V17a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/><path d="M21 10.5h-4a2.25 2.25 0 0 0 0 4.5h4z"/><circle cx="17.4" cy="12.75" r=".9" fill="currentColor" stroke="none"/></svg><span class="gcLabel">Financeiro</span></button>
           <button type="button" class="gcard" onclick="abrirPlano()"><img class="gcImg" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meu Plano</span></button>
           <button type="button" class="gcard" id="gc-mensagens" onclick="abrirMensagens()"><svg class="gcImg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="color:var(--ciano)"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.6 9.6 0 0 1-2.9-.4L3 21l1.6-4.5a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/></svg><span class="gcLabel">Mensagens</span></button>
           <button type="button" class="gcard" id="gc-tutoriais" style="display:none" onclick="abrirTutoriais()"><svg class="gcImg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" style="color:var(--ciano,#00D4FF)"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg><span class="gcLabel">Tutoriais</span></button>
@@ -1968,6 +1970,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         <button class="tab" data-tab="info" onclick="abrirTab('info')">Informações</button>
         <button class="tab" data-tab="whatsapp" onclick="abrirTab('whatsapp')">WhatsApp</button>
         <button class="tab" data-tab="avaliacoes" onclick="abrirTab('avaliacoes')">Avaliações</button>
+        <button class="tab" data-tab="financeiro" onclick="abrirTab('financeiro')">Financeiro</button>
       </div>
 
       <div id="avisoPlano" class="avisoPlano escondido" onclick="abrirPlano()" style="cursor:pointer"><img class="icoM" src="icones/plano.png" alt="" loading="lazy" onerror="mvI(this,'🔒')"><b>Cardápio</b>, <b>Promoções</b> e <b>Eventos</b> são do plano <b>Pró</b>. <u>Clique aqui pra assinar</u>.</div>
@@ -2378,6 +2381,173 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         <div id="avalResumo" class="avalResumo">Carregando...</div>
         <div id="avalLista" class="avalLista"></div>
       </div>
+
+      <!-- ================= FINANCEIRO — 14/09/2026 =================
+           Onde o lojista escolhe COMO recebe e acompanha as vendas.
+           Regra desta aba: ela NAO grava nada em negocios/{uid}. O hasOnly da
+           regra do Firestore nao tem campo do Financeiro, e campo fora do
+           hasOnly faz TODO save do painel ser negado — nao so o do campo novo.
+           Tudo aqui passa pelo /api/financeiro, que escreve com Admin SDK.
+      =========================================================== -->
+      <div class="tabConteudo escondido" id="tab-financeiro">
+      <style>
+        .finTopo{background:#141a24;border:1px solid #223040;border-radius:14px;padding:14px 16px;margin-bottom:14px;font-size:14px;line-height:1.5}
+        .finTopo b{color:#fff}
+        .finSelo{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;margin-left:6px}
+        .finSelo.on{background:#12351f;color:#3ddc97;border:1px solid #1d5c38}
+        .finSelo.off{background:#2a1a1a;color:#ff8f8f;border:1px solid #5c2020}
+        .finModos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+        @media(max-width:640px){.finModos{grid-template-columns:1fr}}
+        .finModo{text-align:left;background:#121821;border:1px solid #223040;border-radius:14px;padding:14px;cursor:pointer;color:#cfe0f0}
+        .finModo:hover{border-color:#2f4a63}
+        .finModo.ativo{border-color:#3ddc97;background:#101d18}
+        .finModo b{display:block;color:#fff;font-size:15px;margin-bottom:4px}
+        .finModo span{display:block;font-size:12.5px;line-height:1.45;color:#93a7bb}
+        .finModo .finTag{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;color:#3ddc97}
+        .finBloco{border-top:1px solid #1c2735;padding-top:14px;margin-top:4px}
+        .finLinha{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        @media(max-width:640px){.finLinha{grid-template-columns:1fr}}
+        .finTermo{position:relative;background:#0f1520;border:1px solid #223040;border-radius:12px;padding:14px;max-height:260px;overflow:auto;font-size:13px;line-height:1.55;color:#a9bccf}
+        .finTermoDica{font-size:12px;color:#7d92a8;margin:6px 2px 0;display:flex;align-items:center;gap:6px}
+        .finTermo h4{margin:0 0 8px;color:#fff;font-size:14px}
+        .finTermo li{margin:0 0 6px}
+        .finAceite{display:flex;gap:10px;align-items:flex-start;margin:12px 0;font-size:13.5px;color:#cfe0f0}
+        .finAceite input{margin-top:3px;width:18px;height:18px;flex:none}
+        .finVenda{background:#121821;border:1px solid #223040;border-radius:14px;padding:13px 14px;margin-bottom:10px}
+        .finVendaTopo{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+        .finVendaVal{font-size:17px;font-weight:800;color:#fff}
+        .finSt{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px}
+        .finSt.aguardando{background:#2a2410;color:#ffd36b}
+        .finSt.conferindo{background:#23202f;color:#c6b3ff}
+        .finSt.pago{background:#12351f;color:#3ddc97}
+        .finSt.entregue{background:#10222e;color:#6fd0ff}
+        .finSt.recusado,.finSt.cancelado,.finSt.expirado{background:#2a1a1a;color:#ff8f8f}
+        .finVendaItens{font-size:13px;color:#9fb3c7;margin:7px 0}
+        .finVendaPe{font-size:12px;color:#7d92a8;margin-top:4px}
+        .finVendaBtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+        .finVendaBtns button{border-radius:10px;padding:8px 13px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid #2f4a63;background:#16202c;color:#cfe0f0}
+        .finVendaBtns .finOk{background:#12351f;border-color:#1d5c38;color:#3ddc97}
+        .finVendaBtns .finNao{background:#2a1a1a;border-color:#5c2020;color:#ff8f8f}
+        .finVazio{color:#7d92a8;font-size:13.5px;padding:10px 2px}
+        .finNota{font-size:12.5px;color:#7d92a8;line-height:1.5;margin-top:8px}
+        .finCent{background:#0f1520;border:1px dashed #2f4a63;border-radius:10px;padding:10px 12px;font-size:13px;color:#a9bccf;margin-top:10px}
+      </style>
+
+      <div class="finTopo" id="finTopo">Carregando seu Financeiro…</div>
+
+      <!-- 1) COMO VOCE RECEBE -->
+      <div class="mvAcc" id="acc-fin-modo">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-fin-modo-body" onclick="mvAccToggle('acc-fin-modo')">
+          <span class="mvAccIco"><img src="icones/financeiro.png" alt="" loading="lazy" onerror="mvI(this,'💰')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Como você recebe</span><span class="mvAccSub">Onde o dinheiro das suas vendas cai.</span></span>
+          <span class="mvAccSelo" id="selo-acc-fin-modo"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-fin-modo-body">
+
+          <div class="finModos">
+            <button type="button" class="finModo" id="finModoPix" onclick="finEscolherModo('pix')">
+              <b>Pix direto — grátis</b>
+              <span>O dinheiro cai na sua conta na hora, sem taxa nenhuma. Você confere no seu extrato e confirma o pedido aqui.</span>
+              <span class="finTag">RECOMENDADO · sem mensalidade e sem taxa</span>
+            </button>
+            <button type="button" class="finModo" id="finModoAsaas" onclick="finEscolherModo('asaas')">
+              <b>Pix automático (Asaas)</b>
+              <span>O sistema confirma o pagamento sozinho, sem você conferir nada. Você paga R$ 1,99 por Pix recebido e precisa ter conta no Asaas.</span>
+              <span class="finTag">Para quem vende bastante</span>
+            </button>
+          </div>
+
+          <!-- Pix direto -->
+          <div class="finBloco" id="finBlocoPix">
+            <div class="secTitulo"><label>Sua chave Pix</label></div>
+            <div class="campo"><label for="finChave">Chave Pix</label><input id="finChave" type="text" placeholder="CPF, CNPJ, e-mail, celular ou chave aleatória" autocomplete="off"></div>
+            <div class="finLinha">
+              <div class="campo"><label for="finTitular">Nome do titular da conta</label><input id="finTitular" type="text" placeholder="Como está no seu banco" autocomplete="off"></div>
+              <div class="campo"><label for="finCidade">Cidade</label><input id="finCidade" type="text" placeholder="Ex.: João Pessoa" autocomplete="off"></div>
+            </div>
+            <div class="campo"><label for="finDoc">CPF ou CNPJ do titular</label><input id="finDoc" type="text" inputmode="numeric" placeholder="Só números" autocomplete="off"></div>
+            <div class="finNota">Esse nome e esse documento aparecem para o cliente na hora de pagar, para ele conferir no aplicativo do banco antes de confirmar. É assim que ele sabe que está pagando para você.</div>
+            <div style="height:10px"></div>
+            <button type="button" class="btn" id="finBtnPix" onclick="finSalvarPix()">Salvar chave Pix</button>
+            <div id="finAvisoPix" class="aviso"></div>
+          </div>
+
+          <!-- Asaas conectado -->
+          <div class="finBloco escondido" id="finBlocoAsaas">
+            <div class="secTitulo"><label>Conectar sua conta Asaas</label></div>
+            <div class="finNota" style="margin-bottom:10px">A conta é sua, não do Moviki. Entre no Asaas, vá em Integrações e copie sua chave de API. Ela fica guardada criptografada e nunca aparece de novo nesta tela.</div>
+            <div class="campo"><label for="finAsaasChave">Chave de API do Asaas</label><input id="finAsaasChave" type="password" placeholder="$aact_..." autocomplete="off"></div>
+            <button type="button" class="btn" id="finBtnAsaas" onclick="finConectarAsaas()">Conectar minha conta</button>
+            <div id="finAvisoAsaas" class="aviso"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 2) LIGAR A VENDA -->
+      <div class="mvAcc" id="acc-fin-ligar">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-fin-ligar-body" onclick="mvAccToggle('acc-fin-ligar')">
+          <span class="mvAccIco"><img src="icones/vender.png" alt="" loading="lazy" onerror="mvI(this,'🛒')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Ligar a venda no seu cardápio</span><span class="mvAccSub">Quando estiver ligado, o cliente compra direto na sua página.</span></span>
+          <span class="mvAccSelo" id="selo-acc-fin-ligar"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-fin-ligar-body">
+
+          <div class="campo">
+            <label for="finEntrega">Como o cliente recebe</label>
+            <select id="finEntrega">
+              <option value="retirada">Só retirada no local</option>
+              <option value="entrega">Só entrega</option>
+              <option value="ambos">Retirada ou entrega</option>
+            </select>
+          </div>
+
+          <div class="secTitulo"><label>Termo de Venda do Moviki</label></div>
+          <div class="finTermo" id="finTermoTexto">
+            <h4>Antes de ligar, leia:</h4>
+            <ul>
+              <li><b>A venda é sua, não do Moviki.</b> O contrato de compra e venda é entre você e o cliente. O Moviki é a vitrine e a ferramenta — não é loja, não é intermediário de pagamento e não fica com o dinheiro em momento nenhum.</li>
+              <li><b>O dinheiro vai direto para a sua conta.</b> O Moviki não recebe, não guarda e não repassa valor de venda.</li>
+              <li><b>Você responde pelo pedido.</b> Entregar o produto, cumprir o prazo combinado, atender o cliente, resolver troca, devolução e arrependimento (Código de Defesa do Consumidor, artigo 49) é responsabilidade sua.</li>
+              <li><b>Você responde pelos impostos</b> e pelas obrigações fiscais das suas vendas.</li>
+              <li><b>Produto proibido, não.</b> Vale a lista das Regras do Moviki: nada de armas, entorpecentes, medicamentos de tarja, conteúdo adulto, produto falsificado, roubado ou de origem duvidosa.</li>
+              <li><b>O cliente pode denunciar.</b> Denúncia com fundamento, pedido não entregue de forma repetida ou produto proibido levam ao bloqueio da venda na sua conta, sem devolução da mensalidade do período em uso.</li>
+              <li><b>No Pix direto, quem confirma o pagamento é você.</b> Confirmar um pedido que não foi pago, ou recusar um pedido que foi, é responsabilidade sua — o Moviki não tem como ver o seu extrato.</li>
+              <li><b>O Moviki pode desligar a venda</b> por segurança, ordem judicial ou suspeita de fraude, avisando você.</li>
+            </ul>
+          </div>
+
+          <div class="finTermoDica">↕ Role a caixa acima para ler o termo inteiro.</div>
+
+          <label class="finAceite"><input type="checkbox" id="finAceite" onchange="finPintarBotaoLigar()"><span>Li e concordo com o Termo de Venda. Entendo que a venda é minha e que respondo pela entrega e pelo atendimento do cliente.</span></label>
+
+          <button type="button" class="btn" id="finBtnLigar" onclick="finLigar()">Ligar a venda</button>
+          <div id="finAvisoLigar" class="aviso"></div>
+          <div class="finNota" id="finNotaMin"></div>
+
+        </div>
+      </div>
+
+      <!-- 3) VENDAS -->
+      <div class="mvAcc" id="acc-fin-vendas">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-fin-vendas-body" onclick="mvAccToggle('acc-fin-vendas')">
+          <span class="mvAccIco"><img src="icones/vendas.png" alt="" loading="lazy" onerror="mvI(this,'🧾')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Vendas</span><span class="mvAccSub">Os pedidos que chegaram pelo cardápio e pela live.</span></span>
+          <span class="mvAccSelo" id="selo-acc-fin-vendas"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-fin-vendas-body">
+          <div class="finCent" id="finDicaCent">Cada pedido tem <b>centavos diferentes</b> — R$ 20,07, R$ 20,13… É assim que você acha o pagamento certo no seu extrato, sem precisar procurar pelo nome.</div>
+          <div style="height:10px"></div>
+          <div id="finVendas"><div class="finVazio">Carregando…</div></div>
+          <div class="finNota" id="finResumo"></div>
+        </div>
+      </div>
+
+      </div>
+
       </div>
 
       <div style="height:10px;"></div>
@@ -2823,7 +2993,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-13-vikpainel';
+  window.MOVIKI_VERSAO='2026-09-14-financeiro';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -3549,6 +3719,14 @@ window.mvAbaInicial=function(){
     document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('ativa',b.dataset.tab===nome));
     document.querySelectorAll('.tabConteudo').forEach(c=>c.classList.add('escondido'));
     el('tab-'+nome).classList.remove('escondido');
+    /* Financeiro carrega sozinho ao abrir, por qualquer caminho (menu lateral,
+       cartao de Ferramentas ou barra de abas) — todos passam por aqui. */
+    if(nome==='financeiro'&&window.finCarregar){setTimeout(window.finCarregar,60);}
+    /* O "Salvar tudo" salva o CADASTRO do negocio e nao tem nada a ver com o
+       Financeiro, que grava pelo endpoint em cada botao proprio. Deixa-lo a
+       vista aqui faria o lojista achar que precisa clicar nele para a chave
+       Pix valer — e sair da tela sem clicar em "Salvar chave Pix". */
+    var _bs=el('btnSalvar'); if(_bs) _bs.style.display = (nome==='financeiro') ? 'none' : '';
   };
 
   /* ---- PAINEL util ---- */
@@ -5196,6 +5374,305 @@ window.mvAbaInicial=function(){
       if(window.mqzMostrar)window.mqzMostrar();
     }
   });
+
+  /* =====================================================================
+     FINANCEIRO — 14/09/2026
+     Aba onde o lojista escolhe COMO recebe e acompanha as vendas.
+
+     REGRA DESTA ABA: ela nao grava NADA em negocios/{uid}. O hasOnly da
+     regra do Firestore nao conhece campo do Financeiro, e campo fora do
+     hasOnly derruba TODO save do painel — cardapio, fotos, promocoes, tudo.
+     Toda escrita daqui passa pelo /api/financeiro, com Admin SDK.
+
+     A lista de vendas, essa sim, le direto do Firestore: a regra ja da
+     leitura ao lojista dos proprios pedidos, entao da para ouvir em tempo
+     real sem gastar chamada de funcao. A consulta e SO por igualdade
+     (lojistaUid) e a ordenacao e feita aqui no navegador, de proposito:
+     where + orderBy em campos diferentes exigiria indice composto, que
+     nao existe e falharia calado na primeira venda.
+  ===================================================================== */
+  const FIN_API = ROBO + '/api/financeiro';
+  let finEstado = null, finPedidos = [], finParar = null, finModoTela = '';
+
+  async function finPost(acao, dados, extra) {
+    const idToken = await usuarioAtual.getIdToken();
+    const corpo = Object.assign({ acao: acao, idToken: idToken }, extra || {});
+    if (dados) corpo.dados = dados;
+    const r = await fetch(FIN_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) });
+    const j = await r.json().catch(function () { return {}; });
+    return { http: r.status, j: j };
+  }
+
+  function finAviso(id, texto, ok) {
+    const a = el(id); if (!a) return;
+    a.className = 'aviso' + (texto ? (ok ? ' ok' : ' erro') : '');
+    a.textContent = texto || '';
+  }
+
+  const FIN_ERROS = {
+    chave: 'Essa chave Pix não parece válida. Confira no seu banco.',
+    nome: 'Escreva o nome completo do titular da conta.',
+    cidade: 'Escreva a cidade da sua conta.',
+    documento: 'CPF ou CNPJ inválido.',
+    sem_chave: 'Cadastre sua chave Pix antes de ligar a venda.',
+    sem_conta: 'Conecte sua conta antes de ligar a venda.',
+    aceite: 'Marque que você leu e concorda com o Termo de Venda.',
+    plano: 'A venda pelo cardápio é dos planos Premium e Enterprise.',
+    nao_pago: 'A venda pelo cardápio é dos planos Premium e Enterprise.',
+    modo: 'Escolha como você quer receber.',
+    config: 'Configuração pendente no servidor. Fale com o suporte.',
+    chave_recusada: 'O Asaas não aceitou essa chave. Confira e tente de novo.',
+    sessao: 'Sua sessão expirou. Saia e entre de novo.',
+    origem: 'Abra o painel por app.moviki.com.br.',
+  };
+  function finMsg(j, http) {
+    if (j && FIN_ERROS[j.erro]) return FIN_ERROS[j.erro];
+    if (j && j.mensagem) return String(j.mensagem).slice(0, 160);
+    if (http === 401) return 'Sua sessão expirou. Saia e entre de novo.';
+    if (http === 429) return 'Muitas tentativas. Espere um pouco.';
+    return 'Não deu certo. Tente de novo.';
+  }
+
+  window.finCarregar = async function () {
+    if (!usuarioAtual) return;
+    const topo = el('finTopo'); if (topo) topo.textContent = 'Carregando seu Financeiro…';
+    try {
+      const r = await finPost('loja_recebimento');
+      if (!r.j || !r.j.ok) { if (topo) topo.textContent = finMsg(r.j, r.http); return; }
+      finEstado = r.j;
+      finPintar();
+      finEscutarVendas();
+    } catch (e) {
+      if (topo) topo.textContent = 'Não consegui carregar agora. Verifique sua conexão.';
+    }
+  };
+
+  function finPintar() {
+    const e = finEstado; if (!e) return;
+
+    /* topo */
+    const topo = el('finTopo');
+    if (topo) {
+      if (e.ligado) {
+        const comoRecebe = e.modo === 'pix' ? 'Pix direto na sua conta'
+          : (e.modo === 'asaas' ? 'Pix automático pelo Asaas' : 'sua subconta Asaas');
+        topo.innerHTML = '<b>Sua venda está ligada</b> <span class="finSelo on">no ar</span><br>'
+          + 'Você recebe por <b>' + comoRecebe + '</b>. Pedido mínimo de <b>R$ ' + String(e.minimo).replace('.', ',') + '</b>.';
+      } else {
+        topo.innerHTML = '<b>Sua venda está desligada</b> <span class="finSelo off">desligada</span><br>'
+          + 'Enquanto estiver assim, o cliente vê seu cardápio mas não consegue comprar por aqui.';
+      }
+    }
+
+    /* modo escolhido */
+    finModoTela = finModoTela || e.modo || 'pix';
+    finDesenharModo();
+
+    /* campos do Pix — o que volta do servidor e so a MASCARA; a chave crua
+       nunca retorna, por isso o campo nasce vazio e com a mascara no rotulo. */
+    const chave = el('finChave');
+    if (chave && e.pix && e.pix.tem) {
+      chave.placeholder = 'Chave atual: ' + e.pix.mascara + ' — digite outra para trocar';
+      if (el('finTitular') && !el('finTitular').value) el('finTitular').value = e.pix.nome || '';
+      if (el('finCidade') && !el('finCidade').value) el('finCidade').value = e.pix.cidade || '';
+      if (el('finDoc')) el('finDoc').placeholder = e.pix.documento || 'Só números';
+    }
+
+    /* selos dos acordeoes */
+    const s1 = el('selo-acc-fin-modo');
+    if (s1) s1.textContent = (e.pix && e.pix.tem) || (e.asaas && e.asaas.tem) ? '✓' : '';
+    const s2 = el('selo-acc-fin-ligar');
+    if (s2) s2.textContent = e.ligado ? '✓' : '';
+
+    /* entrega e termo */
+    if (el('finEntrega') && e.entrega) el('finEntrega').value = e.entrega;
+    const aceite = el('finAceite');
+    if (aceite && e.termo && e.termo.aceito) { aceite.checked = true; aceite.disabled = true; }
+    const nota = el('finNotaMin');
+    if (nota) {
+      nota.innerHTML = e.modo === 'asaas'
+        ? 'No Pix automático o Asaas cobra <b>R$ 1,99 por Pix recebido</b>, descontado da sua conta. Por isso o pedido mínimo é R$ 20.'
+        : 'No Pix direto <b>não existe taxa</b>. O pedido mínimo é R$ 5.';
+    }
+    finPintarBotaoLigar();
+  }
+
+  function finDesenharModo() {
+    const bp = el('finBlocoPix'), ba = el('finBlocoAsaas');
+    const mp = el('finModoPix'), ma = el('finModoAsaas');
+    const ehPix = finModoTela !== 'asaas';
+    if (bp) bp.classList.toggle('escondido', !ehPix);
+    if (ba) ba.classList.toggle('escondido', ehPix);
+    if (mp) mp.classList.toggle('ativo', ehPix);
+    if (ma) ma.classList.toggle('ativo', !ehPix);
+  }
+
+  window.finEscolherModo = function (m) {
+    finModoTela = m === 'asaas' ? 'asaas' : 'pix';
+    finDesenharModo();
+    if (finEstado) { finEstado.modo = finModoTela; finPintar(); }
+  };
+
+  window.finPintarBotaoLigar = function () {
+    const b = el('finBtnLigar'); if (!b) return;
+    const e = finEstado || {};
+    if (e.ligado) { b.textContent = 'Desligar a venda'; b.disabled = false; return; }
+    const aceite = el('finAceite');
+    const temAceite = (e.termo && e.termo.aceito) || (aceite && aceite.checked);
+    b.textContent = 'Ligar a venda';
+    b.disabled = !temAceite;
+  };
+
+  window.finSalvarPix = async function () {
+    const b = el('finBtnPix'); if (!b) return;
+    finAviso('finAvisoPix', '');
+    const dados = {
+      chave: (el('finChave').value || '').trim(),
+      nome: (el('finTitular').value || '').trim(),
+      cidade: (el('finCidade').value || '').trim(),
+      documento: (el('finDoc').value || '').replace(/\D/g, ''),
+    };
+    if (!dados.chave) { finAviso('finAvisoPix', 'Digite sua chave Pix.'); return; }
+    b.disabled = true; const t = b.textContent; b.textContent = 'Salvando…';
+    try {
+      const r = await finPost('loja_pix', dados);
+      if (r.j && r.j.ok) {
+        finEstado = r.j;
+        el('finChave').value = '';
+        finAviso('finAvisoPix', 'Chave Pix salva ✓', true);
+        try { toast('Chave Pix salva!'); } catch (_) {}
+        finPintar();
+      } else {
+        finAviso('finAvisoPix', finMsg(r.j, r.http));
+      }
+    } catch (_) { finAviso('finAvisoPix', 'Falha de conexão. Tente de novo.'); }
+    b.disabled = false; b.textContent = t;
+  };
+
+  window.finConectarAsaas = async function () {
+    const b = el('finBtnAsaas'); if (!b) return;
+    finAviso('finAvisoAsaas', '');
+    const chaveApi = (el('finAsaasChave').value || '').trim();
+    if (!chaveApi) { finAviso('finAvisoAsaas', 'Cole sua chave de API do Asaas.'); return; }
+    b.disabled = true; const t = b.textContent; b.textContent = 'Conectando…';
+    try {
+      const r = await finPost('loja_asaas', { chaveApi: chaveApi });
+      if (r.j && r.j.ok) {
+        finEstado = r.j;
+        el('finAsaasChave').value = '';
+        finAviso('finAvisoAsaas', 'Conta conectada ✓ ' + ((r.j.asaas && r.j.asaas.nome) || ''), true);
+        finPintar();
+      } else {
+        finAviso('finAvisoAsaas', finMsg(r.j, r.http));
+      }
+    } catch (_) { finAviso('finAvisoAsaas', 'Falha de conexão. Tente de novo.'); }
+    b.disabled = false; b.textContent = t;
+  };
+
+  window.finLigar = async function () {
+    const b = el('finBtnLigar'); if (!b) return;
+    finAviso('finAvisoLigar', '');
+    const ligando = !(finEstado && finEstado.ligado);
+    const dados = {
+      modo: finModoTela || 'pix',
+      ligado: ligando,
+      entrega: (el('finEntrega') && el('finEntrega').value) || 'retirada',
+    };
+    const aceite = el('finAceite');
+    if (ligando && aceite && aceite.checked) dados.aceite = true;
+    b.disabled = true; const t = b.textContent; b.textContent = 'Aguarde…';
+    try {
+      const r = await finPost('loja_modo', dados);
+      if (r.j && r.j.ok) {
+        finEstado = r.j;
+        finAviso('finAvisoLigar', ligando ? 'Venda ligada ✓ Seu cardápio já aceita pedido.' : 'Venda desligada.', ligando);
+        try { toast(ligando ? 'Venda ligada!' : 'Venda desligada.'); } catch (_) {}
+        finPintar();
+      } else {
+        finAviso('finAvisoLigar', finMsg(r.j, r.http));
+      }
+    } catch (_) { finAviso('finAvisoLigar', 'Falha de conexão. Tente de novo.'); }
+    b.disabled = false; b.textContent = t;
+    finPintarBotaoLigar();
+  };
+
+  /* ---------------------------------------------------------- vendas */
+
+  function finEscutarVendas() {
+    if (finParar || !usuarioAtual) return;
+    try {
+      const q = query(collection(db, 'pedidos'), where('lojistaUid', '==', usuarioAtual.uid), limit(200));
+      finParar = onSnapshot(q, function (qs) {
+        finPedidos = [];
+        qs.forEach(function (d) { finPedidos.push(Object.assign({ __id: d.id }, d.data())); });
+        finPedidos.sort(function (a, b) { return finMs(b.criadoEm) - finMs(a.criadoEm); });
+        finPintarVendas();
+      }, function () {
+        const lista = el('finVendas');
+        if (lista) lista.innerHTML = '<div class="finVazio">Não consegui carregar suas vendas agora.</div>';
+      });
+    } catch (_) {}
+  }
+  function finMs(t) { return t && typeof t.toMillis === 'function' ? t.toMillis() : 0; }
+  function finReal(v) { return 'R$ ' + Number(v || 0).toFixed(2).replace('.', ','); }
+  function finEsc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  const FIN_ST = { aguardando: 'aguardando pagamento', conferindo: 'conferir pagamento', pago: 'pago', entregue: 'entregue', recusado: 'recusado', cancelado: 'cancelado', expirado: 'expirou', estornado: 'estornado' };
+
+  function finPintarVendas() {
+    const lista = el('finVendas'); if (!lista) return;
+    if (!finPedidos.length) {
+      lista.innerHTML = '<div class="finVazio">Nenhum pedido ainda. Quando alguém comprar pelo seu cardápio ou pela live, aparece aqui.</div>';
+      if (el('finResumo')) el('finResumo').textContent = '';
+      return;
+    }
+    let html = '', pagos = 0, soma = 0;
+    finPedidos.slice(0, 60).forEach(function (p) {
+      const st = String(p.status || 'aguardando');
+      if (st === 'pago' || st === 'entregue') { pagos++; soma += Number(p.total || 0); }
+      const itens = (Array.isArray(p.itens) ? p.itens : []).map(function (i) { return (i.qtd > 1 ? i.qtd + 'x ' : '') + finEsc(i.nome); }).join(', ');
+      const quem = (p.comprador && p.comprador.nome) ? finEsc(p.comprador.nome) : 'Cliente';
+      const wpp = (p.comprador && p.comprador.whatsapp) ? String(p.comprador.whatsapp).replace(/\D/g, '') : '';
+      const ent = (p.entrega && p.entrega.tipo === 'entrega') ? ('Entrega: ' + finEsc(p.entrega.detalhe || '')) : 'Retirada no local';
+      const origem = p.origem === 'cardapio' ? 'cardápio' : 'live';
+
+      let botoes = '';
+      if (p.modo === 'pix' && (st === 'aguardando' || st === 'conferindo' || st === 'expirado')) {
+        botoes += '<button type="button" class="finOk" onclick="finPedidoAcao(\'' + p.__id + '\',\'pago\')">Recebi, confirmar</button>';
+        botoes += '<button type="button" class="finNao" onclick="finPedidoAcao(\'' + p.__id + '\',\'recusado\')">Não caiu</button>';
+      }
+      if (st === 'pago') botoes += '<button type="button" onclick="finPedidoAcao(\'' + p.__id + '\',\'entregue\')">Marcar entregue</button>';
+      if (p.comprovante) botoes += '<button type="button" onclick="finVerComprovante(\'' + p.__id + '\')">Ver comprovante</button>';
+      if (wpp) botoes += '<button type="button" onclick="window.open(\'https://wa.me/55' + wpp + '\',\'_blank\',\'noopener\')">WhatsApp</button>';
+
+      html += '<div class="finVenda">'
+        + '<div class="finVendaTopo"><span class="finVendaVal">' + finReal(p.total) + '</span>'
+        + '<span class="finSt ' + finEsc(st) + '">' + (FIN_ST[st] || st) + '</span></div>'
+        + '<div class="finVendaItens">' + (itens || 'Pedido') + '</div>'
+        + '<div class="finVendaPe">' + quem + ' · ' + ent + ' · veio da ' + origem + '</div>'
+        + (botoes ? '<div class="finVendaBtns">' + botoes + '</div>' : '')
+        + '</div>';
+    });
+    lista.innerHTML = html;
+    if (el('finResumo')) el('finResumo').innerHTML = '<b>' + pagos + '</b> pedido' + (pagos === 1 ? '' : 's') + ' pago' + (pagos === 1 ? '' : 's') + ' · <b>' + finReal(soma) + '</b> no total.';
+  }
+
+  window.finPedidoAcao = async function (id, status) {
+    if (status === 'recusado' && !confirm('Recusar este pedido? Faça isso só se o Pix realmente não caiu na sua conta.')) return;
+    try {
+      const r = await finPost('loja_pedido', null, { pedidoId: id, status: status });
+      if (!(r.j && r.j.ok)) { alert(finMsg(r.j, r.http)); return; }
+      try { toast(status === 'pago' ? 'Pedido confirmado!' : (status === 'entregue' ? 'Marcado como entregue.' : 'Pedido recusado.')); } catch (_) {}
+    } catch (_) { alert('Falha de conexão. Tente de novo.'); }
+  };
+
+  window.finVerComprovante = async function (id) {
+    try {
+      const r = await finPost('loja_comprovante', null, { pedidoId: id });
+      if (r.j && r.j.ok && r.j.url) { window.open(r.j.url, '_blank', 'noopener'); return; }
+      alert(finMsg(r.j, r.http));
+    } catch (_) { alert('Falha de conexão. Tente de novo.'); }
+  };
+
 </script>
 <script>
 (function(){
