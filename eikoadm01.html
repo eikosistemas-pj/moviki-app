@@ -1165,6 +1165,24 @@ table.mvTab td b{font-weight:700}
             <div class="cdTopo"><div><div class="cdTit">Ver a página de um negócio</div><div class="cdSub">Digite o apelido (o que vem depois da barra) e abra a página pública. Em modo demonstração os blocos vazios aparecem como exemplo.</div></div></div>
             <div class="convLinha"><input id="apelidoVer" type="text" placeholder="ex.: karina" autocomplete="off"><button type="button" class="btnMini" id="btnVerApelido">Abrir</button><button type="button" class="btnMini" id="btnVerDemo">Abrir em demonstração</button></div>
           </div>
+          <!-- ============ CONFERIR OS ÍCONES ============
+               A lista NÃO é escrita aqui. O botão lê os três painéis do próprio
+               servidor e tira dali os nomes que cada um pede em icones/. Lista
+               escrita à mão envelhece em silêncio: no dia em que um painel
+               ganhar um ícone novo, a conferência diria "tudo certo" sem ter
+               conferido o novo. -->
+          <div class="cd">
+            <div class="cdTopo"><div><div class="cdTit">Conferir os ícones dos painéis</div><div class="cdSub">Procura todo arquivo que os três painéis pedem em <code>icones/</code> e diz qual não está no repositório. Ícone que falta não quebra a tela — ele só some.</div></div></div>
+            <div class="gridAcoes" style="margin-top:4px">
+              <button type="button" class="linkFora" id="btnConfIcones"><img src="icones/escudo.png" alt="" onerror="this.style.display='none'"><span>Conferir agora</span></button>
+            </div>
+            <div id="confIcoResumo" class="cdSub" style="margin-top:10px"></div>
+            <div id="confIcoFalta" class="hide" style="margin-top:10px;background:var(--mv-campo,#0b1728);border:1px solid rgba(255,107,107,.45);border-radius:12px;padding:12px;font-size:13px;color:#ff9b9b;white-space:pre-wrap;word-break:break-all"></div>
+            <div class="gridAcoes hide" id="confIcoAcoes" style="margin-top:10px">
+              <button type="button" class="btnMini" id="btnConfIcoCopiar">Copiar a lista do que falta</button>
+            </div>
+            <div id="confIcoGrade" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;margin-top:12px"></div>
+          </div>
         </section>
 
         <!-- ============ SEÇÃO: CONFIGURAÇÕES ============ -->
@@ -1323,7 +1341,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-12-www1';
+  window.MOVIKI_VERSAO = '2026-09-15-conferir';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -4096,5 +4114,116 @@ table.mvTab td b{font-weight:700}
   window.mvCrachaDono = { mostrar: mostrar, semCadastro: semCadastro, aviso: aviso, baixar: baixar };
 })();
 </script>
+
+<!-- ===================================================================
+     CONFERÊNCIA DOS ÍCONES — 15/09/2026
+     Substitui o conferir-icones.html solto na raiz, que era público (sem
+     login), mostrava a estrutura interna dos painéis para qualquer um e, pior,
+     carregava uma lista congelada de nomes.
+     Aqui a lista é DESCOBERTA na hora: busca os três painéis no próprio
+     servidor (mesma origem, o connect-src 'self' da CSP já cobre) e tira deles
+     os nomes pedidos em icones/. Assim a ferramenta não envelhece.
+     Só lê. Não grava nada, não chama o robô e não toca no Firestore.
+     =================================================================== */ -->
+<script>
+(function () {
+  'use strict';
+  var PAINEIS = [
+    ['index.html', 'lojista'],
+    ['parceiro.html', 'parceiro'],
+    ['eikoadm01.html', 'dono'],
+  ];
+  var btn = document.getElementById('btnConfIcones');
+  if (!btn) return;
+  var faltam = [];
+
+  function el(id) { return document.getElementById(id); }
+
+  btn.addEventListener('click', async function () {
+    btn.disabled = true;
+    var rotulo = btn.querySelector('span');
+    var antes = rotulo ? rotulo.textContent : '';
+    if (rotulo) rotulo.textContent = 'Lendo os painéis…';
+    el('confIcoResumo').textContent = '';
+    el('confIcoGrade').innerHTML = '';
+    el('confIcoFalta').classList.add('hide');
+    el('confIcoAcoes').classList.add('hide');
+    faltam = [];
+
+    /* onde[nome] = quais painéis pedem aquele arquivo */
+    var onde = {}, lidos = 0;
+    for (var i = 0; i < PAINEIS.length; i++) {
+      try {
+        var r = await fetch(PAINEIS[i][0] + '?v=' + Date.now(), { cache: 'no-store' });
+        if (!r.ok) continue;
+        var txt = await r.text();
+        lidos++;
+        var achados = txt.match(/icones\/[a-z0-9._-]+\.png/gi) || [];
+        for (var k = 0; k < achados.length; k++) {
+          var nome = achados[k].slice(7).toLowerCase();
+          if (!onde[nome]) onde[nome] = [];
+          if (onde[nome].indexOf(PAINEIS[i][1]) < 0) onde[nome].push(PAINEIS[i][1]);
+        }
+      } catch (e) {}
+    }
+
+    var nomes = Object.keys(onde).sort();
+    if (!nomes.length) {
+      el('confIcoResumo').innerHTML = '<b style="color:var(--mv-erro,#ff6b6b)">Não consegui ler os painéis.</b> Abra este painel por app.moviki.com.br.';
+      btn.disabled = false; if (rotulo) rotulo.textContent = antes;
+      return;
+    }
+    if (rotulo) rotulo.textContent = 'Conferindo ' + nomes.length + ' arquivos…';
+
+    var prontos = 0;
+    await Promise.all(nomes.map(function (nome) {
+      return new Promise(function (ok) {
+        var cel = document.createElement('div');
+        cel.style.cssText = 'background:var(--mv-surf,#0e1c30);border:1px solid var(--mv-linha,#1c3457);border-radius:12px;padding:9px;text-align:center';
+        cel.innerHTML = '<div style="height:62px;display:flex;align-items:center;justify-content:center;margin-bottom:6px">' +
+                        '<img alt="" style="max-width:56px;max-height:56px"></div>' +
+                        '<div style="font-size:11px;font-weight:600;word-break:break-all"></div>' +
+                        '<div style="font-size:10px;color:var(--mv-txt-3,#8fa6c4);margin-top:2px">' + onde[nome].join(' · ') + '</div>' +
+                        '<div style="font-size:10px;font-weight:700;margin-top:5px"></div>';
+        var cx = cel.children[0], img = cel.querySelector('img');
+        cel.children[1].textContent = nome;
+        var st = cel.children[3];
+        img.onload = function () { prontos++; st.textContent = 'OK'; st.style.color = 'var(--mv-ok,#25e39b)'; ok(); };
+        img.onerror = function () {
+          faltam.push(nome);
+          cel.style.borderColor = '#ff6b6b';
+          cx.innerHTML = '<span style="font-size:26px;color:#ff6b6b">?</span>';
+          st.textContent = 'FALTA'; st.style.color = '#ff6b6b'; ok();
+        };
+        img.src = 'icones/' + nome + '?v=' + Date.now();
+        el('confIcoGrade').appendChild(cel);
+      });
+    }));
+
+    el('confIcoResumo').innerHTML = '<b>' + prontos + ' de ' + nomes.length + ' no lugar</b> · ' +
+      (faltam.length
+        ? '<b style="color:var(--mv-erro,#ff6b6b)">' + faltam.length + ' faltando</b>'
+        : '<b style="color:var(--mv-ok,#25e39b)">nenhum faltando</b>') +
+      ' · lidos ' + lidos + ' de ' + PAINEIS.length + ' painéis';
+
+    if (faltam.length) {
+      faltam.sort();
+      el('confIcoFalta').textContent = faltam.join('\n');
+      el('confIcoFalta').classList.remove('hide');
+      el('confIcoAcoes').classList.remove('hide');
+    }
+    btn.disabled = false; if (rotulo) rotulo.textContent = antes;
+  });
+
+  var bc = document.getElementById('btnConfIcoCopiar');
+  if (bc) bc.addEventListener('click', function () {
+    var t = faltam.join(', ');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(function () { bc.textContent = 'Copiado!'; setTimeout(function () { bc.textContent = 'Copiar a lista do que falta'; }, 2000); }, function () { prompt('Copie:', t); });
+    } else prompt('Copie:', t);
+  });
+})();
+</script>
+
 </body>
 </html>
