@@ -15,6 +15,10 @@
 <meta name="theme-color" content="#0D1B2A">
 <link rel="stylesheet" href="/movikiui.css">
 <script src="/mvmetrica.js"></script>
+<!-- o modulo de aulas da LIVE. Separado do MOVIKI_TUTORIAIS de proposito:
+     ensina a transmitir, nao a preencher o cadastro, e onze das catorze
+     aulas vivem em abas do ESTUDIO. O mesmo arquivo serve os dois. -->
+<script src="/liveaulas.js"></script>
 <style>
   :root{--ciano:#00D4FF;--azul:#0066FF;--escuro:#0D1B2A;--claro:#F2F5F9;--card:#13263d;--card-borda:#223a5c;--campo:#0d1c30;}
   /* ---- LOGO NO MAPA (aba Local) — cartao + editor de enquadramento ---- */
@@ -2963,6 +2967,17 @@ window.mvAbaInicial=function(){
       var l=Array.isArray(d.liveBeta)?d.liveBeta:[];
       var pode=(!l.length||l.indexOf(uid)>=0)&&d.liveDesligada!==true;
       document.querySelectorAll('.mvBtnLive').forEach(function(b){b.classList.toggle('escondido',!pode);});
+      /* O card das aulas da live so pode aparecer para quem ve o botao, e e
+         ESTE snapshot que decide. Ele chega DEPOIS do MvLiveAulas.iniciar(),
+         entao pintar so la deixava o card invisivel para sempre - foi o que
+         saiu no primeiro teste. Repinta aqui, quando a resposta existe. */
+      try{ if(window.mvLiveAulasFaixa) window.mvLiveAulasFaixa(); }catch(_){}
+      /* Duas das catorze aulas sao do PAINEL, nao do estudio: a de pedidos
+         mora no Financeiro (o pedido pago cai la) e a do cardapio compravel na
+         aba Cardapio. So entram para quem tem a live liberada - quem nao ve o
+         botao Fazer live nao pode achar uma aula de uma ferramenta que nem
+         sabe que existe. */
+      try{ if(pode && window.MvLiveAulas) MvLiveAulas.embutir(); }catch(_){}
     },function(){});
     try{const a=await getDoc(doc(db,'assinaturas',uid));const d=a.exists()?a.data():null;dadosAssinatura=d;
       const ok=d&&d.ativo===true&&(!d.vence_em||d.vence_em.toMillis()>Date.now());
@@ -2993,7 +3008,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-15-aulatrava';
+  window.MOVIKI_VERSAO='2026-09-15-liveaulas2';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5392,6 +5407,35 @@ window.mvAbaInicial=function(){
         };
         window.dispatchEvent(new Event('mv-lojista-pronto'));
       }catch(_){}
+
+      /* ---- 15/09/2026: as aulas do MODO LIVE ----
+         Mesmo desenho do bloco acima: o liveaulas.js nao fala com o Firebase,
+         quem le e grava e aqui. Guarda em negocios/{uid}/estado/liveaulas, que
+         cai no match recursivo (escrita do dono) - sem regra nova.
+         Aqui o painel so MOSTRA o progresso e abre a biblioteca; a trava mora
+         no estudio, que e onde o lojista entra ao vivo. */
+      try{
+        if(window.MvLiveAulas){
+          const _laRef = doc(db,'negocios',user.uid,'estado','liveaulas');
+          let _laV = [], _laEm = '';
+          try{
+            const _laS = await getDoc(_laRef);
+            if(_laS.exists()){
+              const _d = _laS.data();
+              if(Array.isArray(_d.vistas)) _laV = _d.vistas.slice();
+              _laEm = _d.em || '';
+            }
+          }catch(_){}
+          MvLiveAulas.iniciar({
+            estado: { vistas:_laV, em:_laEm },
+            salvar: function(lista, em){
+              try{ setDoc(_laRef, { vistas:lista, em: em||'' }, { merge:true }); }catch(_){}
+            },
+            noAr: function(){ return false; }   /* o painel nunca esta transmitindo */
+          });
+          window.mvLiveAulasFaixa();
+        }
+      }catch(_){}
       try{
         var _qs=new URLSearchParams(location.search), _pl=_qs.get('plano'), _pr=_qs.get('periodo')||'mensal';
         if(_pl==='enterprise' && !ehEnterprisePainel()){ abrirPlano(); setTimeout(function(){ try{selecionarPlano('enterprise','mensal',null);}catch(_){}} ,150); }
@@ -6640,6 +6684,10 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .mvAvisoBtn{flex:none;padding:11px 18px;border-radius:11px;border:0;cursor:pointer;font-family:inherit;
   font-size:14px;font-weight:700;color:#2a1400;background:#ff8a00}
 .mvAvisoBtn:hover{background:#ffa032}
+/* o card das aulas da live em alerta (em dia, mas tem aula nova): ciano,
+   nao laranja - laranja e cadeado, ciano e novidade */
+.mvAvisoLiveOk{border-color:rgba(0,212,255,.45)!important;background:rgba(0,212,255,.10)!important}
+.mvAvisoLiveOk .mvAvisoIco{color:var(--ciano,#00D4FF)}
 .mvAvisoBarra{flex-basis:100%;height:7px;border-radius:99px;background:rgba(255,255,255,.10);overflow:hidden}
 .mvAvisoBarra i{display:block;height:100%;border-radius:99px;background:#ff8a00;transition:width .4s}
 .mvTravado{position:relative}
@@ -7378,9 +7426,63 @@ window.MOVIKI_TUTORIAIS = { modulos: [
         '<button type="button" class="mvAvisoBtn" data-bvabrir="1">'+(falta===t.length?'Ver as aulas':'Continuar')+'</button>'+
         '<span class="mvAvisoBarra"><i style="width:'+Math.round(f.length/t.length*100)+'%"></i></span>';
       alvo.parentNode.insertBefore(a, alvo);
+      /* a faixa da live e reinserida DEPOIS desta, e a remocao la em cima
+         apaga as duas (as duas usam .mvAviso) */
+      try{ if(window.mvLiveAulasFaixa) window.mvLiveAulasFaixa(); }catch(_){}
     }catch(e){}
   }
   window.mvBvFaixa=faixa;
+
+  /* ---------- o card das AULAS DA LIVE ----------
+     Gemeo da faixa de boas-vindas, e logo abaixo dela. So aparece para quem
+     tem a live liberada: quem nao ve o botao Fazer live nao pode levar aviso
+     de uma ferramenta que nem sabe que existe. A regra de quem ve e a mesma
+     do botao - o .mvBtnLive perde a classe `escondido` em carregarPlanoPainel.
+
+     TRES ESTADOS, nesta ordem:
+       falta ver as tres do comeco  -> laranja, "antes da sua primeira live"
+       em dia, mas tem aula nova    -> ciano, alerta, nunca cadeado
+       em dia e sem novidade        -> nao aparece */
+  function liveLiberada(){
+    try{
+      var b=document.querySelector('.gcard.mvBtnLive');
+      return !!b && !b.classList.contains('escondido');
+    }catch(e){ return false; }
+  }
+  function faixaLive(){
+    try{
+      var velha=document.getElementById('mvAvisoLive');
+      if(velha) velha.remove();
+      if(!window.MvLiveAulas || !liveLiberada()) return;
+      var faltam=MvLiveAulas.faltam().length, total=MvLiveAulas.daTrava().length;
+      var novas=MvLiveAulas.novas().length;
+      if(!faltam && !novas) return;
+      var alvo=document.querySelector('.mvMapaCard'); if(!alvo) return;
+
+      var a=document.createElement('div');
+      a.className='mvAviso'+(faltam?'':' mvAvisoLiveOk');
+      a.id='mvAvisoLive';
+      var tit = faltam ? 'Aulas da live: '+(total-faltam)+' de '+total
+                       : (novas===1?'Tem uma aula nova da live':'Tem '+novas+' aulas novas da live');
+      var sub = faltam
+        ? 'Veja as três do começo e o botão Entrar ao vivo libera. São menos de quatro minutos.'
+        : 'Ferramenta nova ganha aula. Você já pode transmitir — isto é só para ficar em dia.';
+      a.innerHTML=
+        '<span class="mvAvisoIco"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+
+        '<rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg></span>'+
+        '<span class="mvAvisoTxt"><b class="mvAvisoTit">'+tit+'</b>'+
+        '<span class="mvAvisoSub">'+sub+'</span></span>'+
+        '<button type="button" class="mvAvisoBtn" data-lvaulas-abrir="1">'+
+        (faltam?(faltam===total?'Ver as aulas':'Continuar'):'Ver o que mudou')+'</button>'+
+        (faltam?'<span class="mvAvisoBarra"><i style="width:'+Math.round((total-faltam)/total*100)+'%"></i></span>':'');
+      /* abaixo da faixa de boas-vindas, se ela estiver la */
+      var bv=document.querySelector('.mvAviso:not(#mvAvisoLive)');
+      if(bv && bv.parentNode) bv.parentNode.insertBefore(a, bv.nextSibling);
+      else alvo.parentNode.insertBefore(a, alvo);
+    }catch(e){}
+  }
+  window.mvLiveAulasFaixa=faixaLive;
+  window.addEventListener('mv-liveaula-vista',faixaLive);
 
   window.addEventListener('mv-lojista-pronto',function(){
     try{

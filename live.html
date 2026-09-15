@@ -3,7 +3,7 @@
 <head>
 <!-- MOVIKI live.html (estudio do lojista) | versao no window.MOVIKI_VERSAO -->
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://i.ibb.co https://*.google-analytics.com; media-src 'self' blob:; connect-src 'self' https://*.googleapis.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://*.cloudflarestream.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src 'self' https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://i.ibb.co https://i.ytimg.com https://*.google-analytics.com; media-src 'self' blob:; connect-src 'self' https://*.googleapis.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://*.cloudflarestream.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src 'self' https://www.youtube-nocookie.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -14,6 +14,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="mvmetrica.js"></script>
+<!-- o modulo de aulas da live: catalogo, biblioteca, player e a trava.
+     Bloco isolado, sem Firebase: aula nao derruba estudio. -->
+<script src="liveaulas.js"></script>
 <style>
 :root{
   --mv-ciano:#00D4FF;--mv-azul:#0066FF;--mv-grad:linear-gradient(135deg,#00D4FF,#0066FF);
@@ -166,6 +169,14 @@ svg{display:block}
 .ped .l3{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .cm.venda{background:rgba(37,227,155,.16)}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:50;background:rgba(0,0,0,.88);color:#fff;border-radius:10px;padding:10px 14px;font-size:13.5px;max-width:90%;text-align:center}
+/* a faixa das aulas, na tela de antes da live */
+.lvTravaAulas{background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.45);border-radius:12px;padding:10px 12px;margin-top:10px;display:flex;flex-direction:column;gap:3px}
+.lvTravaAulas.lvOk{background:rgba(0,212,255,.10);border-color:rgba(0,212,255,.38)}
+.lvTravaAulas b{font-size:14px}
+.lvTravaAulas>span{font-size:12px;color:var(--mv-txt-2)}
+.lvTravaBarra{height:5px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:6px}
+.lvTravaBarra>i{display:block;height:100%;width:0;border-radius:99px;background:var(--mv-grad);transition:width .35s ease}
+#btnIniciar[disabled]{opacity:.55}
 </style>
 </head>
 <body>
@@ -216,8 +227,18 @@ svg{display:block}
         <div id="boxAntes">
           <label class="rot" for="titulo">Título da live (aparece para quem entra)</label>
           <input class="campo" id="titulo" maxlength="60" placeholder="Ex.: Pastel de queijo saindo agora!">
+          <!-- AS AULAS, ANTES DA PRIMEIRA LIVE.
+               Pintada por pintarAulas(). Fica escondida para quem ja assistiu
+               as tres do comeco - quem ja sabe nao leva aviso na cara. -->
+          <div id="boxAulas" class="lvTravaAulas escondido">
+            <b id="aulasTit">Antes da sua primeira live</b>
+            <span id="aulasSub">Três aulas curtas, menos de quatro minutos no total.</span>
+            <div class="lvTravaBarra"><i id="aulasBarra"></i></div>
+            <button type="button" class="btnSec" data-lvaulas-abrir="1" style="width:100%;margin-top:8px">Ver as aulas</button>
+          </div>
           <button type="button" class="btnGrad btnVivo" id="btnIniciar" style="margin-top:10px" disabled><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>Entrar ao vivo</button>
           <div id="erroIniciar" class="msgErro escondido"></div>
+          <button type="button" class="btnMini" data-lvaulas-abrir="1" id="btnAulasLivre" style="width:100%;margin-top:8px">Aulas da live</button>
           <ul class="dicas">
             <li>Segure o celular em pé e deixe a luz de frente para você.</li>
             <li>Use o Wi-Fi ou 4G com sinal cheio. A live usa a internet do celular.</li>
@@ -427,7 +448,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-15-sessao5';
+  window.MOVIKI_VERSAO='2026-09-15-liveaulas';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -542,6 +563,7 @@ svg{display:block}
     if(est.agendada&&est.agendada.em){const d=new Date(ms(est.agendada.em));el('agQuando').value=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);el('agTitulo').value=est.agendada.titulo||'';}
     montarAbas(); pintarProdutos(); pintarOfertaSelect(); ouvirPedidos();
     getDoc(doc(db,'negocios',uid,'estado','liveAceite')).then(a=>{aceiteOk=!!(a.exists()&&a.data().versao===ACEITE_VERSAO);}).catch(()=>{});
+    ligarAulas();
     onSnapshot(doc(db,'configuracoes','liveTermos'),t=>{const d=t.exists()?(t.data()||{}):{};
       MV_TERMOS_EXTRAS=Array.isArray(d.extras)?d.extras.filter(x=>typeof x==='string').slice(0,300):[];
       aplicarChaveMestra(d.liveDesligada===true);},()=>{});
@@ -572,8 +594,86 @@ svg{display:block}
   function abrirAba(k,trava){
     document.querySelectorAll('.aba').forEach(b=>b.classList.toggle('on',b.dataset.k===k));
     document.querySelectorAll('.painelAba').forEach(p=>p.classList.toggle('on',trava?p.dataset.aba==='trava':p.dataset.aba===k));
+    /* o iframe da aba que saiu de cena continuaria tocando por tras da nova */
+    try{ if(window.MvLiveAulas) MvLiveAulas.pararTodos(true); }catch(_){}
     if(trava)ev('live_trava_enterprise',{aba:k});
   }
+
+  /* ================= aulas da live =================
+     O modulo mora em liveaulas.js e nao conhece o Firebase: daqui sai o
+     estado e volta o que mudou. Progresso em negocios/{uid}/estado/liveaulas,
+     que cai no match recursivo (escrita do dono) - sem regra nova. So entram
+     chaves de aula, nada pessoal: a subcolecao e de leitura publica.
+
+     A TRAVA e das TRES aulas de contexto, nao das catorze. As onze de
+     ferramenta ficam livres desde o primeiro dia: travar a live por causa da
+     aula de Cortes nao protege ninguem, e quem clicou em Fazer live esta com
+     a intencao mais quente que vai ter. O que protege de verdade e o aceite
+     das Regras da Live, que continua onde sempre esteve.
+
+     AULA NOVA NAO RETRANCA: quem concluiu tem o carimbo `em` e so recebe
+     ALERTA. Esta regra ja custou caro no painel do parceiro. */
+  const refAulas=()=>doc(db,'negocios',uid,'estado','liveaulas');
+  let aulasProntas=false, travadoPorAula=false;
+  /* mestraOff e declarada mais abaixo no arquivo (let, zona morta):
+     ler direto daria ReferenceError na primeira pintura. */
+  function mestraAtiva(){ try{ return mestraOff===true; }catch(_){ return false; } }
+  function ligarAulas(){
+    if(!window.MvLiveAulas) return;                 /* o script nao subiu: segue sem trava */
+    getDoc(refAulas()).then(a=>{
+      const d=a.exists()?(a.data()||{}):{};
+      MvLiveAulas.iniciar({
+        estado:{ vistas:Array.isArray(d.vistas)?d.vistas:[], em:d.em||'' },
+        salvar:(vistas,em)=>{
+          setDoc(refAulas(),{vistas,em:em||''},{merge:true}).catch(()=>{});
+        },
+        /* com a live NO AR o audio da aula sairia dentro da transmissao */
+        noAr:()=>noAr
+      });
+      aulasProntas=true;
+      MvLiveAulas.embutir();
+      pintarAulas();
+    }).catch(()=>{ aulasProntas=false; });
+  }
+  function pintarAulas(){
+    if(!window.MvLiveAulas||!aulasProntas) return;
+    const box=el('boxAulas'), btn=el('btnIniciar'), livre=el('btnAulasLivre');
+    const faltam=MvLiveAulas.faltam(), total=MvLiveAulas.daTrava().length;
+    const novas=MvLiveAulas.novas().length;
+    if(faltam.length){
+      box.classList.remove('escondido','lvOk');
+      el('aulasTit').textContent='Antes da sua primeira live';
+      el('aulasSub').textContent=faltam.length===total
+        ? 'Três aulas curtas, menos de quatro minutos no total.'
+        : 'Falta'+(faltam.length>1?'m ':' ')+faltam.length+'. Continue de onde parou.';
+      el('aulasBarra').style.width=Math.round((total-faltam.length)/total*100)+'%';
+      if(livre)livre.classList.add('escondido');
+    }else if(novas){
+      box.classList.remove('escondido'); box.classList.add('lvOk');
+      el('aulasTit').textContent='Tem aula nova';
+      el('aulasSub').textContent=novas===1?'Uma ferramenta ganhou aula. Você já pode transmitir.'
+                                          :novas+' aulas novas. Você já pode transmitir.';
+      el('aulasBarra').style.width='100%';
+      if(livre)livre.classList.add('escondido');
+    }else{
+      box.classList.add('escondido');
+      if(livre)livre.classList.remove('escondido');
+    }
+    /* O BOTAO: so acende com camera E aulas em dia.
+       Reabrir e delicado — outras DUAS coisas desabilitam este mesmo botao: a
+       moderacao (encerradaPeloMoviki) e a chave-mestra do dono
+       (aplicarChaveMestra). Reabilitar as cegas furaria as duas. Por isso o
+       motor so reabre o que ELE proprio fechou, e nunca com a chave-mestra
+       ligada. Sem isto o botao ficava travado depois de o lojista ver a
+       ultima aula, ate recarregar a pagina. */
+    if(btn&&!noAr){
+      if(faltam.length&&stream){ btn.disabled=true; travadoPorAula=true; }
+      else if(travadoPorAula&&!faltam.length&&!mestraAtiva()){
+        btn.disabled=false; travadoPorAula=false;
+      }
+    }
+  }
+  window.addEventListener('mv-liveaula-vista',pintarAulas);
 
   /* ================= produtos ================= */
   function pintarProdutos(){
@@ -628,7 +728,8 @@ svg{display:block}
       });
       if(stream)stream.getTracks().forEach(t=>t.stop());
       stream=novo; const v=el('prev'); v.srcObject=stream; v.classList.toggle('espelho',modoCam==='user');
-      el('camVazia').classList.add('escondido'); el('camBase').classList.remove('escondido'); el('btnIniciar').disabled=false;
+      el('camVazia').classList.add('escondido'); el('camBase').classList.remove('escondido');
+      el('btnIniciar').disabled=false; pintarAulas();
       return true;
     }catch(e){
       el('camVazia').classList.remove('escondido');
@@ -670,6 +771,11 @@ svg{display:block}
   el('btnIniciar').onclick=async()=>{
     const b=el('btnIniciar'); b.disabled=true; b.lastChild.textContent='Conectando…'; el('erroIniciar').classList.add('escondido');
     const volta=()=>{b.disabled=false;b.lastChild.textContent='Entrar ao vivo';};
+    /* as aulas vem ANTES do aceite: aprende, depois assina */
+    if(window.MvLiveAulas&&aulasProntas&&!MvLiveAulas.apto()){
+      volta(); ev('live_trava_aulas',{faltam:MvLiveAulas.faltam().length});
+      MvLiveAulas.abrir(); return;
+    }
     if(!aceiteOk){volta();abrirAceite();return;}
     const titulo=el('titulo').value.trim().slice(0,60);
     if(barrar(titulo,'titulo')){volta();return;}
