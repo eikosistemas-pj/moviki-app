@@ -2993,7 +2993,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-15-sku-aviso';
+  window.MOVIKI_VERSAO='2026-09-15-cpffinal';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5747,6 +5747,12 @@ window.mvAbaInicial=function(){
       const wpp = (p.comprador && p.comprador.whatsapp) ? String(p.comprador.whatsapp).replace(/\D/g, '') : '';
       const ent = (p.entrega && p.entrega.tipo === 'entrega') ? ('Entrega: ' + finEsc(p.entrega.detalhe || '')) : 'Retirada no local';
       const origem = p.origem === 'cardapio' ? 'cardápio' : 'live';
+      /* Privacidade do comprador, 15/09: o checkout guarda SO os dois ultimos
+         digitos (comprador.cpfFinal) e descarta o resto. Isso ja era verdade no
+         servidor, mas nao aparecia no painel -- o lojista nao tinha como saber
+         que o Moviki nao retem o documento inteiro. Mostrar e a prova. */
+      const fim = (p.comprador && p.comprador.cpfFinal)
+        ? ' · final ' + finEsc(p.comprador.cpfFinal) : '';
 
       let botoes = '';
       if (p.modo === 'pix' && (st === 'aguardando' || st === 'conferindo' || st === 'expirado')) {
@@ -5761,7 +5767,7 @@ window.mvAbaInicial=function(){
         + '<div class="finVendaTopo"><span class="finVendaVal">' + finReal(p.total) + '</span>'
         + '<span class="finSt ' + finEsc(st) + '">' + (FIN_ST[st] || st) + '</span></div>'
         + '<div class="finVendaItens">' + (itens || 'Pedido') + '</div>'
-        + '<div class="finVendaPe">' + quem + ' · ' + ent + ' · veio da ' + origem + '</div>'
+        + '<div class="finVendaPe">' + quem + fim + ' · ' + ent + ' · veio da ' + origem + '</div>'
         + (botoes ? '<div class="finVendaBtns">' + botoes + '</div>' : '')
         + '</div>';
     });
