@@ -427,7 +427,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-12-www2';
+  window.MOVIKI_VERSAO='2026-09-15-crachafila';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -455,6 +455,8 @@ svg{display:block}
   function mostrar(id){['stCarregando','stSemLogin','stSemPlano','stPronto'].forEach(k=>el(k).classList.toggle('escondido',k!==id));}
 
   let user=null,uid='',neg={},nivel=null,produtos=[],sacola=[],fixado=null,est={};
+  let filaAtual=[];
+  function contarFila(){const nf=el('nFila');if(!nf)return;const abertos=filaAtual.filter(m=>!feitos[m.id]).length;nf.textContent=abertos;nf.classList.toggle('escondido',!abertos||!ent());}
   let stream=null,modoCam='user',pc=null,noAr=false,inicioMs=0,tickT=null,pulsoT=null,contaT=null,chatDes=null,wake=null;
   let pico=0,assistindo=0,msgs=[],encerrando=false;
   const refLive=()=>doc(db,'negocios',uid,'estado','live');
@@ -802,9 +804,9 @@ svg{display:block}
       q2.forEach((m,i)=>{const x=document.createElement('label');x.className='cm quero'+(feitos[m.id]?' feito':'');
         const h=m.criadoEm&&m.criadoEm.toDate?m.criadoEm.toDate().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):'';
         x.innerHTML='<input type="checkbox"'+(feitos[m.id]?' checked':'')+'><div class="t"><b>'+(i+1)+'. '+esc(m.nome)+'</b>'+esc(m.texto)+'</div><span class="h">'+h+'</span>';
-        x.querySelector('input').onchange=e=>{feitos[m.id]=e.target.checked;x.classList.toggle('feito',e.target.checked);try{sessionStorage.setItem('mv_live_fila',JSON.stringify(feitos));}catch(_){}};
+        x.querySelector('input').onchange=e=>{feitos[m.id]=e.target.checked;x.classList.toggle('feito',e.target.checked);try{sessionStorage.setItem('mv_live_fila',JSON.stringify(feitos));}catch(_){}/* 15/09: o cracha da aba conta os NAO feitos, mas so era recalculado quando chegava mensagem nova. Marcar um atendido nao mudava o numero ate alguem escrever no chat -- o lojista marcava tres e o cracha seguia igual. */contarFila();};
         f.appendChild(x);});
-      const abertos=q2.filter(m=>!feitos[m.id]).length, nf=el('nFila'); if(nf){nf.textContent=abertos;nf.classList.toggle('escondido',!abertos||!ent());}
+      filaAtual=q2; contarFila();
       el('kQuero').textContent=q2.length; el('kMsg').textContent=msgs.filter(m=>m.tipo==='msg').length;
       el('kPorProd').innerHTML=porProduto(q2);
     },()=>{});
