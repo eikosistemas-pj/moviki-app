@@ -427,7 +427,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-15-sessao1';
+  window.MOVIKI_VERSAO='2026-09-15-sessao2';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -436,18 +436,13 @@ svg{display:block}
      a configuracao de dominio mude de lado. */
   const APIS=['https://www.moviki.com.br/api/live','https://moviki.com.br/api/live'];
   /* 15/09/2026: o estado "no ar" e o endereco do video passaram a ser do
-     SERVIDOR (negocios/{uid}/estado/liveSessao, escrito so pelo Admin SDK).
-     O pulso e o encerrar falam com o robo; este arquivo nao grava mais
-     ativa/whep/pulso em estado/live — ele so grava CONTEUDO. */
-  const ROBO='https://moviki-robo.vercel.app/api/pontos';
-  async function chamarRobo(acao,extra){
-    try{
-      const tk=await user.getIdToken();
-      const r=await fetch(ROBO,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},
-        body:JSON.stringify(Object.assign({idToken:tk,acao},extra||{}))});
-      return await r.json().catch(()=>({}));
-    }catch(e){ return {erro:'rede'}; }
-  }
+     SERVIDOR (live_sessoes/{uid}, escrito so pelo Admin SDK). O pulso e o
+     encerrar falam com o robo; este arquivo nao grava mais ativa/whep/pulso em
+     estado/live — ele so grava CONTEUDO.
+     A funcao chamarRobo() e a constante ROBO JA EXISTEM neste modulo, mais
+     abaixo (aba Receber no Pix), e sao reaproveitadas aqui. Declarar de novo
+     derrubava o modulo INTEIRO com "Identifier already declared" — e o estudio
+     ficava preso em "Carregando..." para sempre, sem mensagem nenhuma. */
   let API=null;
   const app=initializeApp({
     apiKey:"AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",authDomain:"app.moviki.com.br",projectId:"moviki-app",
