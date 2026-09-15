@@ -427,7 +427,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-15-crachafila';
+  window.MOVIKI_VERSAO='2026-09-15-sessao1';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -435,6 +435,19 @@ svg{display:block}
      o www direto nao ha salto nenhum. O apex fica de reserva, caso um dia
      a configuracao de dominio mude de lado. */
   const APIS=['https://www.moviki.com.br/api/live','https://moviki.com.br/api/live'];
+  /* 15/09/2026: o estado "no ar" e o endereco do video passaram a ser do
+     SERVIDOR (negocios/{uid}/estado/liveSessao, escrito so pelo Admin SDK).
+     O pulso e o encerrar falam com o robo; este arquivo nao grava mais
+     ativa/whep/pulso em estado/live — ele so grava CONTEUDO. */
+  const ROBO='https://moviki-robo.vercel.app/api/pontos';
+  async function chamarRobo(acao,extra){
+    try{
+      const tk=await user.getIdToken();
+      const r=await fetch(ROBO,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},
+        body:JSON.stringify(Object.assign({idToken:tk,acao},extra||{}))});
+      return await r.json().catch(()=>({}));
+    }catch(e){ return {erro:'rede'}; }
+  }
   let API=null;
   const app=initializeApp({
     apiKey:"AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",authDomain:"app.moviki.com.br",projectId:"moviki-app",
@@ -538,7 +551,17 @@ svg{display:block}
       MV_TERMOS_EXTRAS=Array.isArray(d.extras)?d.extras.filter(x=>typeof x==='string').slice(0,300):[];
       aplicarChaveMestra(d.liveDesligada===true);},()=>{});
     /* moderacao: se o dono do Moviki encerrar a live, o estudio para na hora */
-    onSnapshot(refLive(),sn=>{const d=sn.exists()?sn.data():{};if(noAr&&d.encerradaPor==='moviki')encerradaPeloMoviki(d.motivoModeracao||'');},()=>{});
+    /* Quem carimba "encerrada pelo Moviki" agora e o servidor, em
+       live_sessoes/{uid} — colecao que este navegador NAO escreve. Antes o
+       campo morava em estado/live, que o proprio lojista escreve: bastava
+       apaga-lo no console para a tela voltar ao normal.
+       A colecao e da RAIZ de proposito: dentro de negocios/{uid} o curinga das
+       regras daria a escrita de volta ao dono, e regra nao tem "deny". */
+    onSnapshot(doc(db,'live_sessoes',uid),sn=>{
+      const d=sn.exists()?(sn.data()||{}):{};
+      if(noAr&&d.encerradaPor==='moviki')encerradaPeloMoviki(d.motivoModeracao||'');
+      else if(noAr&&d.ativa===false)encerradaPeloMoviki('');
+    },()=>{});
     el('lnkVoltar').href='/';
   }
 
@@ -664,7 +687,9 @@ svg{display:block}
         bloqueado:'Sua conta está sem permissão para fazer live'+(r.ate?' até '+new Date(r.ate).toLocaleDateString('pt-BR'):'')+', por descumprir as Regras da Live. Fale com o suporte do Moviki pela caixa de mensagens.',
         conteudo:'"'+(r.texto||'')+'" não pode ir para a live ('+(r.termo||'')+'). Tire da sacolinha ou do título e tente de novo.',
         desligada:'As transmissões ao vivo estão temporariamente desligadas para manutenção. Volte daqui a pouco.',
-        beta:'A live ainda está em preparação e será liberada em breve. Você vai ser avisado quando abrir.'}[r.erro]||'Não deu para começar agora.';
+        beta:'A live ainda está em preparação e será liberada em breve. Você vai ser avisado quando abrir.',
+        cota:'Você já usou as '+(r.cota||2)+' lives do período de teste. Assinando um plano, a quantidade deixa de ter limite.',
+        sessao:'Não consegui abrir a live agora. Tente de novo em instantes.'}[r.erro]||'Não deu para começar agora.';
       el('erroIniciar').textContent=txt; el('erroIniciar').classList.remove('escondido'); b.disabled=false; b.lastChild.textContent='Entrar ao vivo'; return;
     }
     whipAtual=r.whip; whepAtual=r.whep;
@@ -672,19 +697,31 @@ svg{display:block}
       el('erroIniciar').textContent='A conexão de vídeo falhou. Troque de Wi-Fi para 4G (ou o contrário) e tente de novo.';el('erroIniciar').classList.remove('escondido');b.disabled=false;b.lastChild.textContent='Entrar ao vivo';return;}
     vigiar(pc);
     noAr=true; inicioMs=Date.now(); pico=0; msgs=[]; document.body.classList.add('noAr');
+    /* CONTEUDO da live. `ativa`, `whep` e `pulso` NAO entram mais aqui: quem
+       diz que a live esta no ar, e de onde vem o video, e o servidor
+       (estado/liveSessao). Os campos antigos sao zerados de proposito para que
+       nenhuma tela volte a ler o valor velho por engano. */
     await setDoc(refLive(),{
-      ativa:true,titulo:el('titulo').value.trim().slice(0,60),inicio:serverTimestamp(),pulso:serverTimestamp(),fim:null,
-      whep:whepAtual,nivel:nivel.nivel,assistindo:0,sacola:sacola.map(itemPub).filter(Boolean),fixado:fixado?itemPub(fixado):null,
-      oferta:null,cupom:null,brinde:null,local:false,agendada:null,atualizadoEm:serverTimestamp()
+      titulo:el('titulo').value.trim().slice(0,60),nivel:nivel.nivel,assistindo:0,
+      sacola:sacola.map(itemPub).filter(Boolean),fixado:fixado?itemPub(fixado):null,
+      oferta:null,cupom:null,brinde:null,local:false,agendada:null,atualizadoEm:serverTimestamp(),
+      ativa:false,whep:'',pulso:null
     },{merge:true}).catch(()=>{});
     ev('live_iniciar',{nivel:nivel.nivel});
     /* sessao da live para o painel do dono: o id usa o INICIO gravado pelo
        servidor, o mesmo que o robo poe nos pedidos (liveId) */
-    try{const lv=await getDoc(refLive());const im=lv.exists()&&lv.data().inicio&&lv.data().inicio.toMillis?lv.data().inicio.toMillis():Date.now();
+    try{const im=Number(String(r.sessaoId||'').split('_')[1])||Date.now();
       liveIdServidor=String(im); liveDocId=uid+'_'+im;
       await setDoc(doc(db,'lives',liveDocId),{lojistaUid:uid,slug:String(neg.slug||'').slice(0,40),nome:String(neg.nome||'').slice(0,80),nivel:nivel.nivel,titulo:el('titulo').value.trim().slice(0,60),
         liveId:liveIdServidor,inicioMs:im,pulsoMs:Date.now(),ativa:true,pico:0,assistindo:0,mensagens:0,queros:0,duracaoMin:0});
     }catch(_){}
+    /* Cota do teste gratis: alem de trava, e gatilho de assinatura. O lojista
+       precisa saber ANTES de gastar a ultima. */
+    if(r.cota&&r.restam!=null){
+      aviso(r.restam>0
+        ? ('Teste grátis: esta é a sua live '+(r.cota-r.restam)+' de '+r.cota+'. Assinando um plano, a quantidade deixa de ter limite.')
+        : 'Teste grátis: esta é a sua última live do período de teste. Assinando um plano, a quantidade deixa de ter limite.');
+    }
     el('boxAntes').classList.add('escondido'); el('boxDurante').classList.remove('escondido'); el('boxResumo').classList.add('escondido');
     el('pillVivo').classList.remove('escondido'); el('pillOlho').classList.remove('escondido');
     try{wake=await navigator.wakeLock.request('screen');}catch(_){}
@@ -711,8 +748,17 @@ svg{display:block}
   }
   function statsSessao(){const q=msgs.filter(m=>m.tipo==='quero').length,c=msgs.filter(m=>m.tipo==='msg').length;
     return {pulsoMs:Date.now(),assistindo,pico,mensagens:c,queros:q,duracaoMin:Math.round((Date.now()-inicioMs)/60000)};}
-  function pulso(){if(!noAr)return;updateDoc(refLive(),{pulso:serverTimestamp(),assistindo}).catch(()=>{});
-    if(liveDocId)updateDoc(doc(db,'lives',liveDocId),statsSessao()).catch(()=>{});}
+  /* O pulso deixou de ser uma escrita do navegador no Firestore e virou uma
+     batida no servidor. E la que o TETO DE MINUTOS do plano passa a existir de
+     verdade: antes ele era so este relogio aqui, e um nivel.limiteMin=99999 no
+     console fazia a live de 60 min durar doze horas. Se o servidor disser que
+     acabou, a transmissao cai aqui na hora. */
+  async function pulso(){
+    if(!noAr)return;
+    const r=await chamarRobo('live_pulso',{});
+    if(r&&r.encerrar){toast('A live chegou ao limite do seu plano.');encerrar();return;}
+    if(liveDocId)updateDoc(doc(db,'lives',liveDocId),statsSessao()).catch(()=>{});
+  }
   async function contar(){
     if(!noAr)return;
     try{
@@ -729,7 +775,8 @@ svg{display:block}
     if(gravador&&gravador.state==='recording')gravador.stop();
     try{pc&&pc.close();}catch(_){} pc=null;
     try{wake&&wake.release();}catch(_){}
-    await updateDoc(refLive(),{ativa:false,fim:serverTimestamp(),oferta:null,cupom:null,brinde:null,local:false,assistindo:0}).catch(()=>{});
+    await chamarRobo('live_fechar',{});
+    await updateDoc(refLive(),{oferta:null,cupom:null,brinde:null,local:false,assistindo:0}).catch(()=>{});
     if(liveDocId)await updateDoc(doc(db,'lives',liveDocId),Object.assign(statsSessao(),{ativa:false,fimMs:Date.now()})).catch(()=>{});
     ev('live_encerrar',{nivel:nivel.nivel,min:Math.round((Date.now()-inicioMs)/60000)});
     el('pillVivo').classList.add('escondido'); el('pillOlho').classList.add('escondido'); aviso('');
@@ -765,7 +812,17 @@ svg{display:block}
     }
   }
   window.addEventListener('beforeunload',e=>{if(noAr){e.preventDefault();e.returnValue='';}});
-  window.addEventListener('pagehide',()=>{if(noAr){try{updateDoc(refLive(),{ativa:false,fim:serverTimestamp()});}catch(_){}}});
+  /* Aba fechada sem "Encerrar": avisa o servidor com sendBeacon, que sobrevive
+     ao fechamento da pagina. Se nem isso sair, a live cai sozinha em 3 minutos
+     sem pulso — a tela publica ja media isso, e agora quem mede e o servidor. */
+  window.addEventListener('pagehide',()=>{
+    if(!noAr)return;
+    try{
+      user.getIdToken().then(tk=>{
+        try{navigator.sendBeacon(ROBO,JSON.stringify({idToken:tk,acao:'live_fechar'}));}catch(_){}
+      }).catch(()=>{});
+    }catch(_){}
+  });
 
   function mostrarResumo(){
     const min=Math.max(1,Math.round((Date.now()-inicioMs)/60000));

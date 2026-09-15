@@ -3831,14 +3831,30 @@ table.mvTab td b{font-weight:700}
       let avisoCf='';
       try{const tk=await USER.getIdToken();const r=await (await fetch(LV_API,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:JSON.stringify({idToken:tk,acao:'adm_encerrar',uid:lojistaUid})})).json();
         if(!r.ok)avisoCf='O vídeo não foi cortado no Cloudflare ('+(r.erro||'erro')+'). ';}catch(e){avisoCf='Sem resposta do servidor de vídeo. ';}
+      /* 15/09/2026 — QUEM DERRUBA A LIVE E O SERVIDOR.
+         Ate aqui o encerramento era gravado em negocios/{uid}/estado/live, um
+         documento que o PROPRIO lojista escreve: bastava ele apagar o campo
+         `encerradaPor` no console do navegador para o estudio parar de avisar.
+         E a pagina publica nunca olhou esse campo — ela so olhava `ativa`, que
+         tambem e dele. Agora o estado da transmissao mora em
+         live_sessoes/{uid}, escrito SO pelo Admin SDK (lib/livesessao.js), e e
+         essa chamada aqui que o derruba. A escrita abaixo continua, para
+         limpar oferta/cupom/brinde da tela de quem assiste. */
+      let avisoSessao='';
+      try{
+        const tk2=await USER.getIdToken();
+        const rs=await (await fetch('https://moviki-robo.vercel.app/api/pontos',{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},
+          body:JSON.stringify({idToken:tk2,acao:'live_adm_fechar',dados:{uid:lojistaUid,motivo:motivo}})})).json();
+        if(!rs||!rs.ok)avisoSessao='A sessão no servidor não foi fechada ('+((rs&&rs.erro)||'erro')+'). ';
+      }catch(e){avisoSessao='Sem resposta do robô ao fechar a sessão. ';}
       try{
         await setDoc(doc(db,'negocios',lojistaUid,'estado','live'),{ativa:false,fim:serverTimestamp(),encerradaPor:'moviki',motivoModeracao:motivo,oferta:null,cupom:null,brinde:null},{merge:true});
         if(liveDocId)await updateDoc(doc(db,'lives',liveDocId),{ativa:false,fimMs:Date.now(),encerradaPor:'moviki',motivo:motivo});
         if(dias!==0)await setDoc(doc(db,'live_bloqueios',lojistaUid),{motivo:motivo,ate:dias>0?Timestamp.fromMillis(Date.now()+dias*86400000):null,por:USER.uid,criadoEm:serverTimestamp()});
         await addDoc(collection(db,'moderacao'),{acao:'encerrar',lojistaUid:lojistaUid,nome:String(nome||'').slice(0,80),motivo:motivo,dias:dias,por:USER.uid,criadoEm:serverTimestamp()});
         if(denId)await updateDoc(doc(db,'denuncias',denId),{status:'resolvida',resolucao:'encerrada',resolvidaEm:serverTimestamp()});
-        msg.textContent=avisoCf+'Feito.'; setTimeout(()=>{ov.remove();lvCarregarHist();},avisoCf?2600:700);
-      }catch(e){msg.textContent=avisoCf+'Falhou ao gravar: '+(e&&e.code||'erro')+'. Confira se as regras v23 estão publicadas.';b.disabled=false;}
+        msg.textContent=avisoCf+avisoSessao+'Feito.'; setTimeout(()=>{ov.remove();lvCarregarHist();},(avisoCf||avisoSessao)?2600:700);
+      }catch(e){msg.textContent=avisoCf+avisoSessao+'Falhou ao gravar: '+(e&&e.code||'erro')+'. Confira se as regras v24 estão publicadas.';b.disabled=false;}
     };
   }
   el('lvRecarregar').addEventListener('click',()=>lvCarregarHist());
