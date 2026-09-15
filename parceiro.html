@@ -1334,7 +1334,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-15-matcategoria';
+  window.MOVIKI_VERSAO = '2026-09-15-aulatrava';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -3370,6 +3370,35 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     f.__p=null;
   }
 
+  /* =====================================================================
+     15/09/2026 - A TRAVA DO CURSOR, E O FIM DO VISTO QUE SUMIA
+
+     Dois defeitos, relatados juntos pelo Paulo na conta de teste:
+
+     (a) ARRASTAR A AGULHA CONTAVA COMO ASSISTIR. A medicao olhava a POSICAO
+         (tempo atual / duracao >= 0,9). Puxar a barrinha ate perto do fim
+         marcava a aula em dois segundos. Isso ja tinha sido consertado no
+         painel do parceiro em 10/09 e NUNCA foi trazido para ca.
+
+     (b) A AULA ASSISTIDA NAO FICAVA VERDE. A marcacao dependia de o iframe
+         continuar VIVO ate o proximo tique do relogio. Quem chegava nos 90% e
+         trocava de aula antes disso perdia a aula inteira - e, como a medicao
+         recomecava do zero a cada player, reassistir pela metade nunca fechava.
+         Era esse o "assisti duas vezes e mesmo assim nao ficou verde".
+
+     O conserto e um so: vale o CAMINHO PERCORRIDO, nao a posicao da agulha.
+     A cada 500 ms anota-se o segundo que esta tocando, e o salto so entra se
+     couber no tempo real decorrido - entao arrastar nao soma nada. O que foi
+     percorrido fica guardado POR AULA (PERCORRIDO), e nao por iframe: fechar,
+     trocar e voltar continua de onde parou. 2x continua valendo, de proposito.
+
+     ⚠️ O FIM DO VIDEO NAO E PROVA DE NADA. Quem arrasta a agulha ate o fim
+     tambem cai no estado ENDED. Por isso o ENDED nao marca mais sozinho: ele
+     so fecha a aula se os 90% percorridos ja estiverem la.
+     ===================================================================== */
+  var PERCORRIDO = {};                 /* chave da aula -> { s:{}, n:segundos } */
+  function trilha(k){ if(!PERCORRIDO[k]) PERCORRIDO[k]={ s:{}, n:0 }; return PERCORRIDO[k]; }
+
   function vigiar(f,v){
     carregarYT(function(){
       var tentativas = 0;
@@ -3383,46 +3412,53 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       })();
       function montar(){
         try{
-          var vistos={}, nVistos=0, ultimo=-1, ultimoMs=0, dur=0;
-
-          function relogio(p){
-            clearInterval(f.__t);
-            f.__t=setInterval(function(){
-              try{
-                if(!dur){ try{ dur=p.getDuration()||0; }catch(_){ dur=0; } }
-                var tt=p.getCurrentTime();
-                if(!(tt>=0)) return;
-                var agora=Date.now();
-                var real=ultimoMs ? ((agora-ultimoMs)/1000) : 0;
-                ultimoMs=agora;
-                var s=Math.floor(tt);
-                if(ultimo>=0 && (tt-ultimo) <= real*1.6 + 0.6){
-                  for(var i=Math.floor(ultimo); i<=s; i++){
-                    if(i>=0 && !vistos[i]){ vistos[i]=1; nVistos++; }
-                  }
-                } else if(s>=0 && !vistos[s]){ vistos[s]=1; nVistos++; }
-                ultimo=tt;
-                if(dur>0 && !f.__contado && nVistos >= dur*0.9){
-                  f.__contado=1;                       /* uma gravacao por iframe */
-                  clearInterval(f.__t); f.__t=null;
-                  marcar(v.k);
-                }
-              }catch(_){}
-            },500);
+          var t = trilha(v.k), ultimo = -1, ultimoMs = 0, dur = 0;
+          function pararRelogio(){ try{ clearInterval(f.__t); }catch(_){} f.__t=null; }
+          /* fecha a aula SO com 90% percorridos - uma gravacao por iframe */
+          function fechar(){
+            if(f.__contado) return true;
+            if(!(dur > 0 && t.n >= dur * 0.9)) return false;
+            f.__contado = 1;
+            pararRelogio();
+            marcar(v.k);
+            return true;
           }
-
-          f.__p=new YT.Player(f.id,{ events:{
-            onReady:function(e){
-              try{ dur=e.target.getDuration()||0; }catch(_){}
+          function relogio(p){
+            pararRelogio();
+            f.__t = setInterval(function(){
+              try{
+                if(!document.body.contains(f)){ pararRelogio(); return; }   /* saiu da tela */
+                if(!dur){ try{ dur = p.getDuration() || 0; }catch(_){ dur = 0; } }
+                var tt = p.getCurrentTime();
+                if(!(tt >= 0)) return;
+                var agora = Date.now();
+                var real = ultimoMs ? ((agora - ultimoMs) / 1000) : 0;
+                ultimoMs = agora;
+                var s = Math.floor(tt);
+                /* so conta o trecho se o avanco couber no tempo que passou de
+                   verdade - a folga de 1,6x deixa o 2x passar e barra o arrasto */
+                if(ultimo >= 0 && (tt - ultimo) <= real * 1.6 + 0.6){
+                  for(var i = Math.floor(ultimo); i <= s; i++){
+                    if(i >= 0 && !t.s[i]){ t.s[i] = 1; t.n++; }
+                  }
+                } else if(s >= 0 && !t.s[s]){ t.s[s] = 1; t.n++; }
+                ultimo = tt;
+                andamento(v.k, dur);
+                fechar();
+              }catch(_){}
+            }, 500);
+          }
+          f.__p = new YT.Player(f.id, { events:{
+            onReady: function(e){
+              try{ dur = e.target.getDuration() || 0; }catch(_){}
               relogio(f.__p);
             },
-            onStateChange:function(e){
-              if(e.data===YT.PlayerState.PLAYING){ ultimoMs=0; relogio(f.__p); return; }
-              if(e.data===YT.PlayerState.ENDED){
-                try{ clearInterval(f.__t); }catch(_){}
-                f.__t=null;
-                if(!f.__contado){ f.__contado=1; marcar(v.k); }
-                acabou(v.k);
+            onStateChange: function(e){
+              if(e.data === YT.PlayerState.PLAYING){ ultimoMs = 0; relogio(f.__p); return; }
+              if(e.data === YT.PlayerState.ENDED){
+                pararRelogio();
+                if(!fechar()) adiantou(v.k);     /* chegou no fim sem assistir */
+                try{ acabou(v.k); }catch(_){}
               }
             }
           } });
@@ -3532,6 +3568,9 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     for(var i=0;i<t.length;i++){
       if(f.indexOf(t[i].k)===-1){
         var prox=t[i];
+        /* prox.k===k = a aula atual NAO contou (adiantou o video). Nao recarrega
+           a mesma aula por cima do aviso: deixa onde esta. */
+        if(prox.k===k) return;
         setTimeout(function(){ if(au && !au.hidden && auTocando===k) porNoPalco(prox,false); },700);
         return;
       }
@@ -3595,6 +3634,25 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     pintarAulas();
   }
 
+  /* O parceiro precisa VER o quanto ja assistiu - a Divulgacao dele depende
+     disso, entao a trava sem medidor viraria reclamacao. */
+  function andamento(k, dur){
+    try{
+      if(!au || au.hidden || auTocando !== k || !auPSub) return;
+      var v = achar(k); if(!v) return;
+      var base = v.d ? ('Duração ' + v.d) : '';
+      if(feitas().indexOf(k) > -1){ auPSub.textContent = base + ' · Assistida'; return; }
+      if(!(dur > 0)) return;
+      var pc = Math.min(100, Math.round(trilha(k).n / dur * 100));
+      auPSub.textContent = base + ' · Assistido ' + pc + '%';
+    }catch(_){}
+  }
+  function adiantou(k){
+    try{
+      if(!au || au.hidden || auTocando !== k || !auPSub) return;
+      auPSub.textContent = 'Você adiantou o vídeo. Assista do começo para a aula contar.';
+    }catch(_){}
+  }
   function pintarAulas(){
     if(!au) return;
     var t=todas(), f=feitas();
