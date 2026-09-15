@@ -2972,6 +2972,12 @@ window.mvAbaInicial=function(){
          entao pintar so la deixava o card invisivel para sempre - foi o que
          saiu no primeiro teste. Repinta aqui, quando a resposta existe. */
       try{ if(window.mvLiveAulasFaixa) window.mvLiveAulasFaixa(); }catch(_){}
+      /* Duas das catorze aulas sao do PAINEL, nao do estudio: a de pedidos
+         mora no Financeiro (o pedido pago cai la) e a do cardapio compravel na
+         aba Cardapio. So entram para quem tem a live liberada - quem nao ve o
+         botao Fazer live nao pode achar uma aula de uma ferramenta que nem
+         sabe que existe. */
+      try{ if(pode && window.MvLiveAulas) MvLiveAulas.embutir(); }catch(_){}
     },function(){});
     try{const a=await getDoc(doc(db,'assinaturas',uid));const d=a.exists()?a.data():null;dadosAssinatura=d;
       const ok=d&&d.ativo===true&&(!d.vence_em||d.vence_em.toMillis()>Date.now());
@@ -3002,7 +3008,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-15-liveaulas';
+  window.MOVIKI_VERSAO='2026-09-15-liveaulas2';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026

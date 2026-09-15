@@ -1,4 +1,4 @@
-/*! MOVIKI liveaulas.js | versao 2026-09-15-liveaulas1 | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-09-15-liveaulas2 | repo: moviki-app
  *
  * O MODULO DE AULAS DO MODO LIVE — catalogo e motor, num arquivo so.
  *
@@ -42,8 +42,10 @@
      COMO ATUALIZAR: cole o id do YouTube em id:''. O id sao os 11 caracteres
      depois de "watch?v=" — NAO a URL inteira. Video sem id nao aparece em
      lugar nenhum e nao conta para a trava.
-     `sel` e onde o player nasce embutido, DENTRO do estudio. Aula sem `sel`
-     aparece so na biblioteca.
+     `sel` e onde o player nasce embutido. O seletor pode ser do ESTUDIO
+     (.painelAba[data-aba="..."]) ou do PAINEL (#tab-...): embutir() so procura
+     o alvo, e cada pagina acha os seus. Aula sem `sel` aparece so na
+     biblioteca.
      `plano` e so rotulo no cartao: a aula do Enterprise aparece para quem e
      Premium, com o selo, porque e ela que explica por que vale subir.
      `em` e o dia em que a aula ENTROU NO CATALOGO. E o que separa "aula nova"
@@ -80,8 +82,11 @@
         { k: 'mod-live-pix', t: 'Como você recebe o dinheiro',
           d: '1:30', id: 'hhTBM163vK0', plano: 'Enterprise', em: '2026-09-15' } ]},
 
-      /* pedidos e cardapio moram no PAINEL, nao no estudio: sem `sel` */
-      { n: 'Pedidos', sel: '', v: [
+      /* PEDIDOS E CARDAPIO MORAM NO PAINEL, nao no estudio: o pedido pago cai
+         no Financeiro e o cardapio compravel e a aba Cardapio. Como embutir()
+         so procura o alvo, o mesmo catalogo serve as duas paginas — no estudio
+         estes dois seletores nao existem e as aulas ficam so na biblioteca. */
+      { n: 'Pedidos', sel: '#tab-financeiro', rot: 'O pedido que vem da live', v: [
         { k: 'mod-live-pedidos', t: 'Pedidos: conferir, confirmar e entregar',
           d: '1:00', id: 'qx4dFUC9ORs', plano: 'Enterprise', em: '2026-09-15' } ]},
 
@@ -105,7 +110,10 @@
         { k: 'mod-live-cortes', t: 'Cortes para Reels e Status',
           d: '0:24', id: 'vzZOyzzfYHM', plano: 'Enterprise', em: '2026-09-15' } ]},
 
-      { n: 'Cardápio', sel: '', v: [
+      /* Esta aba ja tem a aula do painel (mod-cardapio, que ensina a MONTAR o
+         cardapio). Esta ensina o cardapio a VENDER, que e outro assunto — as
+         duas caixas convivem, com titulos que nao se confundem. */
+      { n: 'Cardápio', sel: '#tab-cardapio', rot: 'Vender pelo cardápio, sem live', v: [
         { k: 'mod-live-cardapio', t: 'Seu cardápio vendendo sozinho',
           d: '1:18', id: '2_ty4YrgZ0I', plano: 'Enterprise', em: '2026-09-15' } ]}
     ]
@@ -337,7 +345,7 @@
         var txt = document.createElement('span'); txt.className = 'lvAulaTxt';
         var tit = document.createElement('b'); tit.className = 'lvAulaTit'; tit.textContent = v.t;
         var sub = document.createElement('span'); sub.className = 'lvAulaSub';
-        sub.textContent = 'Como usar esta aba' + (v.d ? ' · ' + v.d : '');
+        sub.textContent = (m.rot || 'Como usar esta aba') + (v.d ? ' · ' + v.d : '');
         txt.appendChild(tit); txt.appendChild(sub);
         topo.appendChild(ico); topo.appendChild(txt);
         box.appendChild(topo);
@@ -501,11 +509,22 @@
     if (b) { abrirBiblioteca(); }
   }, true);
 
-  /* troca de aba no estudio para o video que saiu da tela: sem isto o audio
-     continua tocando atras da aba nova */
+  /* troca de aba para o video que saiu da tela: sem isto o audio continua
+     tocando atras da aba nova */
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) pararTodos();
   });
+  /* No PAINEL a troca de secao nao esconde a pagina — troca o .tabConteudo,
+     e o iframe da aba que saiu continuaria tocando por tras da nova.
+     Embrulhar window.abrirTab NAO serve: o proprio painel a re-embrulha duas
+     vezes, dentro de setInterval, depois que o motor ja subiu — o embrulho do
+     motor sumia da ponta da cadeia. Ouvir o CLIQUE e imune a ordem de
+     carregamento e a quantos embrulhos existirem. */
+  document.addEventListener('click', function (e) {
+    var t = e.target && e.target.closest
+      ? e.target.closest('[data-tab], .tab, .aba, [data-fin], .finAba') : null;
+    if (t) setTimeout(function () { pararTodos(true); }, 0);
+  }, true);
 
   window.MvLiveAulas = {
     iniciar: function (op) {
