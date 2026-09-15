@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Moviki — conferir ícones</title>
+<!-- MOVIKI conferir-icones.html | 15/09/2026 | FERRAMENTA TEMPORARIA.
+     Sobe na RAIZ do moviki-app, abre em app.moviki.com.br/conferir-icones.html,
+     confere, e DEPOIS APAGA. Nao faz parte do produto: nao le nada, nao grava
+     nada, nao tem login. So tenta carregar cada PNG que os tres paineis pedem e
+     mostra quem nao respondeu. -->
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{background:#060d18;color:#eaf6ff;padding:22px;line-height:1.45}
+h1{font-size:20px;margin-bottom:4px}
+.sub{color:#8fa6c4;font-size:13.5px;margin-bottom:18px}
+.resumo{background:#0e1c30;border:1px solid #1c3457;border-radius:16px;padding:16px;margin-bottom:18px}
+.resumo b{font-size:17px}
+.ok{color:#25e39b}.ruim{color:#ff6b6b}
+.faltando{margin-top:12px;background:#0b1728;border:1px solid #3a1f2a;border-radius:12px;padding:12px;font-size:13px;
+  color:#ff9b9b;white-space:pre-wrap;word-break:break-all;display:none}
+button{margin-top:12px;background:linear-gradient(135deg,#00D4FF,#0066FF);color:#04121f;border:none;border-radius:12px;
+  padding:12px 18px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.cel{background:#0e1c30;border:1px solid #1c3457;border-radius:14px;padding:12px;text-align:center}
+.cel.erro{border-color:#ff6b6b;background:#1b1020}
+.cel .cx{height:86px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.cel img{max-width:76px;max-height:76px;width:auto;height:auto}
+.cel .nm{font-size:12px;font-weight:600;word-break:break-all}
+.cel .us{font-size:10.5px;color:#8fa6c4;margin-top:3px}
+.cel .st{font-size:10.5px;font-weight:700;margin-top:6px}
+.vazio{font-size:30px;color:#ff6b6b}
+</style>
+</head>
+<body>
+<h1>Conferência dos ícones do painel</h1>
+<p class="sub">Os 49 arquivos que os três painéis pedem em <b>icones/</b>. O que não carregar está faltando no repositório.</p>
+
+<div class="resumo">
+  <div><b id="conta">Conferindo…</b></div>
+  <div class="faltando" id="faltando"></div>
+  <button type="button" id="btn" style="display:none" onclick="copiar()">Copiar a lista do que falta</button>
+</div>
+
+<div class="grade" id="grade"></div>
+
+<script>
+var ICONES = [
+  ['aberto.png', 'lojista'],
+  ['alvo.png', 'lojista · parceiro · dono'],
+  ['avaliacoes.png', 'lojista'],
+  ['cardapio.png', 'lojista'],
+  ['comissoes.png', 'lojista · parceiro · dono'],
+  ['convidar-comerciante.png', 'dono'],
+  ['convidar-parceiro.png', 'parceiro · dono'],
+  ['cormarca.png', 'lojista'],
+  ['escudo.png', 'lojista · dono'],
+  ['eventos.png', 'lojista'],
+  ['exclusoes.png', 'dono'],
+  ['fechado.png', 'lojista'],
+  ['financeiro.png', 'lojista'],
+  ['foguete.png', 'lojista · parceiro · dono'],
+  ['fotos.png', 'lojista'],
+  ['google.png', 'lojista'],
+  ['indicar.png', 'lojista · parceiro'],
+  ['inicio.png', 'lojista · parceiro · dono'],
+  ['lampada.png', 'lojista'],
+  ['live.png', 'lojista · dono'],
+  ['localizacao.png', 'lojista · parceiro'],
+  ['logopino.png', 'lojista'],
+  ['maos.png', 'lojista · parceiro'],
+  ['material.png', 'parceiro'],
+  ['mensagens.png', 'lojista'],
+  ['multipontos.png', 'lojista · dono'],
+  ['pagina.png', 'lojista · parceiro · dono'],
+  ['parceiros.png', 'dono'],
+  ['perfil.png', 'lojista · parceiro'],
+  ['plano.png', 'lojista · parceiro · dono'],
+  ['politicas.png', 'lojista'],
+  ['promocoes.png', 'lojista'],
+  ['qz-associacoes.png', 'lojista'],
+  ['qz-comerciante.png', 'lojista'],
+  ['qz-instagram.png', 'lojista'],
+  ['recorrente.png', 'lojista · parceiro · dono'],
+  ['relatorios.png', 'lojista · parceiro · dono'],
+  ['sair.png', 'lojista · parceiro · dono'],
+  ['selo-parceiro-48.png', 'parceiro'],
+  ['sobre.png', 'lojista · parceiro · dono'],
+  ['termos.png', 'lojista · parceiro · dono'],
+  ['tutoriais.png', 'lojista'],
+  ['upload.png', 'lojista'],
+  ['usuarios.png', 'parceiro · dono'],
+  ['vendas.png', 'lojista'],
+  ['vender.png', 'lojista'],
+  ['ver-site.png', 'dono'],
+  ['vik-avatar-headset-96.png', 'lojista · parceiro'],
+  ['whatsapp.png', 'lojista · parceiro']
+];
+var faltam = [], prontos = 0, total = ICONES.length;
+var grade = document.getElementById('grade');
+
+ICONES.forEach(function (it) {
+  var nome = it[0], usos = it[1];
+  var cel = document.createElement('div'); cel.className = 'cel';
+  cel.innerHTML = '<div class="cx"><img alt=""></div><div class="nm">' + nome +
+                  '</div><div class="us">' + usos + '</div><div class="st">…</div>';
+  var img = cel.querySelector('img'), st = cel.querySelector('.st');
+  img.onload = function () { prontos++; st.textContent = 'OK'; st.className = 'st ok'; fim(); };
+  img.onerror = function () {
+    faltam.push(nome); cel.className = 'cel erro';
+    cel.querySelector('.cx').innerHTML = '<span class="vazio">?</span>';
+    st.textContent = 'FALTA'; st.className = 'st ruim'; fim();
+  };
+  img.src = 'icones/' + nome + '?v=' + Date.now();
+  grade.appendChild(cel);
+});
+
+function fim() {
+  if (prontos + faltam.length < total) return;
+  var c = document.getElementById('conta');
+  c.innerHTML = prontos + ' de ' + total + ' no lugar · <span class="' + (faltam.length ? 'ruim' : 'ok') + '">' +
+                (faltam.length ? faltam.length + ' faltando' : 'nenhum faltando') + '</span>';
+  if (!faltam.length) return;
+  var f = document.getElementById('faltando');
+  f.style.display = 'block';
+  f.textContent = faltam.sort().join('\n');
+  document.getElementById('btn').style.display = 'inline-block';
+}
+function copiar() {
+  var t = faltam.sort().join(', ');
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(function(){ alert('Lista copiada.'); }, function(){ prompt('Copie:', t); });
+  else prompt('Copie:', t);
+}
+</script>
+</body>
+</html>
