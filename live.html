@@ -3,7 +3,7 @@
 <head>
 <!-- MOVIKI live.html (estudio do lojista) | versao no window.MOVIKI_VERSAO -->
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://i.ibb.co https://i.ytimg.com https://*.google-analytics.com; media-src 'self' blob:; connect-src 'self' https://*.googleapis.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://*.cloudflarestream.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src 'self' https://www.youtube-nocookie.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app https://i.ibb.co https://*.google-analytics.com; media-src 'self' blob:; connect-src 'self' https://*.googleapis.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://*.cloudflarestream.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src 'self' https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -14,9 +14,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="mvmetrica.js"></script>
-<!-- o modulo de aulas da live: catalogo, biblioteca, player e a trava.
-     Bloco isolado, sem Firebase: aula nao derruba estudio. -->
-<script src="liveaulas.js"></script>
 <style>
 :root{
   --mv-ciano:#00D4FF;--mv-azul:#0066FF;--mv-grad:linear-gradient(135deg,#00D4FF,#0066FF);
@@ -169,14 +166,6 @@ svg{display:block}
 .ped .l3{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .cm.venda{background:rgba(37,227,155,.16)}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:50;background:rgba(0,0,0,.88);color:#fff;border-radius:10px;padding:10px 14px;font-size:13.5px;max-width:90%;text-align:center}
-/* a faixa das aulas, na tela de antes da live */
-.lvTravaAulas{background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.45);border-radius:12px;padding:10px 12px;margin-top:10px;display:flex;flex-direction:column;gap:3px}
-.lvTravaAulas.lvOk{background:rgba(0,212,255,.10);border-color:rgba(0,212,255,.38)}
-.lvTravaAulas b{font-size:14px}
-.lvTravaAulas>span{font-size:12px;color:var(--mv-txt-2)}
-.lvTravaBarra{height:5px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:6px}
-.lvTravaBarra>i{display:block;height:100%;width:0;border-radius:99px;background:var(--mv-grad);transition:width .35s ease}
-#btnIniciar[disabled]{opacity:.55}
 </style>
 </head>
 <body>
@@ -227,18 +216,8 @@ svg{display:block}
         <div id="boxAntes">
           <label class="rot" for="titulo">Título da live (aparece para quem entra)</label>
           <input class="campo" id="titulo" maxlength="60" placeholder="Ex.: Pastel de queijo saindo agora!">
-          <!-- AS AULAS, ANTES DA PRIMEIRA LIVE.
-               Pintada por pintarAulas(). Fica escondida para quem ja assistiu
-               as tres do comeco - quem ja sabe nao leva aviso na cara. -->
-          <div id="boxAulas" class="lvTravaAulas escondido">
-            <b id="aulasTit">Antes da sua primeira live</b>
-            <span id="aulasSub">Três aulas curtas, menos de quatro minutos no total.</span>
-            <div class="lvTravaBarra"><i id="aulasBarra"></i></div>
-            <button type="button" class="btnSec" data-lvaulas-abrir="1" style="width:100%;margin-top:8px">Ver as aulas</button>
-          </div>
           <button type="button" class="btnGrad btnVivo" id="btnIniciar" style="margin-top:10px" disabled><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>Entrar ao vivo</button>
           <div id="erroIniciar" class="msgErro escondido"></div>
-          <button type="button" class="btnMini" data-lvaulas-abrir="1" id="btnAulasLivre" style="width:100%;margin-top:8px">Aulas da live</button>
           <ul class="dicas">
             <li>Segure o celular em pé e deixe a luz de frente para você.</li>
             <li>Use o Wi-Fi ou 4G com sinal cheio. A live usa a internet do celular.</li>
@@ -448,7 +427,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-15-liveaulas';
+  window.MOVIKI_VERSAO='2026-09-15-sessao5';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -456,6 +435,14 @@ svg{display:block}
      o www direto nao ha salto nenhum. O apex fica de reserva, caso um dia
      a configuracao de dominio mude de lado. */
   const APIS=['https://www.moviki.com.br/api/live','https://moviki.com.br/api/live'];
+  /* 15/09/2026: o estado "no ar" e o endereco do video passaram a ser do
+     SERVIDOR (live_sessoes/{uid}, escrito so pelo Admin SDK). O pulso e o
+     encerrar falam com o robo; este arquivo nao grava mais ativa/whep/pulso em
+     estado/live — ele so grava CONTEUDO.
+     A funcao chamarRobo() e a constante ROBO JA EXISTEM neste modulo, mais
+     abaixo (aba Receber no Pix), e sao reaproveitadas aqui. Declarar de novo
+     derrubava o modulo INTEIRO com "Identifier already declared" — e o estudio
+     ficava preso em "Carregando..." para sempre, sem mensagem nenhuma. */
   let API=null;
   const app=initializeApp({
     apiKey:"AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",authDomain:"app.moviki.com.br",projectId:"moviki-app",
@@ -555,12 +542,21 @@ svg{display:block}
     if(est.agendada&&est.agendada.em){const d=new Date(ms(est.agendada.em));el('agQuando').value=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);el('agTitulo').value=est.agendada.titulo||'';}
     montarAbas(); pintarProdutos(); pintarOfertaSelect(); ouvirPedidos();
     getDoc(doc(db,'negocios',uid,'estado','liveAceite')).then(a=>{aceiteOk=!!(a.exists()&&a.data().versao===ACEITE_VERSAO);}).catch(()=>{});
-    ligarAulas();
     onSnapshot(doc(db,'configuracoes','liveTermos'),t=>{const d=t.exists()?(t.data()||{}):{};
       MV_TERMOS_EXTRAS=Array.isArray(d.extras)?d.extras.filter(x=>typeof x==='string').slice(0,300):[];
       aplicarChaveMestra(d.liveDesligada===true);},()=>{});
     /* moderacao: se o dono do Moviki encerrar a live, o estudio para na hora */
-    onSnapshot(refLive(),sn=>{const d=sn.exists()?sn.data():{};if(noAr&&d.encerradaPor==='moviki')encerradaPeloMoviki(d.motivoModeracao||'');},()=>{});
+    /* Quem carimba "encerrada pelo Moviki" agora e o servidor, em
+       live_sessoes/{uid} — colecao que este navegador NAO escreve. Antes o
+       campo morava em estado/live, que o proprio lojista escreve: bastava
+       apaga-lo no console para a tela voltar ao normal.
+       A colecao e da RAIZ de proposito: dentro de negocios/{uid} o curinga das
+       regras daria a escrita de volta ao dono, e regra nao tem "deny". */
+    onSnapshot(doc(db,'live_sessoes',uid),sn=>{
+      const d=sn.exists()?(sn.data()||{}):{};
+      if(noAr&&d.encerradaPor==='moviki')encerradaPeloMoviki(d.motivoModeracao||'');
+      else if(noAr&&d.ativa===false)encerradaPeloMoviki('');
+    },()=>{});
     el('lnkVoltar').href='/';
   }
 
@@ -576,72 +572,8 @@ svg{display:block}
   function abrirAba(k,trava){
     document.querySelectorAll('.aba').forEach(b=>b.classList.toggle('on',b.dataset.k===k));
     document.querySelectorAll('.painelAba').forEach(p=>p.classList.toggle('on',trava?p.dataset.aba==='trava':p.dataset.aba===k));
-    /* o iframe da aba que saiu de cena continuaria tocando por tras da nova */
-    try{ if(window.MvLiveAulas) MvLiveAulas.pararTodos(true); }catch(_){}
     if(trava)ev('live_trava_enterprise',{aba:k});
   }
-
-  /* ================= aulas da live =================
-     O modulo mora em liveaulas.js e nao conhece o Firebase: daqui sai o
-     estado e volta o que mudou. Progresso em negocios/{uid}/estado/liveaulas,
-     que cai no match recursivo (escrita do dono) - sem regra nova. So entram
-     chaves de aula, nada pessoal: a subcolecao e de leitura publica.
-
-     A TRAVA e das TRES aulas de contexto, nao das catorze. As onze de
-     ferramenta ficam livres desde o primeiro dia: travar a live por causa da
-     aula de Cortes nao protege ninguem, e quem clicou em Fazer live esta com
-     a intencao mais quente que vai ter. O que protege de verdade e o aceite
-     das Regras da Live, que continua onde sempre esteve.
-
-     AULA NOVA NAO RETRANCA: quem concluiu tem o carimbo `em` e so recebe
-     ALERTA. Esta regra ja custou caro no painel do parceiro. */
-  const refAulas=()=>doc(db,'negocios',uid,'estado','liveaulas');
-  let aulasProntas=false;
-  function ligarAulas(){
-    if(!window.MvLiveAulas) return;                 /* o script nao subiu: segue sem trava */
-    getDoc(refAulas()).then(a=>{
-      const d=a.exists()?(a.data()||{}):{};
-      MvLiveAulas.iniciar({
-        estado:{ vistas:Array.isArray(d.vistas)?d.vistas:[], em:d.em||'' },
-        salvar:(vistas,em)=>{
-          setDoc(refAulas(),{vistas,em:em||''},{merge:true}).catch(()=>{});
-        },
-        /* com a live NO AR o audio da aula sairia dentro da transmissao */
-        noAr:()=>noAr
-      });
-      aulasProntas=true;
-      MvLiveAulas.embutir();
-      pintarAulas();
-    }).catch(()=>{ aulasProntas=false; });
-  }
-  function pintarAulas(){
-    if(!window.MvLiveAulas||!aulasProntas) return;
-    const box=el('boxAulas'), btn=el('btnIniciar'), livre=el('btnAulasLivre');
-    const faltam=MvLiveAulas.faltam(), total=MvLiveAulas.daTrava().length;
-    const novas=MvLiveAulas.novas().length;
-    if(faltam.length){
-      box.classList.remove('escondido','lvOk');
-      el('aulasTit').textContent='Antes da sua primeira live';
-      el('aulasSub').textContent=faltam.length===total
-        ? 'Três aulas curtas, menos de quatro minutos no total.'
-        : 'Falta'+(faltam.length>1?'m ':' ')+faltam.length+'. Continue de onde parou.';
-      el('aulasBarra').style.width=Math.round((total-faltam.length)/total*100)+'%';
-      if(livre)livre.classList.add('escondido');
-    }else if(novas){
-      box.classList.remove('escondido'); box.classList.add('lvOk');
-      el('aulasTit').textContent='Tem aula nova';
-      el('aulasSub').textContent=novas===1?'Uma ferramenta ganhou aula. Você já pode transmitir.'
-                                          :novas+' aulas novas. Você já pode transmitir.';
-      el('aulasBarra').style.width='100%';
-      if(livre)livre.classList.add('escondido');
-    }else{
-      box.classList.add('escondido');
-      if(livre)livre.classList.remove('escondido');
-    }
-    /* o botao so acende com camera E aulas em dia */
-    if(btn&&!noAr&&stream&&faltam.length)btn.disabled=true;
-  }
-  window.addEventListener('mv-liveaula-vista',pintarAulas);
 
   /* ================= produtos ================= */
   function pintarProdutos(){
@@ -696,8 +628,7 @@ svg{display:block}
       });
       if(stream)stream.getTracks().forEach(t=>t.stop());
       stream=novo; const v=el('prev'); v.srcObject=stream; v.classList.toggle('espelho',modoCam==='user');
-      el('camVazia').classList.add('escondido'); el('camBase').classList.remove('escondido');
-      el('btnIniciar').disabled=false; pintarAulas();
+      el('camVazia').classList.add('escondido'); el('camBase').classList.remove('escondido'); el('btnIniciar').disabled=false;
       return true;
     }catch(e){
       el('camVazia').classList.remove('escondido');
@@ -739,11 +670,6 @@ svg{display:block}
   el('btnIniciar').onclick=async()=>{
     const b=el('btnIniciar'); b.disabled=true; b.lastChild.textContent='Conectando…'; el('erroIniciar').classList.add('escondido');
     const volta=()=>{b.disabled=false;b.lastChild.textContent='Entrar ao vivo';};
-    /* as aulas vem ANTES do aceite: aprende, depois assina */
-    if(window.MvLiveAulas&&aulasProntas&&!MvLiveAulas.apto()){
-      volta(); ev('live_trava_aulas',{faltam:MvLiveAulas.faltam().length});
-      MvLiveAulas.abrir(); return;
-    }
     if(!aceiteOk){volta();abrirAceite();return;}
     const titulo=el('titulo').value.trim().slice(0,60);
     if(barrar(titulo,'titulo')){volta();return;}
@@ -756,7 +682,12 @@ svg{display:block}
         bloqueado:'Sua conta está sem permissão para fazer live'+(r.ate?' até '+new Date(r.ate).toLocaleDateString('pt-BR'):'')+', por descumprir as Regras da Live. Fale com o suporte do Moviki pela caixa de mensagens.',
         conteudo:'"'+(r.texto||'')+'" não pode ir para a live ('+(r.termo||'')+'). Tire da sacolinha ou do título e tente de novo.',
         desligada:'As transmissões ao vivo estão temporariamente desligadas para manutenção. Volte daqui a pouco.',
-        beta:'A live ainda está em preparação e será liberada em breve. Você vai ser avisado quando abrir.'}[r.erro]||'Não deu para começar agora.';
+        beta:'A live ainda está em preparação e será liberada em breve. Você vai ser avisado quando abrir.',
+        cota:'Você já usou as '+(r.cota||2)+' lives do período de teste. Assinando um plano, a quantidade deixa de ter limite.',
+        /* O servidor manda quantos segundos faltam — dizer "espere um pouco"
+           sem numero e o que faz a pessoa ficar clicando. */
+        freio:'Você tentou começar várias vezes seguidas. '+(r.esperaSeg?('Tente de novo em '+(r.esperaSeg>90?(Math.ceil(r.esperaSeg/60)+' minutos'):(r.esperaSeg+' segundos'))+'.'):'Espere um pouco e tente de novo.'),
+        sessao:'Não consegui abrir a live agora. Tente de novo em instantes.'}[r.erro]||'Não deu para começar agora.';
       el('erroIniciar').textContent=txt; el('erroIniciar').classList.remove('escondido'); b.disabled=false; b.lastChild.textContent='Entrar ao vivo'; return;
     }
     whipAtual=r.whip; whepAtual=r.whep;
@@ -764,19 +695,31 @@ svg{display:block}
       el('erroIniciar').textContent='A conexão de vídeo falhou. Troque de Wi-Fi para 4G (ou o contrário) e tente de novo.';el('erroIniciar').classList.remove('escondido');b.disabled=false;b.lastChild.textContent='Entrar ao vivo';return;}
     vigiar(pc);
     noAr=true; inicioMs=Date.now(); pico=0; msgs=[]; document.body.classList.add('noAr');
+    /* CONTEUDO da live. `ativa`, `whep` e `pulso` NAO entram mais aqui: quem
+       diz que a live esta no ar, e de onde vem o video, e o servidor
+       (estado/liveSessao). Os campos antigos sao zerados de proposito para que
+       nenhuma tela volte a ler o valor velho por engano. */
     await setDoc(refLive(),{
-      ativa:true,titulo:el('titulo').value.trim().slice(0,60),inicio:serverTimestamp(),pulso:serverTimestamp(),fim:null,
-      whep:whepAtual,nivel:nivel.nivel,assistindo:0,sacola:sacola.map(itemPub).filter(Boolean),fixado:fixado?itemPub(fixado):null,
-      oferta:null,cupom:null,brinde:null,local:false,agendada:null,atualizadoEm:serverTimestamp()
+      titulo:el('titulo').value.trim().slice(0,60),nivel:nivel.nivel,assistindo:0,
+      sacola:sacola.map(itemPub).filter(Boolean),fixado:fixado?itemPub(fixado):null,
+      oferta:null,cupom:null,brinde:null,local:false,agendada:null,atualizadoEm:serverTimestamp(),
+      ativa:false,whep:'',pulso:null
     },{merge:true}).catch(()=>{});
     ev('live_iniciar',{nivel:nivel.nivel});
     /* sessao da live para o painel do dono: o id usa o INICIO gravado pelo
        servidor, o mesmo que o robo poe nos pedidos (liveId) */
-    try{const lv=await getDoc(refLive());const im=lv.exists()&&lv.data().inicio&&lv.data().inicio.toMillis?lv.data().inicio.toMillis():Date.now();
+    try{const im=Number(String(r.sessaoId||'').split('_')[1])||Date.now();
       liveIdServidor=String(im); liveDocId=uid+'_'+im;
       await setDoc(doc(db,'lives',liveDocId),{lojistaUid:uid,slug:String(neg.slug||'').slice(0,40),nome:String(neg.nome||'').slice(0,80),nivel:nivel.nivel,titulo:el('titulo').value.trim().slice(0,60),
         liveId:liveIdServidor,inicioMs:im,pulsoMs:Date.now(),ativa:true,pico:0,assistindo:0,mensagens:0,queros:0,duracaoMin:0});
     }catch(_){}
+    /* Cota do teste gratis: alem de trava, e gatilho de assinatura. O lojista
+       precisa saber ANTES de gastar a ultima. */
+    if(r.cota&&r.restam!=null){
+      aviso(r.restam>0
+        ? ('Teste grátis: esta é a sua live '+(r.cota-r.restam)+' de '+r.cota+'. Assinando um plano, a quantidade deixa de ter limite.')
+        : 'Teste grátis: esta é a sua última live do período de teste. Assinando um plano, a quantidade deixa de ter limite.');
+    }
     el('boxAntes').classList.add('escondido'); el('boxDurante').classList.remove('escondido'); el('boxResumo').classList.add('escondido');
     el('pillVivo').classList.remove('escondido'); el('pillOlho').classList.remove('escondido');
     try{wake=await navigator.wakeLock.request('screen');}catch(_){}
@@ -803,8 +746,17 @@ svg{display:block}
   }
   function statsSessao(){const q=msgs.filter(m=>m.tipo==='quero').length,c=msgs.filter(m=>m.tipo==='msg').length;
     return {pulsoMs:Date.now(),assistindo,pico,mensagens:c,queros:q,duracaoMin:Math.round((Date.now()-inicioMs)/60000)};}
-  function pulso(){if(!noAr)return;updateDoc(refLive(),{pulso:serverTimestamp(),assistindo}).catch(()=>{});
-    if(liveDocId)updateDoc(doc(db,'lives',liveDocId),statsSessao()).catch(()=>{});}
+  /* O pulso deixou de ser uma escrita do navegador no Firestore e virou uma
+     batida no servidor. E la que o TETO DE MINUTOS do plano passa a existir de
+     verdade: antes ele era so este relogio aqui, e um nivel.limiteMin=99999 no
+     console fazia a live de 60 min durar doze horas. Se o servidor disser que
+     acabou, a transmissao cai aqui na hora. */
+  async function pulso(){
+    if(!noAr)return;
+    const r=await chamarRobo('live_pulso',{});
+    if(r&&r.encerrar){toast('A live chegou ao limite do seu plano.');encerrar();return;}
+    if(liveDocId)updateDoc(doc(db,'lives',liveDocId),statsSessao()).catch(()=>{});
+  }
   async function contar(){
     if(!noAr)return;
     try{
@@ -821,7 +773,8 @@ svg{display:block}
     if(gravador&&gravador.state==='recording')gravador.stop();
     try{pc&&pc.close();}catch(_){} pc=null;
     try{wake&&wake.release();}catch(_){}
-    await updateDoc(refLive(),{ativa:false,fim:serverTimestamp(),oferta:null,cupom:null,brinde:null,local:false,assistindo:0}).catch(()=>{});
+    await chamarRobo('live_fechar',{});
+    await updateDoc(refLive(),{oferta:null,cupom:null,brinde:null,local:false,assistindo:0}).catch(()=>{});
     if(liveDocId)await updateDoc(doc(db,'lives',liveDocId),Object.assign(statsSessao(),{ativa:false,fimMs:Date.now()})).catch(()=>{});
     ev('live_encerrar',{nivel:nivel.nivel,min:Math.round((Date.now()-inicioMs)/60000)});
     el('pillVivo').classList.add('escondido'); el('pillOlho').classList.add('escondido'); aviso('');
@@ -836,9 +789,25 @@ svg{display:block}
     try{pc&&pc.close();}catch(_){} pc=null; try{wake&&wake.release();}catch(_){}
     if(stream)stream.getTracks().forEach(t=>t.stop()); stream=null; el('prev').srcObject=null;
     el('pillVivo').classList.add('escondido'); el('pillOlho').classList.add('escondido'); aviso('');
-    el('boxDurante').classList.add('escondido'); el('boxAntes').classList.remove('escondido'); el('btnIniciar').disabled=true;
+    el('boxDurante').classList.add('escondido'); el('boxAntes').classList.remove('escondido');
+    /* 15/09/2026 — a tela ficava dizendo "Conectando...".
+       O rotulo do botao muda para "Conectando..." no clique de Entrar ao vivo e
+       so e restaurado no encerrar() normal. Encerrada pela moderacao, o botao
+       ficava com o rotulo da conexao, em vermelho, e DESABILITADO PARA SEMPRE:
+       quem levou so um aviso ("so encerrar, sem bloquear") ficava preso ate
+       recarregar a pagina. */
+    const _b=el('btnIniciar');
+    _b.disabled=true; _b.lastChild.textContent='Transmissão encerrada';
     el('erroIniciar').textContent='Sua live foi encerrada pela equipe do Moviki por descumprir as Regras da Live'+(motivo?' ('+motivo+')':'')+'. Fale com o suporte pela caixa de mensagens do painel.';
     el('erroIniciar').classList.remove('escondido'); ev('live_encerrada_moviki');
+    /* Um minuto de espera e o botao volta. Nao e a trava: quem foi bloqueado de
+       verdade leva a recusa do servidor, com o motivo e o prazo. Isto so evita
+       que a pessoa saia clicando no susto — e evita prender quem nao foi
+       bloqueado. */
+    setTimeout(function(){
+      if(noAr)return;
+      _b.disabled=false; _b.lastChild.textContent='Entrar ao vivo de novo';
+    },60000);
   }
   /* Chave-mestra do dono (configuracoes/liveTermos.liveDesligada): desliga a
      live inteira sem deploy. Quem ja esta no ar cai; quem nao esta, nao entra.
@@ -857,7 +826,17 @@ svg{display:block}
     }
   }
   window.addEventListener('beforeunload',e=>{if(noAr){e.preventDefault();e.returnValue='';}});
-  window.addEventListener('pagehide',()=>{if(noAr){try{updateDoc(refLive(),{ativa:false,fim:serverTimestamp()});}catch(_){}}});
+  /* Aba fechada sem "Encerrar": avisa o servidor com sendBeacon, que sobrevive
+     ao fechamento da pagina. Se nem isso sair, a live cai sozinha em 3 minutos
+     sem pulso — a tela publica ja media isso, e agora quem mede e o servidor. */
+  window.addEventListener('pagehide',()=>{
+    if(!noAr)return;
+    try{
+      user.getIdToken().then(tk=>{
+        try{navigator.sendBeacon(ROBO,JSON.stringify({idToken:tk,acao:'live_fechar'}));}catch(_){}
+      }).catch(()=>{});
+    }catch(_){}
+  });
 
   function mostrarResumo(){
     const min=Math.max(1,Math.round((Date.now()-inicioMs)/60000));
