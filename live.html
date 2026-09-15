@@ -427,7 +427,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-15-sessao3';
+  window.MOVIKI_VERSAO='2026-09-15-sessao4';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -684,6 +684,7 @@ svg{display:block}
         desligada:'As transmissões ao vivo estão temporariamente desligadas para manutenção. Volte daqui a pouco.',
         beta:'A live ainda está em preparação e será liberada em breve. Você vai ser avisado quando abrir.',
         cota:'Você já usou as '+(r.cota||2)+' lives do período de teste. Assinando um plano, a quantidade deixa de ter limite.',
+        freio:'Você tentou começar várias vezes seguidas. Espere um pouco e tente de novo.',
         sessao:'Não consegui abrir a live agora. Tente de novo em instantes.'}[r.erro]||'Não deu para começar agora.';
       el('erroIniciar').textContent=txt; el('erroIniciar').classList.remove('escondido'); b.disabled=false; b.lastChild.textContent='Entrar ao vivo'; return;
     }
