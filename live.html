@@ -427,7 +427,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-15-sessao2';
+  window.MOVIKI_VERSAO='2026-09-15-sessao3';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -786,9 +786,25 @@ svg{display:block}
     try{pc&&pc.close();}catch(_){} pc=null; try{wake&&wake.release();}catch(_){}
     if(stream)stream.getTracks().forEach(t=>t.stop()); stream=null; el('prev').srcObject=null;
     el('pillVivo').classList.add('escondido'); el('pillOlho').classList.add('escondido'); aviso('');
-    el('boxDurante').classList.add('escondido'); el('boxAntes').classList.remove('escondido'); el('btnIniciar').disabled=true;
+    el('boxDurante').classList.add('escondido'); el('boxAntes').classList.remove('escondido');
+    /* 15/09/2026 — a tela ficava dizendo "Conectando...".
+       O rotulo do botao muda para "Conectando..." no clique de Entrar ao vivo e
+       so e restaurado no encerrar() normal. Encerrada pela moderacao, o botao
+       ficava com o rotulo da conexao, em vermelho, e DESABILITADO PARA SEMPRE:
+       quem levou so um aviso ("so encerrar, sem bloquear") ficava preso ate
+       recarregar a pagina. */
+    const _b=el('btnIniciar');
+    _b.disabled=true; _b.lastChild.textContent='Transmissão encerrada';
     el('erroIniciar').textContent='Sua live foi encerrada pela equipe do Moviki por descumprir as Regras da Live'+(motivo?' ('+motivo+')':'')+'. Fale com o suporte pela caixa de mensagens do painel.';
     el('erroIniciar').classList.remove('escondido'); ev('live_encerrada_moviki');
+    /* Um minuto de espera e o botao volta. Nao e a trava: quem foi bloqueado de
+       verdade leva a recusa do servidor, com o motivo e o prazo. Isto so evita
+       que a pessoa saia clicando no susto — e evita prender quem nao foi
+       bloqueado. */
+    setTimeout(function(){
+      if(noAr)return;
+      _b.disabled=false; _b.lastChild.textContent='Entrar ao vivo de novo';
+    },60000);
   }
   /* Chave-mestra do dono (configuracoes/liveTermos.liveDesligada): desliga a
      live inteira sem deploy. Quem ja esta no ar cai; quem nao esta, nao entra.
