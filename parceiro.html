@@ -1334,7 +1334,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-13-vikpainel';
+  window.MOVIKI_VERSAO = '2026-09-15-matcategoria';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -4677,6 +4677,19 @@ function mvQR(texto){
 .matFiltros button{flex:0 0 auto;border:1px solid var(--mv-linha);background:var(--mv-campo);color:var(--mv-txt-2);font-family:inherit;
   font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;cursor:pointer}
 .matFiltros button.on{border-color:var(--mv-ciano);background:rgba(0,212,255,.12);color:var(--mv-ciano)}
+/* ---------- faixa de CATEGORIA DE COMERCIO (15/09/2026) ----------
+   Nivel 1 da navegacao do material. Fica ACIMA do filtro de tipo e e
+   visualmente mais forte que ele: o parceiro escolhe primeiro o ramo do
+   lojista que ele vai prospectar, depois o formato do post. Rola na
+   horizontal no celular, igual a faixa de tipo. */
+.matCats{display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;margin:12px 0 2px;scrollbar-width:none}
+.matCats::-webkit-scrollbar{display:none}
+.matCats button{flex:0 0 auto;border:1px solid var(--mv-linha);background:var(--mv-surf-2);color:var(--mv-txt-2);
+  font-family:inherit;font-size:13.5px;font-weight:700;padding:9px 15px;border-radius:12px;cursor:pointer;
+  display:flex;align-items:center;gap:7px;white-space:nowrap}
+.matCats button .n{font-size:11px;font-weight:600;opacity:.65}
+.matCats button.on{border-color:transparent;background:var(--mv-grad);color:#04121f}
+.matCats button.on .n{opacity:.75}
 .matGrade{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 @media(min-width:620px){.matGrade{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .matCard{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--mv-surf);border:1px solid var(--mv-linha);
@@ -4782,13 +4795,19 @@ function mvQR(texto){
    esta pintado na tela (.mvTravado e #condBox.ok), para nao duplicar a
    regra em dois lugares que podem divergir.
 
+   NAVEGACAO EM DOIS NIVEIS (15/09/2026): faixa de CATEGORIA DE COMERCIO em
+   cima (lida de 'categorias' no catalogo) e faixa de TIPO DE MIDIA embaixo.
+   O catalogo manda; este HTML nao tem lista de ramo escrita dentro dele.
+   Ramo novo = campo 'categoria' na entrada do catalogo, mais nada.
+   Catalogo velho, sem 'categorias', continua funcionando como lista unica.
+
    Bloco isolado: falha calado. Painel nao cai por causa de material.
    ===================================================================== */
 (function(){
   'use strict';
   var CAT_URL = 'material/catalogo.json';
   var FILTROS = [['tudo','Tudo'],['panfleto','Panfletos'],['feed','Feed'],['story','Stories'],['video','Vídeos'],['texto','Textos']];
-  var CAT = null, FILTRO = 'tudo', PEDINDO = null;
+  var CAT = null, FILTRO = 'tudo', CATEG = '', PEDINDO = null;
   var ATUAL = null, BLOB = null, BLOBNOME = '', BLOBURL = '';
   var cacheComposto = {};
 
@@ -4848,7 +4867,22 @@ function mvQR(texto){
           if(it.tipo === 'texto') return typeof it.texto === 'string';
           return urlOk(it.arquivo) && (!it.capa || urlOk(it.capa));
         });
-        CAT = { versao: String((j && j.versao) || ''), itens: itens };
+        /* categorias de comercio: opcional. Catalogo sem elas volta a ser
+           lista unica com filtro de tipo -- o comportamento de antes. */
+        var cats = (j && Array.isArray(j.categorias)) ? j.categorias.filter(function(c){
+          return c && typeof c.id === 'string' && c.id && typeof c.nome === 'string' && c.nome;
+        }) : [];
+        /* rede de seguranca: erro de digitacao no campo 'categoria' de um item
+           faria ele sumir de TODAS as faixas -- o parceiro nunca mais veria a
+           peca e ninguem perceberia. Categoria desconhecida cai na primeira da
+           lista (ou em 'geral', se existir). Peca escondida e pior que peca
+           na aba errada. */
+        if(cats.length){
+          var valida = {}, padrao = cats[0].id;
+          cats.forEach(function(c){ valida[c.id] = 1; if(c.id === 'geral') padrao = 'geral'; });
+          itens.forEach(function(it){ if(!it.categoria || !valida[it.categoria]) it.categoria = padrao; });
+        }
+        CAT = { versao: String((j && j.versao) || ''), itens: itens, cats: cats };
         return CAT;
       })
       .catch(function(e){ PEDINDO = null; throw e; });
@@ -4873,27 +4907,85 @@ function mvQR(texto){
          '<div><h2>Material de apoio</h2><p>Artes, panfleto com o seu QR code, vídeos e textos prontos para divulgar.</p></div></div>';
     h += '<div id="matPortaBox">' + portaHTML(p) + '</div>';
     if(p.ok) h += '<div class="matLembre"><b>#publi no início</b> de todo post, visível sem “ver mais”. A legenda sugerida já vem assim, com o seu link.</div>';
-    h += '<div class="matFiltros" role="tablist">';
-    FILTROS.forEach(function(f){
-      h += '<button type="button" data-matfiltro="' + f[0] + '" class="' + (FILTRO === f[0] ? 'on' : '') + '">' + f[1] + '</button>';
-    });
-    h += '</div><div class="matGrade" id="matGrade"><div class="matCarregando">Carregando o material…</div></div>';
+    /* as duas faixas nascem vazias: quem preenche e barras(), depois que o
+       catalogo chega -- porque as categorias vem de dentro dele. */
+    h += '<div class="matCats" id="matCats" hidden></div>';
+    h += '<div class="matFiltros" id="matFiltros" role="tablist"></div>';
+    h += '<div class="matGrade" id="matGrade"><div class="matCarregando">Carregando o material…</div></div>';
     raiz.innerHTML = h;
     var bx = el('matPortaBox'); if(bx) bx.__ult = p.tipo;
 
     pedir().then(function(c){
       lsSet('mv_mat_visto', c.versao); pintarNovo();
-      grade();
+      barras(); grade();
     }).catch(function(){
       var g = el('matGrade');
       if(g) g.innerHTML = '<div class="matVazio" style="grid-column:1/-1">Não deu para carregar o material agora.<br><button type="button" class="btn sec" data-matrecarregar="1" style="max-width:220px">Tentar de novo</button></div>';
     });
   }
 
+  /* ------------------------------------------------- navegacao em 2 niveis
+     Nivel 1: categoria de comercio (vem do catalogo, campo 'categorias').
+     Nivel 2: tipo de midia (lista fixa FILTROS).
+     Categoria sem nenhuma peca nao aparece. Tipo que nao existe dentro da
+     categoria escolhida tambem nao aparece -- evita abrir um filtro e achar
+     a grade vazia. Menos de duas categorias: a faixa de cima some. */
+  function catsUsadas(){
+    if(!CAT || !CAT.cats || !CAT.cats.length) return [];
+    var tem = {};
+    CAT.itens.forEach(function(it){ if(it && it.categoria) tem[it.categoria] = (tem[it.categoria] || 0) + 1; });
+    var out = [];
+    CAT.cats.forEach(function(c){ if(tem[c.id]) out.push({ id:c.id, nome:c.nome, emoji:c.emoji || '', n:tem[c.id] }); });
+    return out;
+  }
+  function daCateg(){
+    if(!CAT) return [];
+    if(!CATEG) return CAT.itens;
+    return CAT.itens.filter(function(it){ return it.categoria === CATEG; });
+  }
+  function barras(){
+    var cs = catsUsadas(), bc = el('matCats');
+    if(bc){
+      if(cs.length < 2){ bc.innerHTML = ''; bc.hidden = true; CATEG = ''; }
+      else {
+        bc.hidden = false;
+        var achou = false, i;
+        for(i=0;i<cs.length;i++) if(cs[i].id === CATEG) achou = true;
+        if(!achou){
+          CATEG = cs[0].id;
+          for(i=0;i<cs.length;i++) if(cs[i].id === 'geral') CATEG = 'geral';
+        }
+        var hc = '';
+        cs.forEach(function(c){
+          hc += '<button type="button" data-matcat="' + esc(c.id) + '" class="' + (CATEG === c.id ? 'on' : '') + '">' +
+                (c.emoji ? '<span>' + esc(c.emoji) + '</span>' : '') + esc(c.nome) +
+                '<span class="n">' + c.n + '</span></button>';
+        });
+        bc.innerHTML = hc;
+      }
+    }
+    var bf = el('matFiltros');
+    if(bf){
+      var tem = {};
+      daCateg().forEach(function(it){ tem[it.tipo] = 1; });
+      var lista = FILTROS.filter(function(f){ return f[0] === 'tudo' || tem[f[0]]; });
+      if(lista.length <= 2){ bf.innerHTML = ''; bf.hidden = true; FILTRO = 'tudo'; }
+      else {
+        bf.hidden = false;
+        if(FILTRO !== 'tudo' && !tem[FILTRO]) FILTRO = 'tudo';
+        var hf = '';
+        lista.forEach(function(f){
+          hf += '<button type="button" data-matfiltro="' + f[0] + '" class="' + (FILTRO === f[0] ? 'on' : '') + '">' + f[1] + '</button>';
+        });
+        bf.innerHTML = hf;
+      }
+    }
+  }
+
   function grade(){
     var g = el('matGrade'); if(!g || !CAT) return;
     var lib = porta().ok;
-    var itens = CAT.itens.filter(function(it){ return FILTRO === 'tudo' || it.tipo === FILTRO; });
+    var itens = daCateg().filter(function(it){ return FILTRO === 'tudo' || it.tipo === FILTRO; });
     /* o panfleto com QR sempre primeiro: e o que so existe aqui */
     itens.sort(function(a,b){ return (b.destaque?1:0) - (a.destaque?1:0); });
     if(!itens.length){ g.innerHTML = '<div class="matVazio" style="grid-column:1/-1">Nada aqui ainda. Material novo chega sempre.</div>'; return; }
@@ -5216,6 +5308,13 @@ function mvQR(texto){
     var secM = document.querySelector('section[data-sec="material"]');
     if(secM && !secM.classList.contains('hide')) setTimeout(pintarPorta, 450);
     var b;
+    if((b = t.closest('[data-matcat]'))){
+      CATEG = b.getAttribute('data-matcat');
+      FILTRO = 'tudo';
+      barras(); grade();
+      try{ var gg = el('matGrade'); if(gg) gg.scrollIntoView({ block:'nearest' }); }catch(e){}
+      ev('categoria', CATEG); return;
+    }
     if((b = t.closest('[data-matfiltro]'))){
       FILTRO = b.getAttribute('data-matfiltro');
       var bs = document.querySelectorAll('[data-matfiltro]');
