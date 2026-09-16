@@ -1341,7 +1341,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-15-conferir';
+  window.MOVIKI_VERSAO = '2026-09-16-b2b10';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -3693,22 +3693,85 @@ table.mvTab td b{font-weight:700}
      "Redirects to www.moviki.com.br". Redirecionamento entre origens troca a
      origem por "null" e o navegador bloqueia por CORS. */
   const LV_API='https://www.moviki.com.br/api/live';
+  const LV_ROBO='https://moviki-robo.vercel.app/api/pontos';
   const LV_MOTIVOS={proibido:'Produto proibido',sexual:'Conteúdo sexual',menor:'Criança/adolescente em risco',violencia:'Violência/ódio',golpe:'Golpe/preço enganoso',outro:'Outro'};
   const brlLv=v=>'R$ '+Number(v||0).toFixed(2).replace('.',',');
   const diaSP=(m)=>new Date((m||Date.now())-3*3600000).toISOString().slice(0,10);
   let LV_ATIVAS=[],LV_HIST=[],LV_PED=[],LV_DEN=[],LV_BLOQ=[],LV_CONTAS=[],lvOuvindo=false;
   var LV_ASAAS_TOTAL=-1;   // -1 = ainda nao conferido no Asaas
-  function lvAtivaDeVerdade(l){return l.ativa===true&&(Date.now()-Number(l.pulsoMs||0))<180000;}
+  /* lvAtivaDeVerdade morreu em 16/09/2026: ela lia `ativa` e `pulsoMs` do
+     documento do proprio lojista. Quem esta no ar agora e lvNoArTem(uid). */
+  /* Liga no login (para o número de denúncias aparecer no menu sem abrir a
+     seção) e de novo, sem duplicar, ao abrir a seção. */
+  /* ===== B2 (16/09/2026) — QUEM ESTA NO AR QUEM DIZ E O SERVIDOR =====
+     Ate aqui esta lista vinha de lives/{id} where ativa==true. Esse documento
+     e escrito pelo PROPRIO lojista: um updateDoc(ativa:false) no console do
+     navegador sumia da lista, dos KPIs e do varredor de termos — e a
+     transmissao continuava, porque quem a alimenta e outro documento. O setDoc
+     de `lives` no estudio ainda mora dentro de um try/catch vazio, entao basta
+     ele nao executar.
+     Agora a verdade vem da acao live_adm_noar (moviki-robo/lib/livesessao.js),
+     que le live_sessoes — colecao da RAIZ, escrita SO pelo Admin SDK.
+     O documento `lives` virou enfeite: da slug e contadores. Quando o servidor
+     diz que alguem esta no ar e o enfeite NAO existe, isso aparece na tela como
+     aviso, em vez de sumir. */
+  let LV_NOAR=[], lvNoArEm=0, lvNoArErro='', lvNoArTimer=null, lvNoArIndo=false;
+  async function lvPuxarNoAr(){
+    if(lvNoArIndo||!USER)return; lvNoArIndo=true;
+    try{
+      const tk=await USER.getIdToken();
+      const r=await (await fetch(LV_ROBO,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},
+        body:JSON.stringify({idToken:tk,acao:'live_adm_noar',limite:60})})).json();
+      if(r&&r.ok&&Array.isArray(r.lives)){LV_NOAR=r.lives;lvNoArErro='';lvNoArEm=Date.now();}
+      else lvNoArErro=(r&&r.erro)||'resposta';
+    }catch(e){lvNoArErro='sem_resposta';}
+    lvNoArIndo=false; lvPintarAtivas(); lvKpis();
+  }
+  /* seção aberta: de 30 em 30 s. Fechada: 1 vez a cada 5 min, so para o KPI
+     "no ar agora" nao mentir no topo da tela. */
+  function lvNoArCiclo(){
+    const sec=document.querySelector('[data-sec="lives"]');
+    const aberta=sec&&!sec.classList.contains('hide');
+    if(aberta||Date.now()-lvNoArEm>300000)lvPuxarNoAr();
+  }
+  function lvNoArLigar(){ if(lvNoArTimer)return; lvPuxarNoAr(); lvNoArTimer=setInterval(lvNoArCiclo,30000); }
+
   /* Liga no login (para o número de denúncias aparecer no menu sem abrir a
      seção) e de novo, sem duplicar, ao abrir a seção. */
   function livesOuvir(){
     if(!lvOuvindo){lvOuvindo=true;
-      onSnapshot(query(collection(db,'lives'),where('ativa','==',true)),s=>{LV_ATIVAS=[];s.forEach(d=>LV_ATIVAS.push(Object.assign({id:d.id},d.data())));lvPintarAtivas();lvKpis();},()=>{el('lvAtivas').innerHTML='<div class="vazio">Não consegui ler as lives. Confira se as regras v23 estão publicadas.</div>';});
-      onSnapshot(query(collection(db,'denuncias'),where('status','==','aberta')),s=>{LV_DEN=[];s.forEach(d=>LV_DEN.push(Object.assign({id:d.id},d.data())));lvPintarDen();lvKpis();lvPintarAtivas();},()=>{});
+      onSnapshot(query(collection(db,'lives'),where('ativa','==',true)),s=>{LV_ATIVAS=[];s.forEach(d=>LV_ATIVAS.push(Object.assign({id:d.id},d.data())));lvPintarAtivas();lvKpis();},()=>{LV_ATIVAS=[];lvPintarAtivas();});
+      lvDenOuvir();
+      lvNoArLigar();
     }
+  }
+  /* B10 (16/09/2026) — a fila de denuncias tem teto.
+     `denuncias` aceita create sem auth, com o lojistaUid escolhido por quem
+     denuncia. O painel escutava SEM limit(): 5.000 denuncias contra um
+     concorrente montavam 5.000 cartoes, afogavam a tela e enterravam a
+     denuncia verdadeira do dia. O teto aqui e metade do conserto; a outra
+     metade e o freio no create, na regra do Firestore.
+     O orderBy exige indice composto (status + criadoEm). Se o indice nao
+     existir, o snapshot falha — e falhar em silencio era o defeito antigo.
+     Por isso ha queda para a consulta sem ordem, com o aviso na tela. */
+  const LV_DEN_TETO=300;
+  function lvDenAplicar(s){LV_DEN=[];s.forEach(d=>LV_DEN.push(Object.assign({id:d.id},d.data())));lvPintarDen();lvKpis();lvPintarAtivas();}
+  function lvDenOuvir(){
+    try{
+      onSnapshot(query(collection(db,'denuncias'),where('status','==','aberta'),orderBy('criadoEm','desc'),limit(LV_DEN_TETO)),
+        lvDenAplicar,
+        ()=>{ lvDenSemOrdem(); });
+    }catch(e){ lvDenSemOrdem(); }
+  }
+  var LV_DEN_AVISO='';
+  function lvDenSemOrdem(){
+    LV_DEN_AVISO='A fila está sem ordem por data: falta o índice composto (denuncias: status + criadoEm). Estas são '+LV_DEN_TETO+' denúncias quaisquer, não as mais recentes.';
+    try{ onSnapshot(query(collection(db,'denuncias'),where('status','==','aberta'),limit(LV_DEN_TETO)),lvDenAplicar,()=>{LV_DEN=[];lvPintarDen();lvKpis();}); }
+    catch(e){ LV_DEN=[]; lvPintarDen(); lvKpis(); }
   }
   async function livesAbrir(){
     livesOuvir();
+    lvNoArLigar(); lvPuxarNoAr();
     await lvCarregarHist();
   }
   async function lvCarregarHist(){
@@ -3746,43 +3809,119 @@ table.mvTab td b{font-weight:700}
       +'<p class="cdSub" style="margin-top:10px">O teto de R$ 2.000 do Asaas conta desde a criação da subconta; aqui aparecem só os últimos 30 dias. Ao chegar perto, peça a homologação ao Asaas antes de o lojista ser travado.</p>';
   }
   function pagosDe(uid,liveId){return LV_PED.filter(p=>p.lojistaUid===uid&&(!liveId||p.liveId===liveId)&&(p.status==='pago'||p.status==='entregue'));}
+  /* helpers da autoridade: o enfeite (doc `lives`) casa por lojistaUid */
+  function lvEnfeite(uid){
+    let melhor=null;
+    for(const l of LV_ATIVAS){ if(l.lojistaUid!==uid)continue; if(!melhor||Number(l.inicioMs||0)>Number(melhor.inicioMs||0))melhor=l; }
+    return melhor;
+  }
+  function lvNoArTem(uid){ return LV_NOAR.some(x=>x.uid===uid); }
+  function lvNome(uid){ const e=lvEnfeite(uid)||{}; return e.nome||(NEG.find(x=>x.uid===uid)||{}).nome||uid; }
+  function lvSlug(uid){ const e=lvEnfeite(uid)||{}; return e.slug||(NEG.find(x=>x.uid===uid)||{}).apelido||''; }
   function lvKpis(){
-    const at=LV_ATIVAS.filter(lvAtivaDeVerdade), hoje=diaSP(), pagosHoje=LV_PED.filter(p=>p.dia===hoje&&(p.status==='pago'||p.status==='entregue'));
+    const hoje=diaSP(), pagosHoje=LV_PED.filter(p=>p.dia===hoje&&(p.status==='pago'||p.status==='entregue'));
     const bloq=LV_BLOQ.filter(b=>!b.ate||ms(b.ate)>Date.now());
-    txt('lvKAgora',at.length); txt('lvKAssist',at.reduce((t,l)=>t+Number(l.assistindo||0),0));
+    txt('lvKAgora',lvNoArErro&&!LV_NOAR.length?'?':LV_NOAR.length);
+    txt('lvKAssist',LV_NOAR.reduce((t,x)=>t+Number((lvEnfeite(x.uid)||{}).assistindo||0),0));
     txt('lvKHoje',LV_HIST.filter(l=>diaSP(l.inicioMs)===hoje).length); txt('lvK7',LV_HIST.filter(l=>l.inicioMs>=Date.now()-7*86400000).length);
     txt('lvKVendaHoje',brlLv(pagosHoje.reduce((t,p)=>t+Number(p.total||0),0))); txt('lvKPedHoje',pagosHoje.length);
-    txt('lvKDen',LV_DEN.length); txt('lvKBloq',bloq.length); txt('lvDenChip',LV_DEN.length);
-    ['badLive','badLiveM'].forEach(id=>{const b=el(id);if(!b)return;const n=LV_DEN.length;b.textContent=n;b.classList.toggle('hide',!n);});
+    const alvos=new Set(LV_DEN.map(d=>d.lojistaUid||'-')).size;
+    txt('lvKDen',LV_DEN.length); txt('lvKBloq',bloq.length);
+    txt('lvDenChip',LV_DEN.length+(alvos>1?' · '+alvos+' lojistas':''));
+    /* o badge do menu conta LOJISTAS, nao denuncias: e essa a fila de trabalho,
+       e e o numero que a enxurrada nao consegue inflar. */
+    ['badLive','badLiveM'].forEach(id=>{const b=el(id);if(!b)return;b.textContent=alvos;b.classList.toggle('hide',!alvos);});
   }
   async function lvPintarAtivas(){
-    const at=LV_ATIVAS.filter(lvAtivaDeVerdade).sort((a,b)=>Number(b.assistindo||0)-Number(a.assistindo||0));
-    if(!at.length){el('lvAtivas').innerHTML='<div class="vazio" style="margin-top:10px">Nenhuma live no ar agora.</div>';return;}
-    const htm=await Promise.all(at.map(async l=>{
-      let alerta=mvProibido(l.titulo);
-      if(!alerta){try{const e=await getDoc(doc(db,'negocios',l.lojistaUid,'estado','live'));const d=e.exists()?e.data():{};
-        for(const x of [].concat(Array.isArray(d.sacola)?d.sacola:[],d.fixado?[d.fixado]:[])){if(x&&(alerta=mvProibido(x.nome)))break;}}catch(_){}}
-      const den=LV_DEN.filter(d=>d.lojistaUid===l.lojistaUid).length, min=Math.round((Date.now()-Number(l.inicioMs||Date.now()))/60000);
-      const pg=pagosDe(l.lojistaUid,l.liveId);
-      return '<div class="lvItem"><div class="t"><span class="lvVivo">AO VIVO</span><strong>'+esc(l.nome||'')+'</strong><span class="cdChip">'+esc(l.nivel||'')+'</span>'+(den?'<span class="lvAlerta">'+den+' denúncia(s)</span>':'')+(alerta?'<span class="lvAlerta">termo proibido: '+esc(alerta.termo)+'</span>':'')+'</div>'+
-        '<div class="s">'+esc(l.titulo||'sem título')+' · '+min+' min · '+Number(l.assistindo||0)+' assistindo (pico '+Number(l.pico||0)+') · '+Number(l.mensagens||0)+' mensagens · '+Number(l.queros||0)+' "quero" · '+pg.length+' pedido(s) pago(s) '+brlLv(pg.reduce((t,p)=>t+Number(p.total||0),0))+'</div>'+
-        '<div class="a"><a class="btnMini" target="_blank" rel="noopener" href="https://moviki.com.br/live/'+encodeURIComponent(l.slug||'')+'">Assistir</a><button type="button" class="btnMini lvBtnPerigo" data-enc="'+esc(l.lojistaUid)+'" data-live="'+esc(l.id)+'" data-nome="'+esc(l.nome||'')+'">Encerrar live</button></div></div>';
+    const cx=el('lvAtivas'); if(!cx)return;
+    if(!LV_NOAR.length){
+      cx.innerHTML='<div class="vazio" style="margin-top:10px">'+
+        (lvNoArErro?'Não consegui falar com o servidor de sessões ('+esc(lvNoArErro)+'). Enquanto isso esta lista está cega — não conclua que ninguém está no ar.'
+                   :'Nenhuma live no ar agora.')+'</div>';
+      return;
+    }
+    const at=LV_NOAR.slice().sort((a,b)=>Number(b.inicioMs||0)-Number(a.inicioMs||0));
+    const htm=await Promise.all(at.map(async x=>{
+      const uid=x.uid, e=lvEnfeite(uid)||{}, nome=lvNome(uid), slug=lvSlug(uid);
+      /* O que o espectador esta vendo mora em negocios/{uid}/estado/live — e
+         esse o documento que a pagina publica le. O varredor olha o titulo
+         DALI, nao o do enfeite, e desde 16/09 tambem OFERTA, CUPOM e BRINDE:
+         a faixa de maior destaque da tela era a unica que ninguem varria. */
+      let titulo='', alerta=null;
+      try{
+        const g=await getDoc(doc(db,'negocios',uid,'estado','live'));
+        const d=g.exists()?(g.data()||{}):{};
+        titulo=String(d.titulo||'');
+        const textos=[titulo]
+          .concat((Array.isArray(d.sacola)?d.sacola:[]).map(i=>i&&i.nome))
+          .concat(d.fixado&&d.fixado.nome?[d.fixado.nome]:[])
+          .concat(d.oferta?[d.oferta.nome]:[])
+          .concat(d.cupom?[d.cupom.codigo,d.cupom.texto]:[])
+          .concat(d.brinde?[d.brinde.texto]:[]);
+        for(const t of textos){ if(t&&(alerta=mvProibido(t)))break; }
+      }catch(_){}
+      if(!titulo)titulo=String(e.titulo||'');
+      const den=LV_DEN.filter(d=>d.lojistaUid===uid).length;
+      const min=Math.round((Date.now()-Number(x.inicioMs||Date.now()))/60000);
+      const pg=pagosDe(uid,e.liveId);
+      const orfa=!(e.ativa===true);
+      return '<div class="lvItem"><div class="t"><span class="lvVivo">AO VIVO</span><strong>'+esc(nome)+'</strong>'+
+        '<span class="cdChip">'+esc(x.nivel||e.nivel||'')+'</span>'+
+        (orfa?'<span class="lvAlerta">sem registro do estúdio — só o servidor vê esta live</span>':'')+
+        (den?'<span class="lvAlerta">'+den+' denúncia(s)</span>':'')+
+        (alerta?'<span class="lvAlerta">termo proibido: '+esc(alerta.termo)+'</span>':'')+'</div>'+
+        '<div class="s">'+esc(titulo||'sem título')+' · '+min+' min · '+Number(e.assistindo||0)+' assistindo (pico '+Number(e.pico||0)+') · '+Number(e.mensagens||0)+' mensagens · '+Number(e.queros||0)+' "quero" · '+pg.length+' pedido(s) pago(s) '+brlLv(pg.reduce((t,p)=>t+Number(p.total||0),0))+'</div>'+
+        '<div class="a">'+(slug?'<a class="btnMini" target="_blank" rel="noopener" href="https://moviki.com.br/live/'+encodeURIComponent(slug)+'">Assistir</a>':'')+
+        '<button type="button" class="btnMini lvBtnPerigo" data-enc="'+esc(uid)+'" data-live="'+esc(e.id||'')+'" data-nome="'+esc(nome)+'">Encerrar live</button></div></div>';
     }));
-    el('lvAtivas').innerHTML=htm.join('');
-    el('lvAtivas').querySelectorAll('[data-enc]').forEach(b=>b.onclick=()=>lvModal(b.dataset.enc,b.dataset.live,b.dataset.nome));
+    cx.innerHTML=(lvNoArErro?'<div class="lvAlerta" style="display:block;margin:10px 0">Lista possivelmente atrasada: '+esc(lvNoArErro)+'</div>':'')+htm.join('');
+    cx.querySelectorAll('[data-enc]').forEach(b=>b.onclick=()=>lvModal(b.dataset.enc,b.dataset.live,b.dataset.nome));
   }
+  /* B10 (16/09/2026) — a tela agrupa por LOJISTA.
+     Denuncia e anonima e sem custo para quem faz. Uma lista plana entrega a
+     ordem da fila a quem gerar mais documentos. Agrupada, mil denuncias contra
+     o mesmo lojista viram UM cartao — e a quantidade vira sinal de enxurrada,
+     nao vantagem. A ordem e por gravidade do pior motivo, depois por quem esta
+     no ar agora, depois pela denuncia mais recente. Nunca por quantidade. */
+  const LV_ENXURRADA=20;
   function lvPintarDen(){
     const ordem={menor:0,sexual:1,proibido:2,violencia:3,golpe:4,outro:5};
-    const l=LV_DEN.slice().sort((a,b)=>(ordem[a.motivo]??9)-(ordem[b.motivo]??9)||ms(b.criadoEm)-ms(a.criadoEm));
-    if(!l.length){el('lvDen').innerHTML='<div class="vazio">Nenhuma denúncia aberta.</div>';return;}
-    el('lvDen').innerHTML=l.map(d=>{const ativa=LV_ATIVAS.find(x=>x.lojistaUid===d.lojistaUid&&lvAtivaDeVerdade(x));const n=(NEG.find(x=>x.uid===d.lojistaUid)||{}).nome||d.slug||d.lojistaUid;
-      return '<div class="lvItem"><div class="t"><span class="lvAlerta">'+esc(LV_MOTIVOS[d.motivo]||d.motivo)+'</span><strong>'+esc(n)+'</strong>'+(ativa?'<span class="lvVivo">AO VIVO</span>':'')+'</div>'+
-      '<div class="s">'+esc(d.detalhe||'sem detalhe')+' · '+(d.criadoEm&&d.criadoEm.toDate?d.criadoEm.toDate().toLocaleString('pt-BR'):'')+'</div>'+
-      '<div class="a">'+(d.slug?'<a class="btnMini" target="_blank" rel="noopener" href="https://moviki.com.br/live/'+encodeURIComponent(d.slug)+'">Ver a live</a>':'')+
-      '<button type="button" class="btnMini lvBtnPerigo" data-enc="'+esc(d.lojistaUid)+'" data-live="'+esc(ativa?ativa.id:'')+'" data-nome="'+esc(n)+'" data-den="'+esc(d.id)+'">Encerrar e bloquear</button>'+
-      '<button type="button" class="btnMini" data-res="'+esc(d.id)+'">Resolver sem ação</button></div></div>';}).join('');
-    el('lvDen').querySelectorAll('[data-enc]').forEach(b=>b.onclick=()=>lvModal(b.dataset.enc,b.dataset.live,b.dataset.nome,b.dataset.den));
-    el('lvDen').querySelectorAll('[data-res]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await updateDoc(doc(db,'denuncias',b.dataset.res),{status:'resolvida',resolucao:'sem_acao',resolvidaEm:serverTimestamp()});}catch(e){b.disabled=false;alert('Não salvou.');}});
+    const cx=el('lvDen'); if(!cx)return;
+    if(!LV_DEN.length){cx.innerHTML='<div class="vazio">Nenhuma denúncia aberta.</div>';return;}
+    const g={};
+    LV_DEN.forEach(d=>{ const u=d.lojistaUid||'-'; (g[u]||(g[u]=[])).push(d); });
+    const grupos=Object.keys(g).map(u=>{
+      const l=g[u].slice().sort((a,b)=>ms(b.criadoEm)-ms(a.criadoEm));
+      const pior=l.reduce((m,d)=>Math.min(m,(ordem[d.motivo]!==undefined?ordem[d.motivo]:9)),9);
+      return {uid:u,itens:l,pior:pior,noAr:lvNoArTem(u),ultima:ms(l[0].criadoEm)||0};
+    }).sort((a,b)=>a.pior-b.pior||(b.noAr?1:0)-(a.noAr?1:0)||b.ultima-a.ultima);
+    cx.innerHTML=(LV_DEN_AVISO?'<div class="lvAlerta" style="display:block;margin-bottom:10px">'+esc(LV_DEN_AVISO)+'</div>':'')+
+      (LV_DEN.length>=LV_DEN_TETO?'<div class="lvAlerta" style="display:block;margin-bottom:10px">Fila no teto de '+LV_DEN_TETO+'. Há mais denúncias abertas do que esta tela carrega — resolva as de cima antes de concluir qualquer coisa.</div>':'')+
+      grupos.map(gr=>{
+        const n=lvNome(gr.uid), q=gr.itens.length, d0=gr.itens[0], slug=lvSlug(gr.uid)||d0.slug||'';
+        const mostra=gr.itens.slice(0,3);
+        return '<div class="lvItem"><div class="t">'+
+          '<span class="lvAlerta">'+esc(LV_MOTIVOS[d0.motivo]||d0.motivo)+'</span>'+
+          '<strong>'+esc(n)+'</strong>'+
+          (gr.noAr?'<span class="lvVivo">AO VIVO</span>':'')+
+          '<span class="cdChip">'+q+' denúncia'+(q>1?'s':'')+'</span>'+
+          (q>=LV_ENXURRADA?'<span class="lvAlerta">possível enxurrada — trate como 1 caso, não como '+q+'</span>':'')+
+          '</div>'+
+          mostra.map(d=>'<div class="s">'+esc(LV_MOTIVOS[d.motivo]||d.motivo)+' · '+esc(String(d.detalhe||'sem detalhe').slice(0,160))+' · '+(d.criadoEm&&d.criadoEm.toDate?d.criadoEm.toDate().toLocaleString('pt-BR'):'')+'</div>').join('')+
+          (q>mostra.length?'<div class="s" style="opacity:.7">+ '+(q-mostra.length)+' denúncia(s) do mesmo lojista</div>':'')+
+          '<div class="a">'+(slug?'<a class="btnMini" target="_blank" rel="noopener" href="https://moviki.com.br/live/'+encodeURIComponent(slug)+'">Ver a live</a>':'')+
+          '<button type="button" class="btnMini lvBtnPerigo" data-enc="'+esc(gr.uid)+'" data-live="'+esc((lvEnfeite(gr.uid)||{}).id||'')+'" data-nome="'+esc(n)+'" data-den="'+esc(d0.id)+'">Encerrar e bloquear</button>'+
+          '<button type="button" class="btnMini" data-resg="'+esc(gr.uid)+'" data-q="'+q+'">Resolver sem ação'+(q>1?' ('+q+')':'')+'</button></div></div>';
+      }).join('');
+    cx.querySelectorAll('[data-enc]').forEach(b=>b.onclick=()=>lvModal(b.dataset.enc,b.dataset.live,b.dataset.nome,b.dataset.den));
+    cx.querySelectorAll('[data-resg]').forEach(b=>b.onclick=async()=>{
+      const uid=b.dataset.resg, l=(g[uid]||[]).slice(0,50);
+      if(l.length>1&&!confirm('Resolver sem ação '+l.length+' denúncia(s) contra '+lvNome(uid)+'?'))return;
+      b.disabled=true;
+      let falhou=0;
+      for(const d of l){ try{ await updateDoc(doc(db,'denuncias',d.id),{status:'resolvida',resolucao:'sem_acao',resolvidaEm:serverTimestamp()}); }catch(e){ falhou++; } }
+      if(falhou){ b.disabled=false; alert('Não salvou '+falhou+' de '+l.length+'.'); }
+    });
   }
   function lvPintarBloq(){
     const l=LV_BLOQ.filter(b=>!b.ate||ms(b.ate)>Date.now());
@@ -3814,7 +3953,7 @@ table.mvTab td b{font-weight:700}
     const top=Object.entries(porLoja).sort((a,b)=>b[1]-a[1]).slice(0,5);
     el('lvTop').innerHTML=top.length?top.map(([u,v])=>'<div class="lvItem" style="padding:8px 12px"><div class="t"><strong>'+esc((NEG.find(x=>x.uid===u)||{}).nome||u)+'</strong><span class="cdChip">'+brlLv(v)+'</span><span class="cdChip">'+pagos.filter(p=>p.lojistaUid===u).length+' pedido(s)</span></div></div>').join(''):'<div class="vazio">Nenhuma venda pelo Pix ainda.</div>';
     el('lvHist').innerHTML=LV_HIST.length?LV_HIST.slice(0,60).map(l=>{const pg=pagosDe(l.lojistaUid,l.liveId);
-      return '<tr><td>'+new Date(Number(l.inicioMs)).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</td><td>'+esc(l.nome||'')+'</td><td>'+esc(l.nivel||'')+'</td><td>'+Number(l.duracaoMin||0)+' min</td><td>'+Number(l.pico||0)+'</td><td>'+Number(l.mensagens||0)+'</td><td>'+Number(l.queros||0)+'</td><td>'+pg.length+'</td><td>'+brlLv(pg.reduce((t,p)=>t+Number(p.total||0),0))+'</td><td>'+(l.encerradaPor==='moviki'?'<span class="lvAlerta">moderada</span>':(lvAtivaDeVerdade(l)?'<span class="lvVivo">AO VIVO</span>':''))+'</td></tr>';}).join(''):'<tr><td colspan="10" class="vazio">Nenhuma live nos últimos 30 dias.</td></tr>';
+      return '<tr><td>'+new Date(Number(l.inicioMs)).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</td><td>'+esc(l.nome||'')+'</td><td>'+esc(l.nivel||'')+'</td><td>'+Number(l.duracaoMin||0)+' min</td><td>'+Number(l.pico||0)+'</td><td>'+Number(l.mensagens||0)+'</td><td>'+Number(l.queros||0)+'</td><td>'+pg.length+'</td><td>'+brlLv(pg.reduce((t,p)=>t+Number(p.total||0),0))+'</td><td>'+(l.encerradaPor==='moviki'?'<span class="lvAlerta">moderada</span>':(lvNoArTem(l.lojistaUid)?'<span class="lvVivo">AO VIVO</span>':''))+'</td></tr>';}).join(''):'<tr><td colspan="10" class="vazio">Nenhuma live nos últimos 30 dias.</td></tr>';
   }
   function lvModal(lojistaUid,liveDocId,nome,denId){
     const ov=document.createElement('div'); ov.className='lvMod';
