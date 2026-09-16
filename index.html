@@ -1055,7 +1055,10 @@ input[type=checkbox]{width:auto;padding:0;}
   background:var(--mv-surf);border-top:1px solid var(--mv-linha);
   margin:10px -16px 0;
   padding:9px 16px calc(env(safe-area-inset-bottom) + 18px);}
-.piPe .piAviso{margin-top:0;}
+.piPe{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.piPe .piAviso{margin-top:0;flex:1 1 180px;min-width:0;}
+.piPe .piSalvar{flex:0 0 auto;}
+.piPe .piSalvar:disabled{opacity:.6;cursor:default;}
 .cvFoto{position:relative;aspect-ratio:9/16;border-radius:11px;overflow:hidden;border:1px solid var(--mv-linha);
   background:var(--mv-campo);cursor:pointer;padding:0;}
 .cvFoto img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -3116,7 +3119,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-16-videoitens2';
+  window.MOVIKI_VERSAO='2026-09-16-videoitens3';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -4957,8 +4960,10 @@ window.mvAbaInicial=function(){
     if(!temAlgum){
       h+='<p style="font-size:13px;color:var(--mv-txt-3);margin-top:14px">Você ainda não tem itens no cardápio. Monte o cardápio primeiro, na aba <b>Cardápio</b>.</p>';
     }else{
-      h+='<div class="piPe"><p class="piAviso">Item <b>sem preço</b> não pode ser vendido pelo site.<br>'+
-         'Marcou? Não esqueça de <b>Salvar tudo</b>.</p></div>';
+      h+='<div class="piPe">'+
+           '<p class="piAviso">Item <b>sem preço</b> não pode ser vendido pelo site — por isso aparece apagado.</p>'+
+           '<button type="button" class="vdBtn piSalvar" id="piSalvar">Salvar e fechar</button>'+
+         '</div>';
     }
     cx.innerHTML=h;
     f.appendChild(cx); document.body.appendChild(f); _piFundo=f;
@@ -4969,6 +4974,18 @@ window.mvAbaInicial=function(){
     }
     conta();
     cx.querySelector('#piX').onclick=function(){ piFechar(); renderVideos(); };
+    /* Salvar daqui e o MESMO "Salvar tudo" do rodape do painel -- o cadastro do
+       negocio e um documento so, nao da para gravar os videos sozinhos.
+       A janela FECHA antes de salvar, de proposito: quando o salvar recusa
+       (negocio sem nome, apelido em uso, endereco nao confirmado no mapa) ele
+       troca de aba e escreve o motivo na tela. Com a janela por cima, o lojista
+       levaria "nao salvou" sem nunca ver o porque. */
+    var bs=cx.querySelector('#piSalvar');
+    if(bs) bs.onclick=function(){
+      bs.disabled=true; bs.textContent='Salvando…';
+      piFechar(); renderVideos();
+      try{ window.salvar(); }catch(_){ toast('Não consegui salvar. Use o botão Salvar tudo.',true); }
+    };
     Array.prototype.forEach.call(cx.querySelectorAll('[data-pi]'),function(b){
       b.onclick=function(){
         const parte=String(b.getAttribute('data-pi')||'').split('|');
