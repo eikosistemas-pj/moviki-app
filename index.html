@@ -512,6 +512,23 @@
   .qIcon3d{width:42px;height:42px;flex:0 0 auto;object-fit:contain;border-radius:11px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35));}
   .qzCardGrande .qIcon3d{width:52px;height:52px;border-radius:14px;}
   .qTxt{font-size:15px;font-weight:600;line-height:1.3;}
+  /* ===== PORTA DE ENTRADA — 16/09/2026 =====================================
+     A tela 1 passou a abrir pela venda ao vivo, no mesmo eixo do site. O
+     DESTINO de cada card nao mudou: o de cima continua em mqzIrA2() e o de
+     baixo em mqzIrApresent(). Uma porta por destino, de proposito — duas
+     portas para o mesmo cadastro dividem o funil e fazem escolher errado. */
+  .qzSelo{display:flex;align-items:center;justify-content:center;gap:7px;width:max-content;margin:8px auto 0;
+    font-size:10.5px;font-weight:800;letter-spacing:1.1px;color:#ffd9d9;
+    background:rgba(255,59,59,.14);border:1px solid rgba(255,59,59,.5);border-radius:999px;padding:6px 13px;}
+  .qzSeloPonto{width:7px;height:7px;border-radius:50%;background:#ff3b3b;box-shadow:0 0 8px #ff3b3b;animation:qzPisca 1.9s ease-in-out infinite;}
+  @keyframes qzPisca{0%,100%{opacity:1}50%{opacity:.35}}
+  .qzTitulo .qzTitG{background:linear-gradient(135deg,var(--ciano),var(--azul));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .qTxtWrap{display:flex;flex-direction:column;gap:3px;min-width:0;}
+  .qTxtSub{font-size:12.5px;font-weight:500;line-height:1.35;color:#8fa6c4;}
+  .qzCardDestaque{border-color:rgba(0,212,255,.55);background:linear-gradient(150deg,rgba(0,212,255,.13),rgba(0,102,255,.05));
+    box-shadow:0 14px 30px rgba(0,0,0,.35),0 0 26px rgba(0,212,255,.22),inset 0 1px 0 rgba(255,255,255,.06);}
+  .qzProva{display:flex;gap:6px 16px;flex-wrap:wrap;justify-content:center;font-size:12px;color:#8fa6c4;margin:0 0 14px;}
+  @media(prefers-reduced-motion:reduce){.qzSeloPonto{animation:none}}
   /* Nível 1 / Nível 2 do quiz de segmentação (20/08/2026) — grade 2 colunas com
      ícones 3D glossy. Seleção de 1 toque: tocar no card já avança pra próxima
      tela (sem botão "Avançar" extra), reduzindo o número de toques do fluxo. */
@@ -2640,14 +2657,20 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
       <div class="qzBarraWrap"><i id="qzBarra" style="width:33%"></i></div>
     </div>
 
-    <!-- TELA 1 — O GRANDE FILTRO -->
+    <!-- TELA 1 — O GRANDE FILTRO
+         16/09/2026: mesma frase da home, e a venda na frente. O card de cima
+         continua levando a mqzIrA2() e o de baixo a mqzIrApresent() — so o
+         rotulo, o icone e a ordem de leitura mudaram. -->
     <div id="qzTela1" class="qzTela qzAtiva">
       <div class="qzMarca"><img src="logo.png" class="qzLogo" alt="Moviki" onerror="this.style.display='none'"></div>
-      <h1 class="qzTitulo">Olá! Bem-vindo ao Moviki. O que vamos fazer hoje?</h1>
+      <div class="qzSelo"><span class="qzSeloPonto"></span>NOVO · VENDA AO VIVO</div>
+      <h1 class="qzTitulo">Seu negócio no mapa. <span class="qzTitG">E em vídeo.</span></h1>
+      <p class="qzSubtitulo">Por onde a gente começa?</p>
       <div class="qzGrid">
-        <button type="button" class="qzCard qzCardGrande" onclick="mqzIrA2()"><img class="qIcon3d" src="icones/qz-comerciante.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🚚'))"><span class="qTxt">Colocar meu negócio no mapa</span></button>
-        <button type="button" class="qzCard qzCardGrande" onclick="mqzIrApresent()"><img class="qIcon3d" src="icones/indicar.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('📢'))"><span class="qTxt">Indicar negócios e ganhar comissões</span></button>
+        <button type="button" class="qzCard qzCardGrande qzCardDestaque" onclick="mqzIrA2()"><img class="qIcon3d" src="icones/qz-live.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🔴'))"><span class="qTxtWrap"><span class="qTxt">Quero vender ao vivo e no cardápio</span><span class="qTxtSub">e aparecer no mapa em tempo real</span></span></button>
+        <button type="button" class="qzCard qzCardGrande" onclick="mqzIrApresent()"><img class="qIcon3d" src="icones/indicar.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('📢'))"><span class="qTxtWrap"><span class="qTxt">Quero indicar e ganhar comissões</span><span class="qTxtSub">comissão todo mês, sem ter negócio próprio</span></span></button>
       </div>
+      <p class="qzProva"><span>🎁 30 dias grátis</span><span>💳 sem cartão de crédito</span></p>
       <div class="qzRodape"><button type="button" class="qzLink" onclick="mqzIrLogin()">Já tenho uma conta — Entrar</button></div>
     </div>
 
@@ -3008,7 +3031,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-15-liveaulas2';
+  window.MOVIKI_VERSAO='2026-09-16-quizlive1';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
