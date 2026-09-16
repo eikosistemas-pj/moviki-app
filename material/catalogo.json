@@ -1,5 +1,5 @@
 {
- "versao": "2026-09-16-material",
+ "versao": "2026-09-16-qr",
  "atualizado": "2026-09-16",
  "itens": [
   {
@@ -886,14 +886,14 @@
    "novo": true,
    "legenda": "#publi Te mando o panfleto do Moviki, o mapa dos negócios que se movem.\n\nSeu cliente vê onde você está hoje, o seu cardápio, as suas fotos — e agora também consegue comprar de você ao vivo, pelo vídeo, direto do celular.\n\nO que você vender é seu: sem comissão sobre as vendas. Aponte a câmera para o QR code ou entre pelo meu link: {link}",
    "qr": {
-    "x": 1352,
+    "x": 1312,
     "y": 1841,
     "l": 288
    },
    "texto": {
-    "x": 1255,
-    "y": 2179,
-    "w": 428,
+    "x": 1456,
+    "y": 2162,
+    "w": 420,
     "cor": "#0b1220"
    },
    "destaque": true,
