@@ -602,7 +602,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-16-imersivo3';
+  window.MOVIKI_VERSAO='2026-09-16-tetoplano';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -1111,6 +1111,15 @@ svg{display:block}
     if(s===lim-290)setTimeout(()=>aviso(''),8000);
     if(s>=lim&&!encerrando){toast('A live chegou ao limite do seu plano.');encerrar();}
   }
+  /* Aviso do teto de minutos de video do plano. Nao existia jeito de o lojista
+     saber que estava perto de acabar: a live simplesmente caia. Avisa uma vez
+     em cada faixa, e nao repete a cada 45 s. */
+  var _vidAviso=0;
+  function avisarVideo(restam){
+    if(restam<=15&&_vidAviso<3){_vidAviso=3;toast('Restam cerca de '+restam+' minutos de video do seu plano neste ciclo.');aviso('Minutos de video acabando: '+restam+' min.');return;}
+    if(restam<=60&&_vidAviso<2){_vidAviso=2;aviso('Restam '+restam+' minutos de video do seu plano neste ciclo.');setTimeout(function(){aviso('');},10000);return;}
+    if(restam<=180&&_vidAviso<1){_vidAviso=1;aviso('Seu plano tem '+restam+' minutos de video restantes neste ciclo.');setTimeout(function(){aviso('');},8000);}
+  }
   function statsSessao(){const q=msgs.filter(m=>m.tipo==='quero').length,c=msgs.filter(m=>m.tipo==='msg').length;
     return {pulsoMs:Date.now(),assistindo,pico,mensagens:c,queros:q,duracaoMin:Math.round((Date.now()-inicioMs)/60000)};}
   /* O pulso deixou de ser uma escrita do navegador no Firestore e virou uma
@@ -1121,7 +1130,13 @@ svg{display:block}
   async function pulso(){
     if(!noAr)return;
     const r=await chamarRobo('live_pulso',{});
-    if(r&&r.encerrar){toast('A live chegou ao limite do seu plano.');encerrar();return;}
+    /* 16/09/2026 — sao DUAS paredes diferentes, e o lojista precisa saber qual
+       bateu. `limite` e o relogio da live (60 ou 180 min). `teto_video` e o
+       total de minutos ENTREGUES no ciclo (espectadores x duracao), que e o
+       que o Moviki paga ao Cloudflare. Dizer "limite do seu plano" nos dois
+       casos faz o lojista achar que a live de 10 minutos durou uma hora. */
+    if(r&&r.encerrar){toast(r.mensagem||'A live chegou ao limite do seu plano.');encerrar();return;}
+    if(r&&typeof r.videoRestamMin==='number')avisarVideo(r.videoRestamMin);
     if(liveDocId)updateDoc(doc(db,'lives',liveDocId),statsSessao()).catch(()=>{});
   }
   async function contar(){
