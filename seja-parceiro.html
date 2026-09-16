@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <title>Seja um Parceiro Moviki</title>
-<script>window.MOVIKI_VERSAO='2026-09-04-conta-existente';</script>
+<script>window.MOVIKI_VERSAO='2026-09-16-parceirolive';</script>
 <script src="/mvmetrica.js"></script>
 <link rel="icon" href="favicon512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,6 +32,19 @@
   input:focus{outline:none;border-color:var(--ciano)}
   input::placeholder{color:#6b7f96}
   .dica{font-size:11.5px;color:#8fa6c4;margin-top:5px}
+  /* ===== 2026-09-16-parceirolive: contexto do produto e o que vem depois =====
+     Quem chega pelo /pp/<apelido> caia direto num formulario pedindo chave Pix,
+     sem uma linha dizendo o que e o Moviki nem o que acontece depois de enviar.
+     Estes dois blocos existem para isso, e sao curtos de proposito: a pagina e
+     de cadastro, nao de venda - quem quer se aprofundar tem o link do programa. */
+  .oque{background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.22);border-radius:12px;padding:13px 15px;font-size:13px;color:#cfe0f5;line-height:1.55;margin-bottom:6px}
+  .oque b{color:#fff}
+  .oque .saiba{display:inline-block;margin-top:7px;color:var(--ciano);font-size:12.5px;font-weight:600}
+  .caminho{margin-top:16px;border-top:1px solid rgba(255,255,255,.10);padding-top:14px}
+  .caminho .tit{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8fa6c4;margin-bottom:9px}
+  .caminho ol{margin:0;padding-left:18px}
+  .caminho li{font-size:12.8px;color:#b9cbe0;line-height:1.5;margin-bottom:6px}
+  .caminho li b{color:#e6eefb}
   .linkPrev{font-size:12.5px;margin-top:6px;color:#9fb3c8}
   .linkPrev b{color:var(--ciano)}
   .slugMsg{font-size:12px;margin-top:5px;min-height:15px}
@@ -67,6 +80,11 @@
       <h1>Seja um Parceiro Moviki</h1>
       <p class="sub">Indique o Moviki e receba <b>15% da mensalidade</b> de cada assinatura efetivamente paga que vier pelo seu link, enquanto o comerciante seguir pagando. Preencha abaixo pra começar.</p>
 
+      <div class="oque">
+        <b>O que você vai indicar:</b> o Moviki coloca o negócio no mapa em tempo real, dá a ele uma página própria com cardápio e deixa ele <b>vender ao vivo, em vídeo</b>, para quem está por perto. Feira, food truck, loja de bairro, serviço que vai até o cliente.
+        <a class="saiba" href="https://www.moviki.com.br/parceiros-ganhos.html" target="_blank" rel="noopener" data-ev="conhecer_programa">Conhecer o programa antes de me cadastrar →</a>
+      </div>
+
       <label for="nome">Nome completo</label>
       <input id="nome" type="text" placeholder="Seu nome" autocomplete="name" maxlength="80">
 
@@ -97,6 +115,15 @@
         <label for="aceite" style="margin:0;font-weight:500;color:#cfe0f5">Li e concordo com o <a href="regulamento.html" target="_blank" rel="noopener">Regulamento do Programa de Parceiros</a>.</label>
       </div>
 
+      <div class="caminho">
+        <div class="tit">Depois de enviar</div>
+        <ol>
+          <li><b>Análise.</b> Todo cadastro entra como pendente e passa por aprovação. Você recebe um e-mail quando for aprovado.</li>
+          <li><b>Aulas do programa.</b> Curtas, no seu painel. Explicam como a comissão nasce e o que pode e o que não pode ser dito ao divulgar. <b>A aba de Divulgação abre quando você termina</b> — é assim porque conteúdo que gera comissão é publicidade, e o que você publica responde junto com a gente.</li>
+          <li><b>Seu link, seu crachá e as artes prontas.</b> Aí sim você sai divulgando, e acompanha tudo pelo painel.</li>
+        </ol>
+      </div>
+
       <button class="btn" id="btn" onclick="cadastrar()">Criar meu cadastro</button>
       <div class="aviso" id="aviso"></div>
       <div class="rodape">Já é parceiro? <a href="parceiro.html">Entrar no seu painel</a></div>
@@ -107,6 +134,8 @@
       <h2>Cadastro recebido!</h2>
       <p>Bem-vindo(a) ao Programa de Parceiros Moviki. Seu cadastro foi registrado com sucesso.</p>
       <div class="box">Seu acesso está <b>em análise</b>. Assim que for aprovado, seu link de parceiro é ativado e você recebe um e-mail de boas-vindas. 💚</div>
+      <p style="font-size:13px;color:#9fb3c8;line-height:1.6;margin-top:14px">Enquanto isso, já dá pra entrar no painel e começar as <b style="color:#cfe0f5">aulas do programa</b>. São curtas, e são elas que abrem a aba de Divulgação com as artes prontas e o seu crachá.</p>
+      <p style="font-size:13px;margin-top:12px"><a href="parceiro.html" style="color:var(--ciano);font-weight:700" data-ev="ir_painel_sucesso">Ir para o meu painel →</a></p>
     </div>
 
   </div>
