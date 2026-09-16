@@ -1069,10 +1069,12 @@ table.mvTab td b{font-weight:700}
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px">
               <label style="font-size:12.5px;color:var(--mv-txt-3)">Teto do mês, em minutos entregues</label>
               <input id="lvConsTeto" type="number" min="0" step="1000" style="width:140px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="0 = sem teto">
+              <label style="font-size:12.5px;color:var(--mv-txt-3)">Dia da virada do ciclo</label>
+              <input id="lvConsCiclo" type="number" min="1" max="28" step="1" style="width:80px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="1">
               <button type="button" class="btnMini" id="lvConsSalvar">Salvar teto</button>
               <button type="button" class="btnMini" id="lvConsMedir">Medir agora</button>
             </div>
-            <p class="cdSub" style="margin-top:8px">Zero ou vazio = sem teto, igual à lista do beta vazia. Se a medição falhar, a live <b>continua começando</b>: derrubar a transmissão de todo mundo porque uma API de relatório caiu seria pior que o risco de conta. Para parar tudo na hora, use a chave-mestra abaixo.</p>
+            <p class="cdSub" style="margin-top:8px">O ciclo de faturamento do Cloudflare <b>não é o mês-calendário</b>: começa no dia em que a conta assinou. Veja em Manage account → Billing → Billable usage qual é o seu (hoje: <b>dia 12</b>) e ponha esse número aqui, senão a contagem fica fora de fase com a fatura. Zero ou vazio = sem teto, igual à lista do beta vazia. Se a medição falhar, a live <b>continua começando</b>: derrubar a transmissão de todo mundo porque uma API de relatório caiu seria pior que o risco de conta. Para parar tudo na hora, use a chave-mestra abaixo.</p>
           </div>
 
           <div class="cd" style="margin-top:14px" id="lvMestraCard">
@@ -1353,7 +1355,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-consumo';
+  window.MOVIKI_VERSAO = '2026-09-16-consumo2';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -3792,7 +3794,7 @@ table.mvTab td b{font-weight:700}
     try{const s=await getDocs(query(collection(db,'lives'),where('inicioMs','>=',desde),orderBy('inicioMs','desc'),limit(400)));LV_HIST=[];s.forEach(d=>LV_HIST.push(Object.assign({id:d.id},d.data())));}catch(e){LV_HIST=[];}
     try{const s=await getDocs(query(collection(db,'pedidos'),where('dia','>=',diaSP(desde))));LV_PED=[];s.forEach(d=>LV_PED.push(Object.assign({id:d.id},d.data())));}catch(e){LV_PED=[];}
     try{const s=await getDocs(collection(db,'live_bloqueios'));LV_BLOQ=[];s.forEach(d=>LV_BLOQ.push(Object.assign({uid:d.id},d.data())));}catch(e){LV_BLOQ=[];}
-    try{const t=await getDoc(doc(db,'configuracoes','liveTermos'));const d=t.exists()?(t.data()||{}):{};const ex=Array.isArray(d.extras)?d.extras:[];MV_TERMOS_EXTRAS=ex;el('lvTermos').value=ex.join('\n');txt('lvTermChip',ex.length+' extras');lvPintarMestra(d.liveDesligada===true);LV_BETA=Array.isArray(d.liveBeta)?d.liveBeta.filter(function(x){return typeof x==='string';}):[];lvPintarBeta();var _ct=el('lvConsTeto');if(_ct&&document.activeElement!==_ct)_ct.value=Number(d.tetoMinutosMes||0)||'';}catch(e){txt('lvTermChip','—');txt('lvMestraChip','—');}
+    try{const t=await getDoc(doc(db,'configuracoes','liveTermos'));const d=t.exists()?(t.data()||{}):{};const ex=Array.isArray(d.extras)?d.extras:[];MV_TERMOS_EXTRAS=ex;el('lvTermos').value=ex.join('\n');txt('lvTermChip',ex.length+' extras');lvPintarMestra(d.liveDesligada===true);LV_BETA=Array.isArray(d.liveBeta)?d.liveBeta.filter(function(x){return typeof x==='string';}):[];lvPintarBeta();var _ct=el('lvConsTeto');if(_ct&&document.activeElement!==_ct)_ct.value=Number(d.tetoMinutosMes||0)||'';var _cc=el('lvConsCiclo');if(_cc&&document.activeElement!==_cc)_cc.value=Number(d.cicloDia||1)||1;}catch(e){txt('lvTermChip','—');txt('lvMestraChip','—');}
     try{const s=await getDocs(query(collection(db,'moderacao'),orderBy('criadoEm','desc'),limit(25)));const l=[];s.forEach(d=>l.push(d.data()));
       el('lvModLog').innerHTML=l.length?l.map(m=>'<div class="lvItem"><div class="t"><strong>'+esc(m.acao==='liberar'?'Liberado':'Encerrada'+(m.dias===0?'':' e bloqueado'))+'</strong><span class="cdChip">'+esc(m.nome||m.lojistaUid||'')+'</span></div><div class="s">'+esc(m.motivo||'')+(m.dias>0?' · '+m.dias+' dia(s)':(m.dias===-1?' · permanente':''))+' · '+(m.criadoEm&&m.criadoEm.toDate?m.criadoEm.toDate().toLocaleString('pt-BR'):'')+'</div></div>').join(''):'<div class="vazio">Nada registrado.</div>';
     }catch(e){}
@@ -4032,6 +4034,7 @@ table.mvTab td b{font-weight:700}
     const usd=Number(r.custoUsd||0);
     const pct=teto>0?Math.round(mes/teto*100):0;
     const campo=el('lvConsTeto'); if(campo&&document.activeElement!==campo)campo.value=teto||'';
+    const campoC=el('lvConsCiclo'); if(campoC&&document.activeElement!==campoC)campoC.value=Number(r.cicloDia||1);
     txt('lvConsChip',teto>0?(pct+'% do teto'):'sem teto');
     const chip=el('lvConsChip'); if(chip)chip.style.color=teto>0?(pct>=90?'#ff6b6b':(pct>=70?'#ffc107':'')):'';
     var aviso='';
@@ -4041,16 +4044,20 @@ table.mvTab td b{font-weight:700}
     else if(teto>0&&mes>=teto)aviso='<div class="lvAlerta" style="display:block;margin-top:8px"><b>Teto atingido.</b> Nenhuma live nova está começando. Aumente o teto aqui ou espere o mês virar.</div>';
     const quando=r.medidoEm?new Date(Number(r.medidoEm)).toLocaleTimeString('pt-BR'):'—';
     cx.classList.remove('vazio');
-    cx.innerHTML='<div class="lvItem"><div class="t"><strong>'+mes.toLocaleString('pt-BR')+' min entregues no mês</strong>'+
+    const desde=String(r.desde||'');
+    const desdeBr=desde?desde.slice(8)+'/'+desde.slice(5,7):'';
+    cx.innerHTML='<div class="lvItem"><div class="t"><strong>'+mes.toLocaleString('pt-BR')+' min entregues no ciclo</strong>'+
       '<span class="cdChip">US$ '+usd.toFixed(2)+'</span>'+
       (teto>0?'<span class="cdChip">teto '+teto.toLocaleString('pt-BR')+'</span>':'<span class="lvAlerta">sem teto</span>')+'</div>'+
-      '<div class="s">'+sem.toLocaleString('pt-BR')+' min nos últimos 7 dias · medido às '+quando+' (a medição vale 15 min)</div></div>'+aviso;
+      '<div class="s">'+(desdeBr?'ciclo desde '+desdeBr+' · ':'')+sem.toLocaleString('pt-BR')+' min nos últimos 7 dias · medido às '+quando+' (a medição vale 15 min)</div></div>'+aviso;
   }
   el('lvConsMedir').addEventListener('click',()=>lvMedirConsumo(true));
   el('lvConsSalvar').addEventListener('click',async()=>{
     const v=Math.max(0,Math.min(100000000,parseInt(el('lvConsTeto').value||'0',10)||0));
-    try{await setDoc(doc(db,'configuracoes','liveTermos'),{tetoMinutosMes:v,atualizadoEm:serverTimestamp()},{merge:true});
-      if(LV_CONS){LV_CONS.teto=v;lvPintarConsumo();}
+    const cd=Math.max(1,Math.min(28,parseInt(el('lvConsCiclo').value||'1',10)||1));
+    try{await setDoc(doc(db,'configuracoes','liveTermos'),{tetoMinutosMes:v,cicloDia:cd,atualizadoEm:serverTimestamp()},{merge:true});
+      if(LV_CONS){LV_CONS.teto=v;LV_CONS.cicloDia=cd;lvPintarConsumo();}
+      lvMedirConsumo(true);
       alert(v>0?('Teto salvo: '+v.toLocaleString('pt-BR')+' minutos entregues no mês. Vale na hora, sem subir arquivo.'):'Teto removido. Nenhuma live será barrada por consumo.');}
     catch(e){alert('Não salvou: '+(e&&e.code||'erro'));}
   });
