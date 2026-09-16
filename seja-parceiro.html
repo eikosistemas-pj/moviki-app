@@ -6,8 +6,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <title>Seja um Parceiro Moviki</title>
-<script>window.MOVIKI_VERSAO='2026-09-16-parceirolive';</script>
+<script>window.MOVIKI_VERSAO='2026-09-16-atrib1';</script>
 <script src="/mvmetrica.js"></script>
+<script>
+/* 16/09/2026 — ATRIBUICAO DO LEAD (mvAtrib).
+   O mvmetrica.js ja guardava o fbc/fbp do clique de anuncio e expunha
+   window.mvFb(), mas NENHUMA chamada de cadastro mandava esses campos para o
+   robo. O Lead da CAPI chegava na Meta, era aceito... e nao creditava campanha
+   nenhuma — que e a mesma coisa que nao existir para quem esta otimizando.
+   Vive no window de proposito: as chamadas de cadastro estao espalhadas por
+   escopos diferentes deste arquivo. */
+window.mvAtrib = function(){
+  try{
+    var f = (window.mvFb ? window.mvFb() : {}) || {};
+    return { fbc: f.fbc || '', fbp: f.fbp || '', origemUrl: location.href };
+  }catch(_){ return {}; }
+};
+</script>
+
 <link rel="icon" href="favicon512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -305,7 +321,7 @@
         fetch('https://moviki-robo.vercel.app/api/novo-parceiro', {
           method:'POST',
           headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ idToken, uid })
+          body: JSON.stringify(Object.assign({ idToken, uid }, (window.mvAtrib ? window.mvAtrib() : {})))
         }).catch(function(){});
       }catch(_){}
 

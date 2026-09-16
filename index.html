@@ -15,6 +15,22 @@
 <meta name="theme-color" content="#0D1B2A">
 <link rel="stylesheet" href="/movikiui.css">
 <script src="/mvmetrica.js"></script>
+<script>
+/* 16/09/2026 — ATRIBUICAO DO LEAD (mvAtrib).
+   O mvmetrica.js ja guardava o fbc/fbp do clique de anuncio e expunha
+   window.mvFb(), mas NENHUMA chamada de cadastro mandava esses campos para o
+   robo. O Lead da CAPI chegava na Meta, era aceito... e nao creditava campanha
+   nenhuma — que e a mesma coisa que nao existir para quem esta otimizando.
+   Vive no window de proposito: as chamadas de cadastro estao espalhadas por
+   escopos diferentes deste arquivo. */
+window.mvAtrib = function(){
+  try{
+    var f = (window.mvFb ? window.mvFb() : {}) || {};
+    return { fbc: f.fbc || '', fbp: f.fbp || '', origemUrl: location.href };
+  }catch(_){ return {}; }
+};
+</script>
+
 <!-- o modulo de aulas da LIVE. Separado do MOVIKI_TUTORIAIS de proposito:
      ensina a transmitir, nao a preencher o cadastro, e onze das catorze
      aulas vivem em abas do ESTUDIO. O mesmo arquivo serve os dois. -->
@@ -2978,7 +2994,7 @@ window.mvAbaInicial=function(){
 };
   window.verSenha=function(){const s=el('senha'),b=document.querySelector('.verSenha');if(s.type==='password'){s.type='text';b.textContent='ocultar';}else{s.type='password';b.textContent='mostrar';}};
   function msgErro(c){const m={'auth/invalid-email':'E-mail inválido.','auth/missing-password':'Digite uma senha.','auth/weak-password':'A senha precisa ter pelo menos 6 caracteres.','auth/email-already-in-use':'Esse e-mail já tem conta. Tente "Entrar".','auth/invalid-credential':'E-mail ou senha incorretos.','auth/user-not-found':'Não encontrei conta com esse e-mail.','auth/wrong-password':'Senha incorreta.','auth/too-many-requests':'Muitas tentativas. Espere um pouco.','auth/network-request-failed':'Sem conexão. Confira a internet.','auth/popup-blocked':'Seu navegador bloqueou a janela do Google. Permita pop-ups e tente de novo.','auth/account-exists-with-different-credential':'Esse e-mail já tem conta criada com senha. Entre com e-mail e senha, ou clique em "Esqueci minha senha".','auth/unauthorized-domain':'Este endereço ainda não está autorizado no Firebase para login com Google.','auth/internal-error':'Não consegui falar com o login do Google agora. Tente de novo — ou crie sua conta com e-mail e senha, que funciona do mesmo jeito.','auth/operation-not-allowed':'O login com Google está desativado nesta conta do sistema. Use e-mail e senha por enquanto.'};return m[c]||('Erro: '+c);}
-  window.acao=async function(){const email=el('email').value.trim(),senha=el('senha').value,btn=el('btnAcao');limparAviso();if(!email){erroAcesso('Digite seu e-mail.');return;}if(!senha){erroAcesso('Digite uma senha.');return;}btn.disabled=true;const t=btn.textContent;btn.textContent='Aguarde...';try{if(modo==='criar'){await createUserWithEmailAndPassword(auth,email,senha);try{ if(window.mvSignup) mvSignup('email'); }catch(_){}try{await sendEmailVerification(auth.currentUser);}catch(_){}try{await registrarIndicacao(auth.currentUser.uid);}catch(_){}garantirTrial();try{auth.currentUser.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:auth.currentUser.uid})}).catch(function(){});}).catch(function(){});}catch(_){}}else await signInWithEmailAndPassword(auth,email,senha);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.textContent=t;}};
+  window.acao=async function(){const email=el('email').value.trim(),senha=el('senha').value,btn=el('btnAcao');limparAviso();if(!email){erroAcesso('Digite seu e-mail.');return;}if(!senha){erroAcesso('Digite uma senha.');return;}btn.disabled=true;const t=btn.textContent;btn.textContent='Aguarde...';try{if(modo==='criar'){await createUserWithEmailAndPassword(auth,email,senha);try{ if(window.mvSignup) mvSignup('email'); }catch(_){}try{await sendEmailVerification(auth.currentUser);}catch(_){}try{await registrarIndicacao(auth.currentUser.uid);}catch(_){}garantirTrial();try{auth.currentUser.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({idToken:tk,uid:auth.currentUser.uid},(window.mvAtrib?window.mvAtrib():{})))}).catch(function(){});}).catch(function(){});}catch(_){}}else await signInWithEmailAndPassword(auth,email,senha);}catch(e){erroAcesso(msgErro(e.code));btn.disabled=false;btn.textContent=t;}};
   // Login/cadastro com Google. Mesmo botão serve pros dois casos: o Firebase cria a conta
   // na hora se for a 1ª vez (getAdditionalUserInfo().isNewUser diz se foi criação agora).
   // E-mail do Google já vem verificado -> não passa pelo bannerVerif nem pelo fluxo de sendEmailVerification.
@@ -2989,7 +3005,7 @@ window.mvAbaInicial=function(){
     if(!info||!info.isNewUser)return;
     try{ if(window.mvSignup) mvSignup('google'); }catch(_){}
     try{await registrarIndicacao(cred.user.uid);}catch(_){}
-    try{const tk=await cred.user.getIdToken();fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:cred.user.uid})}).catch(function(){});}catch(_){}
+    try{const tk=await cred.user.getIdToken();fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({idToken:tk,uid:cred.user.uid},(window.mvAtrib?window.mvAtrib():{})))}).catch(function(){});}catch(_){}
   }
   // Navegadores embutidos (Instagram/Facebook/TikTok/WhatsApp) bloqueiam ou o Google recusa o popup —
   // nesse caso já manda direto pro redirect. O retorno do redirect é tratado abaixo, no boot do módulo.
@@ -3117,7 +3133,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-16-preco1';
+  window.MOVIKI_VERSAO='2026-09-16-atrib1';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5581,7 +5597,7 @@ window.mvAbaInicial=function(){
       try{await sendEmailVerification(user);}catch(_){}
       try{await registrarIndicacao(user.uid);}catch(_){}
       garantirTrial();
-      try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:user.uid})}).catch(function(){});}).catch(function(){}); }catch(_){}
+      try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({idToken:tk,uid:user.uid},(window.mvAtrib?window.mvAtrib():{})))}).catch(function(){});}).catch(function(){}); }catch(_){}
       await setDoc(doc(db,'slugs',slug),{uid:user.uid});
       const dadosNegocio={
         nome:nome,status:'fechado',promocoes:[],eventos:[],fotos:[],
@@ -5733,7 +5749,7 @@ window.mvAbaInicial=function(){
     if(!livre) return {ok:false,erro:'O apelido "'+base+'" já está em uso. Escolha outro.'};
     try{await registrarIndicacao(user.uid);}catch(_){}
     garantirTrial();
-    try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:user.uid})}).catch(function(){});}).catch(function(){}); }catch(_){}
+    try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({idToken:tk,uid:user.uid},(window.mvAtrib?window.mvAtrib():{})))}).catch(function(){});}).catch(function(){}); }catch(_){}
     await setDoc(doc(db,'slugs',slug),{uid:user.uid});
     const dadosNegocio={
       nome:nome,status:'fechado',promocoes:[],eventos:[],fotos:[],
