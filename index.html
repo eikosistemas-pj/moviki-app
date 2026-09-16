@@ -3031,7 +3031,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-16-aulafinanceiro';
+  window.MOVIKI_VERSAO='2026-09-16-trilha';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -6894,7 +6894,57 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      so fecha a aula se os 90% percorridos ja estiverem la.
      ===================================================================== */
   var PERCORRIDO = {};                 /* chave da aula -> { s:{}, n:segundos } */
-  function trilha(k){ if(!PERCORRIDO[k]) PERCORRIDO[k]={ s:{}, n:0 }; return PERCORRIDO[k]; }
+
+  /* ---------- 16/09/2026: O PERCURSO PASSA A SOBREVIVER AO RECARREGAMENTO ----
+     Ate aqui o percurso vivia SO em memoria. Quem assistia metade da aula,
+     fechava o painel e voltava depois recomecava do zero — e a aula nunca
+     ficava verde, por mais vezes que a pessoa assistisse. Numa aula de dois
+     minutos e meio, e a diferenca entre concluir e desistir. Foi exatamente
+     este o relato de 16/09: "assisti e nao fica verde".
+     Agora o percurso fica no proprio navegador, por conta e por aula. NAO vai
+     para o banco: medicao e local; o que o banco guarda continua sendo a aula
+     CONCLUIDA. Falha calado — aba anonima, armazenamento cheio ou bloqueado
+     volta ao comportamento antigo, sem quebrar nada. */
+  function donoTrilha(){
+    var P = window.__mvParceiroTut || window.__mvLojistaTut;
+    return (P && P.uid) || 'anon';
+  }
+  function chaveTrilha(k){ return 'mvTrilha:' + donoTrilha() + ':' + k; }
+  function trilha(k){
+    if(!PERCORRIDO[k]){
+      var t = { s:{}, n:0 };
+      try{
+        var cru = window.localStorage && localStorage.getItem(chaveTrilha(k));
+        var l = cru ? JSON.parse(cru) : null;
+        if(l && l.length){
+          for(var i=0;i<l.length;i++){
+            var x = Number(l[i]);
+            if(x >= 0 && !t.s[x]){ t.s[x] = 1; t.n++; }
+          }
+        }
+      }catch(_){}
+      PERCORRIDO[k] = t;
+    }
+    return PERCORRIDO[k];
+  }
+  function guardarTrilha(k){
+    try{
+      var t = PERCORRIDO[k]; if(!t || !window.localStorage) return;
+      var l = [];
+      for(var s in t.s){ if(t.s[s]) l.push(Number(s)); }
+      localStorage.setItem(chaveTrilha(k), JSON.stringify(l));
+    }catch(_){}
+  }
+  /* Fechar a aba ou recarregar tambem tem que guardar: e o caminho mais comum
+     de sair no meio de uma aula. `pagehide` pega os dois, e ainda funciona no
+     iPhone, onde `beforeunload` nao dispara. */
+  try{
+    window.addEventListener('pagehide', function(){
+      try{ for(var k in PERCORRIDO){ if(PERCORRIDO[k] && PERCORRIDO[k].n) guardarTrilha(k); } }catch(_){}
+    });
+  }catch(_){}
+  /* aula fechada nao precisa mais de rascunho ocupando lugar */
+  function limparTrilha(k){ try{ if(window.localStorage) localStorage.removeItem(chaveTrilha(k)); }catch(_){} }
 
   function vigiar(f,v){
     carregarYT(function(){
@@ -6910,13 +6960,17 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       function montar(){
         try{
           var t = trilha(v.k), ultimo = -1, ultimoMs = 0, dur = 0;
-          function pararRelogio(){ try{ clearInterval(f.__t); }catch(_){} f.__t=null; }
+          f.__gravou = 0;
+          /* guarda o rascunho ao parar: sair da tela, trocar de aula ou fechar o
+             painel nao pode mais custar o que ja foi assistido */
+          function pararRelogio(){ try{ clearInterval(f.__t); }catch(_){} f.__t=null; try{ guardarTrilha(v.k); }catch(_){} }
           /* fecha a aula SO com 90% percorridos - uma gravacao por iframe */
           function fechar(){
             if(f.__contado) return true;
             if(!(dur > 0 && t.n >= dur * 0.9)) return false;
             f.__contado = 1;
             pararRelogio();
+            limparTrilha(v.k);
             marcar(v.k);
             return true;
           }
@@ -6941,6 +6995,11 @@ window.MOVIKI_TUTORIAIS = { modulos: [
                 } else if(s >= 0 && !t.s[s]){ t.s[s] = 1; t.n++; }
                 ultimo = tt;
                 andamento(v.k, dur);
+                /* grava de 2 em 2 segundos, nao a cada tique. Nao e so
+                   economia: gravar raro demais perde o comeco da aula de quem
+                   sai rapido, e e justamente esse pedaco que faz a pessoa
+                   achar que "nao contou nada". */
+                if((++f.__gravou % 4) === 0) guardarTrilha(v.k);
                 fechar();
               }catch(_){}
             }, 500);
@@ -7263,7 +7322,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   var BOASVINDAS=['mod-boasvindas','mod-inicio','mod-desempenho','mod-diaadia'];
   var ABRIR_SEMPRE=true;    /* true: reabre a cada entrada ate concluir */
 
-  var au=null, auPal=null, auLista=null, auPTit=null, auPSub=null, auCont=null, auBar=null, auFim=null, auH=null;
+  var au=null, auPal=null, auLista=null, auPTit=null, auPSub=null, auCont=null, auBar=null, auFim=null, auMed=null, auMedPct=null, auMedTxt=null, auMedBar=null, auH=null;
   var auTocando=null, LOCAIS=[];
   var VISTO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>';
 
@@ -7342,7 +7401,30 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     auPal=document.createElement('div'); auPal.className='mvTutVideo';
     auPTit=document.createElement('div'); auPTit.className='mvAuPalcoTit';
     auPSub=document.createElement('div'); auPSub.className='mvAuPalcoSub';
-    esq.appendChild(auPal); esq.appendChild(auPTit); esq.appendChild(auPSub);
+    /* ---------- 16/09/2026: O MEDIDOR FICOU VISIVEL ----------
+       A trava existe para a pessoa assistir a aula inteira, e isso so e justo
+       se ela ENXERGA o quanto falta. A linha de texto miuda embaixo do video
+       nao dava conta: parecia defeito, nao regra. Agora e uma faixa com barra,
+       porcentagem grande e a meta escrita. Estilo inline de proposito — e um
+       bloco novo num arquivo disputado, e nao vale uma classe na folha. */
+    auMed=document.createElement('div');
+    auMed.style.cssText='margin:10px 2px 0;padding:11px 13px;border-radius:14px;'+
+      'background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.30)';
+    var auMedTopo=document.createElement('div');
+    auMedTopo.style.cssText='display:flex;align-items:baseline;gap:8px;margin-bottom:8px';
+    auMedPct=document.createElement('b');
+    auMedPct.style.cssText='font-size:22px;font-weight:800;letter-spacing:-.02em;color:#00D4FF';
+    auMedTxt=document.createElement('span');
+    auMedTxt.style.cssText='font-size:12.5px;line-height:1.35;color:#c6d8ee';
+    auMedTopo.appendChild(auMedPct); auMedTopo.appendChild(auMedTxt);
+    var auMedFora=document.createElement('span');
+    auMedFora.style.cssText='display:block;height:9px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden';
+    auMedBar=document.createElement('i');
+    auMedBar.style.cssText='display:block;height:100%;width:0%;border-radius:999px;'+
+      'background:linear-gradient(90deg,#00D4FF,#0066FF);transition:width .35s ease';
+    auMedFora.appendChild(auMedBar);
+    auMed.appendChild(auMedTopo); auMed.appendChild(auMedFora);
+    esq.appendChild(auPal); esq.appendChild(auPTit); esq.appendChild(auPSub); esq.appendChild(auMed);
     auLista=document.createElement('div'); auLista.className='mvAuLista';
     grade.appendChild(esq); grade.appendChild(auLista);
     var pe=document.createElement('div'); pe.className='mvAuPe';
@@ -7374,25 +7456,64 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     }
     auPTit.textContent=v.t;
     auPSub.textContent = v.d ? ('Duração ' + v.d) : '';
+    medidor(pctDoPalco(v.k), bvFeitas().indexOf(v.k) > -1 ? 1 : 0);
     pintarAulas();
   }
   /* O lojista precisa VER o quanto ja assistiu - senao a trava do cursor vira
      "o sistema esta quebrado". Escreve no subtitulo do palco, sem tela nova. */
+  /* "2:23" -> 143, so para a barra do medidor. A medicao de verdade usa a
+     duracao que o proprio YouTube informa. */
+  function segsDe(d){
+    var m=/^(\d+):(\d{1,2})$/.exec(String(d||''));
+    return m ? (Number(m[1])*60 + Number(m[2])) : 0;
+  }
+  function pctDoPalco(k){
+    try{
+      var v=achar(k); if(!v) return 0;
+      var dur=segsDe(v.d); if(!dur) return 0;
+      var t=trilha(k); if(!t || !t.n) return 0;
+      return Math.min(99, Math.round(t.n / dur * 100));
+    }catch(_){ return 0; }
+  }
+  /* pinta a faixa do medidor. estado: 0 = assistindo, 1 = concluida,
+     2 = adiantou o video */
+  function medidor(pc, estado){
+    if(!auMed) return;
+    var verde = estado === 1, erro = estado === 2;
+    auMed.style.background = erro ? 'rgba(255,138,0,.10)' : (verde ? 'rgba(37,227,155,.10)' : 'rgba(0,212,255,.08)');
+    auMed.style.borderColor = erro ? 'rgba(255,138,0,.42)' : (verde ? 'rgba(37,227,155,.40)' : 'rgba(0,212,255,.30)');
+    auMedPct.style.color = erro ? '#ffb020' : (verde ? '#25e39b' : '#00D4FF');
+    auMedBar.style.background = verde ? '#25e39b' : 'linear-gradient(90deg,#00D4FF,#0066FF)';
+    auMedBar.style.width = Math.max(0, Math.min(100, pc)) + '%';
+    if(verde){
+      auMedPct.textContent = 'Aula concluída';
+      auMedTxt.textContent = 'Pode passar para a próxima.';
+    } else if(erro){
+      auMedPct.textContent = 'Não contou';
+      auMedTxt.textContent = 'Você adiantou o vídeo. Assista do ponto onde parou — só o que passa de verdade conta.';
+    } else {
+      auMedPct.textContent = 'Assistido ' + pc + '%';
+      auMedTxt.textContent = pc >= 90 ? 'Pronto, já conta. Pode seguir.'
+                                      : 'a aula fica verde quando chegar em 90%';
+    }
+  }
   function andamento(k, dur){
     try{
       if(!au || au.hidden || auTocando !== k || !auPSub) return;
       var v = achar(k); if(!v) return;
       var base = v.d ? ('Duração ' + v.d) : '';
-      if(bvFeitas().indexOf(k) > -1){ auPSub.textContent = base + ' · Assistida'; return; }
+      if(bvFeitas().indexOf(k) > -1){ auPSub.textContent = base + ' · Assistida'; medidor(100, 1); return; }
       if(!(dur > 0)) return;
       var pc = Math.min(100, Math.round(trilha(k).n / dur * 100));
       auPSub.textContent = base + ' · Assistido ' + pc + '%';
+      medidor(pc, 0);
     }catch(_){}
   }
   function adiantou(k){
     try{
       if(!au || au.hidden || auTocando !== k || !auPSub) return;
-      auPSub.textContent = 'Você adiantou o vídeo. Assista do começo para a aula contar.';
+      auPSub.textContent = 'Você adiantou o vídeo.';
+      medidor(pctDoPalco(k), 2);
     }catch(_){}
   }
   function pintarAulas(){
