@@ -1334,7 +1334,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-matfaixa';
+  window.MOVIKI_VERSAO = '2026-09-16-wafoto';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -5322,11 +5322,18 @@ function mvQR(texto){
   function compartilhar(b, rede, it, o, leg){
     var f = arquivoDe(o);
     if(!f || !navigator.canShare({ files:[f] })){ toast('Este celular não deixa enviar o arquivo direto. Use Baixar e poste pela galeria.'); return; }
-    /* Instagram e Facebook ignoram o texto que vai junto (e alguns somem da
-       lista quando ha texto): so o arquivo. WhatsApp leva a legenda junto. */
+    /* 16/09/2026 - NENHUMA REDE RECEBE TEXTO JUNTO COM O ARQUIVO.
+       Ate aqui o WhatsApp era excecao: ia `files` + `text`. O WhatsApp do
+       Android, recebendo os dois, DESCARTA O ARQUIVO e manda so o texto - e
+       aceita o compartilhamento, entao o `.then()` roda como sucesso e o
+       parceiro nunca fica sabendo. O sintoma, na conversa dele, e a legenda
+       sozinha, sem a arte. Conferido em 16/09 num print do proprio envio.
+       O fallback que existia embaixo so pegava quando o share REJEITAVA;
+       aqui ele nao rejeita.
+       A legenda ja foi para a area de transferencia no toque, antes daqui.
+       Texto o parceiro cola; imagem que nao foi, ele nao tem como colar. */
     var pacote = { files:[f] };
-    if(rede === 'wa' && leg) pacote.text = leg;
-    toast(rede === 'wa' ? 'Escolha o WhatsApp na lista.' : 'Escolha o ' + REDES[rede].nome + ' na lista. A legenda já está copiada: é só colar.', 7000);
+    toast('Escolha o ' + REDES[rede].nome + ' na lista. A legenda ja esta copiada: e so colar.', 7000);
     navigator.share(pacote).then(function(){
       desarmar(b); ev('postar_' + rede, it.id);
     }).catch(function(e){
@@ -5336,10 +5343,6 @@ function mvQR(texto){
            em maos; o proximo toque abre na hora. */
         b.classList.add('armado'); rotulo(b, 'Toque de novo'); b.disabled = false;
         toast('Pronto! Toque de novo em ' + REDES[rede].nome + '.');
-        return;
-      }
-      if(rede === 'wa' && pacote.text){
-        navigator.share({ files:[f] }).then(function(){ desarmar(b); ev('postar_' + rede, it.id); }).catch(function(){ desarmar(b); });
         return;
       }
       desarmar(b);
