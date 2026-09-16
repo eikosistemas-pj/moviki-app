@@ -3044,7 +3044,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-16-quadro';
+  window.MOVIKI_VERSAO='2026-09-16-cena';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -4599,6 +4599,10 @@ window.mvAbaInicial=function(){
     renderVideos();
     vdDizer('Vídeo do <b>'+(VD_NOME[inf.p]||'')+'</b> adicionado. Não esqueça de <b>Salvar tudo</b>.',false);
     toast('Vídeo adicionado. Não esqueça de Salvar.');
+    /* TikTok: tentamos a capa sozinhos, em segundo plano. Se vier, o cartão
+       já nasce com imagem e o lojista não precisa fazer nada. Se não vier,
+       ninguém fica sabendo — ele escolhe a capa na mão, como antes. */
+    if(inf.p==='tt') cvCapaAutoTikTok(inf.url,false);
   };
   window.removerVideo=function(i){
     _videos.splice(i,1); renderVideos();
@@ -4637,6 +4641,16 @@ window.mvAbaInicial=function(){
      Tudo acontece no aparelho: o video nunca sobe. Sai daqui so a imagem do
      quadro escolhido, no mesmo caminho das fotos. */
   var _cvUrlObj='';
+  /* NAVEGADOR DE DENTRO DO APLICATIVO -- achado em 16/09/2026, num teste real.
+     O lojista chega ao painel clicando no link que ele mesmo postou no
+     Instagram, e ai o painel abre no navegador EMBUTIDO do Instagram. Esse
+     navegador nao decodifica video local: a tela fica preta e o quadro nunca
+     vem. Nao adianta insistir — o caminho e avisar cedo e mandar abrir no
+     navegador de verdade. Vale para Instagram, Facebook e TikTok. */
+  function cvAppEmbutido(){
+    var u=String(navigator.userAgent||'');
+    return /Instagram|FBAN|FBAV|FB_IAB|Messenger|musical_ly|Bytedance|TikTok|Line\/|OKApp/i.test(u);
+  }
   function cvLimparVideo(){
     if(_cvUrlObj){ try{ URL.revokeObjectURL(_cvUrlObj); }catch(_){} _cvUrlObj=''; }
   }
@@ -4657,17 +4671,26 @@ window.mvAbaInicial=function(){
         '<b style="font-size:17px">Escolha a cena</b>'+
         '<button type="button" class="vdCapaBt" id="cqVoltar">Voltar</button></div>'+
       '<p style="font-size:12.5px;color:var(--mv-txt-3);line-height:1.5;margin:8px 0 10px">'+
-        'Arraste para achar o melhor quadro. O vídeo fica no seu aparelho — só a imagem escolhida é enviada.</p>'+
+        'Arraste para achar a melhor cena. O vídeo fica no seu aparelho — só a imagem escolhida é enviada.</p>'+
+      (cvAppEmbutido()
+        ? '<div style="background:rgba(255,138,0,.10);border:1px solid rgba(255,138,0,.40);border-radius:12px;padding:10px 12px;margin-bottom:10px;font-size:12.5px;line-height:1.5;color:#ffd9a3">'+
+          '<b>Você abriu o painel por dentro do Instagram.</b> Esse navegador não consegue abrir vídeo do celular. Abra <b>app.moviki.com.br no Chrome</b> para escolher a cena.</div>'
+        : '')+
       '<div style="position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:9/16;max-height:52vh;margin:0 auto">'+
         '<video id="cqVideo" playsinline muted preload="metadata" style="width:100%;height:100%;object-fit:contain;display:block"></video>'+
       '</div>'+
       '<input type="range" id="cqBarra" min="0" max="1000" value="0" step="1" style="width:100%;margin:12px 0 4px">'+
       '<div id="cqTempo" style="font-size:12px;color:var(--mv-txt-3);text-align:center">0:00</div>'+
-      '<button type="button" class="vdBtn" id="cqUsar" style="width:100%;margin-top:12px">Usar este quadro</button>'+
+      '<button type="button" class="vdBtn" id="cqUsar" style="width:100%;margin-top:12px">Usar esta cena como capa</button>'+
       '<div id="cqErro" style="font-size:12.5px;color:#ff9b9b;margin-top:10px;display:none"></div>';
     var vd=cx.querySelector('#cqVideo'), barra=cx.querySelector('#cqBarra'),
         tempo=cx.querySelector('#cqTempo'), usar=cx.querySelector('#cqUsar'),
         erro=cx.querySelector('#cqErro');
+    /* nasce travado: so libera quando o navegador provar que consegue
+       decodificar (largura e duracao de verdade). Botao ativo sobre tela preta
+       e o que faz a pessoa achar que o sistema esta quebrado. */
+    usar.disabled=true;
+    var cqPronto=false;
     cx.querySelector('#cqVoltar').onclick=function(){ cvLimparVideo(); window.abrirCapaVideo(_cvIdx); };
     function mmss(t){ var m=Math.floor(t/60), sg=Math.floor(t%60); return m+':'+(sg<10?'0':'')+sg; }
     function falhou(txt){
@@ -4675,17 +4698,42 @@ window.mvAbaInicial=function(){
       erro.textContent=txt; erro.style.display='';
       if(usar) usar.disabled=true;
     }
-    vd.onloadedmetadata=function(){
-      /* videoWidth zero = o navegador abriu o arquivo mas nao sabe decodificar
-         (acontece com .mov HEVC de iPhone em navegador de Android). Sem isso o
-         lojista ficaria arrastando uma tela preta sem entender. */
-      if(!(vd.videoWidth>0) || !(vd.duration>0)){
-        falhou('Este vídeo não abre aqui no navegador. Use "Enviar uma imagem" ou escolha uma foto da galeria.');
-        return;
-      }
-      vd.currentTime=Math.min(0.1, vd.duration/2);
-    };
-    vd.onerror=function(){ falhou('Não consegui abrir este vídeo. Use "Enviar uma imagem" ou uma foto da galeria.'); };
+    /* O metadado nem sempre chega no primeiro evento: em varios navegadores de
+       celular a largura so aparece depois que o video toca um instante. Por
+       isso a liberacao escuta TRES eventos e ainda dá um empurrao com play
+       mudo — em vez de desistir no primeiro `loadedmetadata` magro. */
+    function cqLiberar(){
+      if(cqPronto) return;
+      if(!(vd.videoWidth>0) || !(vd.duration>0)) return;
+      cqPronto=true;
+      usar.disabled=false;
+      if(erro) erro.style.display='none';
+      try{ if(!(vd.currentTime>0)) vd.currentTime=Math.min(0.1, vd.duration/2); }catch(_){}
+    }
+    vd.onloadedmetadata=cqLiberar;
+    vd.onloadeddata=cqLiberar;
+    vd.oncanplay=cqLiberar;
+    vd.onerror=function(){ cqDesistir(); };
+    /* empurrao: tocar mudo por um instante forca a decodificacao do primeiro
+       quadro em navegador de celular. Silencioso: se o play for recusado, o
+       relogio de desistencia resolve. */
+    setTimeout(function(){
+      if(cqPronto) return;
+      try{
+        vd.muted=true;
+        var pr=vd.play();
+        if(pr && pr.then) pr.then(function(){
+          setTimeout(function(){ try{ vd.pause(); }catch(_){} cqLiberar(); }, 250);
+        }).catch(function(){});
+      }catch(_){}
+    }, 400);
+    function cqDesistir(){
+      if(cqPronto) return;
+      falhou(cvAppEmbutido()
+        ? 'Você está no navegador de dentro do Instagram, e ele não abre vídeo do celular. Abra app.moviki.com.br no Chrome (ou no Safari) para escolher a cena. Aqui dentro, use "Enviar uma imagem" ou uma foto da galeria.'
+        : 'Este vídeo não abriu aqui. Costuma ser o formato do arquivo (vídeo de iPhone em alta eficiência). Use "Enviar uma imagem" ou escolha uma foto da galeria.');
+    }
+    setTimeout(cqDesistir, 4500);
     vd.ontimeupdate=function(){ if(tempo&&vd.duration>0) tempo.textContent=mmss(vd.currentTime)+' de '+mmss(vd.duration); };
     barra.oninput=function(){
       if(!(vd.duration>0))return;
@@ -4701,13 +4749,44 @@ window.mvAbaInicial=function(){
         var cv=document.createElement('canvas'); cv.width=w; cv.height=h;
         cv.getContext('2d').drawImage(vd,0,0,w,h);
         var dataUrl=cv.toDataURL('image/jpeg',0.85);
-        cvSubirImagem(dataUrl, usar, 'Usar este quadro');
+        cvSubirImagem(dataUrl, usar, 'Usar esta cena como capa');
       }catch(e){
-        usar.disabled=false; usar.textContent='Usar este quadro';
-        falhou('Não consegui pegar o quadro. Tente outro ponto do vídeo.');
+        usar.disabled=false; usar.textContent='Usar esta cena como capa';
+        falhou('Não consegui pegar a cena. Tente outro ponto do vídeo.');
       }
     };
     vd.src=_cvUrlObj;
+  }
+  /* =====================================================================
+     CAPA DO TIKTOK, SOZINHA -- 16/09/2026
+     O TikTok ainda mantem um endereco publico que devolve a miniatura do
+     video sem pedir chave nenhuma. O robo busca la, re-hospeda no nosso
+     Storage (o endereco que o TikTok devolve e assinado e vence) e manda a
+     URL final de volta. Aqui so guardamos.
+     Regras desta funcao:
+       - nunca trava a tela: roda em segundo plano;
+       - nunca mostra erro quando foi automatica: capa e conforto, nao tarefa;
+       - acha o video pela URL, nao pelo indice -- entre o pedido e a resposta
+         o lojista pode ter removido ou reordenado a lista;
+       - nao passa por cima de capa que o lojista escolheu.
+     ===================================================================== */
+  async function cvCapaAutoTikTok(url, naMao){
+    try{
+      var idToken=await usuarioAtual.getIdToken();
+      var resp=await fetch(ROBO+'/api/video-capa',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({idToken:idToken,url:url})});
+      var j=await resp.json().catch(function(){return {};});
+      /* mesma peneira do caminho manual: so entra endereco que a pagina
+         publica sabe mostrar. */
+      if(!(j&&j.ok&&j.url&&fotoUrlOk(j.url))) return false;
+      var achou=false;
+      _videos.forEach(function(v){ if(v.url===url && !v.capa){ v.capa=j.url; achou=true; } });
+      if(!achou) return false;
+      renderVideos();
+      vdDizer('Peguei a capa desse vídeo no <b>TikTok</b>. Não esqueça de <b>Salvar tudo</b>.',false);
+      toast('Capa do TikTok pronta. Não esqueça de Salvar.');
+      return true;
+    }catch(e){ return false; }
   }
   /* um caminho so para subir imagem, venha ela de arquivo ou do quadro */
   async function cvSubirImagem(dataUrl, botao, rotulo){
@@ -4749,12 +4828,19 @@ window.mvAbaInicial=function(){
       h+='<p style="font-size:12.5px;color:var(--mv-txt-3);margin-top:12px">Você ainda não tem fotos na galeria — envie uma imagem abaixo.</p>';
     }
     h+='<div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:14px">'+
-         '<button type="button" class="vdBtn" id="cvQuadro" style="flex:1 1 100%">Pegar um quadro do vídeo</button>'+
+         (inf.p==='tt'
+           ? '<button type="button" class="vdBtn" id="cvTT" style="flex:1 1 100%">Buscar a capa no TikTok</button>'
+           : '')+
+         '<button type="button" class="vdBtn" id="cvQuadro" style="flex:1 1 100%">Escolher a cena do vídeo do meu celular</button>'+
          '<button type="button" class="vdCapaBt" id="cvEnviar" style="flex:1 1 auto">Enviar uma imagem</button>'+
          (v.capa?'<button type="button" class="vdCapaBt" id="cvTirar">Tirar a capa</button>':'')+
        '</div>'+
+       (cvAppEmbutido()
+         ? '<p style="font-size:11.5px;line-height:1.5;margin:10px 0 0;color:#ffd9a3">'+
+           '<b>Atenção:</b> você abriu o painel por dentro do Instagram. Para escolher a cena do vídeo, abra <b>app.moviki.com.br no Chrome</b>.</p>'
+         : '')+
        '<p style="font-size:11.5px;color:var(--mv-txt-3);line-height:1.5;margin:10px 0 0">'+
-         '<b>Pegar um quadro do vídeo</b> abre o vídeo que está no seu celular e deixa você escolher a cena, arrastando. O vídeo <b>não</b> é enviado: sai daqui só a imagem do quadro escolhido.<br>'+
+         'O botão de cima abre o <b>arquivo do vídeo que está no seu aparelho</b> — o mesmo que você postou — e deixa você escolher a cena arrastando. O vídeo <b>não</b> é enviado: sai daqui só a imagem da cena escolhida.<br>'+
          'A capa fica em pé, no formato do cartão. Foto deitada aparece cortada nas laterais.</p>';
     cx.innerHTML=h;
     f.appendChild(cx); document.body.appendChild(f); _cvFundo=f;
@@ -4763,6 +4849,19 @@ window.mvAbaInicial=function(){
     Array.prototype.forEach.call(cx.querySelectorAll('[data-cvf]'),function(b){
       b.onclick=function(){ cvAplicar(_galeria[Number(b.getAttribute('data-cvf'))]||''); };
     });
+    var btt=cx.querySelector('#cvTT');
+    if(btt) btt.onclick=async function(){
+      btt.disabled=true; btt.textContent='Buscando…';
+      /* na mão o lojista PEDIU: aqui o silêncio seria grosseria. Se a capa
+         antiga existir, ela sai para a nova poder entrar. */
+      var guardada=_videos[_cvIdx]?_videos[_cvIdx].capa:'';
+      if(_videos[_cvIdx]) _videos[_cvIdx].capa='';
+      var ok=await cvCapaAutoTikTok(_videos[_cvIdx]?_videos[_cvIdx].url:'', true);
+      if(ok){ cvFechar(); return; }
+      if(_videos[_cvIdx]) _videos[_cvIdx].capa=guardada;
+      btt.disabled=false; btt.textContent='Buscar a capa no TikTok';
+      toast('O TikTok não devolveu a capa desse vídeo. Escolha uma aqui embaixo.',true);
+    };
     cx.querySelector('#cvQuadro').onclick=function(){ cvAbrirQuadro(); };
     cx.querySelector('#cvEnviar').onclick=function(){
       var inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
