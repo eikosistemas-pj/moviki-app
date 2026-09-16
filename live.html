@@ -85,6 +85,64 @@ svg{display:block}
 .msgErro{background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.4);color:#ffd0d0;border-radius:11px;padding:10px 12px;font-size:13px;margin-top:10px}
 .msgOk{background:rgba(37,227,155,.1);border:1px solid rgba(37,227,155,.35);color:#c9ffe6;border-radius:11px;padding:10px 12px;font-size:13px;margin-top:10px}
 
+
+/* ================= MODO IMERSIVO (16/09/2026) =================
+   No celular, ao vivo, a camera passava a ocupar 44vh para o chat e as nove
+   abas caberem embaixo: o lojista ficava com menos da metade da tela para
+   MOSTRAR O PRODUTO, que e a unica coisa que a live precisa fazer bem.
+   Agora o video ocupa a tela inteira e as ferramentas viram uma folha que
+   sobe de baixo, em meia tela, e desce ao tocar no video.
+   Vale SO em tela pequena e SO no ar (body.noAr): antes de entrar ao vivo o
+   lojista precisa do titulo e do botao, e no desktop o layout de duas colunas
+   ja aproveita bem o espaco. Nenhum handler muda — so a apresentacao. */
+@media(max-width:899px){
+  body.imersivo{overflow:hidden}
+  body.imersivo .lvTopo,body.imersivo #boxAntes{display:none}
+  body.imersivo .lvCam{position:fixed;inset:0;width:100%;max-width:none;height:100dvh;max-height:none;aspect-ratio:auto;border-radius:0;margin:0;z-index:5}
+  body.imersivo .lv{padding:0}
+  /* a barra de camera sobe para nao ficar embaixo das ferramentas */
+  body.imersivo .camBase{bottom:calc(env(safe-area-inset-bottom) + 86px)}
+  body.imersivo .camTopo{top:calc(env(safe-area-inset-top) + 10px)}
+
+  /* barra de ferramentas por cima do video */
+  body.imersivo .abas{position:fixed;left:0;right:0;bottom:0;z-index:30;margin:0;
+    padding:10px 12px calc(env(safe-area-inset-bottom) + 10px);
+    background:linear-gradient(to top,rgba(4,10,20,.94),rgba(4,10,20,.55) 70%,transparent);
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  body.imersivo .aba{background:rgba(0,0,0,.5);border-color:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(4px)}
+  body.imersivo .aba.on{background:var(--mv-grad);color:#001428;border-color:transparent}
+
+  /* encerrar/avisar viram botoes flutuantes no topo */
+  body.imersivo #boxDurante{position:fixed;top:calc(env(safe-area-inset-top) + 8px);right:10px;left:auto;z-index:31;width:auto;margin:0}
+  body.imersivo #boxDurante>div{gap:6px}
+  body.imersivo #boxDurante .btnSec{padding:7px 10px;font-size:12.5px;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}
+  body.imersivo #boxDurante p{display:none}
+
+  /* a folha: as ferramentas que existiam na coluna da direita */
+  body.imersivo #lvFolha{position:fixed;left:0;right:0;bottom:0;z-index:40;
+    height:min(64dvh,620px);background:var(--mv-bg-2);border-radius:18px 18px 0 0;
+    border-top:1px solid var(--mv-linha);box-shadow:0 -12px 40px rgba(0,0,0,.6);
+    transform:translateY(102%);transition:transform .24s ease;overflow:hidden;
+    display:flex;flex-direction:column}
+  body.imersivo #lvFolha.aberta{transform:none}
+  body.imersivo #lvFolhaPuxador{flex:0 0 auto;padding:8px 0 4px;text-align:center;cursor:grab}
+  body.imersivo #lvFolhaPuxador i{display:inline-block;width:44px;height:4px;border-radius:999px;background:var(--mv-linha-forte)}
+  body.imersivo #lvFolhaCorpo{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:4px 14px calc(env(safe-area-inset-bottom) + 76px)}
+  body.imersivo #lvVeu{position:fixed;inset:0;z-index:35;background:transparent}
+  body.imersivo #lvVeu.escondido{display:none}
+}
+/* Fora do imersivo a folha nao existe visualmente: `display:contents` faz o
+   envelope sumir do layout e os paineis ficarem exatamente onde sempre
+   estiveram — desktop e o "antes de entrar ao vivo" nao mudam em nada. */
+#lvFolha,#lvFolhaCorpo{display:contents}
+#lvFolhaPuxador,#lvVeu{display:none}
+@media(max-width:899px){
+  body.imersivo #lvFolha{display:flex}
+  body.imersivo #lvFolhaCorpo{display:block}
+  body.imersivo #lvFolhaPuxador{display:block}
+}
+
 /* ---- abas ---- */
 .abas{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px;scrollbar-width:none}
 .abas::-webkit-scrollbar{display:none}
@@ -270,6 +328,12 @@ svg{display:block}
     <!-- coluna das ferramentas -->
     <div>
       <div class="abas" id="abas"></div>
+      <div id="lvVeu" class="escondido"></div>
+      <!-- No imersivo isto vira a folha que sobe; fora dele e `display:contents`,
+           ou seja, some do layout e os paineis seguem exatamente onde estavam. -->
+      <div id="lvFolha">
+      <div id="lvFolhaPuxador" aria-hidden="true"><i></i></div>
+      <div id="lvFolhaCorpo">
 
       <div class="painelAba on" data-aba="produtos">
         <div class="card">
@@ -428,6 +492,8 @@ svg{display:block}
           <a class="btnOuro" href="/?plano=enterprise&periodo=mensal">Conhecer o Enterprise</a>
         </div>
       </div>
+      </div><!-- /lvFolhaCorpo -->
+      </div><!-- /lvFolha -->
     </div>
   </div>
 </div>
@@ -470,7 +536,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-16-recebi';
+  window.MOVIKI_VERSAO='2026-09-16-imersivo';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -613,12 +679,45 @@ svg{display:block}
       b.innerHTML=esc(t)+(e&&!ent()?CAD:'')+(k==='fila'?' <b id="nFila" class="escondido">0</b>':'')+(k==='pix'?' <b id="nPix" class="escondido">0</b>':'');
       b.onclick=()=>{abrirAba(k,e&&!ent());if(k==='pix'&&ent())pixAbrir();};box.appendChild(b);});
   }
+  /* ---------- modo imersivo: folha que sobe (16/09/2026) ---------- */
+  const imersivo=()=>document.body.classList.contains('imersivo');
+  let abaAberta='';
+  function folhaAbrir(){const f=el('lvFolha');if(!f)return;f.classList.add('aberta');el('lvVeu').classList.remove('escondido');}
+  function folhaFechar(){const f=el('lvFolha');if(!f)return;f.classList.remove('aberta');el('lvVeu').classList.add('escondido');abaAberta='';
+    document.querySelectorAll('.aba').forEach(b=>b.classList.remove('on'));
+    /* som e video de aula nao ficam tocando atras da folha fechada */
+    try{ if(window.MvLiveAulas) MvLiveAulas.pararTodos(true); }catch(_){}}
+  /* toque no video fecha, como no padrao das lives */
+  document.addEventListener('click',(e)=>{
+    if(!imersivo())return;
+    const f=el('lvFolha'); if(!f||!f.classList.contains('aberta'))return;
+    if(e.target.closest('#lvFolha')||e.target.closest('.abas'))return;
+    folhaFechar();
+  },true);
+  document.addEventListener('keydown',(e)=>{if(e.key==='Escape'&&imersivo())folhaFechar();});
+  /* arrastar o puxador para baixo fecha */
+  (function(){
+    const pux=el('lvFolhaPuxador'); if(!pux)return; let y0=null;
+    pux.addEventListener('touchstart',(e)=>{y0=e.touches[0].clientY;},{passive:true});
+    pux.addEventListener('touchmove',(e)=>{if(y0!==null&&e.touches[0].clientY-y0>50){y0=null;folhaFechar();}},{passive:true});
+    pux.addEventListener('touchend',()=>{y0=null;},{passive:true});
+  })();
+  /* o imersivo liga e desliga junto com o "no ar" */
+  function aplicarImersivo(ligado){
+    document.body.classList.toggle('imersivo',!!ligado);
+    if(!ligado)folhaFechar();
+  }
+
   function abrirAba(k,trava){
+    /* no imersivo, tocar na aba ja aberta fecha a folha (toggle) */
+    if(imersivo()&&abaAberta===k){folhaFechar();return;}
+    abaAberta=imersivo()?k:'';
     document.querySelectorAll('.aba').forEach(b=>b.classList.toggle('on',b.dataset.k===k));
     document.querySelectorAll('.painelAba').forEach(p=>p.classList.toggle('on',trava?p.dataset.aba==='trava':p.dataset.aba===k));
     /* o iframe da aba que saiu de cena continuaria tocando por tras da nova */
     try{ if(window.MvLiveAulas) MvLiveAulas.pararTodos(true); }catch(_){}
     if(trava)ev('live_trava_enterprise',{aba:k});
+    if(imersivo())folhaAbrir();
   }
 
   /* ================= aulas da live =================
@@ -822,7 +921,7 @@ svg{display:block}
     try{pc=await conectar(whipAtual);}catch(e){
       el('erroIniciar').textContent='A conexão de vídeo falhou. Troque de Wi-Fi para 4G (ou o contrário) e tente de novo.';el('erroIniciar').classList.remove('escondido');b.disabled=false;b.lastChild.textContent='Entrar ao vivo';return;}
     vigiar(pc);
-    noAr=true; inicioMs=Date.now(); pico=0; msgs=[]; document.body.classList.add('noAr');
+    noAr=true; inicioMs=Date.now(); pico=0; msgs=[]; document.body.classList.add('noAr'); aplicarImersivo(true);
     /* CONTEUDO da live. `ativa`, `whep` e `pulso` NAO entram mais aqui: quem
        diz que a live esta no ar, e de onde vem o video, e o servidor
        (estado/liveSessao). Os campos antigos sao zerados de proposito para que
@@ -897,7 +996,7 @@ svg{display:block}
   el('btnEncerrar').onclick=()=>{if(confirm('Encerrar a live agora?'))encerrar();};
   async function encerrar(){
     if(encerrando)return; encerrando=true;
-    noAr=false; clearInterval(tickT);clearInterval(pulsoT);clearInterval(contaT); document.body.classList.remove('noAr');
+    noAr=false; clearInterval(tickT);clearInterval(pulsoT);clearInterval(contaT); document.body.classList.remove('noAr'); aplicarImersivo(false);
     if(gravador&&gravador.state==='recording')gravador.stop();
     try{pc&&pc.close();}catch(_){} pc=null;
     try{wake&&wake.release();}catch(_){}
@@ -913,7 +1012,7 @@ svg{display:block}
   /* Encerrada pelo dono do Moviki: para camera e transmissao, nao grava nada
      (o estado ja foi gravado pelo dono) e explica o motivo. */
   function encerradaPeloMoviki(motivo){
-    noAr=false; clearInterval(tickT);clearInterval(pulsoT);clearInterval(contaT); document.body.classList.remove('noAr');
+    noAr=false; clearInterval(tickT);clearInterval(pulsoT);clearInterval(contaT); document.body.classList.remove('noAr'); aplicarImersivo(false);
     try{pc&&pc.close();}catch(_){} pc=null; try{wake&&wake.release();}catch(_){}
     if(stream)stream.getTracks().forEach(t=>t.stop()); stream=null; el('prev').srcObject=null;
     el('pillVivo').classList.add('escondido'); el('pillOlho').classList.add('escondido'); aviso('');
