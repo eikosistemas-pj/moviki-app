@@ -1,5 +1,5 @@
 {
- "versao": "2026-09-16-qr",
+ "versao": "2026-09-16-caticones",
  "atualizado": "2026-09-16",
  "itens": [
   {
@@ -1184,62 +1184,74 @@
   {
    "id": "geral",
    "nome": "Para qualquer negócio",
-   "emoji": "📍"
+   "emoji": "📍",
+   "ico": "cat-geral.png"
   },
   {
    "id": "alimentacao",
    "nome": "Alimentação e bebidas",
-   "emoji": "🍔"
+   "emoji": "🍔",
+   "ico": "cat-alimentacao.png"
   },
   {
    "id": "moda",
    "nome": "Moda e acessórios",
-   "emoji": "👗"
+   "emoji": "👗",
+   "ico": "cat-moda.png"
   },
   {
    "id": "beleza",
    "nome": "Beleza e bem-estar",
-   "emoji": "💇"
+   "emoji": "💇",
+   "ico": "cat-beleza.png"
   },
   {
    "id": "naturais",
    "nome": "Naturais e saudáveis",
-   "emoji": "🌿"
+   "emoji": "🌿",
+   "ico": "cat-naturais.png"
   },
   {
    "id": "pet",
    "nome": "Pet",
-   "emoji": "🐾"
+   "emoji": "🐾",
+   "ico": "cat-pet.png"
   },
   {
    "id": "artesanato",
    "nome": "Artesanato",
-   "emoji": "🎨"
+   "emoji": "🎨",
+   "ico": "cat-artesanato.png"
   },
   {
    "id": "eletronicos",
    "nome": "Eletrônicos",
-   "emoji": "📱"
+   "emoji": "📱",
+   "ico": "cat-eletronicos.png"
   },
   {
    "id": "papelaria",
    "nome": "Papelaria e escolar",
-   "emoji": "📚"
+   "emoji": "📚",
+   "ico": "cat-papelaria.png"
   },
   {
    "id": "automotivo",
    "nome": "Carro e moto",
-   "emoji": "🏍️"
+   "emoji": "🏍️",
+   "ico": "cat-automotivo.png"
   },
   {
    "id": "servicos",
    "nome": "Serviços e reparos",
-   "emoji": "🔧"
+   "emoji": "🔧",
+   "ico": "cat-servicos.png"
   },
   {
    "id": "feira",
    "nome": "Feira, rua e delivery",
-   "emoji": "🛒"
+   "emoji": "🛒",
+   "ico": "cat-feira.png"
   }
  ]
 }
