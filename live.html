@@ -112,11 +112,19 @@ svg{display:block}
   body.imersivo .aba{background:rgba(0,0,0,.5);border-color:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(4px)}
   body.imersivo .aba.on{background:var(--mv-grad);color:#001428;border-color:transparent}
 
-  /* encerrar/avisar viram botoes flutuantes no topo */
-  body.imersivo #boxDurante{position:fixed;top:calc(env(safe-area-inset-top) + 8px);right:10px;left:auto;z-index:31;width:auto;margin:0}
-  body.imersivo #boxDurante>div{gap:6px}
-  body.imersivo #boxDurante .btnSec{padding:7px 10px;font-size:12.5px;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}
-  body.imersivo #boxDurante p{display:none}
+  /* Encerrar deixa de ser um retangulo com texto e vira o botao redondo de
+     parar, sozinho no topo. Avisar clientes desce para o dock, com o resto. */
+  body.imersivo #boxDurante{display:none}
+  #lvStop{position:fixed;top:calc(env(safe-area-inset-top) + 9px);right:10px;z-index:34;display:none;
+    width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.85);
+    background:var(--vivo);color:#fff;align-items:center;justify-content:center;
+    box-shadow:0 2px 12px rgba(0,0,0,.5)}
+  body.imersivo #lvStop{display:flex}
+  #lvStop i{display:block;width:15px;height:15px;border-radius:3px;background:#fff}
+  body.limpo #lvStop{opacity:.35}
+  /* contador de quem esta assistindo, grande o bastante para ler de relance */
+  body.imersivo .camTopo .pill{font-size:13px;padding:6px 11px;background:rgba(0,0,0,.45);backdrop-filter:blur(6px)}
+  body.imersivo .camTopo .pill.vivo{background:var(--vivo)}
 
   /* a folha: as ferramentas que existiam na coluna da direita */
   body.imersivo #lvFolha{position:fixed;left:0;right:0;bottom:0;z-index:40;
@@ -141,6 +149,57 @@ svg{display:block}
   body.imersivo #lvFolha{display:flex}
   body.imersivo #lvFolhaCorpo{display:block}
   body.imersivo #lvFolhaPuxador{display:block}
+}
+
+
+/* ---- imersivo v2: dock lateral, chat sobre o video, tela limpa ---- */
+@media(max-width:899px){
+  /* a barra de pilhas some do rodape: no imersivo ela vive DENTRO da folha,
+     como indice das ferramentas. Os atalhos do dia a dia ficam no dock. */
+  body.imersivo .abas{position:static;background:none;backdrop-filter:none;padding:2px 0 8px;margin:0}
+  body.imersivo #lvFolha .abas{position:sticky;top:0;z-index:2;background:var(--mv-bg-2);padding:6px 14px 8px}
+
+  /* dock lateral, como nas lives que o lojista ja conhece */
+  #lvDock{position:fixed;right:9px;bottom:calc(env(safe-area-inset-bottom) + 18px);z-index:30;
+    display:none;flex-direction:column;gap:13px;align-items:center}
+  body.imersivo #lvDock{display:flex}
+  .dockIt{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;padding:0}
+  .dockBt{position:relative;width:47px;height:47px;border-radius:50%;
+    background:rgba(0,0,0,.40);border:1px solid rgba(255,255,255,.16);color:#fff;
+    backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+    display:flex;align-items:center;justify-content:center}
+  .dockBt svg{width:22px;height:22px}
+  .dockBt .cad{position:absolute;right:-1px;bottom:-1px;width:15px;height:15px;background:var(--mv-bg);border-radius:50%;padding:2px}
+  .dockBt b{position:absolute;top:-3px;right:-3px;background:var(--vivo);color:#fff;border-radius:999px;font-size:10px;line-height:1;padding:3px 5px;font-weight:800}
+  .dockTxt{font-size:10px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.9);letter-spacing:.2px}
+
+  /* chat sobre o video, subindo — o que o lojista mais olha durante a live */
+  #lvChatF{position:fixed;left:10px;bottom:calc(env(safe-area-inset-bottom) + 18px);z-index:29;
+    display:none;width:min(60vw,268px);max-height:36dvh;overflow:hidden;
+    flex-direction:column;justify-content:flex-end;gap:5px;pointer-events:none;
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 26%);
+    mask-image:linear-gradient(to bottom,transparent 0,#000 26%)}
+  body.imersivo #lvChatF{display:flex}
+  .cfM{background:rgba(0,0,0,.42);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+    border-radius:13px;padding:6px 10px;font-size:12.5px;line-height:1.35;color:#fff;
+    word-break:break-word;animation:cfSobe .22s ease}
+  .cfM b{color:var(--mv-ciano);margin-right:5px;font-weight:700}
+  .cfM.quero b{color:var(--mv-alerta)}
+  .cfM.venda{background:rgba(37,227,155,.30)}
+  .cfM.venda b,.cfM.dono b{color:#fff}
+  .cfM.dono{background:rgba(0,102,255,.38)}
+  @keyframes cfSobe{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* TELA LIMPA: um toque no video abaixa tudo e deixa so o risquinho */
+  body.imersivo #lvDock,body.imersivo #lvChatF,body.imersivo #boxDurante,
+  body.imersivo .camBase,body.imersivo .camTopo{transition:opacity .18s ease,transform .18s ease}
+  body.limpo #lvDock,body.limpo #lvChatF,body.limpo #boxDurante,body.limpo .camBase{
+    opacity:0;pointer-events:none;transform:translateY(10px)}
+  body.limpo .camTopo{opacity:.35}
+  #lvPuxar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 10px);
+    z-index:33;display:none;padding:12px 30px;background:none;border:0}
+  body.imersivo.limpo #lvPuxar{display:block}
+  #lvPuxar i{display:block;width:58px;height:5px;border-radius:999px;background:rgba(255,255,255,.7);box-shadow:0 1px 6px rgba(0,0,0,.6)}
 }
 
 /* ---- abas ---- */
@@ -329,6 +388,13 @@ svg{display:block}
     <div>
       <div class="abas" id="abas"></div>
       <div id="lvVeu" class="escondido"></div>
+      <!-- dock lateral e chat flutuante: so aparecem no imersivo -->
+      <div id="lvDock"></div>
+      <div id="lvChatF"></div>
+      <button type="button" id="lvPuxar" aria-label="Mostrar controles"><i></i></button>
+      <!-- Encerrar. Nao duplica logica: aciona o botao real, que segue no
+           boxDurante com todo o fluxo de encerramento intacto. -->
+      <button type="button" id="lvStop" aria-label="Encerrar live" title="Encerrar live"><i></i></button>
       <!-- No imersivo isto vira a folha que sobe; fora dele e `display:contents`,
            ou seja, some do layout e os paineis seguem exatamente onde estavam. -->
       <div id="lvFolha">
@@ -536,7 +602,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-16-imersivo';
+  window.MOVIKI_VERSAO='2026-09-16-imersivo3';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -573,7 +639,8 @@ svg{display:block}
 
   let user=null,uid='',neg={},nivel=null,produtos=[],sacola=[],fixado=null,est={};
   let filaAtual=[];
-  function contarFila(){const nf=el('nFila');if(!nf)return;const abertos=filaAtual.filter(m=>!feitos[m.id]).length;nf.textContent=abertos;nf.classList.toggle('escondido',!abertos||!ent());}
+  function contarFila(){const abertos=filaAtual.filter(m=>!feitos[m.id]).length;
+    [el('nFila'),el('dkFila')].forEach(nf=>{if(!nf)return;nf.textContent=abertos;nf.classList.toggle('escondido',!abertos||!ent());});}
   let stream=null,modoCam='user',pc=null,noAr=false,inicioMs=0,tickT=null,pulsoT=null,contaT=null,chatDes=null,wake=null;
   let pico=0,assistindo=0,msgs=[],encerrando=false;
   const refLive=()=>doc(db,'negocios',uid,'estado','live');
@@ -690,9 +757,16 @@ svg{display:block}
   /* toque no video fecha, como no padrao das lives */
   document.addEventListener('click',(e)=>{
     if(!imersivo())return;
-    const f=el('lvFolha'); if(!f||!f.classList.contains('aberta'))return;
-    if(e.target.closest('#lvFolha')||e.target.closest('.abas'))return;
-    folhaFechar();
+    const f=el('lvFolha');
+    if(f&&f.classList.contains('aberta')){
+      if(e.target.closest('#lvFolha'))return;
+      folhaFechar(); return;
+    }
+    /* toque no VIDEO abaixa tudo e deixa so o risquinho. Toque em botao,
+       dock, chat ou aviso de pedido nao conta como toque na tela. */
+    if(e.target.closest('#lvDock')||e.target.closest('#lvPuxar')||e.target.closest('#boxDurante')
+      ||e.target.closest('.camBase')||e.target.closest('#pedAviso')||e.target.closest('button')||e.target.closest('a'))return;
+    if(e.target.closest('.lvCam')||e.target.id==='prev')limpo(!document.body.classList.contains('limpo'));
   },true);
   document.addEventListener('keydown',(e)=>{if(e.key==='Escape'&&imersivo())folhaFechar();});
   /* arrastar o puxador para baixo fecha */
@@ -702,10 +776,76 @@ svg{display:block}
     pux.addEventListener('touchmove',(e)=>{if(y0!==null&&e.touches[0].clientY-y0>50){y0=null;folhaFechar();}},{passive:true});
     pux.addEventListener('touchend',()=>{y0=null;},{passive:true});
   })();
+  /* ---------- dock lateral ---------- */
+  /* Atalhos do dia a dia. As nove abas continuam existindo: elas viram o
+     indice no topo da folha, que o botao "Mais" abre. Barra unica no rodape
+     com nove pilulas obrigava a arrastar de lado no meio da transmissao. */
+  const IC={
+    produtos:'<path d="M3 9l1-5h16l1 5"/><path d="M4 9v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9"/><path d="M9 13h6"/>',
+    oferta:'<path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/>',
+    cupom:'<path d="M4 8V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 8v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-8z"/><path d="M12 6v2M12 11v2M12 16v2"/>',
+    fila:'<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.5"/><circle cx="4.5" cy="12" r="1.5"/><circle cx="4.5" cy="18" r="1.5"/>',
+    chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/>',
+    mais:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>'
+  };
+  const DOCK=[['produtos','Produtos'],['oferta','Oferta',1],['cupom','Cupom',1],['fila','Fila',1],['chat','Chat']];
+  function montarDock(){
+    const d=el('lvDock'); if(!d)return; d.innerHTML='';
+    DOCK.forEach(([k,rot,e])=>{
+      const b=document.createElement('button'); b.type='button'; b.className='dockIt'; b.dataset.k=k;
+      const trava=e&&!ent();
+      b.innerHTML='<span class="dockBt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+IC[k]+'</svg>'+
+        (trava?CAD:'')+(k==='fila'?'<b id="dkFila" class="escondido">0</b>':'')+'</span><span class="dockTxt">'+esc(rot)+'</span>';
+      b.onclick=(ev_)=>{ev_.stopPropagation();abrirAba(k,trava);};
+      d.appendChild(b);
+    });
+    /* Avisar clientes: mesmo botao de sempre, acionado daqui. */
+    const av=document.createElement('button'); av.type='button'; av.className='dockIt';
+    av.innerHTML='<span class="dockBt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></span><span class="dockTxt">Avisar</span>';
+    av.onclick=(ev_)=>{ev_.stopPropagation();const b=el('btnAvisar');if(b)b.click();};
+    d.appendChild(av);
+    const m=document.createElement('button'); m.type='button'; m.className='dockIt';
+    m.innerHTML='<span class="dockBt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'+IC.mais+'</svg></span><span class="dockTxt">Mais</span>';
+    m.onclick=(ev_)=>{ev_.stopPropagation();folhaAbrir();};
+    d.appendChild(m);
+  }
+
+  el('lvStop').addEventListener('click',(e)=>{e.stopPropagation();const b=el('btnEncerrar');if(b)b.click();});
+
+  /* ---------- tela limpa ---------- */
+  function limpo(l){document.body.classList.toggle('limpo',!!l);}
+  el('lvPuxar').addEventListener('click',(e)=>{e.stopPropagation();limpo(false);});
+  (function(){const pux=el('lvPuxar');let y0=null;
+    pux.addEventListener('touchstart',e=>{y0=e.touches[0].clientY;},{passive:true});
+    pux.addEventListener('touchmove',e=>{if(y0!==null&&y0-e.touches[0].clientY>30){y0=null;limpo(false);}},{passive:true});})();
+
+  /* ---------- chat sobre o video ---------- */
+  function pintarChatFlutuante(){
+    const c=el('lvChatF'); if(!c||!imersivo())return;
+    c.innerHTML='';
+    /* msgs vem em ordem decrescente; as 7 ultimas, a mais nova embaixo */
+    msgs.slice(0,7).reverse().forEach(m=>{
+      const x=document.createElement('div');
+      x.className='cfM'+(m.tipo==='quero'?' quero':'')+(m.tipo==='dono'?' dono':'')+(m.tipo==='venda'?' venda':'');
+      x.innerHTML='<b>'+esc(m.nome)+'</b>'+(m.tipo==='quero'?'quer: ':'')+(m.tipo==='venda'?'comprou ':'')+esc(m.texto);
+      c.appendChild(x);
+    });
+  }
+
   /* o imersivo liga e desliga junto com o "no ar" */
   function aplicarImersivo(ligado){
     document.body.classList.toggle('imersivo',!!ligado);
-    if(!ligado)folhaFechar();
+    if(ligado){
+      montarDock();
+      /* a barra de pilulas passa a morar dentro da folha */
+      const ab=el('abas'), f=el('lvFolha'), cp=el('lvFolhaCorpo');
+      if(ab&&f&&cp&&ab.parentNode!==f)f.insertBefore(ab,cp);
+      pintarChatFlutuante();
+    }else{
+      limpo(false); folhaFechar();
+      const ab=el('abas'), v=el('lvVeu');
+      if(ab&&v&&ab.nextSibling!==v)v.parentNode.insertBefore(ab,v);
+    }
   }
 
   function abrirAba(k,trava){
@@ -1095,6 +1235,7 @@ svg{display:block}
         x.innerHTML='<div class="t"><b>'+esc(m.nome)+'</b>'+(m.tipo==='quero'?'quer: ':'')+(m.tipo==='venda'?'comprou ':'')+esc(m.texto)+'</div><button type="button" class="x" title="Apagar">×</button>';
         x.querySelector('.x').onclick=()=>deleteDoc(doc(db,'negocios',uid,'livechat',m.id)).catch(()=>toast('Não apagou.'));
         box.appendChild(x);});
+      pintarChatFlutuante();
       /* fila (Enterprise): ordem de CHEGADA, a mais antiga no topo */
       const q2=msgs.filter(m=>m.tipo==='quero').reverse();
       const f=el('filaLista'); f.innerHTML='';
