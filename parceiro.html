@@ -1334,7 +1334,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-wafoto';
+  window.MOVIKI_VERSAO = '2026-09-16-caticones';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -4766,6 +4766,15 @@ function mvQR(texto){
   .matCats button{font-size:12.5px;padding:8px 11px}
   .matCats button .n{font-size:10.5px}}
 .matCats button .n{font-size:11px;font-weight:600;opacity:.65;padding-left:1px}
+/* 16/09/2026 - ICONE 3D NA FAIXA DE CATEGORIA.
+   A faixa nasceu com emoji. Emoji e desenhado pelo sistema: muda em cada
+   aparelho e some em Windows antigo, entao a mesma faixa aparecia
+   diferente para cada parceiro. Agora vem um PNG 3D de icones/cat-<id>.png,
+   no mesmo estilo dos icones do painel, e o emoji fica de reserva
+   escondido: se o PNG nao carregar, o onerror mostra o emoji e a faixa
+   continua legivel. Nenhuma das duas coisas depende da outra. */
+.matCats button .matCatIco{width:19px;height:19px;flex:0 0 auto;object-fit:contain;display:block}
+@media(max-width:620px){.matCats button .matCatIco{width:17px;height:17px}}
 .matCats button.on{border-color:transparent;background:var(--mv-grad);color:#04121f}
 .matCats button.on .n{opacity:.75}
 .matGrade{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -5013,7 +5022,7 @@ function mvQR(texto){
     var tem = {};
     CAT.itens.forEach(function(it){ if(it && it.categoria) tem[it.categoria] = (tem[it.categoria] || 0) + 1; });
     var out = [];
-    CAT.cats.forEach(function(c){ if(tem[c.id]) out.push({ id:c.id, nome:c.nome, emoji:c.emoji || '', n:tem[c.id] }); });
+    CAT.cats.forEach(function(c){ if(tem[c.id]) out.push({ id:c.id, nome:c.nome, emoji:c.emoji || '', ico:c.ico || '', n:tem[c.id] }); });
     return out;
   }
   function daCateg(){
@@ -5035,8 +5044,17 @@ function mvQR(texto){
         }
         var hc = '';
         cs.forEach(function(c){
+          /* icone 3D na frente e o emoji escondido logo atras, de reserva:
+             se o PNG faltar, o onerror troca um pelo outro (16/09/2026) */
+          var ico = c.ico
+            ? '<img class="matCatIco" src="icones/' + esc(c.ico) + '" alt="" loading="lazy" ' +
+              'onerror="this.hidden=true;if(this.nextElementSibling)this.nextElementSibling.hidden=false">'
+            : '';
+          var emj = c.emoji
+            ? '<span class="matCatEmj"' + (c.ico ? ' hidden' : '') + '>' + esc(c.emoji) + '</span>'
+            : '';
           hc += '<button type="button" data-matcat="' + esc(c.id) + '" class="' + (CATEG === c.id ? 'on' : '') + '">' +
-                (c.emoji ? '<span>' + esc(c.emoji) + '</span>' : '') + esc(c.nome) +
+                ico + emj + esc(c.nome) +
                 '<span class="n">' + c.n + '</span></button>';
         });
         bc.innerHTML = hc;
