@@ -3119,7 +3119,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-16-videoitens3';
+  window.MOVIKI_VERSAO='2026-09-16-videoitens4';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -4962,7 +4962,7 @@ window.mvAbaInicial=function(){
     }else{
       h+='<div class="piPe">'+
            '<p class="piAviso">Item <b>sem preço</b> não pode ser vendido pelo site — por isso aparece apagado.</p>'+
-           '<button type="button" class="vdBtn piSalvar" id="piSalvar">Salvar e fechar</button>'+
+           '<button type="button" class="vdBtn piSalvar" id="piSalvar">Salvar</button>'+
          '</div>';
     }
     cx.innerHTML=h;
@@ -4981,10 +4981,23 @@ window.mvAbaInicial=function(){
        troca de aba e escreve o motivo na tela. Com a janela por cima, o lojista
        levaria "nao salvou" sem nunca ver o porque. */
     var bs=cx.querySelector('#piSalvar');
-    if(bs) bs.onclick=function(){
+    if(bs) bs.onclick=async function(){
+      var rot=bs.textContent;
       bs.disabled=true; bs.textContent='Salvando…';
-      piFechar(); renderVideos();
-      try{ window.salvar(); }catch(_){ toast('Não consegui salvar. Use o botão Salvar tudo.',true); }
+      try{ await window.salvar(); }catch(_){}
+      /* O salvar escreve o resultado no aviso do painel. Deu certo: a janela
+         FICA ABERTA e o botao confirma ali mesmo -- o lojista continua
+         marcando sem perder o lugar.
+         Recusou (negocio sem nome, apelido em uso, endereco nao confirmado no
+         mapa): ele troca de aba e escreve o motivo ATRAS da janela, entao a
+         janela fecha sozinha. Sem isso o lojista levaria "nao salvou" sem ver
+         o porque. */
+      var deuCerto = avisoP && String(avisoP.className||'').indexOf('ok') >= 0;
+      renderVideos();
+      if(!deuCerto){ piFechar(); return; }
+      if(!bs.isConnected)return;
+      bs.textContent='✓ Salvo';
+      setTimeout(function(){ if(bs&&bs.isConnected){ bs.disabled=false; bs.textContent=rot; } },2000);
     };
     Array.prototype.forEach.call(cx.querySelectorAll('[data-pi]'),function(b){
       b.onclick=function(){
