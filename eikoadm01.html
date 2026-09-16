@@ -1063,6 +1063,18 @@ table.mvTab td b{font-weight:700}
             <div id="lvAsaasLista"><div class="vazio">Nenhuma subconta ainda.</div></div>
           </div>
 
+          <div class="cd" style="margin-top:14px" id="lvConsumoCard">
+            <div class="cdTopo"><div><div class="cdTit">Consumo de vídeo do mês</div><div class="cdSub">Minutos <b>entregues</b> pelo Cloudflare Stream, medidos na fonte. O preço é por minuto entregue (US$&nbsp;1 por 1.000), ou seja <b>espectadores × duração</b> — o Cloudflare não tem limite de gasto próprio, só aviso. O teto abaixo é a parede de verdade: atingido, nenhuma live nova começa até o mês virar.</div></div><span class="cdChip" id="lvConsChip">—</span></div>
+            <div id="lvConsResumo" class="vazio" style="margin:8px 0">Carregando…</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px">
+              <label style="font-size:12.5px;color:var(--mv-txt-3)">Teto do mês, em minutos entregues</label>
+              <input id="lvConsTeto" type="number" min="0" step="1000" style="width:140px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="0 = sem teto">
+              <button type="button" class="btnMini" id="lvConsSalvar">Salvar teto</button>
+              <button type="button" class="btnMini" id="lvConsMedir">Medir agora</button>
+            </div>
+            <p class="cdSub" style="margin-top:8px">Zero ou vazio = sem teto, igual à lista do beta vazia. Se a medição falhar, a live <b>continua começando</b>: derrubar a transmissão de todo mundo porque uma API de relatório caiu seria pior que o risco de conta. Para parar tudo na hora, use a chave-mestra abaixo.</p>
+          </div>
+
           <div class="cd" style="margin-top:14px" id="lvMestraCard">
             <div class="cdTopo"><div><div class="cdTit">Chave-mestra das lives</div><div class="cdSub">Desliga TODA transmissão do Moviki de uma vez, na hora, sem subir arquivo e sem mexer em variável de ambiente. Quem está no ar cai, quem tentar entrar recebe aviso de manutenção e nenhuma cobrança nova nasce. Use em incidente, manutenção ou problema no Cloudflare.</div></div><span class="cdChip" id="lvMestraChip">—</span></div>
             <button type="button" class="btnMini" id="lvMestraBtn" style="margin-top:8px">Carregando…</button>
@@ -1341,7 +1353,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-b2b10';
+  window.MOVIKI_VERSAO = '2026-09-16-consumo';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -3772,6 +3784,7 @@ table.mvTab td b{font-weight:700}
   async function livesAbrir(){
     livesOuvir();
     lvNoArLigar(); lvPuxarNoAr();
+    lvMedirConsumo(false);
     await lvCarregarHist();
   }
   async function lvCarregarHist(){
@@ -3779,7 +3792,7 @@ table.mvTab td b{font-weight:700}
     try{const s=await getDocs(query(collection(db,'lives'),where('inicioMs','>=',desde),orderBy('inicioMs','desc'),limit(400)));LV_HIST=[];s.forEach(d=>LV_HIST.push(Object.assign({id:d.id},d.data())));}catch(e){LV_HIST=[];}
     try{const s=await getDocs(query(collection(db,'pedidos'),where('dia','>=',diaSP(desde))));LV_PED=[];s.forEach(d=>LV_PED.push(Object.assign({id:d.id},d.data())));}catch(e){LV_PED=[];}
     try{const s=await getDocs(collection(db,'live_bloqueios'));LV_BLOQ=[];s.forEach(d=>LV_BLOQ.push(Object.assign({uid:d.id},d.data())));}catch(e){LV_BLOQ=[];}
-    try{const t=await getDoc(doc(db,'configuracoes','liveTermos'));const d=t.exists()?(t.data()||{}):{};const ex=Array.isArray(d.extras)?d.extras:[];MV_TERMOS_EXTRAS=ex;el('lvTermos').value=ex.join('\n');txt('lvTermChip',ex.length+' extras');lvPintarMestra(d.liveDesligada===true);LV_BETA=Array.isArray(d.liveBeta)?d.liveBeta.filter(function(x){return typeof x==='string';}):[];lvPintarBeta();}catch(e){txt('lvTermChip','—');txt('lvMestraChip','—');}
+    try{const t=await getDoc(doc(db,'configuracoes','liveTermos'));const d=t.exists()?(t.data()||{}):{};const ex=Array.isArray(d.extras)?d.extras:[];MV_TERMOS_EXTRAS=ex;el('lvTermos').value=ex.join('\n');txt('lvTermChip',ex.length+' extras');lvPintarMestra(d.liveDesligada===true);LV_BETA=Array.isArray(d.liveBeta)?d.liveBeta.filter(function(x){return typeof x==='string';}):[];lvPintarBeta();var _ct=el('lvConsTeto');if(_ct&&document.activeElement!==_ct)_ct.value=Number(d.tetoMinutosMes||0)||'';}catch(e){txt('lvTermChip','—');txt('lvMestraChip','—');}
     try{const s=await getDocs(query(collection(db,'moderacao'),orderBy('criadoEm','desc'),limit(25)));const l=[];s.forEach(d=>l.push(d.data()));
       el('lvModLog').innerHTML=l.length?l.map(m=>'<div class="lvItem"><div class="t"><strong>'+esc(m.acao==='liberar'?'Liberado':'Encerrada'+(m.dias===0?'':' e bloqueado'))+'</strong><span class="cdChip">'+esc(m.nome||m.lojistaUid||'')+'</span></div><div class="s">'+esc(m.motivo||'')+(m.dias>0?' · '+m.dias+' dia(s)':(m.dias===-1?' · permanente':''))+' · '+(m.criadoEm&&m.criadoEm.toDate?m.criadoEm.toDate().toLocaleString('pt-BR'):'')+'</div></div>').join(''):'<div class="vazio">Nada registrado.</div>';
     }catch(e){}
@@ -3996,7 +4009,53 @@ table.mvTab td b{font-weight:700}
       }catch(e){msg.textContent=avisoCf+avisoSessao+'Falhou ao gravar: '+(e&&e.code||'erro')+'. Confira se as regras v24 estão publicadas.';b.disabled=false;}
     };
   }
-  el('lvRecarregar').addEventListener('click',()=>lvCarregarHist());
+  /* ---------- consumo de video do mes (16/09/2026) ----------
+     Quem mede e o moviki/api/live.js, que fala com a analytics do Cloudflare
+     (streamMinutesViewedAdaptiveGroups) com cache de 15 min por instancia.
+     O token precisa de Account Analytics alem de Stream Editar — sem isso a
+     resposta volta com erro 'sem_permissao' e o texto abaixo diz o que fazer. */
+  var LV_CONS=null;
+  async function lvMedirConsumo(agora){
+    const cx=el('lvConsResumo'); if(!cx)return;
+    cx.textContent='Medindo…';
+    try{
+      const tk=await USER.getIdToken();
+      const r=await (await fetch(LV_API,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},
+        body:JSON.stringify({idToken:tk,acao:'adm_consumo',agora:agora===true})})).json();
+      if(!r||!r.ok){cx.innerHTML='<span class="lvAlerta">Não consegui medir ('+esc((r&&r.erro)||'erro')+').</span>';txt('lvConsChip','—');return;}
+      LV_CONS=r; lvPintarConsumo();
+    }catch(e){cx.innerHTML='<span class="lvAlerta">Sem resposta do servidor de vídeo.</span>';txt('lvConsChip','—');}
+  }
+  function lvPintarConsumo(){
+    const r=LV_CONS, cx=el('lvConsResumo'); if(!r||!cx)return;
+    const teto=Number(r.teto||0), mes=Number(r.mes||0), sem=Number(r.semana||0);
+    const usd=Number(r.custoUsd||0);
+    const pct=teto>0?Math.round(mes/teto*100):0;
+    const campo=el('lvConsTeto'); if(campo&&document.activeElement!==campo)campo.value=teto||'';
+    txt('lvConsChip',teto>0?(pct+'% do teto'):'sem teto');
+    const chip=el('lvConsChip'); if(chip)chip.style.color=teto>0?(pct>=90?'#ff6b6b':(pct>=70?'#ffc107':'')):'';
+    var aviso='';
+    if(r.erro==='sem_permissao')aviso='<div class="lvAlerta" style="display:block;margin-top:8px">O token do Cloudflare não tem permissão de <b>Account Analytics</b>. No painel do Cloudflare, edite o token que já existe e acrescente essa permissão — sem ela o número acima não atualiza e o teto nunca dispara.</div>';
+    else if(r.erro==='config')aviso='<div class="lvAlerta" style="display:block;margin-top:8px">As variáveis CF_ACCOUNT_ID / CF_STREAM_TOKEN não estão no projeto <b>moviki</b> da Vercel.</div>';
+    else if(r.erro)aviso='<div class="lvAlerta" style="display:block;margin-top:8px">A medição falhou ('+esc(r.erro)+'). O número abaixo é o da última leitura que deu certo.</div>';
+    else if(teto>0&&mes>=teto)aviso='<div class="lvAlerta" style="display:block;margin-top:8px"><b>Teto atingido.</b> Nenhuma live nova está começando. Aumente o teto aqui ou espere o mês virar.</div>';
+    const quando=r.medidoEm?new Date(Number(r.medidoEm)).toLocaleTimeString('pt-BR'):'—';
+    cx.classList.remove('vazio');
+    cx.innerHTML='<div class="lvItem"><div class="t"><strong>'+mes.toLocaleString('pt-BR')+' min entregues no mês</strong>'+
+      '<span class="cdChip">US$ '+usd.toFixed(2)+'</span>'+
+      (teto>0?'<span class="cdChip">teto '+teto.toLocaleString('pt-BR')+'</span>':'<span class="lvAlerta">sem teto</span>')+'</div>'+
+      '<div class="s">'+sem.toLocaleString('pt-BR')+' min nos últimos 7 dias · medido às '+quando+' (a medição vale 15 min)</div></div>'+aviso;
+  }
+  el('lvConsMedir').addEventListener('click',()=>lvMedirConsumo(true));
+  el('lvConsSalvar').addEventListener('click',async()=>{
+    const v=Math.max(0,Math.min(100000000,parseInt(el('lvConsTeto').value||'0',10)||0));
+    try{await setDoc(doc(db,'configuracoes','liveTermos'),{tetoMinutosMes:v,atualizadoEm:serverTimestamp()},{merge:true});
+      if(LV_CONS){LV_CONS.teto=v;lvPintarConsumo();}
+      alert(v>0?('Teto salvo: '+v.toLocaleString('pt-BR')+' minutos entregues no mês. Vale na hora, sem subir arquivo.'):'Teto removido. Nenhuma live será barrada por consumo.');}
+    catch(e){alert('Não salvou: '+(e&&e.code||'erro'));}
+  });
+
+  el('lvRecarregar').addEventListener('click',()=>{lvCarregarHist();lvMedirConsumo(false);});
   el('lvTermSalvar').addEventListener('click',async()=>{
     const l=el('lvTermos').value.split('\n').map(x=>x.replace(/\s+/g,' ').trim().toLowerCase()).filter(x=>x.length>=3).slice(0,300);
     try{await setDoc(doc(db,'configuracoes','liveTermos'),{extras:Array.from(new Set(l)),atualizadoEm:serverTimestamp()},{merge:true});txt('lvTermChip',l.length+' extras');alert('Termos salvos. Já valem no estúdio, na live e no servidor.');}
