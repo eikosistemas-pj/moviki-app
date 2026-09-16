@@ -168,6 +168,16 @@ svg{display:block}
 .ped .l2{color:var(--mv-txt-3);margin-top:3px}
 .ped .l3{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .cm.venda{background:rgba(37,227,155,.16)}
+/* AVISO DE PAGAMENTO AVISADO (16/09/2026). No modo chave Pix do lojista nao
+   existe gateway: o pedido so anda quando ele confirma. Numa live ele esta com
+   a camera na mao — se isso viver so dentro de uma aba, ele nao ve e o cliente
+   espera. Por isso fica por cima de tudo, com o valor grande. */
+#pedAviso{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:60;width:min(94vw,460px);background:linear-gradient(135deg,#0e1c30,#13263d);border:1px solid var(--mv-ok);border-radius:14px;padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+#pedAviso .paTopo{font-size:12px;color:var(--mv-txt-3);text-transform:uppercase;letter-spacing:.5px}
+#pedAviso .paValor{font-size:26px;font-weight:800;color:var(--mv-ok);line-height:1.15;margin:2px 0 2px}
+#pedAviso .paSub{font-size:13px;color:var(--mv-txt-2);margin-bottom:10px}
+#pedAviso .paBts{display:flex;gap:8px}
+#pedAviso .paBts button,#pedAviso .paBts a{flex:1;text-align:center;text-decoration:none}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:50;background:rgba(0,0,0,.88);color:#fff;border-radius:10px;padding:10px 14px;font-size:13.5px;max-width:90%;text-align:center}
 /* a faixa das aulas, na tela de antes da live */
 .lvTravaAulas{background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.45);border-radius:12px;padding:10px 12px;margin-top:10px;display:flex;flex-direction:column;gap:3px}
@@ -441,6 +451,16 @@ svg{display:block}
     <button type="button" class="btnSec" id="aceiteNao" style="width:100%;margin-top:8px">Agora não</button>
   </div>
 </div>
+<div id="pedAviso" class="escondido" role="status" aria-live="polite">
+  <div class="paTopo">Cliente avisou que pagou</div>
+  <div class="paValor" id="paValor">R$ 0,00</div>
+  <div class="paSub" id="paSub"></div>
+  <div class="paBts">
+    <button type="button" class="btnGrad" id="paRecebi">Recebi</button>
+    <a class="btnSec" id="paComp" target="_blank" rel="noopener" style="display:none">Ver comprovante</a>
+    <button type="button" class="btnSec" id="paDepois">Depois</button>
+  </div>
+</div>
 <div id="toast" class="escondido"></div>
 
 <script type="module">
@@ -450,7 +470,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-16-pixfinanceiro';
+  window.MOVIKI_VERSAO='2026-09-16-recebi';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -1156,7 +1176,9 @@ svg{display:block}
       l.sort((a,b)=>ms(b.criadoEm)-ms(a.criadoEm));
       const pagos=l.filter(x=>x.status==='pago'||x.status==='entregue');
       el('pxQtd').textContent=pagos.length; el('pxTotal').textContent=brl(pagos.reduce((t,x)=>t+Number(x.total||0),0));
-      const abertos=l.filter(x=>x.status==='pago').length, nb=el('nPix'); if(nb){nb.textContent=abertos;nb.classList.toggle('escondido',!abertos);}
+      const conferindo=l.filter(x=>x.status==='conferindo');
+      const abertos=l.filter(x=>x.status==='pago').length+conferindo.length, nb=el('nPix'); if(nb){nb.textContent=abertos;nb.classList.toggle('escondido',!abertos);}
+      pintarAvisoPedido(conferindo);
       if(pedVistos){pagos.forEach(x=>{if(!pedVistos.has(x.id+x.status)&&x.status==='pago'){toast('Pedido pago: '+((x.itens&&x.itens[0]&&x.itens[0].nome)||'')+' — '+brl(x.total));}});}
       pedVistos=new Set(l.map(x=>x.id+x.status));
       const box=el('pxPedidos'); box.innerHTML='';
@@ -1170,7 +1192,13 @@ svg{display:block}
           '<div class="l2">'+esc(c.nome||'')+' · #'+esc(x.id.slice(-6).toUpperCase())+' · '+(en.tipo==='entrega'?'Entrega: '+esc(en.detalhe||''):'Retirada no local')+'</div>'+
           '<div class="l3">'+(w&&x.status!=='aguardando'?'<a class="btnMini on" target="_blank" rel="noopener" href="https://wa.me/55'+w+'?text='+encodeURIComponent(msg)+'">WhatsApp do cliente</a>':'')+
           (x.status==='pago'?'<button type="button" class="btnMini" data-p="entregue">Marcar entregue</button>':'')+
-          (x.status==='aguardando'?'<button type="button" class="btnMini" data-p="conferir">Conferir pagamento</button><button type="button" class="btnMini perigo" data-p="cancelado">Cancelar</button>':'')+'</div>';
+          /* No modo chave Pix propria nao ha gateway: "Conferir pagamento"
+             nao tem a quem perguntar e sempre volta "ainda nao caiu". Quem
+             confirma e o lojista, olhando o extrato pelos centavos. */
+          (x.status==='conferindo'?'<button type="button" class="btnMini on" data-p="pago">Recebi — marcar pago</button><button type="button" class="btnMini perigo" data-p="cancelado">Cancelar</button>':'')+
+          (x.status==='aguardando'?(x.modo==='pix'
+              ?'<button type="button" class="btnMini" data-p="pago">Recebi — marcar pago</button><button type="button" class="btnMini perigo" data-p="cancelado">Cancelar</button>'
+              :'<button type="button" class="btnMini" data-p="conferir">Conferir pagamento</button><button type="button" class="btnMini perigo" data-p="cancelado">Cancelar</button>'):'')+'</div>';
         d.querySelectorAll('[data-p]').forEach(b=>b.onclick=async()=>{
           if(b.dataset.p==='cancelado'&&!confirm('Cancelar este Pix que ainda não foi pago?'))return;
           b.disabled=true; const r=await chamarRobo('loja_pedido',{pedidoId:x.id,status:b.dataset.p});
@@ -1181,6 +1209,33 @@ svg{display:block}
       });
     },()=>{});
   }
+  /* ---------- aviso de pagamento avisado, por cima da tela ---------- */
+  let paAdiados={};
+  function pintarAvisoPedido(lista){
+    const cx=el('pedAviso');
+    const alvo=(lista||[]).filter(x=>!paAdiados[x.id])[0];
+    if(!alvo){cx.classList.add('escondido');return;}
+    const it=(alvo.itens&&alvo.itens[0])||{}, c=alvo.comprador||{};
+    el('paValor').textContent=brl(alvo.total);
+    /* o valor EXATO e a prova: os centavos identificam este pedido no extrato */
+    el('paSub').textContent=(c.nome||'Cliente')+' · '+(it.qtd>1?it.qtd+'x ':'')+(it.nome||'')+' · #'+String(alvo.id).slice(-6).toUpperCase()+' — confira este valor exato no seu extrato.';
+    const lk=el('paComp');
+    if(alvo.comprovante){
+      lk.style.display='';
+      lk.onclick=async(e)=>{e.preventDefault();const r=await chamarRobo('loja_comprovante',{pedidoId:alvo.id});
+        if(r&&r.ok&&r.url)window.open(r.url,'_blank','noopener');else toast('Não abriu o comprovante.');};
+    } else lk.style.display='none';
+    el('paRecebi').onclick=async()=>{
+      const b=el('paRecebi'); b.disabled=true;
+      const r=await chamarRobo('loja_pedido',{pedidoId:alvo.id,status:'pago'});
+      b.disabled=false;
+      if(r&&r.ok){toast('Pedido marcado como pago.');cx.classList.add('escondido');}
+      else toast('Não mudou. Tente pela aba Receber no Pix.');
+    };
+    el('paDepois').onclick=()=>{paAdiados[alvo.id]=1;cx.classList.add('escondido');};
+    cx.classList.remove('escondido');
+  }
+
   /* ================= aceite das Regras da Live ================= */
   function abrirAceite(){el('aceiteChk').checked=false;el('aceiteOv').classList.remove('escondido');ev('live_aceite_aberto');}
   el('aceiteNao').onclick=()=>el('aceiteOv').classList.add('escondido');
