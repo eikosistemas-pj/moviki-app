@@ -1078,6 +1078,23 @@ table.mvTab td b{font-weight:700}
             <p class="cdSub" style="margin-top:8px">A conta da trava é <b>minutos medidos ≥ teto</b>. Com a medição em zero, nenhum teto dispara — e a linha "Próxima live" acima diz isso com todas as letras, para você não precisar testar às cegas. A medição vem da analytics do Cloudflare, que <b>não é tempo real</b>: este teto é uma parede de conta mensal, com atraso de minutos, não um freio de transmissão. Quem corta na hora é a chave-mestra.<br><br>O ciclo de faturamento do Cloudflare <b>não é o mês-calendário</b>: começa no dia em que a conta assinou. Veja em Manage account → Billing → Billable usage qual é o seu (hoje: <b>dia 12</b>) e ponha esse número aqui, senão a contagem fica fora de fase com a fatura. Zero ou vazio = sem teto, igual à lista do beta vazia. Se a medição falhar, a live <b>continua começando</b>: derrubar a transmissão de todo mundo porque uma API de relatório caiu seria pior que o risco de conta. Para parar tudo na hora, use a chave-mestra abaixo.</p>
           </div>
 
+          <div class="cd" style="margin-top:14px" id="lvPlanoCard">
+            <div class="cdTopo"><div><div class="cdTit">Teto de vídeo por plano</div><div class="cdSub">O teto acima é da <b>conta inteira</b>: protege a sua fatura e não protege os lojistas. Um lojista com público grande consome os 12.000 minutos sozinho e a live de <b>todos os outros</b> para — sem aviso e sem culpado. Estes tetos são por assinante, por ciclo, e contam <b>minutos entregues</b> (espectadores × duração), não duração da live.</div></div><span class="cdChip" id="lvPlanoChip">—</span></div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px">
+              <label style="font-size:12.5px;color:var(--mv-txt-3)">Premium</label>
+              <input id="lvTetoPremium" type="number" min="0" step="100" style="width:110px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="1500">
+              <label style="font-size:12.5px;color:var(--mv-txt-3)">Enterprise</label>
+              <input id="lvTetoEnterprise" type="number" min="0" step="100" style="width:110px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="5000">
+              <label style="font-size:12.5px;color:var(--mv-txt-3)">Teste grátis</label>
+              <input id="lvTetoTrial" type="number" min="0" step="50" style="width:110px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="300">
+              <button type="button" class="btnMini" id="lvPlanoSalvar">Salvar tetos</button>
+              <button type="button" class="btnMini" id="lvPlanoAtualizar">Atualizar consumo</button>
+            </div>
+            <p class="cdSub" style="margin-top:8px"><b>Vazio usa o padrão do código</b> (1.500 · 5.000 · 300). <b>Zero = sem teto</b> para aquele plano, igual à lista do beta vazia. Estes tetos valem na hora, sem subir arquivo — o servidor relê a configuração a cada 5 minutos.<br><br>A conta é <b>nossa</b>, não do Cloudflare: a analytics deles agrega por conta e a entrada de vídeo é recriada a cada live, então não dá para atribuir minuto a lojista por lá. A cada pulso (45 s) o servidor <b>conta</b> quem está assistindo e multiplica pelo tempo. Live sem ninguém assistindo não gasta teto. Atingido o teto, a live daquele lojista cai e ele recebe o aviso no estúdio — a de todos os outros continua.</p>
+            <div style="margin-top:12px"><div class="cdTit" style="font-size:14px">Consumo por lojista neste ciclo</div>
+            <div id="lvPlanoLista" class="vazio" style="margin-top:8px">Carregando…</div></div>
+          </div>
+
           <div class="cd" style="margin-top:14px" id="lvMestraCard">
             <div class="cdTopo"><div><div class="cdTit">Chave-mestra das lives</div><div class="cdSub">Desliga TODA transmissão do Moviki de uma vez, na hora, sem subir arquivo e sem mexer em variável de ambiente. Quem está no ar cai, quem tentar entrar recebe aviso de manutenção e nenhuma cobrança nova nasce. Use em incidente, manutenção ou problema no Cloudflare.</div></div><span class="cdChip" id="lvMestraChip">—</span></div>
             <button type="button" class="btnMini" id="lvMestraBtn" style="margin-top:8px">Carregando…</button>
@@ -1438,7 +1455,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-exclusao2';
+  window.MOVIKI_VERSAO = '2026-09-16-tetoplano';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -3880,6 +3897,7 @@ table.mvTab td b{font-weight:700}
     livesOuvir();
     lvNoArLigar(); lvPuxarNoAr();
     lvMedirConsumo(false);
+    lvPlanoCarregar();
     await lvCarregarHist();
   }
   async function lvCarregarHist(){
@@ -3887,7 +3905,7 @@ table.mvTab td b{font-weight:700}
     try{const s=await getDocs(query(collection(db,'lives'),where('inicioMs','>=',desde),orderBy('inicioMs','desc'),limit(400)));LV_HIST=[];s.forEach(d=>LV_HIST.push(Object.assign({id:d.id},d.data())));}catch(e){LV_HIST=[];}
     try{const s=await getDocs(query(collection(db,'pedidos'),where('dia','>=',diaSP(desde))));LV_PED=[];s.forEach(d=>LV_PED.push(Object.assign({id:d.id},d.data())));}catch(e){LV_PED=[];}
     try{const s=await getDocs(collection(db,'live_bloqueios'));LV_BLOQ=[];s.forEach(d=>LV_BLOQ.push(Object.assign({uid:d.id},d.data())));}catch(e){LV_BLOQ=[];}
-    try{const t=await getDoc(doc(db,'configuracoes','liveTermos'));const d=t.exists()?(t.data()||{}):{};const ex=Array.isArray(d.extras)?d.extras:[];MV_TERMOS_EXTRAS=ex;el('lvTermos').value=ex.join('\n');txt('lvTermChip',ex.length+' extras');lvPintarMestra(d.liveDesligada===true);LV_BETA=Array.isArray(d.liveBeta)?d.liveBeta.filter(function(x){return typeof x==='string';}):[];lvPintarBeta();var _ct=el('lvConsTeto');if(_ct&&document.activeElement!==_ct)_ct.value=Number(d.tetoMinutosMes||0)||'';var _cc=el('lvConsCiclo');if(_cc&&document.activeElement!==_cc)_cc.value=Number(d.cicloDia||1)||1;}catch(e){txt('lvTermChip','—');txt('lvMestraChip','—');}
+    try{const t=await getDoc(doc(db,'configuracoes','liveTermos'));const d=t.exists()?(t.data()||{}):{};const ex=Array.isArray(d.extras)?d.extras:[];MV_TERMOS_EXTRAS=ex;el('lvTermos').value=ex.join('\n');txt('lvTermChip',ex.length+' extras');lvPintarMestra(d.liveDesligada===true);LV_BETA=Array.isArray(d.liveBeta)?d.liveBeta.filter(function(x){return typeof x==='string';}):[];lvPintarBeta();var _ct=el('lvConsTeto');if(_ct&&document.activeElement!==_ct)_ct.value=Number(d.tetoMinutosMes||0)||'';var _cc=el('lvConsCiclo');if(_cc&&document.activeElement!==_cc)_cc.value=Number(d.cicloDia||1)||1;lvPlanoCampos(d);LV_CICLO_DIA=Number(d.cicloDia||1)||1;}catch(e){txt('lvTermChip','—');txt('lvMestraChip','—');}
     try{const s=await getDocs(query(collection(db,'moderacao'),orderBy('criadoEm','desc'),limit(25)));const l=[];s.forEach(d=>l.push(d.data()));
       el('lvModLog').innerHTML=l.length?l.map(m=>'<div class="lvItem"><div class="t"><strong>'+esc(m.acao==='liberar'?'Liberado':'Encerrada'+(m.dias===0?'':' e bloqueado'))+'</strong><span class="cdChip">'+esc(m.nome||m.lojistaUid||'')+'</span></div><div class="s">'+esc(m.motivo||'')+(m.dias>0?' · '+m.dias+' dia(s)':(m.dias===-1?' · permanente':''))+' · '+(m.criadoEm&&m.criadoEm.toDate?m.criadoEm.toDate().toLocaleString('pt-BR'):'')+'</div></div>').join(''):'<div class="vazio">Nada registrado.</div>';
     }catch(e){}
@@ -4161,6 +4179,86 @@ table.mvTab td b{font-weight:700}
       (teto>0?'<span class="cdChip">teto '+teto.toLocaleString('pt-BR')+'</span>':'<span class="lvAlerta">sem teto</span>')+'</div>'+
       '<div class="s">'+(desdeBr?'ciclo desde '+desdeBr+' · ':'')+sem.toLocaleString('pt-BR')+' min nos últimos 7 dias · medido às '+quando+' (a medição vale 15 min)</div></div>'+vered+aviso;
   }
+  /* ==========================================================
+     TETO DE VIDEO POR PLANO — 16/09/2026
+     O teto do card de cima e da CONTA. Estes sao por assinante, e o dado
+     vem de live_cota/{uid}, escrito pelo robo a cada pulso.
+     `cicloVideo` diferente do ciclo corrente = balde de outro periodo: nao
+     soma e nao aparece aqui. Sem isso o consumo do mes passado ficaria na
+     tela parecendo consumo de agora.
+     ========================================================== */
+  var LV_CICLO_DIA=1;
+  function lvCicloRotulo(){
+    var dia=Math.max(1,Math.min(28,Number(LV_CICLO_DIA)||1)), d=new Date();
+    var ano=d.getUTCFullYear(), mes=d.getUTCMonth();
+    if(d.getUTCDate()<dia){ mes-=1; if(mes<0){mes=11;ano-=1;} }
+    return ano+'-'+String(mes+1).padStart(2,'0');
+  }
+  function lvPlanoCampos(d){
+    d=d||{};
+    [['lvTetoPremium','tetoVideoPremium'],['lvTetoEnterprise','tetoVideoEnterprise'],['lvTetoTrial','tetoVideoTrial']]
+      .forEach(function(par){
+        var c=el(par[0]); if(!c||document.activeElement===c)return;
+        c.value=(d[par[1]]==null?'':String(Number(d[par[1]])||0));
+      });
+  }
+  async function lvPlanoCarregar(){
+    var cx=el('lvPlanoLista'); if(!cx)return;
+    var ciclo=lvCicloRotulo();
+    try{
+      var s=await getDocs(collection(db,'live_cota'));
+      var vp=(el('lvTetoPremium').value||'').trim();
+      var regua=(vp===''?1500:(parseInt(vp,10)||0));
+      var itens=[];
+      s.forEach(function(d){
+        var x=d.data()||{};
+        if(String(x.cicloVideo||'')!==ciclo)return;
+        var m=Number(x.minutosVideo)||0;
+        if(m<=0)return;
+        /* A tela nao sabe o plano de cada lojista sem mais uma leitura por
+           conta; usa o teto PREMIUM como regua da porcentagem, que e o menor
+           dos pagos — quem for Enterprise aparece adiantado, nunca atrasado.
+           Alerta que erra para o lado seguro vale mais que leitura paga. */
+        itens.push({uid:d.id,min:m,teto:regua});
+      });
+      itens.sort(function(a,b){return b.min-a.min;});
+      txt('lvPlanoChip',itens.length?(itens.length+(itens.length===1?' lojista':' lojistas')):'ciclo '+ciclo);
+      if(!itens.length){ cx.className='vazio'; cx.textContent='Ninguém consumiu minutos de vídeo no ciclo '+ciclo+' ainda.'; return; }
+      var total=itens.reduce(function(a,b){return a+b.min;},0);
+      cx.className='';
+      cx.innerHTML='<div class="s" style="margin-bottom:6px">Ciclo '+ciclo+' · '+Math.round(total).toLocaleString('pt-BR')+' min entregues no total · US$ '+(total/1000).toFixed(2)+'</div>'+
+        itens.map(function(i){
+          var pct=i.teto>0?Math.min(100,Math.round(i.min*100/i.teto)):0;
+          return '<div class="lvItem"><div class="t"><strong>'+esc(lvNome(i.uid))+'</strong>'+
+                 '<span class="cdChip">'+Math.round(i.min).toLocaleString('pt-BR')+' min</span>'+
+                 (pct>=90?'<span class="lvAlerta">'+pct+'% do teto do plano</span>':(pct>=60?'<span class="lvAlerta" style="opacity:.75">'+pct+'% do teto</span>':''))+
+                 '</div><div class="s">'+esc(i.uid)+'</div></div>';
+        }).join('');
+    }catch(e){
+      cx.className='vazio';
+      cx.textContent='Não consegui ler o consumo por lojista ('+((e&&e.code)||'erro')+'). A regra do Firestore precisa deixar o admin ler live_cota.';
+    }
+  }
+  el('lvPlanoAtualizar').addEventListener('click',lvPlanoCarregar);
+  el('lvPlanoSalvar').addEventListener('click',async()=>{
+    /* Campo VAZIO nao e zero: vazio devolve o padrao do codigo, zero desliga o
+       teto daquele plano. Sao coisas diferentes e a tela nao pode confundir as
+       duas — por isso o campo vazio APAGA a chave em vez de gravar 0. */
+    const ler=(id)=>{ const v=(el(id).value||'').trim(); return v===''?null:Math.max(0,Math.min(1000000,parseInt(v,10)||0)); };
+    const pr=ler('lvTetoPremium'), en=ler('lvTetoEnterprise'), tr=ler('lvTetoTrial');
+    const dados={atualizadoEm:serverTimestamp()};
+    dados.tetoVideoPremium    = (pr===null?deleteField():pr);
+    dados.tetoVideoEnterprise = (en===null?deleteField():en);
+    dados.tetoVideoTrial      = (tr===null?deleteField():tr);
+    try{
+      await setDoc(doc(db,'configuracoes','liveTermos'),dados,{merge:true});
+      alert('Tetos por plano salvos. Valem em até 5 minutos, sem subir arquivo.\n\n'+
+            'Premium: '+(pr===null?'padrão (1.500)':(pr===0?'sem teto':pr+' min'))+'\n'+
+            'Enterprise: '+(en===null?'padrão (5.000)':(en===0?'sem teto':en+' min'))+'\n'+
+            'Teste grátis: '+(tr===null?'padrão (300)':(tr===0?'sem teto':tr+' min')));
+    }catch(e){ alert('Não salvou: '+((e&&e.code)||'erro')); }
+  });
+
   el('lvConsMedir').addEventListener('click',()=>lvMedirConsumo(true));
   el('lvConsSalvar').addEventListener('click',async()=>{
     const v=Math.max(0,Math.min(100000000,parseInt(el('lvConsTeto').value||'0',10)||0));
