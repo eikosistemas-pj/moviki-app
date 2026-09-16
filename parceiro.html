@@ -1334,7 +1334,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-15-aulatrava';
+  window.MOVIKI_VERSAO = '2026-09-16-matfaixa';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -4740,12 +4740,32 @@ function mvQR(texto){
    visualmente mais forte que ele: o parceiro escolhe primeiro o ramo do
    lojista que ele vai prospectar, depois o formato do post. Rola na
    horizontal no celular, igual a faixa de tipo. */
-.matCats{display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;margin:12px 0 2px;scrollbar-width:none}
-.matCats::-webkit-scrollbar{display:none}
+/* 16/09/2026 - A FAIXA DE CATEGORIAS DEIXOU DE ESCONDER CATEGORIA.
+   Com 11 categorias ela rolava na horizontal com a barra escondida
+   (scrollbar-width:none): a ultima aparecia cortada na borda e NAO havia
+   pista nenhuma de que existia mais coisa para o lado. Quem procurava a
+   propria categoria concluia que ela nao existia.
+   Faixa que rola sem dizer que rola esconde conteudo.
+
+   No DESKTOP as 11 cabem em duas linhas: quebra e acabou.
+   No CELULAR duas linhas virariam SETE (294px de altura, um terco da
+   tela), entao ali ela continua rolando - mas com um esmaecido na borda
+   direita dizendo que tem mais. O esmaecido so aparece quando ha mesmo
+   o que rolar: a classe 'temMais' e posta em barras(), medindo. */
+.matCats{display:flex;flex-wrap:wrap;gap:8px;padding:2px 0 4px;margin:12px 0 2px}
+@media(max-width:620px){
+  .matCats{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .matCats::-webkit-scrollbar{display:none}
+  .matCats.temMais{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 38px),transparent);
+                           mask-image:linear-gradient(90deg,#000 calc(100% - 38px),transparent)}
+}
 .matCats button{flex:0 0 auto;border:1px solid var(--mv-linha);background:var(--mv-surf-2);color:var(--mv-txt-2);
   font-family:inherit;font-size:13.5px;font-weight:700;padding:9px 15px;border-radius:12px;cursor:pointer;
   display:flex;align-items:center;gap:7px;white-space:nowrap}
-.matCats button .n{font-size:11px;font-weight:600;opacity:.65}
+@media(max-width:620px){.matCats{gap:6px}
+  .matCats button{font-size:12.5px;padding:8px 11px}
+  .matCats button .n{font-size:10.5px}}
+.matCats button .n{font-size:11px;font-weight:600;opacity:.65;padding-left:1px}
 .matCats button.on{border-color:transparent;background:var(--mv-grad);color:#04121f}
 .matCats button.on .n{opacity:.75}
 .matGrade{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -5020,6 +5040,8 @@ function mvQR(texto){
                 '<span class="n">' + c.n + '</span></button>';
         });
         bc.innerHTML = hc;
+        /* mede DEPOIS de pintar: so esmaece se houver mesmo o que rolar */
+        try{ bc.classList.toggle('temMais', bc.scrollWidth > bc.clientWidth + 4); }catch(_){}
       }
     }
     var bf = el('matFiltros');
