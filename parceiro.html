@@ -1334,7 +1334,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-caticones';
+  window.MOVIKI_VERSAO = '2026-09-16-liveparc';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -3247,6 +3247,12 @@ window.MOVIKI_TUTORIAIS = { modulos: [
        de qualquer coisa sobre como divulgar. Ela tambem e o par da tela de
        aceite que fica na Divulgacao - a aula ensina, o aceite registra. */
     { k:'mod-parc-conduta',    t:'Como falar do Moviki sem prometer o que não pode', d:'2:29', id:'T5QdBjl9Y1k' } ]},
+  /* VENDA AO VIVO - 16/09/2026. Modulo SEM `sel`: nao existe secao de live no
+     painel do parceiro. Ela CONTA para a trava de proposito - e a aula que diz
+     o que nao pode ser prometido sobre a live, par exato da conduta. Enquanto
+     estiver sem `id` nao aparece em lugar nenhum e nao entra na conta. */
+  { n:'Venda ao vivo', v:[
+    { k:'mod-parc-live',       t:'A venda ao vivo: o que é e como falar dela',   d:'2:50', id:'' } ]},
   { n:'Começar', sel:'section[data-sec="visao"]', v:[
     { k:'mod-parc-comecar',    t:'Como funciona o Programa de Parceiros',        d:'0:28', id:'vWj5K8RdSdY' } ]},
   /* NIVEIS - 11/09/2026. Aula propria, embutida no FIM do card "Seu nivel"
@@ -3274,7 +3280,35 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   { n:'Meus dados', sel:'section[data-sec="dados"]', v:[
     { k:'mod-parc-dados',      t:'Seus dados e a sua chave Pix',                 d:'0:23', id:'mmXpzkWlm0A' } ]},
   { n:'Falar com o Vik', sel:'section[data-sec="mensagens"]', v:[
-    { k:'mod-parc-vik',        t:'Tirar dúvida com o Vik',                       d:'0:23', id:'YP6CTBUNbuQ' } ]}
+    { k:'mod-parc-vik',        t:'Tirar dúvida com o Vik',                       d:'0:23', id:'YP6CTBUNbuQ' } ]},
+  /* ===================== MODULO OPCIONAL - 16/09/2026 =====================
+     As catorze aulas do Modo Live que o LOJISTA assiste. Entram aqui para o
+     parceiro poder mostrar a ferramenta por dentro na hora da visita.
+     `opcional:true` e o que impede que elas virem imposto: a trava da
+     Divulgacao e o selo continuam contando SO os modulos obrigatorios. Sem
+     essa flag a trava saltaria de 13 para 27 aulas, em cima do parceiro novo.
+     Modulo sem `sel`: nada e embutido em secao nenhuma do painel.
+     FONTE DOS ids: `moviki-app/liveaulas.js`. Id trocado la TEM que ser
+     trocado aqui - sao dois catalogos apontando para os mesmos videos.
+     Este arquivo NAO carrega liveaulas.js de proposito: aquele script traz o
+     motor do estudio junto, e ele nao tem o que fazer no painel do parceiro.
+     ===================================================================== */
+  { n:'Conhecer o estúdio por dentro', opcional:true,
+    nota:'São as aulas que o lojista vê. Não trancam nada: assista se quiser mostrar o Moviki por dentro na hora da visita.', v:[
+    { k:'mod-live-abertura',   t:'Live no Moviki: o que é e como funciona',          d:'1:20', id:'1TqgHffAyYU' },
+    { k:'mod-live-regras',     t:'O que pode e o que não pode na live',              d:'1:04', id:'3WceM12RkWE' },
+    { k:'mod-live-primeira',   t:'Sua primeira live: título, câmera e entrar ao vivo', d:'1:16', id:'sngj1eUC7kU' },
+    { k:'mod-live-sacolinha',  t:'Sacolinha e produto em destaque',                  d:'0:55', id:'3Fsofzdj0u4' },
+    { k:'mod-live-chat',       t:'Chat da live: responder e apagar',                 d:'0:33', id:'V6WZqQ0s-bY' },
+    { k:'mod-live-agendar',    t:'Agendar a próxima live e divulgar o link',         d:'0:31', id:'cWG2cWGMrII' },
+    { k:'mod-live-pix',        t:'Como você recebe o dinheiro',                      d:'1:30', id:'hhTBM163vK0' },
+    { k:'mod-live-pedidos',    t:'Pedidos: conferir, confirmar e entregar',          d:'1:00', id:'qx4dFUC9ORs' },
+    { k:'mod-live-oferta',     t:'Oferta relâmpago e estoque ao vivo',               d:'0:55', id:'pbWfLHoKGag' },
+    { k:'mod-live-cupom',      t:'Cupom, brinde e "Estou aqui agora"',               d:'0:50', id:'BQPflIBLNG0' },
+    { k:'mod-live-fila',       t:'Fila de pedidos',                                  d:'0:21', id:'hhooJvRXx2Q' },
+    { k:'mod-live-dados',      t:'Dados ao vivo e o resumo da live',                 d:'0:31', id:'07rQewrYNaI' },
+    { k:'mod-live-cortes',     t:'Cortes para Reels e Status',                       d:'0:24', id:'vzZOyzzfYHM' },
+    { k:'mod-live-cardapio',   t:'Seu cardápio vendendo sozinho',                    d:'1:18', id:'2_ty4YrgZ0I' } ]}
 ]};
 </script>
 <script>
@@ -3285,12 +3319,19 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   'use strict';
   function MOD(){ return (window.MOVIKI_TUTORIAIS && window.MOVIKI_TUTORIAIS.modulos) || []; }
   function prontos(m){ return (m.v||[]).filter(function(v){ return !!v.id; }); }
+  /* ---------- 16/09/2026: modulo OPCIONAL ----------
+     Modulo com `opcional:true` e aprofundamento: aparece na tela de aulas,
+     guarda progresso igual, e NAO entra na trava da Divulgacao nem no selo.
+     Sem isso, toda aula nova publicada vira imposto sobre a ativacao do
+     parceiro novo - que e exatamente quem precisa do link para agir. */
+  function obrigatorios(){ return MOD().filter(function(m){ return !m.opcional; }); }
+  function opcionais(){ return MOD().filter(function(m){ return !!m.opcional; }); }
   function achar(k){
     var r=null;
     MOD().forEach(function(m){ prontos(m).forEach(function(v){ if(v.k===k) r=v; }); });
     return r;
   }
-  function quantos(){ var n=0; MOD().forEach(function(m){ n+=prontos(m).length; }); return n; }
+  function quantos(){ var n=0; obrigatorios().forEach(function(m){ n+=prontos(m).length; }); return n; }
   var PLAY='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.4v13.2L19 12z"/></svg>';
   function capa(id,q){ return 'https://i.ytimg.com/vi/'+encodeURIComponent(id)+'/'+q+'.jpg'; }
 
@@ -3546,12 +3587,16 @@ window.MOVIKI_TUTORIAIS = { modulos: [
 
   var VISTO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>';
 
-  function todas(){ var r=[]; MOD().forEach(function(m){ prontos(m).forEach(function(v){ r.push(v); }); }); return r; }
+  /* `todas()` e a FILA e o denominador: so modulo obrigatorio entra. As
+     opcionais vivem em `extras()` - aparecem, marcam visto, e nao contam. */
+  function todas(){ var r=[]; obrigatorios().forEach(function(m){ prontos(m).forEach(function(v){ r.push(v); }); }); return r; }
+  function extras(){ var r=[]; opcionais().forEach(function(m){ prontos(m).forEach(function(v){ r.push(v); }); }); return r; }
+  function ehExtra(k){ return extras().some(function(v){ return v.k===k; }); }
   function feitas(){
     var P=window.__mvParceiroTut;
     var r=(P && P.vistas) ? P.vistas.slice() : [];
     LOCAIS.forEach(function(k){ if(r.indexOf(k)<0) r.push(k); });
-    var ks=todas().map(function(v){ return v.k; });
+    var ks=todas().concat(extras()).map(function(v){ return v.k; });
     return r.filter(function(k){ return ks.indexOf(k)>-1; });
   }
   /* chamada pelo player quando o YouTube confirma 90% */
@@ -3564,7 +3609,9 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      matava o iframe da aula que ainda estava tocando os ultimos segundos. */
   function acabou(k){
     if(!(au && !au.hidden && auTocando===k)) return;
-    var f=feitas(), t=todas();
+    /* aula opcional avanca DENTRO das opcionais: terminar uma delas nao pode
+       jogar o parceiro de volta para o meio das obrigatorias. */
+    var f=feitas(), t=ehExtra(k)?extras():todas();
     for(var i=0;i<t.length;i++){
       if(f.indexOf(t[i].k)===-1){
         var prox=t[i];
@@ -3656,9 +3703,13 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   function pintarAulas(){
     if(!au) return;
     var t=todas(), f=feitas();
-    if(auCont) auCont.textContent = f.length + ' de ' + t.length;
-    if(auBar) auBar.style.width = t.length ? Math.round(f.length/t.length*100)+'%' : '0%';
-    if(auFim) auFim.hidden = !(t.length && f.length>=t.length);
+    /* o contador e a barra medem SO as obrigatorias - aula opcional assistida
+       nao pode inflar "12 de 13" nem destravar a Divulgacao. */
+    var ko=t.map(function(v){ return v.k; });
+    var fo=f.filter(function(k){ return ko.indexOf(k)>-1; });
+    if(auCont) auCont.textContent = fo.length + ' de ' + t.length;
+    if(auBar) auBar.style.width = t.length ? Math.round(fo.length/t.length*100)+'%' : '0%';
+    if(auFim) auFim.hidden = !(t.length && fo.length>=t.length);
     if(!auLista) return;
     auLista.innerHTML='';
     if(!t.length){
@@ -3682,6 +3733,40 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       b.appendChild(n); b.appendChild(tx);
       auLista.appendChild(b);
     });
+    /* ---------- as opcionais, depois, com recado proprio ----------
+       Estilo inline de proposito: o bloco de aulas tem folha propria e este
+       pedaco nao vale uma classe nova em arquivo disputado. */
+    var ex=extras();
+    if(ex.length){
+      var cab=document.createElement('div');
+      cab.style.cssText='margin:14px 0 6px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12)';
+      var ct=document.createElement('b');
+      ct.style.cssText='display:block;font-size:13px;font-weight:700';
+      var fe=ex.filter(function(v){ return f.indexOf(v.k)>-1; }).length;
+      ct.textContent='Opcional · Conhecer o estúdio por dentro ('+fe+' de '+ex.length+')';
+      var cs=document.createElement('span');
+      cs.style.cssText='display:block;font-size:11.5px;line-height:1.5;opacity:.75;margin-top:2px';
+      cs.textContent='São as aulas que o lojista vê. Não trancam nada e não contam para o seu selo.';
+      cab.appendChild(ct); cab.appendChild(cs);
+      auLista.appendChild(cab);
+      ex.forEach(function(v){
+        var ok=f.indexOf(v.k)>-1;
+        var b=document.createElement('button');
+        b.type='button';
+        b.className='mvAuIt'+(ok?' feita':'')+(auTocando===v.k?' tocando':'');
+        b.setAttribute('data-auit',v.k);
+        var n=document.createElement('span');
+        n.className='mvAuNum'+(ok?' ok':'');
+        n.innerHTML = ok ? VISTO : '+';
+        var tx=document.createElement('span'); tx.className='mvAuTxt';
+        var nome=document.createElement('span'); nome.className='mvAuNome'; nome.textContent=v.t;
+        var min=document.createElement('span'); min.className='mvAuMin';
+        min.textContent = (ok ? 'Assistida' : 'Opcional') + (v.d ? ' · ' + v.d : '');
+        tx.appendChild(nome); tx.appendChild(min);
+        b.appendChild(n); b.appendChild(tx);
+        auLista.appendChild(b);
+      });
+    }
   }
   window.mvAuPintar=pintarAulas;
 
@@ -3893,8 +3978,14 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      Enquanto houver menos de MIN_AULAS publicadas, nao existe trava.
      ===================================================================== */
   var MIN_AULAS=8;
+  /* SO as obrigatorias. E daqui que saem a trava da Divulgacao e o selo -
+     modulo opcional nao pode entrar nesta conta em hipotese nenhuma. */
   function chavesPublicadas(){
-    var r=[]; MOD().forEach(function(m){ prontos(m).forEach(function(v){ r.push(v.k); }); });
+    var r=[]; obrigatorios().forEach(function(m){ prontos(m).forEach(function(v){ r.push(v.k); }); });
+    return r;
+  }
+  function chavesOpcionais(){
+    var r=[]; opcionais().forEach(function(m){ prontos(m).forEach(function(v){ r.push(v.k); }); });
     return r;
   }
   function trava(){
@@ -3905,15 +3996,21 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     if(trava.__feito){ try{ trava.__pintar(); }catch(e){} return; }  /* so monta uma vez */
     trava.__feito=1;
 
-    var vistas=(P.vistas||[]).filter(function(k){ return pub.indexOf(k)>-1; });
+    /* `guardadas` e o que vai para o banco (obrigatorias + opcionais, mesmo
+       array `aulasVistas`, sem regra nova). `vistas` e o que conta. */
+    var opc=chavesOpcionais();
+    var validas=pub.concat(opc);
+    var guardadas=(P.vistas||[]).filter(function(k){ return validas.indexOf(k)>-1; });
+    var vistas=guardadas.filter(function(k){ return pub.indexOf(k)>-1; });
     var concluiu=!!P.concluiuEm || vistas.length>=pub.length;
 
     window.mvTutAoVer=function(k){
-      if(pub.indexOf(k)===-1 || vistas.indexOf(k)>-1) return;
-      vistas.push(k);
+      if(validas.indexOf(k)===-1 || guardadas.indexOf(k)>-1) return;
+      guardadas.push(k);
+      if(pub.indexOf(k)>-1) vistas.push(k);
       var fim=vistas.length>=pub.length;
-      P.vistas=vistas.slice();                    /* fonte unica do progresso */
-      try{ P.salvar(vistas.slice(), fim); }catch(e){}
+      P.vistas=guardadas.slice();                 /* fonte unica do progresso */
+      try{ P.salvar(guardadas.slice(), fim); }catch(e){}
       if(fim){ concluiu=true; }
       pintar();
       try{ selo(); }catch(e){}   /* o selo anda junto: 7 de 8 vira 8 de 8 na hora */
