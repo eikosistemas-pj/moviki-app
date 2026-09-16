@@ -292,19 +292,21 @@ svg{display:block}
             <p>O Asaas desconta <b>R$ 1,99 por Pix recebido</b> — é tarifa dele, não do Moviki, e vale por pedido, não por real vendido. Num pedido de R$ 20 você fica com R$ 18,01; num de R$ 50, com R$ 48,01. Por isso o <b>pedido mínimo é R$ 20</b>: quanto maior a sacolinha, menor o peso da tarifa.</p>
           </div>
           <div id="pxCarregando" class="pPreco">Carregando…</div>
-          <div id="pxSemConta" class="pxForm escondido">
-            <div class="pxTipo"><label><input type="radio" name="pxTipo" value="pf" checked> Pessoa física (CPF)</label><label><input type="radio" name="pxTipo" value="pj"> Empresa (CNPJ)</label></div>
-            <input class="campo" id="pxNome" maxlength="80" placeholder="Nome completo (ou razão social)">
-            <div class="linha2"><input class="campo" id="pxDoc" maxlength="18" inputmode="numeric" placeholder="CPF"><input class="campo" id="pxNasc" type="date" title="Data de nascimento"></div>
-            <select class="campo escondido" id="pxTipoEmp" style="margin-top:8px"><option value="MEI">MEI</option><option value="LIMITED">Limitada (LTDA)</option><option value="INDIVIDUAL">Empresário individual</option><option value="ASSOCIATION">Associação</option></select>
-            <div class="linha2"><input class="campo" id="pxEmail" maxlength="120" type="email" placeholder="E-mail da conta"><input class="campo" id="pxCel" maxlength="16" inputmode="tel" placeholder="Celular com DDD"></div>
-            <div class="linha2"><input class="campo" id="pxRenda" maxlength="12" inputmode="decimal" placeholder="Faturamento por mês (R$)"><input class="campo" id="pxCep" maxlength="9" inputmode="numeric" placeholder="CEP"></div>
-            <input class="campo" id="pxEnd" maxlength="120" placeholder="Rua / avenida" style="margin-top:8px">
-            <div class="linha2"><input class="campo" id="pxNum" maxlength="12" placeholder="Número"><input class="campo" id="pxBairro" maxlength="60" placeholder="Bairro"></div>
-            <input class="campo" id="pxComp" maxlength="60" placeholder="Complemento (opcional)" style="margin-top:8px">
-            <label class="pxAceite"><input type="checkbox" id="pxAceite"><span>Autorizo o Moviki a abrir uma conta de pagamento no Asaas em meu nome. Sei que o dinheiro das vendas cai nessa conta, que os saques são feitos pelo app ou site do Asaas, e aceito os termos de uso do Asaas. Os dados acima são meus e verdadeiros.</span></label>
-            <button type="button" class="btnGrad" id="pxCriar">Abrir minha conta de recebimento</button>
-            <div id="pxErro" class="msgErro escondido"></div>
+          <!-- 16/09/2026: o formulario de abrir conta de recebimento SAIU daqui.
+               Conta nova nao se abre mais pelo estudio (a subconta consome o teto
+               de 10 do Asaas, e estourar o teto cancela assinatura de todo mundo).
+               O caminho passou a ser a aba Financeiro do painel: Pix direto do
+               lojista ou a conta Asaas dele conectada por chave de API.
+               Quem JA tem conta aberta continua com o bloco de baixo, intacto.
+               A barreira de verdade esta no servidor (lojaCriar); isto aqui e a
+               tela que explica. -->
+          <div id="pxSemConta" class="escondido">
+            <div class="avisoTarifa">
+              <b>O seu recebimento agora fica no painel</b>
+              <p>Você escolhe como recebe na aba <b>Financeiro</b> do painel: <b>Pix direto</b>, com a sua própria chave e sem tarifa nenhuma, ou <b>Pix automático</b>, conectando a sua conta do Asaas. Ligado lá, o pagamento aparece aqui dentro da live.</p>
+            </div>
+            <a class="btnGrad" id="pxIrFinanceiro" href="/index.html#financeiro">Abrir o Financeiro no painel</a>
+            <p class="sub" style="margin-top:8px">Receber <b>dentro da transmissão</b> continua sendo do plano Enterprise.</p>
           </div>
           <div id="pxComConta" class="escondido">
             <div id="pxResumo" class="pPreco"></div>
@@ -448,7 +450,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-15-liveaulas';
+  window.MOVIKI_VERSAO='2026-09-16-pixfinanceiro';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -1121,7 +1123,7 @@ svg{display:block}
   function pintarPix(r){
     el('pxSemConta').classList.toggle('escondido',!!r.temConta);
     el('pxComConta').classList.toggle('escondido',!r.temConta);
-    if(!r.temConta){if(!el('pxEmail').value)el('pxEmail').value=(user&&user.email)||'';if(!el('pxNome').value)el('pxNome').value='';return;}
+    if(!r.temConta){return;}   /* sem conta: a tela so aponta para o Financeiro */
     el('pxResumo').textContent='Conta em nome de '+(r.nome||'—')+(r.documento?' · '+r.documento:'');
     const e=r.etapas||{}, cls=v=>v==='aprovado'?'ok':(v==='recusado'?'nao':'esp');
     el('pxEtapas').innerHTML=[['Dados comerciais',e.comercial],['Documentos',e.documentos],['Conta bancária (para saque)',e.bancario],['Aprovação geral',e.geral]]
@@ -1135,23 +1137,9 @@ svg{display:block}
       :'Envie os documentos pedidos acima. O Asaas analisa e aprova; enquanto isso o botão de compra não aparece na live.';
     if(r.aprovada&&r.webhookOk===false)el('pxDica').innerHTML+='<br><b>Atenção:</b> o aviso automático de pagamento não ficou configurado. Os pedidos continuam funcionando, mas use <b>Conferir pagamento</b> em cada pedido. Fale com o suporte do Moviki.';
   }
-  document.querySelectorAll('input[name="pxTipo"]').forEach(x=>x.addEventListener('change',()=>{
-    const pj=document.querySelector('input[name="pxTipo"]:checked').value==='pj';
-    el('pxDoc').placeholder=pj?'CNPJ':'CPF'; el('pxNasc').classList.toggle('escondido',pj); el('pxTipoEmp').classList.toggle('escondido',!pj);
-    el('pxNome').placeholder=pj?'Razão social':'Nome completo';
-  }));
-  el('pxCriar').onclick=async()=>{
-    const erroEl=el('pxErro'); erroEl.classList.add('escondido');
-    if(!el('pxAceite').checked){erroEl.textContent='Marque a autorização para abrir a conta.';erroEl.classList.remove('escondido');return;}
-    const pj=document.querySelector('input[name="pxTipo"]:checked').value==='pj';
-    const dados={tipo:pj?'pj':'pf',nome:el('pxNome').value,documento:el('pxDoc').value,nascimento:el('pxNasc').value,tipoEmpresa:el('pxTipoEmp').value,
-      email:el('pxEmail').value,celular:el('pxCel').value,renda:el('pxRenda').value,cep:el('pxCep').value,endereco:el('pxEnd').value,numero:el('pxNum').value,bairro:el('pxBairro').value,complemento:el('pxComp').value};
-    const b=el('pxCriar'); b.disabled=true; b.textContent='Abrindo a conta…';
-    const r=await chamarRobo('loja_criar',{dados});
-    b.disabled=false; b.textContent='Abrir minha conta de recebimento';
-    if(!r.ok){erroEl.textContent=r.erro==='asaas'?('O Asaas recusou: '+(r.mensagem||'confira os dados.')):(ERR_PIX[r.erro]||'Não deu certo. Confira os dados.');erroEl.classList.remove('escondido');return;}
-    ev('live_pix_conta'); pintarPix(r); toast('Conta aberta. Agora envie os documentos pedidos.');
-  };
+  /* 16/09/2026: os listeners do formulario de abertura de conta sairam junto
+     com o formulario. A acao loja_criar continua existindo no servidor para
+     o caso de a subconta ser reaberta, mas o estudio nao a chama mais. */
   el('pxLigar').onclick=async()=>{
     const ligar=el('pxLigar').textContent==='Ligar';
     const r=await chamarRobo('loja_ligar',{ligado:ligar});

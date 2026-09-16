@@ -1,4 +1,4 @@
-/*! MOVIKI liveaulas.js | versao 2026-09-15-liveaulas2 | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-09-16-pixnovo | repo: moviki-app
  *
  * O MODULO DE AULAS DO MODO LIVE — catalogo e motor, num arquivo so.
  *
@@ -78,9 +78,16 @@
         { k: 'mod-live-agendar', t: 'Agendar a próxima live e divulgar o link',
           d: '0:31', id: 'cWG2cWGMrII', plano: 'Premium', em: '2026-09-15' } ]},
 
+      /* REGRAVADA em 16/09/2026. A primeira leva ensinava a abrir subconta pelo
+         proprio estudio — caminho adiado em 14/09 pela P31. A nova diz o que e
+         verdade: o recebimento vem da aba Financeiro do painel, e aqui so se
+         liga o Pix na transmissao. O id antigo era 'hhTBM163vK0' e NAO pode
+         voltar a catalogo nenhum.
+         `em` continua 2026-09-15 DE PROPOSITO: regravacao nao e aula nova, e
+         nao pode virar alerta de "aula nova" para quem ja concluiu. */
       { n: 'Receber no Pix', sel: '.painelAba[data-aba="pix"]', v: [
         { k: 'mod-live-pix', t: 'Como você recebe o dinheiro',
-          d: '1:30', id: 'hhTBM163vK0', plano: 'Enterprise', em: '2026-09-15' } ]},
+          d: '1:14', id: 'xxulNw7JRhQ', plano: 'Enterprise', em: '2026-09-15' } ]},
 
       /* PEDIDOS E CARDAPIO MORAM NO PAINEL, nao no estudio: o pedido pago cai
          no Financeiro e o cardapio compravel e a aba Cardapio. Como embutir()
