@@ -2069,16 +2069,14 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
               <div class="mpBadge">Recomendado</div>
               <div class="mpNome">Pró</div>
               <div class="mpDesc">+ Cardápio, Promoções e Eventos</div>
-              <button class="mpBtn" onclick="selecionarPlano('pro','mensal',this)">Mensal · R$ 37,90</button>
-              <button class="mpBtn" onclick="selecionarPlano('pro','trimestral',this)">Trimestral · R$ 99,90</button>
-              <button class="mpBtn" onclick="selecionarPlano('pro','anual',this)">Anual · R$ 379,00 <span class="mpTag">2 meses grátis</span></button>
+              <button class="mpBtn" onclick="selecionarPlano('pro','mensal',this)">Mensal · R$ 39,90</button>
+              <button class="mpBtn" onclick="selecionarPlano('pro','anual',this)">Anual · R$ 399,00 <span class="mpTag">2 meses grátis</span></button>
             </div>
             <div class="mpPlano">
               <div class="mpNome">Premium</div>
               <div class="mpDesc">Tudo do Pró + extras</div>
-              <button class="mpBtn" onclick="selecionarPlano('premium','mensal',this)">Mensal · R$ 49,90</button>
-              <button class="mpBtn" onclick="selecionarPlano('premium','trimestral',this)">Trimestral · R$ 134,90</button>
-              <button class="mpBtn" onclick="selecionarPlano('premium','anual',this)">Anual · R$ 499,00 <span class="mpTag">2 meses grátis</span></button>
+              <button class="mpBtn" onclick="selecionarPlano('premium','mensal',this)">Mensal · R$ 69,90</button>
+              <button class="mpBtn" onclick="selecionarPlano('premium','anual',this)">Anual · R$ 699,00 <span class="mpTag">2 meses grátis</span></button>
             </div>
             <div class="mpPlano mpEnt">
               <div class="mpNome">Enterprise</div>
@@ -3119,7 +3117,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-16-videoitens4';
+  window.MOVIKI_VERSAO='2026-09-16-preco1';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -3690,7 +3688,7 @@ window.mvAbaInicial=function(){
   function ptRenderResumo(pontos,inclusos){
     var box=el('ptResumo');if(!box)return;
     pontos=pontos||[];
-    var BASE=99.90,EXTRA=19.90;
+    var BASE=129.90,EXTRA=19.90;
     var incl=Number(inclusos)||3;                 // pontos inclusos no plano (contando o principal)
     var freeExtras=Math.max(0,incl-1);            // extras grátis (principal já é 1)
     var totalExtras=pontos.length;
@@ -3795,8 +3793,13 @@ window.mvAbaInicial=function(){
     }else{s.innerHTML='Seu plano atual: <b>Básico</b> (grátis). Escolha Pró ou Premium — ou fale com a gente pro Enterprise (vários pontos).';}
   }
   let planoSel=null,periodoSel=null;
-  const _precoLabel={pro:{mensal:'Mensal · R$ 37,90',trimestral:'Trimestral · R$ 99,90',anual:'Anual · R$ 379,00'},premium:{mensal:'Mensal · R$ 49,90',trimestral:'Trimestral · R$ 134,90',anual:'Anual · R$ 499,00'},enterprise:{mensal:'Mensal · R$ 99,90'}};
+  /* 16/09/2026 - preco novo e FIM DO TRIMESTRAL. Nao existe mais rotulo de
+     trimestral aqui: link antigo com ?periodo=trimestral ainda chega, e o
+     deep-link abaixo o redireciona para o mensal antes de pintar a tela.
+     A linha de guarda dentro de selecionarPlano e a segunda trava. */
+  const _precoLabel={pro:{mensal:'Mensal · R$ 39,90',anual:'Anual · R$ 399,00'},premium:{mensal:'Mensal · R$ 69,90',anual:'Anual · R$ 699,00'},enterprise:{mensal:'Mensal · R$ 129,90'}};
   window.selecionarPlano=function(plano,periodo,btn){
+    if(!_precoLabel[plano]||!_precoLabel[plano][periodo]) periodo='mensal';  /* trimestral aposentado: nunca deixa rotulo vazio */
     planoSel=plano;periodoSel=periodo;
     try{ if(window.mvEv) mvEv('plano_selecionado',{plano:plano,periodo:periodo}); }catch(_){}
     document.querySelectorAll('.mpBtn').forEach(b=>b.classList.remove('sel'));
@@ -5912,7 +5915,8 @@ window.mvAbaInicial=function(){
         var _qs=new URLSearchParams(location.search), _pl=_qs.get('plano'), _pr=_qs.get('periodo')||'mensal';
         if(_pl==='enterprise' && !ehEnterprisePainel()){ abrirPlano(); setTimeout(function(){ try{selecionarPlano('enterprise','mensal',null);}catch(_){}} ,150); }
         else if(_pl==='premium'||_pl==='pro'){
-          if(['mensal','trimestral','anual'].indexOf(_pr)<0)_pr='mensal';
+          /* trimestral aposentado em 16/09: link antigo cai no mensal, nunca em tela vazia */
+          if(['mensal','anual'].indexOf(_pr)<0)_pr='mensal';
           abrirPlano();
           setTimeout(function(){ try{
             var _b=document.querySelector('.mpPlano .mpBtn[onclick^="selecionarPlano(\''+_pl+'\',\''+_pr+'\'"]');

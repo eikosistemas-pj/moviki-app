@@ -989,14 +989,14 @@ html.mvSigGraf #grafNota{
 
             <div class="cvAbas" id="cvAbas">
               <button type="button" class="cvAba" data-cvplano="basico">Básico<span>Grátis</span></button>
-              <button type="button" class="cvAba ativa" data-cvplano="pro">Pró<span>R$ 37,90</span></button>
-              <button type="button" class="cvAba" data-cvplano="premium">Premium<span>R$ 49,90</span></button>
-              <button type="button" class="cvAba" data-cvplano="enterprise">Enterprise<span>R$ 99,90</span></button>
+              <button type="button" class="cvAba ativa" data-cvplano="pro">Pró<span>R$ 39,90</span></button>
+              <button type="button" class="cvAba" data-cvplano="premium">Premium<span>R$ 69,90</span></button>
+              <button type="button" class="cvAba" data-cvplano="enterprise">Enterprise<span>R$ 129,90</span></button>
             </div>
 
             <div class="cvDestaque">
               <div class="cvDestTopo">Sua comissão por assinatura desse plano</div>
-              <div class="cvDestValor" id="cvValor">R$ 5,69</div>
+              <div class="cvDestValor" id="cvValor">R$ 5,99</div>
               <div class="cvDestPe" id="cvPe">por mês, enquanto essa pessoa continuar cliente pagante</div>
             </div>
 
@@ -1334,7 +1334,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-trilha';
+  window.MOVIKI_VERSAO = '2026-09-16-preco1';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2822,9 +2822,9 @@ html.mvSigGraf #grafNota{
   'use strict';
   var PLANOS = {
     basico:     { preco: 0,     pe: 'o plano gratuito não gera comissão' },
-    pro:        { preco: 37.90, pe: 'por mês, enquanto essa pessoa continuar cliente pagante' },
-    premium:    { preco: 49.90, pe: 'por mês, enquanto essa pessoa continuar cliente pagante' },
-    enterprise: { preco: 99.90, pe: 'por mês, enquanto essa pessoa continuar cliente pagante' }
+    pro:        { preco: 39.90, pe: 'por mês, enquanto essa pessoa continuar cliente pagante' },
+    premium:    { preco: 69.90, pe: 'por mês, enquanto essa pessoa continuar cliente pagante' },
+    enterprise: { preco: 129.90, pe: 'por mês, enquanto essa pessoa continuar cliente pagante' }
   };
   var N1 = 0.15, N2 = 0.075, N3 = 0.05;
   var planoAtual = 'pro';
@@ -2867,7 +2867,7 @@ html.mvSigGraf #grafNota{
     var preco = (PLANOS[planoAtual] || PLANOS.pro).preco;
     var q1 = num('cvN1'), q2 = num('cvN2'), q3 = num('cvN3');
     /* arredonda a comissao de UMA assinatura antes de multiplicar: assim a
-       barra bate com o numero grande do destaque (3 x R$ 5,69 = R$ 17,07).
+       barra bate com o numero grande do destaque (3 x R$ 5,99 = R$ 17,97).
        Somar sem arredondar daria R$ 17,06 e pareceria erro de conta. */
     function cada(pct){ return Math.round(preco * pct * 100) / 100; }
     /* 11/09/2026 - a primeira barra passou a aplicar o percentual do NIVEL.

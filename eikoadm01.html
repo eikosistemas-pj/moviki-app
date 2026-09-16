@@ -1438,7 +1438,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-custos1';
+  window.MOVIKI_VERSAO = '2026-09-16-preco1';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1482,9 +1482,9 @@ table.mvTab td b{font-weight:700}
 
   const PLANOS = {
     basico:{n:'Básico',p:0},
-    pro:{n:'Pró',p:37.90},
-    premium:{n:'Premium',p:49.90},
-    enterprise:{n:'Enterprise',p:99.90}
+    pro:{n:'Pró',p:39.90},
+    premium:{n:'Premium',p:69.90},
+    enterprise:{n:'Enterprise',p:129.90}
   };
   const normPlano = v => { v=(v||'').toString().toLowerCase().trim(); return PLANOS[v]?v:'basico'; };
 
