@@ -1074,7 +1074,7 @@ table.mvTab td b{font-weight:700}
               <button type="button" class="btnMini" id="lvConsSalvar">Salvar teto</button>
               <button type="button" class="btnMini" id="lvConsMedir">Medir agora</button>
             </div>
-            <p class="cdSub" style="margin-top:8px">O ciclo de faturamento do Cloudflare <b>não é o mês-calendário</b>: começa no dia em que a conta assinou. Veja em Manage account → Billing → Billable usage qual é o seu (hoje: <b>dia 12</b>) e ponha esse número aqui, senão a contagem fica fora de fase com a fatura. Zero ou vazio = sem teto, igual à lista do beta vazia. Se a medição falhar, a live <b>continua começando</b>: derrubar a transmissão de todo mundo porque uma API de relatório caiu seria pior que o risco de conta. Para parar tudo na hora, use a chave-mestra abaixo.</p>
+            <p class="cdSub" style="margin-top:8px">A conta da trava é <b>minutos medidos ≥ teto</b>. Com a medição em zero, nenhum teto dispara — e a linha "Próxima live" acima diz isso com todas as letras, para você não precisar testar às cegas. A medição vem da analytics do Cloudflare, que <b>não é tempo real</b>: este teto é uma parede de conta mensal, com atraso de minutos, não um freio de transmissão. Quem corta na hora é a chave-mestra.<br><br>O ciclo de faturamento do Cloudflare <b>não é o mês-calendário</b>: começa no dia em que a conta assinou. Veja em Manage account → Billing → Billable usage qual é o seu (hoje: <b>dia 12</b>) e ponha esse número aqui, senão a contagem fica fora de fase com a fatura. Zero ou vazio = sem teto, igual à lista do beta vazia. Se a medição falhar, a live <b>continua começando</b>: derrubar a transmissão de todo mundo porque uma API de relatório caiu seria pior que o risco de conta. Para parar tudo na hora, use a chave-mestra abaixo.</p>
           </div>
 
           <div class="cd" style="margin-top:14px" id="lvMestraCard">
@@ -1355,7 +1355,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-consumo2';
+  window.MOVIKI_VERSAO = '2026-09-16-consumo3';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -4037,6 +4037,23 @@ table.mvTab td b{font-weight:700}
     const campoC=el('lvConsCiclo'); if(campoC&&document.activeElement!==campoC)campoC.value=Number(r.cicloDia||1);
     txt('lvConsChip',teto>0?(pct+'% do teto'):'sem teto');
     const chip=el('lvConsChip'); if(chip)chip.style.color=teto>0?(pct>=90?'#ff6b6b':(pct>=70?'#ffc107':'')):'';
+    /* O VEREDITO vem do servidor, da MESMA funcao que decide de verdade.
+       Ate 16/09 esta tela mostrava so o numero, e a trava era invisivel
+       quando nao disparava: um teste com teto de 1 minuto passava e ninguem
+       sabia por que. */
+    var vered='';
+    if(r.motivo){
+      var mapa={
+        sem_teto:['Próxima live: LIBERADA','Sem teto. Nenhuma live será barrada por consumo.',''],
+        medicao_zerada:['Próxima live: LIBERADA','A medição voltou <b>zero minuto</b> neste ciclo. Enquanto ela for zero, <b>nenhum teto dispara</b> — e isso não é defeito da trava: a conta é «minutos medidos ≥ teto», e zero nunca alcança. A analytics do Cloudflare não é tempo real: demora alguns minutos e, com volume pequeno, arredonda para baixo. Volte depois de uma live de verdade com gente assistindo.','lvAlerta'],
+        abaixo_do_teto:['Próxima live: LIBERADA','Consumo abaixo do teto.',''],
+        teto_atingido:['Próxima live: BARRADA','O teto foi alcançado. Nenhuma live nova começa até o ciclo virar ou você subir o teto.','lvAlerta'],
+        medicao_falhou:['Próxima live: LIBERADA','A medição falhou, e esta trava <b>falha aberta</b> de propósito: derrubar a transmissão de todo mundo porque uma API de relatório caiu seria pior. Para parar tudo na hora, use a chave-mestra.','lvAlerta']
+      };
+      var m=mapa[r.motivo]||['Próxima live: —','',''];
+      vered='<div class="lvItem" style="margin-top:8px"><div class="t"><strong>'+m[0]+'</strong>'+
+        (r.barra?'<span class="lvAlerta">teto ativo</span>':'')+'</div><div class="s">'+m[1]+'</div></div>';
+    }
     var aviso='';
     if(r.erro==='sem_permissao')aviso='<div class="lvAlerta" style="display:block;margin-top:8px">O token do Cloudflare não tem permissão de <b>Account Analytics</b>. No painel do Cloudflare, edite o token que já existe e acrescente essa permissão — sem ela o número acima não atualiza e o teto nunca dispara.</div>';
     else if(r.erro==='config')aviso='<div class="lvAlerta" style="display:block;margin-top:8px">As variáveis CF_ACCOUNT_ID / CF_STREAM_TOKEN não estão no projeto <b>moviki</b> da Vercel.</div>';
@@ -4049,7 +4066,7 @@ table.mvTab td b{font-weight:700}
     cx.innerHTML='<div class="lvItem"><div class="t"><strong>'+mes.toLocaleString('pt-BR')+' min entregues no ciclo</strong>'+
       '<span class="cdChip">US$ '+usd.toFixed(2)+'</span>'+
       (teto>0?'<span class="cdChip">teto '+teto.toLocaleString('pt-BR')+'</span>':'<span class="lvAlerta">sem teto</span>')+'</div>'+
-      '<div class="s">'+(desdeBr?'ciclo desde '+desdeBr+' · ':'')+sem.toLocaleString('pt-BR')+' min nos últimos 7 dias · medido às '+quando+' (a medição vale 15 min)</div></div>'+aviso;
+      '<div class="s">'+(desdeBr?'ciclo desde '+desdeBr+' · ':'')+sem.toLocaleString('pt-BR')+' min nos últimos 7 dias · medido às '+quando+' (a medição vale 15 min)</div></div>'+vered+aviso;
   }
   el('lvConsMedir').addEventListener('click',()=>lvMedirConsumo(true));
   el('lvConsSalvar').addEventListener('click',async()=>{
