@@ -3044,7 +3044,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-16-capavideo';
+  window.MOVIKI_VERSAO='2026-09-16-quadro';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -4616,6 +4616,7 @@ window.mvAbaInicial=function(){
   var _cvIdx=-1, _cvFundo=null;
   function cvFechar(){
     if(_cvFundo){ try{ _cvFundo.remove(); }catch(_){} _cvFundo=null; }
+    try{ cvLimparVideo(); }catch(_){}
     _cvIdx=-1;
   }
   function cvAplicar(url){
@@ -4626,6 +4627,102 @@ window.mvAbaInicial=function(){
     cvFechar();
     toast(tinha?'Capa escolhida. Não esqueça de Salvar.':'Capa removida. Não esqueça de Salvar.');
   }
+  /* ---------- PEGAR UM QUADRO DO VIDEO -- 16/09/2026 ----------
+     O pedido nasceu do Instagram: la voce arrasta a linha do tempo e escolhe a
+     capa. NAO da para fazer isso com o video que ja esta publicado no
+     Instagram ou no TikTok — o arquivo nao e acessivel de fora do app deles
+     (o endereco do video e assinado, o oEmbed publico acabou, e canvas de
+     outra origem nem deixa ler o quadro). O que da, e entrega a MESMA coisa:
+     abrir o video que esta no celular do lojista, que e de onde ele postou.
+     Tudo acontece no aparelho: o video nunca sobe. Sai daqui so a imagem do
+     quadro escolhido, no mesmo caminho das fotos. */
+  var _cvUrlObj='';
+  function cvLimparVideo(){
+    if(_cvUrlObj){ try{ URL.revokeObjectURL(_cvUrlObj); }catch(_){} _cvUrlObj=''; }
+  }
+  function cvAbrirQuadro(){
+    var inp=document.createElement('input'); inp.type='file'; inp.accept='video/*';
+    inp.onchange=function(){
+      var file=inp.files&&inp.files[0]; if(!file)return;
+      if(!/^video\//.test(file.type)){ toast('Escolha um vídeo.',true); return; }
+      cvMontarQuadro(file);
+    };
+    inp.click();
+  }
+  function cvMontarQuadro(file){
+    var cx=_cvFundo&&_cvFundo.querySelector('.cvCaixa'); if(!cx)return;
+    cvLimparVideo();
+    _cvUrlObj=URL.createObjectURL(file);
+    cx.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">'+
+        '<b style="font-size:17px">Escolha a cena</b>'+
+        '<button type="button" class="vdCapaBt" id="cqVoltar">Voltar</button></div>'+
+      '<p style="font-size:12.5px;color:var(--mv-txt-3);line-height:1.5;margin:8px 0 10px">'+
+        'Arraste para achar o melhor quadro. O vídeo fica no seu aparelho — só a imagem escolhida é enviada.</p>'+
+      '<div style="position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:9/16;max-height:52vh;margin:0 auto">'+
+        '<video id="cqVideo" playsinline muted preload="metadata" style="width:100%;height:100%;object-fit:contain;display:block"></video>'+
+      '</div>'+
+      '<input type="range" id="cqBarra" min="0" max="1000" value="0" step="1" style="width:100%;margin:12px 0 4px">'+
+      '<div id="cqTempo" style="font-size:12px;color:var(--mv-txt-3);text-align:center">0:00</div>'+
+      '<button type="button" class="vdBtn" id="cqUsar" style="width:100%;margin-top:12px">Usar este quadro</button>'+
+      '<div id="cqErro" style="font-size:12.5px;color:#ff9b9b;margin-top:10px;display:none"></div>';
+    var vd=cx.querySelector('#cqVideo'), barra=cx.querySelector('#cqBarra'),
+        tempo=cx.querySelector('#cqTempo'), usar=cx.querySelector('#cqUsar'),
+        erro=cx.querySelector('#cqErro');
+    cx.querySelector('#cqVoltar').onclick=function(){ cvLimparVideo(); window.abrirCapaVideo(_cvIdx); };
+    function mmss(t){ var m=Math.floor(t/60), sg=Math.floor(t%60); return m+':'+(sg<10?'0':'')+sg; }
+    function falhou(txt){
+      if(!erro)return;
+      erro.textContent=txt; erro.style.display='';
+      if(usar) usar.disabled=true;
+    }
+    vd.onloadedmetadata=function(){
+      /* videoWidth zero = o navegador abriu o arquivo mas nao sabe decodificar
+         (acontece com .mov HEVC de iPhone em navegador de Android). Sem isso o
+         lojista ficaria arrastando uma tela preta sem entender. */
+      if(!(vd.videoWidth>0) || !(vd.duration>0)){
+        falhou('Este vídeo não abre aqui no navegador. Use "Enviar uma imagem" ou escolha uma foto da galeria.');
+        return;
+      }
+      vd.currentTime=Math.min(0.1, vd.duration/2);
+    };
+    vd.onerror=function(){ falhou('Não consegui abrir este vídeo. Use "Enviar uma imagem" ou uma foto da galeria.'); };
+    vd.ontimeupdate=function(){ if(tempo&&vd.duration>0) tempo.textContent=mmss(vd.currentTime)+' de '+mmss(vd.duration); };
+    barra.oninput=function(){
+      if(!(vd.duration>0))return;
+      vd.currentTime=(Number(barra.value)/1000)*vd.duration;
+    };
+    usar.onclick=function(){
+      if(!(vd.videoWidth>0)){ falhou('Este vídeo não abre aqui no navegador.'); return; }
+      usar.disabled=true; usar.textContent='Enviando…';
+      try{
+        var M=1080, w=vd.videoWidth, h=vd.videoHeight;
+        if(w>=h){ if(w>M){ h=Math.round(h*M/w); w=M; } }
+        else { if(h>M){ w=Math.round(w*M/h); h=M; } }
+        var cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+        cv.getContext('2d').drawImage(vd,0,0,w,h);
+        var dataUrl=cv.toDataURL('image/jpeg',0.85);
+        cvSubirImagem(dataUrl, usar, 'Usar este quadro');
+      }catch(e){
+        usar.disabled=false; usar.textContent='Usar este quadro';
+        falhou('Não consegui pegar o quadro. Tente outro ponto do vídeo.');
+      }
+    };
+    vd.src=_cvUrlObj;
+  }
+  /* um caminho so para subir imagem, venha ela de arquivo ou do quadro */
+  async function cvSubirImagem(dataUrl, botao, rotulo){
+    try{
+      var idToken=await usuarioAtual.getIdToken();
+      var resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
+      var j=await resp.json().catch(function(){return {};});
+      if(resp.ok&&j.ok&&j.url){ cvLimparVideo(); cvAplicar(j.url); return true; }
+      toast('Não deu certo. Tente de novo.',true);
+    }catch(e){ toast('Falha ao enviar. Confira a conexão.',true); }
+    if(botao){ botao.disabled=false; botao.textContent=rotulo; }
+    return false;
+  }
+
   window.abrirCapaVideo=function(i){
     if(!_videos[i])return;
     cvFechar(); _cvIdx=i;
@@ -4652,10 +4749,12 @@ window.mvAbaInicial=function(){
       h+='<p style="font-size:12.5px;color:var(--mv-txt-3);margin-top:12px">Você ainda não tem fotos na galeria — envie uma imagem abaixo.</p>';
     }
     h+='<div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:14px">'+
-         '<button type="button" class="vdBtn" id="cvEnviar" style="flex:1 1 auto">Enviar uma imagem</button>'+
+         '<button type="button" class="vdBtn" id="cvQuadro" style="flex:1 1 100%">Pegar um quadro do vídeo</button>'+
+         '<button type="button" class="vdCapaBt" id="cvEnviar" style="flex:1 1 auto">Enviar uma imagem</button>'+
          (v.capa?'<button type="button" class="vdCapaBt" id="cvTirar">Tirar a capa</button>':'')+
        '</div>'+
        '<p style="font-size:11.5px;color:var(--mv-txt-3);line-height:1.5;margin:10px 0 0">'+
+         '<b>Pegar um quadro do vídeo</b> abre o vídeo que está no seu celular e deixa você escolher a cena, arrastando. O vídeo <b>não</b> é enviado: sai daqui só a imagem do quadro escolhido.<br>'+
          'A capa fica em pé, no formato do cartão. Foto deitada aparece cortada nas laterais.</p>';
     cx.innerHTML=h;
     f.appendChild(cx); document.body.appendChild(f); _cvFundo=f;
@@ -4664,6 +4763,7 @@ window.mvAbaInicial=function(){
     Array.prototype.forEach.call(cx.querySelectorAll('[data-cvf]'),function(b){
       b.onclick=function(){ cvAplicar(_galeria[Number(b.getAttribute('data-cvf'))]||''); };
     });
+    cx.querySelector('#cvQuadro').onclick=function(){ cvAbrirQuadro(); };
     cx.querySelector('#cvEnviar').onclick=function(){
       var inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
       inp.onchange=async function(){
@@ -4672,12 +4772,7 @@ window.mvAbaInicial=function(){
         var bt=cx.querySelector('#cvEnviar'); if(bt){ bt.disabled=true; bt.textContent='Enviando…'; }
         try{
           var dataUrl=await comprimirProporcional(file,1080);
-          var idToken=await usuarioAtual.getIdToken();
-          var resp=await fetch(ROBO+'/api/upload-imagem',{method:'POST',headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({idToken:idToken,imagemBase64:dataUrl,tipo:'produto'})});
-          var j=await resp.json().catch(function(){return {};});
-          if(resp.ok&&j.ok&&j.url){ cvAplicar(j.url); }
-          else{ toast('Não deu certo. Tente de novo.',true); if(bt){ bt.disabled=false; bt.textContent='Enviar uma imagem'; } }
+          await cvSubirImagem(dataUrl, bt, 'Enviar uma imagem');
         }catch(e){ toast('Falha ao enviar. Confira a conexão.',true); if(bt){ bt.disabled=false; bt.textContent='Enviar uma imagem'; } }
       };
       inp.click();
