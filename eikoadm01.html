@@ -1438,7 +1438,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-preco1';
+  window.MOVIKI_VERSAO = '2026-09-16-exclusao2';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2684,6 +2684,12 @@ table.mvTab td b{font-weight:700}
         const rz = j.resumo || {};
         const partes = ['Conta excluída'];
         if(rz.assinaturaCancelada) partes.push('assinatura cancelada');
+        /* 16/09/2026 — o dono PRECISA ver isto: sao as comissoes que o lojista
+           excluido gerou na carteira de OUTRO parceiro. Elas nao apareciam em
+           lugar nenhum e continuavam sacaveis por Pix. */
+        if(rz.comissoesGeradasEstornadas) partes.push(rz.comissoesGeradasEstornadas + (rz.comissoesGeradasEstornadas === 1 ? ' comissão estornada' : ' comissões estornadas'));
+        if(rz.comissoesGeradasMarcadas) partes.push(rz.comissoesGeradasMarcadas + (rz.comissoesGeradasMarcadas === 1 ? ' comissão já paga mantida no histórico' : ' comissões já pagas mantidas no histórico'));
+        if(rz.authDesativado && !rz.authRemovido) partes.push('⚠️ o acesso não foi apagado, só desativado');
         if(rz.apelidoLiberado) partes.push('apelido /'+rz.apelidoLiberado+' liberado');
         if(rz.pontos) partes.push(rz.pontos + (rz.pontos === 1 ? ' unidade' : ' unidades'));
         if(rz.arquivos) partes.push('arquivos apagados');
@@ -2692,7 +2698,10 @@ table.mvTab td b{font-weight:700}
         setTimeout(()=>{ carregarTudo(); }, 1200);
       } else {
         b.disabled = false; b.textContent = t;
-        let m = (j && j.erro) ? j.erro : 'Não consegui excluir agora.';
+        /* 16/09/2026 — a tela mostrava o CODIGO do erro ('assinatura_viva') em vez
+           da frase. Com a exclusao virando falha fechada, a frase e a instrucao:
+           diz o que fazer no Asaas e garante que nada foi apagado. */
+        let m = (j && j.mensagem) ? j.mensagem : ((j && j.erro) ? j.erro : 'Não consegui excluir agora.');
         if(r.status === 403) m = 'Sem permissão (seu e-mail precisa estar em admins).';
         if(msg){ msg.style.color = 'var(--mv-erro)'; msg.textContent = m; }
       }
