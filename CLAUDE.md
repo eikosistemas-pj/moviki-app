@@ -2,6 +2,10 @@
 
 Este arquivo é lido pelo Claude Code no início de toda sessão. Ele vale para TODOS os repositórios do projeto Moviki (conta GitHub `eikosistemas-pj`). A mesma cópia fica na raiz de cada repositório.
 
+> **REGRA DE SINCRONIZAÇÃO (17/09/2026).** As seis cópias são idênticas e precisam continuar idênticas. Alteração no mapa atualiza **os seis repositórios no mesmo ciclo** — nunca um e "os outros depois". Foi exatamente isso que fez as cópias divergirem duas vezes em 17/09: uma foi atualizada e as outras ficaram para depois. "Depois" não aconteceu.
+>
+> A cópia existe em todos porque a sessão do Claude Code começa em **um** repositório e lê o mapa dali sozinha. Quem trabalha no `moviki-robo` precisa da tabela de planos e das coleções; quem trabalha no `moviki` precisa das regras de LGPD da vitrine. Centralizar num repositório só obrigaria a pedir anexo em toda sessão — fricção permanente no Paulo para resolver um problema de disciplina de quem edita.
+
 > Levantado por leitura direta dos repositórios em 17/09/2026. O que não foi possível confirmar está marcado como **a confirmar**.
 
 ---
@@ -58,7 +62,7 @@ Este arquivo é lido pelo Claude Code no início de toda sessão. Ele vale para 
 - **Lojista escolhe um plano** → painel chama `moviki-robo /api/criar-assinatura` → Asaas gera a cobrança.
 - **Asaas avisa sozinho** quando o pagamento muda → `moviki-robo /api/webhook` → grava `ativo` em `assinaturas/{uid}` → recursos liberam ou caem para Básico.
 - **Visitante** abre `moviki.com.br/{slug}` → `moviki /api/og` monta a página do negócio.
-- **Cliente manda mensagem no WhatsApp** → `moviki-ai /api/atendimento` (não sabe quem está falando, só conhece o catálogo).
+- **Cliente manda mensagem no WhatsApp** → `moviki-ai /api/atendimento` (não sabe quem está falando, só conhece o catálogo). **Teto de 30 mensagens por telefone por dia** (`ATENDIMENTO_LIMITE_DIA` no Vercel). Ao estourar, manda uma vez o caminho humano e fica calado até a virada do dia (UTC).
 - **Lojista usa a caixa de mensagens do painel** → `moviki-ai /api/chat` (sabe quem está falando, lê os dados reais da conta).
 - **Rotinas de rede social** → `moviki-assistente-social` roda por Actions, lê `negocios` e publica.
 
@@ -260,7 +264,7 @@ Regras da nota:
 - ✅ **`hasOnly` voltou a valer.** O curinga anulava o `negocioValido()` — regra do Firestore é aditiva e não tem "deny". Conferido no emulador: gravava-se campo inventado, nome vazio e cor inválida. Corrigido junto.
 - ✅ **E-mail do lojista fechado.** `negocios/{uid}/estado/liveAceite` guarda o e-mail e era público pelo curinga. Agora só `estado/live` e `estado/liveSessao` são públicos.
 - ✅ **Regras com teste automático** em `moviki-app/firebase/testes/`, contra o emulador oficial do Firebase.
-- ⚠️ **O atendente do WhatsApp (`moviki-ai /api/atendimento`) não tem teto de uso.** O do painel tem limite diário; o do WhatsApp não. Exposição de custo, não de dado.
+- ✅ **Teto de uso no atendente do WhatsApp** criado em 17/09/2026 (`ATENDIMENTO_LIMITE_DIA`, padrão 30/telefone/dia), com teste automático em `moviki-ai/lib/tetoDia.test.js`.
 - ⚠️ `moviki-vault` é privado e não foi auditado.
 
 ## 14. Observações levantadas nesta leitura
@@ -283,3 +287,5 @@ Regras da nota:
 - 17/09/2026: `.bat` de sincronização corrigido — passou a trazer do GitHub antes de enviar, e a subir também o que o Paulo escreve dentro do Obsidian. Antes, anotação feita direto no Obsidian nunca saía do computador.
 - 17/09/2026: regras do Firestore e do Storage trazidas para dentro do repositório (`moviki-app/firebase/`). Antes viviam só no console do Firebase: sem revisão, sem histórico e sem como voltar de uma alteração feita por engano.
 - 17/09/2026: curinga `match /{documento=**}` removido de `negocios/{uid}` (regras v26). Ele anulava em silêncio o `hasOnly` do cadastro, deixava público o e-mail do lojista em `estado/liveAceite`, e faria qualquer subcoleção futura nascer pública. Regras passaram a ter teste automático.
+- 17/09/2026: teto de uso criado no atendente do WhatsApp. Ele falava com desconhecido sem limite nenhum, e cada mensagem é uma chamada paga à Anthropic — a assinatura da Meta barra chamada forjada, não pessoa real insistindo.
+- 17/09/2026: mapa mantido em **cópia completa nos seis repositórios**, com regra explícita de sincronização no topo deste arquivo. Cogitou-se centralizar numa cópia só, com ponteiro nas outras; descartado porque obrigaria a pedir anexo do `moviki-app` em toda sessão iniciada em outro repositório — fricção permanente para resolver um problema que é de disciplina de quem edita, não de estrutura.
