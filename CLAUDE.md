@@ -87,6 +87,8 @@ Este arquivo é lido pelo Claude Code no início de toda sessão. Ele vale para 
 
 Projeto Firebase único, compartilhado por todos os repositórios: **`moviki-app`**.
 
+As **regras do Firestore e do Storage** ficam versionadas em `moviki-app/firebase/` (`firestore.rules` e `storage.rules`). Mudança de regra passa por Pull Request ali e só depois é publicada no console do Firebase — guardar o arquivo **não** publica nada. Ver `moviki-app/firebase/LEIA-ME.md`.
+
 | Coleção | Conteúdo | Quem escreve |
 |---|---|---|
 | `negocios` | Cadastro e vitrine de cada lojista | Lojista (campos limitados) + Admin SDK |
@@ -251,7 +253,14 @@ Regras da nota:
 
 - ✅ **Nenhuma chave secreta gravada em arquivo** nos 6 repositórios lidos. A única chave presente é a `apiKey` pública do Firebase Web, que é feita para ser pública.
 - ✅ Chaves de Asaas, Anthropic, WhatsApp e service account ficam corretamente fora do código.
-- ⚠️ A leitura de `negocios` é pública nas regras do Firestore, de propósito (o assistente social lê sem autenticação). **Conferir que nenhum dado sensível de lojista está nessa coleção.**
+- ✅ **Conferido em 17/09/2026: a leitura pública de `negocios` não expõe dado sensível.** Os campos legíveis são só de vitrine (nome, recado, cardápio, promoções, eventos, fotos, vídeos, horário, endereço, entrega, preço médio, capa, slug, whatsapp, lat/lng, cor, segmento). Não há CPF, e-mail, senha, dado financeiro nem id interno. O CPF do lojista vai para o Asaas pela API e não é gravado; do comprador guarda-se só o final.
+- ✅ **App Check (reCAPTCHA v3) está ligado** em todas as páginas que leem dados, o que barra coleta em massa por script.
+- ✅ **Coleções financeiras não têm regra** (`faturamento`, `checkout_contas`, `recebimento`, `checkout_tokens`, `financeiro_trilha`, `atendimentos_bot`, `trial_negado`) — sem regra, o Firestore nega por padrão, e não existe curinga global. Só o Admin SDK alcança.
+- ✅ **Curinga de `negocios` removido em 17/09/2026 (v26).** Cada subcoleção passou a ter regra própria e explícita. Subcoleção nova agora nasce **negada**, não pública. Ao criar uma, é obrigatório escrever a regra dela.
+- ✅ **`hasOnly` voltou a valer.** O curinga anulava o `negocioValido()` — regra do Firestore é aditiva e não tem "deny". Conferido no emulador: gravava-se campo inventado, nome vazio e cor inválida. Corrigido junto.
+- ✅ **E-mail do lojista fechado.** `negocios/{uid}/estado/liveAceite` guarda o e-mail e era público pelo curinga. Agora só `estado/live` e `estado/liveSessao` são públicos.
+- ✅ **Regras com teste automático** em `moviki-app/firebase/testes/`, contra o emulador oficial do Firebase.
+- ⚠️ **O atendente do WhatsApp (`moviki-ai /api/atendimento`) não tem teto de uso.** O do painel tem limite diário; o do WhatsApp não. Exposição de custo, não de dado.
 - ⚠️ `moviki-vault` é privado e não foi auditado.
 
 ## 14. Observações levantadas nesta leitura
@@ -272,3 +281,5 @@ Regras da nota:
 - 17/09/2026: `moviki-platform` autorizado a ser apagado pelo Paulo — estava vazio, nunca foi usado.
 - 17/09/2026: definido o formato da nota de diário entregue ao Obsidian (seção 12), com o prefixo `MOVIKI ` que o `.bat` reconhece.
 - 17/09/2026: `.bat` de sincronização corrigido — passou a trazer do GitHub antes de enviar, e a subir também o que o Paulo escreve dentro do Obsidian. Antes, anotação feita direto no Obsidian nunca saía do computador.
+- 17/09/2026: regras do Firestore e do Storage trazidas para dentro do repositório (`moviki-app/firebase/`). Antes viviam só no console do Firebase: sem revisão, sem histórico e sem como voltar de uma alteração feita por engano.
+- 17/09/2026: curinga `match /{documento=**}` removido de `negocios/{uid}` (regras v26). Ele anulava em silêncio o `hasOnly` do cadastro, deixava público o e-mail do lojista em `estado/liveAceite`, e faria qualquer subcoleção futura nascer pública. Regras passaram a ter teste automático.

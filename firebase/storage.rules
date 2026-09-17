@@ -1,0 +1,88 @@
+rules_version = '2';
+
+// ==========================================================
+//  MOVIKI — REGRAS DO CLOUD STORAGE — 27/08/2026
+//  Balde: moviki-app.firebasestorage.app
+//
+//  Até hoje o projeto NÃO gravava no Storage pelo navegador: as imagens
+//  do painel sobem em base64 pelo robô (api/upload-imagem.js), com o
+//  Admin SDK, que ignora estas regras. Este arquivo existe por causa do
+//  anexo de documento da caixa de mensagens — a primeira coisa que o
+//  navegador grava direto no Storage.
+//
+//  Regra de ouro: fora de documentos/{uid}/, o balde é FECHADO.
+// ==========================================================
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Anexos da caixa de mensagens. Uma pasta por lojista, e o nome da
+    // pasta É o uid dele — ninguém abre a pasta do vizinho.
+    match /documentos/{uid}/{arquivo} {
+
+      allow read: if request.auth != null
+                  && (request.auth.uid == uid || ehAdmin());
+
+      // O admin sempre pode anexar. O lojista só quando o dono do Moviki
+      // ligou o botão "Mensagens do admin" naquela conversa — a MESMA
+      // trava da regra do Firestore, para o arquivo não subir e a mensagem
+      // ser recusada depois (arquivo órfão ocupando espaço).
+      allow create: if request.auth != null
+                    && request.resource.size < 10 * 1024 * 1024
+                    && tipoOk(request.resource.contentType)
+                    && ( ehAdmin() || (request.auth.uid == uid && docsLiberados(uid)) );
+
+      // Arquivo enviado não se sobrescreve: cada anexo nasce com o carimbo
+      // de hora no nome. Trocar o conteúdo de um documento já entregue
+      // seria falsificar o que a outra pessoa recebeu.
+      allow update: if false;
+
+      allow delete: if ehAdmin();
+    }
+
+    // ---- O QUE JÁ EXISTIA NO BALDE (não mexer) ----
+    // logos/{uid}/*.jpg     = logo do pino, gravada por api/upload-imagem.js
+    // produtos/{uid}/*.jpg  = fotos de produto, gravadas pelo mesmo endpoint
+    // As duas são lidas pelo VISITANTE ANÔNIMO na página pública — por isso
+    // read: if true. Sem estas duas linhas, trocar as regras do Storage apagaria
+    // da tela todas as logos e todas as fotos de produto do Moviki.
+    // Escrita continua false: quem grava ali é o Admin SDK do robô, que não
+    // passa por estas regras.
+    match /logos/{uid}/{arquivo} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /produtos/{uid}/{arquivo} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Todo o resto do balde: fechado para o navegador.
+    match /{tudo=**} {
+      allow read, write: if false;
+    }
+
+    function ehAdmin() {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid));
+    }
+
+    function docsLiberados(uid) {
+      return firestore.exists(/databases/(default)/documents/conversas/$(uid))
+        && firestore.get(/databases/(default)/documents/conversas/$(uid)).data.docsLiberado == true;
+    }
+
+    function tipoOk(t) {
+      return t != null && (
+        t == 'application/pdf'
+        || t.matches('image/.*')
+        || t == 'text/plain'
+        || t == 'text/csv'
+        || t == 'application/msword'
+        || t == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        || t == 'application/vnd.ms-excel'
+        || t == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      );
+    }
+  }
+}

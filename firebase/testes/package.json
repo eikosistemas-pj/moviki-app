@@ -1,0 +1,13 @@
+{
+  "name": "moviki-regras-testes",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "teste": "firebase emulators:exec --only firestore --project moviki-teste \"node --test regras.test.js\""
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^4.0.1",
+    "firebase": "^11.0.0",
+    "firebase-tools": "^13.29.1"
+  }
+}
