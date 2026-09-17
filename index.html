@@ -1611,6 +1611,25 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
 .mvRodapeLinks{margin-top:7px;display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center}
 .mvRodape a{color:#8fa6c4;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.14)}
 @media(min-width:900px){ .mvRodape{padding-bottom:28px} }
+
+/* --- Painel do parceiro: atalho no menu (17/09/2026) ---
+   Quem vira parceiro passa a ter DOIS paineis e precisa ir e voltar entre eles.
+   A porta de ida existia num lugar so: o link "Abrir meu painel completo",
+   no fim do modal "Indicar agora" - ou seja, tres toques e um rolar de tela.
+   O caminho de volta (parceiro.html -> index.html) ja tinha virado item de
+   menu em 17/09; esta e a outra metade do par. Dourado de proposito: nao e
+   mais uma secao do painel do negocio, e a troca pro painel do dinheiro. */
+.mvNavParc,.drawerParc{border-color:rgba(232,169,0,.45)!important;
+  background:linear-gradient(160deg,rgba(255,199,64,.16),rgba(255,199,64,.04))!important;
+  color:#ffd98a!important;font-weight:700!important;text-decoration:none;}
+.mvNavParc:hover,.drawerParc:hover{border-color:rgba(255,207,77,.8)!important;
+  background:linear-gradient(160deg,rgba(255,199,64,.26),rgba(255,199,64,.08))!important;color:#ffe6b0!important;}
+.mvNavParcSep,.drawerParcSep{height:1px;background:var(--mv-linha,rgba(255,255,255,.09));margin:8px 4px 6px;}
+/* O dourado chapado do botao do modal: ali ele e a acao principal da tela,
+   nao um item de lista - por isso fundo cheio, e nao so a borda. */
+.idxBtn.ouro{background:linear-gradient(135deg,#ffe08a,#ffcf4d 45%,#e8a900);color:#3a2a00;
+  border:1px solid #d99e00;box-shadow:0 4px 16px rgba(224,168,0,.35);}
+.idxBtn.ouro:hover{background:linear-gradient(135deg,#ffe9a8,#ffd966 45%,#f0b400);}
 </style>
 </head>
 <body>
@@ -1679,6 +1698,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         <button type="button" onclick="fecharMenu();abrirMensagens()"><svg class="diImg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.6 9.6 0 0 1-2.9-.4L3 21l1.6-4.5a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/></svg> Falar com o Vik<span class="msgBad escondido" id="msgBadMenu">1</span></button>
 
         <div class="drawerSec">Crescer</div>
+        <a class="drawerParc" id="drawerParceiro" href="parceiro.html" style="display:none"><img class="diImg" src="icones/comissoes.png" alt="" onerror="this.replaceWith(document.createTextNode('💰'))"> Painel do parceiro</a>
         <button type="button" onclick="abrirIndica()"><img class="diImg" src="icones/indicar.png" alt="" onerror="this.replaceWith(document.createTextNode('💰'))"> Indique e ganhe</button>
         <a href="https://g.page/r/CeZnw1wWHEgMEBM/review" target="_blank" rel="noopener"><img class="diImg" src="icones/google.png" alt="" onerror="this.replaceWith(document.createTextNode('⭐'))"> Avaliar o Moviki no Google</a>
 
@@ -1760,7 +1780,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
               <div class="pcGanhoItem"><span class="pcGanhoPct">5%</span><span class="pcGanhoTxt">A indicação do amigo indicar outra pessoa: você recebe um bônus único de <b>5%</b> no primeiro pagamento dela.</span></div>
             </div>
           </div>
-          <a href="parceiro.html" target="_blank" rel="noopener" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5">Abrir meu painel completo</a>
+          <a href="parceiro.html" target="_blank" rel="noopener" class="idxBtn ouro"><img src="icones/comissoes.png" alt="" width="20" height="20" style="object-fit:contain" onerror="this.style.display='none'">Abrir meu painel de parceiro</a>
 
           <!-- ====================== CONFORMIDADE - 03/09/2026 ==================
                Aqui existia um "Simule seus ganhos": tres controles deslizantes
@@ -1955,6 +1975,8 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
           </div>
         </div>
         <nav class="mvNav">
+        <a class="mvNavIt mvNavParc" id="mvNavParceiro" href="parceiro.html" style="display:none"><img class="mvNavIco" src="icones/comissoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Painel do parceiro</span></a>
+        <div class="mvNavParcSep" id="mvNavParceiroSep" style="display:none"></div>
         <button type="button" class="mvNavIt" data-sec="home" onclick="mvIr('home')"><img class="mvNavIco" src="icones/inicio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Início</span></button>
         <button type="button" class="mvNavIt" data-sec="cardapio" onclick="mvIr('cardapio')"><img class="mvNavIco" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Cardápio</span></button>
         <button type="button" class="mvNavIt" data-sec="promocoes" onclick="mvIr('promocoes')"><img class="mvNavIco" src="icones/promocoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Promoções</span></button>
@@ -3553,10 +3575,23 @@ window.mvAbaInicial=function(){
   var _parceiro=null; window._ehParceiro=false;
   var _pcBrl=function(n){return 'R$ '+(Number(n)||0).toFixed(2).replace('.',',');};
   var _pcMsg=function(link){return 'Oi! Tudo bem? 😊 Quero te mostrar o Moviki — um mapa que ajuda seus clientes a te encontrarem na hora. É grátis pra começar. Dá uma olhada pelo meu link: '+link;};
+  /* 17/09/2026: o atalho pro painel do parceiro so existia dentro do modal
+     "Indicar agora", no fim da rolagem. Quem e parceiro entra e sai dos dois
+     paineis o tempo todo - o caminho precisa estar no menu, dos dois lados.
+     So acende pra quem esta APROVADO e com slug: parceiro pendente ou recusado
+     nao tem painel pra abrir, e um item de menu que leva a uma tela vazia e
+     pior do que item nenhum. */
+  function mostrarAtalhoParceiro(on){
+    var d=on?'':'none';
+    ['mvNavParceiro','mvNavParceiroSep','drawerParceiro'].forEach(function(id){
+      var e=el(id); if(e) e.style.display=d;
+    });
+  }
   async function carregarParceiroPainel(uid){
     _parceiro=null; window._ehParceiro=false; window._statusParceiro=null;
     mostrarBannerParceiro();
     var card=el('gc-indicar'); if(card)card.style.display='none';
+    mostrarAtalhoParceiro(false);
     try{
       var s=await getDoc(doc(db,'parceiros',uid));
       if(!s.exists())return;
@@ -3567,6 +3602,7 @@ window.mvAbaInicial=function(){
       _parceiro={uid:uid,slug:p.slug,nome:p.nome||''};
       window._ehParceiro=true;
       if(card)card.style.display='flex';
+      mostrarAtalhoParceiro(true);
       var lk=el('pcLink'); if(lk)lk.textContent='moviki.com.br/p/'+p.slug;
       contarIndicadosParceiro(); carregarComissaoParceiro();
     }catch(e){}
