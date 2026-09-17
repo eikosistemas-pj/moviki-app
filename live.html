@@ -126,9 +126,15 @@ svg{display:block}
   body.imersivo .camTopo .pill{font-size:13px;padding:6px 11px;background:rgba(0,0,0,.45);backdrop-filter:blur(6px)}
   body.imersivo .camTopo .pill.vivo{background:var(--vivo)}
 
+  /* A altura da folha virou variavel em 16/09/2026 porque agora DUAS coisas
+     dependem dela: a propria folha e a faixa que sobra para o chat acima dela.
+     Dois numeros iguais escritos em dois lugares viram dois numeros diferentes
+     no primeiro ajuste. */
+  body.imersivo{--lvFolhaH:min(64dvh,620px)}
+
   /* a folha: as ferramentas que existiam na coluna da direita */
   body.imersivo #lvFolha{position:fixed;left:0;right:0;bottom:0;z-index:40;
-    height:min(64dvh,620px);background:var(--mv-bg-2);border-radius:18px 18px 0 0;
+    height:var(--lvFolhaH);background:var(--mv-bg-2);border-radius:18px 18px 0 0;
     border-top:1px solid var(--mv-linha);box-shadow:0 -12px 40px rgba(0,0,0,.6);
     transform:translateY(102%);transition:transform .24s ease;overflow:hidden;
     display:flex;flex-direction:column}
@@ -189,6 +195,25 @@ svg{display:block}
   .cfM.venda b,.cfM.dono b{color:#fff}
   .cfM.dono{background:rgba(0,102,255,.38)}
   @keyframes cfSobe{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---- CHAT x FOLHA (16/09/2026) ----
+     Com a folha aberta, o chat flutuante (z-index 29) ficava atras dela
+     (z-index 40): o lojista abria a sacola para mostrar um produto e PARAVA DE
+     VER as mensagens — justamente no momento em que o cliente pergunta o
+     preco. Perder pergunta com a sacola aberta e perder venda na hora exata da
+     venda.
+     O conserto NAO e so subir o z-index: o chat ficaria POR CIMA da folha,
+     tapando as ferramentas. Ele sobe para a faixa livre ACIMA da folha, com a
+     mesma altura dela como referencia, e encolhe para caber.
+     Feito em CSS puro com `:has()`, sem tocar em handler nenhum — regra de
+     ouro do projeto: reforma visual so e segura quando nao toca handler. Em
+     navegador sem `:has()` nada muda: volta a ser exatamente o de hoje. */
+  body.imersivo #lvChatF{transition:bottom .24s ease,max-height .24s ease,width .24s ease}
+  body.imersivo:has(#lvFolha.aberta) #lvChatF{
+    z-index:41;
+    bottom:calc(var(--lvFolhaH) + 12px);
+    max-height:24dvh;
+    width:min(72vw,300px)}
 
   /* TELA LIMPA: um toque no video abaixa tudo e deixa so o risquinho */
   body.imersivo #lvDock,body.imersivo #lvChatF,body.imersivo #boxDurante,
@@ -602,7 +627,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-16-tetoplano';
+  window.MOVIKI_VERSAO='2026-09-16-chatfolha';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
