@@ -909,6 +909,7 @@ svg{display:block}
     getDoc(refAulas()).then(a=>{
       const d=a.exists()?(a.data()||{}):{};
       MvLiveAulas.iniciar({
+        uid,
         estado:{ vistas:Array.isArray(d.vistas)?d.vistas:[], em:d.em||'' },
         salvar:(vistas,em)=>{
           setDoc(refAulas(),{vistas,em:em||''},{merge:true}).catch(()=>{});

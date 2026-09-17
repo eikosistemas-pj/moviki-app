@@ -1,4 +1,4 @@
-/*! MOVIKI liveaulas.js | versao 2026-09-16-pixnovo | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-09-17-percurso | repo: moviki-app
  *
  * O MODULO DE AULAS DO MODO LIVE — catalogo e motor, num arquivo so.
  *
@@ -201,6 +201,82 @@
              '<path d="M8 5.4v13.2L19 12z"/></svg>';
   var ytPronto = false, ytFila = [], seq = 0;
 
+  /* =====================================================================
+     17/09/2026 — OS TRES CONSERTOS QUE O PAINEL JA TINHA E ESTE ARQUIVO NAO
+
+     (a) A AULA MORRIA AOS 90%. `marcar()` repinta a biblioteca inteira, e a
+         biblioteca e repintada com `corpo.innerHTML=''` — que APAGA o iframe
+         da aula que estava tocando. Como as tres aulas da trava so existem na
+         biblioteca, eram justamente elas que cortavam sozinhas perto do fim.
+         Era isso o "as videoaulas estao travando".
+     (b) O PLAYER APAGADO NUNCA ERA DESTRUIDO. A API do YouTube fica presa a
+         uma janela que nao existe mais e PARA de entregar evento aos players
+         seguintes: da segunda aula em diante nada chegava aos 90% e nada
+         ficava verde — e a trava da live nunca abria.
+     (c) VALIA A POSICAO DA AGULHA (tempo atual / duracao >= 0,9). Arrastar a
+         barrinha ate o fim marcava a aula em dois segundos. O painel do
+         lojista e o do parceiro trocaram isso em 15/09 pelo CAMINHO
+         PERCORRIDO; este arquivo ficou para tras.
+
+     Agora vale o percurso: a cada 500 ms anota-se o segundo que esta tocando,
+     e o salto so entra se couber no tempo real decorrido — 2x continua
+     passando, arrasto nao soma nada. O percurso fica guardado POR AULA no
+     proprio navegador, entao fechar o estudio no meio da aula nao custa mais
+     o que ja foi assistido. E o fim do video nao e prova de nada: o estado
+     ENDED so fecha a aula se os 90% percorridos ja estiverem la.
+     ===================================================================== */
+  var PERCORRIDO = {};                 /* chave da aula -> { s:{}, n:segundos } */
+  var dono = '';                       /* uid, para o percurso nao vazar entre contas */
+
+  function chaveTrilha(k) { return 'mvTrilhaLv:' + (dono || 'anon') + ':' + k; }
+  function trilha(k) {
+    if (!PERCORRIDO[k]) {
+      var t = { s: {}, n: 0 };
+      try {
+        var cru = window.localStorage && localStorage.getItem(chaveTrilha(k));
+        var l = cru ? JSON.parse(cru) : null;
+        if (l && l.length) {
+          for (var i = 0; i < l.length; i++) {
+            var x = Number(l[i]);
+            if (x >= 0 && !t.s[x]) { t.s[x] = 1; t.n++; }
+          }
+        }
+      } catch (e) {}
+      PERCORRIDO[k] = t;
+    }
+    return PERCORRIDO[k];
+  }
+  function guardarTrilha(k) {
+    try {
+      var t = PERCORRIDO[k]; if (!t || !window.localStorage) return;
+      var l = [];
+      for (var x in t.s) { if (t.s[x]) l.push(Number(x)); }
+      localStorage.setItem(chaveTrilha(k), JSON.stringify(l));
+    } catch (e) {}
+  }
+  function limparTrilha(k) {
+    try { if (window.localStorage) localStorage.removeItem(chaveTrilha(k)); } catch (e) {}
+  }
+  /* fechar a aba ou recarregar e o jeito mais comum de sair no meio da aula.
+     `pagehide` pega os dois, e ainda funciona no iPhone. */
+  try {
+    window.addEventListener('pagehide', function () {
+      try { for (var k in PERCORRIDO) { if (PERCORRIDO[k] && PERCORRIDO[k].n) guardarTrilha(k); } } catch (e) {}
+    });
+  } catch (e) {}
+  function segsDe(d) {
+    var m = /^(\d+):(\d{1,2})$/.exec(String(d || ''));
+    return m ? (Number(m[1]) * 60 + Number(m[2])) : 0;
+  }
+  function pctDe(k) {
+    try {
+      var v = achar(k); if (!v) return 0;
+      var dur = segsDe(v.d); if (!dur) return 0;
+      var t = trilha(k); if (!t || !t.n) return 0;
+      return Math.min(99, Math.round(t.n / dur * 100));
+    } catch (e) { return 0; }
+  }
+
   function carregarYT(cb) {
     if (ytPronto) return cb();
     ytFila.push(cb);
@@ -263,31 +339,125 @@
         }
         montar();
       })();
-      function pararRelogio() { try { clearInterval(f.__t); } catch (e) {} f.__t = null; }
-      function contar() { if (f.__contado) return; f.__contado = 1; pararRelogio(); marcar(v.k); }
-      function relogio() {
-        if (f.__t) return;
-        f.__t = setInterval(function () {
-          try {
-            if (!document.body.contains(f)) { pararRelogio(); return; }
-            if (!f.__p) return;
-            var d = f.__p.getDuration(), t = f.__p.getCurrentTime();
-            if (d > 0 && t / d >= 0.9) contar();
-          } catch (e) {}
-        }, 1000);
-      }
       function montar() {
         try {
+          var t = trilha(v.k), ultimo = -1, ultimoMs = 0, dur = 0;
+          f.__gravou = 0;
+          /* guarda o rascunho ao parar: trocar de aula, fechar a biblioteca ou
+             sair do estudio nao pode custar o que ja foi assistido */
+          function pararRelogio() {
+            try { clearInterval(f.__t); } catch (e) {}
+            f.__t = null;
+            try { guardarTrilha(v.k); } catch (e) {}
+          }
+          /* fecha a aula SO com 90% PERCORRIDOS — uma gravacao por iframe */
+          function fechar() {
+            if (f.__contado) return true;
+            if (!(dur > 0 && t.n >= dur * 0.9)) return false;
+            f.__contado = 1;
+            pararRelogio();
+            limparTrilha(v.k);
+            marcar(v.k);
+            /* o relogio para aqui: sem este empurrao o medidor congelaria em
+               "Assistido 100%" em vez de dizer que a aula fechou */
+            andamento(v.k, dur);
+            return true;
+          }
+          function relogio(p) {
+            pararRelogio();
+            f.__t = setInterval(function () {
+              try {
+                if (!document.body.contains(f)) { pararRelogio(); return; }
+                if (!dur) { try { dur = p.getDuration() || 0; } catch (e) { dur = 0; } }
+                var tt = p.getCurrentTime();
+                if (!(tt >= 0)) return;
+                var agora = Date.now();
+                var real = ultimoMs ? ((agora - ultimoMs) / 1000) : 0;
+                ultimoMs = agora;
+                var sg = Math.floor(tt);
+                /* so conta o trecho se o avanco couber no tempo que passou de
+                   verdade — a folga de 1,6x deixa o 2x passar e barra o arrasto */
+                if (ultimo >= 0 && (tt - ultimo) <= real * 1.6 + 0.6) {
+                  for (var i = Math.floor(ultimo); i <= sg; i++) {
+                    if (i >= 0 && !t.s[i]) { t.s[i] = 1; t.n++; }
+                  }
+                } else if (sg >= 0 && !t.s[sg]) { t.s[sg] = 1; t.n++; }
+                ultimo = tt;
+                andamento(v.k, dur);
+                /* grava de 2 em 2 segundos: gravar raro demais perde o comeco
+                   da aula de quem sai rapido, e e esse pedaco que faz a pessoa
+                   achar que nao contou nada */
+                if ((++f.__gravou % 4) === 0) guardarTrilha(v.k);
+                fechar();
+              } catch (e) {}
+            }, 500);
+          }
           f.__p = new YT.Player(f.id, { events: {
-            onReady: relogio,
+            onReady: function (e) {
+              try { dur = e.target.getDuration() || 0; } catch (_) {}
+              relogio(f.__p);
+            },
             onStateChange: function (e) {
-              if (e.data === YT.PlayerState.ENDED) { contar(); return; }
-              if (e.data === YT.PlayerState.PLAYING) relogio();
+              if (e.data === YT.PlayerState.PLAYING) { ultimoMs = 0; relogio(f.__p); return; }
+              if (e.data === YT.PlayerState.ENDED) {
+                pararRelogio();
+                /* o fim do video nao e prova de nada: quem arrasta a agulha ate
+                   o fim tambem cai em ENDED */
+                if (!fechar()) adiantou(v.k);
+              }
             }
           } });
         } catch (e) {}
       }
     });
+  }
+
+  /* ---------- o medidor visivel ----------
+     A trava so e justa se o lojista ENXERGA o quanto falta. Sem isto, a regra
+     dos 90% parece defeito — foi essa a licao do painel do parceiro. */
+  var med = null, medPct = null, medTxt = null, medBar = null, medK = '';
+  function montarMedidor(k) {
+    med = document.createElement('div'); med.className = 'lvAulaMed';
+    var topo = document.createElement('div'); topo.className = 'lvAulaMedTopo';
+    medPct = document.createElement('b'); medPct.className = 'lvAulaMedPct';
+    medTxt = document.createElement('span'); medTxt.className = 'lvAulaMedTxt';
+    topo.appendChild(medPct); topo.appendChild(medTxt);
+    var fora = document.createElement('span'); fora.className = 'lvAulaMedFora';
+    medBar = document.createElement('i');
+    fora.appendChild(medBar);
+    med.appendChild(topo); med.appendChild(fora);
+    medK = k;
+    return med;
+  }
+  function soltarMedidor() { med = medPct = medTxt = medBar = null; medK = ''; }
+  /* estado: 0 = assistindo, 1 = concluida, 2 = adiantou o video */
+  function medidor(pc, estado) {
+    if (!med) return;
+    var ok = estado === 1, erro = estado === 2;
+    med.className = 'lvAulaMed' + (ok ? ' lvAulaMedOk' : (erro ? ' lvAulaMedErro' : ''));
+    medBar.style.width = Math.max(0, Math.min(100, pc)) + '%';
+    if (ok) {
+      medPct.textContent = 'Aula concluída';
+      medTxt.textContent = 'Pode passar para a próxima.';
+    } else if (erro) {
+      medPct.textContent = 'Não contou';
+      medTxt.textContent = 'Você adiantou o vídeo. Assista do ponto onde parou — só o que passa de verdade conta.';
+    } else {
+      medPct.textContent = 'Assistido ' + pc + '%';
+      medTxt.textContent = pc >= 90 ? 'Pronto, já conta.'
+                                    : 'a aula fica verde quando chegar em 90%';
+    }
+  }
+  function andamento(k, dur) {
+    try {
+      if (medK !== k || !med) return;
+      if (viu(k)) { medidor(100, 1); return; }
+      if (!(dur > 0)) return;
+      medidor(Math.min(100, Math.round(trilha(k).n / dur * 100)), 0);
+    } catch (e) {}
+  }
+  function adiantou(k) {
+    try { if (medK === k && med) medidor(pctDe(k), 2); } catch (e) {}
   }
   function iframe(v) {
     var f = document.createElement('iframe');
@@ -305,6 +475,10 @@
   function parar(cx) {
     var q = cx.querySelector('div.lvAulaQuadro'); if (!q) return;
     try { matar(q.querySelector('iframe')); } catch (e) {}
+    try {
+      var m = cx.querySelector('.lvAulaMed');
+      if (m) { if (m === med) soltarMedidor(); m.parentNode.removeChild(m); }
+    } catch (e) {}
     var v = achar(cx.getAttribute('data-lvk')); if (!v) return;
     cx.replaceChild(moldura(v), q);
   }
@@ -322,10 +496,15 @@
     /* A TRAVA QUE VALE MAIS QUE AS OUTRAS: com a live NO AR o audio da aula
        sairia pelo microfone, dentro da transmissao. */
     if (noAr()) { avisoNoAr(); return; }
+    var caixa = botao.parentNode;
     pararTodos();                                // um video de cada vez, sempre
     var q = document.createElement('div'); q.className = 'lvAulaQuadro';
     q.appendChild(iframe(v));
-    botao.parentNode.replaceChild(q, botao);
+    caixa.replaceChild(q, botao);
+    try {
+      caixa.appendChild(montarMedidor(k));
+      medidor(viu(k) ? 100 : pctDe(k), viu(k) ? 1 : 0);
+    } catch (e) {}
   }
   function avisoNoAr() {
     try {
@@ -384,22 +563,44 @@
     cx.addEventListener('click', function (e) { if (e.target === cx) fecharBiblioteca(); });
     document.body.appendChild(cx);
   }
-  function pintarBiblioteca() {
+  /* O aviso do topo mora num bloco proprio para poder ser refeito SOZINHO.
+     Sem isso, atualizar o aviso obrigava a repintar a biblioteca inteira — e
+     repintar apaga o video que estiver tocando dentro dela. */
+  function pintarAviso() {
     if (!corpo) return;
-    corpo.innerHTML = '';
+    var velho = corpo.querySelector('.lvAulasAviso');
+    if (velho) velho.parentNode.removeChild(velho);
+    var cxa = document.createElement('div'); cxa.className = 'lvAulasAviso';
     var f = faltam();
     if (f.length) {
       var av = document.createElement('div'); av.className = 'lvAulasTrava';
       av.innerHTML = '<b>Falta' + (f.length > 1 ? 'm ' + f.length + ' aulas' : ' 1 aula') +
         ' para você entrar ao vivo.</b><span>São as três do começo. As outras ficam ' +
         'aqui para consultar quando precisar.</span>';
-      corpo.appendChild(av);
+      cxa.appendChild(av);
     } else if (novas().length) {
       var nv = document.createElement('div'); nv.className = 'lvAulasNovo';
       nv.innerHTML = '<b>Tem aula nova aqui.</b><span>Ferramenta nova ganha aula. ' +
         'Você já pode transmitir — isto é só para ficar em dia.</span>';
-      corpo.appendChild(nv);
+      cxa.appendChild(nv);
     }
+    if (corpo.firstChild) corpo.insertBefore(cxa, corpo.firstChild);
+    else corpo.appendChild(cxa);
+  }
+  /* Repintar e DESTRUTIVO: `innerHTML=''` apaga o iframe que estiver tocando.
+     Por isso todo player e destruido antes — so apagar o elemento deixa a API
+     do YouTube presa a uma janela morta, e ela para de entregar evento aos
+     players seguintes (era isso que travava o visto verde da segunda aula em
+     diante). */
+  function pintarBiblioteca() {
+    if (!corpo) return;
+    try {
+      var fs = corpo.querySelectorAll('iframe');
+      for (var i = 0; i < fs.length; i++) matar(fs[i]);
+    } catch (e) {}
+    soltarMedidor();
+    corpo.innerHTML = '';
+    pintarAviso();
     MOD().forEach(function (m) {
       var vs = prontos(m); if (!vs.length) return;
       var sec = document.createElement('section'); sec.className = 'lvAulasSec';
@@ -430,10 +631,35 @@
   function fecharBiblioteca() {
     if (!cx) return;
     pararTodos();
+    soltarMedidor();
     cx.classList.add('escondido');
     document.body.classList.remove('lvAulasAberto');
   }
 
+  function tocandoNaBiblioteca() {
+    try { return !!(corpo && corpo.querySelector('div.lvAulaQuadro iframe')); }
+    catch (e) { return false; }
+  }
+  /* legenda do cartao, atualizada NO LUGAR — serve para a aula ficar
+     "Assistida" sem precisar refazer a biblioteca inteira */
+  function pintarLegendas() {
+    try {
+      var cs = document.querySelectorAll('.lvAulaCel[data-lvk]');
+      for (var i = 0; i < cs.length; i++) {
+        var k = cs[i].getAttribute('data-lvk'), v = achar(k);
+        if (!v || !viu(k)) continue;
+        var sp = cs[i].querySelector('.lvAulaLeg span');
+        if (sp) sp.textContent = 'Assistida' + (v.d ? ' · ' + v.d : '');
+      }
+    } catch (e) {}
+  }
+  /* ⚠️ ESTE E O CONSERTO DE 17/09/2026 (o "as aulas travam").
+     `marcar()` chama pintarTudo() no instante em que a aula chega aos 90% —
+     e repintar a biblioteca APAGA o iframe que ainda esta tocando. Como as
+     tres aulas da trava so existem na biblioteca, eram justamente elas que
+     cortavam sozinhas perto do fim. Agora, com uma aula tocando ali dentro,
+     so o que e seguro e atualizado: o visto verde, a legenda e o aviso do
+     topo. A biblioteca inteira e refeita na proxima vez que abrir. */
   function pintarTudo() {
     try {
       /* repinta as capas ja na tela para o visto verde aparecer na hora */
@@ -441,7 +667,10 @@
       for (var i = 0; i < bs.length; i++) {
         if (viu(bs[i].getAttribute('data-lvaula'))) bs[i].classList.add('lvAulaVista');
       }
-      if (corpo && cx && !cx.classList.contains('escondido')) pintarBiblioteca();
+      var aberta = corpo && cx && !cx.classList.contains('escondido');
+      if (!aberta) return;
+      if (tocandoNaBiblioteca()) { pintarLegendas(); pintarAviso(); return; }
+      pintarBiblioteca();
     } catch (e) {}
   }
 
@@ -470,6 +699,21 @@
       'color:#fff;font-size:11px;font-weight:600;padding:2px 6px;border-radius:6px}',
     '.lvAulaVista{outline:2px solid var(--mv-ok,#25e39b);outline-offset:-2px}',
     '.lvAulaVista .lvAulaPlay{background:rgba(37,227,155,.85);color:#06131f}',
+    /* o medidor: a regra dos 90% so e justa se o lojista VE o quanto falta */
+    '.lvAulaMed{margin-top:8px;padding:9px 11px;border-radius:12px;',
+      'background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.30)}',
+    '.lvAulaMedTopo{display:flex;align-items:baseline;gap:8px;margin-bottom:7px}',
+    '.lvAulaMedPct{font-size:17px;font-weight:800;letter-spacing:-.02em;color:#00D4FF;flex:0 0 auto}',
+    '.lvAulaMedTxt{font-size:11.5px;line-height:1.35;color:var(--mv-txt-2,#c6d8ee)}',
+    '.lvAulaMedFora{display:block;height:8px;border-radius:999px;',
+      'background:rgba(255,255,255,.10);overflow:hidden}',
+    '.lvAulaMedFora>i{display:block;height:100%;width:0%;border-radius:999px;',
+      'background:linear-gradient(90deg,#00D4FF,#0066FF);transition:width .35s ease}',
+    '.lvAulaMedOk{background:rgba(37,227,155,.10);border-color:rgba(37,227,155,.40)}',
+    '.lvAulaMedOk .lvAulaMedPct{color:#25e39b}',
+    '.lvAulaMedOk .lvAulaMedFora>i{background:#25e39b}',
+    '.lvAulaMedErro{background:rgba(255,138,0,.10);border-color:rgba(255,138,0,.42)}',
+    '.lvAulaMedErro .lvAulaMedPct{color:#ffb020}',
     /* biblioteca */
     '.lvAulasModal{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.72);',
       'display:flex;align-items:flex-end;justify-content:center}',
@@ -536,6 +780,9 @@
   window.MvLiveAulas = {
     iniciar: function (op) {
       op = op || {};
+      /* o percurso da aula fica no navegador, por conta: sem o uid, dois
+         lojistas no mesmo aparelho herdariam o progresso um do outro */
+      dono = op.uid || '';
       est = { vistas: (op.estado && op.estado.vistas) || [],
               em: (op.estado && op.estado.em) || '' };
       if (typeof op.salvar === 'function') salvar = op.salvar;

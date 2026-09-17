@@ -5939,6 +5939,7 @@ window.mvAbaInicial=function(){
             }
           }catch(_){}
           MvLiveAulas.iniciar({
+            uid: user.uid,
             estado: { vistas:_laV, em:_laEm },
             salvar: function(lista, em){
               try{ setDoc(_laRef, { vistas:lista, em: em||'' }, { merge:true }); }catch(_){}
@@ -7678,6 +7679,21 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     caixa.appendChild(x); caixa.appendChild(head); caixa.appendChild(corpo);
     cx.appendChild(caixa); document.body.appendChild(cx);
   }
+  /* ---------- 17/09/2026: O VISTO VERDE QUE PARAVA NA SEGUNDA AULA ----------
+     A janela Tutoriais troca de tela com `corpo.innerHTML=''`. Isso APAGA o
+     iframe da aula que estava tocando, mas NAO destroi o YT.Player dela - e a
+     API do YouTube, presa a uma janela que nao existe mais, para de entregar
+     evento aos players seguintes. Da segunda aula em diante a medicao nunca
+     comecava e a aula nunca ficava verde. E exatamente o defeito que ja tinha
+     sido consertado no player embutido (funcao matar) e nunca chegou aqui.
+     Agora toda troca de tela desta janela passa por matarCorpo(). */
+  function matarCorpo(){
+    try{
+      if(!corpo) return;
+      var fs=corpo.querySelectorAll('iframe');
+      for(var i=0;i<fs.length;i++) matar(fs[i]);
+    }catch(e){}
+  }
   function cartao(v,rotulo){
     var b=moldura(v,'mvTutCapa','data-tutcapa');
     var fora=document.createElement('button');
@@ -7695,7 +7711,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      O nome do modulo virou rotulo dentro do cartao. */
   function lista(){
     pararTodos();
-    montar(); corpo.innerHTML='';
+    montar(); matarCorpo(); corpo.innerHTML='';
     var grade=document.createElement('div'); grade.className='mvTutGrade';
     var n=0;
     MOD().forEach(function(m){
@@ -7712,15 +7728,17 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     volta.type='button'; volta.className='mvTutVoltar'; volta.setAttribute('data-tutvoltar','1');
     volta.textContent='‹ Todos os tutoriais';
     var tit=document.createElement('div'); tit.className='mvTutTit'; tit.textContent=v.t;
-    var q=document.createElement('div'); q.className='mvTutVideo'; q.appendChild(iframe(v));
+    var q=document.createElement('div'); q.className='mvTutVideo';
+    matarCorpo();
     corpo.innerHTML='';
+    q.appendChild(iframe(v));
     corpo.appendChild(volta); corpo.appendChild(tit); corpo.appendChild(q);
     cx.classList.remove('escondido');
   }
   function fechar(){
     if(!cx) return;
     cx.classList.add('escondido');
-    try{ var fr=corpo.querySelector('iframe'); if(fr) clearInterval(fr.__t); }catch(e){}
+    matarCorpo();         /* destroi o player: so apagar o iframe trava o visto verde das proximas */
     corpo.innerHTML='';   /* mata o iframe: sem isso o audio continua tocando */
   }
 
