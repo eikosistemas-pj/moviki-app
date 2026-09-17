@@ -1100,6 +1100,12 @@ table.mvTab td b{font-weight:700}
             <button type="button" class="btnMini" id="lvMestraBtn" style="margin-top:8px">Carregando…</button>
           </div>
 
+          <div class="cd" style="margin-top:14px" id="lvVitrineCard">
+            <div class="cdTopo"><div><div class="cdTit">Vitrine "Ao vivo agora" no site</div><div class="cdSub">O bloco na home e na página do Modo Live que mostra quem está transmitindo <b>neste momento</b>. É o que faz o Moviki levar espectador para a live do lojista — sem ele, a live só é vista por quem o lojista mesmo chamou no WhatsApp.<br><br>Desligar aqui <b>não</b> derruba live nenhuma: as transmissões continuam, só somem da vitrine. Serve para incidente de conteúdo, quando você quer tirar o cartaz da frente da loja sem fechar a loja. A <b>chave-mestra acima também apaga a vitrine</b> — sem live acontecendo, não pode haver cartaz dizendo que há.</div></div><span class="cdChip" id="lvVitrineChip">—</span></div>
+            <button type="button" class="btnMini" id="lvVitrineBtn" style="margin-top:8px">Carregando…</button>
+            <p class="cdSub" style="margin-top:8px">Vale em até <b>20 segundos</b> — é o tempo que a lista fica guardada no cache que faz mil visitantes na home custarem uma leitura do banco.</p>
+          </div>
+
           <div class="cd" style="margin-top:14px">
             <div class="cdTopo"><div><div class="cdTit">Termos proibidos extras</div><div class="cdSub">A lista-base (drogas, armas, sexual, remédios, cigarro, fraude, apostas, animais, golpe) já vale em todo lugar. Aqui você acrescenta termos novos, um por linha — valem na hora, sem subir arquivo.</div></div><span class="cdChip" id="lvTermChip">—</span></div>
             <textarea id="lvTermos" rows="5" style="width:100%;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:10px;font:inherit" placeholder="um termo por linha"></textarea>
@@ -1455,7 +1461,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-tetoplano';
+  window.MOVIKI_VERSAO = '2026-09-16-vitrine1';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -3905,7 +3911,7 @@ table.mvTab td b{font-weight:700}
     try{const s=await getDocs(query(collection(db,'lives'),where('inicioMs','>=',desde),orderBy('inicioMs','desc'),limit(400)));LV_HIST=[];s.forEach(d=>LV_HIST.push(Object.assign({id:d.id},d.data())));}catch(e){LV_HIST=[];}
     try{const s=await getDocs(query(collection(db,'pedidos'),where('dia','>=',diaSP(desde))));LV_PED=[];s.forEach(d=>LV_PED.push(Object.assign({id:d.id},d.data())));}catch(e){LV_PED=[];}
     try{const s=await getDocs(collection(db,'live_bloqueios'));LV_BLOQ=[];s.forEach(d=>LV_BLOQ.push(Object.assign({uid:d.id},d.data())));}catch(e){LV_BLOQ=[];}
-    try{const t=await getDoc(doc(db,'configuracoes','liveTermos'));const d=t.exists()?(t.data()||{}):{};const ex=Array.isArray(d.extras)?d.extras:[];MV_TERMOS_EXTRAS=ex;el('lvTermos').value=ex.join('\n');txt('lvTermChip',ex.length+' extras');lvPintarMestra(d.liveDesligada===true);LV_BETA=Array.isArray(d.liveBeta)?d.liveBeta.filter(function(x){return typeof x==='string';}):[];lvPintarBeta();var _ct=el('lvConsTeto');if(_ct&&document.activeElement!==_ct)_ct.value=Number(d.tetoMinutosMes||0)||'';var _cc=el('lvConsCiclo');if(_cc&&document.activeElement!==_cc)_cc.value=Number(d.cicloDia||1)||1;lvPlanoCampos(d);LV_CICLO_DIA=Number(d.cicloDia||1)||1;}catch(e){txt('lvTermChip','—');txt('lvMestraChip','—');}
+    try{const t=await getDoc(doc(db,'configuracoes','liveTermos'));const d=t.exists()?(t.data()||{}):{};const ex=Array.isArray(d.extras)?d.extras:[];MV_TERMOS_EXTRAS=ex;el('lvTermos').value=ex.join('\n');txt('lvTermChip',ex.length+' extras');lvPintarMestra(d.liveDesligada===true);lvPintarVitrine(d.vitrineDesligada===true);LV_BETA=Array.isArray(d.liveBeta)?d.liveBeta.filter(function(x){return typeof x==='string';}):[];lvPintarBeta();var _ct=el('lvConsTeto');if(_ct&&document.activeElement!==_ct)_ct.value=Number(d.tetoMinutosMes||0)||'';var _cc=el('lvConsCiclo');if(_cc&&document.activeElement!==_cc)_cc.value=Number(d.cicloDia||1)||1;lvPlanoCampos(d);LV_CICLO_DIA=Number(d.cicloDia||1)||1;}catch(e){txt('lvTermChip','—');txt('lvMestraChip','—');}
     try{const s=await getDocs(query(collection(db,'moderacao'),orderBy('criadoEm','desc'),limit(25)));const l=[];s.forEach(d=>l.push(d.data()));
       el('lvModLog').innerHTML=l.length?l.map(m=>'<div class="lvItem"><div class="t"><strong>'+esc(m.acao==='liberar'?'Liberado':'Encerrada'+(m.dias===0?'':' e bloqueado'))+'</strong><span class="cdChip">'+esc(m.nome||m.lojistaUid||'')+'</span></div><div class="s">'+esc(m.motivo||'')+(m.dias>0?' · '+m.dias+' dia(s)':(m.dias===-1?' · permanente':''))+' · '+(m.criadoEm&&m.criadoEm.toDate?m.criadoEm.toDate().toLocaleString('pt-BR'):'')+'</div></div>').join(''):'<div class="vazio">Nada registrado.</div>';
     }catch(e){}
@@ -4282,6 +4288,23 @@ table.mvTab td b{font-weight:700}
      iniciar, o lib/checkout.js recusa cobranca nova, o estudio derruba quem
      esta no ar e a pagina publica mostra manutencao. Sem deploy. */
   var lvMestra=false;
+  /* Vitrine "Ao vivo agora" — 16/09/2026.
+     Interruptor separado da chave-mestra de proposito: sao dois problemas
+     diferentes. A chave-mestra e para o produto (Cloudflare fora, manutencao);
+     esta e para o CONTEUDO — tirar o cartaz da frente da loja sem fechar a
+     loja. Derrubar todas as transmissoes do Moviki porque UM lojista passou do
+     ponto seria punir os outros pelo incidente dele. */
+  var lvVitrineOff=false;
+  function lvPintarVitrine(off){
+    lvVitrineOff=!!off;
+    const b=el('lvVitrineBtn'); if(!b)return;
+    txt('lvVitrineChip',off?'DESLIGADA':'no ar');
+    const c=el('lvVitrineChip'); if(c)c.style.color=off?'var(--mv-erro,#ff6b6b)':'';
+    b.textContent=off?'Religar a vitrine':'Tirar a vitrine do site';
+    b.style.borderColor=off?'':'rgba(255,107,107,.6)';
+    b.style.color=off?'':'#ff6b6b';
+    b.disabled=false;
+  }
   function lvPintarMestra(off){
     lvMestra=!!off;
     const b=el('lvMestraBtn'); if(!b)return;
@@ -4631,6 +4654,18 @@ table.mvTab td b{font-weight:700}
       console.error('[custos] escrita:', e);
     }
     b.disabled = false; b.textContent = 'Salvar tudo';
+  });
+
+  el('lvVitrineBtn').addEventListener('click',async()=>{
+    const ligar=lvVitrineOff;
+    if(!ligar&&!confirm('Tirar a vitrine "Ao vivo agora" do site?\n\nAs lives CONTINUAM no ar e quem tem o link assiste normalmente — elas só deixam de aparecer na home e na página do Modo Live. Você religa por aqui.'))return;
+    const b=el('lvVitrineBtn'); b.disabled=true; b.textContent='Gravando…';
+    try{
+      await setDoc(doc(db,'configuracoes','liveTermos'),{vitrineDesligada:!ligar,atualizadoEm:serverTimestamp()},{merge:true});
+      try{await addDoc(collection(db,'moderacao'),{acao:ligar?'religar_vitrine':'desligar_vitrine',lojistaUid:'-',nome:'Vitrine Ao vivo agora',motivo:ligar?'religar':'desligar',dias:0,por:(USER&&USER.uid)||'',criadoEm:serverTimestamp()});}catch(_){}
+      lvPintarVitrine(!ligar);
+      alert(ligar?'Vitrine religada. Volta ao site em até 20 segundos.':'Vitrine fora do site em até 20 segundos. Nenhuma live caiu.');
+    }catch(e){alert('Não gravou: '+(e&&e.code||'erro'));lvPintarVitrine(lvVitrineOff);}
   });
 
   el('lvMestraBtn').addEventListener('click',async()=>{
