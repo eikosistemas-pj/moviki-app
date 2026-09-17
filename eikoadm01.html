@@ -1019,12 +1019,14 @@ table.mvTab td b{font-weight:700}
               <div><small>Assistindo agora</small><b id="lvKAssist">—</b></div>
               <div><small>Lives hoje</small><b id="lvKHoje">—</b></div>
               <div><small>Vendido pelo Pix hoje</small><b id="lvKVendaHoje">—</b></div>
+              <div><small>Conferido no extrato</small><b id="lvKVendaGw">—</b></div>
               <div class="al"><small>Denúncias abertas</small><b id="lvKDen">—</b></div>
               <div class="al"><small>Lojistas bloqueados</small><b id="lvKBloq">—</b></div>
               <div><small>Pedidos pagos hoje</small><b id="lvKPedHoje">—</b></div>
               <div><small>Lives em 7 dias</small><b id="lvK7">—</b></div>
             </div>
             <div id="lvAtivas"><div class="vazio" style="margin-top:10px">Carregando…</div></div>
+            <p class="cdSub" id="lvOrigemNota" style="margin-top:12px"></p>
           </div>
 
           <div class="cd" style="margin-top:14px">
@@ -1461,7 +1463,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-vitrine1';
+  window.MOVIKI_VERSAO = '2026-09-16-origempago';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -3950,6 +3952,43 @@ table.mvTab td b{font-weight:700}
   function lvNoArTem(uid){ return LV_NOAR.some(x=>x.uid===uid); }
   function lvNome(uid){ const e=lvEnfeite(uid)||{}; return e.nome||(NEG.find(x=>x.uid===uid)||{}).nome||uid; }
   function lvSlug(uid){ const e=lvEnfeite(uid)||{}; return e.slug||(NEG.find(x=>x.uid===uid)||{}).apelido||''; }
+  /* ==========================================================
+     DE ONDE VEM O "PAGO" — 16/09/2026
+     Um pedido chega a pago por dois caminhos que valem coisas diferentes:
+       gateway  o Asaas confirmou que o dinheiro CAIU na subconta. E venda,
+                conferida contra o extrato.
+       lojista  o lojista clicou em "Recebi" olhando o proprio celular. E a
+                palavra dele. No modo chave Pix propria nao existe gateway,
+                entao esse e o unico caminho possivel — e ele e legitimo.
+     Somados no mesmo numero, "Vendido pelo Pix" media a DILIGENCIA do lojista,
+     nao a venda: quem nunca clica em "Recebi" aparecia vendendo zero, e quem
+     clica sem olhar o extrato aparecia vendendo tudo. E por numero assim que
+     se decide preco, meta e em quem prestar atencao.
+     Pedido antigo nao tem `confirmadoPor` e NAO entra em nenhum dos dois —
+     entra na contagem de "sem origem". Chutar a origem de dado velho seria
+     inventar o que este conserto existe para parar de inventar. */
+  function lvOrigemSoma(lista){
+    const r={gw:0,lj:0,velho:0,gwN:0,ljN:0,velhoN:0};
+    (lista||[]).forEach(p=>{
+      const v=Number(p.total||0), o=String(p.confirmadoPor||'');
+      if(o==='gateway'){r.gw+=v;r.gwN++;}
+      else if(o==='lojista'){r.lj+=v;r.ljN++;}
+      else {r.velho+=v;r.velhoN++;}
+    });
+    return r;
+  }
+  function lvOrigemPintar(pagosHoje){
+    const r=lvOrigemSoma(pagosHoje);
+    txt('lvKVendaGw',brlLv(r.gw));
+    const n=el('lvOrigemNota'); if(!n)return;
+    if(!(r.gwN+r.ljN+r.velhoN)){ n.textContent='Nenhum pedido pago hoje.'; return; }
+    const partes=[];
+    if(r.gwN) partes.push('<b>'+brlLv(r.gw)+'</b> em '+r.gwN+(r.gwN===1?' pedido confirmado pelo Asaas':' pedidos confirmados pelo Asaas')+' — dinheiro visto na subconta');
+    if(r.ljN) partes.push('<b>'+brlLv(r.lj)+'</b> em '+r.ljN+(r.ljN===1?' pedido confirmado pelo lojista':' pedidos confirmados pelo lojista')+' no botão "Recebi" — é a palavra dele, não o extrato');
+    if(r.velhoN) partes.push('<b>'+brlLv(r.velho)+'</b> em '+r.velhoN+' pedido(s) <b>sem origem registrada</b> (anteriores a 16/09/2026)');
+    n.innerHTML='Origem do "pago" hoje: '+partes.join(' · ')+'.'+
+      (r.ljN?'<br>No modo <b>chave Pix própria</b> não existe gateway: confirmar na mão é o único caminho, e ele é legítimo. O que não vale é somar os dois como se fossem a mesma prova.':'');
+  }
   function lvKpis(){
     const hoje=diaSP(), pagosHoje=LV_PED.filter(p=>p.dia===hoje&&(p.status==='pago'||p.status==='entregue'));
     const bloq=LV_BLOQ.filter(b=>!b.ate||ms(b.ate)>Date.now());
@@ -3957,6 +3996,7 @@ table.mvTab td b{font-weight:700}
     txt('lvKAssist',LV_NOAR.reduce((t,x)=>t+Number((lvEnfeite(x.uid)||{}).assistindo||0),0));
     txt('lvKHoje',LV_HIST.filter(l=>diaSP(l.inicioMs)===hoje).length); txt('lvK7',LV_HIST.filter(l=>l.inicioMs>=Date.now()-7*86400000).length);
     txt('lvKVendaHoje',brlLv(pagosHoje.reduce((t,p)=>t+Number(p.total||0),0))); txt('lvKPedHoje',pagosHoje.length);
+    lvOrigemPintar(pagosHoje);
     const alvos=new Set(LV_DEN.map(d=>d.lojistaUid||'-')).size;
     txt('lvKDen',LV_DEN.length); txt('lvKBloq',bloq.length);
     txt('lvDenChip',LV_DEN.length+(alvos>1?' · '+alvos+' lojistas':''));
