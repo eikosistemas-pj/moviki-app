@@ -1,0 +1,1359 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==========================================================
+    //  v25 — 16/09/2026 — MODERACAO, PRESENCA E RETENCAO DO SAQUE
+    //
+    //  TRES mudancas, e so elas. O resto do arquivo e a v24 publicada,
+    //  letra por letra.
+    //    1) denuncias/{id}                    -> so se denuncia live NO AR
+    //    2) negocios/{uid}/livepresenca/{sid} -> create so com a live NO AR
+    //    3) saques/{id}                       -> pedidoEm == hora do SERVIDOR
+    //
+    //  --- 1: a denuncia deixa de ser arma (achado B10) ---
+    //  `denuncias` aceitava create sem auth, sem teto e com o lojistaUid
+    //  escolhido por quem denuncia. Cinco mil denuncias contra um concorrente
+    //  afogavam a fila do painel e enterravam a denuncia verdadeira do dia.
+    //  Agora so se denuncia quem esta transmitindo AGORA: liveNoAr() custa 1
+    //  leitura por denuncia (evento raro) e reduz a janela do ataque ao tempo
+    //  em que o alvo esta no ar. O teto de 300 e a agregacao por lojista sao
+    //  a outra metade, no painel do dono (2026-09-16-b2b10).
+    //  O App Check enforcado desde 05/09 ja exige navegador de verdade.
+    //
+    //  --- 2: presenca forjavel (achado B7) ---
+    //  A regra nao exigia nada alem do formato: 500 documentos viravam
+    //  "500 assistindo", e o laco rodava ate contra uid que nem estava ao
+    //  vivo, so para gerar escrita paga.
+    //  liveNoAr() entra SO NO CREATE. No update sairia caro do jeito errado:
+    //  a batida e por espectador por MINUTO, e cada uma pagaria um get().
+    //  So o create cria documento novo — que e o que o ataque precisa.
+    //
+    //  --- 3: a retencao de 7 dias do saque (achado B11) ---
+    //  `pedidoEm` era escrito pelo cliente e a regra so exigia que o campo
+    //  EXISTISSE. Com uma string no lugar da data, o ms() do servidor devolvia
+    //  null e o corte de 7 dias sumia: TODAS as comissoes em retencao entravam
+    //  no pagamento. Agora a data e a hora do servidor, como em criadoEm.
+    //
+    //  --- ORDEM DE PUBLICACAO ---
+    //  Publicar ESTAS regras ANTES de subir o pagar-saque.js do lote 1D.
+    //  Invertido, nada quebra: o servidor so fica mais rigoroso que a regra.
+    // ==========================================================
+
+    // ==========================================================
+    //  v24 — 15/09/2026 — A SESSAO DA LIVE PASSA A SER DO SERVIDOR
+    //
+    //  TRES mudancas, e so elas. O resto do arquivo e a v23 publicada,
+    //  letra por letra.
+    //    1) live_sessoes/{uid}  -> COLECAO NOVA: quem diz que a live esta no ar
+    //    2) live_cota/{uid}     -> colecao nova: cota de lives do teste gratis
+    //    3) liveNoAr(uid)       -> passa a ler live_sessoes, e nao estado/live
+    //
+    //  --- POR QUE EXISTE ---
+    //  Ate 15/09 quem dizia que a live estava no ar era o NAVEGADOR DO LOJISTA.
+    //  A pagina publica lia negocios/{uid}/estado/live e acreditava nos campos
+    //  `ativa`, `whep` e `pulso` — documento que cai no curinga
+    //  `match /{documento=**}` deste arquivo, com escrita livre para o dono.
+    //
+    //  Resultado, achado na auditoria de 15/09: qualquer lojista com plano
+    //  (teste gratis inclusive) lia o `whep` de uma live de verdade
+    //  (negocios/* e read:true), escrevia no proprio estado
+    //     { ativa:true, pulso:agora, whep:<whep alheio> }
+    //  e ficava AO VIVO na propria pagina RETRANSMITINDO A IMAGEM DO OUTRO,
+    //  com o proprio WhatsApp e o proprio Pix — sem aceitar as Regras da Live,
+    //  sem passar pelo beta fechado e sem filtro de termos.
+    //
+    //  --- POR QUE COLECAO NOVA, NA RAIZ, E NAO estado/liveSessao ---
+    //  ISTO E O CORACAO DA CORRECAO, e quase passou batido: REGRA DO FIRESTORE
+    //  NAO TEM "DENY". Quando varios match casam com o mesmo caminho, o acesso
+    //  e concedido se QUALQUER UM permitir. Um match especifico dizendo
+    //  `allow write: if false` DENTRO de negocios/{uid} nao tiraria nada: o
+    //  curinga logo abaixo ja concede escrita ao dono. A protecao inteira
+    //  viraria enfeite.
+    //  Por isso a sessao mora FORA de negocios/{uid}, onde o curinga nao
+    //  alcanca. De quebra, a lista de lives no ar do painel do dono vira uma
+    //  consulta simples, sem collectionGroup e sem indice novo.
+    //
+    //  --- A DIVISAO QUE FICA ---
+    //  negocios/{uid}/estado/live = CONTEUDO, escrito pelo lojista
+    //     (titulo, sacola, produto em destaque, oferta, cupom, brinde)
+    //  live_sessoes/{uid}         = AUTORIDADE, escrita so pelo Admin SDK
+    //     (ativa, whep, inicioEm, pulsoEm, limiteMin, entradaId, encerradaPor)
+    //
+    //  --- ATENCAO: liveNoAr MUDOU DE DOCUMENTO ---
+    //  O campo `ativa` de estado/live passa a ser SEMPRE false — o estudio novo
+    //  nao o escreve mais. Se esta funcao continuasse lendo de la, liveNoAr()
+    //  devolveria false para sempre e O CHAT DA LIVE PARARIA DE FUNCIONAR,
+    //  calado: o visitante escreve, a regra nega, e a tela diz "Nao foi".
+    //
+    //  --- ORDEM DE PUBLICACAO ---
+    //  PUBLICAR ESTAS REGRAS ANTES de subir os arquivos da marca
+    //  `2026-09-15-sessao1`. Invertido, a live nao abre: o robo grava
+    //  live_sessoes (Admin SDK ignora regras, entao a gravacao passa), mas a
+    //  pagina publica nao consegue LER a colecao nova e ninguem fica no ar.
+    //  E, enquanto estas regras nao subirem com o estudio novo no ar, o chat
+    //  fica mudo pelo motivo do paragrafo acima.
+    // ==========================================================
+
+    // ==========================================================
+    //  v23 — 11/09/2026 — MODO LIVE + CHECKOUT PIX + SEGURANCA DA LIVE
+    //
+    //  (Revisada duas vezes no mesmo dia, ANTES de ser publicada. Se voce
+    //  tem uma v23 sem "SEGURANCA" neste titulo, jogue fora: esta substitui.)
+    //
+    //  NOVE mudancas, e so elas. O resto do arquivo e a v22 publicada,
+    //  letra por letra.
+    //    1) negocios/{uid}/livechat/{mid}    -> visitante anonimo comenta
+    //                                           (com filtro de termos graves)
+    //    2) negocios/{uid}/livepresenca/{sid} -> "quem esta assistindo"
+    //    3) pedidos/{id}                      -> o lojista le os proprios
+    //    4) checkout_publico/{uid}            -> leitura publica, so leitura
+    //    5) match recursivo de negocios/{uid} -> o ADMIN tambem escreve
+    //       (e o que deixa o dono do Moviki encerrar a live de alguem)
+    //    6) lives/{id}                        -> sessao de live (painel do dono)
+    //    7) denuncias/{id}                    -> denuncia anonima da live
+    //    8) live_bloqueios/{uid}              -> quem esta proibido de transmitir
+    //    9) moderacao/{id} e configuracoes/liveTermos -> registro, termos extras
+    //       e a CHAVE-MESTRA liveDesligada (desliga toda live sem deploy)
+    //  E duas funcoes novas la embaixo: liveNoAr(uid) e liveCampos(d).
+    //
+    //  --- 5 a 9: SEGURANCA DA LIVE ---
+    //  lives: o lojista cria e atualiza a propria sessao (id uid_inicio), com
+    //    conjunto FECHADO de campos; depois que o Moviki encerra
+    //    (encerradaPor == 'moviki') o lojista nao mexe mais nela.
+    //  denuncias: qualquer um CRIA (anonima), so com motivo da lista, texto
+    //    de ate 300 e hora do servidor. Ler, resolver e apagar: so admin.
+    //  live_bloqueios: leitura publica (a live mostra "suspensa"; o servidor
+    //    confere antes de entregar o endereco de video); escrita so admin.
+    //  moderacao: so admin cria e le; ninguem edita nem apaga — e registro.
+    //  configuracoes/liveTermos: leitura publica (os filtros precisam ler),
+    //    escrita so admin.
+    //
+    //  --- 3 e 4: CHECKOUT PIX (Enterprise) ---
+    //  O Pix e emitido pela SUBCONTA Asaas do lojista, pelo robo
+    //  (lib/checkout.js). Pedido so e escrito pelo Admin SDK: `write: false`
+    //  para todo mundo, inclusive o dono — status "pago" nunca nasce no
+    //  navegador. O lojista LE os proprios pedidos (a consulta do estudio
+    //  filtra por lojistaUid, que e o que a regra exige).
+    //  checkout_publico/{uid} = { ativo } diz a pagina da live se mostra o
+    //  botao "Comprar com Pix". Tambem so o robo escreve.
+    //  checkout_contas/{uid} (chave da subconta, cifrada) NAO tem match:
+    //  ninguem le nem escreve pelo app. Nao e esquecimento — e a trava.
+    //
+    //  --- POR QUE EXISTE ---
+    //  O lojista Premium/Enterprise transmite ao vivo pelo estudio
+    //  (app.moviki.com.br/live.html) e o cliente assiste em
+    //  moviki.com.br/live/{apelido}. O estado da live mora em
+    //  negocios/{uid}/estado/live e NAO precisou de regra: o match
+    //  recursivo de negocios/{uid} ja da escrita ao dono e leitura a todos.
+    //  O que precisou de regra e o que o VISITANTE ANONIMO escreve: a
+    //  mensagem do chat (e o toque em "Quero este", que vira mensagem do
+    //  tipo 'quero') e o carimbo de presenca.
+    //
+    //  --- AS TRAVAS ---
+    //  livechat: so nome (2-30), texto (1-140), tipo 'msg' ou 'quero',
+    //    criadoEm == hora do servidor (ninguem data mensagem no passado) e
+    //    expiraEm opcional para o TTL de 30 dias. E SO ENQUANTO A LIVE ESTA
+    //    NO AR: liveNoAr() custa 1 leitura por mensagem e impede o chat de
+    //    virar mural de spam fora da transmissao. Mensagem nao se edita. O
+    //    tipo 'dono' (resposta do lojista) entra pelo match recursivo, que
+    //    so o dono do negocio alcanca — visitante nao consegue se passar
+    //    pela loja.
+    //  livepresenca: so em (== hora do servidor) e expiraEm. Sem nome, sem
+    //    IP, sem nada pessoal. Id da aba entre 10 e 40 caracteres.
+    //
+    //  --- O QUE NAO AFROUXA ---
+    //  Nada fora de negocios/{uid}/livechat e livepresenca muda. O App Check
+    //  enforcado no Firestore (desde 05/09) e o que barra script de fora;
+    //  estas regras dizem O QUE pode ser gravado.
+    //
+    //  --- ORDEM DE PUBLICACAO ---
+    //  PUBLICAR ESTAS REGRAS ANTES de divulgar a primeira live. Invertido,
+    //  nada quebra: o video e o produto funcionam, mas o chat responde "Nao
+    //  foi" e o contador de quem assiste fica em zero.
+    //
+    //  --- TTL (opcional, recomendado) ---
+    //  Console do Google Cloud > Firestore > Time-to-live: criar politica
+    //  para os grupos de colecao `livechat` e `livepresenca`, campo
+    //  `expiraEm`. Sem isso nada quebra — so acumula documento pequeno.
+    // ==========================================================
+
+    // ==========================================================
+    //  v22 — 10/09/2026 — GALERIA DE VIDEOS NA PAGINA DO CLIENTE
+    //
+    //  UMA mudanca, e so ela: o campo `videos` em negocios/{uid}, dentro da
+    //  funcao negocioValido() la embaixo. O resto do arquivo e a v21
+    //  publicada, letra por letra.
+    //
+    //  Por que existe: a pagina publica ganhou uma faixa de VIDEOS acima da
+    //  galeria de fotos. O lojista cola no painel o link de um video que ele
+    //  JA postou (YouTube/Shorts, Instagram Reels ou TikTok) com um titulo
+    //  curto, e isso vem parar neste campo:
+    //    videos = lista de { url, titulo }, no maximo 6
+    //  Nada de video e hospedado no Moviki: e link e texto, mais nada. Video
+    //  hospedado custaria banda do Storage a cada visita (30 s = 15-20 MB,
+    //  contra 200 KB de uma foto) e derrubaria a pagina no 4G.
+    //
+    //  ATENCAO — ISTO NAO E OPCIONAL: `negocioValido` usa hasOnly. Sem
+    //  'videos' na lista, TODO "Salvar tudo" do painel novo e NEGADO — nao
+    //  so o video, o save inteiro (nome, cardapio, promocoes, tudo).
+    //  PUBLICAR ESTAS REGRAS ANTES de subir o index.html `2026-09-10-videos`.
+    //  Mesma armadilha da v17, e pelo mesmo motivo.
+    //
+    //  Por que a regra nao confere url e titulo item por item: regra do
+    //  Firestore nao entra dentro de mapa dentro de lista. O teto de 6 e a
+    //  trava que importa aqui (documento nao estoura, e a faixa nao vira
+    //  rolagem infinita). O filtro de dominio — so YouTube, Instagram e
+    //  TikTok, sempre https — e feito no painel (na hora de colar) e DE NOVO
+    //  no 404.html (na hora de publicar), que e quem de fato joga o link
+    //  dentro de um href. Link que nao casa simplesmente nao aparece.
+    //
+    //  O campo e OPCIONAL: negocio que nunca pos video nao tem o campo, e
+    //  exigir presenca derrubaria o save de todos eles.
+    // ==========================================================
+
+    // ==========================================================
+    //  v21 — 05/09/2026 — ACEITE DE CONDUTA DO DIVULGADOR
+    //
+    //  UMA mudanca, e so ela: o `allow update` de parceiros/{uid}, mais
+    //  abaixo, passa a aceitar o campo `aceiteConduta`. O resto do arquivo
+    //  e a v20, letra por letra.
+    //
+    //  --- POR QUE EXISTE ---
+    //  O Guia CONAR 2026 trata conteudo COMISSIONADO como publicidade e poe
+    //  sobre o ANUNCIANTE o dever de informar o divulgador das normas e de
+    //  monitorar o que ele publica, sob risco de responsabilizacao
+    //  SOLIDARIA. Todo parceiro daqui e comissionado — logo, todo post de
+    //  parceiro sobre o Moviki e publicidade.
+    //
+    //  A videoaula de conduta (P10) ensina. Este campo REGISTRA que o dever
+    //  de informar foi cumprido, com versao e data. Se um parceiro postar
+    //  "ganhe tanto por mes indicando", quem responde nao e so ele — e a
+    //  Eiko Sistemas. O aceite e a prova, e visualizacao de video nao e.
+    //
+    //  aceiteConduta = { versao: '1.0', em: <ISO> }
+    //  A versao existe para o dia em que o compromisso mudar: quem aceitou a
+    //  1.0 nao conta como tendo aceitado a 2.0, e o painel volta a pedir.
+    //
+    //  --- POR QUE OPCIONAL ---
+    //  Campo NOVO entra opcional, pela regra de ouro do projeto. Parceiro
+    //  antigo, que nunca clicou, continua salvando nome e Pix normalmente.
+    //
+    //  --- O QUE NAO AFROUXA ---
+    //  Dinheiro, status e slug continuam FORA do hasOnly. O maximo que um
+    //  parceiro esperto consegue forjando o campo e liberar os proprios
+    //  botoes de copiar link e baixar cracha — que e material de apoio, nao
+    //  valor. E, ao forjar, ele grava a declaracao de que se comprometeu:
+    //  contra ele, nao a favor.
+    //
+    //  --- ORDEM DE PUBLICACAO ---
+    //  PUBLICAR ESTAS REGRAS ANTES de subir o parceiro.html
+    //  `2026-09-04-conduta`. Sem o campo no hasOnly a gravacao e NEGADA, e o
+    //  botao "Li e concordo" responde "Nao deu certo — tentar de novo" para
+    //  sempre. Mesma armadilha da v18, e pelo mesmo motivo.
+    // ==========================================================
+
+    // ==========================================================
+    //  v20 — 03/09/2026 — ESPELHO PUBLICO DO PARCEIRO
+    //
+    //  UMA mudanca, e so ela: a colecao nova `parceiros_publicos/{slug}`,
+    //  logo abaixo de parceiro_slugs. O resto do arquivo e a v19,
+    //  letra por letra.
+    //
+    //  ATENCAO: esta v20 e construida SOBRE a v19 (fraude de nota, tamanho
+    //  de comentario e teto de saque). Se a v19 ainda nao tiver sido
+    //  publicada, publicar esta aqui publica as duas de uma vez — e nao ha
+    //  problema nisso: as tres mudancas da v19 so APERTAM.
+    //
+    //  --- POR QUE EXISTE ---
+    //  A pagina moviki.com.br/v/{apelido} deixa o comerciante conferir, no
+    //  celular dele e na frente do parceiro, se aquela pessoa e mesmo
+    //  parceira do Moviki. Para isso ela precisa LER algo publico.
+    //
+    //  Ler `parceiros/{uid}` esta fora de questao: aquele documento guarda
+    //  a CHAVE PIX. Regra do Firestore libera o documento inteiro ou nada —
+    //  nao existe "libera so estes campos". Abrir aquela colecao entregaria
+    //  a chave Pix de todo parceiro a qualquer visitante.
+    //
+    //  Entao o robo COPIA, para esta colecao separada, so o punhado de
+    //  campos que pode ser visto por estranho: nome, arroba, mes de
+    //  autorizacao, se concluiu o treinamento e se esta ativo. Dinheiro,
+    //  e-mail e uid NAO atravessam. O numero de seguidores tambem nao —
+    //  e dado do parceiro, nao credencial dele.
+    //
+    //  --- QUEM ESCREVE ---
+    //  Ninguem, pelo app. `write: if false` cobre create, update e delete.
+    //  Quem grava e o Admin SDK do moviki-robo (lib/espelhoParceiro.js),
+    //  que ignora regras — mesmo padrao de comissoes, pontos e vik_memoria.
+    //  E o que garante que um parceiro nao consiga se declarar "treinado"
+    //  nem reativar o proprio cadastro depois de suspenso.
+    //
+    //  --- ORDEM DE PUBLICACAO ---
+    //  PUBLICAR ESTAS REGRAS ANTES de subir o v.html. Ao contrario da v18,
+    //  aqui a inversao nao quebra nada — so faz a pagina de verificacao
+    //  dizer "nao existe parceiro com este apelido" para todo mundo, ate
+    //  as regras subirem. Mas e uma mentira na tela, e mentira na tela do
+    //  comerciante e exatamente o que esta pagina existe para evitar.
+    // ==========================================================
+
+    // ==========================================================
+    //  v19 — 03/09/2026 — FECHANDO A FRAUDE DE NOTA E O PEDIDO SEM TETO
+    //
+    //  TRES mudancas, e so elas. O resto do arquivo e a v18 publicada,
+    //  letra por letra.
+    //
+    //  1) negocios/{uid}/resumo/avaliacoes  -> o `allow create`
+    //  2) negocios/{uid}/avaliacoes/{avId}  -> tamanho do comentario
+    //  3) saques/{id}                       -> teto no valorSolicitado
+    //
+    //  --- POR QUE 1: a nota podia ser INVENTADA ---
+    //  A nota que aparece na pagina publica sai do documento {n, soma}.
+    //  Na v18 o `create` dele aceitava n ate 100.000 vindo de VISITANTE
+    //  ANONIMO. Ou seja: qualquer pessoa, sem login, podia fazer um
+    //  negocio nascer com 5,0 estrelas e "2.000 avaliacoes" — ou nascer
+    //  com 1,0 — sem que existisse UMA avaliacao de verdade no banco.
+    //  Agora o visitante anonimo so pode criar o resumo com a PRIMEIRA
+    //  avaliacao (n <= 1, soma <= 5). Semear o resumo inteiro virou
+    //  direito do DONO do negocio, que e quem ja podia reescrever tudo
+    //  no `update`.
+    //
+    //  EFEITO COLATERAL CONHECIDO, e e so custo: negocio ANTIGO que
+    //  ainda nao tem o documento resumo (criado antes de 26/08) e que
+    //  ja tinha mais de uma avaliacao. A pagina publica tenta gravar o
+    //  resumo somando a lista; agora essa gravacao e negada para o
+    //  visitante. A NOTA CONTINUA CERTA na tela — a pagina cai sozinha
+    //  no caminho antigo, que le a lista inteira. So volta a custar
+    //  caro naquele negocio, ate o proprio lojista abrir a pagina
+    //  publica dele logado, o que grava o resumo e resolve de vez.
+    //  Na pratica quase nao existe caso: todo negocio visitado desde
+    //  26/08 ja tem o resumo gravado.
+    //
+    //  --- POR QUE 2: comentario sem tamanho ---
+    //  A v18 checava a nota e o nome, mas o `comentario` nao tinha
+    //  limite nenhum. A caixa da tela limita a 300 caracteres, so que
+    //  regra nao e tela: um script gravaria um comentario de 1 MB,
+    //  estourando o documento e quebrando o layout da pagina publica.
+    //  Agora o limite de 300 esta na regra, igual ao da tela.
+    //
+    //  --- POR QUE 3: pedido de saque sem teto ---
+    //  A v18 so exigia R$ 20 no minimo. Um parceiro podia gravar um
+    //  pedido de R$ 999.999 e ele apareceria assim no painel do dono.
+    //  O DINHEIRO nunca esteve em risco: o pagar-saque.js recalcula o
+    //  valor pelo ledger de comissoes, ignora o valorSolicitado e tem
+    //  teto proprio de R$ 500. Isto aqui e para o painel nao mostrar
+    //  numero mentiroso. Teto de R$ 5.000, bem acima de qualquer
+    //  comissao real e bem abaixo do absurdo.
+    //
+    //  NAO PRECISA MEXER EM NENHUM ARQUIVO ANTES NEM DEPOIS. As tres
+    //  mudancas so APERTAM. Nada que o painel grava hoje passa a ser
+    //  negado — a tela ja respeita todos estes limites.
+    // ==========================================================
+
+    // ==========================================================
+    //  v18 — 02/09/2026 — AULAS DO PARCEIRO (TRAVA DE DIVULGACAO)
+    //
+    //  UMA mudanca, e so ela: o `allow update` de parceiros/{uid}, mais
+    //  abaixo. O resto do arquivo e a v17 publicada, letra por letra.
+    //
+    //  Por que existe: o painel do parceiro agora mostra um aviso laranja
+    //  piscando pedindo que ele assista as 8 videoaulas, e mantem o bloco
+    //  "Divulgacao" (o link e os materiais) trancado ate ele assistir.
+    //  Para o progresso nao se perder quando ele troca de aparelho ou
+    //  limpa o navegador, ele e gravado no proprio cadastro dele:
+    //    aulasVistas = lista com as chaves das aulas ja assistidas
+    //    aulasEm     = data em que ele completou as 8 (destrava definitiva)
+    //
+    //  Na v17 o parceiro so podia mexer em ['nome','pix']. Sem estes dois
+    //  campos na lista, TODA gravacao de progresso e NEGADA — o parceiro
+    //  assiste, a barra anda na tela, e ao recarregar volta do zero, calado.
+    //  PUBLICAR ESTAS REGRAS ANTES de subir o parceiro.html novo.
+    //
+    //  Nao afrouxa nada: a lista tem tamanho maximo, so aceita texto curto,
+    //  e nenhum campo de dinheiro, status ou slug entrou no hasOnly.
+    // ==========================================================
+
+    // ==========================================================
+    //  v17 — 31/08/2026 — FOTO DE CAPA DEDICADA
+    //
+    //  UMA mudanca, e so ela: o campo `capa` em negocios/{uid}, dentro da
+    //  funcao negocioValido() la embaixo. O resto do arquivo e a v16
+    //  publicada, letra por letra.
+    //
+    //  Por que existe: ate agora a capa do topo da pagina publica era,
+    //  obrigatoriamente, a 1a foto da galeria — o lojista nao mandava nela.
+    //  Agora ele escolhe e enquadra a capa num bloco proprio do painel
+    //  ("Foto de capa da sua pagina", aba Localizacao) e a URL vem parar
+    //  neste campo.
+    //
+    //  ATENCAO: `negocioValido` usa hasOnly. Sem 'capa' na lista, TODO
+    //  "Salvar tudo" do painel novo e negado — nao so a capa, o save
+    //  inteiro. Publicar ESTAS regras ANTES de subir o index.html novo.
+    // ==========================================================
+
+    // ==========================================================
+    //  v16 — 28/08/2026 — CONFIGURACOES/SISTEMA DESTRAVADO
+    //
+    //  UMA mudanca, e so ela: o bloco `configuracoes/sistema`. O resto
+    //  do arquivo e a v15 publicada, letra por letra.
+    //
+    //  Sintoma: o dono, logado como admin, nao conseguia DESLIGAR o botao
+    //  "Aprovar parceiro na hora" no painel. Causa: hasOnly avaliado sobre
+    //  o documento inteiro mesclado. A explicacao completa esta em cima do
+    //  proprio bloco, la embaixo.
+    //
+    //  Regra de ouro que nasceu daqui: hasOnly em colecao que SO admin
+    //  escreve e seguranca de mentira — nao barra ninguem e quebra o
+    //  painel a cada campo novo. Validar TIPO, nunca conjunto fechado.
+    // ==========================================================
+
+    // ==========================================================
+    //  v15 — 27/08/2026 — MEMORIA DO VIK
+    //
+    //  Uma colecao nova, `vik_memoria/{uid}`, e nada mais. O bloco da v14
+    //  abaixo continua inteiro.
+    //
+    //  Regra: NINGUEM escreve pelo app, nem o dono da conta, nem o admin.
+    //  Quem grava e o Admin SDK do moviki-ai, que ignora regras. Leitura so
+    //  para admin, e delete so para admin — e o botao "apagar memoria" do
+    //  painel do dono.
+    //
+    //  Por que o LOJISTA nao le a propria memoria: se ele lesse, leria
+    //  tambem as objecoes comerciais anotadas sobre ele ("acha o Pro caro").
+    //  Isso e nota interna de atendimento, nao dado que se mostra ao cliente.
+    //  Ele continua vendo TODAS as mensagens da conversa, que e o que
+    //  importa — a memoria e um resumo derivado delas, nao um registro
+    //  paralelo escondido.
+    // ==========================================================
+
+    match /vik_memoria/{uid} {
+      allow read: if isAdmin();
+      allow create, update: if false;  // so o Admin SDK do moviki-ai grava
+      allow delete: if isAdmin();      // botao "apagar memoria" do painel do dono
+    }
+
+    // ==========================================================
+    //  v14 — 27/08/2026 — ASSISTENTE DE IA NA CAIXA DE MENSAGENS
+    //
+    //  Base: a v13 REAL, publicada. Mudou pouco, e o pouco é obrigatório.
+    //  Só o bloco `conversas` e a função `conversaCampos` foram tocados.
+    //
+    //  POR QUE ISTO NÃO É OPCIONAL: o robô responde pelo Admin SDK, que
+    //  ignora regras — até aí, nada a fazer. O problema é DEPOIS. Quando o
+    //  robô grava, o documento da conversa passa a ter `ultimoDe: 'bot'` e
+    //  os campos `botLigado`, `botRespondeuAte`, `botDia` e `botUsos`.
+    //  Na v13, `conversaCampos()` é avaliada sobre o documento INTEIRO já
+    //  mesclado em toda escrita do lojista — e ela não conhece esses campos
+    //  nem o valor 'bot'. Resultado: depois da PRIMEIRA resposta do robô, o
+    //  lojista não conseguiria mais nem marcar como lido nem mandar
+    //  mensagem naquela conversa. A caixa travaria, calada.
+    //
+    //  O que mudou, item a item:
+    //    1. `conversaCampos` passou a conhecer os 4 campos do robô e o
+    //       valor 'bot' em `ultimoDe`;
+    //    2. o `create` do lojista passou a proibir que a conversa NASÇA com
+    //       o robô ligado ou com os carimbos dele forjados;
+    //    3. o `update` do lojista continua com o mesmo `hasOnly` de 4
+    //       campos — é ele que impede o lojista de ligar o próprio robô.
+    //
+    //  `mensagemCampos` NÃO mudou, de propósito: 'bot' fica FORA da lista
+    //  de `de` permitidos. O robô escreve pelo Admin SDK, e manter 'bot'
+    //  fora garante que nenhum cliente consiga forjar uma resposta
+    //  "oficial" do assistente.
+    // ==========================================================
+
+    match /negocios/{uid} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.uid == uid
+                   && negocioValido(request.resource.data);
+
+      // BLINDAGEM DE AVALIAÇÕES: Impede injeção maliciosa em lote
+      //
+      // --- 03/09/2026 (v19): TAMANHO DO COMENTARIO ---
+      // A v18 checava nota e nome, mas deixava `comentario` sem limite.
+      // A caixa da tela ja limita a 300 caracteres; agora a REGRA limita
+      // tambem, senao um script grava um comentario gigante, estoura o
+      // documento e quebra o layout da pagina publica.
+      match /avaliacoes/{avId} {
+        allow read: if true;
+        allow create: if request.resource.data.nota is int
+                      && request.resource.data.nota >= 1
+                      && request.resource.data.nota <= 5
+                      && request.resource.data.nome is string
+                      && request.resource.data.nome.size() >= 2
+                      && request.resource.data.nome.size() <= 60
+                      && ( !('comentario' in request.resource.data)
+                           || ( request.resource.data.comentario is string
+                                && request.resource.data.comentario.size() <= 300 ) )
+                      && request.resource.data.keys().hasOnly(['nota','nome','comentario','criadoEm']);
+      }
+
+      // ---- 26/08/2026: RESUMO DE AVALIAÇÕES ----
+      // Antes, a página pública lia TODAS as avaliações do negócio a cada visita
+      // (1 leitura por avaliação). Negócio com 200 avaliações = 200 leituras por
+      // visita. Agora a nota média e a quantidade vêm deste documento único.
+      // O visitante anônimo só pode somar +1 avaliação e a soma da nota tem que
+      // crescer entre 1 e 5. O dono reescreve o resumo inteiro quando quiser.
+      //
+      // --- 03/09/2026 (v19): O `create` DEIXOU DE ACEITAR VALOR INVENTADO ---
+      // Na v18 o create aceitava n ate 100.000 vindo de QUALQUER UM, sem
+      // login. A nota da pagina publica sai daqui — entao dava para fazer
+      // um negocio nascer com 5,0 e "2.000 avaliacoes", ou nascer com 1,0,
+      // sem uma avaliacao real no banco. Agora:
+      //   - DONO do negocio  -> pode semear o resumo inteiro (e o que a
+      //     migracao de negocio antigo precisa; ele ja podia reescrever
+      //     tudo no update, entao nao afrouxa nada);
+      //   - VISITANTE anonimo -> so cria com a PRIMEIRA avaliacao
+      //     (n no maximo 1, soma no maximo 5).
+      // O `update` NAO mudou: continua +1 por vez, entre 1 e 5.
+      match /resumo/avaliacoes {
+        allow read: if true;
+        allow create: if request.resource.data.keys().hasOnly(['n','soma'])
+                      && request.resource.data.n is int
+                      && request.resource.data.n >= 0
+                      && request.resource.data.soma is int
+                      && request.resource.data.soma >= request.resource.data.n
+                      && request.resource.data.soma <= request.resource.data.n * 5
+                      && (
+                           // o dono do negocio: resumo inteiro
+                           ( request.auth != null
+                             && request.auth.uid == uid
+                             && request.resource.data.n <= 100000 )
+                           // visitante anonimo: so a primeira avaliacao
+                           || ( request.resource.data.n <= 1
+                                && request.resource.data.soma <= 5 )
+                         );
+        allow update: if ( request.auth != null && request.auth.uid == uid )
+                      || ( request.resource.data.keys().hasOnly(['n','soma'])
+                           && request.resource.data.n == resource.data.n + 1
+                           && request.resource.data.soma >= resource.data.soma + 1
+                           && request.resource.data.soma <= resource.data.soma + 5 );
+        allow delete: if request.auth != null && request.auth.uid == uid;
+      }
+
+      // ---- 11/09/2026 (v23): MODO LIVE ----
+      // Chat da transmissao. Visitante anonimo CRIA mensagem so enquanto a
+      // live esta no ar (liveNoAr = 1 leitura). Resposta do lojista (tipo
+      // 'dono') e moderacao (apagar) entram pelo match recursivo abaixo,
+      // que so o dono do negocio alcanca.
+      match /livechat/{mid} {
+        allow read: if true;
+        allow create: if request.resource.data.keys().hasOnly(['nome','texto','tipo','criadoEm','expiraEm'])
+                      && request.resource.data.nome is string
+                      && request.resource.data.nome.size() >= 2
+                      && request.resource.data.nome.size() <= 30
+                      && request.resource.data.texto is string
+                      && request.resource.data.texto.size() >= 1
+                      && request.resource.data.texto.size() <= 140
+                      && request.resource.data.tipo in ['msg','quero']
+                      && request.resource.data.criadoEm == request.time
+                      && ( !('expiraEm' in request.resource.data)
+                           || request.resource.data.expiraEm is timestamp )
+                      // filtro dos termos MAIS graves, tambem no servidor: a
+                      // pagina ja esconde a lista inteira, isto barra quem
+                      // escreve por fora dela
+                      && !request.resource.data.texto.lower().matches('.*(^|[^a-z0-9á-ú])(maconha|cocaina|cocaína|crack|ecstasy|mdma|lsd|haxixe|skunk|pistola|revolver|revólver|fuzil|municao|munição|explosivo|granada|porno|pornô|nudes|onlyfans|xvideos|novinha|novinhas|anabolizante|ozempic|rivotril|cytotec|vape|tigrinho|rifa)([^a-z0-9á-ú]|$).*')
+                      && !request.resource.data.nome.lower().matches('.*(^|[^a-z0-9á-ú])(maconha|cocaina|cocaína|crack|ecstasy|mdma|lsd|haxixe|skunk|pistola|revolver|revólver|fuzil|municao|munição|explosivo|granada|porno|pornô|nudes|onlyfans|xvideos|novinha|novinhas|anabolizante|ozempic|rivotril|cytotec|vape|tigrinho|rifa)([^a-z0-9á-ú]|$).*')
+                      && liveNoAr(uid);
+      }
+
+      // Presenca: um documento por aba de quem assiste, carimbado a cada
+      // 60 s. So hora do servidor e validade. O estudio conta quantos
+      // bateram nos ultimos 100 s.
+      match /livepresenca/{sid} {
+        allow read: if true;
+        // v25 — o CREATE exige live no ar; o UPDATE nao.
+        // Documento novo e o que o ataque precisa (500 documentos = "500
+        // assistindo"), e era o que nenhuma condicao barrava. Por liveNoAr()
+        // tambem no update faria cada batida de presenca — uma por espectador
+        // por minuto — pagar um get(): o remedio sairia mais caro que a doenca.
+        allow create: if request.resource.data.keys().hasOnly(['em','expiraEm'])
+                      && request.resource.data.em == request.time
+                      && ( !('expiraEm' in request.resource.data)
+                           || request.resource.data.expiraEm is timestamp )
+                      && sid.size() >= 10 && sid.size() <= 40
+                      && liveNoAr(uid);
+        allow update: if request.resource.data.keys().hasOnly(['em','expiraEm'])
+                      && request.resource.data.em == request.time
+                      && ( !('expiraEm' in request.resource.data)
+                           || request.resource.data.expiraEm is timestamp )
+                      && sid.size() >= 10 && sid.size() <= 40;
+      }
+
+      // v23: o ADMIN tambem escreve aqui dentro. E o que permite ao dono do
+      // Moviki encerrar a live de um lojista (estado/live) pelo painel.
+      // isAdmin() so e avaliado quando a primeira condicao falha.
+      match /{documento=**} {
+        allow read: if true;
+        allow write: if request.auth != null && (request.auth.uid == uid || isAdmin());
+      }
+    }
+
+    // ==========================================================
+    //  v23 — SEGURANCA DA LIVE: sessoes, denuncias, bloqueios, registro
+    // ==========================================================
+
+    // Sessao de live, gravada pelo estudio do proprio lojista. O painel do
+    // dono le todas. Depois que o Moviki encerra, o lojista nao mexe mais.
+    match /lives/{id} {
+      allow read: if request.auth != null
+                  && (resource.data.lojistaUid == request.auth.uid || isAdmin());
+      allow create: if request.auth != null
+                    && request.resource.data.lojistaUid == request.auth.uid
+                    && id.size() <= 160
+                    && liveCampos(request.resource.data)
+                    && !('encerradaPor' in request.resource.data);
+      allow update: if request.auth != null && (
+                      isAdmin()
+                      || ( resource.data.lojistaUid == request.auth.uid
+                           && request.resource.data.lojistaUid == resource.data.lojistaUid
+                           && liveCampos(request.resource.data)
+                           && resource.data.get('encerradaPor', '') != 'moviki'
+                           && request.resource.data.get('encerradaPor', '') == resource.data.get('encerradaPor', '') ) );
+      allow delete: if isAdmin();
+    }
+
+    // Denuncia anonima feita na pagina da live.
+    match /denuncias/{id} {
+      allow read, update, delete: if isAdmin();
+      allow create: if request.resource.data.keys().hasOnly(['lojistaUid','slug','motivo','detalhe','status','criadoEm'])
+                    && request.resource.data.lojistaUid is string
+                    && request.resource.data.lojistaUid.size() >= 10
+                    && request.resource.data.lojistaUid.size() <= 128
+                    && request.resource.data.slug is string
+                    && request.resource.data.slug.size() <= 40
+                    && request.resource.data.motivo in ['proibido','sexual','menor','violencia','golpe','outro']
+                    && request.resource.data.detalhe is string
+                    && request.resource.data.detalhe.size() <= 300
+                    && request.resource.data.status == 'aberta'
+                    && request.resource.data.criadoEm == request.time
+                    // v25: so se denuncia quem esta transmitindo AGORA. Fora
+                    // do ar nao ha o que denunciar em tempo real, e a janela
+                    // do afogamento encolhe para a duracao da live do alvo.
+                    && liveNoAr(request.resource.data.lojistaUid);
+    }
+
+    // ---- 15/09/2026 (v24): A SESSAO DA LIVE ----
+    // Quem diz que a live esta no ar, e DE ONDE VEM O VIDEO. Leitura publica
+    // (a pagina de quem assiste le em tempo real); escrita NEGADA PARA TODOS,
+    // inclusive para o dono do negocio e para o admin. Quem grava e o Admin
+    // SDK do moviki-robo (lib/livesessao.js), que ignora regras — mesmo padrao
+    // de pedidos, comissoes e parceiros_publicos.
+    //
+    // `write: if false` cobre create, update E delete. Esta e a linha que
+    // impede o lojista de se declarar no ar, de apontar a propria pagina para
+    // o video de outro lojista, de apagar o "encerrada pelo Moviki" e de
+    // esticar o limite de minutos do plano.
+    //
+    // NAO MOVER ESTE BLOCO PARA DENTRO DE negocios/{uid}: la o curinga
+    // `match /{documento=**}` concede escrita ao dono, e regra do Firestore
+    // nao tem "deny" — bastaria UM match permitindo para a trava sumir.
+    match /live_sessoes/{uid} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Cota de lives do periodo de teste (decisao de 15/09: 2 lives no teste
+    // gratis, sem limite de quantidade no plano pago). So o robo escreve; o
+    // painel do dono le para conferir. O lojista nao precisa ler: o estudio
+    // recebe quantas restam na resposta do proprio servidor.
+    match /live_cota/{uid} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // Quem esta proibido de transmitir (e de vender pelo Pix na live).
+    match /live_bloqueios/{uid} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Registro de moderacao: so admin cria e le. Registro nao se edita.
+    match /moderacao/{id} {
+      allow read, create: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    // Termos proibidos EXTRAS (a lista-base mora no codigo).
+    match /configuracoes/liveTermos {
+      // Leitura publica: os filtros da live e a chave-mestra precisam ler.
+      // 'extras'        -> termos proibidos que o dono acrescenta sem deploy
+      // 'liveDesligada' -> chave-mestra: true desliga TODA live do Moviki
+      // 'liveBeta'      -> lista de uid liberados; VAZIA = live aberta a todos
+      // Campos opcionais de proposito: o painel grava com merge, um de cada vez.
+      allow read: if true;
+      allow create, update: if isAdmin()
+                            && (!('extras' in request.resource.data)
+                                || (request.resource.data.extras is list
+                                    && request.resource.data.extras.size() <= 300))
+                            && (!('liveDesligada' in request.resource.data)
+                                || request.resource.data.liveDesligada is bool)
+                            && (!('liveBeta' in request.resource.data)
+                                || (request.resource.data.liveBeta is list
+                                    && request.resource.data.liveBeta.size() <= 200));
+      allow delete: if false;
+    }
+
+    // Plano de cada negócio. Todos leem; ninguém escreve pelo app.
+    match /assinaturas/{uid} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Rastreio do Programa de Parceiros: de qual parceiro veio este lojista.
+    // Criado 1x no cadastro; imutável depois.
+    match /indicacoes/{uid} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.auth.uid == uid
+                    && request.resource.data.keys().hasOnly(['ref','criadoEm'])
+                    && request.resource.data.ref is string
+                    && request.resource.data.ref.size() >= 3
+                    && request.resource.data.ref.size() <= 40;
+      allow update, delete: if false;
+    }
+
+    // ==========================================================
+    //  CAIXA DE MENSAGENS — 27/08/2026 (v13, ampliada na v14)
+    //  conversas/{uid}: UMA conversa por lojista, e o id do documento
+    //  É o uid dele. Não existe conversa entre lojistas: os dois lados
+    //  são sempre o lojista daquele uid e o dono do Moviki.
+    //
+    //  Quem lê e escreve: só o dono daquele uid e o admin.
+    //
+    //  docsLiberado é o botão "Mensagens do admin" do painel do dono.
+    //  Ele fica FORA da lista de campos que o lojista pode alterar — é
+    //  isso, e só isso, que impede o lojista de liberar o próprio anexo.
+    //
+    //  v14: botLigado é o interruptor do assistente de IA, e segue
+    //  exatamente a mesma lógica — fora do hasOnly do update do lojista.
+    // ==========================================================
+
+    match /conversas/{uid} {
+      allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
+
+      // O lojista abre a própria conversa na 1ª mensagem. Ela nasce com o
+      // envio de documento DESLIGADO — ligar é ato do admin.
+      allow create: if request.auth != null && (
+                      isAdmin()
+                      || ( request.auth.uid == uid
+                           && conversaCampos(request.resource.data)
+                           && request.resource.data.uid == uid
+                           && request.resource.data.ultimoDe == 'lojista'
+                           && request.resource.data.get('docsLiberado', false) == false
+                           && !('docsPedido' in request.resource.data)
+                           // v14: nasce com o robô DESLIGADO, e sem os
+                           // carimbos dele. Sem estas quatro linhas, o
+                           // lojista abriria a conversa já com botLigado
+                           // true e ligaria o assistente sozinho.
+                           && request.resource.data.get('botLigado', false) == false
+                           && !('botRespondeuAte' in request.resource.data)
+                           && !('botDia' in request.resource.data)
+                           && !('botUsos' in request.resource.data) )
+                    );
+
+      // Duas escritas possíveis do lojista:
+      //   1) só marcar "já vi" (vistoLojistaEm);
+      //   2) mandar mensagem: resumo + data + quem falou + já vi.
+      // Em nenhuma das duas ele encosta em docsLiberado, docsPedido nem em
+      // nenhum dos campos do robô (v14) — o hasOnly é a trava.
+      // O caminho 1 (só vistoLojistaEm) NÃO checa ultimoDe de propósito:
+      // se checasse, marcar como lido seria negado toda vez que a última
+      // fala tivesse sido do admin ou do robô.
+      allow update: if request.auth != null && (
+                      isAdmin()
+                      || ( request.auth.uid == uid
+                           && conversaCampos(request.resource.data)
+                           && ( request.resource.data.diff(resource.data).affectedKeys()
+                                  .hasOnly(['vistoLojistaEm'])
+                                || ( request.resource.data.diff(resource.data).affectedKeys()
+                                       .hasOnly(['ultimaMsg','ultimaEm','ultimoDe','vistoLojistaEm'])
+                                     && request.resource.data.ultimoDe == 'lojista' ) ) )
+                    );
+
+      allow delete: if isAdmin();
+
+      // As mensagens em si. Ninguém edita mensagem depois de enviada —
+      // conversa que pode ser reescrita não serve de registro de nada.
+      match /mensagens/{mid} {
+        allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
+
+        allow create: if request.auth != null
+                      && mensagemCampos(request.resource.data)
+                      && (
+                        ( isAdmin() && request.resource.data.de == 'admin' )
+                        || ( request.auth.uid == uid
+                             && request.resource.data.de == 'lojista'
+                             && ( !('arquivoUrl' in request.resource.data) || docsLiberados(uid) ) )
+                      );
+
+        allow update: if false;
+        allow delete: if isAdmin();
+      }
+    }
+
+    // ==========================================================
+    //  PROGRAMA DE PARCEIROS (FUSÃO PERFEITA QUIZ DUOLINGO)
+    // ==========================================================
+
+    // Cadastro do parceiro. Dados sensíveis (Pix) NÃO são públicos:
+    // só o próprio parceiro e o admin leem.
+    match /parceiros/{uid} {
+      allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
+
+      // Cadastro Unificado: Libera os campos do Quiz do Cláudio ('arroba' e 'canais')
+      // mantendo as travas estritas de segurança de e-mail e status pendente.
+      allow create: if request.auth != null
+                    && request.auth.uid == uid
+                    && request.resource.data.keys().hasOnly(['nome','email','pix','slug','status','aceite','criadoEm','indicadoPor','arroba','canais'])
+                    && request.resource.data.status == 'pendente'
+                    && request.resource.data.nome is string
+                    && request.resource.data.nome.size() >= 2 && request.resource.data.nome.size() <= 80
+                    && request.resource.data.email is string
+                    && request.resource.data.email == request.auth.token.email
+                    && request.resource.data.pix is string
+                    && request.resource.data.pix.size() >= 3 && request.resource.data.pix.size() <= 140
+                    && request.resource.data.slug is string
+                    && request.resource.data.slug.size() >= 3 && request.resource.data.slug.size() <= 40
+                    && request.resource.data.aceite is map
+                    && ( !('indicadoPor' in request.resource.data)
+                         || ( request.resource.data.indicadoPor is string
+                              && request.resource.data.indicadoPor.size() >= 3
+                              && request.resource.data.indicadoPor.size() <= 40
+                              && request.resource.data.indicadoPor != request.resource.data.slug ) )
+                    && ( !('arroba' in request.resource.data)
+                         || ( request.resource.data.arroba is string && request.resource.data.arroba.size() <= 40 ) )
+                    && ( !('canais' in request.resource.data)
+                         || ( request.resource.data.canais is list && request.resource.data.canais.size() <= 3 ) );
+
+      // Atualização Segura: Parceiro só muda Nome/Pix, o próprio progresso
+      // das videoaulas e o aceite de conduta. Admin muda o resto.
+      //
+      // --- 05/09/2026 (v21): aceiteConduta ---
+      // aceiteConduta = { versao, em } — o compromisso de divulgação que o
+      //   parceiro aceita na aba Divulgação, ao lado do lembrete de três
+      //   linhas (#publi, nunca prometer, falar do que a ferramenta faz).
+      //   Guia CONAR 2026: conteúdo comissionado é publicidade, e o
+      //   anunciante responde junto. Este campo é a prova de que o dever de
+      //   informar foi cumprido — assistir ao vídeo não é.
+      //
+      // SEM ESTE CAMPO NO hasOnly, o clique em "Li e concordo" é NEGADO e o
+      // botão responde "Não deu certo" para sempre. Mesma armadilha da v18.
+      //
+      // A versão fica na chave para o dia em que o texto do compromisso
+      // mudar: quem aceitou a 1.0 não conta como tendo aceitado a 2.0.
+      //
+      // --- 02/09/2026 (v18): aulasVistas e aulasEm ---
+      // aulasVistas = lista com as chaves das aulas que ele já assistiu
+      //   (ex.: ['p01','p02']). O painel só acrescenta a chave depois que o
+      //   YouTube confirma 90% do vídeo tocado.
+      // aulasEm     = data em que ele completou as 8 aulas. É o que faz o
+      //   destravamento ser DEFINITIVO: se um dia entrar uma 9a aula, quem
+      //   já tem esta data não é trancado de novo.
+      //
+      // SEM ESTES DOIS CAMPOS NO hasOnly, toda gravação de progresso é
+      // NEGADA e o parceiro fica preso na tela travada para sempre.
+      //
+      // Isto NÃO deixa ele mexer em dinheiro, status nem slug: esses
+      // continuam fora da lista. O pior que um parceiro esperto consegue
+      // fazer forjando os campos é destravar a própria aba de divulgação —
+      // que é material de apoio, não valor.
+      allow update: if request.auth != null && (
+                      ( request.auth.uid == uid
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nome','pix','aulasVistas','aulasEm','aceiteConduta'])
+                        && ( !('aulasVistas' in request.resource.data)
+                             || ( request.resource.data.aulasVistas is list
+                                  && request.resource.data.aulasVistas.size() <= 40 ) )
+                        && ( !('aulasEm' in request.resource.data)
+                             || ( request.resource.data.aulasEm is string
+                                  && request.resource.data.aulasEm.size() <= 40 ) )
+                        // v21: forma fechada, para o campo nao virar deposito
+                        // de texto qualquer dentro do cadastro do parceiro.
+                        && ( !('aceiteConduta' in request.resource.data)
+                             || ( request.resource.data.aceiteConduta is map
+                                  && request.resource.data.aceiteConduta.keys().hasOnly(['versao','em'])
+                                  && request.resource.data.aceiteConduta.versao is string
+                                  && request.resource.data.aceiteConduta.versao.size() >= 1
+                                  && request.resource.data.aceiteConduta.versao.size() <= 10
+                                  && request.resource.data.aceiteConduta.em is string
+                                  && request.resource.data.aceiteConduta.em.size() <= 40 ) ) )
+                      || isAdmin()
+                    );
+
+      allow delete: if isAdmin();
+    }
+
+    // Reserva de apelido do parceiro (link /p/<slug>). Namespace separado do slug de lojista.
+    match /parceiro_slugs/{slug} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.resource.data.keys().hasOnly(['uid'])
+                    && request.resource.data.uid == request.auth.uid
+                    && slug.size() >= 3 && slug.size() <= 40;
+      allow update, delete: if isAdmin();
+    }
+
+    // ==========================================================
+    //  ESPELHO PUBLICO DO PARCEIRO — 03/09/2026 (v20)
+    //
+    //  E o que a pagina moviki.com.br/v/{apelido} le para dizer ao
+    //  comerciante, na frente do parceiro, se aquela pessoa e mesmo
+    //  parceira do Moviki.
+    //
+    //  POR QUE NAO LEMOS `parceiros/{uid}` DIRETO: a CHAVE PIX mora
+    //  naquele documento. Regra do Firestore libera o documento inteiro
+    //  ou nada — nao existe "libera so estes campos". Abrir aquela
+    //  colecao entregaria a chave Pix de todo parceiro a qualquer um que
+    //  abrisse o console do navegador.
+    //
+    //  O robo (lib/espelhoParceiro.js) copia para ca so o que pode ser
+    //  visto por estranho: slug, nome, arroba, mes de autorizacao,
+    //  `treinado` e `ativo`. Dinheiro, e-mail e uid NAO atravessam.
+    //
+    //  `write: if false` cobre create, update E delete. Quem grava e o
+    //  Admin SDK, que ignora regras — mesmo padrao de comissoes, pontos e
+    //  vik_memoria. E o que impede um parceiro de se declarar "treinado"
+    //  ou de reativar sozinho um cadastro suspenso.
+    //
+    //  O documento NAO e apagado quando o parceiro sai: vira ativo:false,
+    //  e a pagina diz que o apelido nao esta autorizado. Documento
+    //  apagado daria "nao encontrado", que o comerciante leria como erro
+    //  de digitacao em vez de alerta.
+    // ==========================================================
+
+    match /parceiros_publicos/{slug} {
+      allow read: if true;
+      allow write: if false;   // so o Admin SDK do moviki-robo grava
+    }
+
+    // ---- 11/09/2026 (v23): CHECKOUT PIX DA LIVE ----
+    // Pedido: so o robo escreve. O lojista le os proprios; o admin le todos.
+    // O comprador acompanha o status pelo robo (pedido + chave secreta), nunca
+    // lendo daqui — o documento tem nome e WhatsApp dele.
+    match /pedidos/{id} {
+      allow read: if request.auth != null
+                  && (resource.data.lojistaUid == request.auth.uid || isAdmin());
+      allow write: if false;
+    }
+
+    // Diz se o botao "Comprar com Pix" aparece na live. So o robo escreve.
+    match /checkout_publico/{uid} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Comissões do parceiro. Só o Admin SDK (o robô) escreve — nunca pelo app.
+    match /comissoes/{id} {
+      allow read: if request.auth != null
+                  && (resource.data.parceiroUid == request.auth.uid || isAdmin());
+      allow write: if false;
+    }
+
+    // Pedidos de saque. O parceiro cria o pedido (sempre 'solicitado', >= R$20)
+    //
+    // --- 03/09/2026 (v19): TETO DE R$ 5.000 NO PEDIDO ---
+    // A v18 so exigia o minimo de R$ 20. Um parceiro podia gravar um pedido
+    // de R$ 999.999 e ele apareceria assim no painel do dono.
+    // O DINHEIRO nunca esteve em risco: o pagar-saque.js recalcula o valor
+    // pelo ledger de `comissoes`, IGNORA o valorSolicitado, e tem teto
+    // proprio de R$ 500 no envio automatico. Este teto aqui e para o painel
+    // nao exibir numero mentiroso — bem acima de qualquer comissao real e
+    // bem abaixo do absurdo.
+    //
+    // O que NAO da para fazer em regra do Firestore: exigir "so um pedido em
+    // aberto por parceiro" — regra nao consulta outros documentos por
+    // consulta. Isso ja e barrado no parceiro.html (que confere antes de
+    // deixar pedir) e no pagar-saque.js (que recusa pagamento avulso quando
+    // ha pedido em aberto).
+    match /saques/{id} {
+      allow read: if request.auth != null
+                  && (resource.data.parceiroUid == request.auth.uid || isAdmin());
+      allow create: if request.auth != null
+                    && request.resource.data.parceiroUid == request.auth.uid
+                    && request.resource.data.status == 'solicitado'
+                    && request.resource.data.valorSolicitado is number
+                    && request.resource.data.valorSolicitado >= 20
+                    && request.resource.data.valorSolicitado <= 5000
+                    // v25 (B11): era so `('pedidoEm' in ...)`. O parceiro
+                    // mandava uma string, o ms() do servidor devolvia null e
+                    // a retencao de 7 dias desaparecia.
+                    && request.resource.data.pedidoEm == request.time
+                    && request.resource.data.keys().hasOnly(['parceiroUid','valorSolicitado','status','pedidoEm']);
+      allow update, delete: if isAdmin();
+    }
+
+    // Admins do sistema. Criado SÓ pelo console do Firebase.
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // ==========================================================
+    //  Configurações gerais do painel do dono (doc único).
+    //  v16 — 28/08/2026: o hasOnly SAIU daqui, e o write virou
+    //  create/update separados do delete.
+    //
+    //  POR QUE: o painel grava com setDoc(..., {merge:true}). Em escrita
+    //  mesclada, request.resource.data é o DOCUMENTO INTEIRO já mesclado,
+    //  não só o campo enviado. Bastava o documento ter QUALQUER outro
+    //  campo (carimbo antigo, algo gravado pelo Admin SDK) para o
+    //  hasOnly negar a escrita — e o dono, mesmo sendo admin, não
+    //  conseguia desligar a aprovação automática. A leitura continuava
+    //  funcionando porque só depende de isAdmin(): o sintoma era o botão
+    //  aparecer ligado com "não salvou" embaixo.
+    //
+    //  Segundo defeito, corrigido junto: `allow write` cobre delete, e em
+    //  delete request.resource é NULO — a expressão erra e nega. Agora o
+    //  delete é explícito e proibido (config não se apaga pelo app).
+    //
+    //  NÃO afrouxa nada: isAdmin() é a trava real, e /admins só nasce
+    //  pelo Console do Firebase. hasOnly aqui era segurança de mentira
+    //  (não barrava ninguém que já não estivesse barrado) e quebrava o
+    //  painel a cada campo novo. A validação passou a ser de TIPO, e
+    //  opcional — o padrão do projeto: !('x' in d) || d.x is bool.
+    // ==========================================================
+
+    match /configuracoes/sistema {
+      allow read: if isAdmin();
+      allow create, update: if isAdmin()
+                            && ( !('aprovacaoAutomaticaParceiros' in request.resource.data)
+                                 || request.resource.data.aprovacaoAutomaticaParceiros is bool );
+      allow delete: if false;
+    }
+
+    // ==========================================================
+
+    // ==========================================================
+    //  NEWSLETTER — 26/08/2026
+    //  Gravada pelo formulario do rodape da landing (index.html),
+    //  colecao newsletter/{auto-id}. Visitante anonimo so CRIA.
+    //  Ler / editar / apagar: so o admin (bloco Newsletter do painel
+    //  do dono, com Exportar CSV — Fase 5).
+    //  'ativo' ja entra liberado para o link de descadastro nao exigir
+    //  uma nova publicacao de regras depois.
+    // ==========================================================
+
+    match /newsletter/{id} {
+      allow read: if isAdmin();
+
+      allow create: if request.resource.data.keys().hasOnly(['email','origem','consentimento','consentimentoTexto','criadoEm','ativo'])
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() >= 6
+                    && request.resource.data.email.size() <= 120
+                    && request.resource.data.email.matches('^[^@]+@[^@]+[.][^@]+$')
+                    && request.resource.data.origem is string
+                    && request.resource.data.origem.size() >= 1
+                    && request.resource.data.origem.size() <= 40
+                    && request.resource.data.consentimento == true
+                    && ('criadoEm' in request.resource.data)
+                    && ( !('consentimentoTexto' in request.resource.data)
+                         || ( request.resource.data.consentimentoTexto is string
+                              && request.resource.data.consentimentoTexto.size() <= 400 ) )
+                    && ( !('ativo' in request.resource.data)
+                         || request.resource.data.ativo is bool );
+
+      // Descadastro (LGPD): a pagina descadastro.html so pode virar
+      // ativo para false. Nada mais muda, e ninguem le a lista sem ser admin.
+      allow update: if isAdmin()
+                    || ( request.resource.data.diff(resource.data).affectedKeys().hasOnly(['ativo'])
+                         && request.resource.data.ativo == false );
+
+      allow delete: if isAdmin();
+    }
+
+    match /slugs/{slug} {
+      allow read: if true;
+      allow create: if request.auth != null
+                    && request.resource.data.keys().hasOnly(['uid'])
+                    && request.resource.data.uid == request.auth.uid
+                    && slug.size() >= 3 && slug.size() <= 40;
+      allow update, delete: if request.auth != null
+                    && resource.data.uid == request.auth.uid;
+    }
+
+    // ==========================================================
+    //  MÉTRICAS POR NEGÓCIO — 26/08/2026
+    //  metricas/{uid}/dias/{AAAA-MM-DD}
+    //  Quem escreve é o visitante ANÔNIMO da página pública, com
+    //  increment(1). Quem lê é o dono do negócio (o painel) e, desde a
+    //  v12, o dono do Moviki.
+    //  Isso existe porque o GA4 mede o site inteiro e nao devolve dado
+    //  por lojista.
+    //  Travas contra inflar o numero:
+    //    - so os 16 nomes previstos (4 contadores + 12 faixas de 2h);
+    //    - no maximo 2 campos por escrita;
+    //    - cada campo sobe no maximo 1 por escrita.
+    //  Colecao separada de propria: dentro de negocios/{uid} o
+    //  match /{documento=**} deixaria qualquer um LER as metricas.
+    // ==========================================================
+
+    match /metricas/{uid}/dias/{dia} {
+      // 26/08/2026 (v12): ESTA É A ÚNICA LINHA QUE MUDOU DA v11.
+      // Antes só o dono do negócio lia as próprias métricas. O painel do dono
+      // (Fase 5) precisa somar as métricas de TODOS os negócios, então o admin
+      // passa a ler também. É só LEITURA: quem escreve continua sendo o
+      // visitante anônimo, com as mesmas travas de +1 por campo.
+      allow read: if request.auth != null && (request.auth.uid == uid || isAdmin());
+
+      // expiraEm = data de expiracao do TTL (13 meses). O cliente manda sempre o
+      // mesmo valor pro mesmo dia, entao no update ele nao conta como alterado.
+      // Na atualizacao ele nao pode MUDAR: senao qualquer visitante poderia jogar
+      // a data pro passado e fazer o Firestore apagar as metricas do negocio.
+      // 26/08/2026 (v10): expiraEm passou a ser OPCIONAL na criacao.
+      // Motivo: a v9 exigia o campo, mas o arquivo publico que grava o contador
+      // ainda nao manda expiraEm — entao a criacao do documento do dia seguinte
+      // seria NEGADA e o contador pararia de registrar. Enquanto o campo nao
+      // existir, o documento simplesmente fica de fora do TTL, sem erro.
+      allow create: if metricaCampos()
+                    && request.resource.data.keys().size() <= 3
+                    && ( !('expiraEm' in request.resource.data)
+                         || request.resource.data.expiraEm is timestamp )
+                    && metricaSobeUm();
+
+      // 26/08/2026 (v11): o limite de campos alterados passa de 2 para 3 SO no
+      // caso do documento que ainda nao tem expiraEm (criado antes do arquivo
+      // publico novo entrar no ar). Sem isso, a primeira visita nesse documento
+      // mexeria em 3 campos (views + faixa de hora + o expiraEm que esta sendo
+      // acrescentado) e seria RECUSADA — a visita do dia se perderia calada.
+      // Nao abre brecha: metricaSobeUm() continua limitando cada contador a +1.
+      allow update: if metricaCampos()
+                    && request.resource.data.diff(resource.data).affectedKeys().size()
+                       <= ( ('expiraEm' in resource.data) ? 2 : 3 )
+                    && ( !('expiraEm' in resource.data)
+                         || request.resource.data.expiraEm == resource.data.expiraEm )
+                    && ( !('expiraEm' in request.resource.data)
+                         || request.resource.data.expiraEm is timestamp )
+                    && metricaSobeUm();
+
+      allow delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // ==========================================================
+    //  MULTI-PONTO (plano Enterprise)
+    // ==========================================================
+
+    match /pontos/{pid} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /ponto_slugs/{slug} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ==========================================================
+
+    // ---- 27/08/2026 (v13): funções da caixa de mensagens ----
+
+    // v14: os 4 campos do robô e o valor 'bot' entraram aqui. Esta função é
+    // avaliada sobre o documento INTEIRO já mesclado em toda escrita do
+    // lojista — sem estas linhas, a caixa de mensagens travaria para ele
+    // logo depois da primeira resposta do assistente.
+    // Deixar os campos passarem por aqui NÃO deixa o lojista escrevê-los:
+    // quem impede isso é o hasOnly de 4 campos do allow update acima.
+    function conversaCampos(d) {
+      return d.keys().hasOnly(['uid','nome','email','ultimaMsg','ultimaEm','ultimoDe',
+                               'vistoLojistaEm','vistoDonoEm','docsLiberado','docsPedido','criadoEm',
+                               'botLigado','botRespondeuAte','botDia','botUsos'])
+        && d.uid is string
+        && d.uid.size() >= 6 && d.uid.size() <= 128
+        && (!('nome' in d)       || (d.nome is string && d.nome.size() <= 80))
+        && (!('email' in d)      || (d.email is string && d.email.size() <= 120))
+        && (!('ultimaMsg' in d)  || (d.ultimaMsg is string && d.ultimaMsg.size() <= 200))
+        && (!('ultimoDe' in d)   || (d.ultimoDe is string && d.ultimoDe in ['lojista','admin','bot']))
+        && (!('docsLiberado' in d) || d.docsLiberado is bool)
+        && (!('docsPedido' in d) || (d.docsPedido is string && d.docsPedido.size() <= 300))
+        && (!('botLigado' in d)  || d.botLigado is bool)
+        && (!('botRespondeuAte' in d) || (d.botRespondeuAte is string && d.botRespondeuAte.size() <= 64))
+        && (!('botDia' in d)     || (d.botDia is string && d.botDia.size() <= 10))
+        && (!('botUsos' in d)    || (d.botUsos is int && d.botUsos >= 0 && d.botUsos <= 100000));
+    }
+
+    // v14: 'bot' NÃO entra nesta lista, de propósito. Esta função só roda no
+    // create pelo cliente; a resposta do robô é gravada pelo Admin SDK, que
+    // ignora regras. Manter 'bot' fora daqui é o que garante que nenhum
+    // lojista consiga forjar uma resposta "oficial" do assistente.
+    function mensagemCampos(d) {
+      return d.keys().hasOnly(['de','texto','criadoEm','arquivoUrl','arquivoNome','arquivoTipo','arquivoTam'])
+        && d.de is string
+        && d.de in ['lojista','admin']
+        && ('criadoEm' in d)
+        && (!('texto' in d)        || (d.texto is string && d.texto.size() <= 2000))
+        && (!('arquivoUrl' in d)   || (d.arquivoUrl is string && d.arquivoUrl.size() <= 800))
+        && (!('arquivoNome' in d)  || (d.arquivoNome is string && d.arquivoNome.size() <= 160))
+        && (!('arquivoTipo' in d)  || (d.arquivoTipo is string && d.arquivoTipo.size() <= 100))
+        && (!('arquivoTam' in d)   || (d.arquivoTam is int && d.arquivoTam >= 0 && d.arquivoTam <= 10485760))
+        // mensagem vazia não entra: ou tem texto, ou tem arquivo
+        && ( (('texto' in d) && d.texto.size() > 0) || ('arquivoUrl' in d) );
+    }
+
+    // Custa 1 leitura, e só é chamada quando o LOJISTA manda arquivo.
+    // Mensagem de texto não passa por aqui.
+    function docsLiberados(uid) {
+      return exists(/databases/$(database)/documents/conversas/$(uid))
+        && get(/databases/$(database)/documents/conversas/$(uid)).data.get('docsLiberado', false) == true;
+    }
+
+    function metricaCampos() {
+      return request.resource.data.keys().hasOnly(['views','whats','rota','cardapio','b0','b1','b2','b3','b4','b5','b6','b7','b8','b9','b10','b11','expiraEm']);
+    }
+
+    function metricaSobeUm() {
+      return (request.resource.data.get('views', 0) is int
+        && request.resource.data.get('views', 0) >= 0
+        && request.resource.data.get('views', 0) <= (resource == null ? 0 : resource.data.get('views', 0)) + 1)
+        && (request.resource.data.get('whats', 0) is int
+        && request.resource.data.get('whats', 0) >= 0
+        && request.resource.data.get('whats', 0) <= (resource == null ? 0 : resource.data.get('whats', 0)) + 1)
+        && (request.resource.data.get('rota', 0) is int
+        && request.resource.data.get('rota', 0) >= 0
+        && request.resource.data.get('rota', 0) <= (resource == null ? 0 : resource.data.get('rota', 0)) + 1)
+        && (request.resource.data.get('cardapio', 0) is int
+        && request.resource.data.get('cardapio', 0) >= 0
+        && request.resource.data.get('cardapio', 0) <= (resource == null ? 0 : resource.data.get('cardapio', 0)) + 1)
+        && (request.resource.data.get('b0', 0) is int
+        && request.resource.data.get('b0', 0) >= 0
+        && request.resource.data.get('b0', 0) <= (resource == null ? 0 : resource.data.get('b0', 0)) + 1)
+        && (request.resource.data.get('b1', 0) is int
+        && request.resource.data.get('b1', 0) >= 0
+        && request.resource.data.get('b1', 0) <= (resource == null ? 0 : resource.data.get('b1', 0)) + 1)
+        && (request.resource.data.get('b2', 0) is int
+        && request.resource.data.get('b2', 0) >= 0
+        && request.resource.data.get('b2', 0) <= (resource == null ? 0 : resource.data.get('b2', 0)) + 1)
+        && (request.resource.data.get('b3', 0) is int
+        && request.resource.data.get('b3', 0) >= 0
+        && request.resource.data.get('b3', 0) <= (resource == null ? 0 : resource.data.get('b3', 0)) + 1)
+        && (request.resource.data.get('b4', 0) is int
+        && request.resource.data.get('b4', 0) >= 0
+        && request.resource.data.get('b4', 0) <= (resource == null ? 0 : resource.data.get('b4', 0)) + 1)
+        && (request.resource.data.get('b5', 0) is int
+        && request.resource.data.get('b5', 0) >= 0
+        && request.resource.data.get('b5', 0) <= (resource == null ? 0 : resource.data.get('b5', 0)) + 1)
+        && (request.resource.data.get('b6', 0) is int
+        && request.resource.data.get('b6', 0) >= 0
+        && request.resource.data.get('b6', 0) <= (resource == null ? 0 : resource.data.get('b6', 0)) + 1)
+        && (request.resource.data.get('b7', 0) is int
+        && request.resource.data.get('b7', 0) >= 0
+        && request.resource.data.get('b7', 0) <= (resource == null ? 0 : resource.data.get('b7', 0)) + 1)
+        && (request.resource.data.get('b8', 0) is int
+        && request.resource.data.get('b8', 0) >= 0
+        && request.resource.data.get('b8', 0) <= (resource == null ? 0 : resource.data.get('b8', 0)) + 1)
+        && (request.resource.data.get('b9', 0) is int
+        && request.resource.data.get('b9', 0) >= 0
+        && request.resource.data.get('b9', 0) <= (resource == null ? 0 : resource.data.get('b9', 0)) + 1)
+        && (request.resource.data.get('b10', 0) is int
+        && request.resource.data.get('b10', 0) >= 0
+        && request.resource.data.get('b10', 0) <= (resource == null ? 0 : resource.data.get('b10', 0)) + 1)
+        && (request.resource.data.get('b11', 0) is int
+        && request.resource.data.get('b11', 0) >= 0
+        && request.resource.data.get('b11', 0) <= (resource == null ? 0 : resource.data.get('b11', 0)) + 1);
+    }
+
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // v23: a live esta no ar? Custa 1 leitura; so o chat anonimo usa.
+    // v23: campos da sessao de live (lives/{id}). Conjunto fechado e tipos.
+    function liveCampos(d) {
+      return d.keys().hasOnly(['lojistaUid','slug','nome','nivel','titulo','liveId','inicioMs','fimMs','pulsoMs',
+                               'ativa','pico','assistindo','mensagens','queros','duracaoMin','encerradaPor','motivo'])
+        && d.lojistaUid is string
+        && (!('slug' in d)       || (d.slug is string && d.slug.size() <= 40))
+        && (!('nome' in d)       || (d.nome is string && d.nome.size() <= 80))
+        && (!('nivel' in d)      || (d.nivel is string && d.nivel.size() <= 20))
+        && (!('titulo' in d)     || (d.titulo is string && d.titulo.size() <= 60))
+        && (!('liveId' in d)     || (d.liveId is string && d.liveId.size() <= 20))
+        && (!('ativa' in d)      || d.ativa is bool)
+        && (!('inicioMs' in d)   || d.inicioMs is number)
+        && (!('fimMs' in d)      || d.fimMs is number)
+        && (!('pulsoMs' in d)    || d.pulsoMs is number)
+        && (!('pico' in d)       || (d.pico is int && d.pico >= 0 && d.pico <= 1000000))
+        && (!('assistindo' in d) || (d.assistindo is int && d.assistindo >= 0 && d.assistindo <= 1000000))
+        && (!('mensagens' in d)  || (d.mensagens is int && d.mensagens >= 0))
+        && (!('queros' in d)     || (d.queros is int && d.queros >= 0))
+        && (!('duracaoMin' in d) || (d.duracaoMin is int && d.duracaoMin >= 0 && d.duracaoMin <= 1440))
+        && (!('motivo' in d)     || (d.motivo is string && d.motivo.size() <= 200));
+    }
+
+    // v24 — 15/09/2026: MUDOU DE DOCUMENTO.
+    // Antes lia negocios/{uid}/estado/live, que o proprio lojista escreve. A
+    // partir da marca `2026-09-15-sessao1` o campo `ativa` daquele documento e
+    // sempre false — quem diz que a live esta no ar e o servidor, em
+    // live_sessoes/{uid}. Se esta funcao ficasse apontando para o documento
+    // antigo, o chat da live seria negado para todo visitante, calado.
+    // exists() antes do get(): sem o documento, get() derruba a regra inteira
+    // com erro em vez de simplesmente negar.
+    function liveNoAr(uid) {
+      return exists(/databases/$(database)/documents/live_sessoes/$(uid))
+        && get(/databases/$(database)/documents/live_sessoes/$(uid)).data.get('ativa', false) == true;
+    }
+
+    function negocioValido(d) {
+      return d.keys().hasOnly(['nome','status','recado','cardapio','promocoes','eventos','fotos','videos','atualizadoEm','lat','lng','slug','whatsapp','markerLogo','cor','whiteLabel','segmento','segmentoMacro','autorizaDivulgacao','horario','endereco','entrega','precoMedio','capa'])
+        && d.nome is string && d.nome.size() >= 1 && d.nome.size() <= 80
+        && (!('status' in d) || (d.status is string && d.status in ['aberto','fechado']))
+        && (!('recado' in d) || (d.recado is string && d.recado.size() <= 280))
+        && (!('slug' in d) || (d.slug is string && d.slug.size() <= 40))
+        && (!('whatsapp' in d) || (d.whatsapp is string && d.whatsapp.size() <= 20))
+        && (!('lat' in d) || d.lat is number)
+        && (!('lng' in d) || d.lng is number)
+        && (!('markerLogo' in d) || (d.markerLogo is string && d.markerLogo.size() <= 500))
+        && (!('cor' in d) || (d.cor is string && d.cor.matches('^#[0-9a-fA-F]{6}$')))
+        && (!('whiteLabel' in d) || d.whiteLabel is bool)
+        // --- 24/08/2026: Quiz + vitrine do robô social ---
+        // segmento           = id do sub-tipo do Quiz (ex.: 'foodtruck')
+        // segmentoMacro      = id do macro-segmento (ex.: 'alimentacao'). Gravado
+        //   junto porque é por ele que o robô social escolhe o fundo da arte, e o
+        //   macro não é dedutível a partir do sub-tipo fora do repo do painel.
+        // autorizaDivulgacao = opt-in do lojista pra ser divulgado nas redes do
+        //   Moviki. Nasce false. É LGPD: sem true explícito, não entra na vitrine.
+        // Os três são OPCIONAIS: contas criadas antes desta data não têm os campos,
+        // e exigir presença faria o hasOnly derrubar qualquer save nelas.
+        && (!('segmento' in d) || (d.segmento is string && d.segmento.size() <= 40))
+        && (!('segmentoMacro' in d) || (d.segmentoMacro is string && d.segmentoMacro.size() <= 40))
+        && (!('autorizaDivulgacao' in d) || d.autorizaDivulgacao is bool)
+        // --- 26/08/2026: campos da Fase 2b (pagina publica ja tem o espaco pronto) ---
+        // horario    = texto livre do funcionamento (ex.: 'Seg a Sab, 11h as 23h')
+        // endereco   = endereco escrito, para quem nao quer abrir o mapa
+        // entrega    = texto da taxa/condicao de entrega (ex.: 'Entrega R$ 5,00')
+        // precoMedio = valor medio por pessoa, numero
+        // Os quatro sao OPCIONAIS: negocios antigos nao tem os campos e exigir
+        // presenca faria o hasOnly derrubar qualquer save neles.
+        && (!('horario' in d) || (d.horario is string && d.horario.size() <= 120))
+        && (!('endereco' in d) || (d.endereco is string && d.endereco.size() <= 200))
+        && (!('entrega' in d) || (d.entrega is string && d.entrega.size() <= 60))
+        && (!('precoMedio' in d) || (d.precoMedio is number && d.precoMedio >= 0 && d.precoMedio <= 100000))
+        // --- 31/08/2026 (v17): FOTO DE CAPA DEDICADA ---
+        // capa = URL da foto grande do topo da pagina publica, ja enquadrada em
+        //   16:9 pelo painel (bloco "Foto de capa da sua pagina", aba Localizacao).
+        //   Antes a capa era, obrigatoriamente, a 1a foto da galeria.
+        //   OPCIONAL e pode ser STRING VAZIA: vazia significa "nao escolhi", e a
+        //   pagina publica volta a usar a 1a foto da galeria. Por isso NAO se
+        //   exige tamanho minimo — exigir derrubaria o save de quem nunca
+        //   escolheu capa.
+        //   SEM ESTE CAMPO NO hasOnly ACIMA, TODO save do painel novo e negado.
+        && (!('capa' in d) || (d.capa is string && d.capa.size() <= 500))
+        && (!('cardapio' in d) || (d.cardapio is list && d.cardapio.size() <= 60))
+        && (!('promocoes' in d) || (d.promocoes is list && d.promocoes.size() <= 60))
+        && (!('eventos' in d) || (d.eventos is list && d.eventos.size() <= 60))
+        && (!('fotos' in d) || (d.fotos is list && d.fotos.size() <= 12))
+        // --- 10/09/2026 (v22): GALERIA DE VIDEOS ---
+        // videos = lista de { url, titulo } com os links de video que o lojista
+        //   colou no painel (YouTube/Shorts, Instagram Reels, TikTok). No maximo
+        //   6 — o teto existe pra nao estourar o documento (limite de 1 MB) e
+        //   pra faixa da pagina publica nao virar rolagem infinita.
+        //   OPCIONAL: negocio que nunca pos video nao tem o campo, e exigir
+        //   presenca derrubaria o save de todos eles.
+        //   A regra NAO entra dentro de cada item (regra do Firestore nao le
+        //   mapa dentro de lista). O filtro de dominio, sempre https e so
+        //   YouTube/Instagram/TikTok, e feito no painel na hora de colar e DE
+        //   NOVO no 404.html na hora de publicar — que e quem joga o link
+        //   dentro de um href.
+        //   SEM ESTE CAMPO NO hasOnly ACIMA, TODO save do painel novo e negado.
+        && (!('videos' in d) || (d.videos is list && d.videos.size() <= 6));
+    }
+  }
+}
