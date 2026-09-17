@@ -3,6 +3,60 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================================
+    //  v26 — 17/09/2026 — O CURINGA DE negocios SAIU
+    //
+    //  UMA mudanca, num lugar so. O resto do arquivo e a v25 publicada,
+    //  letra por letra.
+    //    negocios/{uid}/{documento=**}  ->  removido, trocado por regra
+    //                                      explicita de cada subcolecao
+    //
+    //  Aquele curinga tinha `allow read: if true` e fazia TRES coisas.
+    //  Duas ninguem queria.
+    //
+    //  --- 1: ele ANULAVA o negocioValido() do cadastro ---
+    //  Regra do Firestore soma permissoes e nao tem "deny": como o curinga
+    //  tambem alcancava o documento negocios/{uid}, bastava ELE permitir
+    //  para o hasOnly da regra de cima deixar de valer. Conferido no
+    //  emulador: passavam campo inventado, nome vazio, negocio SEM NOME e
+    //  cor em formato invalido — tudo o que a lista existe para barrar.
+    //  Sem o curinga, negocioValido() volta a valer de verdade.
+    //  ATENCAO ao publicar: se algum cadastro em producao carregar um
+    //  campo fora da lista, o save daquele lojista passa a ser recusado.
+    //  O risco foi avaliado como baixo (o curinga entrou na v23, em 11/09,
+    //  e nenhum caminho do codigo grava campo fora da lista), mas e o
+    //  primeiro lugar a olhar se um lojista reclamar que "nao salva".
+    //
+    //  --- 2: ele deixava PUBLICO todo documento de estado/ ---
+    //  Inclusive negocios/{uid}/estado/liveAceite, que guarda o E-MAIL do
+    //  lojista. Agora so estado/live e estado/liveSessao sao publicos —
+    //  que e do que a pagina da live precisa. O resto e do dono e do admin.
+    //
+    //  --- 3: ele faria subcolecao NOVA nascer publica ---
+    //  No dia em que alguem criasse negocios/{uid}/clientes, ela nasceria
+    //  legivel pelo mundo sem ninguem mudar uma linha e sem nenhum aviso.
+    //  Agora nasce NEGADA: o Firestore nega o que nenhuma regra permite,
+    //  entao nao ter match e a trava. Quem criar subcolecao nova e
+    //  obrigado a escrever a regra dela e decidir, na hora, quem le.
+    //
+    //  --- O QUE CONTINUA IGUAL ---
+    //  O curinga tambem sustentava escrita legitima, e ela foi reescrita
+    //  subcolecao por subcolecao (avaliacoes, resumo, livechat,
+    //  livepresenca, estado) com a funcao donoOuAdmin(uid): encerrar live,
+    //  moderar chat, apagar avaliacao, limpar presenca, o save do painel.
+    //
+    //  --- TESTE ---
+    //  Estas regras tem teste automatico em firebase/testes/, contra o
+    //  emulador oficial do Firebase. 31 casos, rodados ANTES da mudanca
+    //  (a brecha falhava, como esperado) e DEPOIS (31/31).
+    //      cd firebase/testes && npm install && npm run teste
+    //
+    //  --- ORDEM DE PUBLICACAO ---
+    //  Nao depende de nenhum deploy: e so regra. Publicar quando quiser.
+    //  Logo depois, salvar qualquer alteracao no painel do lojista para
+    //  confirmar o item 1 acima.
+    // ==========================================================
+
+    // ==========================================================
     //  v25 — 16/09/2026 — MODERACAO, PRESENCA E RETENCAO DO SAQUE
     //
     //  TRES mudancas, e so elas. O resto do arquivo e a v24 publicada,
