@@ -33,25 +33,39 @@ repositório.
 > sendo um passo manual no console do Firebase. Este repositório é a memória
 > e a revisão; o console é o que está no ar.
 
-## Ponto que ficou em aberto
+## Testes
 
-Em `firestore.rules`, dentro de `negocios/{uid}`, existe um curinga:
+`testes/` tem testes automaticos das regras, rodando contra o emulador oficial
+do Firebase — o mesmo motor que vale em producao.
 
 ```
-match /{documento=**} {
-  allow read: if true;
+cd firebase/testes && npm install && npm run teste
 ```
 
-Hoje ele não expõe nada indevido: as quatro subcoleções que existem embaixo
-de `negocios` (`estado`, `livechat`, `livepresenca`, `resumo`) são públicas
-por natureza — é a live, o chat da live, quem está assistindo e o resumo de
-avaliações.
+Eles travam, um por um, cada acesso que precisa continuar funcionando (a live,
+a moderacao do chat, apagar avaliacao, o save do painel) e cada acesso que
+precisa continuar barrado. Regra de seguranca sem teste e so um texto que
+alguem leu uma vez.
 
-O risco é futuro: esse curinga **falha aberto**. No dia em que alguém criar
-uma subcoleção nova embaixo de `negocios` — por exemplo a lista de clientes
-ou de pedidos de um lojista — ela nasce legível por qualquer pessoa do mundo,
-sem ninguém mudar uma linha de regra e sem nenhum aviso.
+## O curinga foi removido (17/09/2026)
 
-Trocar por uma lista explícita das quatro subcoleções públicas resolve. É
-mudança de comportamento e precisa de teste, então está separada deste
-pacote.
+Existia dentro de `negocios/{uid}` um `match /{documento=**}` com
+`allow read: if true`. Ele fazia tres coisas, duas delas indesejadas:
+
+1. **Sustentava escrita legitima** — encerrar live, moderar chat, apagar
+   avaliacao, limpar presenca. Isso foi reescrito subcolecao por subcolecao;
+   o comportamento e o mesmo, agora dito em voz alta.
+
+2. **Anulava o `negocioValido()`.** Regra do Firestore e aditiva e nao tem
+   "deny": como o curinga tambem alcancava o documento do negocio, bastava
+   ele permitir para o `hasOnly` deixar de valer. Conferido no emulador: o
+   lojista gravava campo inventado, nome vazio e cor em formato invalido.
+   Sem o curinga, a lista volta a valer de verdade.
+
+3. **Deixava publico todo documento de `estado/`** — inclusive
+   `estado/liveAceite`, que guarda o **e-mail do lojista**. Agora so
+   `estado/live` e `estado/liveSessao` sao publicos, que e do que a pagina
+   da live precisa.
+
+E, daqui para frente, subcolecao nova embaixo de `negocios/{uid}` nasce
+**negada**, nao publica. Quem criar e obrigado a decidir, na hora, quem le.

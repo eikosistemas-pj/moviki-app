@@ -256,7 +256,10 @@ Regras da nota:
 - ✅ **Conferido em 17/09/2026: a leitura pública de `negocios` não expõe dado sensível.** Os campos legíveis são só de vitrine (nome, recado, cardápio, promoções, eventos, fotos, vídeos, horário, endereço, entrega, preço médio, capa, slug, whatsapp, lat/lng, cor, segmento). Não há CPF, e-mail, senha, dado financeiro nem id interno. O CPF do lojista vai para o Asaas pela API e não é gravado; do comprador guarda-se só o final.
 - ✅ **App Check (reCAPTCHA v3) está ligado** em todas as páginas que leem dados, o que barra coleta em massa por script.
 - ✅ **Coleções financeiras não têm regra** (`faturamento`, `checkout_contas`, `recebimento`, `checkout_tokens`, `financeiro_trilha`, `atendimentos_bot`, `trial_negado`) — sem regra, o Firestore nega por padrão, e não existe curinga global. Só o Admin SDK alcança.
-- ⚠️ **O curinga `negocios/{uid}/{documento=**}` falha aberto.** Hoje as quatro subcoleções embaixo de `negocios` são públicas por natureza, mas subcoleção nova nasce legível por qualquer pessoa sem ninguém mudar regra. Trocar por lista explícita.
+- ✅ **Curinga de `negocios` removido em 17/09/2026 (v26).** Cada subcoleção passou a ter regra própria e explícita. Subcoleção nova agora nasce **negada**, não pública. Ao criar uma, é obrigatório escrever a regra dela.
+- ✅ **`hasOnly` voltou a valer.** O curinga anulava o `negocioValido()` — regra do Firestore é aditiva e não tem "deny". Conferido no emulador: gravava-se campo inventado, nome vazio e cor inválida. Corrigido junto.
+- ✅ **E-mail do lojista fechado.** `negocios/{uid}/estado/liveAceite` guarda o e-mail e era público pelo curinga. Agora só `estado/live` e `estado/liveSessao` são públicos.
+- ✅ **Regras com teste automático** em `moviki-app/firebase/testes/`, contra o emulador oficial do Firebase.
 - ⚠️ **O atendente do WhatsApp (`moviki-ai /api/atendimento`) não tem teto de uso.** O do painel tem limite diário; o do WhatsApp não. Exposição de custo, não de dado.
 - ⚠️ `moviki-vault` é privado e não foi auditado.
 
@@ -279,3 +282,4 @@ Regras da nota:
 - 17/09/2026: definido o formato da nota de diário entregue ao Obsidian (seção 12), com o prefixo `MOVIKI ` que o `.bat` reconhece.
 - 17/09/2026: `.bat` de sincronização corrigido — passou a trazer do GitHub antes de enviar, e a subir também o que o Paulo escreve dentro do Obsidian. Antes, anotação feita direto no Obsidian nunca saía do computador.
 - 17/09/2026: regras do Firestore e do Storage trazidas para dentro do repositório (`moviki-app/firebase/`). Antes viviam só no console do Firebase: sem revisão, sem histórico e sem como voltar de uma alteração feita por engano.
+- 17/09/2026: curinga `match /{documento=**}` removido de `negocios/{uid}` (regras v26). Ele anulava em silêncio o `hasOnly` do cadastro, deixava público o e-mail do lojista em `estado/liveAceite`, e faria qualquer subcoleção futura nascer pública. Regras passaram a ter teste automático.

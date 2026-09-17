@@ -1,0 +1,258 @@
+/* Testes das regras do Firestore — negocios/{uid} e suas subcolecoes.
+ *
+ * POR QUE ESTE ARQUIVO EXISTE
+ * As regras decidem quem le e quem grava o dado de cada lojista. Ate hoje
+ * nenhuma delas tinha teste: a unica conferencia era ler e torcer. Estes
+ * testes travam, um por um, TODOS os acessos que o curinga
+ * `match /{documento=**}` sustentava, para que a troca dele por uma lista
+ * explicita nao derrube a live, a moderacao do chat nem o save do painel.
+ *
+ * Rodar:  npm run teste   (sobe o emulador do Firestore sozinho)
+ */
+import { readFileSync } from 'node:fs';
+import { test, before, after, describe } from 'node:test';
+import assert from 'node:assert/strict';
+import {
+  initializeTestEnvironment,
+  assertSucceeds,
+  assertFails,
+} from '@firebase/rules-unit-testing';
+import {
+  doc, getDoc, setDoc, deleteDoc, serverTimestamp,
+} from 'firebase/firestore';
+
+const DONO      = 'lojista-dono-1';
+const ESTRANHO  = 'lojista-estranho-2';
+const ADM       = 'dono-do-moviki';
+
+let env;
+
+before(async () => {
+  env = await initializeTestEnvironment({
+    projectId: 'moviki-teste',
+    firestore: {
+      rules: readFileSync(new URL('../firestore.rules', import.meta.url), 'utf8'),
+      host: '127.0.0.1',
+      port: 8080,
+    },
+  });
+});
+
+after(async () => { if (env) await env.cleanup(); });
+
+/* Semeia o banco ignorando as regras: e o estado que ja existiria em producao. */
+async function semear({ liveNoAr = false } = {}) {
+  await env.clearFirestore();
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    const db = ctx.firestore();
+    await setDoc(doc(db, 'admins', ADM), { desde: 'sempre' });
+    await setDoc(doc(db, 'negocios', DONO), { nome: 'Food Truck do Teste' });
+    await setDoc(doc(db, 'live_sessoes', DONO), { ativa: liveNoAr });
+    await setDoc(doc(db, 'negocios', DONO, 'estado', 'live'), { ativa: false });
+    await setDoc(doc(db, 'negocios', DONO, 'estado', 'liveSessao'), { assistindo: 3 });
+    await setDoc(doc(db, 'negocios', DONO, 'estado', 'liveAceite'), { versao: 1, email: 'lojista@exemplo.com' });
+    await setDoc(doc(db, 'negocios', DONO, 'estado', 'boasvindas'), { visto: true });
+    await setDoc(doc(db, 'negocios', DONO, 'livechat', 'msg1'), { nome: 'Ana', texto: 'oi' });
+    await setDoc(doc(db, 'negocios', DONO, 'avaliacoes', 'av1'), { nota: 5, nome: 'Ana' });
+    await setDoc(doc(db, 'negocios', DONO, 'livepresenca', 'sessao-abcdefghij'), { em: new Date() });
+    await setDoc(doc(db, 'negocios', DONO, 'resumo', 'avaliacoes'), { n: 1, soma: 5 });
+  });
+}
+
+const anon      = () => env.unauthenticatedContext().firestore();
+const dono      = () => env.authenticatedContext(DONO).firestore();
+const estranho  = () => env.authenticatedContext(ESTRANHO).firestore();
+const admin     = () => env.authenticatedContext(ADM).firestore();
+
+/* ================= o documento do negocio ================= */
+describe('negocios/{uid} — o cadastro do lojista', () => {
+  before(() => semear());
+
+  test('visitante anonimo LE a pagina publica', async () => {
+    await assertSucceeds(getDoc(doc(anon(), 'negocios', DONO)));
+  });
+
+  test('o dono GRAVA o proprio negocio', async () => {
+    await assertSucceeds(setDoc(doc(dono(), 'negocios', DONO), { nome: 'Novo nome' }));
+  });
+
+  test('estranho NAO grava no negocio alheio', async () => {
+    await assertFails(setDoc(doc(estranho(), 'negocios', DONO), { nome: 'invadido' }));
+  });
+
+  test('campo fora da lista derruba o save inteiro (hasOnly)', async () => {
+    await assertFails(setDoc(doc(dono(), 'negocios', DONO), { nome: 'ok', campoNovo: 1 }));
+  });
+});
+
+/* ========== estado/live — hoje SO o curinga sustenta ========== */
+describe('estado/live — o interruptor da transmissao', () => {
+  before(() => semear());
+
+  test('visitante anonimo LE o estado da live (a pagina publica depende disso)', async () => {
+    await assertSucceeds(getDoc(doc(anon(), 'negocios', DONO, 'estado', 'live')));
+  });
+
+  test('o dono LIGA e DESLIGA a propria live', async () => {
+    await assertSucceeds(setDoc(doc(dono(), 'negocios', DONO, 'estado', 'live'), { ativa: true }));
+  });
+
+  test('o dono do Moviki ENCERRA a live de um lojista pelo painel', async () => {
+    await assertSucceeds(setDoc(doc(admin(), 'negocios', DONO, 'estado', 'live'), { ativa: false }));
+  });
+
+  test('estranho NAO mexe na live alheia', async () => {
+    await assertFails(setDoc(doc(estranho(), 'negocios', DONO, 'estado', 'live'), { ativa: true }));
+  });
+});
+
+/* ========== livechat — moderacao entra pelo curinga ========== */
+describe('livechat — o chat da transmissao', () => {
+  test('visitante anonimo LE o chat', async () => {
+    await semear({ liveNoAr: true });
+    await assertSucceeds(getDoc(doc(anon(), 'negocios', DONO, 'livechat', 'msg1')));
+  });
+
+  test('visitante anonimo ESCREVE com a live no ar', async () => {
+    await semear({ liveNoAr: true });
+    await assertSucceeds(setDoc(doc(anon(), 'negocios', DONO, 'livechat', 'nova1'), {
+      nome: 'Ana', texto: 'quanto custa?', tipo: 'msg', criadoEm: serverTimestamp(),
+    }));
+  });
+
+  test('visitante anonimo NAO escreve com a live fora do ar', async () => {
+    await semear({ liveNoAr: false });
+    await assertFails(setDoc(doc(anon(), 'negocios', DONO, 'livechat', 'nova2'), {
+      nome: 'Ana', texto: 'oi', tipo: 'msg', criadoEm: serverTimestamp(),
+    }));
+  });
+
+  test('o dono RESPONDE no chat (tipo dono — so o curinga permite)', async () => {
+    await semear({ liveNoAr: true });
+    await assertSucceeds(setDoc(doc(dono(), 'negocios', DONO, 'livechat', 'resp1'), {
+      nome: 'Loja', texto: 'R$ 25', tipo: 'dono', criadoEm: serverTimestamp(),
+    }));
+  });
+
+  test('o dono APAGA mensagem do chat (moderacao — so o curinga permite)', async () => {
+    await semear({ liveNoAr: true });
+    await assertSucceeds(deleteDoc(doc(dono(), 'negocios', DONO, 'livechat', 'msg1')));
+  });
+
+  test('estranho NAO apaga mensagem do chat alheio', async () => {
+    await semear({ liveNoAr: true });
+    await assertFails(deleteDoc(doc(estranho(), 'negocios', DONO, 'livechat', 'msg1')));
+  });
+});
+
+/* ========== avaliacoes — apagar entra pelo curinga ========== */
+describe('avaliacoes — a nota de quem comprou', () => {
+  before(() => semear());
+
+  test('visitante anonimo LE as avaliacoes', async () => {
+    await assertSucceeds(getDoc(doc(anon(), 'negocios', DONO, 'avaliacoes', 'av1')));
+  });
+
+  test('visitante anonimo AVALIA', async () => {
+    await assertSucceeds(setDoc(doc(anon(), 'negocios', DONO, 'avaliacoes', 'nova'), {
+      nota: 5, nome: 'Carlos', criadoEm: serverTimestamp(),
+    }));
+  });
+
+  test('nota fora de 1 a 5 e recusada', async () => {
+    await assertFails(setDoc(doc(anon(), 'negocios', DONO, 'avaliacoes', 'ruim'), {
+      nota: 99, nome: 'Carlos', criadoEm: serverTimestamp(),
+    }));
+  });
+
+  test('o dono APAGA avaliacao (moderacao — so o curinga permite)', async () => {
+    await assertSucceeds(deleteDoc(doc(dono(), 'negocios', DONO, 'avaliacoes', 'av1')));
+  });
+});
+
+/* ========== livepresenca e resumo ========== */
+describe('livepresenca e resumo', () => {
+  before(() => semear({ liveNoAr: true }));
+
+  test('visitante anonimo LE a presenca', async () => {
+    await assertSucceeds(getDoc(doc(anon(), 'negocios', DONO, 'livepresenca', 'sessao-abcdefghij')));
+  });
+
+  test('o dono LIMPA presenca antiga (so o curinga permite)', async () => {
+    await assertSucceeds(deleteDoc(doc(dono(), 'negocios', DONO, 'livepresenca', 'sessao-abcdefghij')));
+  });
+
+  test('visitante anonimo LE o resumo de avaliacoes', async () => {
+    await assertSucceeds(getDoc(doc(anon(), 'negocios', DONO, 'resumo', 'avaliacoes')));
+  });
+
+  test('o dono REESCREVE o proprio resumo', async () => {
+    await assertSucceeds(setDoc(doc(dono(), 'negocios', DONO, 'resumo', 'avaliacoes'), { n: 3, soma: 14 }));
+  });
+});
+
+/* ================================================================
+ *  A BRECHA
+ *  Subcolecao que ninguem previu. Com o curinga, ela nasce legivel
+ *  por QUALQUER PESSOA DO MUNDO, sem ninguem mudar uma linha de regra.
+ *  Este teste FALHA nas regras de hoje — e e exatamente o ponto.
+ * ================================================================ */
+describe('A BRECHA — subcolecao nova embaixo de negocios', () => {
+  before(async () => {
+    await semear();
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      // Imagine que amanha alguem guarde a lista de clientes do lojista aqui.
+      await setDoc(doc(ctx.firestore(), 'negocios', DONO, 'clientes', 'cliente1'), {
+        nome: 'Maria', telefone: '41999990000', endereco: 'Rua das Flores, 120',
+      });
+    });
+  });
+
+  test('estranho NAO deve ler a lista de clientes de outro lojista', async () => {
+    await assertFails(getDoc(doc(estranho(), 'negocios', DONO, 'clientes', 'cliente1')));
+  });
+
+  test('visitante anonimo NAO deve ler a lista de clientes', async () => {
+    await assertFails(getDoc(doc(anon(), 'negocios', DONO, 'clientes', 'cliente1')));
+  });
+
+  /* Falha FECHADA: nem o proprio dono alcanca, ate alguem escrever a regra.
+     E o ponto do conserto. Quem criar a subcolecao e obrigado a decidir, na
+     hora, quem pode ler — em vez de herdar "todo mundo" sem perceber. */
+  test('nem o proprio dono alcanca antes de existir regra (falha fechada)', async () => {
+    await assertFails(getDoc(doc(dono(), 'negocios', DONO, 'clientes', 'cliente1')));
+  });
+});
+
+/* ================================================================
+ *  v26 — estado/ deixou de ser tudo publico
+ *  A pagina da live precisa de estado/live e estado/liveSessao.
+ *  O resto e interno — e estado/liveAceite guarda o E-MAIL do lojista.
+ * ================================================================ */
+describe('estado/ — publico so o que a live precisa', () => {
+  before(() => semear());
+
+  test('estado/liveSessao continua publico (a pagina da live le sem login)', async () => {
+    await assertSucceeds(getDoc(doc(anon(), 'negocios', DONO, 'estado', 'liveSessao')));
+  });
+
+  test('o e-mail do lojista em estado/liveAceite NAO e publico', async () => {
+    await assertFails(getDoc(doc(anon(), 'negocios', DONO, 'estado', 'liveAceite')));
+  });
+
+  test('estranho NAO le o e-mail do lojista', async () => {
+    await assertFails(getDoc(doc(estranho(), 'negocios', DONO, 'estado', 'liveAceite')));
+  });
+
+  test('o proprio lojista le o seu aceite', async () => {
+    await assertSucceeds(getDoc(doc(dono(), 'negocios', DONO, 'estado', 'liveAceite')));
+  });
+
+  test('estado interno de onboarding NAO e publico', async () => {
+    await assertFails(getDoc(doc(anon(), 'negocios', DONO, 'estado', 'boasvindas')));
+  });
+
+  test('o lojista grava o proprio onboarding', async () => {
+    await assertSucceeds(setDoc(doc(dono(), 'negocios', DONO, 'estado', 'boasvindas'), { visto: true }));
+  });
+});

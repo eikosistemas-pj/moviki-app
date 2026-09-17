@@ -486,6 +486,8 @@ service cloud.firestore {
                            || ( request.resource.data.comentario is string
                                 && request.resource.data.comentario.size() <= 300 ) )
                       && request.resource.data.keys().hasOnly(['nota','nome','comentario','criadoEm']);
+        // v26: moderar (editar/apagar avaliacao) era o curinga que permitia.
+        allow update, delete: if donoOuAdmin(uid);
       }
 
       // ---- 26/08/2026: RESUMO DE AVALIAÇÕES ----
@@ -529,6 +531,8 @@ service cloud.firestore {
                            && request.resource.data.soma >= resource.data.soma + 1
                            && request.resource.data.soma <= resource.data.soma + 5 );
         allow delete: if request.auth != null && request.auth.uid == uid;
+        // v26: o admin alcancava por meio do curinga; agora esta escrito.
+        allow write: if donoOuAdmin(uid);
       }
 
       // ---- 11/09/2026 (v23): MODO LIVE ----
@@ -555,6 +559,9 @@ service cloud.firestore {
                       && !request.resource.data.texto.lower().matches('.*(^|[^a-z0-9á-ú])(maconha|cocaina|cocaína|crack|ecstasy|mdma|lsd|haxixe|skunk|pistola|revolver|revólver|fuzil|municao|munição|explosivo|granada|porno|pornô|nudes|onlyfans|xvideos|novinha|novinhas|anabolizante|ozempic|rivotril|cytotec|vape|tigrinho|rifa)([^a-z0-9á-ú]|$).*')
                       && !request.resource.data.nome.lower().matches('.*(^|[^a-z0-9á-ú])(maconha|cocaina|cocaína|crack|ecstasy|mdma|lsd|haxixe|skunk|pistola|revolver|revólver|fuzil|municao|munição|explosivo|granada|porno|pornô|nudes|onlyfans|xvideos|novinha|novinhas|anabolizante|ozempic|rivotril|cytotec|vape|tigrinho|rifa)([^a-z0-9á-ú]|$).*')
                       && liveNoAr(uid);
+        // v26: a resposta do lojista (tipo 'dono') e a moderacao (apagar)
+        // entravam pelo curinga. Agora entram por aqui.
+        allow write: if donoOuAdmin(uid);
       }
 
       // Presenca: um documento por aba de quem assiste, carimbado a cada
@@ -578,14 +585,54 @@ service cloud.firestore {
                       && ( !('expiraEm' in request.resource.data)
                            || request.resource.data.expiraEm is timestamp )
                       && sid.size() >= 10 && sid.size() <= 40;
+        // v26: limpar presenca antiga era o curinga que permitia.
+        allow write: if donoOuAdmin(uid);
       }
 
-      // v23: o ADMIN tambem escreve aqui dentro. E o que permite ao dono do
-      // Moviki encerrar a live de um lojista (estado/live) pelo painel.
-      // isAdmin() so e avaliado quando a primeira condicao falha.
-      match /{documento=**} {
+      // ==========================================================
+      //  v26 — 17/09/2026 — O CURINGA SAIU
+      //
+      //  Ate aqui existia, neste ponto, um `match /{documento=**}` com
+      //  `allow read: if true`. Ele fazia TRES coisas, duas indesejadas:
+      //
+      //  1) sustentava, de verdade, a escrita do dono e do admin em todas
+      //     as subcolecoes (encerrar live, moderar chat, apagar avaliacao,
+      //     limpar presenca). Isso foi reescrito, subcolecao por
+      //     subcolecao, nos blocos acima e abaixo — o comportamento e o
+      //     mesmo, so que agora esta dito em voz alta.
+      //
+      //  2) ANULAVA o negocioValido() do documento do negocio. Regra do
+      //     Firestore e aditiva e nao tem "deny": como o curinga tambem
+      //     alcancava negocios/{uid}, bastava ele permitir para o hasOnly
+      //     deixar de valer. Na pratica, o lojista gravava campo
+      //     inventado, nome vazio e cor em formato invalido — tudo que a
+      //     lista existe para barrar. Sem o curinga, negocioValido volta
+      //     a valer de fato.
+      //
+      //  3) deixava PUBLICO todo documento de estado/, inclusive
+      //     estado/liveAceite, que guarda o E-MAIL do lojista. So
+      //     estado/live e estado/liveSessao precisam ser publicos.
+      //
+      //  E, daqui para frente, subcolecao nova embaixo de negocios/{uid}
+      //  nasce NEGADA, e nao publica. O Firestore nega o que nenhuma regra
+      //  permite: nao ter match e a trava.
+      // ==========================================================
+
+      // A pagina publica da live depende destes dois: quem assiste nao tem
+      // login. Sao escritos pelo lojista (estudio) e pelo servidor.
+      match /estado/live {
         allow read: if true;
-        allow write: if request.auth != null && (request.auth.uid == uid || isAdmin());
+        allow write: if donoOuAdmin(uid);
+      }
+      match /estado/liveSessao {
+        allow read: if true;
+        allow write: if donoOuAdmin(uid);
+      }
+
+      // Todo o resto de estado/ e interno: aceite dos termos da live (com
+      // e-mail), onboarding, aulas assistidas. Nenhuma pagina publica le.
+      match /estado/{documento} {
+        allow read, write: if donoOuAdmin(uid);
       }
     }
 
@@ -1253,6 +1300,13 @@ service cloud.firestore {
     function isAdmin() {
       return request.auth != null
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // v26 — 17/09/2026: quem manda no negocio. Extraida do curinga que foi
+    // removido de negocios/{uid}, para que cada subcolecao diga, na propria
+    // regra, quem escreve nela.
+    function donoOuAdmin(uid) {
+      return request.auth != null && (request.auth.uid == uid || isAdmin());
     }
 
     // v23: a live esta no ar? Custa 1 leitura; so o chat anonimo usa.
