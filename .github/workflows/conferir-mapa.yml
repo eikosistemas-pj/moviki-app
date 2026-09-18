@@ -1,0 +1,98 @@
+name: Conferir sincronia do mapa
+
+# Confere se o CLAUDE.md (mapa mestre) e as cadeiras transversais
+# Gabinete e Guarda estao identicos em todos os repositorios.
+#
+# Por que isto existe: o mapa registra tres divergencias em 17/09/2026,
+# sempre pelo mesmo motivo ("uma copia foi atualizada e as outras ficaram
+# para depois"). A conferencia era tarefa humana do Gabinete no inicio de
+# cada sessao. Regra que depende de alguem lembrar volta a quebrar; aqui
+# ela passa a ter dono automatico.
+
+on:
+  schedule:
+    # Todo dia as 11:00 UTC (08:00 em Brasilia), uma hora antes do
+    # lembrete-trial do moviki-robo, para nao competir por atencao.
+    - cron: '0 11 * * *'
+  workflow_dispatch:        # permite rodar na mao pelo botao do GitHub
+  push:
+    branches: [main]
+    paths:
+      - 'CLAUDE.md'
+      - '.claude/skills/gabinete/**'
+      - '.claude/skills/guarda/**'
+
+permissions:
+  contents: read
+  issues: write             # para abrir/atualizar a issue de aviso
+
+jobs:
+  conferir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Conferir se o token esta configurado
+        id: token
+        env:
+          MAPA_TOKEN: ${{ secrets.MAPA_TOKEN }}
+        run: |
+          if [ -z "$MAPA_TOKEN" ]; then
+            echo "presente=nao" >> "$GITHUB_OUTPUT"
+            echo "::warning::O segredo MAPA_TOKEN nao esta configurado. Sem ele este workflow nao consegue ler os outros repositorios. Ver .github/workflows/LEIA-ME-conferir-mapa.md"
+          else
+            echo "presente=sim" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Comparar as copias
+        id: conferir
+        if: steps.token.outputs.presente == 'sim'
+        env:
+          # O GITHUB_TOKEN padrao so alcanca este repositorio. Para ler os
+          # outros cinco (incluindo o moviki-vault, que e privado) o gh
+          # precisa de um token com escopo `repo`.
+          GH_TOKEN: ${{ secrets.MAPA_TOKEN }}
+        run: |
+          set +e
+          python3 .github/scripts/conferir_mapa.py > relatorio.md 2> erro.txt
+          codigo=$?
+          set -e
+          echo "codigo=$codigo" >> "$GITHUB_OUTPUT"
+          cat relatorio.md
+          if [ "$codigo" = "2" ]; then
+            echo "::error::Falha ao consultar o GitHub:"
+            cat erro.txt
+          fi
+
+      - name: Abrir ou atualizar a issue de aviso
+        if: steps.conferir.outputs.codigo == '1'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITULO="Mapa fora de sincronia entre os repositorios"
+          # Reaproveita a issue aberta, para nao criar uma por dia.
+          EXISTENTE=$(gh issue list --state open --search "$TITULO in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTENTE" ]; then
+            gh issue comment "$EXISTENTE" --body-file relatorio.md
+            echo "Comentario adicionado na issue #$EXISTENTE"
+          else
+            gh issue create --title "$TITULO" --body-file relatorio.md --label "" 2>/dev/null \
+              || gh issue create --title "$TITULO" --body-file relatorio.md
+          fi
+
+      - name: Fechar a issue quando voltar a bater
+        if: steps.conferir.outputs.codigo == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITULO="Mapa fora de sincronia entre os repositorios"
+          EXISTENTE=$(gh issue list --state open --search "$TITULO in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTENTE" ]; then
+            gh issue close "$EXISTENTE" --comment "As copias voltaram a bater. Fechado automaticamente."
+          fi
+
+      - name: Falhar o job se houver divergencia
+        if: steps.conferir.outputs.codigo != '0'
+        run: |
+          echo "Conferencia terminou com codigo ${{ steps.conferir.outputs.codigo }}"
+          exit 1
