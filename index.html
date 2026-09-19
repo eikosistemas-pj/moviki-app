@@ -511,6 +511,9 @@ window.mvAtrib = function(){
   .qzBarraWrap{flex:1;height:8px;border-radius:8px;background:rgba(255,255,255,.08);overflow:hidden;}
   .qzBarraWrap i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--ciano),var(--azul));transition:width .4s cubic-bezier(.4,0,.2,1);}
   .qzTela{display:none;opacity:0;transform:translateY(14px);}
+  #qzTela1 .qzSubtitulo{margin-top:0;font-size:13.5px;font-weight:600;color:#b8c8da}
+  #qzTela1 .qzTitG{white-space:nowrap}
+  .qzLinhaApoio{margin:-12px auto 14px;max-width:360px;font-size:15px;line-height:1.45;color:#c9d7e6;text-align:center;font-weight:500}
   .qzTela.qzAtiva{display:block;opacity:1;transform:translateY(0);transition:opacity .35s ease,transform .35s ease;}
   .qzMarca{display:flex;justify-content:center;margin-bottom:6px;}
   .qzLogo{width:100%;max-width:150px;height:auto;}
@@ -2796,8 +2799,9 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
     <div id="qzTela1" class="qzTela qzAtiva">
       <div class="qzMarca"><img src="logo.png" class="qzLogo" alt="Moviki" onerror="this.style.display='none'"></div>
       <div class="qzSelo"><span class="qzSeloPonto"></span>NOVO · VENDA AO VIVO</div>
-      <h1 class="qzTitulo">Seu negócio no mapa. <span class="qzTitG">E em vídeo.</span></h1>
-      <p class="qzSubtitulo">Por onde a gente começa?</p>
+      <h1 class="qzTitulo">Mostre ao vivo. <span class="qzTitG">Venda na hora.</span></h1>
+      <p class="qzLinhaApoio">Apareça no mapa em tempo real e venda ao vivo pelo celular.</p>
+      <p class="qzSubtitulo">O que você quer fazer agora?</p>
       <div class="qzGrid">
         <button type="button" class="qzCard qzCardGrande qzCardDestaque" onclick="mqzIrA2()"><img class="qIcon3d" src="icones/qz-live.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🔴'))"><span class="qTxtWrap"><span class="qTxt">Quero vender ao vivo e no cardápio</span><span class="qTxtSub">e aparecer no mapa em tempo real</span></span></button>
         <button type="button" class="qzCard qzCardGrande" onclick="mqzIrApresent()"><img class="qIcon3d" src="icones/indicar.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('📢'))"><span class="qTxtWrap"><span class="qTxt">Quero indicar negócios e receber comissão</span><span class="qTxtSub">comissão a cada mensalidade paga, sem ter negócio próprio</span></span></button>
@@ -3176,7 +3180,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-19-quizconforme';
+  window.MOVIKI_VERSAO='2026-09-19-quizpulo';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -7035,7 +7039,23 @@ window.mvAbaInicial=function(){
        do que a pessoa pediu. A URL manda no boot; este botao manda em si mesmo. */
     try{ trocarAba('entrar'); }catch(_){} };
   window.mqzIrQuiz=function(){ var b=$('box'); if(b)b.style.display='none'; resetarQuiz(); window.mqzMostrar(); };
-  window.mqzMostrar=function(){ var m=$('quizModal'); if(m)m.classList.remove('qzEscondido'); };
+  /* 2026-09-19-quizpulo: quem chega com ?criar=1 (ou ?novo=1 / ?cadastro=1) ja
+     clicou em "Criar minha pagina" na comerciantes.html — e o caminho do link do
+     parceiro. Mostrar de novo a escolha "vender / indicar" deixava o lojista
+     indicado tocar em "indicar" por engano. Vale UMA vez: o Voltar ainda leva
+     a Tela 1, e logout/novo acesso sem o parametro mostra a escolha normal. */
+  var mqzPuloFeito=false;
+  function mqzQuerCriar(){
+    try{ var q=new URLSearchParams(location.search);
+      var v=(q.get('criar')||q.get('novo')||q.get('cadastro')||'').toLowerCase();
+      return v==='1'||v==='true'||v==='sim'; }catch(_){ return false; }
+  }
+  window.mqzMostrar=function(){ var m=$('quizModal'); if(m)m.classList.remove('qzEscondido');
+    if(!mqzPuloFeito && passoAtual==='qzTela1' && mqzQuerCriar()){
+      mqzPuloFeito=true;
+      try{ window.mqzIrA2(); if(window.mvEv) mvEv('quiz_pulo_escolha',{origem:'criar'}); }catch(_){}
+    }
+  };
   window.mqzEsconder=function(){ var m=$('quizModal'); if(m)m.classList.add('qzEscondido'); };
   window.mqzEsconderLoader=function(){ var l=$('qzLoader'); if(l)l.classList.add('qzEscondido'); };
   window.mqzResetar=resetarQuiz;
