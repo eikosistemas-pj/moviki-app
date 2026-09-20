@@ -1,5 +1,5 @@
 {
-  "versao": "2026-09-19-chamaparceiro",
+  "versao": "2026-09-19-menucateg",
   "atualizado": "2026-09-19",
   "itens": [
     {
@@ -1263,84 +1263,101 @@
       "id": "geral",
       "nome": "Para qualquer negócio",
       "emoji": "📍",
-      "ico": "cat-geral.png"
+      "ico": "cat-geral.png",
+      "grupo": "principal",
+      "desc": "Serve para todo comerciante"
     },
     {
       "id": "recrutar",
       "nome": "Chamar parceiro",
-      "emoji": "🤝"
+      "emoji": "🤝",
+      "grupo": "convite",
+      "desc": "Para convidar novos parceiros",
+      "ico": "cat-recrutar.png"
     },
     {
       "id": "alimentacao",
       "nome": "Alimentação e bebidas",
       "emoji": "🍔",
-      "ico": "cat-alimentacao.png"
-    },
-    {
-      "id": "moda",
-      "nome": "Moda e acessórios",
-      "emoji": "👗",
-      "ico": "cat-moda.png"
-    },
-    {
-      "id": "beleza",
-      "nome": "Beleza e bem-estar",
-      "emoji": "💇",
-      "ico": "cat-beleza.png"
-    },
-    {
-      "id": "naturais",
-      "nome": "Naturais e saudáveis",
-      "emoji": "🌿",
-      "ico": "cat-naturais.png"
-    },
-    {
-      "id": "pet",
-      "nome": "Pet",
-      "emoji": "🐾",
-      "ico": "cat-pet.png"
+      "ico": "cat-alimentacao.png",
+      "grupo": "ramo"
     },
     {
       "id": "artesanato",
       "nome": "Artesanato",
       "emoji": "🎨",
-      "ico": "cat-artesanato.png"
+      "ico": "cat-artesanato.png",
+      "grupo": "ramo"
     },
     {
-      "id": "eletronicos",
-      "nome": "Eletrônicos",
-      "emoji": "📱",
-      "ico": "cat-eletronicos.png"
-    },
-    {
-      "id": "papelaria",
-      "nome": "Papelaria e escolar",
-      "emoji": "📚",
-      "ico": "cat-papelaria.png"
+      "id": "beleza",
+      "nome": "Beleza e bem-estar",
+      "emoji": "💇",
+      "ico": "cat-beleza.png",
+      "grupo": "ramo"
     },
     {
       "id": "automotivo",
       "nome": "Carro e moto",
       "emoji": "🏍️",
-      "ico": "cat-automotivo.png"
+      "ico": "cat-automotivo.png",
+      "grupo": "ramo"
     },
     {
-      "id": "eventos",
-      "nome": "Fotografia e eventos",
-      "emoji": "📸",
-      "ico": "cat-eventos.png"
-    },
-    {
-      "id": "servicos",
-      "nome": "Serviços e reparos",
-      "emoji": "🔧",
-      "ico": "cat-servicos.png"
+      "id": "eletronicos",
+      "nome": "Eletrônicos",
+      "emoji": "📱",
+      "ico": "cat-eletronicos.png",
+      "grupo": "ramo"
     },
     {
       "id": "feira",
       "nome": "Feira, rua e delivery",
       "emoji": "🛒",
-      "ico": "cat-feira.png"
+      "ico": "cat-feira.png",
+      "grupo": "ramo"
+    },
+    {
+      "id": "eventos",
+      "nome": "Fotografia e eventos",
+      "emoji": "📸",
+      "ico": "cat-eventos.png",
+      "grupo": "ramo"
+    },
+    {
+      "id": "moda",
+      "nome": "Moda e acessórios",
+      "emoji": "👗",
+      "ico": "cat-moda.png",
+      "grupo": "ramo"
+    },
+    {
+      "id": "naturais",
+      "nome": "Naturais e saudáveis",
+      "emoji": "🌿",
+      "ico": "cat-naturais.png",
+      "grupo": "ramo"
+    },
+    {
+      "id": "papelaria",
+      "nome": "Papelaria e escolar",
+      "emoji": "📚",
+      "ico": "cat-papelaria.png",
+      "grupo": "ramo"
+    },
+    {
+      "id": "pet",
+      "nome": "Pet",
+      "emoji": "🐾",
+      "ico": "cat-pet.png",
+      "grupo": "ramo"
+    },
+    {
+      "id": "servicos",
+      "nome": "Serviços e reparos",
+      "emoji": "🔧",
+      "ico": "cat-servicos.png",
+      "grupo": "ramo"
     }
   ]
 }
