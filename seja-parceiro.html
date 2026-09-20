@@ -344,8 +344,12 @@ window.mvAtrib = function(){
       }catch(_){}
 
       window.mvSignup && window.mvSignup('parceiro_email');
-      mvEv('parceiro_cadastrado', { tem_upline: refUpline ? 'sim' : 'nao',
+      mvEv('parceiro_cadastrado', { tem_upline: refUpline ? 'sim' : 'nao', origem: 'seja_parceiro',
                                     metodo: contaNova ? 'email' : 'conta_existente' });
+      /* 2026-09-19-tipocadastro: mesmo par de eventos do quiz do app —
+         cadastro_parceiro sempre; cadastro_indicado quando veio de /pp/apelido. */
+      if (contaNova) mvEv('cadastro_parceiro', { ref: refUpline || '(direto)', method: 'parceiro_email' });
+      if (contaNova && refUpline) mvEv('cadastro_indicado', { ref: refUpline, tipo: 'parceiro', method: 'parceiro_email' });
 
       el('form').style.display='none';
       el('sucesso').style.display='block';

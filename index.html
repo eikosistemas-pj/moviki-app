@@ -3044,15 +3044,29 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
      e do localStorage (janela de 90 dias), a mesma ordem da indicacao real.
      Nao mexe no mvmetrica.js (que e identico nos dois repos) nem na marca
      MOVIKI_VERSAO (o Vik compara a marca; mudanca invisivel nao troca marca). */
-  window.MOVIKI_METRICA_IND='2026-09-19-refcadastro';
+  /* 2026-09-19-tipocadastro — lojista e parceiro separados. Ate aqui o
+     parceiro criado pelo quiz disparava o mesmo sign_up 'email'/'google' do
+     lojista: com anuncio de parceiro rodando, o relatorio creditaria lojista.
+     Agora o metodo do parceiro comeca com 'parceiro_' (igual ao seja-parceiro)
+     e, junto do sign_up, sai UM evento com o tipo no nome:
+       cadastro_lojista  /  cadastro_parceiro   (params: ref, method)
+     Nome de evento nao precisa de dimensao no GA4: aparece direto em Eventos
+     e pode virar evento-chave e conversao do Google Ads, um por campanha.
+     cadastro_indicado continua (com tipo) para quem ja monta relatorio nele. */
+  window.MOVIKI_METRICA_IND='2026-09-19-tipocadastro';
   try{
     const _mvSignupOrig=window.mvSignup;
     if(typeof _mvSignupOrig==='function' && !_mvSignupOrig._comRef){
       const _mvSignupRef=function(metodo){
         const primeiro=!window._mvSignupSent;
         _mvSignupOrig(metodo);
-        if(primeiro && refParceiro.length>=3){
-          try{ if(window.mvEv) mvEv('cadastro_indicado',{ref:refParceiro, method:metodo||'email'}); }catch(_){}
+        if(!primeiro) return;
+        const m=String(metodo||'email');
+        const tipo=(m.indexOf('parceiro')===0)?'parceiro':'lojista';
+        const ref=(refParceiro&&refParceiro.length>=3)?refParceiro:'';
+        try{ if(window.mvEv) mvEv('cadastro_'+tipo,{ref:ref||'(direto)', method:m}); }catch(_){}
+        if(ref){
+          try{ if(window.mvEv) mvEv('cadastro_indicado',{ref:ref, tipo:tipo, method:m}); }catch(_){}
         }
       };
       _mvSignupRef._comRef=1;
@@ -5757,7 +5771,8 @@ window.mvAbaInicial=function(){
       }
       if(!livre) return {ok:false,erro:'Não consegui gerar seu link agora. Tente de novo.'};
       await createUserWithEmailAndPassword(auth,email,senha);
-      try{ if(window.mvSignup) mvSignup('email'); }catch(_){}
+      try{ if(window.mvSignup) mvSignup('parceiro_email'); }catch(_){}
+      try{ if(window.mvEv) mvEv('parceiro_cadastrado',{origem:'quiz', metodo:'email', tem_upline:(refParceiro&&refParceiro.length>=3)?'sim':'nao'}); }catch(_){}
       const user=auth.currentUser;
       try{await sendEmailVerification(user);}catch(_){}
       await setDoc(doc(db,'parceiro_slugs',slug),{uid:user.uid});
@@ -5891,7 +5906,8 @@ window.mvAbaInicial=function(){
     const info=getAdditionalUserInfo(cred);
     const user=cred.user;
     if(info&&!info.isNewUser){ return {ok:true,jaExistia:true}; }
-    try{ if(window.mvSignup) mvSignup('google'); }catch(_){}
+    try{ if(window.mvSignup) mvSignup('parceiro_google'); }catch(_){}
+    try{ if(window.mvEv) mvEv('parceiro_cadastrado',{origem:'quiz', metodo:'google', tem_upline:(refParceiro&&refParceiro.length>=3)?'sim':'nao'}); }catch(_){}
     const nome=(d.nome||'').trim();
     const pix=(d.pix||'').trim();
     let slug=limpaSlugParc(d.slug||nome);
