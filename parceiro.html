@@ -964,7 +964,7 @@ html.mvSigGraf #grafNota{
 
           <div class="cd soAprovado">
             <div class="cdTit">Indicar outro parceiro</div>
-            <p class="cdSub" style="margin-bottom:12px">Chame alguém pra ser parceiro também. Se a pessoa se cadastrar pelo seu link, você ganha bônus quando os indicados dela assinarem.</p>
+            <p class="cdSub" style="margin-bottom:12px">Chame alguém pra ser parceiro também. Se a pessoa se cadastrar pelo seu link, você recebe um bônus único quando os indicados dela assinarem.</p>
             <div class="rcLink" id="meuLinkParc">moviki.com.br/pp/…</div>
             <div class="rcAcoes" style="grid-template-columns:repeat(2,minmax(0,1fr))">
               <button type="button" class="rcAcao" id="btnCopiarP"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar</span></button>
@@ -1351,7 +1351,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-preco1';
+  window.MOVIKI_VERSAO = '2026-09-19-conforme';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2190,7 +2190,7 @@ html.mvSigGraf #grafNota{
     if(badge){ badge.className = 'badge ' + status; badge.textContent = rot[status] || status; }
     const notas = {
       pendente:'Recebemos seu cadastro e ele está em análise. Assim que for aprovado, seu link é ativado e você já pode divulgar.',
-      aprovado:'Tudo certo! Divulgue seu link. A cada negócio que assinar por ele, você ganha comissão recorrente.',
+      aprovado:'Tudo certo! Divulgue seu link. A cada negócio que assinar por ele, você recebe comissão a cada mensalidade paga.',
       recusado:'Seu cadastro não foi aprovado no momento. Se tiver dúvidas, fale com a gente pelo WhatsApp do suporte.',
       suspenso:'Seu acesso está suspenso no momento. Fale com a gente pelo WhatsApp do suporte para regularizar.'
     };
