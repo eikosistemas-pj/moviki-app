@@ -717,6 +717,16 @@ img{max-width:100%;}
        background:linear-gradient(180deg,#08111f,#060d18);box-shadow:0 26px 70px rgba(0,0,0,.5);}
 }
 
+/* 2026-09-20-loginenxuto - TELA DE LOGIN NO COMPUTADOR. A casca (.box) tem
+   1080px para caber o PAINEL; sem ninguem logado a mesma largura esticava o
+   formulario de login de ponta a ponta da tela (campo de e-mail com ~1180px).
+   Fora do painel (.box sem .largo) a caixa volta a ter tamanho de formulario.
+   Logado nada muda: o painel recebe .largo e segue com 1080px. */
+.box:not(.largo){max-width:480px;}
+@media(min-width:1120px){
+  .box:not(.largo){margin:48px auto 40px;padding:0 28px 30px;}
+}
+
 /* ---------- tela de acesso ---------- */
 .marca{padding-top:26px;text-align:center;}
 .marca .logoMarca{margin:0 auto;max-width:210px;}
