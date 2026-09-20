@@ -390,6 +390,7 @@ svg{display:block}
           </div>
           <button type="button" class="btnGrad btnVivo" id="btnIniciar" style="margin-top:10px" disabled><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>Entrar ao vivo</button>
           <div id="erroIniciar" class="msgErro escondido"></div>
+          <p id="saldoVideo" class="sub escondido" style="font-size:12.5px;color:var(--mv-txt-3);margin:8px 0 0"></p>
           <button type="button" class="btnMini" data-lvaulas-abrir="1" id="btnAulasLivre" style="width:100%;margin-top:8px">Aulas da live</button>
           <ul class="dicas">
             <li>Segure o celular em pé e deixe a luz de frente para você.</li>
@@ -627,7 +628,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-16-chatfolha';
+  window.MOVIKI_VERSAO='2026-09-19-cotalive';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -744,6 +745,7 @@ svg{display:block}
     montarAbas(); pintarProdutos(); pintarOfertaSelect(); ouvirPedidos();
     getDoc(doc(db,'negocios',uid,'estado','liveAceite')).then(a=>{aceiteOk=!!(a.exists()&&a.data().versao===ACEITE_VERSAO);}).catch(()=>{});
     ligarAulas();
+    carregarSaldo();
     onSnapshot(doc(db,'configuracoes','liveTermos'),t=>{const d=t.exists()?(t.data()||{}):{};
       MV_TERMOS_EXTRAS=Array.isArray(d.extras)?d.extras.filter(x=>typeof x==='string').slice(0,300):[];
       aplicarChaveMestra(d.liveDesligada===true);},()=>{});
@@ -757,6 +759,7 @@ svg{display:block}
     onSnapshot(doc(db,'live_sessoes',uid),sn=>{
       const d=sn.exists()?(sn.data()||{}):{};
       if(noAr&&d.encerradaPor==='moviki')encerradaPeloMoviki(d.motivoModeracao||'');
+      else if(noAr&&d.ativa===false&&(d.motivo==='limite'||d.motivo==='teto_video'))encerradaPeloLimite(d.motivo,'');
       else if(noAr&&d.ativa===false)encerradaPeloMoviki('');
     },()=>{});
     el('lnkVoltar').href='/';
@@ -1076,7 +1079,8 @@ svg{display:block}
         conteudo:'"'+(r.texto||'')+'" não pode ir para a live ('+(r.termo||'')+'). Tire da sacolinha ou do título e tente de novo.',
         desligada:'As transmissões ao vivo estão temporariamente desligadas para manutenção. Volte daqui a pouco.',
         beta:'A live ainda está em preparação e será liberada em breve. Você vai ser avisado quando abrir.',
-        cota:'Você já usou as '+(r.cota||2)+' lives do período de teste. Assinando um plano, a quantidade deixa de ter limite.',
+        cota:'Você já usou as '+(r.cota||2)+' lives do período de teste. No Premium e no Enterprise, as lives seguem os limites de minutos de vídeo e de espectadores do plano.',
+        teto_video:r.mensagem||'Seu plano atingiu o limite de minutos de vídeo deste ciclo.',
         /* O servidor manda quantos segundos faltam — dizer "espere um pouco"
            sem numero e o que faz a pessoa ficar clicando. */
         freio:'Você tentou começar várias vezes seguidas. '+(r.esperaSeg?('Tente de novo em '+(r.esperaSeg>90?(Math.ceil(r.esperaSeg/60)+' minutos'):(r.esperaSeg+' segundos'))+'.'):'Espere um pouco e tente de novo.'),
@@ -1087,7 +1091,7 @@ svg{display:block}
     try{pc=await conectar(whipAtual);}catch(e){
       el('erroIniciar').textContent='A conexão de vídeo falhou. Troque de Wi-Fi para 4G (ou o contrário) e tente de novo.';el('erroIniciar').classList.remove('escondido');b.disabled=false;b.lastChild.textContent='Entrar ao vivo';return;}
     vigiar(pc);
-    noAr=true; inicioMs=Date.now(); pico=0; msgs=[]; document.body.classList.add('noAr'); aplicarImersivo(true);
+    noAr=true; inicioMs=Date.now(); pico=0; msgs=[]; _vidAviso=0; el("saldoVideo").classList.add("escondido"); document.body.classList.add('noAr'); aplicarImersivo(true);
     /* CONTEUDO da live. `ativa`, `whep` e `pulso` NAO entram mais aqui: quem
        diz que a live esta no ar, e de onde vem o video, e o servidor
        (estado/liveSessao). Os campos antigos sao zerados de proposito para que
@@ -1140,11 +1144,19 @@ svg{display:block}
   /* Aviso do teto de minutos de video do plano. Nao existia jeito de o lojista
      saber que estava perto de acabar: a live simplesmente caia. Avisa uma vez
      em cada faixa, e nao repete a cada 45 s. */
+  /* 19/09/2026: por PORCENTAGEM (80% e 100%), que vale para qualquer tamanho
+     de plano. Em 100% a live NAO cai: segue na tolerancia, e o lojista precisa
+     saber que esta nela e que a proxima so volta na virada do ciclo. */
   var _vidAviso=0;
-  function avisarVideo(restam){
-    if(restam<=15&&_vidAviso<3){_vidAviso=3;toast('Restam cerca de '+restam+' minutos de video do seu plano neste ciclo.');aviso('Minutos de video acabando: '+restam+' min.');return;}
-    if(restam<=60&&_vidAviso<2){_vidAviso=2;aviso('Restam '+restam+' minutos de video do seu plano neste ciclo.');setTimeout(function(){aviso('');},10000);return;}
-    if(restam<=180&&_vidAviso<1){_vidAviso=1;aviso('Seu plano tem '+restam+' minutos de video restantes neste ciclo.');setTimeout(function(){aviso('');},8000);}
+  function avisarVideo(v){
+    const pct=Number(v.videoPct)||0;
+    if(pct>=100&&_vidAviso<2){_vidAviso=2;
+      toast('Você chegou a 100% dos minutos de vídeo do plano.');
+      aviso('Limite do ciclo atingido. Esta live continua por mais cerca de '+Math.max(0,Number(v.videoToleranciaRestamMin)||0)+' minutos de vídeo; a próxima só em '+(v.viraEm||'o próximo ciclo')+'.');
+      return;}
+    if(pct>=80&&_vidAviso<1){_vidAviso=1;
+      aviso('Você já usou '+pct+'% dos minutos de vídeo do plano neste ciclo (restam '+(Number(v.videoRestamMin)||0).toLocaleString('pt-BR')+' min).');
+      setTimeout(function(){if(_vidAviso===1)aviso('');},12000);}
   }
   function statsSessao(){const q=msgs.filter(m=>m.tipo==='quero').length,c=msgs.filter(m=>m.tipo==='msg').length;
     return {pulsoMs:Date.now(),assistindo,pico,mensagens:c,queros:q,duracaoMin:Math.round((Date.now()-inicioMs)/60000)};}
@@ -1161,8 +1173,8 @@ svg{display:block}
        total de minutos ENTREGUES no ciclo (espectadores x duracao), que e o
        que o Moviki paga ao Cloudflare. Dizer "limite do seu plano" nos dois
        casos faz o lojista achar que a live de 10 minutos durou uma hora. */
-    if(r&&r.encerrar){toast(r.mensagem||'A live chegou ao limite do seu plano.');encerrar();return;}
-    if(r&&typeof r.videoRestamMin==='number')avisarVideo(r.videoRestamMin);
+    if(r&&r.encerrar){if(r.motivo==='teto_video'||r.motivo==='limite'){if(noAr)encerradaPeloLimite(r.motivo,r.mensagem||'');else if(r.mensagem){el('erroIniciar').textContent=r.mensagem;el('erroIniciar').classList.remove('escondido');}return;}toast(r.mensagem||'A live chegou ao limite do seu plano.');encerrar();return;}
+    if(r&&typeof r.videoPct==='number')avisarVideo(r);
     if(liveDocId)updateDoc(doc(db,'lives',liveDocId),statsSessao()).catch(()=>{});
   }
   async function contar(){
@@ -1188,7 +1200,49 @@ svg{display:block}
     el('pillVivo').classList.add('escondido'); el('pillOlho').classList.add('escondido'); aviso('');
     el('boxDurante').classList.add('escondido'); el('boxAntes').classList.remove('escondido');
     el('btnIniciar').disabled=false; el('btnIniciar').lastChild.textContent='Entrar ao vivo de novo';
-    mostrarResumo(); encerrando=false;
+    mostrarResumo(); encerrando=false; carregarSaldo();
+  }
+  /* ================= saldo do ciclo (19/09/2026) =================
+     O lojista via o limite de minutos de video so DURANTE a live, ou na
+     recusa ao tentar comecar. Agora o saldo aparece antes de entrar ao vivo,
+     em horas e pessoas, que e a unidade que ele entende. O numero vem do
+     servidor (live_saldo); se o robo nao responder, a linha simplesmente nao
+     aparece — quem decide continua sendo o servidor. */
+  let saldoInfo=null;
+  const fmtMin=m=>{m=Math.max(0,Math.round(m));return m>=60?(Math.floor(m/60)+'h'+(m%60?String(m%60).padStart(2,'0'):'')):(m+' min');};
+  async function carregarSaldo(){
+    const r=await chamarRobo('live_saldo',{});
+    const p=el('saldoVideo'); if(!p)return;
+    if(!r||!r.ok||!r.nivel){p.classList.add('escondido');return;}
+    saldoInfo=r;
+    const max=Number(r.maxEspectadores||0);
+    const pessoas=max>0?('Até '+max+' pessoas assistindo ao mesmo tempo. '):'';
+    if(!(r.tetoMin>0)){p.textContent=pessoas;p.classList.toggle('escondido',!pessoas);return;}
+    const resta=Math.max(0,r.tetoMin-r.usadoMin);
+    const exemplo=max>0&&resta>0?(' — cerca de '+fmtMin(resta/Math.min(max,10))+' com 10 pessoas assistindo'):'';
+    if(r.bloqueada){
+      p.innerHTML='<b style="color:var(--mv-erro)">Você usou os '+r.tetoMin.toLocaleString('pt-BR')+' minutos de vídeo do plano neste ciclo.</b> A próxima live fica liberada em <b>'+esc(r.viraEm||'')+'</b>.';
+    }else{
+      p.innerHTML=pessoas+'Minutos de vídeo neste ciclo: <b>'+r.usadoMin.toLocaleString('pt-BR')+' de '+r.tetoMin.toLocaleString('pt-BR')+'</b> ('+r.pct+'%)'+esc(exemplo)+'. Renova em '+esc(r.viraEm||'')+'. '+
+        '<span style="opacity:.8">1 pessoa assistindo 1 minuto = 1 minuto de vídeo.</span>';
+    }
+    p.classList.remove('escondido');
+  }
+  /* A live que o SERVIDOR fechou por limite (relogio da live ou minutos de
+     video) chegava aqui pelo snapshot de live_sessoes com ativa:false — e caia
+     no encerradaPeloMoviki(''), que dizia "encerrada pela equipe do Moviki por
+     descumprir as Regras da Live". Acusar de infracao o lojista que so usou o
+     plano ate o fim. Agora o motivo gravado pelo servidor decide a mensagem. */
+  function encerradaPeloLimite(tipo,mensagem){
+    encerradaPeloMoviki('');
+    const b=el('btnIniciar');
+    let t=mensagem||'';
+    if(!t&&tipo==='limite')t='A live chegou ao tempo máximo por transmissão do seu plano ('+(nivel&&nivel.limiteMin>=60?(nivel.limiteMin/60)+' h':(nivel?nivel.limiteMin+' min':''))+'). Você pode começar outra agora.';
+    if(!t)t='Sua live foi encerrada: o plano passou do limite de minutos de vídeo deste ciclo, já contando a tolerância de '+((saldoInfo&&saldoInfo.toleranciaPct)||20)+'%.'+(saldoInfo&&saldoInfo.viraEm?' A próxima live fica liberada em '+saldoInfo.viraEm+'.':'');
+    el('erroIniciar').textContent=t; el('erroIniciar').classList.remove('escondido');
+    b.disabled=(tipo==='teto_video'); b.lastChild.textContent=tipo==='teto_video'?'Limite do ciclo atingido':'Entrar ao vivo de novo';
+    ev('live_encerrada_limite',{tipo});
+    carregarSaldo();
   }
   /* Encerrada pelo dono do Moviki: para camera e transmissao, nao grava nada
      (o estado ja foi gravado pelo dono) e explica o motivo. */
@@ -1213,7 +1267,7 @@ svg{display:block}
        que a pessoa saia clicando no susto — e evita prender quem nao foi
        bloqueado. */
     setTimeout(function(){
-      if(noAr)return;
+      if(noAr||(saldoInfo&&saldoInfo.bloqueada))return;
       _b.disabled=false; _b.lastChild.textContent='Entrar ao vivo de novo';
     },60000);
   }

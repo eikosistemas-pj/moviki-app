@@ -1081,18 +1081,30 @@ table.mvTab td b{font-weight:700}
           </div>
 
           <div class="cd" style="margin-top:14px" id="lvPlanoCard">
-            <div class="cdTopo"><div><div class="cdTit">Teto de vídeo por plano</div><div class="cdSub">O teto acima é da <b>conta inteira</b>: protege a sua fatura e não protege os lojistas. Um lojista com público grande consome os 12.000 minutos sozinho e a live de <b>todos os outros</b> para — sem aviso e sem culpado. Estes tetos são por assinante, por ciclo, e contam <b>minutos entregues</b> (espectadores × duração), não duração da live.</div></div><span class="cdChip" id="lvPlanoChip">—</span></div>
+            <div class="cdTopo"><div><div class="cdTit">Teto de vídeo por plano</div><div class="cdSub">O teto acima é da <b>conta inteira</b>: protege a sua fatura e não protege os lojistas. Um lojista com público grande consome o teto da conta sozinho e a live de <b>todos os outros</b> para — sem aviso e sem culpado. Estes tetos são por assinante, por ciclo, e contam <b>minutos entregues</b> (espectadores × duração), não duração da live.</div></div><span class="cdChip" id="lvPlanoChip">—</span></div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px">
               <label style="font-size:12.5px;color:var(--mv-txt-3)">Premium</label>
-              <input id="lvTetoPremium" type="number" min="0" step="100" style="width:110px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="1500">
+              <input id="lvTetoPremium" type="number" min="0" step="100" style="width:110px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="3000">
               <label style="font-size:12.5px;color:var(--mv-txt-3)">Enterprise</label>
-              <input id="lvTetoEnterprise" type="number" min="0" step="100" style="width:110px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="5000">
+              <input id="lvTetoEnterprise" type="number" min="0" step="100" style="width:110px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="10000">
               <label style="font-size:12.5px;color:var(--mv-txt-3)">Teste grátis</label>
               <input id="lvTetoTrial" type="number" min="0" step="50" style="width:110px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="300">
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px">
+              <label style="font-size:12.5px;color:var(--mv-txt-3)">Espectadores ao mesmo tempo — Premium</label>
+              <input id="lvEspPremium" type="number" min="0" step="5" style="width:80px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="30">
+              <label style="font-size:12.5px;color:var(--mv-txt-3)">Enterprise</label>
+              <input id="lvEspEnterprise" type="number" min="0" step="10" style="width:80px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="100">
+              <label style="font-size:12.5px;color:var(--mv-txt-3)">Teste grátis</label>
+              <input id="lvEspTrial" type="number" min="0" step="5" style="width:80px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="15">
+              <label style="font-size:12.5px;color:var(--mv-txt-3)">Tolerância %</label>
+              <input id="lvTolerancia" type="number" min="0" max="50" step="5" style="width:80px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit" placeholder="20">
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px">
               <button type="button" class="btnMini" id="lvPlanoSalvar">Salvar tetos</button>
               <button type="button" class="btnMini" id="lvPlanoAtualizar">Atualizar consumo</button>
             </div>
-            <p class="cdSub" style="margin-top:8px"><b>Vazio usa o padrão do código</b> (1.500 · 5.000 · 300). <b>Zero = sem teto</b> para aquele plano, igual à lista do beta vazia. Estes tetos valem na hora, sem subir arquivo — o servidor relê a configuração a cada 5 minutos.<br><br>A conta é <b>nossa</b>, não do Cloudflare: a analytics deles agrega por conta e a entrada de vídeo é recriada a cada live, então não dá para atribuir minuto a lojista por lá. A cada pulso (45 s) o servidor <b>conta</b> quem está assistindo e multiplica pelo tempo. Live sem ninguém assistindo não gasta teto. Atingido o teto, a live daquele lojista cai e ele recebe o aviso no estúdio — a de todos os outros continua.</p>
+            <p class="cdSub" style="margin-top:8px"><b>Vazio usa o padrão do código</b> (minutos 3.000 · 10.000 · 300; espectadores 30 · 100 · 15; tolerância 20%). <b>Estes números estão escritos em premium.html, enterprise.html e nos Termos</b>: baixar qualquer um deles exige trocar o texto das páginas ANTES e avisar quem já assinou (CDC). Subir é livre. <b>Zero = sem teto</b> para aquele plano, igual à lista do beta vazia. Estes tetos valem na hora, sem subir arquivo — o servidor relê a configuração a cada 5 minutos.<br><br>A conta é <b>nossa</b>, não do Cloudflare: a analytics deles agrega por conta e a entrada de vídeo é recriada a cada live, então não dá para atribuir minuto a lojista por lá. A cada pulso (45 s) o servidor <b>conta</b> quem está assistindo e multiplica pelo tempo. Live sem ninguém assistindo não gasta teto. Em <b>80%</b> o lojista é avisado no estúdio. Em <b>100%</b> a live em andamento <b>continua</b> até 100% + tolerância e só então cai; a <b>próxima</b> fica barrada até virar o ciclo. A de todos os outros continua. Quem chega acima do limite de espectadores vê "Live lotada" e não gasta minuto.</p>
             <div style="margin-top:12px"><div class="cdTit" style="font-size:14px">Consumo por lojista neste ciclo</div>
             <div id="lvPlanoLista" class="vazio" style="margin-top:8px">Carregando…</div></div>
           </div>
@@ -1463,7 +1475,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-16-origempago';
+  window.MOVIKI_VERSAO = '2026-09-19-cotalive';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -4242,11 +4254,14 @@ table.mvTab td b{font-weight:700}
   }
   function lvPlanoCampos(d){
     d=d||{};
-    [['lvTetoPremium','tetoVideoPremium'],['lvTetoEnterprise','tetoVideoEnterprise'],['lvTetoTrial','tetoVideoTrial']]
+    [['lvTetoPremium','tetoVideoPremium'],['lvTetoEnterprise','tetoVideoEnterprise'],['lvTetoTrial','tetoVideoTrial'],
+     ['lvEspPremium','espectadoresPremium'],['lvEspEnterprise','espectadoresEnterprise'],['lvEspTrial','espectadoresTrial']]
       .forEach(function(par){
         var c=el(par[0]); if(!c||document.activeElement===c)return;
         c.value=(d[par[1]]==null?'':String(Number(d[par[1]])||0));
       });
+    var tl=el('lvTolerancia');
+    if(tl&&document.activeElement!==tl)tl.value=(d.toleranciaVideo==null?'':String(Math.round(Number(d.toleranciaVideo)*100)||0));
   }
   async function lvPlanoCarregar(){
     var cx=el('lvPlanoLista'); if(!cx)return;
@@ -4254,7 +4269,7 @@ table.mvTab td b{font-weight:700}
     try{
       var s=await getDocs(collection(db,'live_cota'));
       var vp=(el('lvTetoPremium').value||'').trim();
-      var regua=(vp===''?1500:(parseInt(vp,10)||0));
+      var regua=(vp===''?3000:(parseInt(vp,10)||0));
       var itens=[];
       s.forEach(function(d){
         var x=d.data()||{};
@@ -4265,7 +4280,11 @@ table.mvTab td b{font-weight:700}
            conta; usa o teto PREMIUM como regua da porcentagem, que e o menor
            dos pagos — quem for Enterprise aparece adiantado, nunca atrasado.
            Alerta que erra para o lado seguro vale mais que leitura paga. */
-        itens.push({uid:d.id,min:m,teto:regua});
+        /* 19/09: o robo grava o teto APLICADO (tetoVideo) a cada pulso. Com
+           ele a porcentagem e o veredito sao exatos; sem ele (consumo gravado
+           antes de 19/09), cai na regua Premium, que erra para o lado seguro. */
+        var tv=Number(x.tetoVideo)||0;
+        itens.push({uid:d.id,min:m,teto:tv>0?tv:regua,exato:tv>0});
       });
       itens.sort(function(a,b){return b.min-a.min;});
       txt('lvPlanoChip',itens.length?(itens.length+(itens.length===1?' lojista':' lojistas')):'ciclo '+ciclo);
@@ -4274,11 +4293,14 @@ table.mvTab td b{font-weight:700}
       cx.className='';
       cx.innerHTML='<div class="s" style="margin-bottom:6px">Ciclo '+ciclo+' · '+Math.round(total).toLocaleString('pt-BR')+' min entregues no total · US$ '+(total/1000).toFixed(2)+'</div>'+
         itens.map(function(i){
-          var pct=i.teto>0?Math.min(100,Math.round(i.min*100/i.teto)):0;
+          var pct=i.teto>0?Math.round(i.min*100/i.teto):0;
+          var barrada=i.teto>0&&i.min>=i.teto;
+          /* Regra de ouro: trava sem tela = trava quebrada. Cada lojista mostra
+             o veredito da PROXIMA live, do mesmo jeito que o card da conta. */
           return '<div class="lvItem"><div class="t"><strong>'+esc(lvNome(i.uid))+'</strong>'+
-                 '<span class="cdChip">'+Math.round(i.min).toLocaleString('pt-BR')+' min</span>'+
-                 (pct>=90?'<span class="lvAlerta">'+pct+'% do teto do plano</span>':(pct>=60?'<span class="lvAlerta" style="opacity:.75">'+pct+'% do teto</span>':''))+
-                 '</div><div class="s">'+esc(i.uid)+'</div></div>';
+                 '<span class="cdChip">'+Math.round(i.min).toLocaleString('pt-BR')+' / '+i.teto.toLocaleString('pt-BR')+' min</span>'+
+                 (barrada?'<span class="lvAlerta">'+pct+'% · próxima live BARRADA</span>':(pct>=80?'<span class="lvAlerta" style="opacity:.8">'+pct+'% · aviso de 80% enviado</span>':'<span class="cdChip">'+pct+'% · liberada</span>'))+
+                 '</div><div class="s">'+esc(i.uid)+(i.exato?'':' · % pela régua Premium (consumo anterior a 19/09)')+'</div></div>';
         }).join('');
     }catch(e){
       cx.className='vazio';
@@ -4292,16 +4314,25 @@ table.mvTab td b{font-weight:700}
        duas — por isso o campo vazio APAGA a chave em vez de gravar 0. */
     const ler=(id)=>{ const v=(el(id).value||'').trim(); return v===''?null:Math.max(0,Math.min(1000000,parseInt(v,10)||0)); };
     const pr=ler('lvTetoPremium'), en=ler('lvTetoEnterprise'), tr=ler('lvTetoTrial');
+    const ep=ler('lvEspPremium'), ee=ler('lvEspEnterprise'), et=ler('lvEspTrial');
+    const tlv=(el('lvTolerancia').value||'').trim();
+    const tl=tlv===''?null:Math.max(0,Math.min(50,parseInt(tlv,10)||0));
     const dados={atualizadoEm:serverTimestamp()};
     dados.tetoVideoPremium    = (pr===null?deleteField():pr);
     dados.tetoVideoEnterprise = (en===null?deleteField():en);
     dados.tetoVideoTrial      = (tr===null?deleteField():tr);
+    dados.espectadoresPremium    = (ep===null?deleteField():ep);
+    dados.espectadoresEnterprise = (ee===null?deleteField():ee);
+    dados.espectadoresTrial      = (et===null?deleteField():et);
+    dados.toleranciaVideo        = (tl===null?deleteField():tl/100);
     try{
       await setDoc(doc(db,'configuracoes','liveTermos'),dados,{merge:true});
       alert('Tetos por plano salvos. Valem em até 5 minutos, sem subir arquivo.\n\n'+
-            'Premium: '+(pr===null?'padrão (1.500)':(pr===0?'sem teto':pr+' min'))+'\n'+
-            'Enterprise: '+(en===null?'padrão (5.000)':(en===0?'sem teto':en+' min'))+'\n'+
-            'Teste grátis: '+(tr===null?'padrão (300)':(tr===0?'sem teto':tr+' min')));
+            'Premium: '+(pr===null?'padrão (3.000)':(pr===0?'sem teto':pr+' min'))+' · '+(ep===null?'30':(ep===0?'sem limite de':ep))+' espectadores\n'+
+            'Enterprise: '+(en===null?'padrão (10.000)':(en===0?'sem teto':en+' min'))+' · '+(ee===null?'100':(ee===0?'sem limite de':ee))+' espectadores\n'+
+            'Teste grátis: '+(tr===null?'padrão (300)':(tr===0?'sem teto':tr+' min'))+' · '+(et===null?'15':(et===0?'sem limite de':et))+' espectadores\n'+
+            'Tolerância: '+(tl===null?'padrão (20%)':tl+'%')+'\n\n'+
+            'Limite de espectadores vale a partir da PRÓXIMA live de cada lojista.');
     }catch(e){ alert('Não salvou: '+((e&&e.code)||'erro')); }
   });
 
