@@ -3034,6 +3034,31 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
       else refParceiro=refGuardado();
     }
   }catch(e){}
+  /* 2026-09-19-refcadastro — funil do parceiro no GA4, de ponta a ponta.
+     O sign_up (mvmetrica.js) nao sabe de qual parceiro o lojista veio: so o
+     Firestore sabia (indicacoes/{uid}). Agora, no MESMO disparo do sign_up,
+     sai tambem "cadastro_indicado" com o parametro ref — o mesmo nome de
+     parametro do "chegou_por_indicacao" da comerciantes.html. Com a dimensao
+     personalizada "ref" (escopo evento) criada no GA4, o relatorio mostra
+     chegou -> cadastrou por parceiro. Vale para ref da URL, do cookie mv_ref
+     e do localStorage (janela de 90 dias), a mesma ordem da indicacao real.
+     Nao mexe no mvmetrica.js (que e identico nos dois repos) nem na marca
+     MOVIKI_VERSAO (o Vik compara a marca; mudanca invisivel nao troca marca). */
+  window.MOVIKI_METRICA_IND='2026-09-19-refcadastro';
+  try{
+    const _mvSignupOrig=window.mvSignup;
+    if(typeof _mvSignupOrig==='function' && !_mvSignupOrig._comRef){
+      const _mvSignupRef=function(metodo){
+        const primeiro=!window._mvSignupSent;
+        _mvSignupOrig(metodo);
+        if(primeiro && refParceiro.length>=3){
+          try{ if(window.mvEv) mvEv('cadastro_indicado',{ref:refParceiro, method:metodo||'email'}); }catch(_){}
+        }
+      };
+      _mvSignupRef._comRef=1;
+      window.mvSignup=_mvSignupRef;
+    }
+  }catch(_){}
   // Grava, 1x, de qual parceiro veio este lojista (só no cadastro; a regra do Firestore impede alterar depois).
   async function registrarIndicacao(uid){
     if(!uid || refParceiro.length<3) return;
