@@ -1,5 +1,5 @@
 {
-  "versao": "2026-09-19-menucateg",
+  "versao": "2026-09-19-publi",
   "atualizado": "2026-09-19",
   "itens": [
     {
@@ -981,7 +981,7 @@
       "titulo": "Resposta para \"não tenho seguidores\"",
       "formato": "WhatsApp",
       "novo": false,
-      "texto": "\"Mas eu não tenho seguidores.\"\n\nNem precisa. Você já tem o que importa: o seu WhatsApp, o seu grupo de clientes, as pessoas que já compram de você. Essas são as que compram de novo — e são elas que você chama para a live.\n\nO Moviki é o palco. O megafone você já tem na mão.\n\nE tem aula dentro do painel ensinando exatamente como fazer isso, inclusive quando aparece pouca gente no começo (que é o normal, e não é problema).\n\n30 dias grátis, sem cartão: {link}",
+      "texto": "\"Mas eu não tenho seguidores.\"\n\nNem precisa. Você já tem o que importa: o seu WhatsApp, o seu grupo de clientes, as pessoas que já compram de você. Essas são as que compram de novo — e são elas que você chama para a live.\n\nO Moviki é o palco. O megafone você já tem na mão.\n\nE tem aula dentro do painel ensinando exatamente como fazer isso, inclusive quando aparece pouca gente no começo (que é o normal, e não é problema).\n\n#publi: sou parceiro do Moviki. 30 dias grátis, sem cartão: {link}",
       "categoria": "geral"
     },
     {
@@ -1201,7 +1201,7 @@
       "titulo": "Quando perguntarem se você é mesmo do Moviki",
       "formato": "WhatsApp",
       "novo": false,
-      "texto": "Pode conferir: esta é a minha página de parceiro autorizado do Moviki, com o meu nome e a minha situação: {verificacao}\n\nVocê não paga nada para mim. A minha comissão sai do Moviki.",
+      "texto": "#publi — pode conferir: esta é a minha página de parceiro autorizado do Moviki, com o meu nome e a minha situação: {verificacao}\n\nVocê não paga nada para mim. A minha comissão sai do Moviki.",
       "categoria": "geral"
     },
     {
