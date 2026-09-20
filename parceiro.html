@@ -1351,7 +1351,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-19-conforme';
+  window.MOVIKI_VERSAO = '2026-09-19-chamaparceiro';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -5192,6 +5192,10 @@ function mvQR(texto){
     return String(txt || '')
       .replace(/\{link\}/g, slug ? 'https://moviki.com.br/p/' + slug : 'moviki.com.br')
       .replace(/\{verificacao\}/g, slug ? 'https://moviki.com.br/v/' + slug : 'moviki.com.br')
+      /* 2026-09-19-chamaparceiro: {link_parceiro} = /pp/apelido, o link de
+         "parceiro chama parceiro" (vai para o seja-parceiro com utm
+         upline_parceiros e ref). Pecas da categoria "Chamar parceiro". */
+      .replace(/\{link_parceiro\}/g, slug ? 'https://moviki.com.br/pp/' + slug : 'moviki.com.br')
       .replace(/\{meu_nome\}/g, nome);
   }
 
@@ -5345,7 +5349,7 @@ function mvQR(texto){
     itens.forEach(function(it){
       if(it.tipo === 'texto'){
         h += '<div class="matTexto"><div class="matCardTit">' + esc(it.titulo) + '</div>' +
-             '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto) : it.texto.replace(/\{link\}|\{verificacao\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
+             '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto) : it.texto.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
              '<div class="matAcoes"><button type="button" class="pri" data-matcopiar="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Copiar texto</button>' +
              '<button type="button" class="wpp" data-matwpp="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Mandar no WhatsApp</button></div></div>';
         return;
@@ -5443,7 +5447,7 @@ function mvQR(texto){
     el('matOvDica').textContent = it.dica || '';
     el('matOvDica').hidden = !it.dica;
     el('matOvPorta').innerHTML = p.ok ? '' : portaHTML(p);
-    var leg = it.legenda ? (p.ok ? trocar(it.legenda) : it.legenda.replace(/\{link\}|\{verificacao\}/g,'(seu link aparece aqui)')) : '';
+    var leg = it.legenda ? (p.ok ? trocar(it.legenda) : it.legenda.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}/g,'(seu link aparece aqui)')) : '';
     el('matOvLeg').textContent = leg;
     el('matOvLegBox').hidden = !leg;
     el('matOvAcoes').hidden = !p.ok;
