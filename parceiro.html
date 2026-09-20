@@ -1351,7 +1351,7 @@ html.mvSigGraf #grafNota{
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-19-chamaparceiro';
+  window.MOVIKI_VERSAO = '2026-09-19-menucateg';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -5031,6 +5031,45 @@ function mvQR(texto){
 @media(max-width:620px){.matCats button .matCatIco{width:17px;height:17px}}
 .matCats button.on{border-color:transparent;background:var(--mv-grad);color:#04121f}
 .matCats button.on .n{opacity:.75}
+/* 2026-09-19-menucateg - menu em tres andares (so com 'grupo' no catalogo) */
+.matCats.mcV2{display:block;overflow:visible;-webkit-mask-image:none;mask-image:none;margin:14px 0 4px}
+.mcV2 .mcTopo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.mcV2 button{white-space:normal;flex:initial}
+.mcV2 .mcPrinc,.mcV2 .mcRamoBtn{width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:11px 12px;border-radius:14px;
+  border:1px solid var(--mv-linha);background:var(--mv-surf-2);color:var(--mv-txt);font-family:inherit;cursor:pointer}
+.mcV2 .mcIco{width:38px;height:38px;flex:0 0 38px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35))}
+.mcV2 .mcEmj{font-size:24px;line-height:1;flex:0 0 auto}
+.mcV2 .mcTxt{display:flex;flex-direction:column;min-width:0;flex:1 1 auto;line-height:1.25}
+.mcV2 .mcTxt b{font-size:14px;font-weight:800}
+.mcV2 .mcTxt small{font-size:11.5px;font-weight:600;color:var(--mv-txt-3,#8fa6c4);margin-top:2px}
+.mcV2 .mcRamoBtn .mcTxt small{margin:0 0 2px;text-transform:uppercase;letter-spacing:.06em;font-size:10.5px}
+.mcV2 .n{font-size:11px;font-weight:700;background:rgba(0,212,255,.12);color:var(--mv-ciano,#00d4ff);border-radius:999px;padding:2px 8px;flex:0 0 auto}
+.mcV2 .mcPrinc.on,.mcV2 .mcRamoBtn.on,.mcV2 .mcRamo.on{color:var(--mv-txt,#eaf6ff)}
+.mcV2 .mcPrinc.on,.mcV2 .mcRamoBtn.on{border-color:var(--mv-ciano,#00d4ff);box-shadow:0 0 0 1px var(--mv-ciano,#00d4ff),0 8px 22px rgba(0,212,255,.14);
+  background:linear-gradient(150deg,rgba(0,212,255,.14),rgba(0,102,255,.06))}
+.mcV2 .mcConvite{border-color:rgba(37,227,155,.35)}
+.mcV2 .mcConvite .n{background:rgba(37,227,155,.14);color:#25e39b}
+.mcV2 .mcConvite.on{border-color:#25e39b;box-shadow:0 0 0 1px #25e39b,0 8px 22px rgba(37,227,155,.16);background:linear-gradient(150deg,rgba(37,227,155,.14),rgba(0,102,255,.05))}
+.mcV2 .mcSeta{font-size:14px;color:var(--mv-txt-3,#8fa6c4);transition:transform .2s ease;flex:0 0 auto}
+.mcV2 .mcRamoBtn.aberto .mcSeta{transform:rotate(180deg)}
+.mcV2 .mcRamos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px;padding:10px;border:1px solid var(--mv-linha);border-radius:14px;background:rgba(0,0,0,.18)}
+.mcV2 .mcRamos[hidden]{display:none}
+.mcV2 .mcRamo{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px 9px;border-radius:12px;
+  border:1px solid var(--mv-linha);background:var(--mv-surf-2);color:var(--mv-txt-2);font-family:inherit;cursor:pointer;text-align:center}
+.mcV2 .mcRamo .mcIcoR{width:36px;height:36px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35))}
+.mcV2 .mcRamo .mcEmj{font-size:26px}
+.mcV2 .mcRNome{font-size:12px;font-weight:700;line-height:1.2}
+.mcV2 .mcRamo .n{position:absolute;top:5px;right:5px;padding:1px 6px;font-size:10px}
+.mcV2 .mcRamo.on{border-color:var(--mv-ciano,#00d4ff);color:var(--mv-txt);background:linear-gradient(150deg,rgba(0,212,255,.16),rgba(0,102,255,.06))}
+@media(max-width:620px){
+  .mcV2 .mcTopo{gap:8px}
+  .mcV2 .mcPrinc{flex-direction:column;align-items:flex-start;gap:6px;padding:10px 11px;position:relative}
+  .mcV2 .mcPrinc .n{position:absolute;top:9px;right:9px}
+  .mcV2 .mcIco{width:34px;height:34px;flex-basis:34px}
+  .mcV2 .mcTxt b{font-size:13px}
+  .mcV2 .mcRamos{grid-template-columns:repeat(3,minmax(0,1fr));padding:8px;gap:6px}
+  .mcV2 .mcRNome{font-size:11.5px}
+}
 .matGrade{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 @media(min-width:620px){.matGrade{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .matCard{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--mv-surf);border:1px solid var(--mv-linha);
@@ -5280,7 +5319,7 @@ function mvQR(texto){
     var tem = {};
     CAT.itens.forEach(function(it){ if(it && it.categoria) tem[it.categoria] = (tem[it.categoria] || 0) + 1; });
     var out = [];
-    CAT.cats.forEach(function(c){ if(tem[c.id]) out.push({ id:c.id, nome:c.nome, emoji:c.emoji || '', ico:c.ico || '', n:tem[c.id] }); });
+    CAT.cats.forEach(function(c){ if(tem[c.id]) out.push({ id:c.id, nome:c.nome, emoji:c.emoji || '', ico:c.ico || '', n:tem[c.id], grupo:(typeof c.grupo === 'string' ? c.grupo : ''), desc:(typeof c.desc === 'string' ? c.desc : '') }); });
     return out;
   }
   function daCateg(){
@@ -5300,6 +5339,19 @@ function mvQR(texto){
           CATEG = cs[0].id;
           for(i=0;i<cs.length;i++) if(cs[i].id === 'geral') CATEG = 'geral';
         }
+        /* 2026-09-19-menucateg - MENU ORGANIZADO. Com 13 categorias a faixa
+           virou quatro linhas de botoes no computador e, no celular, uma
+           fita onde so cabia um botao e meio. Quando o catalogo traz 'grupo'
+           nas categorias, o menu passa a ter tres andares:
+             principal/convite -> dois cartoes grandes lado a lado
+             ramo              -> UM botao "Material por ramo" que abre uma
+                                  grade de ramos com icone 3D, e fecha ao
+                                  escolher.
+           Catalogo sem 'grupo' (ou grupo desconhecido) cai no desenho antigo,
+           a faixa de botoes: nada some. */
+        var temGrupo = cs.some(function(c){ return c.grupo === 'principal' || c.grupo === 'convite' || c.grupo === 'ramo'; });
+        if(temGrupo){ bc.innerHTML = menuV2(cs); bc.classList.add('mcV2'); bc.classList.remove('temMais'); return barrasFiltro(); }
+        bc.classList.remove('mcV2');
         var hc = '';
         cs.forEach(function(c){
           /* icone 3D na frente e o emoji escondido logo atras, de reserva:
@@ -5320,6 +5372,49 @@ function mvQR(texto){
         try{ bc.classList.toggle('temMais', bc.scrollWidth > bc.clientWidth + 4); }catch(_){}
       }
     }
+    return barrasFiltro();
+  }
+  var RAMOS_ABERTO = false;
+  function icoHTML(c, cls){
+    var ico = c.ico
+      ? '<img class="' + cls + '" src="icones/' + esc(c.ico) + '" alt="" loading="lazy" ' +
+        'onerror="this.hidden=true;if(this.nextElementSibling)this.nextElementSibling.hidden=false">'
+      : '';
+    var emj = '<span class="mcEmj"' + (c.ico ? ' hidden' : '') + '>' + esc(c.emoji || '•') + '</span>';
+    return ico + emj;
+  }
+  function menuV2(cs){
+    var topo = cs.filter(function(c){ return c.grupo === 'principal' || c.grupo === 'convite'; });
+    var ramos = cs.filter(function(c){ return c.grupo !== 'principal' && c.grupo !== 'convite'; });
+    var atual = null, i;
+    for(i=0;i<ramos.length;i++) if(ramos[i].id === CATEG) atual = ramos[i];
+    var h = '';
+    if(topo.length){
+      h += '<div class="mcTopo">';
+      topo.forEach(function(c){
+        h += '<button type="button" data-matcat="' + esc(c.id) + '" class="mcPrinc' + (c.grupo === 'convite' ? ' mcConvite' : '') + (CATEG === c.id ? ' on' : '') + '">' +
+             icoHTML(c, 'mcIco') +
+             '<span class="mcTxt"><b>' + esc(c.nome) + '</b><small>' + esc(c.desc || (c.n + (c.n === 1 ? ' peça' : ' peças'))) + '</small></span>' +
+             '<span class="n">' + c.n + '</span></button>';
+      });
+      h += '</div>';
+    }
+    if(ramos.length){
+      h += '<button type="button" data-matramos="1" class="mcRamoBtn' + (atual ? ' on' : '') + (RAMOS_ABERTO ? ' aberto' : '') + '" aria-expanded="' + (RAMOS_ABERTO ? 'true' : 'false') + '">' +
+           (atual ? icoHTML(atual, 'mcIco') : '<img class="mcIco" src="icones/material.png" alt="" onerror="this.style.display=\'none\'">') +
+           '<span class="mcTxt"><small>Material por ramo do comerciante</small><b>' + (atual ? esc(atual.nome) : 'Escolher o ramo (' + ramos.length + ')') + '</b></span>' +
+           (atual ? '<span class="n">' + atual.n + '</span>' : '') +
+           '<span class="mcSeta" aria-hidden="true">▾</span></button>';
+      h += '<div class="mcRamos"' + (RAMOS_ABERTO ? '' : ' hidden') + '>';
+      ramos.forEach(function(c){
+        h += '<button type="button" data-matcat="' + esc(c.id) + '" class="mcRamo' + (CATEG === c.id ? ' on' : '') + '">' +
+             icoHTML(c, 'mcIcoR') + '<span class="mcRNome">' + esc(c.nome) + '</span><span class="n">' + c.n + '</span></button>';
+      });
+      h += '</div>';
+    }
+    return h;
+  }
+  function barrasFiltro(){
     var bf = el('matFiltros');
     if(bf){
       var tem = {};
@@ -5667,7 +5762,12 @@ function mvQR(texto){
     var secM = document.querySelector('section[data-sec="material"]');
     if(secM && !secM.classList.contains('hide')) setTimeout(pintarPorta, 450);
     var b;
+    if((b = t.closest('[data-matramos]'))){
+      RAMOS_ABERTO = !RAMOS_ABERTO; barras();
+      ev('ramos_' + (RAMOS_ABERTO ? 'abrir' : 'fechar'), ''); return;
+    }
     if((b = t.closest('[data-matcat]'))){
+      RAMOS_ABERTO = false;
       CATEG = b.getAttribute('data-matcat');
       FILTRO = 'tudo';
       barras(); grade();
