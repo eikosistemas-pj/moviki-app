@@ -1,6 +1,6 @@
 {
-  "versao": "2026-09-19-publi",
-  "atualizado": "2026-09-19",
+  "versao": "2026-09-23-convitecriador",
+  "atualizado": "2026-09-23",
   "itens": [
     {
       "id": "video-parceiro-chama-parceiro",
@@ -13,17 +13,33 @@
       "capa": "material/capas/video-parceiro-chama-parceiro.webp",
       "w": "1080",
       "h": "1920",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Você conhece gente que vende na rua, na feira, no food truck ou pelo WhatsApp. E vê de perto quanto cliente passa sem saber onde eles estão.\n\nO Moviki coloca o negócio no mapa, em tempo real, e deixa vender ao vivo pela câmera do celular. Quem apresenta o Moviki para um comerciante vira parceiro: recebe comissão a cada mensalidade paga por ele, enquanto ele continuar cliente.\n\nEntrar é grátis, sem meta e sem mensalidade. Tem material pronto e aulas curtas no painel. Não é pirâmide: só existe comissão sobre assinatura paga — e o valor depende de quem você indicar, pode ser zero.\n\nAssista até o fim e veja se é pra você. Cadastro de parceiro 👉 {link_parceiro}",
       "dica": "Este vídeo é para chamar OUTRA pessoa a ser parceira, não para o comerciante. No Reels, deixe o seu link de parceiro (o /pp/) na bio enquanto o post estiver no ar e escreva #publi no começo da legenda. No WhatsApp e no Story, a legenda já vai com o link.",
       "categoria": "recrutar"
+    },
+    {
+      "id": "video-convite-criador-parceiro",
+      "tipo": "video",
+      "titulo": "Convite para criador de conteúdo virar parceiro",
+      "formato": "Reels/Story 9:16",
+      "duracao": "1:01",
+      "peso": "11,7 MB",
+      "arquivo": "material/video-convite-criador-parceiro.mp4",
+      "capa": "material/capas/video-convite-criador-parceiro.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "categoria": "recrutar",
+      "legenda": "#publi Você cria conteúdo e as pessoas vão aonde você manda. Existe um jeito de isso virar uma parceria.\n\nO Moviki é o mapa em tempo real da cidade: o negócio aparece quando está aberto e vende ao vivo pelo celular. Como criador parceiro, você indica negócios da sua cidade pelo seu link e recebe comissão sobre a mensalidade de cada negócio que continuar pagando.\n\nA comissão só existe sobre assinatura paga — pode ser zero. Entrar é grátis, sem cota e sem meta, e a mensalidade do lojista não aumenta por sua causa. As regras estão num regulamento público.\n\nO Moviki avalia cada criador. Cadastro pelo meu link 👉 {link_parceiro}",
+      "dica": "Este vídeo é para convidar um CRIADOR DE CONTEÚDO (influenciador) a ser parceiro, não para o comerciante. Mande no direct ou no WhatsApp de quem produz conteúdo na sua cidade; a legenda já vai com o seu link de parceiro (o /pp/). No Reels, deixe esse link na bio e escreva #publi no começo. Não prometa bônus, cachê nem vaga: a condição de criador quem define é o Moviki."
     },
     {
       "id": "texto-convite-parceiro",
       "tipo": "texto",
       "titulo": "Convite pessoal para ser parceiro",
       "formato": "WhatsApp",
-      "novo": true,
+      "novo": false,
       "categoria": "recrutar",
       "texto": "Oi! Aqui é {meu_nome} (#publi: sou parceiro do Moviki). Lembrei de você porque você conhece muita gente que vende — feira, food truck, loja de bairro, quem atende em casa.\n\nO Moviki coloca o negócio dessas pessoas no mapa e deixa vender ao vivo pelo celular. Quem apresenta o Moviki para um comerciante recebe comissão a cada mensalidade que ele pagar. Entrar é grátis e não tem meta. Não prometo valor nenhum: depende de quem você indicar, pode ser zero.\n\nSe quiser ver como funciona, o cadastro de parceiro é por aqui: {link_parceiro}"
     },
@@ -32,7 +48,7 @@
       "tipo": "texto",
       "titulo": "Convite para grupo ou lista de transmissão",
       "formato": "WhatsApp",
-      "novo": true,
+      "novo": false,
       "categoria": "recrutar",
       "texto": "#publi Pra quem conhece comerciante de bairro, feira, food truck ou quem vende pelo WhatsApp:\n\nO Moviki é o mapa dos negócios em movimento — o comerciante aparece em tempo real e vende ao vivo pela câmera do celular. Estou no Programa de Parceiros: quem apresenta o Moviki para um comerciante recebe comissão a cada mensalidade paga por ele.\n\nÉ grátis pra entrar, sem meta, com material pronto. Não é renda prometida — depende de quem você indicar.\n\nCadastro de parceiro: {link_parceiro}"
     },
