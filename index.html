@@ -2636,7 +2636,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
             </button>
             <button type="button" class="finModo" id="finModoAsaas" onclick="finEscolherModo('asaas')">
               <b>Pix automático (Asaas)</b>
-              <span>O sistema confirma o pagamento sozinho, sem você conferir nada. Você paga R$ 1,99 por Pix recebido e precisa ter conta no Asaas.</span>
+              <span>O sistema confere o pagamento no Asaas sozinho: na hora, se o cliente estiver com a página aberta, e a cada 5 minutos nos demais casos — e você pode tocar em “Conferir no Asaas” quando quiser. Você paga R$ 1,99 por Pix recebido e precisa ter conta no Asaas.</span>
               <span class="finTag">Para quem vende bastante</span>
             </button>
           </div>
@@ -3278,7 +3278,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-23-assinatura';
+  window.MOVIKI_VERSAO='2026-09-23-rodada2';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -4720,6 +4720,7 @@ window.mvAbaInicial=function(){
     const ativo=d.ativo===true&&(!d.vence_em||d.vence_em.toMillis()>Date.now());
     if(ativo&&(d.plano==='premium'||d.plano==='enterprise'))return 'premium';
     if(ativo&&d.periodo==='trial')return 'trial';
+    if(ativo&&d.testeAte&&typeof d.testeAte.toMillis==='function'&&d.testeAte.toMillis()>Date.now())return 'trial'; /* 23/09: pagou durante o teste */
     return 'bloqueado';
   }
   function atualizarNotaFotos(){
@@ -5526,7 +5527,7 @@ window.mvAbaInicial=function(){
     btn.disabled=true;const t=btn.textContent;btn.textContent='Salvando...';
     try{
       if(slug){const ref=doc(db,'slugs',slug);const snap=await getDoc(ref);if(snap.exists()&&snap.data().uid!==usuarioAtual.uid){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('O apelido "'+slug+'" já está em uso. Escolha outro.');btn.disabled=false;btn.textContent=t;return;}if(!snap.exists()){await setDoc(ref,{uid:usuarioAtual.uid});}el('apelido').value=slug;}
-      const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),fotos:lerGaleria(),videos:lerVideos(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?el('whatsapp').value.replace(/\D/g,''):'';if(_wpp)dados.whatsapp=_wpp;
+      const dados={nome,status:statusAtual,recado:el('recado').value.trim(),cardapio:lerCardapio(),promocoes:lerPromos(),eventos:lerEventos(),fotos:lerGaleria(),videos:lerVideos(),atualizadoEm:serverTimestamp()};const _wpp=el('whatsapp')?(function(x){x=String(x||'').replace(/\D/g,'').replace(/^0+/,'');return (x.length>=12&&x.slice(0,2)==='55')?x.slice(2):x;})(el('whatsapp').value):''; /* 23/09: sem o 55 do pais - a pagina publica ja poe wa.me/55 */if(_wpp)dados.whatsapp=_wpp;
       /* Fase 2b: informações do negócio. Sempre gravados (texto vazio = some da página pública). */
       dados.horario=el('infoHorario')?el('infoHorario').value.trim().slice(0,120):'';
       /* Endereço só entra se veio do mapa (ver endEscolher). Texto solto trava o
@@ -5749,7 +5750,7 @@ window.mvAbaInicial=function(){
       if(!nome) return {ok:false,erro:'Dê um nome ao seu negócio.'};
       const email=(d.email||'').trim();
       const senha=d.senha||'';
-      const whatsapp=(d.whatsapp||'').replace(/\D/g,'');
+      const whatsapp=(function(x){x=String(x||'').replace(/\D/g,'').replace(/^0+/,'');return (x.length>=12&&x.slice(0,2)==='55')?x.slice(2):x;})(d.whatsapp);
       const slug=limpaSlug(d.slug||'');
       if(slug.length<3) return {ok:false,erro:'Escolha um apelido de link com pelo menos 3 letras/números.'};
       if(RESERVADOS.includes(slug)) return {ok:false,erro:'Esse apelido é reservado, escolha outro.'};
@@ -5901,7 +5902,7 @@ window.mvAbaInicial=function(){
     }
     try{ if(window.mvSignup) mvSignup('google'); }catch(_){}
     const nome=(d.nome||'').trim();
-    const whatsapp=(d.whatsapp||'').replace(/\D/g,'');
+    const whatsapp=(function(x){x=String(x||'').replace(/\D/g,'').replace(/^0+/,'');return (x.length>=12&&x.slice(0,2)==='55')?x.slice(2):x;})(d.whatsapp);
     let slug=limpaSlug(d.slug||'');
     const subtipo=buscarSubtipoQuiz(d.template);
     const tpl=JSON.parse(JSON.stringify((subtipo&&subtipo.cardapioExemplo)||[]));
@@ -6522,7 +6523,7 @@ window.mvAbaInicial=function(){
       if (st === 'pago' || st === 'entregue') { pagos++; soma += Number(p.total || 0); }
       const itens = (Array.isArray(p.itens) ? p.itens : []).map(function (i) { return (i.qtd > 1 ? i.qtd + 'x ' : '') + finEsc(i.nome); }).join(', ');
       const quem = (p.comprador && p.comprador.nome) ? finEsc(p.comprador.nome) : 'Cliente';
-      const wpp = (p.comprador && p.comprador.whatsapp) ? String(p.comprador.whatsapp).replace(/\D/g, '') : '';
+      const wpp = (p.comprador && p.comprador.whatsapp) ? (function(x){x=String(x||'').replace(/\D/g,'').replace(/^0+/,'');return (x.length>=12&&x.slice(0,2)==='55')?x.slice(2):x;})(p.comprador.whatsapp) : '';
       const ent = (p.entrega && p.entrega.tipo === 'entrega') ? ('Entrega: ' + finEsc(p.entrega.detalhe || '')) : 'Retirada no local';
       const origem = p.origem === 'cardapio' ? 'cardápio' : 'live';
       /* Privacidade do comprador, 15/09: o checkout guarda SO os dois ultimos
@@ -6537,6 +6538,8 @@ window.mvAbaInicial=function(){
         botoes += '<button type="button" class="finOk" onclick="finPedidoAcao(\'' + p.__id + '\',\'pago\')">Recebi, confirmar</button>';
         botoes += '<button type="button" class="finNao" onclick="finPedidoAcao(\'' + p.__id + '\',\'recusado\')">Não caiu</button>';
       }
+      /* 23/09/2026: modos com Asaas - o lojista pode perguntar ao Asaas na hora (o robo tambem confere sozinho a cada 5 min). */
+      if (p.modo !== 'pix' && st === 'aguardando') botoes += '<button type="button" class="finOk" onclick="finPedidoAcao(\'' + p.__id + '\',\'conferir\')">Conferir no Asaas</button>';
       if (st === 'pago') botoes += '<button type="button" onclick="finPedidoAcao(\'' + p.__id + '\',\'entregue\')">Marcar entregue</button>';
       if (p.comprovante) botoes += '<button type="button" onclick="finVerComprovante(\'' + p.__id + '\')">Ver comprovante</button>';
       if (wpp) botoes += '<button type="button" onclick="window.open(\'https://wa.me/55' + wpp + '\',\'_blank\',\'noopener\')">WhatsApp</button>';
@@ -6558,7 +6561,12 @@ window.mvAbaInicial=function(){
     try {
       const r = await finPost('loja_pedido', null, { pedidoId: id, status: status });
       if (!(r.j && r.j.ok)) { alert(finMsg(r.j, r.http)); return; }
-      try { toast(status === 'pago' ? 'Pedido confirmado!' : (status === 'entregue' ? 'Marcado como entregue.' : 'Pedido recusado.')); } catch (_) {}
+      try {
+        if (status === 'conferir') {
+          const sc = r.j.status;
+          toast(sc === 'pago' ? 'Pagamento confirmado no Asaas!' : (sc === 'expirado' ? 'O Pix expirou sem pagamento.' : (sc === 'divergente' ? 'O valor no Asaas não bate com o pedido. Confira no app do Asaas.' : 'Ainda não caiu no Asaas.')));
+        } else toast(status === 'pago' ? 'Pedido confirmado!' : (status === 'entregue' ? 'Marcado como entregue.' : 'Pedido recusado.'));
+      } catch (_) {}
     } catch (_) { alert('Falha de conexão. Tente de novo.'); }
   };
 

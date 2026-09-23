@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -1527,7 +1527,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-22-criador4';
+  window.MOVIKI_VERSAO = '2026-09-23-rodada2';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2046,7 +2046,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
       // que deixar o lojista preso sem volta pro painel principal.
       try{
         const n = await getDoc(doc(db,'negocios',user.uid));
-        if(n.exists()) mostrarVoltar();
+        if(n.exists()){ mostrarVoltar(); avisoLojistaSemPlano(user.uid); }
       }catch(_){ mostrarVoltar(); }
       pmIniciar(user);
       try{ cpIniciar(user); }catch(e){ console.error('area do criador:', e); }
@@ -2373,6 +2373,34 @@ textarea.cpCampo{min-height:110px;resize:vertical}
       suspenso:'Seu acesso está suspenso no momento. Fale com a gente pelo WhatsApp do suporte para regularizar.'
     };
     txt('statusNota', notas[status] || '');
+  }
+
+  /* 23/09/2026 — PARCEIRO QUE TAMBEM E LOJISTA.
+     O robo (webhook.js, parceiroPodeGanhar) so gera comissao para quem tem
+     negocio no Moviki se o PROPRIO plano estiver pago e em dia — teste gratis
+     e Basico nao geram. O painel dizia "Tudo certo! Divulgue seu link" e o
+     parceiro so descobria quando as comissoes nao apareciam. Regulamento 2.4. */
+  async function avisoLojistaSemPlano(uid){
+    try{
+      const a = await getDoc(doc(db,'assinaturas',uid));
+      const d = a.exists() ? (a.data()||{}) : null;
+      const vence = d && d.vence_em && typeof d.vence_em.toMillis === 'function' ? d.vence_em.toMillis() : 0;
+      const pagante = !!(d && d.ativo === true && (!vence || vence > Date.now()) && d.periodo !== 'trial');
+      if(pagante) return;
+      if(el('avisoLojistaPlano')) return;
+      const box = document.createElement('div');
+      box.id = 'avisoLojistaPlano';
+      box.setAttribute('role','alert');
+      box.style.cssText = 'margin:0 0 14px;padding:12px 14px;border-radius:12px;border:1px solid #f5b942;background:rgba(245,185,66,.12);color:inherit;font-size:14px;line-height:1.45';
+      const t = document.createElement('div');
+      t.textContent = '⚠️ Você também tem um negócio no Moviki. Pelo regulamento (cláusula 2.4), você só recebe comissão enquanto o plano do SEU negócio estiver pago e em dia (Pró, Premium ou Enterprise). No teste grátis e no Básico, suas indicações continuam registradas, mas os pagamentos delas nesse período não geram comissão — nem depois.';
+      const lk = document.createElement('a');
+      lk.href = '/'; lk.textContent = 'Ir para o painel do meu negócio e ver os planos';
+      lk.style.cssText = 'display:inline-block;margin-top:8px;font-weight:700;text-decoration:underline;color:inherit';
+      box.appendChild(t); box.appendChild(lk);
+      const alvo = document.querySelector('section[data-sec="visao"]');
+      if(alvo) alvo.insertBefore(box, alvo.firstChild);
+    }catch(_){}
   }
 
   /* ---------- o card de saldo mora no centro no celular e na coluna da direita no desktop ---------- */
