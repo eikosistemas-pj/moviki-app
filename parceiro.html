@@ -628,8 +628,8 @@ textarea.cpCampo{min-height:110px;resize:vertical}
 <div id="login" class="telaCentro hide">
   <div class="marca"><img src="logo.png" alt="Moviki" onerror="this.style.display='none'"></div>
   <div class="caixa">
-    <h1>Painel do Parceiro</h1>
-    <p class="sub">Entre com o e-mail e a senha do seu cadastro.</p>
+    <h1 id="loginTit">Painel do Parceiro</h1>
+    <p class="sub" id="loginSub">Entre com o e-mail e a senha do seu cadastro.</p>
     <label for="email">E-mail</label>
     <input id="email" type="email" placeholder="voce@email.com" autocomplete="email">
     <label for="senha">Senha</label>
@@ -637,7 +637,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
     <button class="btn" id="btnEntrar">Entrar</button>
     <div class="aviso" id="avisoLogin"></div>
     <div class="link-min"><a href="#" id="esqueci">Esqueci minha senha</a></div>
-    <div class="link-min" style="margin-top:6px;color:var(--mv-txt-3)">Ainda não é parceiro? <a href="seja-parceiro.html">Cadastre-se</a></div>
+    <div class="link-min" style="margin-top:6px;color:var(--mv-txt-3)" id="loginCad">Ainda não é parceiro? <a href="seja-parceiro.html">Cadastre-se</a></div>
   </div>
 </div>
 
@@ -646,7 +646,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
   <div class="marca"><img src="logo.png" alt="Moviki" onerror="this.style.display='none'"></div>
   <div class="caixa" style="text-align:center">
     <h1>Cadastro não encontrado</h1>
-    <p class="sub">Esta conta não tem um cadastro de parceiro. Faça seu cadastro para começar.</p>
+    <p class="sub" id="semCadSub">Esta conta não tem um cadastro de parceiro. Faça seu cadastro para começar.</p>
     <a class="btn" href="seja-parceiro.html" style="display:block;text-align:center;text-decoration:none">Fazer meu cadastro</a>
     <button class="btn sec" id="sair2">Sair</button>
   </div>
@@ -1527,7 +1527,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-22-criador3';
+  window.MOVIKI_VERSAO = '2026-09-22-criador4';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -3061,24 +3061,50 @@ textarea.cpCampo{min-height:110px;resize:vertical}
     CP_UID = user.uid;
     const ehCriador = MEU.criador === true;
     ['navCriador','menuCriador','cpCardHome'].forEach(id => { const n = el(id); if(n) n.classList.toggle('hide', !ehCriador); });
-    if(!ehCriador) return;
+    if(!ehCriador){
+      /* Entrou pelo link dos criadores, mas a conta ainda nao foi marcada. */
+      if(CP_MODO && !el('cpAvisoModo')){
+        const v = document.querySelector('section[data-sec="visao"]');
+        if(v) v.insertAdjacentHTML('afterbegin', '<div id="cpAvisoModo" class="cpMsg er" style="margin:0 0 14px">'
+          + (MEU.status === 'aprovado'
+              ? 'Sua conta ainda não foi liberada como <b>criador</b>. Avise o Moviki: assim que liberarmos, a Área do criador aparece aqui.'
+              : 'Seu cadastro ainda está em análise. Depois de aprovado e liberado como <b>criador</b>, a Área do criador aparece aqui.')
+          + '</div>');
+      }
+      return;
+    }
     txt('cpAutTexto', cpTextoAutorizacao());
     if(MEU.status !== 'aprovado'){
       el('cpAvisoCad').innerHTML = '<div class="cpMsg er" style="margin-top:12px">Seu cadastro de parceiro ainda não está aprovado. Assim que for, o envio de peças é liberado.</div>';
     }
     cpCarregarPecas();
-    /* Link mestre de acesso (22/09/2026): parceiro.html?area=criador abre
-       direto a Area do criador. O parametro sai da barra depois de usado,
-       para o F5 nao prender o criador nessa tela. */
+    if(CP_MODO) irSec('criador');
+  }
+
+  /* ---------- link dos criadores (22/09/2026) ----------
+     app.moviki.com.br/criador (rewrite do vercel.json) ou parceiro.html?area=criador.
+     Mesma conta e mesmo login do parceiro — o criador E um parceiro marcado —,
+     mas a porta fala com o criador: titulo, texto e cadastro proprios, e
+     depois do login cai direto na Area do criador. */
+  const CP_MODO = (function(){
     try{
+      if(/^\/criador\/?$/.test(location.pathname)) return true;
       const q = new URLSearchParams(location.search);
       if(q.get('area') === 'criador'){
-        irSec('criador');
         q.delete('area');
         const resto = q.toString();
-        history.replaceState(null, '', location.pathname + (resto ? '?' + resto : '') + location.hash);
+        history.replaceState(null, '', '/criador' + (resto ? '?' + resto : '') + location.hash);
+        return true;
       }
     }catch(e){}
+    return false;
+  })();
+  if(CP_MODO){
+    document.title = 'Área do criador · Moviki';
+    txt('loginTit', 'Área do criador');
+    const s = el('loginSub'); if(s) s.innerHTML = 'Envie suas peças para as redes oficiais do Moviki e acompanhe seus resultados.<br>Entre com o e-mail e a senha do seu cadastro.';
+    const c = el('loginCad'); if(c) c.innerHTML = 'Ainda não tem acesso? <a href="seja-parceiro.html">Faça seu cadastro</a> e avise o Moviki para liberar a Área do criador.';
+    const sc = el('semCadSub'); if(sc) sc.textContent = 'Esta conta ainda não tem cadastro. O acesso de criador é feito pelo cadastro de parceiro: faça o cadastro e avise o Moviki para liberar a Área do criador.';
   }
 
   async function cpCarregarPecas(){

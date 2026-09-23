@@ -1267,8 +1267,8 @@ table.mvTab td b{font-weight:700}
 
           <!-- 22/09/2026: link mestre de acesso dos criadores (tambem em Atalhos do dono) -->
           <div class="cd" style="margin-top:14px">
-            <div class="cdTopo"><div><div class="cdTit">Link de acesso dos criadores</div><div class="cdSub">Um link só, igual para todos. O criador entra com o <b>mesmo e-mail e senha</b> do cadastro de parceiro e cai direto na <b>Área do criador</b>. Quem não está marcado como criador cai no painel normal.</div></div></div>
-            <div class="convLinha"><input id="crLinkAcesso" type="text" readonly value="https://app.moviki.com.br/parceiro.html?area=criador"><button type="button" class="btnMini" data-copiarcampo="crLinkAcesso">Copiar</button><a class="btnMini" href="https://app.moviki.com.br/parceiro.html?area=criador" target="_blank" rel="noopener" style="text-decoration:none">Abrir</a><button type="button" class="btnMini" data-wpp="cri">Enviar pelo WhatsApp</button></div>
+            <div class="cdTopo"><div><div class="cdTit">Link de acesso dos criadores</div><div class="cdSub">Um link só, igual para todos. Porta própria do criador: tela de entrada com o nome “Área do criador” e, depois do login, direto nas peças dele. A conta é a do cadastro de parceiro (é ela que dá o link /c/, a comissão e o aceite de conduta). Quem ainda não foi marcado vê o aviso “avise o Moviki”.</div></div></div>
+            <div class="convLinha"><input id="crLinkAcesso" type="text" readonly value="https://app.moviki.com.br/criador"><button type="button" class="btnMini" data-copiarcampo="crLinkAcesso">Copiar</button><a class="btnMini" href="https://app.moviki.com.br/criador" target="_blank" rel="noopener" style="text-decoration:none">Abrir</a><button type="button" class="btnMini" data-wpp="cri">Enviar pelo WhatsApp</button></div>
           </div>
 
           <div class="cd" style="margin-top:14px" data-crpainel="fila">
@@ -1365,8 +1365,8 @@ table.mvTab td b{font-weight:700}
           </div>
 
           <div class="cd">
-            <div class="cdTopo"><div><div class="cdTit">Link de acesso dos criadores</div><div class="cdSub">Um link só, igual para todos. O criador entra com o <b>mesmo e-mail e senha</b> do cadastro de parceiro e cai direto na <b>Área do criador</b>. Quem não está marcado como criador cai no painel normal.</div></div></div>
-            <div class="convLinha"><input id="crLinkAcesso2" type="text" readonly value="https://app.moviki.com.br/parceiro.html?area=criador"><button type="button" class="btnMini" data-copiarcampo="crLinkAcesso2">Copiar</button><a class="btnMini" href="https://app.moviki.com.br/parceiro.html?area=criador" target="_blank" rel="noopener" style="text-decoration:none">Abrir</a><button type="button" class="btnMini" data-wpp="cri">Enviar pelo WhatsApp</button></div>
+            <div class="cdTopo"><div><div class="cdTit">Link de acesso dos criadores</div><div class="cdSub">Um link só, igual para todos. Porta própria do criador: tela de entrada com o nome “Área do criador” e, depois do login, direto nas peças dele. A conta é a do cadastro de parceiro (é ela que dá o link /c/, a comissão e o aceite de conduta). Quem ainda não foi marcado vê o aviso “avise o Moviki”.</div></div></div>
+            <div class="convLinha"><input id="crLinkAcesso2" type="text" readonly value="https://app.moviki.com.br/criador"><button type="button" class="btnMini" data-copiarcampo="crLinkAcesso2">Copiar</button><a class="btnMini" href="https://app.moviki.com.br/criador" target="_blank" rel="noopener" style="text-decoration:none">Abrir</a><button type="button" class="btnMini" data-wpp="cri">Enviar pelo WhatsApp</button></div>
           </div>
           <div class="cd">
             <div class="cdTopo"><div><div class="cdTit">Páginas do Moviki</div><div class="cdSub">Abre em outra aba.</div></div></div>
@@ -1379,7 +1379,7 @@ table.mvTab td b{font-weight:700}
               <a class="linkFora" href="https://moviki.com.br/parceiros-ganhos.html" target="_blank" rel="noopener"><img src="icones/comissoes.png" alt="" onerror="this.style.display='none'"><span>Parceiros — ganhos</span></a>
               <a class="linkFora" href="index.html"><img src="icones/pagina.png" alt="" onerror="this.style.display='none'"><span>Painel do lojista</span></a>
               <a class="linkFora" href="parceiro.html"><img src="icones/parceiros.png" alt="" onerror="this.style.display='none'"><span>Painel do parceiro</span></a>
-              <a class="linkFora" href="parceiro.html?area=criador" target="_blank" rel="noopener"><img src="icones/live.png" alt="" onerror="this.style.display='none'"><span>Área do criador (login)</span></a>
+              <a class="linkFora" href="/criador" target="_blank" rel="noopener"><img src="icones/live.png" alt="" onerror="this.style.display='none'"><span>Área do criador (login)</span></a>
               <a class="linkFora" href="regulamento.html"><img src="icones/termos.png" alt="" onerror="this.style.display='none'"><span>Regulamento</span></a>
             </div>
           </div>
@@ -1565,7 +1565,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-22-criadores3';
+  window.MOVIKI_VERSAO = '2026-09-22-criadores4';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2958,7 +2958,7 @@ table.mvTab td b{font-weight:700}
   const LINK = {
     com:'https://moviki.com.br/comerciantes.html',
     par:'https://moviki.com.br/parceiros.html',
-    cri:'https://app.moviki.com.br/parceiro.html?area=criador'
+    cri:'https://app.moviki.com.br/criador'
   };
   const MSG_WPP = {
     cri:'Olá! Tudo bem? 😊 Este é o seu acesso à *Área do criador* do Moviki. Entre com o *mesmo e-mail e senha* do seu cadastro de parceiro. Lá você envia suas peças para as redes oficiais do Moviki, autoriza ou revoga cada uma e acompanha seus resultados: ',

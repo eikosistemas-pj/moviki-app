@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/criador",
+      "destination": "/parceiro.html"
+    },
+    {
       "source": "/__/auth/:caminho*",
       "destination": "https://moviki-app.firebaseapp.com/__/auth/:caminho*"
     },
