@@ -3,6 +3,35 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================================
+    //  v27 — 22/09/2026 — PECAS DOS CRIADORES (criador_pecas)
+    //
+    //  UMA colecao nova, e so ela. O resto do arquivo e a v26, letra por
+    //  letra.
+    //    criador_pecas/{id} -> peca que o influenciador envia para as redes
+    //                          oficiais do Moviki
+    //
+    //  AS DUAS CHAVES
+    //    - o CRIADOR autoriza (autorizaRedes + autorizaRedesEm + termoVersao)
+    //      e pode revogar (revogadaEm). So ele mexe nesses campos.
+    //    - o DONO aprova, recusa ou suspende (status + avaliadaEm +
+    //      avaliadaPor + motivoRecusa). So o admin mexe nesses campos.
+    //    O criador NUNCA grava status diferente de 'aguardando', e o admin
+    //    NUNCA grava autorizacao em nome do criador.
+    //
+    //  POR QUE NA RAIZ: regra do Firestore nao tem "deny". Dentro de
+    //  parceiros/{uid} a escrita do dono do documento alcancaria a peca.
+    //
+    //  QUEM CRIA: parceiro APROVADO e marcado como criador
+    //  (parceiros/{uid}.criador == true — o painel do dono marca).
+    //  Conteudo da peca nao se edita depois de criado: trocar o video de uma
+    //  peca ja aprovada seria publicar algo que o dono nao viu. Para mudar,
+    //  apaga e envia outra.
+    //
+    //  ORDEM DE PUBLICACAO: regra ANTES do painel do dono e do painel do
+    //  criador. Sem a regra, a leitura da fila e recusada calada.
+    // ==========================================================
+
+    // ==========================================================
     //  v26 — 17/09/2026 — O CURINGA DE negocios SAIU
     //
     //  UMA mudanca, num lugar so. O resto do arquivo e a v25 publicada,
@@ -1081,6 +1110,83 @@ service cloud.firestore {
                     && request.resource.data.pedidoEm == request.time
                     && request.resource.data.keys().hasOnly(['parceiroUid','valorSolicitado','status','pedidoEm']);
       allow update, delete: if isAdmin();
+    }
+
+    // ==========================================================
+    //  v27 — PECAS DOS CRIADORES. Contrato completo em
+    //  moviki-assistente-social/conteudo/CRIADORES-CONTRATO.md
+    // ==========================================================
+    function criadorAtivo(uid) {
+      return exists(/databases/$(database)/documents/parceiros/$(uid))
+        && get(/databases/$(database)/documents/parceiros/$(uid)).data.get('status', '') == 'aprovado'
+        && get(/databases/$(database)/documents/parceiros/$(uid)).data.get('criador', false) == true;
+    }
+
+    function pecaConteudoOk(d, uid) {
+      return d.formato in ['feed', 'story', 'reel']
+        && d.midia in ['imagem', 'video']
+        && d.url is string && d.url.size() <= 1000
+        && d.url.matches('https://firebasestorage[.]googleapis[.]com/.*')
+        && d.storagePath is string && d.storagePath.size() <= 300
+        && d.storagePath.matches('criadores/' + uid + '/.*')
+        && d.get('titulo', '') is string && d.get('titulo', '').size() <= 120
+        && d.get('legenda', '') is string && d.get('legenda', '').size() <= 2200
+        && d.get('categoria', '') is string && d.get('categoria', '').size() <= 40
+        && d.get('capa', '') is string && d.get('capa', '').size() <= 1000
+        && (d.get('w', 0) is int || d.get('w', 0) is float)
+        && (d.get('h', 0) is int || d.get('h', 0) is float)
+        && (d.get('duracao', 0) is int || d.get('duracao', 0) is float);
+    }
+
+    match /criador_pecas/{id} {
+      allow read: if request.auth != null
+                  && (resource.data.uid == request.auth.uid || isAdmin());
+
+      allow create: if request.auth != null
+                    && request.resource.data.uid == request.auth.uid
+                    && criadorAtivo(request.auth.uid)
+                    && request.resource.data.keys().hasAll(['uid','formato','midia','url','storagePath','status','criadaEm'])
+                    && request.resource.data.keys().hasOnly(['uid','formato','midia','url','storagePath','capa',
+                         'w','h','duracao','titulo','legenda','categoria','status','criadaEm',
+                         'autorizaRedes','autorizaRedesEm','termoVersao'])
+                    && request.resource.data.status == 'aguardando'
+                    && request.resource.data.criadaEm == request.time
+                    && pecaConteudoOk(request.resource.data, request.auth.uid)
+                    && ( !('autorizaRedes' in request.resource.data)
+                         || request.resource.data.autorizaRedes == false
+                         || ( request.resource.data.autorizaRedes == true
+                              && request.resource.data.autorizaRedesEm == request.time
+                              && request.resource.data.termoVersao is string
+                              && request.resource.data.termoVersao.size() <= 20 ) );
+
+      allow update: if request.auth != null && (
+          // o CRIADOR: so autoriza ou revoga
+          ( resource.data.uid == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys()
+                 .hasOnly(['autorizaRedes','autorizaRedesEm','termoVersao','revogadaEm'])
+            && request.resource.data.autorizaRedes is bool
+            && ( ( request.resource.data.autorizaRedes == true
+                   && request.resource.data.autorizaRedesEm == request.time
+                   && request.resource.data.termoVersao is string
+                   && request.resource.data.termoVersao.size() <= 20
+                   && request.resource.data.get('revogadaEm', null) == null )
+              || ( request.resource.data.autorizaRedes == false
+                   && request.resource.data.revogadaEm == request.time ) ) )
+          ||
+          // o DONO: so aprova, recusa ou suspende
+          ( isAdmin()
+            && request.resource.data.diff(resource.data).affectedKeys()
+                 .hasOnly(['status','avaliadaEm','avaliadaPor','motivoRecusa'])
+            && request.resource.data.status in ['aguardando','aprovada','recusada','suspensa']
+            && request.resource.data.avaliadaEm == request.time
+            && request.resource.data.avaliadaPor == request.auth.uid
+            && request.resource.data.get('motivoRecusa', '') is string
+            && request.resource.data.get('motivoRecusa', '').size() <= 300 )
+        );
+
+      // O criador pode tirar a peca a qualquer momento (LGPD e termo).
+      allow delete: if request.auth != null
+                    && (resource.data.uid == request.auth.uid || isAdmin());
     }
 
     // Admins do sistema. Criado SÓ pelo console do Firebase.
