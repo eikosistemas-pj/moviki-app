@@ -1565,7 +1565,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-22-criadores4';
+  window.MOVIKI_VERSAO = '2026-09-22-criadores5';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -5193,6 +5193,24 @@ table.mvTab td b{font-weight:700}
   }
 
   /* ---------- quem e criador ---------- */
+  /* Oferta do criador (decisao de 22/09/2026):
+       convite direto do Moviki  -> comissao + bonus de ativacao + Premium liberado
+       entrou pelo link de parceiro -> so a comissao normal
+     O painel so MOSTRA; o bonus de ativacao e pago a mao na fase 0.
+     Link do proprio dono (parceiro com o e-mail de quem esta logado) conta
+     como convite direto. */
+  function crOferta(p){
+    const pai = String((p && p.indicadoPor) || '').trim();
+    const eu = String((auth.currentUser && auth.currentUser.email) || '').toLowerCase();
+    const doDono = pai && PARC.some(q => q.slug === pai && String(q.email || '').toLowerCase() === eu);
+    if(!pai || doDono) return {conv:true, txt:'Convite direto do Moviki · comissão + bônus de ativação + Premium liberado'};
+    return {conv:false, txt:'Entrou pelo link de /p/' + pai + ' · só a comissão normal (sem bônus de ativação nem Premium)'};
+  }
+  function crOfertaTag(p){
+    const o = crOferta(p);
+    return '<small style="display:block;margin-top:3px;color:' + (o.conv ? 'var(--mv-verde,#25e39b)' : '#ffb020') + '">' + esc(o.txt) + '</small>';
+  }
+
   function crPintarGerir(){
     const cands = PARC.filter(p => p.status === 'aprovado' && !crEhCriador(p))
                       .sort((a,b) => String(a.nome || '').localeCompare(String(b.nome || '')));
@@ -5201,7 +5219,7 @@ table.mvTab td b{font-weight:700}
       : '<option value="">Nenhum parceiro aprovado sem a marca</option>';
     const cri = PARC.filter(crEhCriador);
     el('crLista').innerHTML = cri.length
-      ? cri.map(p => '<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--mv-linha)"><div><b>' + esc(p.nome || p.uid) + '</b>' + (p.arroba ? ' · ' + esc(p.arroba) : '') + '<br><small style="color:var(--mv-txt-3)">/c/' + esc(p.slug || '—') + ' · cadastro ' + esc(p.status || '?') + '</small></div><button type="button" class="btnMini perigo" data-crdesmarcar="' + esc(p.uid) + '">Tirar a marca</button></div>').join('')
+      ? cri.map(p => '<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--mv-linha)"><div><b>' + esc(p.nome || p.uid) + '</b>' + (p.arroba ? ' · ' + esc(p.arroba) : '') + '<br><small style="color:var(--mv-txt-3)">/c/' + esc(p.slug || '—') + ' · cadastro ' + esc(p.status || '?') + '</small>' + crOfertaTag(p) + '</div><button type="button" class="btnMini perigo" data-crdesmarcar="' + esc(p.uid) + '">Tirar a marca</button></div>').join('')
       : '<div class="vazio">Nenhum parceiro marcado como criador.</div>';
   }
 
@@ -5289,7 +5307,7 @@ table.mvTab td b{font-weight:700}
   el('crMarcar').addEventListener('click', async () => {
     const uid = el('crNovo').value; if(!uid) return;
     const p = crParc(uid);
-    if(confirm('Marcar ' + ((p && p.nome) || uid) + ' como criador? Ele passa a poder enviar peças para as redes do Moviki (sempre com a sua aprovação).')) await crMarca(uid, true);
+    if(confirm('Marcar ' + ((p && p.nome) || uid) + ' como criador? Ele passa a poder enviar peças para as redes do Moviki (sempre com a sua aprovação).\n\nOferta: ' + crOferta(p).txt + '.')) await crMarca(uid, true);
   });
   el('crPeriodo').addEventListener('change', () => { crPintarRank(); crPintarDet(); });
   el('crRecarregar').addEventListener('click', async () => {
