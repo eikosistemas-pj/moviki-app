@@ -3,6 +3,19 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================================
+    //  v28 — 23/09/2026 — TRES AJUSTES, NENHUMA COLECAO NOVA
+    //    1. avaliacoes/{avId}: id so no formato do addDoc (20 letras e
+    //       numeros). Fecha a invasao do painel do lojista por id montado.
+    //    2. conversas/{uid}: botFiltro, botFiltroEm e botFiltros entram na
+    //       lista do conversaCampos. O moviki-ai grava esses carimbos quando
+    //       o filtro barra o Vik; fora da lista, TODA mensagem seguinte do
+    //       lojista/parceiro era negada ("Nao consegui enviar" para sempre).
+    //       O lojista continua sem poder criar nem alterar esses campos.
+    //    3. mensagens: arquivoUrl so aceita endereco do Firebase Storage.
+    //  O resto do arquivo e a v27, letra por letra.
+    // ==========================================================
+
+    // ==========================================================
     //  v27 — 22/09/2026 — PECAS DOS CRIADORES (criador_pecas)
     //
     //  UMA colecao nova, e so ela. O resto do arquivo e a v26, letra por
@@ -568,7 +581,11 @@ service cloud.firestore {
                       && ( !('comentario' in request.resource.data)
                            || ( request.resource.data.comentario is string
                                 && request.resource.data.comentario.size() <= 300 ) )
-                      && request.resource.data.keys().hasOnly(['nota','nome','comentario','criadoEm']);
+                      && request.resource.data.keys().hasOnly(['nota','nome','comentario','criadoEm'])
+                      // v28 (23/09/2026): id no formato do addDoc (20 letras/numeros).
+                      // O id era livre, e um id com apostrofo virava codigo nos
+                      // botoes Responder/Editar do painel do lojista.
+                      && avId.matches('^[A-Za-z0-9]{20}$');
         // v26: moderar (editar/apagar avaliacao) era o curinga que permitia.
         allow update, delete: if donoOuAdmin(uid);
       }
@@ -879,7 +896,11 @@ service cloud.firestore {
                            && request.resource.data.get('botLigado', false) == false
                            && !('botRespondeuAte' in request.resource.data)
                            && !('botDia' in request.resource.data)
-                           && !('botUsos' in request.resource.data) )
+                           && !('botUsos' in request.resource.data)
+                           // v28: o lojista tambem nao nasce com carimbo do filtro
+                           && !('botFiltro' in request.resource.data)
+                           && !('botFiltroEm' in request.resource.data)
+                           && !('botFiltros' in request.resource.data) )
                     );
 
       // Duas escritas possíveis do lojista:
@@ -1362,7 +1383,11 @@ service cloud.firestore {
     function conversaCampos(d) {
       return d.keys().hasOnly(['uid','nome','email','ultimaMsg','ultimaEm','ultimoDe',
                                'vistoLojistaEm','vistoDonoEm','docsLiberado','docsPedido','criadoEm',
-                               'botLigado','botRespondeuAte','botDia','botUsos'])
+                               'botLigado','botRespondeuAte','botDia','botUsos',
+                               // v28: carimbos do filtro do Vik (moviki-ai/api/chat.js).
+                               // Fora desta lista, a conversa travava para sempre
+                               // na 1a vez que o filtro barrava uma resposta.
+                               'botFiltro','botFiltroEm','botFiltros'])
         && d.uid is string
         && d.uid.size() >= 6 && d.uid.size() <= 128
         && (!('nome' in d)       || (d.nome is string && d.nome.size() <= 80))
@@ -1387,7 +1412,10 @@ service cloud.firestore {
         && d.de in ['lojista','admin']
         && ('criadoEm' in d)
         && (!('texto' in d)        || (d.texto is string && d.texto.size() <= 2000))
-        && (!('arquivoUrl' in d)   || (d.arquivoUrl is string && d.arquivoUrl.size() <= 800))
+        // v28: so endereco do nosso Storage (getDownloadURL). Antes aceitava
+        // qualquer texto, que ia parar num botao do painel do dono.
+        && (!('arquivoUrl' in d)   || (d.arquivoUrl is string && d.arquivoUrl.size() <= 800
+                                       && d.arquivoUrl.matches('^https://firebasestorage[.]googleapis[.]com/v0/b/[A-Za-z0-9._-]+/o/[^"<> ]+$')))
         && (!('arquivoNome' in d)  || (d.arquivoNome is string && d.arquivoNome.size() <= 160))
         && (!('arquivoTipo' in d)  || (d.arquivoTipo is string && d.arquivoTipo.size() <= 100))
         && (!('arquivoTam' in d)   || (d.arquivoTam is int && d.arquivoTam >= 0 && d.arquivoTam <= 10485760))
