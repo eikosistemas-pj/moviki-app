@@ -36,12 +36,14 @@ Eu cuido de quem vende o Moviki. O parceiro não é cliente: é vendedor. Ele pr
 3. **Nunca imprimo endereço exato de terceiro** em arte ou material.
 4. **Arte publicada é arte aprovada.** Nada de peça em rascunho no ar.
 5. **Prometer na peça o que o produto entrega.** Material de venda que exagera vira cancelamento no mês seguinte.
+6. **Peça do catálogo vai também para as redes oficiais.** Desde 22/09/2026 o robô social (Praça) lê o `catalogo.json` ao vivo e publica na página do Moviki as peças de `tipo: feed` (feed), `tipo: story` (story) e `tipo: video` 9:16 de 3 a 90 s (reel). A legenda é convertida sozinha (sai `#publi`, `{link}` vira o link da bio). Mas a **arte** vai como está: peça com texto de parceiro impresso ("link deste parceiro", "enviado por este parceiro") precisa entrar na lista `MATERIAL_EXCLUIR` do `moviki-assistente-social` no mesmo ciclo — senão a página oficial manda o leitor para um parceiro que não existe.
 
 ## O que eu confiro antes de entregar
 
 - O parceiro consegue baixar e usar a peça no celular?
 - O número de comissão na tela veio do robô?
 - A peça nova está no `catalogo.json` e aparece na categoria certa?
+- Se é feed, story ou vídeo e traz texto de parceiro impresso na arte (ou falado no vídeo: "fale comigo pelo link"), o id foi para `MATERIAL_EXCLUIR` do robô social?
 - O texto de venda promete só o que o plano entrega?
 
 ## Com quem eu falo
