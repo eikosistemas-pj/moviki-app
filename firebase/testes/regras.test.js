@@ -154,7 +154,14 @@ describe('avaliacoes — a nota de quem comprou', () => {
   });
 
   test('visitante anonimo AVALIA', async () => {
-    await assertSucceeds(setDoc(doc(anon(), 'negocios', DONO, 'avaliacoes', 'nova'), {
+    /* v28: id no formato do addDoc (20 letras/numeros) */
+    await assertSucceeds(setDoc(doc(anon(), 'negocios', DONO, 'avaliacoes', 'AbCdEfGhIj0123456789'), {
+      nota: 5, nome: 'Carlos', criadoEm: serverTimestamp(),
+    }));
+  });
+
+  test('v28: id de avaliacao montado (apostrofo) e recusado', async () => {
+    await assertFails(setDoc(doc(anon(), 'negocios', DONO, 'avaliacoes', "x');alert(1);('"), {
       nota: 5, nome: 'Carlos', criadoEm: serverTimestamp(),
     }));
   });
@@ -345,5 +352,53 @@ describe('criador_pecas — pecas dos influenciadores', () => {
 
   test('criador APAGA a propria peca', async () => {
     await assertSucceeds(deleteDoc(doc(criador(), 'criador_pecas', 'p1')));
+  });
+});
+
+
+/* ========== v28 (23/09/2026): caixa de mensagens ========== */
+describe('v28 — conversas e anexos', () => {
+  before(async () => {
+    await env.clearFirestore();
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      await setDoc(doc(db, 'admins', ADM), { desde: 'sempre' });
+      /* conversa em que o filtro do Vik ja barrou uma resposta */
+      await setDoc(doc(db, 'conversas', DONO), {
+        uid: DONO, ultimoDe: 'bot', ultimaMsg: 'oi', docsLiberado: true,
+        botLigado: true, botUsos: 2, botDia: '2026-09-23',
+        botFiltro: 'promessa_de_ganho', botFiltroEm: new Date(), botFiltros: 2,
+      });
+    });
+  });
+
+  test('lojista MANDA mensagem depois que o filtro do Vik barrou (antes: negado para sempre)', async () => {
+    await assertSucceeds(updateDoc(doc(dono(), 'conversas', DONO), {
+      ultimaMsg: 'e agora?', ultimaEm: serverTimestamp(), ultimoDe: 'lojista', vistoLojistaEm: serverTimestamp(),
+    }));
+  });
+
+  test('lojista NAO apaga nem mexe no carimbo do filtro', async () => {
+    await assertFails(updateDoc(doc(dono(), 'conversas', DONO), { botFiltro: 'nada', ultimoDe: 'lojista' }));
+  });
+
+  test('lojista NAO cria conversa ja com carimbo do filtro', async () => {
+    await assertFails(setDoc(doc(estranho(), 'conversas', ESTRANHO), {
+      uid: ESTRANHO, ultimoDe: 'lojista', ultimaMsg: 'oi', botFiltros: 0,
+    }));
+  });
+
+  test('anexo com endereco do Storage passa', async () => {
+    await assertSucceeds(setDoc(doc(dono(), 'conversas', DONO, 'mensagens', 'm1'), {
+      de: 'lojista', criadoEm: serverTimestamp(), arquivoNome: 'nota.pdf', arquivoTipo: 'application/pdf', arquivoTam: 100,
+      arquivoUrl: 'https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/documentos%2Fx%2F1_nota.pdf?alt=media&token=abc',
+    }));
+  });
+
+  test('anexo com endereco inventado e recusado', async () => {
+    await assertFails(setDoc(doc(dono(), 'conversas', DONO, 'mensagens', 'm2'), {
+      de: 'lojista', criadoEm: serverTimestamp(), arquivoNome: 'x', arquivoTam: 1,
+      arquivoUrl: "javascript:alert(1)//'",
+    }));
   });
 });
