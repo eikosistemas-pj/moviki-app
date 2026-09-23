@@ -739,6 +739,14 @@ textarea.cpCampo{min-height:110px;resize:vertical}
             <span class="mvNovo" data-matnovo="1" hidden>NOVO</span>
             <svg class="matSeta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
           </button>
+          <!-- 22/09/2026: atalho da Area do criador na Visao geral. So aparece
+               para parceiro marcado como criador (cpIniciar). -->
+          <button type="button" class="matDest cpDest hide" id="cpCardHome" data-ir="criador">
+            <img src="icones/live.png" alt="" onerror="this.style.display='none'">
+            <span class="matDestTxt"><b>Área do criador</b><span id="cpCardTxt">Envie suas peças para as redes oficiais do Moviki e acompanhe seus resultados.</span></span>
+            <span class="mvNovo cpCardTag" id="cpCardTag" hidden></span>
+            <svg class="matSeta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
           <div class="cd soAprovado">
             <div class="cdTopo">
               <div class="cdTit">Resumo dos seus ganhos</div>
@@ -1519,7 +1527,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-22-criador';
+  window.MOVIKI_VERSAO = '2026-09-22-criador2';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -3052,7 +3060,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
   function cpIniciar(user){
     CP_UID = user.uid;
     const ehCriador = MEU.criador === true;
-    ['navCriador','menuCriador'].forEach(id => { const n = el(id); if(n) n.classList.toggle('hide', !ehCriador); });
+    ['navCriador','menuCriador','cpCardHome'].forEach(id => { const n = el(id); if(n) n.classList.toggle('hide', !ehCriador); });
     if(!ehCriador) return;
     txt('cpAutTexto', cpTextoAutorizacao());
     if(MEU.status !== 'aprovado'){
@@ -3076,6 +3084,29 @@ textarea.cpCampo{min-height:110px;resize:vertical}
     txt('cpKApr', CP_PECAS ? L.filter(x => x.status === 'aprovada').length : '—');
     txt('cpKLib', CP_PECAS ? L.filter(cpLiberada).length : '—');
     if(CP_HIST) txt('cpKPost', CP_HIST.filter(h => h.origem === 'criador' && h.criador === CP_UID).length);
+    cpCardHome();
+  }
+
+  /* Card da Visao geral: resumo em uma linha e selo quando ha peca recusada. */
+  function cpCardHome(){
+    const t = el('cpCardTxt'), tag = el('cpCardTag');
+    if(!t || !CP_PECAS) return;
+    const L = CP_PECAS;
+    if(!L.length){ t.textContent = 'Envie sua primeira peça para as redes oficiais do Moviki e acompanhe seus resultados.'; }
+    else{
+      const n = s => L.filter(x => x.status === s).length;
+      const partes = [];
+      if(n('aguardando')) partes.push(n('aguardando') + ' aguardando aprovação');
+      if(n('aprovada')) partes.push(n('aprovada') + (n('aprovada') === 1 ? ' aprovada' : ' aprovadas'));
+      const lib = L.filter(cpLiberada).length;
+      if(lib) partes.push(lib + ' no ar pelo robô');
+      t.textContent = (partes.length ? partes.join(' · ') : L.length + (L.length === 1 ? ' peça enviada' : ' peças enviadas')) + '. Toque para abrir.';
+    }
+    if(tag){
+      const rec = L.filter(x => x.status === 'recusada').length;
+      tag.hidden = !rec;
+      tag.textContent = rec ? (rec === 1 ? '1 RECUSADA' : rec + ' RECUSADAS') : '';
+    }
   }
 
   function cpIrAba(aba){
@@ -5601,6 +5632,9 @@ function mvQR(texto){
   box-shadow:0 0 0 0 rgba(0,212,255,.0);animation:matPulso 3.2s ease-in-out infinite}
 @keyframes matPulso{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,0)}50%{box-shadow:0 0 22px 0 rgba(0,212,255,.22)}}
 @media (prefers-reduced-motion:reduce){.matDest{animation:none}}
+.cpDest{animation:none;background:linear-gradient(var(--mv-surf),var(--mv-surf)) padding-box,linear-gradient(135deg,#ff9f43,#ff4d8d,#8b5cf6) border-box}
+.cpDest .matSeta{color:#ff9f43}
+.cpCardTag{background:#ff4d8d!important;color:#fff!important}
 .matDest img{width:58px;height:58px;object-fit:contain;flex:0 0 auto}
 .matDestTxt{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
 .matDestTxt b{font-size:16.5px;font-weight:800;letter-spacing:-.3px}
