@@ -402,3 +402,46 @@ describe('v28 — conversas e anexos', () => {
     }));
   });
 });
+
+/* ========== v29 (23/09/2026): parceiros ========== */
+describe('v29 — cadastro e selo de treinamento do parceiro', () => {
+  const NOVO = 'parceiro-novo-v29';
+  const VELHO = 'parceiro-velho-v29';
+  before(async () => {
+    await env.clearFirestore();
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      /* cadastrado agora: nao pode carimbar treinamento ja */
+      await setDoc(doc(db, 'parceiros', NOVO), { nome: 'Novo', status: 'pendente', criadoEm: new Date() });
+      /* cadastrado ha 1 hora: pode */
+      await setDoc(doc(db, 'parceiros', VELHO), { nome: 'Velho', status: 'aprovado', criadoEm: new Date(Date.now() - 3600000) });
+    });
+  });
+  const como = (uid) => env.authenticatedContext(uid, { email: uid + '@exemplo.com' }).firestore();
+
+  test('cadastro com hora do servidor passa', async () => {
+    await assertSucceeds(setDoc(doc(como('p-cad-ok'), 'parceiros', 'p-cad-ok'), {
+      nome: 'Maria', email: 'p-cad-ok@exemplo.com', pix: 'maria@pix.com', slug: 'mariaok',
+      status: 'pendente', aceite: { versao: '1.0', em: serverTimestamp() }, criadoEm: serverTimestamp(),
+    }));
+  });
+
+  test('cadastro com data inventada no passado e recusado', async () => {
+    await assertFails(setDoc(doc(como('p-cad-ruim'), 'parceiros', 'p-cad-ruim'), {
+      nome: 'Maria', email: 'p-cad-ruim@exemplo.com', pix: 'maria@pix.com', slug: 'mariaruim',
+      status: 'pendente', aceite: { versao: '1.0', em: serverTimestamp() }, criadoEm: new Date(2020, 0, 1),
+    }));
+  });
+
+  test('carimbo de treinamento no mesmo minuto do cadastro e recusado', async () => {
+    await assertFails(updateDoc(doc(como(NOVO), 'parceiros', NOVO), { aulasVistas: ['a'], aulasEm: new Date().toISOString() }));
+  });
+
+  test('progresso sem carimbo continua gravando', async () => {
+    await assertSucceeds(updateDoc(doc(como(NOVO), 'parceiros', NOVO), { aulasVistas: ['a', 'b'] }));
+  });
+
+  test('carimbo depois do tempo minimo passa', async () => {
+    await assertSucceeds(updateDoc(doc(como(VELHO), 'parceiros', VELHO), { aulasVistas: ['a'], aulasEm: new Date().toISOString() }));
+  });
+});
