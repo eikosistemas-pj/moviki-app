@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://unpkg.com https://*.tile.openstreetmap.org https://firebasestorage.googleapis.com; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://*.googleapis.com https://www.google.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://raw.githubusercontent.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://unpkg.com https://*.tile.openstreetmap.org https://firebasestorage.googleapis.com; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://www.gstatic.com https://unpkg.com https://*.googleapis.com https://www.google.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://raw.githubusercontent.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="robots" content="noindex,nofollow">
@@ -1565,7 +1565,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-23-rodada3';
+  window.MOVIKI_VERSAO = '2026-09-23-rodada3b';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1800,6 +1800,7 @@ table.mvTab td b{font-weight:700}
     pintarSaude();
     pintarPendencias();
     vikConferirMarcas();
+    cvCarregarPadrao();
   }
 
   /* ==========================================================
@@ -3868,7 +3869,12 @@ table.mvTab td b{font-weight:700}
   el('swBot').addEventListener('change', function(){ cvTrocarBot(this.checked); });
   el('swPadraoVik').addEventListener('change', function(){ cvTrocarPadrao(this.checked); });
   el('btnCvBotPadrao').addEventListener('click', cvVoltarAoPadrao);
-  cvCarregarPadrao();
+  /* 23/09 (rodada 3): cvCarregarPadrao() saiu daqui. Rodava no carregamento
+     da pagina, ANTES do login: a regra so deixa admin ler
+     configuracoes/sistema, a leitura era negada ("Missing or insufficient
+     permissions" no console) e o interruptor "Padrao geral do Vik" aparecia
+     DESLIGADO mesmo quando estava ligado. Agora roda depois do login, junto
+     com o resto dos dados (carregarTudo). */
   el('btnCvMemApagar').addEventListener('click', cvApagarMemoria);
   el('btnCvPedido').addEventListener('click', cvSalvarPedido);
   el('btnCvNova').addEventListener('click', cvAbrirPicker);
