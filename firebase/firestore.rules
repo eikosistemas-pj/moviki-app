@@ -3,6 +3,14 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================================
+    //  v29 — 23/09/2026 — PARCEIROS
+    //    1. parceiros/{uid} create: criadoEm tem que ser a hora do servidor.
+    //    2. parceiros/{uid} update: aulasEm (selo de treinamento) so entra
+    //       6 min ou mais depois do cadastro.
+    //  O resto do arquivo e a v28, letra por letra.
+    // ==========================================================
+
+    // ==========================================================
     //  v28 — 23/09/2026 — TRES AJUSTES, NENHUMA COLECAO NOVA
     //    1. avaliacoes/{avId}: id so no formato do addDoc (20 letras e
     //       numeros). Fecha a invasao do painel do lojista por id montado.
@@ -958,6 +966,9 @@ service cloud.firestore {
                     && request.auth.uid == uid
                     && request.resource.data.keys().hasOnly(['nome','email','pix','slug','status','aceite','criadoEm','indicadoPor','arroba','canais'])
                     && request.resource.data.status == 'pendente'
+                    // v29: a hora do cadastro e a do SERVIDOR (serverTimestamp) —
+                    // e dela que sai o tempo minimo do treinamento acima.
+                    && request.resource.data.criadoEm == request.time
                     && request.resource.data.nome is string
                     && request.resource.data.nome.size() >= 2 && request.resource.data.nome.size() <= 80
                     && request.resource.data.email is string
@@ -1018,6 +1029,16 @@ service cloud.firestore {
                         && ( !('aulasEm' in request.resource.data)
                              || ( request.resource.data.aulasEm is string
                                   && request.resource.data.aulasEm.size() <= 40 ) )
+                        // v29 (23/09/2026): o carimbo de "treinamento concluido"
+                        // so entra depois de tempo compativel com assistir as
+                        // aulas obrigatorias (~15 min; 90% em velocidade 2x da
+                        // ~7 min). Antes dava para carimbar pelo F12 no mesmo
+                        // segundo do cadastro, ganhar o selo publico e pular a
+                        // trava da Divulgacao. Cadastro antigo sem criadoEm
+                        // segue como antes.
+                        && ( !request.resource.data.diff(resource.data).affectedKeys().hasAny(['aulasEm'])
+                             || !(resource.data.get('criadoEm', null) is timestamp)
+                             || request.time > resource.data.criadoEm + duration.value(6, 'm') )
                         // v21: forma fechada, para o campo nao virar deposito
                         // de texto qualquer dentro do cadastro do parceiro.
                         && ( !('aceiteConduta' in request.resource.data)
