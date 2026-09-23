@@ -18,7 +18,7 @@ import {
   assertFails,
 } from '@firebase/rules-unit-testing';
 import {
-  doc, getDoc, setDoc, deleteDoc, serverTimestamp,
+  doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp,
 } from 'firebase/firestore';
 
 const DONO      = 'lojista-dono-1';
@@ -254,5 +254,96 @@ describe('estado/ — publico so o que a live precisa', () => {
 
   test('o lojista grava o proprio onboarding', async () => {
     await assertSucceeds(setDoc(doc(dono(), 'negocios', DONO, 'estado', 'boasvindas'), { visto: true }));
+  });
+});
+
+
+/* ========== v27 — criador_pecas: as duas chaves ========== */
+const CRIADOR = 'criador-ana-3';
+const PARC_COMUM = 'parceiro-comum-4';
+const criador = () => env.authenticatedContext(CRIADOR).firestore();
+const parcComum = () => env.authenticatedContext(PARC_COMUM).firestore();
+
+function peca(uid, extra = {}) {
+  return Object.assign({
+    uid, formato: 'reel', midia: 'video',
+    url: 'https://firebasestorage.googleapis.com/v0/b/x/o/v.mp4?alt=media&token=1',
+    storagePath: 'criadores/' + uid + '/v.mp4',
+    w: 1080, h: 1920, duracao: 30, titulo: 'Pastel na feira', legenda: 'oi', categoria: 'alimentacao',
+    status: 'aguardando', criadaEm: serverTimestamp(),
+  }, extra);
+}
+
+async function semearCriadores() {
+  await env.clearFirestore();
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    const db = ctx.firestore();
+    await setDoc(doc(db, 'admins', ADM), { desde: 'sempre' });
+    await setDoc(doc(db, 'parceiros', CRIADOR), { nome: 'Ana', status: 'aprovado', criador: true });
+    await setDoc(doc(db, 'parceiros', PARC_COMUM), { nome: 'Beto', status: 'aprovado' });
+    await setDoc(doc(db, 'criador_pecas', 'p1'), Object.assign(peca(CRIADOR), { criadaEm: new Date() }));
+  });
+}
+
+describe('criador_pecas — pecas dos influenciadores', () => {
+  before(() => semearCriadores());
+
+  test('criador aprovado ENVIA peca aguardando', async () => {
+    await assertSucceeds(setDoc(doc(criador(), 'criador_pecas', 'p2'), peca(CRIADOR)));
+  });
+
+  test('criador NAO envia peca ja aprovada', async () => {
+    await assertFails(setDoc(doc(criador(), 'criador_pecas', 'p3'), peca(CRIADOR, { status: 'aprovada' })));
+  });
+
+  test('parceiro comum (sem marca de criador) NAO envia peca', async () => {
+    await assertFails(setDoc(doc(parcComum(), 'criador_pecas', 'p4'), peca(PARC_COMUM)));
+  });
+
+  test('criador NAO envia arquivo de fora da pasta dele', async () => {
+    await assertFails(setDoc(doc(criador(), 'criador_pecas', 'p5'),
+      peca(CRIADOR, { storagePath: 'criadores/outro/v.mp4' })));
+  });
+
+  test('criador AUTORIZA a propria peca', async () => {
+    await assertSucceeds(updateDoc(doc(criador(), 'criador_pecas', 'p1'),
+      { autorizaRedes: true, autorizaRedesEm: serverTimestamp(), termoVersao: '3.1' }));
+  });
+
+  test('criador NAO aprova a propria peca', async () => {
+    await assertFails(updateDoc(doc(criador(), 'criador_pecas', 'p1'),
+      { status: 'aprovada', avaliadaEm: serverTimestamp(), avaliadaPor: CRIADOR }));
+  });
+
+  test('criador NAO troca o video depois de enviado', async () => {
+    await assertFails(updateDoc(doc(criador(), 'criador_pecas', 'p1'),
+      { url: 'https://firebasestorage.googleapis.com/v0/b/x/o/outro.mp4' }));
+  });
+
+  test('o dono APROVA', async () => {
+    await assertSucceeds(updateDoc(doc(admin(), 'criador_pecas', 'p1'),
+      { status: 'aprovada', avaliadaEm: serverTimestamp(), avaliadaPor: ADM, motivoRecusa: '' }));
+  });
+
+  test('o dono NAO autoriza em nome do criador', async () => {
+    await assertFails(updateDoc(doc(admin(), 'criador_pecas', 'p1'),
+      { autorizaRedes: true, autorizaRedesEm: serverTimestamp(), termoVersao: '3.1' }));
+  });
+
+  test('criador REVOGA', async () => {
+    await assertSucceeds(updateDoc(doc(criador(), 'criador_pecas', 'p1'),
+      { autorizaRedes: false, revogadaEm: serverTimestamp() }));
+  });
+
+  test('estranho NAO le a peca do criador', async () => {
+    await assertFails(getDoc(doc(estranho(), 'criador_pecas', 'p1')));
+  });
+
+  test('o dono LE a peca', async () => {
+    await assertSucceeds(getDoc(doc(admin(), 'criador_pecas', 'p1')));
+  });
+
+  test('criador APAGA a propria peca', async () => {
+    await assertSucceeds(deleteDoc(doc(criador(), 'criador_pecas', 'p1')));
   });
 });
