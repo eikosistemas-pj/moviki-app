@@ -3278,7 +3278,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-23-rodada2';
+  window.MOVIKI_VERSAO='2026-09-23-rodada3';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -3816,7 +3816,7 @@ window.mvAbaInicial=function(){
       var chk=await getDoc(doc(db,'parceiro_slugs',slug));
       if(chk.exists()){ av.textContent='Esse apelido já está em uso. Escolha outro.'; btn.disabled=false; btn.textContent=t; return; }
       await setDoc(doc(db,'parceiro_slugs',slug),{uid:usuarioAtual.uid});
-      await setDoc(doc(db,'parceiros',usuarioAtual.uid),{nome:nome,email:usuarioAtual.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.0',em:serverTimestamp()},criadoEm:serverTimestamp()});
+      await setDoc(doc(db,'parceiros',usuarioAtual.uid),{nome:nome,email:usuarioAtual.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.2',em:serverTimestamp()},criadoEm:serverTimestamp()});
       try{ usuarioAtual.getIdToken().then(function(tk){ fetch(ROBO+'/api/novo-parceiro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:usuarioAtual.uid})}).catch(function(){}); }).catch(function(){}); }catch(_){}
       window._statusParceiro='pendente';
       var ic=el('candPendIcon'), ti=el('candPendTit'), tx=el('candPendTxt');
@@ -5808,7 +5808,7 @@ window.mvAbaInicial=function(){
       const user=auth.currentUser;
       try{await sendEmailVerification(user);}catch(_){}
       await setDoc(doc(db,'parceiro_slugs',slug),{uid:user.uid});
-      const dadosParceiro={nome:nome,email:user.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.0',em:serverTimestamp()},criadoEm:serverTimestamp()};
+      const dadosParceiro={nome:nome,email:user.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.2',em:serverTimestamp()},criadoEm:serverTimestamp()};
       if(refParceiro&&refParceiro.length>=3&&refParceiro!==slug) dadosParceiro.indicadoPor=refParceiro;
       const arroba=(d.arroba||'').trim().replace(/^@+/,'').slice(0,39);
       if(arroba) dadosParceiro.arroba='@'+arroba;
@@ -5952,7 +5952,7 @@ window.mvAbaInicial=function(){
     }
     if(!livre) return {ok:false,erro:'Não consegui gerar seu link agora. Tente de novo.'};
     await setDoc(doc(db,'parceiro_slugs',slug),{uid:user.uid});
-    const dadosParceiro={nome:nome,email:user.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.0',em:serverTimestamp()},criadoEm:serverTimestamp()};
+    const dadosParceiro={nome:nome,email:user.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.2',em:serverTimestamp()},criadoEm:serverTimestamp()};
     if(refParceiro&&refParceiro.length>=3&&refParceiro!==slug) dadosParceiro.indicadoPor=refParceiro;
     const arroba=(d.arroba||'').trim().replace(/^@+/,'').slice(0,39);
     if(arroba) dadosParceiro.arroba='@'+arroba;

@@ -1565,7 +1565,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-23-vikalarme';
+  window.MOVIKI_VERSAO = '2026-09-23-rodada3';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1631,7 +1631,7 @@ table.mvTab td b{font-weight:700}
 
   /* ---------- estado ---------- */
   let USER = null, EH_ADMIN_BANCO = false;
-  let NEG = [], PLANO_DE = {}, PARC = [], COMIS = [], SAQ = [], NL = [], EXC = [], PONTOS = 0;
+  let NEG = [], PLANO_DE = {}, EM_TESTE = {}, PRECO_MES = {}, PARC = [], COMIS = [], SAQ = [], NL = [], EXC = [], PONTOS = 0;
   let MET = null;
   let CR_PECAS = [];   // criador_pecas (22/09/2026)
   let saquePix = {};
@@ -1806,7 +1806,7 @@ table.mvTab td b{font-weight:700}
      NEGÓCIOS + KPIs + RELATÓRIOS
      ========================================================== */
   async function carregarNegocios(){
-    NEG = []; PLANO_DE = {};
+    NEG = []; PLANO_DE = {}; EM_TESTE = {}; PRECO_MES = {};
     let okNeg = true, okAss = true;
     try{
       const s = await getDocs(collection(db,'negocios'));
@@ -1814,7 +1814,19 @@ table.mvTab td b{font-weight:700}
     }catch(e){ okNeg = false; }
     try{
       const s = await getDocs(collection(db,'assinaturas'));
-      s.forEach(d => { PLANO_DE[d.id] = normPlano((d.data()||{}).plano); });
+      /* 23/09 (rodada 3): so conta como PAGANTE quem tem plano ativo, dentro do
+         vencimento e fora do teste gratis. Antes lia so o campo plano: o teste
+         (plano 'pro'), a cobranca gerada e nao paga (ativo:false) e o vencido
+         apareciam como "Pro ou superior" e somavam receita. Anual entra /12. */
+      s.forEach(d => {
+        const a = d.data() || {};
+        const vence = ms(a.vence_em);
+        const vivo = a.ativo === true && (!vence || vence > Date.now());
+        if(vivo && a.periodo === 'trial'){ EM_TESTE[d.id] = true; PLANO_DE[d.id] = 'basico'; return; }
+        const pl = vivo ? normPlano(a.plano) : 'basico';
+        PLANO_DE[d.id] = pl;
+        if(pl !== 'basico') PRECO_MES[d.id] = (a.periodo === 'anual') ? ({pro:399, premium:699}[pl] || PLANOS[pl].p*12) / 12 : PLANOS[pl].p;
+      });
     }catch(e){ okAss = false; }
     SAUDE.negocios = okNeg; SAUDE.assinaturas = okAss;
 
@@ -1834,7 +1846,7 @@ table.mvTab td b{font-weight:700}
     NEG.forEach(n=>{
       const pl = PLANO_DE[n.uid] || 'basico';
       cont[pl]++;
-      if(pl !== 'basico'){ pagos++; receita += PLANOS[pl].p; }
+      if(pl !== 'basico'){ pagos++; receita += (PRECO_MES[n.uid] || PLANOS[pl].p); }
       if((n.status||'') === 'aberto') abertos++;
       if((n.whatsapp||'').toString().replace(/\D/g,'').length >= 10) comWpp++;
       if(n.slug) comLink++;
@@ -1913,7 +1925,7 @@ table.mvTab td b{font-weight:700}
         : '<span style="color:var(--mv-txt-3)">—</span>';
       return '<tr>'+
         '<td><span class="celNome">'+esc(n.nome||'(sem nome)')+'</span></td>'+
-        '<td><span class="pill '+(pl==='basico'?'off':'info')+'">'+PLANOS[pl].n+'</span></td>'+
+        '<td><span class="pill '+(pl==='basico'&&!EM_TESTE[n.uid]?'off':'info')+'">'+(EM_TESTE[n.uid]?'Teste grátis':PLANOS[pl].n)+'</span></td>'+
         '<td><span class="pill '+(aberto?'ok':'off')+'">'+(aberto?'Aberto':'Fechado')+'</span></td>'+
         '<td>'+link+'</td>'+
         '<td><span class="celNome" style="max-width:150px">'+esc(n.segmento||'—')+'</span></td>'+
@@ -2183,6 +2195,18 @@ table.mvTab td b{font-weight:700}
     return r;
   }
 
+  /* Comissao que pode ser paga HOJE: nao paga, nao estornada, fora da retencao. */
+  function liberadoDe(uid){
+    let v = 0; const agora = Date.now();
+    COMIS.forEach(c=>{
+      if(c.parceiroUid !== uid || c.pago || c.estornada) return;
+      const lib = ms(c.liberaEm);
+      if(lib && lib > agora) return;
+      v += Number(c.valor) || 0;
+    });
+    return Math.round(v * 100) / 100;
+  }
+
   function nomeParceiro(uid){
     const p = PARC.filter(x=>x.uid === uid)[0];
     return (p && p.nome) || '(parceiro)';
@@ -2204,7 +2228,11 @@ table.mvTab td b{font-weight:700}
           (s.status === 'falhou' ? ' <span class="pill perigo">Pix não saiu</span>' : ' <span class="pill warn">Saque pedido</span>')+'</div>'+
         '<span class="icData">'+dataBR(ms(s.pedidoEm))+'</span></div>'+
         '<div class="icInfo">'+
-          '<div><span class="icK">Valor</span><span class="icV"><b>'+brl(s.valorSolicitado)+'</b></span></div>'+
+          /* 23/09 (rodada 3): o pedido e gravado pelo proprio parceiro e nao prova nada.
+             O que vale e o LIBERADO (comissoes nao pagas, nao estornadas e ja fora da retencao). */
+          '<div><span class="icK">Pedido pelo parceiro</span><span class="icV">'+brl(s.valorSolicitado)+'</span></div>'+
+          '<div><span class="icK">Liberado de verdade</span><span class="icV"><b>'+brl(liberadoDe(s.parceiroUid))+'</b></span></div>'+
+          (Number(s.valorSolicitado||0) > liberadoDe(s.parceiroUid) + 0.009 ? '<div class="avisoRegra" style="margin:6px 0 10px">O pedido é MAIOR que o liberado. Pague só o liberado — o robô registra o valor calculado, não o pedido.</div>' : '')+
           '<div><span class="icK">Pix</span><span class="icV"><code>'+esc(saquePix[s.id]||'—')+'</code> <button type="button" class="btnMini" data-saque="pix" data-id="'+esc(s.id)+'">copiar</button></span></div>'+
         '</div>'+
         (s.ultimoErroPagamento ? '<div class="avisoRegra" style="margin-bottom:10px">Última tentativa falhou: '+esc(s.ultimoErroPagamento)+'</div>' : '')+
@@ -2260,15 +2288,30 @@ table.mvTab td b{font-weight:700}
   }
 
   /* Chama o robô (api/pagar-saque). etapa: 'conferir' | 'pagar' | 'manual'. */
-  async function chamarSaque(id, etapa, comprovante){
+  async function chamarSaque(id, etapa, comprovante, valorConferido){
     const idToken = await auth.currentUser.getIdToken();
     const r = await fetch('https://moviki-robo.vercel.app/api/pagar-saque', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({idToken, saqueId:id, etapa:etapa, comprovante:comprovante||''})
+      body: JSON.stringify({idToken, saqueId:id, etapa:etapa, comprovante:comprovante||'', valorConferido:valorConferido||0})
     });
     const j = await r.json().catch(()=>({}));
-    if(!r.ok || !j.ok) throw new Error(j.mensagem || j.erro || 'falhou');
+    if(!r.ok || !j.ok){ const e = new Error(j.mensagem || j.erro || 'falhou'); e.dados = j; throw e; }
     return j;
+  }
+
+  /* 23/09 (rodada 3): pagamento na mao em DOIS passos. 1) o robo devolve o
+     valor LIBERADO calculado (sem gravar nada); 2) o dono confirma que pagou
+     exatamente esse valor e so entao o registro fecha. */
+  async function registrarNaMao(chamar, quem){
+    let valor = 0, aviso = '';
+    try{ return await chamar(0); }  /* retomada de baixa (nenhum dinheiro) responde direto */
+    catch(e){
+      if(!(e.dados && e.dados.erro === 'confirme_valor')) throw e;
+      valor = Number(e.dados.valor) || 0; aviso = e.dados.mensagem || '';
+    }
+    if(!(valor > 0)) throw new Error('sem valor liberado para registrar');
+    if(!confirm(aviso + '\n\nVocê JÁ fez o Pix de ' + brl(valor) + ' para ' + quem + ' pelo banco?\n\nIsso só registra aqui — nenhum dinheiro sai agora.')) return null;
+    return await chamar(valor);
   }
 
   el('saqueBox').addEventListener('click', async ev=>{
@@ -2329,11 +2372,12 @@ table.mvTab td b{font-weight:700}
     }
 
     /* ---------- PAGAMENTO NA MÃO: só registra ---------- */
-    if(!confirm('Confirmar que você JÁ fez o Pix para este parceiro pelo banco?\n\nIsso apenas registra o pagamento aqui — nenhum dinheiro sai agora.')) return;
-    b.disabled = true; b.textContent = 'Registrando…';
-    if(msg){ msg.style.color = 'var(--mv-txt-3)'; msg.textContent = 'Registrando…'; }
+    b.disabled = true; b.textContent = 'Conferindo…';
+    if(msg){ msg.style.color = 'var(--mv-txt-3)'; msg.textContent = 'Calculando o valor liberado…'; }
     try{
-      const j = await chamarSaque(id, 'manual', comp);
+      const sq = SAQ.filter(x=>x.id === id)[0] || {};
+      const j = await registrarNaMao(v => chamarSaque(id, 'manual', comp, v), nomeParceiro(sq.parceiroUid));
+      if(!j){ b.disabled = false; b.textContent = t; if(msg) msg.textContent = ''; return; }
       if(msg){ msg.style.color = 'var(--mv-ok)'; msg.textContent = 'Registrado! ' + brl(j.valorPago) + ' quitado.'; }
       setTimeout(()=>{ carregarComissoes().then(pintarPendencias); }, 900);
     }catch(e){ erro(e); }
@@ -2341,14 +2385,14 @@ table.mvTab td b{font-weight:700}
 
   /* Mesmo pagamento, mas disparado direto da LINHA do parceiro na tabela de
      comissões — sem ele ter pedido saque. O robô abre o registro sozinho. */
-  async function chamarParceiro(uid, etapa){
+  async function chamarParceiro(uid, etapa, valorConferido){
     const idToken = await auth.currentUser.getIdToken();
     const r = await fetch('https://moviki-robo.vercel.app/api/pagar-saque', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({idToken, parceiroUid:uid, etapa:etapa})
+      body: JSON.stringify({idToken, parceiroUid:uid, etapa:etapa, valorConferido:valorConferido||0})
     });
     const j = await r.json().catch(()=>({}));
-    if(!r.ok || !j.ok) throw new Error(j.mensagem || j.erro || 'falhou');
+    if(!r.ok || !j.ok){ const e = new Error(j.mensagem || j.erro || 'falhou'); e.dados = j; throw e; }
     return j;
   }
 
@@ -2365,10 +2409,10 @@ table.mvTab td b{font-weight:700}
     };
 
     if(acao === 'manual'){
-      if(!confirm('Confirmar que você JÁ fez o Pix para ' + nomeParceiro(uid) + ' pelo banco?\n\nIsso apenas registra aqui — nenhum dinheiro sai agora.')) return;
-      b.disabled = true; b.textContent = 'Registrando…';
+      b.disabled = true; b.textContent = 'Conferindo…';
       try{
-        const j = await chamarParceiro(uid, 'manual');
+        const j = await registrarNaMao(v => chamarParceiro(uid, 'manual', v), nomeParceiro(uid));
+        if(!j){ b.disabled = false; b.textContent = t; return; }
         if(msg){ msg.style.color = 'var(--mv-ok)'; msg.textContent = 'Registrado! ' + brl(j.valorPago) + '.'; }
         setTimeout(()=>{ carregarComissoes().then(pintarPendencias); }, 900);
       }catch(e){ erro(e); }
@@ -2725,7 +2769,7 @@ table.mvTab td b{font-weight:700}
         setTimeout(()=>{ carregarExclusoes(); pintarPendencias(); }, 1000);
       } else {
         b.disabled = false; b.textContent = t;
-        let m = 'Não consegui excluir agora.';
+        let m = (j && j.mensagem) ? j.mensagem : 'Não consegui excluir agora.';  /* 23/09: mostra o motivo real (ex.: assinatura viva no Asaas) */
         if(r.status === 403) m = 'Sem permissão (seu e-mail precisa estar em admins).';
         if(msg){ msg.style.color = 'var(--mv-erro)'; msg.textContent = m; }
       }
@@ -2967,7 +3011,7 @@ table.mvTab td b{font-weight:700}
     const itens = [];
     if(VIK_ALERTA) itens.push({n:1, t:VIK_ALERTA, ir:'visao'});
     const pp = PARC.filter(p=>p.status === 'pendente').length;
-    const ps = SAQ.filter(s=>s.status === 'solicitado').length;
+    const ps = SAQ.filter(s=>s.status === 'solicitado' || s.status === 'falhou').length;  /* 23/09: Pix que falhou tambem precisa de voce */
     const pe = EXC.length;
     const pm = CONVS.filter(cvNaoLida).length;
     if(pm) itens.push({n:pm, t:(pm === 1 ? '1 mensagem nova de lojista' : pm + ' mensagens novas de lojistas'), ir:'mensagens'});
@@ -4120,7 +4164,7 @@ table.mvTab td b{font-weight:700}
   }
   function lvNoArTem(uid){ return LV_NOAR.some(x=>x.uid===uid); }
   function lvNome(uid){ const e=lvEnfeite(uid)||{}; return e.nome||(NEG.find(x=>x.uid===uid)||{}).nome||uid; }
-  function lvSlug(uid){ const e=lvEnfeite(uid)||{}; return e.slug||(NEG.find(x=>x.uid===uid)||{}).apelido||''; }
+  function lvSlug(uid){ const e=lvEnfeite(uid)||{}; const ng=NEG.find(x=>x.uid===uid)||{}; return e.slug||ng.slug||ng.apelido||''; } /* 23/09: o campo e slug */
   /* ==========================================================
      DE ONDE VEM O "PAGO" — 16/09/2026
      Um pedido chega a pago por dois caminhos que valem coisas diferentes:
@@ -4779,7 +4823,7 @@ table.mvTab td b{font-weight:700}
     (NEG || []).forEach(function(n){
       const pl = PLANO_DE[n.uid] || 'basico';
       if(pl === 'basico') return;
-      pagantes++; receita += PLANOS[pl].p;
+      pagantes++; receita += (PRECO_MES[n.uid] || PLANOS[pl].p);
       margemTotal += (MARG[pl] || 0);
     });
     const resultado = margemTotal - total;
