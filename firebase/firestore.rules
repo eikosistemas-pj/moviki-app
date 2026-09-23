@@ -3,6 +3,17 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================================
+    //  v30 — 23/09/2026 — VARREDURA DE SEGURANCA
+    //    1. assinaturas: get publico, list so admin (acabou a lista de quem paga).
+    //    2. indicacoes: dono, admin e o parceiro dono do apelido (nao e mais publica).
+    //    3. avaliacoes: criadoEm = hora do servidor.
+    //    4. resumo/avaliacoes: visitante so soma +1 junto com a avaliacao nova.
+    //    5. parceiros: nome travado depois de aprovado; tamanho de nome e Pix.
+    //  O resto do arquivo e a v29, letra por letra.
+    //  ORDEM: publicar ESTA regra ANTES do 404.html 2026-09-23-seguranca.
+    // ==========================================================
+
+    // ==========================================================
     //  v29 — 23/09/2026 — PARCEIROS
     //    1. parceiros/{uid} create: criadoEm tem que ser a hora do servidor.
     //    2. parceiros/{uid} update: aulasEm (selo de treinamento) so entra
@@ -590,6 +601,8 @@ service cloud.firestore {
                            || ( request.resource.data.comentario is string
                                 && request.resource.data.comentario.size() <= 300 ) )
                       && request.resource.data.keys().hasOnly(['nota','nome','comentario','criadoEm'])
+                      // v30: data da avaliacao e a do servidor (nao se forja data antiga/futura)
+                      && request.resource.data.criadoEm == request.time
                       // v28 (23/09/2026): id no formato do addDoc (20 letras/numeros).
                       // O id era livre, e um id com apostrofo virava codigo nos
                       // botoes Responder/Editar do painel do lojista.
@@ -618,26 +631,35 @@ service cloud.firestore {
       // O `update` NAO mudou: continua +1 por vez, entre 1 e 5.
       match /resumo/avaliacoes {
         allow read: if true;
-        allow create: if request.resource.data.keys().hasOnly(['n','soma'])
-                      && request.resource.data.n is int
-                      && request.resource.data.n >= 0
-                      && request.resource.data.soma is int
-                      && request.resource.data.soma >= request.resource.data.n
-                      && request.resource.data.soma <= request.resource.data.n * 5
-                      && (
-                           // o dono do negocio: resumo inteiro
-                           ( request.auth != null
-                             && request.auth.uid == uid
-                             && request.resource.data.n <= 100000 )
-                           // visitante anonimo: so a primeira avaliacao
-                           || ( request.resource.data.n <= 1
-                                && request.resource.data.soma <= 5 )
-                         );
+        // v30 (23/09/2026): o visitante so soma +1 no resumo JUNTO com uma
+        // avaliacao nova, na mesma escrita (ultimaAv = id dela). A avaliacao
+        // tem que nao existir antes e existir depois, e a soma sobe exatamente
+        // a nota dela. Antes dava para derrubar a nota de um concorrente com
+        // +1 de nota 1 repetido, sem avaliacao nenhuma para o dono apagar.
+        allow create: if ( request.auth != null
+                           && request.auth.uid == uid
+                           && request.resource.data.keys().hasOnly(['n','soma'])
+                           && request.resource.data.n is int
+                           && request.resource.data.n >= 0
+                           && request.resource.data.n <= 100000
+                           && request.resource.data.soma is int
+                           && request.resource.data.soma >= request.resource.data.n
+                           && request.resource.data.soma <= request.resource.data.n * 5 )
+                      || ( request.resource.data.keys().hasOnly(['n','soma','ultimaAv'])
+                           && request.resource.data.n == 1
+                           && request.resource.data.ultimaAv is string
+                           && request.resource.data.ultimaAv.size() <= 64
+                           && !exists(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
+                           && existsAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
+                           && request.resource.data.soma == getAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv)).data.nota );
         allow update: if ( request.auth != null && request.auth.uid == uid )
-                      || ( request.resource.data.keys().hasOnly(['n','soma'])
+                      || ( request.resource.data.keys().hasOnly(['n','soma','ultimaAv'])
                            && request.resource.data.n == resource.data.n + 1
-                           && request.resource.data.soma >= resource.data.soma + 1
-                           && request.resource.data.soma <= resource.data.soma + 5 );
+                           && request.resource.data.ultimaAv is string
+                           && request.resource.data.ultimaAv.size() <= 64
+                           && !exists(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
+                           && existsAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
+                           && request.resource.data.soma == resource.data.soma + getAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv)).data.nota );
         allow delete: if request.auth != null && request.auth.uid == uid;
         // v26: o admin alcancava por meio do curinga; agora esta escrito.
         allow write: if donoOuAdmin(uid);
@@ -850,15 +872,26 @@ service cloud.firestore {
     }
 
     // Plano de cada negócio. Todos leem; ninguém escreve pelo app.
+    // v30 (23/09/2026): ler UM documento continua publico (a pagina do
+    // negocio e a live precisam saber o plano), mas LISTAR a colecao inteira
+    // — quem paga qual plano, de todos os lojistas — so o admin.
     match /assinaturas/{uid} {
-      allow read: if true;
+      allow get: if true;
+      allow list: if isAdmin();
       allow write: if false;
     }
 
     // Rastreio do Programa de Parceiros: de qual parceiro veio este lojista.
     // Criado 1x no cadastro; imutável depois.
+    // v30 (23/09/2026): era leitura publica — qualquer um listava quem cada
+    // parceiro indicou. Agora: o proprio lojista le a dele; o admin le tudo;
+    // o PARCEIRO lista so as indicacoes do proprio apelido (a consulta do
+    // painel e where('ref','==', slug dele)).
     match /indicacoes/{uid} {
-      allow read: if true;
+      allow get: if request.auth != null && (request.auth.uid == uid || isAdmin());
+      allow list: if request.auth != null
+                  && ( isAdmin()
+                       || resource.data.ref == get(/databases/$(database)/documents/parceiros/$(request.auth.uid)).data.slug );
       allow create: if request.auth != null
                     && request.auth.uid == uid
                     && request.resource.data.keys().hasOnly(['ref','criadoEm'])
@@ -1023,6 +1056,16 @@ service cloud.firestore {
       allow update: if request.auth != null && (
                       ( request.auth.uid == uid
                         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nome','pix','aulasVistas','aulasEm','aceiteConduta'])
+                        // v30: o nome aparece no cracha publico — depois de aprovado so a equipe troca.
+                        && ( !request.resource.data.diff(resource.data).affectedKeys().hasAny(['nome'])
+                             || ( resource.data.get('status', '') != 'aprovado'
+                                  && request.resource.data.nome is string
+                                  && request.resource.data.nome.size() >= 2
+                                  && request.resource.data.nome.size() <= 80 ) )
+                        && ( !request.resource.data.diff(resource.data).affectedKeys().hasAny(['pix'])
+                             || ( request.resource.data.pix is string
+                                  && request.resource.data.pix.size() >= 3
+                                  && request.resource.data.pix.size() <= 140 ) )
                         && ( !('aulasVistas' in request.resource.data)
                              || ( request.resource.data.aulasVistas is list
                                   && request.resource.data.aulasVistas.size() <= 40 ) )
