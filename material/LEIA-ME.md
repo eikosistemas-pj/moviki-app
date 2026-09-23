@@ -36,3 +36,28 @@ Toda vez que o catálogo muda, **trocar o `versao`** — é isso que reacende o
 - Nunca prometer ganho, venda, "garantido", "sem risco". O Moviki entrega ser encontrado.
 - Nunca "trial": "teste grátis" ou "plano Básico".
 - Baixar e enviar obedecem às mesmas portas do link: aprovado, aulas concluídas, compromisso aceito.
+
+## As redes oficiais também usam estas peças (desde 22/09/2026)
+O robô social (`moviki-assistente-social`) lê este `catalogo.json` ao vivo e
+publica na página oficial do Moviki, sem repetir até girar o catálogo:
+
+| Tipo no catálogo | Vira | Condição |
+|---|---|---|
+| `feed` | post de feed | proporção de 4:5 a 1,91:1 |
+| `story` | story (sem legenda) | 9:16 |
+| `video` | reel | 9:16 e de 3 a 90 s |
+
+- A **arte vai como está**. A **legenda** é convertida sozinha: sai o `#publi`
+  e `Comece pelo meu link: {link}` vira o link da bio (Instagram) ou
+  `moviki.com.br` (Facebook).
+- Peça com **texto de parceiro impresso na arte ou falado no vídeo** ("link
+  deste parceiro", "enviado por este parceiro", "fale comigo pelo link")
+  **não pode** ir para a página oficial: o id entra em `MATERIAL_EXCLUIR` no
+  robô (`src/config.py` ou secret do GitHub). Hoje estão lá:
+  - feed: `feed-na-hora-foodtruck`, `feed-quem-se-move`, `feed-quem-se-move-2`,
+    `feed-tudo-em-um-lugar`, `feed-na-hora-cidade`, `quadrado-na-hora`,
+    `quadrado-zero-comissao`;
+  - story: `story-na-hora`, `story-tudo-em-um-lugar`, `story-quem-se-move`;
+  - vídeo: `video-cada-negocio`, `video-live-parceiro`, `video-live-parceiro-4x5`,
+    `video-parceiro-chama-parceiro`.
+- Categoria `recrutar` não vai para a página oficial.
