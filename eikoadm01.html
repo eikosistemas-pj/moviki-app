@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://unpkg.com https://*.tile.openstreetmap.org; connect-src 'self' https://*.googleapis.com https://www.google.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://unpkg.com https://*.tile.openstreetmap.org https://firebasestorage.googleapis.com; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://*.googleapis.com https://www.google.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://raw.githubusercontent.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="robots" content="noindex,nofollow">
@@ -542,6 +542,36 @@ table.mvTab td b{font-weight:700}
 .lvMod{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:16px}
 .lvMod .cx{width:100%;max-width:460px;background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:16px;padding:18px}
 .lvMod select,.lvMod input,.lvMod textarea{width:100%;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:10px;font:inherit;margin-top:8px}
+/* ===== CRIADORES (22/09/2026) ===== */
+.crAbas{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 14px}
+.crAbas .btnMini.on{border-color:var(--mv-ciano);color:var(--mv-ciano)}
+.crFila{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:900px){.crFila{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.crPeca{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:14px;padding:12px;display:grid;grid-template-columns:120px 1fr;gap:12px}
+.crMidia{width:120px;border-radius:10px;overflow:hidden;background:#000;align-self:start}
+.crMidia img,.crMidia video{width:100%;display:block;max-height:214px;object-fit:contain;background:#000}
+.crInfo{min-width:0;font-size:12.5px;color:var(--mv-txt-2);line-height:1.5}
+.crInfo b{color:var(--mv-txt)}
+.crLeg{white-space:pre-wrap;background:var(--mv-bg-2);border-radius:8px;padding:8px;margin:6px 0;max-height:120px;overflow:auto;font-size:12px}
+.crTag{display:inline-block;font-size:11px;border-radius:999px;padding:2px 8px;margin:2px 4px 2px 0;border:1px solid var(--mv-linha);color:var(--mv-txt-2)}
+.crTag.ok{border-color:rgba(37,227,155,.5);color:var(--mv-ok)}
+.crTag.al{border-color:rgba(255,176,32,.5);color:var(--mv-alerta)}
+.crTag.er{border-color:rgba(255,107,107,.5);color:var(--mv-erro)}
+.crAcoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.crTab tr.clic{cursor:pointer}
+.crTab tr.clic:hover td{background:var(--mv-surf-2)}
+.crGrafs{display:grid;grid-template-columns:1fr;gap:4px 16px}
+@media(min-width:1000px){.crGrafs{grid-template-columns:1fr 1fr}}
+.crGraf{margin-top:14px;min-width:0}
+.crGraf h4{font-size:12.5px;font-weight:600;color:var(--mv-txt-3);margin:0 0 6px}
+.crGraf svg{display:block}
+.crLeg2{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--mv-txt-3);margin-top:4px}
+.crLeg2 i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.crVer{border-radius:12px;padding:10px 12px;margin-top:12px;font-size:13px;border:1px solid var(--mv-linha);background:var(--mv-campo)}
+.crVer.ok{border-color:rgba(37,227,155,.5)}
+.crVer.al{border-color:rgba(255,176,32,.5)}
+.crVer.er{border-color:rgba(255,107,107,.5)}
+@media(max-width:520px){.crPeca{grid-template-columns:1fr}.crMidia{width:100%}}
 </style>
 </head>
 <body>
@@ -605,6 +635,7 @@ table.mvTab td b{font-weight:700}
           <button type="button" class="mvNavIt ativo" data-nav="visao"><img class="mvNavIco" src="icones/inicio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Visão geral</span></button>
           <button type="button" class="mvNavIt" data-nav="negocios"><img class="mvNavIco" src="icones/usuarios.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Negócios</span></button>
           <button type="button" class="mvNavIt" data-nav="parceiros"><img class="mvNavIco" src="icones/parceiros.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Parceiros</span><span class="bad hide" id="badParc">0</span></button>
+          <button type="button" class="mvNavIt" data-nav="criadores"><img class="mvNavIco" src="icones/live.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Criadores</span><span class="bad hide" id="badCri">0</span></button>
           <button type="button" class="mvNavIt" data-nav="comissoes"><img class="mvNavIco" src="icones/comissoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Comissões e saques</span><span class="bad hide" id="badCom">0</span></button>
           <button type="button" class="mvNavIt" data-nav="mensagens"><img class="mvNavIco" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Mensagens</span><span class="bad hide" id="badMsg">0</span></button>
           <button type="button" class="mvNavIt" data-nav="metricas"><img class="mvNavIco" src="icones/alvo.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Métricas</span></button>
@@ -1213,6 +1244,53 @@ table.mvTab td b{font-weight:700}
 
         </section>
 
+        <!-- ============ SEÇÃO: CRIADORES (22/09/2026) ============
+             A segunda chave das peças dos influenciadores e o desempenho de
+             cada um. Peça só vai para as redes do Moviki com AS DUAS: o
+             criador autorizou no painel dele E o dono aprovou aqui. -->
+        <section data-sec="criadores" class="hide">
+          <div class="cd">
+            <div class="cdTopo"><div><div class="cdTit">Criadores</div><div class="cdSub">Influenciadores do Programa de Parceiros. Aqui você aprova o que vai para as redes do Moviki e vê, criador por criador, se a parceria se paga.</div></div><button type="button" class="btnMini" id="crRecarregar">Atualizar</button></div>
+            <div class="lvK">
+              <div><small>Criadores</small><b id="crKCri">—</b></div>
+              <div class="al"><small>Peças esperando você</small><b id="crKFila">—</b></div>
+              <div><small>Peças liberadas para o robô</small><b id="crKLib">—</b></div>
+              <div><small>Posts de criador nas redes (período)</small><b id="crKPosts">—</b></div>
+            </div>
+            <div class="crAbas" style="margin-top:14px">
+              <button type="button" class="btnMini on" data-crab="fila">Aprovar peças</button>
+              <button type="button" class="btnMini" data-crab="desempenho">Desempenho</button>
+              <button type="button" class="btnMini" data-crab="gerir">Quem é criador</button>
+            </div>
+            <div id="crAviso"></div>
+          </div>
+
+          <div class="cd" style="margin-top:14px" data-crpainel="fila">
+            <div class="cdTopo"><div><div class="cdTit">Esperando aprovação</div><div class="cdSub">A pré-triagem só aponta; quem decide é você. Vídeo: assista inteiro — a trava de texto não ouve o que é dito. Aprovar peça que o criador ainda não autorizou não põe nada no ar: o robô exige as duas chaves.</div></div><span class="cdChip" id="crFilaChip">0</span></div>
+            <div id="crFila" class="crFila"><div class="vazio">Carregando…</div></div>
+          </div>
+
+          <div class="cd hide" style="margin-top:14px" data-crpainel="desempenho">
+            <div class="cdTopo"><div><div class="cdTit">Vale a pena?</div><div class="cdSub">Tudo contado: visitas vêm do Google Analytics (links /c/ e /p/ do criador), cadastros de <b>indicacoes</b>, pagantes, receita e custo de <b>comissoes</b>, posts do histórico do robô social. Receita líquida estimada = mensalidade − 6% de imposto − R$ 2 de tarifa por cobrança.</div></div>
+              <select id="crPeriodo" class="campo" style="background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit">
+                <option value="30">30 dias</option><option value="90" selected>90 dias</option><option value="180">180 dias</option><option value="365">12 meses</option>
+              </select>
+            </div>
+            <div id="crTrafAviso"></div>
+            <div class="tabRola"><table class="lvTab crTab"><thead><tr><th>Criador</th><th>Peças no ar</th><th>Posts nossos</th><th>Visitas</th><th>Cadastros</th><th>Pagantes</th><th>Receita líq.</th><th>Custo</th><th>Resultado</th></tr></thead><tbody id="crRank"><tr><td colspan="9" class="vazio">Carregando…</td></tr></tbody></table></div>
+            <div id="crDet"></div>
+          </div>
+
+          <div class="cd hide" style="margin-top:14px" data-crpainel="gerir">
+            <div class="cdTopo"><div><div class="cdTit">Quem é criador</div><div class="cdSub">Só parceiro <b>aprovado</b> e marcado como criador consegue enviar peça e aparecer no endpoint do robô. A marca fica em <code>parceiros/{uid}.criador</code>.</div></div></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <select id="crNovo" class="campo" style="flex:1;min-width:220px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:9px;font:inherit"></select>
+              <button type="button" class="btnMini ok" id="crMarcar">Marcar como criador</button>
+            </div>
+            <div id="crLista" style="margin-top:12px"></div>
+          </div>
+        </section>
+
         <!-- ============ SEÇÃO: EXCLUSÕES ============ -->
         <section data-sec="exclusoes" class="hide">
           <div class="cd">
@@ -1436,6 +1514,7 @@ table.mvTab td b{font-weight:700}
     <button type="button" data-ir="visao"><img src="icones/inicio.png" alt="" onerror="this.style.display='none'">Visão geral</button>
     <button type="button" data-ir="negocios"><img src="icones/usuarios.png" alt="" onerror="this.style.display='none'">Negócios</button>
     <button type="button" data-ir="parceiros"><img src="icones/parceiros.png" alt="" onerror="this.style.display='none'">Parceiros<span class="bad hide" id="badParcM">0</span></button>
+    <button type="button" data-ir="criadores"><img src="icones/live.png" alt="" onerror="this.style.display='none'">Criadores<span class="bad hide" id="badCriM">0</span></button>
     <button type="button" data-ir="comissoes"><img src="icones/comissoes.png" alt="" onerror="this.style.display='none'">Comissões e saques<span class="bad hide" id="badComM">0</span></button>
     <button type="button" data-ir="mensagens"><img src="icones/sobre.png" alt="" onerror="this.style.display='none'">Mensagens<span class="bad hide" id="badMsgM">0</span></button>
     <button type="button" data-ir="metricas"><img src="icones/alvo.png" alt="" onerror="this.style.display='none'">Métricas</button>
@@ -1475,7 +1554,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-19-cotalive';
+  window.MOVIKI_VERSAO = '2026-09-22-criadores';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1543,6 +1622,7 @@ table.mvTab td b{font-weight:700}
   let USER = null, EH_ADMIN_BANCO = false;
   let NEG = [], PLANO_DE = {}, PARC = [], COMIS = [], SAQ = [], NL = [], EXC = [], PONTOS = 0;
   let MET = null;
+  let CR_PECAS = [];   // criador_pecas (22/09/2026)
   let saquePix = {};
   let SAUDE = {};
   let autoAprovAtual = false, autoAprovSalvando = false;
@@ -1566,6 +1646,7 @@ table.mvTab td b{font-weight:700}
     if(nome === 'mensagens') ouvirConversas();
     if(nome === 'lives') livesAbrir();
     if(nome === 'custos') csAbrir();
+    if(nome === 'criadores') crAbrir();
   }
   window.mvIrSec = irSec;
 
@@ -1697,7 +1778,8 @@ table.mvTab td b{font-weight:700}
       carregarParceiros(),
       carregarComissoes(),
       carregarNewsletter(),
-      carregarPontos()
+      carregarPontos(),
+      crCarregarPecas()
     ]);
     carregarConfigSistema();
     carregarMapa();
@@ -2834,6 +2916,8 @@ table.mvTab td b{font-weight:700}
     if(pp) itens.push({n:pp, t:(pp === 1 ? '1 parceiro esperando aprovação' : pp + ' parceiros esperando aprovação'), ir:'parceiros'});
     if(ps) itens.push({n:ps, t:(ps === 1 ? '1 saque pedido' : ps + ' saques pedidos'), ir:'comissoes'});
     if(pe) itens.push({n:pe, t:(pe === 1 ? '1 pedido de exclusão de conta' : pe + ' pedidos de exclusão de conta'), ir:'exclusoes'});
+    const pcr = CR_PECAS.filter(x=>x.status === 'aguardando').length;
+    if(pcr) itens.push({n:pcr, t:(pcr === 1 ? '1 peça de criador esperando aprovação' : pcr + ' peças de criador esperando aprovação'), ir:'criadores'});
 
     const total = itens.reduce((s,x)=>s + x.n, 0);
     ['sinoPt','sinoPt2'].forEach(id=>{
@@ -4751,6 +4835,454 @@ table.mvTab td b{font-weight:700}
       lvPintarMestra(!ligar);
       alert(ligar?'Lives religadas.':'Lives desligadas. Vale na hora, em todo mundo.');
     }catch(e){alert('Não gravou: '+(e&&e.code||'erro')+'. Confira se as regras v23 estão publicadas.');lvPintarMestra(lvMestra);}
+  });
+
+  /* ==========================================================
+     CRIADORES (22/09/2026)
+     A segunda chave das pecas dos influenciadores e o desempenho de cada
+     um. Contrato: moviki-assistente-social/conteudo/CRIADORES-CONTRATO.md
+       - criador_pecas/{id}   : pecas (regras v27). O dono so mexe em
+                                status/avaliadaEm/avaliadaPor/motivoRecusa.
+       - parceiros/{uid}.criador = true : quem e criador (marcado aqui).
+       - indicacoes (ref == apelido)    : cadastros vindos do link dele.
+       - comissoes (parceiroUid)        : pagantes, receita e custo.
+       - historico do robo social (raw do GitHub, repo publico): posts nossos
+         feitos com peca dele.
+       - www.moviki.com.br/api/criadores (POST, so admin): visitas do GA4
+         pelos links /c/ e /p/ do criador (utm_content = apelido).
+     Nada aqui e estimado sem estar escrito na tela.
+     ========================================================== */
+  const CR_API = 'https://www.moviki.com.br/api/criadores';
+  const CR_HIST_URL = 'https://raw.githubusercontent.com/eikosistemas-pj/moviki-assistente-social/main/estado/historico.json';
+  const CR_VALIDADE = 365 * 86400000;          // termo v3.1: 12 meses
+  const CR_COR = { visitas:'#00D4FF', cad:'#a855f7', pag:'#25e39b', rec:'#25e39b', custo:'#ff6b6b',
+                   feed:'#00D4FF', story:'#ffb020', reel:'#a855f7' };
+  const CR_PROIBIDO = [
+    /renda\s+(extra|garantida|passiva|f[áa]cil)/i, /ganh[eoa]\s+(at[ée]\s+)?r\$\s*\d[\d.,]*/i,
+    /fatur[ea]\s+(at[ée]\s+)?r\$\s*\d[\d.,]*/i, /garantid[oa]s?\b/i, /sem\s+risco/i,
+    /vai\s+vender\s+mais/i, /dinheiro\s+(f[áa]cil|r[áa]pido)/i, /aument[eo]\s+\d+\s*%/i,
+    /\bifood\b|\brappi\b|\banota\s*a[íi]\b/i, /\btrial\b/i, /todo\s+m[êe]s/i
+  ];
+  let CR_HIST = null, CR_TRAF = null, CR_TRAF_ERRO = '', CR_IND = {}, CR_ABA = 'fila', CR_SEL = '';
+
+  const crEhCriador = p => !!(p && p.criador === true);
+  const crUrlOk = u => typeof u === 'string' && /^https:\/\/firebasestorage\.googleapis\.com\//.test(u);
+  const crAutEm = x => ms(x.autorizaRedesEm);
+  function crAutorizada(x){
+    const a = crAutEm(x);
+    return x.autorizaRedes === true && a > 0 && !(ms(x.revogadaEm) > a) && Date.now() < a + CR_VALIDADE;
+  }
+  const crLiberada = x => x.status === 'aprovada' && crAutorizada(x);
+  const crParc = uid => PARC.find(p => p.uid === uid) || null;
+
+  function crLista(){
+    const uids = new Set(PARC.filter(crEhCriador).map(p => p.uid));
+    CR_PECAS.forEach(x => { if(x.uid) uids.add(x.uid); });
+    return Array.from(uids).map(u => crParc(u) || {uid:u, nome:'(cadastro não encontrado)'});
+  }
+
+  async function crCarregarPecas(){
+    try{
+      const s = await getDocs(collection(db,'criador_pecas'));
+      CR_PECAS = []; s.forEach(d => CR_PECAS.push(Object.assign({id:d.id}, d.data())));
+      SAUDE.criadores = true;
+    }catch(e){ CR_PECAS = []; SAUDE.criadores = false; }
+    const fila = CR_PECAS.filter(x => x.status === 'aguardando').length;
+    badge('badCri', fila); badge('badCriM', fila);
+  }
+
+  function crTriagem(x){
+    const a = [];
+    if(!crUrlOk(x.url)) a.push(['er','arquivo fora do Storage do Moviki']);
+    if(x.formato === 'feed' && x.midia !== 'imagem') a.push(['er','feed só com imagem']);
+    if(x.formato === 'reel' && x.midia !== 'video') a.push(['er','reel precisa ser vídeo']);
+    const w = Number(x.w), h = Number(x.h), p = (w && h) ? w / h : 0;
+    if(x.formato === 'feed' && !(p >= 0.8 && p <= 1.91)) a.push(['al','proporção fora do feed']);
+    if((x.formato === 'story' || x.formato === 'reel') && !(p >= 0.5 && p <= 0.6)) a.push(['al','não é 9:16']);
+    if(x.midia === 'video'){ const d = Number(x.duracao); if(!(d >= 3 && d <= 90)) a.push(['al','vídeo fora de 3 a 90 s — o robô não publica']); }
+    const t = (x.titulo || '') + ' ' + (x.legenda || '');
+    CR_PROIBIDO.forEach(r => { const m = t.match(r); if(m) a.push(['er','termo proibido: “' + m[0] + '” (o robô troca pela legenda padrão)']); });
+    return a;
+  }
+
+  function crCartao(x, comAcoes){
+    const p = crParc(x.uid) || {};
+    let midia = '<div class="vazio" style="padding:30px 6px">sem prévia</div>';
+    if(crUrlOk(x.url)){
+      midia = x.midia === 'video'
+        ? '<video src="' + esc(x.url) + '" controls preload="metadata" playsinline' + (crUrlOk(x.capa) ? ' poster="' + esc(x.capa) + '"' : '') + '></video>'
+        : '<img src="' + esc(x.url) + '" alt="" loading="lazy">';
+    }
+    let aut;
+    if(crAutorizada(x)) aut = '<span class="crTag ok">criador autorizou em ' + dataBR(crAutEm(x)) + ' · termo ' + esc(x.termoVersao || '?') + ' · vale até ' + dataBR(crAutEm(x) + CR_VALIDADE) + '</span>';
+    else if(ms(x.revogadaEm)) aut = '<span class="crTag er">criador revogou em ' + dataBR(ms(x.revogadaEm)) + '</span>';
+    else if(x.autorizaRedes === true) aut = '<span class="crTag er">autorização vencida</span>';
+    else aut = '<span class="crTag al">criador ainda não autorizou nas redes</span>';
+    const st = {aprovada:'<span class="crTag ok">aprovada' + (crLiberada(x) ? ' · no robô' : '') + '</span>',
+                recusada:'<span class="crTag er">recusada</span>', suspensa:'<span class="crTag al">suspensa</span>',
+                aguardando:'<span class="crTag al">esperando você</span>'}[x.status] || '';
+    const tri = crTriagem(x).map(t => '<span class="crTag ' + t[0] + '">' + esc(t[1]) + '</span>').join('')
+              || '<span class="crTag ok">pré-triagem sem alerta</span>';
+    let acoes = '';
+    if(comAcoes){
+      if(x.status !== 'aprovada') acoes += '<button type="button" class="btnMini ok" data-craprovar="' + esc(x.id) + '">Aprovar</button>';
+      if(x.status === 'aguardando') acoes += '<button type="button" class="btnMini perigo" data-crrecusar="' + esc(x.id) + '">Recusar</button>';
+      if(x.status === 'aprovada') acoes += '<button type="button" class="btnMini perigo" data-crsuspender="' + esc(x.id) + '">Suspender</button>';
+    }
+    const dims = (x.w && x.h ? ' · ' + esc(x.w) + '×' + esc(x.h) : '') + (x.duracao ? ' · ' + esc(Math.round(Number(x.duracao))) + ' s' : '');
+    return '<div class="crPeca"><div class="crMidia">' + midia + '</div><div class="crInfo">'
+      + '<b>' + esc(p.nome || x.uid) + '</b>' + (p.arroba ? ' · ' + esc(p.arroba) : '') + '<br>'
+      + esc(x.formato || '?') + ' · ' + esc(x.midia || '?') + dims + ' · enviada ' + dataBR(ms(x.criadaEm))
+      + (x.titulo ? '<br><b>' + esc(x.titulo) + '</b>' : '')
+      + (x.legenda ? '<div class="crLeg">' + esc(x.legenda) + '</div>' : '<br>')
+      + st + aut + tri
+      + (x.motivoRecusa ? '<div style="margin-top:4px">Motivo: ' + esc(x.motivoRecusa) + '</div>' : '')
+      + (acoes ? '<div class="crAcoes">' + acoes + '</div>' : '')
+      + '</div></div>';
+  }
+
+  function crKpis(){
+    txt('crKCri', num(crLista().length));
+    txt('crKFila', num(CR_PECAS.filter(x => x.status === 'aguardando').length));
+    txt('crKLib', num(CR_PECAS.filter(crLiberada).length));
+  }
+
+  function crPintarFila(){
+    const fila = CR_PECAS.filter(x => x.status === 'aguardando').sort((a,b) => ms(a.criadaEm) - ms(b.criadaEm));
+    txt('crFilaChip', fila.length);
+    if(!SAUDE.criadores){
+      el('crFila').innerHTML = '<div class="avisoRegra">Não consegui ler <b>criador_pecas</b>. Falta publicar as regras <b>v27</b> no console do Firebase (arquivo <code>firebase/firestore.rules</code> desta entrega).</div>';
+      return;
+    }
+    el('crFila').innerHTML = fila.length ? fila.map(x => crCartao(x, true)).join('')
+      : '<div class="vazio">Nenhuma peça esperando. Quando um criador enviar, ela aparece aqui.</div>';
+  }
+
+  /* ---------- aprovar / recusar / suspender ---------- */
+  async function crAvaliar(id, status, motivo){
+    try{
+      await updateDoc(doc(db,'criador_pecas',id), {
+        status: status, avaliadaEm: serverTimestamp(), avaliadaPor: USER.uid,
+        motivoRecusa: String(motivo || '').slice(0,300)
+      });
+      const x = CR_PECAS.find(q => q.id === id);
+      if(x){ x.status = status; x.motivoRecusa = String(motivo || ''); x.avaliadaEm = Date.now(); }
+      crPintarTudo(); pintarPendencias();
+      const fila = CR_PECAS.filter(q => q.status === 'aguardando').length;
+      badge('badCri', fila); badge('badCriM', fila);
+    }catch(e){
+      alert('Não gravou (' + ((e && e.code) || e) + '). Confira se as regras v27 estão publicadas no Firebase.');
+    }
+  }
+
+  /* ---------- desempenho ---------- */
+  function crJanela(){
+    const dias = Number(el('crPeriodo').value) || 90;
+    return {dias: dias, desde: Date.now() - dias * 86400000};
+  }
+
+  async function crCarregarHist(){
+    if(CR_HIST) return;
+    try{
+      const r = await fetch(CR_HIST_URL, {cache:'no-store'});
+      const j = r.ok ? await r.json() : [];
+      CR_HIST = Array.isArray(j) ? j : [];
+    }catch(e){ CR_HIST = []; }
+  }
+
+  async function crCarregarTrafego(){
+    CR_TRAF = null; CR_TRAF_ERRO = '';
+    try{
+      const tk = await USER.getIdToken();
+      const r = await fetch(CR_API, {method:'POST', headers:{'Content-Type':'application/json'},
+                                     body: JSON.stringify({acao:'trafego', idToken: tk, dias: 400})});
+      const j = await r.json().catch(() => null);
+      if(j && j.ok){ CR_TRAF = j.porRef || {}; return; }
+      if(j && j.erro === 'ga4') CR_TRAF_ERRO = 'O Google Analytics recusou a leitura (' + (j.detalhe || 'sem detalhe') + '). Adicione ' + (j.conta || 'a conta de serviço do site') + ' como Leitor na propriedade do GA4 e ative a "Google Analytics Data API" no Google Cloud.';
+      else CR_TRAF_ERRO = 'Visitas indisponíveis (' + ((j && j.erro) || ('HTTP ' + r.status)) + ').';
+    }catch(e){
+      CR_TRAF_ERRO = 'Visitas indisponíveis: o endereço /api/criadores ainda não está no ar no site (repo moviki).';
+    }
+  }
+
+  async function crCarregarIndicacoes(lista){
+    await Promise.all(lista.map(async c => {
+      const slug = String(c.slug || '').trim();
+      if(!slug || CR_IND[c.uid]) return;
+      const vistos = {};
+      for(const s of Array.from(new Set([slug, slug.toLowerCase()]))){
+        try{
+          const q = await getDocs(query(collection(db,'indicacoes'), where('ref','==',s)));
+          q.forEach(d => { vistos[d.id] = ms((d.data() || {}).criadoEm); });
+        }catch(e){}
+      }
+      CR_IND[c.uid] = vistos;
+    }));
+  }
+
+  const crLiq = x => Math.max(0, (Number(x.base) || 0) * 0.94 - 2);
+
+  function crMetricas(c, desde, dias){
+    const ref = String(c.slug || '').toLowerCase();
+    const pecas = CR_PECAS.filter(x => x.uid === c.uid);
+    const posts = (CR_HIST || []).filter(h => h.origem === 'criador' && h.criador === c.uid && Date.parse(h.quando) >= desde);
+    let visitas = 0;
+    const vd = (CR_TRAF && CR_TRAF[ref]) || {};
+    Object.keys(vd).forEach(d => { if(Date.parse(d + 'T12:00:00') >= desde) visitas += Number(vd[d].s) || 0; });
+    const cad = Object.values(CR_IND[c.uid] || {}).filter(t => t >= desde).length;
+    const com = COMIS.filter(x => x.parceiroUid === c.uid && !x.estornada && ms(x.criadoEm) >= desde);
+    const n1 = com.filter(x => Number(x.nivel) === 1);
+    const liquida = n1.reduce((s,x) => s + crLiq(x), 0);
+    const custo = com.reduce((s,x) => s + (Number(x.valor) || 0), 0) + (Number(c.criadorCustoMes) || 0) * (dias / 30);
+    return {
+      pecas: pecas, noAr: pecas.filter(crLiberada).length, posts: posts, visitas: visitas, cad: cad,
+      pag: new Set(n1.map(x => x.lojistaUid).filter(Boolean)).size, cobr: n1.length,
+      liquida: liquida, custo: custo, resultado: liquida - custo
+    };
+  }
+
+  function crVeredito(m, c, dias){
+    const semTraf = !CR_TRAF;
+    if(m.pag > 0 && m.resultado > 0) return ['ok', 'Se paga: ' + m.pag + ' lojista(s) pagante(s) e resultado de ' + brl(m.resultado) + ' no período.'];
+    if(m.pag > 0) return ['al', 'Traz pagante, mas o resultado no período ainda é ' + brl(m.resultado) + '.'];
+    if(m.cad > 0) return ['al', m.cad + ' cadastro(s) pelo link e nenhum pagante ainda. O teste grátis dura 30 dias — reavalie depois dele.'];
+    if(!semTraf && m.visitas > 0) return ['al', m.visitas + ' visita(s) e nenhum cadastro: o público dele chega, mas não converte.'];
+    const desdeCad = ms(c.criadoEm);
+    if(dias >= 60 && (!desdeCad || Date.now() - desdeCad > 60 * 86400000))
+      return ['er', 'Nenhum cadastro nem pagante em ' + dias + ' dias' + (semTraf ? '' : ', e nenhuma visita') + '. Hora de rever a parceria.'];
+    return ['', 'Ainda cedo para avaliar.' + (semTraf ? ' (Visitas indisponíveis — veja o aviso acima.)' : '')];
+  }
+
+  function crBaldes(dias){
+    const out = [];
+    if(dias <= 90){
+      const n = Math.ceil(dias / 7);
+      for(let i = n - 1; i >= 0; i--){
+        const fim = Date.now() - i * 7 * 86400000, ini = fim - 7 * 86400000, d = new Date(ini + 86400000);
+        out.push({ini: ini, fim: fim, rot: String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0')});
+      }
+    } else {
+      const agora = new Date(), n = Math.round(dias / 30.4);
+      const M = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+      for(let i = n - 1; i >= 0; i--){
+        const a = new Date(agora.getFullYear(), agora.getMonth() - i, 1), b = new Date(agora.getFullYear(), agora.getMonth() - i + 1, 1);
+        out.push({ini: a.getTime(), fim: b.getTime(), rot: M[a.getMonth()]});
+      }
+    }
+    return out;
+  }
+
+  /* Barras agrupadas em SVG, desenhadas na LARGURA REAL da caixa: assim o
+     texto do eixo sai legivel no celular e o grafico nao estica no monitor. */
+  function crSvg(baldes, series, fmt, largura){
+    const W = Math.max(300, Math.min(900, Math.round(largura || 640))), H = 190, pl = 48, pr = 6, pt = 10, pb = 24;
+    const n = baldes.length, k = series.length;
+    let max = Math.max(0, ...series.map(s => Math.max(0, ...s.vals)));
+    // eixo com numero inteiro no meio: 1 vira 2, 3 vira 4 (senao o meio mostra "1" arredondado)
+    max = max <= 0 ? 2 : (max < 10 ? Math.ceil(max / 2) * 2 : max);
+    const iw = (W - pl - pr) / n, bw = Math.max(2, (iw * 0.78) / k);
+    const passo = Math.max(1, Math.ceil(38 / iw));
+    let g = '', ultimo = null;
+    [0, .5, 1].forEach(f => {
+      const y = pt + (H - pt - pb) * (1 - f), rot = fmt(max * f);
+      g += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y + '" y2="' + y + '" stroke="#1c3457" stroke-width="1"/>';
+      if(rot !== ultimo) g += '<text x="' + (pl - 6) + '" y="' + (y + 4) + '" text-anchor="end" font-size="11" fill="#8fa6c4">' + esc(rot) + '</text>';
+      ultimo = rot;
+    });
+    baldes.forEach((b, i) => {
+      const x0 = pl + i * iw + (iw - bw * k) / 2;
+      series.forEach((s, j) => {
+        const v = s.vals[i] || 0, h = (H - pt - pb) * Math.min(1, v / max);
+        g += '<rect x="' + (x0 + j * bw).toFixed(1) + '" y="' + (H - pb - h).toFixed(1) + '" width="' + Math.max(1, bw - 1.5).toFixed(1)
+           + '" height="' + Math.max(0, h).toFixed(1) + '" rx="2" fill="' + s.cor + '"><title>' + esc(s.nome + ' · ' + b.rot + ': ' + fmt(v)) + '</title></rect>';
+      });
+      if((n - 1 - i) % passo === 0)
+        g += '<text x="' + (pl + i * iw + iw / 2).toFixed(1) + '" y="' + (H - 7) + '" text-anchor="middle" font-size="11" fill="#8fa6c4">' + esc(b.rot) + '</text>';
+    });
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" style="max-width:100%;height:auto" role="img" aria-label="' + esc(series.map(s => s.nome).join(', ')) + '">' + g + '</svg>'
+         + '<div class="crLeg2">' + series.map(s => '<span><i style="background:' + s.cor + '"></i>' + esc(s.nome) + '</span>').join('') + '</div>';
+  }
+
+  function crPintarRank(){
+    const lista = crLista(), jan = crJanela();
+    if(!lista.length){
+      el('crRank').innerHTML = '<tr><td colspan="9" class="vazio">Nenhum criador ainda. Marque um parceiro na aba “Quem é criador”.</td></tr>';
+      txt('crKPosts','0'); return;
+    }
+    const linhas = lista.map(c => ({c: c, m: crMetricas(c, jan.desde, jan.dias)}))
+                        .sort((a,b) => (b.m.resultado - a.m.resultado) || (b.m.cad - a.m.cad));
+    txt('crKPosts', num(linhas.reduce((s,l) => s + l.m.posts.length, 0)));
+    el('crRank').innerHTML = linhas.map(({c, m}) =>
+      '<tr class="clic" data-crsel="' + esc(c.uid) + '"' + (c.uid === CR_SEL ? ' style="outline:1px solid var(--mv-ciano)"' : '') + '>'
+      + '<td><b>' + esc(c.nome || c.uid) + '</b>' + (c.arroba ? '<br><small>' + esc(c.arroba) + '</small>' : '') + '</td>'
+      + '<td>' + m.noAr + '/' + m.pecas.length + '</td>'
+      + '<td>' + m.posts.length + '</td>'
+      + '<td>' + (CR_TRAF ? num(m.visitas) : '—') + '</td>'
+      + '<td>' + m.cad + '</td>'
+      + '<td>' + m.pag + '</td>'
+      + '<td>' + brl(m.liquida) + '</td>'
+      + '<td>' + brl(m.custo) + '</td>'
+      + '<td style="font-weight:700;color:' + (m.resultado > 0 ? 'var(--mv-ok)' : (m.resultado < 0 ? 'var(--mv-erro)' : 'inherit')) + '">' + brl(m.resultado) + '</td></tr>'
+    ).join('');
+  }
+
+  function crPintarDet(){
+    const box = el('crDet');
+    const c = CR_SEL ? crLista().find(x => x.uid === CR_SEL) : null;
+    if(!c){ box.innerHTML = '<p class="cdSub" style="margin-top:12px">Toque num criador para ver os gráficos dele.</p>'; return; }
+    const jan = crJanela(), m = crMetricas(c, jan.desde, jan.dias), bs = crBaldes(jan.dias);
+    const dentro = (t, b) => t >= b.ini && t < b.fim;
+    const ref = String(c.slug || '').toLowerCase(), vd = (CR_TRAF && CR_TRAF[ref]) || {};
+    const vis = bs.map(b => Object.keys(vd).reduce((s,d) => s + (dentro(Date.parse(d + 'T12:00:00'), b) ? (Number(vd[d].s) || 0) : 0), 0));
+    const cads = bs.map(b => Object.values(CR_IND[c.uid] || {}).filter(t => dentro(t, b)).length);
+    const todas = COMIS.filter(x => x.parceiroUid === c.uid && !x.estornada);
+    const n1 = todas.filter(x => Number(x.nivel) === 1);
+    const cobr = bs.map(b => n1.filter(x => dentro(ms(x.criadoEm), b)).length);
+    const rec = bs.map(b => n1.filter(x => dentro(ms(x.criadoEm), b)).reduce((s,x) => s + crLiq(x), 0));
+    const fixo = Number(c.criadorCustoMes) || 0;
+    const cus = bs.map(b => todas.filter(x => dentro(ms(x.criadoEm), b)).reduce((s,x) => s + (Number(x.valor) || 0), 0) + fixo * ((b.fim - b.ini) / (30 * 86400000)));
+    const posts = (CR_HIST || []).filter(h => h.origem === 'criador' && h.criador === c.uid);
+    const pf = f => bs.map(b => posts.filter(h => h.formato === f && dentro(Date.parse(h.quando), b)).length);
+    const v = crVeredito(m, c, jan.dias);
+    const n0 = x => num(Math.round(x)), r0 = x => 'R$ ' + Math.round(x).toLocaleString('pt-BR');
+    const conv = (a, b) => b > 0 ? (100 * a / b).toFixed(1).replace('.', ',') + '%' : '—';
+    const pecas = CR_PECAS.filter(x => x.uid === c.uid).sort((a,b) => ms(b.criadaEm) - ms(a.criadaEm));
+    const larg = box.clientWidth || 640, colW = larg >= 900 ? (larg - 16) / 2 : larg;
+
+    box.innerHTML =
+      '<div style="margin-top:16px;border-top:1px solid var(--mv-linha);padding-top:14px">'
+      + '<div class="cdTit">' + esc(c.nome || c.uid) + (c.arroba ? ' · ' + esc(c.arroba) : '') + '</div>'
+      + '<div class="cdSub">Link: moviki.com.br/c/' + esc(c.slug || '—') + ' · criador desde ' + dataBR(ms(c.criadoEm)) + '</div>'
+      + '<div class="crVer ' + v[0] + '">' + esc(v[1]) + '</div>'
+      + '<div class="lvK" style="margin-top:12px">'
+      +   '<div><small>Visitas</small><b>' + (CR_TRAF ? num(m.visitas) : '—') + '</b></div>'
+      +   '<div><small>Cadastros</small><b>' + m.cad + '</b></div>'
+      +   '<div><small>Visita → cadastro</small><b>' + (CR_TRAF ? conv(m.cad, m.visitas) : '—') + '</b></div>'
+      +   '<div><small>Lojistas pagantes</small><b>' + m.pag + '</b></div>'
+      +   '<div><small>Mensalidades pagas</small><b>' + m.cobr + '</b></div>'
+      +   '<div><small>Custo por cadastro</small><b>' + (m.cad ? brl(m.custo / m.cad) : '—') + '</b></div>'
+      +   '<div><small>Receita líquida</small><b>' + brl(m.liquida) + '</b></div>'
+      +   '<div class="' + (m.resultado < 0 ? 'al' : '') + '"><small>Resultado</small><b>' + brl(m.resultado) + '</b></div>'
+      + '</div>'
+      + '<div class="crGrafs"><div class="crGraf"><h4>Visitas pelo link dele</h4>' + (CR_TRAF ? crSvg(bs, [{nome:'Visitas', cor:CR_COR.visitas, vals:vis}], n0, colW) : '<div class="vazio">Visitas indisponíveis — veja o aviso acima.</div>') + '</div>'
+      + '<div class="crGraf"><h4>Cadastros e mensalidades pagas</h4>' + crSvg(bs, [{nome:'Cadastros', cor:CR_COR.cad, vals:cads}, {nome:'Mensalidades pagas', cor:CR_COR.pag, vals:cobr}], n0, colW) + '</div>'
+      + '<div class="crGraf"><h4>Receita líquida × custo</h4>' + crSvg(bs, [{nome:'Receita líquida', cor:CR_COR.rec, vals:rec}, {nome:'Custo (comissões e bônus' + (fixo ? ' + fixo' : '') + ')', cor:CR_COR.custo, vals:cus}], r0, colW) + '</div>'
+      + '<div class="crGraf"><h4>Posts nas redes do Moviki com peça dele</h4>' + crSvg(bs, [{nome:'Feed', cor:CR_COR.feed, vals:pf('feed')}, {nome:'Story', cor:CR_COR.story, vals:pf('story')}, {nome:'Reel', cor:CR_COR.reel, vals:pf('reel')}], n0, colW) + '</div></div>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px">'
+      +   '<label style="font-size:12.5px;color:var(--mv-txt-3)">Custo fixo por mês (R$), se houver:</label>'
+      +   '<input id="crFixo" type="number" min="0" step="0.01" value="' + (fixo || '') + '" placeholder="0,00" style="width:120px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:8px;font:inherit">'
+      +   '<button type="button" class="btnMini" data-crfixo="' + esc(c.uid) + '">Salvar</button>'
+      + '</div>'
+      + '<p class="cdSub" style="margin-top:6px">Receita e custo contam só o que o robô do dinheiro gravou. O Premium liberado ao criador não entra como custo (não sai dinheiro); se houver cachê ou bônus pago por fora, lance no custo fixo.</p>'
+      + '<div class="cdTit" style="margin-top:16px;font-size:14px">Peças dele (' + pecas.length + ')</div>'
+      + '<div class="crFila" style="margin-top:8px">' + (pecas.length ? pecas.map(x => crCartao(x, true)).join('') : '<div class="vazio">Nenhuma peça enviada.</div>') + '</div>'
+      + '</div>';
+  }
+
+  /* ---------- quem e criador ---------- */
+  function crPintarGerir(){
+    const cands = PARC.filter(p => p.status === 'aprovado' && !crEhCriador(p))
+                      .sort((a,b) => String(a.nome || '').localeCompare(String(b.nome || '')));
+    el('crNovo').innerHTML = cands.length
+      ? '<option value="">Escolha um parceiro aprovado…</option>' + cands.map(p => '<option value="' + esc(p.uid) + '">' + esc((p.nome || p.email || p.uid) + (p.slug ? ' · ' + p.slug : '') + (p.arroba ? ' · ' + p.arroba : '')) + '</option>').join('')
+      : '<option value="">Nenhum parceiro aprovado sem a marca</option>';
+    const cri = PARC.filter(crEhCriador);
+    el('crLista').innerHTML = cri.length
+      ? cri.map(p => '<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--mv-linha)"><div><b>' + esc(p.nome || p.uid) + '</b>' + (p.arroba ? ' · ' + esc(p.arroba) : '') + '<br><small style="color:var(--mv-txt-3)">/c/' + esc(p.slug || '—') + ' · cadastro ' + esc(p.status || '?') + '</small></div><button type="button" class="btnMini perigo" data-crdesmarcar="' + esc(p.uid) + '">Tirar a marca</button></div>').join('')
+      : '<div class="vazio">Nenhum parceiro marcado como criador.</div>';
+  }
+
+  async function crMarca(uid, ligar){
+    try{
+      await updateDoc(doc(db,'parceiros',uid), {criador: !!ligar});
+      const p = crParc(uid); if(p) p.criador = !!ligar;
+      crPintarTudo();
+    }catch(e){ alert('Não gravou (' + ((e && e.code) || e) + ').'); }
+  }
+
+  function crPintarTudo(){
+    crKpis(); crPintarFila(); crPintarGerir();
+    if(CR_ABA === 'desempenho'){ crPintarRank(); crPintarDet(); }
+  }
+
+  async function crAbrirDesempenho(){
+    el('crRank').innerHTML = '<tr><td colspan="9" class="vazio">Carregando…</td></tr>';
+    const lista = crLista();
+    await Promise.all([
+      crCarregarHist(),
+      (CR_TRAF || CR_TRAF_ERRO) ? null : crCarregarTrafego(),
+      crCarregarIndicacoes(lista)
+    ]);
+    el('crTrafAviso').innerHTML = CR_TRAF_ERRO ? '<div class="avisoRegra" style="margin-bottom:10px">' + esc(CR_TRAF_ERRO) + '</div>' : '';
+    crPintarRank(); crPintarDet();
+  }
+
+  function crIrAba(aba){
+    CR_ABA = aba;
+    document.querySelectorAll('[data-crab]').forEach(b => b.classList.toggle('on', b.getAttribute('data-crab') === aba));
+    document.querySelectorAll('[data-crpainel]').forEach(p => p.classList.toggle('hide', p.getAttribute('data-crpainel') !== aba));
+    if(aba === 'desempenho') crAbrirDesempenho();
+  }
+
+  async function crAbrir(){
+    await crCarregarPecas();
+    crPintarTudo();
+    if(CR_ABA === 'desempenho') crAbrirDesempenho();
+  }
+
+  document.addEventListener('click', async ev => {
+    const a = ev.target.closest ? ev.target : null; if(!a) return;
+    const ab = a.closest('[data-crab]'); if(ab){ crIrAba(ab.getAttribute('data-crab')); return; }
+    const sel = a.closest('[data-crsel]'); if(sel){ CR_SEL = sel.getAttribute('data-crsel'); crPintarRank(); crPintarDet(); el('crDet').scrollIntoView({behavior:'smooth', block:'start'}); return; }
+    const ap = a.closest('[data-craprovar]');
+    if(ap){
+      const x = CR_PECAS.find(q => q.id === ap.getAttribute('data-craprovar')); if(!x) return;
+      const alerta = crTriagem(x).some(t => t[0] === 'er');
+      const msg = (x.midia === 'video' ? 'Você assistiu o vídeo INTEIRO e ouviu o que é dito?\n\n' : '')
+                + (alerta ? 'A pré-triagem apontou problema (em vermelho).\n\n' : '')
+                + (crAutorizada(x) ? 'Aprovar: a peça entra na rotação do robô das redes do Moviki.' : 'Aprovar: o criador ainda não autorizou nas redes — nada vai ao ar até ele autorizar.');
+      if(confirm(msg)){ ap.disabled = true; await crAvaliar(x.id, 'aprovada', ''); }
+      return;
+    }
+    const rc = a.closest('[data-crrecusar]');
+    if(rc){
+      const mot = prompt('Motivo da recusa (o criador vê este texto):', '');
+      if(mot === null) return;
+      if(!mot.trim()){ alert('Escreva o motivo — é o que ensina o criador a mandar a próxima certo.'); return; }
+      rc.disabled = true; await crAvaliar(rc.getAttribute('data-crrecusar'), 'recusada', mot.trim());
+      return;
+    }
+    const su = a.closest('[data-crsuspender]');
+    if(su){
+      const mot = prompt('Suspender: a peça sai da rotação do robô na próxima execução. Motivo:', '');
+      if(mot === null) return;
+      su.disabled = true; await crAvaliar(su.getAttribute('data-crsuspender'), 'suspensa', mot.trim());
+      return;
+    }
+    const fx = a.closest('[data-crfixo]');
+    if(fx){
+      const uid = fx.getAttribute('data-crfixo');
+      const v = Math.max(0, Math.round((Number(String(el('crFixo').value || '0').replace(',', '.')) || 0) * 100) / 100);
+      try{ await updateDoc(doc(db,'parceiros',uid), {criadorCustoMes: v}); const p = crParc(uid); if(p) p.criadorCustoMes = v; feedback(fx,'Salvo!'); crPintarRank(); crPintarDet(); }
+      catch(e){ alert('Não gravou (' + ((e && e.code) || e) + ').'); }
+      return;
+    }
+    const dm = a.closest('[data-crdesmarcar]');
+    if(dm){
+      if(confirm('Tirar a marca de criador? Ele deixa de enviar peça e as peças dele saem do robô na próxima execução.')) await crMarca(dm.getAttribute('data-crdesmarcar'), false);
+      return;
+    }
+  });
+  el('crMarcar').addEventListener('click', async () => {
+    const uid = el('crNovo').value; if(!uid) return;
+    const p = crParc(uid);
+    if(confirm('Marcar ' + ((p && p.nome) || uid) + ' como criador? Ele passa a poder enviar peças para as redes do Moviki (sempre com a sua aprovação).')) await crMarca(uid, true);
+  });
+  el('crPeriodo').addEventListener('change', () => { crPintarRank(); crPintarDet(); });
+  el('crRecarregar').addEventListener('click', async () => {
+    feedback(el('crRecarregar'), 'Atualizando…');
+    CR_HIST = null; CR_TRAF = null; CR_TRAF_ERRO = ''; CR_IND = {};
+    await crAbrir();
   });
 </script>
 
