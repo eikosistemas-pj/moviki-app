@@ -1527,7 +1527,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-22-criador2';
+  window.MOVIKI_VERSAO = '2026-09-22-criador3';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -3067,6 +3067,18 @@ textarea.cpCampo{min-height:110px;resize:vertical}
       el('cpAvisoCad').innerHTML = '<div class="cpMsg er" style="margin-top:12px">Seu cadastro de parceiro ainda não está aprovado. Assim que for, o envio de peças é liberado.</div>';
     }
     cpCarregarPecas();
+    /* Link mestre de acesso (22/09/2026): parceiro.html?area=criador abre
+       direto a Area do criador. O parametro sai da barra depois de usado,
+       para o F5 nao prender o criador nessa tela. */
+    try{
+      const q = new URLSearchParams(location.search);
+      if(q.get('area') === 'criador'){
+        irSec('criador');
+        q.delete('area');
+        const resto = q.toString();
+        history.replaceState(null, '', location.pathname + (resto ? '?' + resto : '') + location.hash);
+      }
+    }catch(e){}
   }
 
   async function cpCarregarPecas(){
