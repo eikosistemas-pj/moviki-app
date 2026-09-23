@@ -19,6 +19,7 @@ import {
 } from '@firebase/rules-unit-testing';
 import {
   doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp,
+  collection, getDocs, query, where, writeBatch, increment,
 } from 'firebase/firestore';
 
 const DONO      = 'lojista-dono-1';
@@ -443,5 +444,71 @@ describe('v29 — cadastro e selo de treinamento do parceiro', () => {
 
   test('carimbo depois do tempo minimo passa', async () => {
     await assertSucceeds(updateDoc(doc(como(VELHO), 'parceiros', VELHO), { aulasVistas: ['a'], aulasEm: new Date().toISOString() }));
+  });
+});
+
+
+/* ========== v30 (23/09/2026): varredura de seguranca ========== */
+describe('v30 — leitura de assinaturas/indicacoes, resumo e nome do parceiro', () => {
+  const PARC = 'parceiro-v30';
+  before(async () => {
+    await env.clearFirestore();
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      await setDoc(doc(db, 'admins', ADM), { desde: 'sempre' });
+      await setDoc(doc(db, 'negocios', DONO), { nome: 'Food Truck do Teste' });
+      await setDoc(doc(db, 'negocios', DONO, 'resumo', 'avaliacoes'), { n: 1, soma: 5 });
+      await setDoc(doc(db, 'assinaturas', DONO), { plano: 'pro', ativo: true });
+      await setDoc(doc(db, 'indicacoes', DONO), { ref: 'anav30' });
+      await setDoc(doc(db, 'parceiros', PARC), { nome: 'Ana', slug: 'anav30', status: 'aprovado', pix: 'ana@pix.com' });
+    });
+  });
+
+  test('ler UMA assinatura continua publico', async () => {
+    await assertSucceeds(getDoc(doc(anon(), 'assinaturas', DONO)));
+  });
+  test('LISTAR assinaturas: anonimo nao', async () => {
+    await assertFails(getDocs(collection(anon(), 'assinaturas')));
+  });
+  test('LISTAR assinaturas: admin sim', async () => {
+    await assertSucceeds(getDocs(collection(admin(), 'assinaturas')));
+  });
+  test('indicacao: anonimo nao le', async () => {
+    await assertFails(getDoc(doc(anon(), 'indicacoes', DONO)));
+  });
+  test('indicacao: o parceiro lista as do proprio apelido', async () => {
+    const db = env.authenticatedContext(PARC).firestore();
+    await assertSucceeds(getDocs(query(collection(db, 'indicacoes'), where('ref', '==', 'anav30'))));
+  });
+  test('indicacao: o parceiro NAO lista as de outro apelido', async () => {
+    const db = env.authenticatedContext(PARC).firestore();
+    await assertFails(getDocs(query(collection(db, 'indicacoes'), where('ref', '==', 'outro'))));
+  });
+  test('resumo: +1 sem avaliacao nova e recusado', async () => {
+    await assertFails(updateDoc(doc(anon(), 'negocios', DONO, 'resumo', 'avaliacoes'), { n: increment(1), soma: increment(1) }));
+  });
+  test('resumo: avaliacao + resumo na mesma escrita passa', async () => {
+    const db = anon();
+    const av = doc(collection(db, 'negocios', DONO, 'avaliacoes'));
+    const b = writeBatch(db);
+    b.set(av, { nota: 4, nome: 'Carlos', criadoEm: serverTimestamp() });
+    b.update(doc(db, 'negocios', DONO, 'resumo', 'avaliacoes'), { n: increment(1), soma: increment(4), ultimaAv: av.id });
+    await assertSucceeds(b.commit());
+  });
+  test('resumo: soma diferente da nota da avaliacao e recusada', async () => {
+    const db = anon();
+    const av = doc(collection(db, 'negocios', DONO, 'avaliacoes'));
+    const b = writeBatch(db);
+    b.set(av, { nota: 5, nome: 'Carlos', criadoEm: serverTimestamp() });
+    b.update(doc(db, 'negocios', DONO, 'resumo', 'avaliacoes'), { n: increment(1), soma: increment(1), ultimaAv: av.id });
+    await assertFails(b.commit());
+  });
+  test('parceiro aprovado NAO troca o nome sozinho', async () => {
+    const db = env.authenticatedContext(PARC).firestore();
+    await assertFails(updateDoc(doc(db, 'parceiros', PARC), { nome: 'Suporte Moviki' }));
+  });
+  test('parceiro aprovado troca a chave Pix', async () => {
+    const db = env.authenticatedContext(PARC).firestore();
+    await assertSucceeds(updateDoc(doc(db, 'parceiros', PARC), { pix: 'ana2@pix.com' }));
   });
 });
