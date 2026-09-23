@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -1565,7 +1565,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-22-criadores5';
+  window.MOVIKI_VERSAO = '2026-09-23-anexoseguro';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -3342,10 +3342,13 @@ table.mvTab td b{font-weight:700}
   function pintarThread(){
     const box = el('cvThread'); if(!box) return;
     if(!CONV_MSGS.length){ box.innerHTML = '<div class="cvVazio">Nenhuma mensagem nesta conversa ainda.</div>'; return; }
-    box.innerHTML = CONV_MSGS.map(m => {
+    box.innerHTML = CONV_MSGS.map((m, i) => {
       const eu = (m.de === 'admin'), ehBot = (m.de === 'bot');
       let anexo = '';
-      if(m.arquivoUrl){
+      /* 23/09/2026: o endereco do anexo e gravado por quem manda a mensagem
+         (lojista ou parceiro com envio liberado). So vira link o que veio do
+         nosso Storage — javascript:, site de terceiro ou texto montado ficam de fora. */
+      if(m.arquivoUrl && cvUrlNossa(m.arquivoUrl)){
         // Imagem vira miniatura clicável; o resto vira cartão de documento.
         // Antes tudo era cartão, e três fotos seguidas ficavam indistinguíveis.
         const ehImg = cvImagem(m.arquivoTipo);
@@ -3358,7 +3361,10 @@ table.mvTab td b{font-weight:700}
             '<span style="min-width:0"><span style="display:block;font-size:12.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(m.arquivoNome||'documento')+'</span>'+
             '<span style="font-size:11px;color:var(--mv-txt-3)">'+cvTam(m.arquivoTam)+' · abrir</span></span></a>';
         if(m.id){
-          anexo += '<button type="button" class="cvApagar" onclick="cvApagarMsg(\''+esc(m.id)+'\',\''+esc(m.arquivoUrl)+'\',\''+esc((m.arquivoNome||'').replace(/'/g,''))+'\')">apagar este anexo</button>';
+          /* 23/09/2026: o botao leva SO a posicao da mensagem na lista (numero).
+             Antes levava id, endereco e nome dentro do onclick - um apostrofo
+             gravado pelo lojista virava codigo rodando com a sessao do dono. */
+          anexo += '<button type="button" class="cvApagar" onclick="cvApagarIdx('+i+')">apagar este anexo</button>';
         }
       }
       const t = m.texto ? esc(m.texto).replace(/\n/g,'<br>') : '';
@@ -3623,7 +3629,8 @@ table.mvTab td b{font-weight:700}
     try{
       await deleteDoc(doc(db,'conversas',CONV_ABERTA,'mensagens',mid));
       const caminho = cvCaminhoDoArquivo(url);
-      if(caminho){ try{ await deleteObject(stRef(storage, caminho)); }catch(_){} }
+      /* 23/09/2026: so apaga arquivo da pasta DESTA conversa - nunca logo, foto ou peca de outra pessoa. */
+      if(caminho && caminho.indexOf('documentos/'+CONV_ABERTA+'/')===0){ try{ await deleteObject(stRef(storage, caminho)); }catch(_){} }
       av.textContent = 'Anexo apagado.';
     }catch(e){
       av.style.color = 'var(--mv-erro)';
@@ -3631,6 +3638,12 @@ table.mvTab td b{font-weight:700}
     }
   }
   window.cvApagarMsg = cvApagarMsg;
+  function cvUrlNossa(u){ return /^https:\/\/firebasestorage\.googleapis\.com\/v0\/b\/[A-Za-z0-9._-]+\/o\/[^"<>\s]+$/.test(String(u||'')); }
+  window.cvApagarIdx = function(i){
+    const m = CONV_MSGS[Number(i)];
+    if(!m || !m.id || !cvUrlNossa(m.arquivoUrl)) return;
+    cvApagarMsg(String(m.id), String(m.arquivoUrl), String(m.arquivoNome||'').replace(/'/g,''));
+  };
 
   async function cvTrocarDocs(ligado){
     if(!CONV_ABERTA) return;

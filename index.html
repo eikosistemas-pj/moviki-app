@@ -2395,7 +2395,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
           <p class="lcTxt">No meio de vários pinos iguais, <b>o seu aparece com a sua marca</b>. As pessoas reconhecem seu negócio de longe, param o olhar no seu ponto — e clicam mais.</p>
           <p class="lcTxt lcTxtFraco">É a diferença entre passar batido e ser <b>notado</b>.</p>
           <a class="lcCta" href="https://moviki.com.br/premium.html" target="_blank" rel="noopener">✨ Quero minha logo no mapa — ver o Premium</a>
-          <div class="lcCtaSub">Veja tudo o que o Premium libera · a partir de <b>R$ 41,58/mês</b> no plano anual</div>
+          <div class="lcCtaSub">Veja tudo o que o Premium libera · a partir de <b>R$ 58,25/mês</b> no plano anual</div>
 
           <div class="lcArea">
             <div class="lcRotulo">Sua logo</div>
@@ -2989,7 +2989,8 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
   async function garantirTrial(){
     try{
       if(!auth.currentUser)return null;
-      const tk=await auth.currentUser.getIdToken();
+      /* 23/09/2026: token NOVO. O antigo pode dizer "e-mail nao confirmado" por ate 1h depois do clique no link. */
+      const tk=await auth.currentUser.getIdToken(true);
       const r=await fetch(ROBO+'/api/ativar-trial',{method:'POST',headers:{'Authorization':'Bearer '+tk}});
       const j=await r.json().catch(()=>({}));
       return r.ok?j:null;
@@ -3193,9 +3194,21 @@ window.mvAbaInicial=function(){
       await auth.currentUser.reload();
       if(auth.currentUser.emailVerified){
         const bv=el('bannerVerif');bv.classList.add('ok');
-        el('bvTexto').innerHTML='✅ <b>E-mail confirmado!</b> Tudo certo, obrigado.';
+        el('bvTexto').innerHTML='✅ <b>E-mail confirmado!</b> Liberando seus 30 dias grátis...';
         el('bvAcoes').style.display='none';
-        setTimeout(function(){bv.classList.add('escondido');},2500);
+        /* 23/09/2026: antes so escondia o aviso - o teste gratis so entrava na
+           proxima entrada (ate 1h depois). Agora pede token novo, chama o robo
+           e repinta o plano na hora. */
+        try{
+          await auth.currentUser.getIdToken(true);
+          if(!dadosAssinatura){ await garantirTrial(); }
+          await carregarPlanoPainel(auth.currentUser.uid);
+          aplicarPlanoNasAbas();
+          mostrarBannerTrial();
+          if(typeof renderStatusPlano==='function') renderStatusPlano();
+          el('bvTexto').innerHTML=(dadosAssinatura&&dadosAssinatura.periodo==='trial')?'✅ <b>E-mail confirmado!</b> Seus 30 dias grátis do Pró estão liberados.':'✅ <b>E-mail confirmado!</b> Tudo certo, obrigado.';
+        }catch(_){ el('bvTexto').innerHTML='✅ <b>E-mail confirmado!</b> Tudo certo, obrigado.'; }
+        setTimeout(function(){bv.classList.add('escondido');},3500);
       }else{
         el('bvTexto').innerHTML='⚠️ Ainda não confirmado. Abra o e-mail que enviamos e clique no link primeiro. Depois toque em "Já confirmei" de novo.';
         if(j)j.disabled=false;
@@ -3265,7 +3278,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-19-cotaquiz';
+  window.MOVIKI_VERSAO='2026-09-23-assinatura';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -3949,6 +3962,13 @@ window.mvAbaInicial=function(){
   }
   function renderStatusPlano(){
     const s=el('mpStatus');if(!s)return;
+    /* 23/09/2026: quem esta no teste gratis nao "renova sozinho" - ele precisa
+       assinar. Antes o texto dizia o contrario e o robo recusava o pagamento. */
+    if(dadosAssinatura&&dadosAssinatura.periodo==='trial'&&dadosAssinatura.ativo===true&&dadosAssinatura.vence_em){
+      const fimT=new Date(dadosAssinatura.vence_em.toMillis()).toLocaleDateString('pt-BR');
+      s.innerHTML='🎁 Você está no <b>teste grátis do Pró</b> até <b>'+fimT+'</b>. Escolha seu plano abaixo para continuar sem interrupção — a primeira cobrança só vence no fim do teste, e você não perde nenhum dia.';
+      return;
+    }
     if(planoPainel==='pro'||planoPainel==='premium'||planoPainel==='enterprise'){
       let ate='';if(dadosAssinatura&&dadosAssinatura.vence_em){ate=' até '+new Date(dadosAssinatura.vence_em.toMillis()).toLocaleDateString('pt-BR');}
       s.innerHTML='✅ Seu plano atual: <b>'+(planoPainel==='enterprise'?'Enterprise':planoPainel==='premium'?'Premium':'Pró')+'</b>'+ate+'. <span style=\'color:#8fd8a0\'>Renova automaticamente — você não precisa reassinar.</span>';
@@ -4038,7 +4058,7 @@ window.mvAbaInicial=function(){
       let n=0,soma=0;const itens=[];
       /* O id do documento passa a viajar junto: sem ele nao ha como
          responder a avaliacao certa. Antes so o conteudo era guardado. */
-      qs.forEach(dd=>{const a=dd.data();const r=Number(a.nota||0);if(r>=1&&r<=5){n++;soma+=r;itens.push(Object.assign({__id:dd.id},a));}});
+      qs.forEach(dd=>{/* 23/09/2026: id de avaliacao e escolhido por quem cria. So entra id no formato do addDoc (letras e numeros) - um id com apostrofo virava codigo dentro dos botoes Responder/Editar e tomava a conta do lojista. */if(!/^[A-Za-z0-9]{1,64}$/.test(String(dd.id||'')))return;const a=dd.data();const r=Number(a.nota||0);if(r>=1&&r<=5){n++;soma+=r;itens.push(Object.assign({__id:dd.id},a));}});
       if(n===0){resumo.innerHTML='Você ainda não recebeu avaliações.<br><span class="avalQtd">Divulgue seu link e peça pros clientes avaliarem.</span>';return;}
       const media=soma/n,cheias=Math.round(media);
       const estrelaCheia='<svg class="full" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.26-.36L12 2z"/></svg>';
@@ -4072,7 +4092,7 @@ window.mvAbaInicial=function(){
   const AVAL_MAX = 500;
   let AVAL_ITENS = [];
 
-  function avalEsc(t){ return (t==null?'':String(t)).replace(/[<>&"]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+  function avalEsc(t){ return (t==null?'':String(t)).replace(/[<>&"']/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c])); }
 
   function avalCartao(a, cheia, vazia){
     const r = Number(a.nota||0);
@@ -4080,7 +4100,8 @@ window.mvAbaInicial=function(){
     const nm = avalEsc((a.nome||'Cliente').toString().slice(0,40));
     const tx = avalEsc((a.comentario||'').toString().slice(0,300));
     const resp = (typeof a.resposta === 'string') ? a.resposta.trim() : '';
-    const id = avalEsc(a.__id||'');
+    const id = /^[A-Za-z0-9]{1,64}$/.test(String(a.__id||'')) ? String(a.__id) : '';  /* segunda trava: id fora do formato nao vira botao */
+    if(!id) return '';
 
     let h = '<div class="avalItem" id="aval_'+id+'">'
           + '<div class="avalTopo"><span class="avalEst">'+e+'</span> <b>'+nm+'</b></div>'
