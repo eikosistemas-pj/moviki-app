@@ -1554,7 +1554,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-22-criadores';
+  window.MOVIKI_VERSAO = '2026-09-22-criadores2';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -4899,7 +4899,7 @@ table.mvTab td b{font-weight:700}
     const w = Number(x.w), h = Number(x.h), p = (w && h) ? w / h : 0;
     if(x.formato === 'feed' && !(p >= 0.8 && p <= 1.91)) a.push(['al','proporção fora do feed']);
     if((x.formato === 'story' || x.formato === 'reel') && !(p >= 0.5 && p <= 0.6)) a.push(['al','não é 9:16']);
-    if(x.midia === 'video'){ const d = Number(x.duracao); if(!(d >= 3 && d <= 90)) a.push(['al','vídeo fora de 3 a 90 s — o robô não publica']); }
+    if(x.midia === 'video'){ const d = Number(x.duracao), mx = x.formato === 'story' ? 60 : 90; if(!(d >= 3 && d <= mx)) a.push(['al','vídeo fora de 3 a ' + mx + ' s — o robô não publica']); }
     const t = (x.titulo || '') + ' ' + (x.legenda || '');
     CR_PROIBIDO.forEach(r => { const m = t.match(r); if(m) a.push(['er','termo proibido: “' + m[0] + '” (o robô troca pela legenda padrão)']); });
     return a;

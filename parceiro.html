@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki-ai.vercel.app https://moviki-robo.vercel.app; frame-src https://www.youtube-nocookie.com https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://i.ytimg.com https://www.gstatic.com https://www.google.com https://firebasestorage.googleapis.com https://*.firebasestorage.app; media-src 'self' blob: https://firebasestorage.googleapis.com; connect-src 'self' https://*.googleapis.com https://www.google.com https://moviki-ai.vercel.app https://moviki-robo.vercel.app https://www.moviki.com.br https://raw.githubusercontent.com; frame-src https://www.youtube-nocookie.com https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <title>Painel do Parceiro · Moviki</title>
@@ -534,6 +534,67 @@ html.mvSigGraf #grafNota{
 @media(min-width:1120px){.kGrid.k1{grid-template-columns:minmax(0,1fr)}}
 @media(min-width:1120px){.kGrid.k3{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:1119px){.kGrid.k3 > .kTile:last-child{grid-column:span 2}}
+/* ===== AREA DO CRIADOR (22/09/2026) ===== */
+.cpK{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media(min-width:760px){.cpK{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.cpK div{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px}
+.cpK small{display:block;font-size:11.5px;color:var(--mv-txt-3)}
+.cpK b{font-size:21px;font-weight:800}
+.cpAbas{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.cpBtn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--mv-campo);border:1px solid var(--mv-linha);
+  color:var(--mv-txt);border-radius:10px;padding:9px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.cpBtn.on{border-color:var(--mv-ciano);color:var(--mv-ciano)}
+.cpBtn.ok{border-color:rgba(37,227,155,.5);color:var(--mv-ok)}
+.cpBtn.perigo{border-color:rgba(255,107,107,.45);color:var(--mv-erro)}
+.cpBtn:disabled{opacity:.5;cursor:default}
+.cpFmt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cpFmt button{text-align:left;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:10px;color:var(--mv-txt);font:inherit;cursor:pointer}
+.cpFmt button b{display:block;font-size:14px}
+.cpFmt button span{display:block;font-size:11.5px;color:var(--mv-txt-3);margin-top:2px;line-height:1.35}
+.cpFmt button.on{border-color:var(--mv-ciano);box-shadow:0 0 0 1px var(--mv-ciano) inset}
+.cpRot{display:block;font-size:12.5px;color:var(--mv-txt-3);margin:14px 0 6px;font-weight:600}
+.cpCampo{width:100%;box-sizing:border-box;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:10px;font:inherit;font-size:14px}
+textarea.cpCampo{min-height:110px;resize:vertical}
+.cpPrev{display:grid;grid-template-columns:140px 1fr;gap:12px;margin-top:10px;align-items:start}
+.cpPrev .cpMidia{width:140px;border-radius:10px;overflow:hidden;background:#000}
+.cpPrev .cpMidia img,.cpPrev .cpMidia video{width:100%;display:block;max-height:250px;object-fit:contain}
+.cpCheck{font-size:12.5px;line-height:1.7}
+.cpCheck div::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:1px;background:var(--mv-ok)}
+.cpCheck div.al::before{background:var(--mv-alerta)}
+.cpCheck div.er::before{background:var(--mv-erro)}
+.cpCheck div.er{color:var(--mv-erro)}
+.cpAut{display:flex;gap:10px;align-items:flex-start;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:12px;margin-top:14px;font-size:12.5px;line-height:1.55;color:var(--mv-txt-2)}
+.cpAut input{margin-top:3px;width:18px;height:18px;flex:0 0 auto}
+.cpAut span{font-weight:400}
+.cpBarra{height:8px;background:var(--mv-campo);border-radius:99px;overflow:hidden;margin-top:12px}
+.cpBarra i{display:block;height:100%;width:0;background:var(--mv-grad);transition:width .2s}
+.cpMsg{font-size:13px;margin-top:10px;min-height:18px;line-height:1.5}
+.cpMsg.ok{color:var(--mv-ok)} .cpMsg.er{color:var(--mv-erro)}
+.cpLista{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:900px){.cpLista{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cpPeca{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:14px;padding:12px;display:grid;grid-template-columns:110px 1fr;gap:12px}
+.cpPeca .cpMidia{width:110px;border-radius:10px;overflow:hidden;background:#000;align-self:start}
+.cpPeca .cpMidia img,.cpPeca .cpMidia video{width:100%;display:block;max-height:196px;object-fit:contain}
+.cpInfo{min-width:0;font-size:12.5px;color:var(--mv-txt-2);line-height:1.55}
+.cpInfo b{color:var(--mv-txt)}
+.cpTag{display:inline-block;font-size:11px;border-radius:999px;padding:2px 8px;margin:3px 4px 0 0;border:1px solid var(--mv-linha);color:var(--mv-txt-2)}
+.cpTag.ok{border-color:rgba(37,227,155,.5);color:var(--mv-ok)}
+.cpTag.al{border-color:rgba(255,176,32,.5);color:var(--mv-alerta)}
+.cpTag.er{border-color:rgba(255,107,107,.5);color:var(--mv-erro)}
+.cpAcoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.cpLink{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px;font-weight:700;word-break:break-all}
+.cpCanais{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.cpGraf{margin-top:14px}
+.cpGraf h4{font-size:12.5px;font-weight:600;color:var(--mv-txt-3);margin:0 0 6px}
+.cpGraf svg{display:block}
+.cpLeg{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--mv-txt-3);margin-top:4px}
+.cpLeg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.cpTabela{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+.cpTabela td,.cpTabela th{padding:7px 6px;border-bottom:1px solid var(--mv-linha);text-align:left}
+.cpTabela th{color:var(--mv-txt-3);font-weight:600}
+.cpRegras li{margin:6px 0;line-height:1.55;font-size:13px;color:var(--mv-txt-2)}
+.cpRegras b{color:var(--mv-txt)}
+@media(max-width:520px){.cpFmt{grid-template-columns:1fr}.cpPrev,.cpPeca{grid-template-columns:1fr}.cpPrev .cpMidia,.cpPeca .cpMidia{width:100%}}
 </style>
 <script>
   /* Aplicado aqui, no <head>, de proposito: qualquer coisa depois disto
@@ -625,6 +686,7 @@ html.mvSigGraf #grafNota{
           <button type="button" class="mvNavIt" data-nav="desempenho"><img class="mvNavIco" src="icones/relatorios.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Desempenho</span></button>
           <button type="button" class="mvNavIt" data-nav="divulgacao"><img class="mvNavIco" src="icones/indicar.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Divulgação</span></button>
           <button type="button" class="mvNavIt mvNavMat" data-nav="material"><img class="mvNavIco" src="icones/material.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Material de apoio</span><span class="mvNovo" data-matnovo="1" hidden>NOVO</span></button>
+          <button type="button" class="mvNavIt hide" id="navCriador" data-nav="criador"><img class="mvNavIco" src="icones/live.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Área do criador</span></button>
           <button type="button" class="mvNavIt" data-nav="mensagens"><img class="mvNavIco" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Falar com o Vik</span><span class="bad hide" id="badMsgP">1</span></button>
           <button type="button" class="mvNavIt" data-nav="dados"><img class="mvNavIco" src="icones/perfil.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meus dados</span></button>
           <button type="button" class="mvNavIt" id="navTutoriais" style="display:none" onclick="abrirTutoriais()"><svg class="mvNavIco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" style="color:var(--ciano,#00D4FF)"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg><span>Tutoriais</span></button>
@@ -1096,6 +1158,111 @@ html.mvSigGraf #grafNota{
           <div id="matRaiz"><div class="matCarregando">Carregando o material…</div></div>
         </section>
 
+        <!-- ============ AREA DO CRIADOR (22/09/2026) ============
+             So aparece para parceiro com parceiros/{uid}.criador == true (o
+             dono marca no painel dele). Envia peca para as redes oficiais do
+             Moviki, autoriza/revoga e acompanha o resultado do link /c/.
+             Contrato: moviki-assistente-social/conteudo/CRIADORES-CONTRATO.md -->
+        <section data-sec="criador" class="hide">
+          <div class="cd">
+            <div class="cdTopo"><div><div class="cdTit">Área do criador</div><div class="cdSub">Mande suas fotos e vídeos para as redes oficiais do Moviki. Tudo passa pela aprovação da equipe; nada vai ao ar sem a sua autorização. Toda peça publicada sai com o crédito do seu @.</div></div></div>
+            <div class="cpK">
+              <div><small>Peças enviadas</small><b id="cpKEnv">—</b></div>
+              <div><small>Aprovadas</small><b id="cpKApr">—</b></div>
+              <div><small>Liberadas para as redes</small><b id="cpKLib">—</b></div>
+              <div><small>Posts do Moviki com peça sua</small><b id="cpKPost">—</b></div>
+            </div>
+            <div class="cpAbas">
+              <button type="button" class="cpBtn on" data-cpab="enviar">Enviar peça</button>
+              <button type="button" class="cpBtn" data-cpab="pecas">Minhas peças</button>
+              <button type="button" class="cpBtn" data-cpab="resultados">Meus resultados</button>
+              <button type="button" class="cpBtn" data-cpab="regras">Regras</button>
+            </div>
+            <div id="cpAvisoCad"></div>
+          </div>
+
+          <div class="cd" data-cppainel="enviar">
+            <div class="cdTit">Enviar peça</div>
+            <label class="cpRot">1. Onde ela vai</label>
+            <div class="cpFmt" id="cpFmt">
+              <button type="button" data-cpfmt="feed" class="on"><b>Feed</b><span>Foto 1080×1350 ou quadrada</span></button>
+              <button type="button" data-cpfmt="story"><b>Story</b><span>Foto ou vídeo 9:16, vídeo até 60 s</span></button>
+              <button type="button" data-cpfmt="reel"><b>Reel</b><span>Vídeo 9:16, de 3 a 90 s</span></button>
+            </div>
+            <label class="cpRot" for="cpArq">2. O arquivo</label>
+            <input type="file" id="cpArq" class="cpCampo" accept="image/jpeg,image/png">
+            <div id="cpPrev"></div>
+            <label class="cpRot" for="cpTitulo">3. Título (obrigatório — vai ao ar se a sua legenda não puder ser usada)</label>
+            <input type="text" id="cpTitulo" class="cpCampo" maxlength="120" placeholder="Ex.: Pastel saindo na feira de Tambaú">
+            <label class="cpRot" for="cpLegenda">4. Legenda sugerida (opcional) <span id="cpLegN" style="float:right;font-weight:400">0/2200</span></label>
+            <textarea id="cpLegenda" class="cpCampo" maxlength="2200" placeholder="Escreva como você falaria com um comerciante. Sem prometer venda, ganho ou resultado."></textarea>
+            <div id="cpLegAviso" class="cpMsg er"></div>
+            <label class="cpRot" for="cpCat">5. Ramo</label>
+            <select id="cpCat" class="cpCampo">
+              <option value="geral">Para qualquer negócio</option>
+              <option value="alimentacao">Alimentação e bebidas</option>
+              <option value="feira">Feira, rua e delivery</option>
+              <option value="moda">Moda e acessórios</option>
+              <option value="beleza">Beleza e bem-estar</option>
+              <option value="servicos">Serviços e reparos</option>
+              <option value="naturais">Naturais e saudáveis</option>
+              <option value="artesanato">Artesanato</option>
+              <option value="automotivo">Carro e moto</option>
+              <option value="eletronicos">Eletrônicos</option>
+              <option value="papelaria">Papelaria e escolar</option>
+              <option value="pet">Pet</option>
+              <option value="eventos">Fotografia e eventos</option>
+            </select>
+            <label class="cpAut"><input type="checkbox" id="cpAutoriza"><span id="cpAutTexto"></span></label>
+            <button type="button" class="btn" id="cpEnviar">Enviar para aprovação</button>
+            <div class="cpBarra hide" id="cpBarra"><i id="cpBarraI"></i></div>
+            <div class="cpMsg" id="cpMsg"></div>
+          </div>
+
+          <div class="cd hide" data-cppainel="pecas">
+            <div class="cdTopo"><div><div class="cdTit">Minhas peças</div><div class="cdSub">Aprovada + autorizada = liberada para as redes do Moviki. Você pode revogar a qualquer momento: a peça deixa de ser usada dali em diante.</div></div><button type="button" class="cpBtn" id="cpRecarregar">Atualizar</button></div>
+            <div id="cpLista" class="cpLista"><div class="vazio">Carregando…</div></div>
+          </div>
+
+          <div class="cd hide" data-cppainel="resultados">
+            <div class="cdTopo"><div><div class="cdTit">Meus resultados</div><div class="cdSub">Tudo contado: visitas do Google Analytics pelo seu link, cadastros e comissões gravados pelo Moviki.</div></div>
+              <select id="cpPeriodo" class="cpCampo" style="width:auto"><option value="30">30 dias</option><option value="90" selected>90 dias</option><option value="180">180 dias</option></select>
+            </div>
+            <label class="cpRot" style="margin-top:0">Seu link de criador</label>
+            <div class="cpLink"><span id="cpLinkTxt">—</span><button type="button" class="cpBtn" data-cpcopiar="">Copiar</button></div>
+            <div class="cdSub">Use um link por lugar e veja abaixo de onde vem cada visita:</div>
+            <div class="cpCanais" id="cpCanais"></div>
+            <div id="cpTrafAviso"></div>
+            <div class="cpK" style="margin-top:14px">
+              <div><small>Visitas pelo seu link</small><b id="cpRVis">—</b></div>
+              <div><small>Cadastros</small><b id="cpRCad">—</b></div>
+              <div><small>Lojistas pagantes</small><b id="cpRPag">—</b></div>
+              <div><small>Comissões geradas</small><b id="cpRCom">—</b></div>
+            </div>
+            <div id="cpGraficos"></div>
+            <div class="cdTit" style="margin-top:18px;font-size:14px">De onde vieram as visitas</div>
+            <div id="cpCanalTab"></div>
+            <div class="cdTit" style="margin-top:18px;font-size:14px">Posts do Moviki com peça sua</div>
+            <div id="cpPosts"></div>
+          </div>
+
+          <div class="cd hide" data-cppainel="regras">
+            <div class="cdTit">Regras das peças</div>
+            <ul class="cpRegras">
+              <li><b>Vídeo:</b> MP4, em pé (9:16, 1080×1920 de preferência). Reel de 3 a 90 s; story de até 60 s. Até 100 MB.</li>
+              <li><b>Foto:</b> JPG ou PNG. Feed 1080×1350 ou 1080×1080; story 1080×1920.</li>
+              <li><b>Sem música de biblioteca do Instagram ou do TikTok.</b> Publicado pelo Moviki, o vídeo com áudio protegido é silenciado ou derrubado pela Meta. Use sua voz, som ambiente ou trilha própria.</li>
+              <li><b>Sem marca d'água</b> do TikTok, CapCut ou outro app — o Instagram entrega menos esse tipo de vídeo.</li>
+              <li><b>Deixe livre a faixa de 78% a 86% da altura</b> nos stories de foto: é onde entra o selo "Conteúdo de @seu_usuario".</li>
+              <li><b>Nada de promessa:</b> sem "renda", "ganhe", "garantido", "vai vender mais", valores ou prazos de ganho. Mostre o que o Moviki faz, não o que alguém vai ganhar.</li>
+              <li><b>Pessoas e telas:</b> só apareça quem autorizou. Nunca mostre tela, nome ou dado de cliente real — use a conta de demonstração.</li>
+              <li><b>Nas suas redes</b> (não nas do Moviki), post sobre o Moviki leva <b>#publi</b> no começo: é conteúdo comissionado (Guia CONAR).</li>
+              <li><b>Aprovação:</b> toda peça é conferida pela equipe. Se for recusada, o motivo aparece em "Minhas peças". Peça enviada não se edita: para trocar, apague e envie outra.</li>
+              <li><b>Autorização:</b> vale 12 meses e pode ser revogada quando você quiser. Post que já foi ao ar sai das redes do Moviki se você pedir pelo "Falar com o Vik".</li>
+            </ul>
+          </div>
+        </section>
+
         <section data-sec="mensagens" class="hide">
           <div class="cd">
             <div class="cdTopo">
@@ -1282,6 +1449,7 @@ html.mvSigGraf #grafNota{
     <div class="menuSec">Painel</div>
     <button type="button" data-ir="visao"><img src="icones/inicio.png" alt="" onerror="this.style.display='none'">Visão geral</button>
     <button type="button" data-ir="material" style="color:var(--mv-txt);font-weight:700"><img src="icones/material.png" alt="" onerror="this.style.display='none'">Material de apoio<span class="mvNovo" data-matnovo="1" hidden>NOVO</span></button>
+    <button type="button" class="hide" id="menuCriador" data-ir="criador" style="color:var(--mv-txt);font-weight:700"><img src="icones/live.png" alt="" onerror="this.style.display='none'">Área do criador</button>
     <button type="button" data-ir="pagamentos"><img src="icones/plano.png" alt="" onerror="this.style.display='none'">Pagamentos</button>
     <button type="button" data-ir="desempenho"><img src="icones/relatorios.png" alt="" onerror="this.style.display='none'">Desempenho</button>
     <button type="button" data-ir="divulgacao"><img src="icones/indicar.png" alt="" onerror="this.style.display='none'">Divulgação</button>
@@ -1346,12 +1514,12 @@ html.mvSigGraf #grafNota{
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
   import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, query, where, orderBy, limit, onSnapshot, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  import { getStorage, ref as stRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, collection, query, where, orderBy, limit, onSnapshot, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref as stRef, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-19-menucateg';
+  window.MOVIKI_VERSAO = '2026-09-22-criador';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -1430,6 +1598,7 @@ html.mvSigGraf #grafNota{
     window.scrollTo({top:0,behavior:'smooth'});
     if(nome === 'indicacoes' || nome === 'visao') carregarIndicacoes();
     if(nome === 'visao') setTimeout(desenharGrafico, 30);
+    if(nome === 'criador') cpAbrir();
   }
   window.mvIrSec = irSec;
 
@@ -1872,6 +2041,7 @@ html.mvSigGraf #grafNota{
         if(n.exists()) mostrarVoltar();
       }catch(_){ mostrarVoltar(); }
       pmIniciar(user);
+      try{ cpIniciar(user); }catch(e){ console.error('area do criador:', e); }
       carregarComissoes();
       carregarSaques();
       carregarIndicacoes();
@@ -2835,6 +3005,468 @@ html.mvSigGraf #grafNota{
   el('btnWpp').onclick    = compartilharWpp;
   el('btnFace').onclick   = compartilharFace;
   el('btnShare').onclick  = compartilharNativo;
+
+  /* ==========================================================
+     AREA DO CRIADOR (22/09/2026)
+     Parceiro marcado como criador (parceiros/{uid}.criador == true) envia
+     peca para as redes oficiais do Moviki. Contrato e regras v27:
+     moviki-assistente-social/conteudo/CRIADORES-CONTRATO.md
+       - arquivo: Storage criadores/{uid}/<carimbo>.<ext> (sem sobrescrever)
+       - registro: criador_pecas/{id}, status 'aguardando' (so o dono muda)
+       - autorizar/revogar: autorizaRedes + autorizaRedesEm/revogadaEm
+     A segunda chave (aprovacao) e do dono. Nada vai ao ar so com esta tela.
+     ========================================================== */
+  const CP_TERMO = '3.1';
+  const CP_VALIDADE = 365 * 86400000;
+  const CP_API = 'https://www.moviki.com.br/api/criadores';
+  const CP_HIST_URL = 'https://raw.githubusercontent.com/eikosistemas-pj/moviki-assistente-social/main/estado/historico.json';
+  const CP_MAX_BYTES = 100 * 1024 * 1024;
+  const CP_CANAIS = [['bio','Bio do Instagram'],['story','Story'],['dm','Direct'],['ig','Post no Instagram'],['tt','TikTok'],['yt','YouTube'],['wa','WhatsApp'],['grupo','Grupo'],['qr','QR impresso']];
+  const CP_NOME_CANAL = {bio:'Bio do Instagram', story:'Story', dm:'Direct', ig:'Post no Instagram', tt:'TikTok', yt:'YouTube', wa:'WhatsApp', grupo:'Grupo', qr:'QR impresso', indicacao:'Link sem canal'};
+  const CP_PROIBIDO = [
+    /renda\s+(extra|garantida|passiva|f[áa]cil)/i, /ganh[eoa]\s+(at[ée]\s+)?r\$\s*\d[\d.,]*/i,
+    /fatur[ea]\s+(at[ée]\s+)?r\$\s*\d[\d.,]*/i, /garantid[oa]s?\b/i, /sem\s+risco/i,
+    /vai\s+vender\s+mais/i, /dinheiro\s+(f[áa]cil|r[áa]pido)/i, /aument[eo]\s+\d+\s*%/i,
+    /\bifood\b|\brappi\b|\banota\s*a[íi]\b/i, /\btrial\b/i, /todo\s+m[êe]s/i
+  ];
+  let CP_UID = '', CP_FMT = 'feed', CP_ABA = 'enviar', CP_PECAS = [], CP_ARQ = null, CP_MEDIA = null, CP_CAPA = null;
+  let CP_HIST = null, CP_TRAF = null, CP_TRAF_ERRO = '', CP_IND = null, CP_COMIS = null, CP_ENVIANDO = false;
+
+  const cpAutEm = x => ms(x.autorizaRedesEm);
+  function cpAutorizada(x){
+    const a = cpAutEm(x);
+    return x.autorizaRedes === true && a > 0 && !(ms(x.revogadaEm) > a) && Date.now() < a + CP_VALIDADE;
+  }
+  const cpLiberada = x => x.status === 'aprovada' && cpAutorizada(x);
+  const cpUrlOk = u => typeof u === 'string' && /^https:\/\/firebasestorage\.googleapis\.com\//.test(u);
+  const cpLink = canal => 'https://moviki.com.br/c/' + encodeURIComponent(MEU.slug || '') + (canal ? '?canal=' + canal : '');
+
+  function cpTextoAutorizacao(){
+    const arroba = MEU.arroba ? String(MEU.arroba) : 'meu @';
+    return 'Autorizo o Moviki a publicar esta peça no Instagram e no Facebook oficiais do Moviki (feed, story ou reel), sempre com crédito a '
+      + arroba + ', por 12 meses a partir de hoje, conforme o termo de adesão v' + CP_TERMO
+      + '. Posso revogar quando quiser. Declaro que a peça é minha, que quem aparece nela autorizou e que ela não usa música de terceiros.';
+  }
+
+  /* ---------- entrada ---------- */
+  function cpIniciar(user){
+    CP_UID = user.uid;
+    const ehCriador = MEU.criador === true;
+    ['navCriador','menuCriador'].forEach(id => { const n = el(id); if(n) n.classList.toggle('hide', !ehCriador); });
+    if(!ehCriador) return;
+    txt('cpAutTexto', cpTextoAutorizacao());
+    if(MEU.status !== 'aprovado'){
+      el('cpAvisoCad').innerHTML = '<div class="cpMsg er" style="margin-top:12px">Seu cadastro de parceiro ainda não está aprovado. Assim que for, o envio de peças é liberado.</div>';
+    }
+    cpCarregarPecas();
+  }
+
+  async function cpCarregarPecas(){
+    try{
+      const s = await getDocs(query(collection(db,'criador_pecas'), where('uid','==',CP_UID)));
+      CP_PECAS = []; s.forEach(d => CP_PECAS.push(Object.assign({id:d.id}, d.data())));
+      CP_PECAS.sort((a,b) => ms(b.criadaEm) - ms(a.criadaEm));
+    }catch(e){ CP_PECAS = null; }
+    cpKpis(); cpPintarLista();
+  }
+
+  function cpKpis(){
+    const L = CP_PECAS || [];
+    txt('cpKEnv', CP_PECAS ? L.length : '—');
+    txt('cpKApr', CP_PECAS ? L.filter(x => x.status === 'aprovada').length : '—');
+    txt('cpKLib', CP_PECAS ? L.filter(cpLiberada).length : '—');
+    if(CP_HIST) txt('cpKPost', CP_HIST.filter(h => h.origem === 'criador' && h.criador === CP_UID).length);
+  }
+
+  function cpIrAba(aba){
+    CP_ABA = aba;
+    document.querySelectorAll('[data-cpab]').forEach(b => b.classList.toggle('on', b.getAttribute('data-cpab') === aba));
+    document.querySelectorAll('[data-cppainel]').forEach(p => p.classList.toggle('hide', p.getAttribute('data-cppainel') !== aba));
+    if(aba === 'pecas') cpPintarLista();
+    if(aba === 'resultados') cpAbrirResultados();
+  }
+
+  function cpAbrir(){
+    if(MEU.criador !== true) return;
+    cpCarregarPecas();
+    if(!CP_HIST) cpCarregarHist().then(cpKpis);
+  }
+
+  /* ---------- 1. ENVIAR ---------- */
+  function cpAceita(){
+    return CP_FMT === 'feed' ? 'image/jpeg,image/png' : (CP_FMT === 'reel' ? 'video/mp4' : 'image/jpeg,image/png,video/mp4');
+  }
+  function cpEscolherFormato(f){
+    CP_FMT = f;
+    document.querySelectorAll('[data-cpfmt]').forEach(b => b.classList.toggle('on', b.getAttribute('data-cpfmt') === f));
+    el('cpArq').setAttribute('accept', cpAceita());
+    if(CP_ARQ) cpAnalisar(CP_ARQ); else el('cpPrev').innerHTML = '';
+  }
+
+  function cpLerMidia(arq){
+    return new Promise(resolve => {
+      const url = URL.createObjectURL(arq);
+      if(arq.type.indexOf('video/') === 0){
+        const v = document.createElement('video');
+        v.preload = 'metadata'; v.muted = true; v.playsInline = true; v.src = url;
+        v.onloadedmetadata = () => {
+          const info = {url: url, midia:'video', w: v.videoWidth, h: v.videoHeight, duracao: v.duration, el: v};
+          // capa: um quadro perto do 1o segundo, desenhado aqui no aparelho
+          const alvo = Math.min(1, (v.duration || 2) / 2);
+          // alguns celulares nao buscam o quadro sem tocar: sem capa em 4 s, segue sem ela
+          const desiste = setTimeout(() => resolve(info), 4000);
+          v.onseeked = () => {
+            clearTimeout(desiste);
+            try{
+              const lg = Math.min(1080, v.videoWidth || 1080), al = Math.round(lg * (v.videoHeight / v.videoWidth));
+              const c = document.createElement('canvas'); c.width = lg; c.height = al;
+              c.getContext('2d').drawImage(v, 0, 0, lg, al);
+              c.toBlob(b => { info.capa = b; resolve(info); }, 'image/jpeg', 0.85);
+            }catch(e){ resolve(info); }
+          };
+          try{ v.currentTime = alvo; }catch(e){ resolve(info); }
+        };
+        v.onerror = () => resolve({url: url, erro: 'Não consegui ler este vídeo. Exporte em MP4 (H.264).'});
+      } else {
+        const i = new Image();
+        i.onload = () => resolve({url: url, midia:'imagem', w: i.naturalWidth, h: i.naturalHeight});
+        i.onerror = () => resolve({url: url, erro: 'Não consegui ler esta imagem.'});
+        i.src = url;
+      }
+    });
+  }
+
+  /* Mesmas regras do robo (src/criadores.py) e do painel do dono. Erro trava o
+     envio; alerta so avisa. */
+  function cpChecar(arq, m){
+    const r = [];
+    if(!arq) return [['er','Escolha um arquivo.']];
+    if(m && m.erro) return [['er', m.erro]];
+    const tipos = cpAceita().split(',');
+    if(tipos.indexOf(arq.type) < 0) r.push(['er', CP_FMT === 'reel' ? 'Reel precisa ser vídeo MP4.' : (CP_FMT === 'feed' ? 'Feed precisa ser foto JPG ou PNG.' : 'Use JPG, PNG ou MP4.')]);
+    if(arq.size >= CP_MAX_BYTES) r.push(['er','Arquivo com ' + (arq.size / 1048576).toFixed(0) + ' MB — o limite é 100 MB.']);
+    if(m && m.w && m.h){
+      const p = m.w / m.h;
+      if(CP_FMT === 'feed' && !(p >= 0.8 && p <= 1.91)) r.push(['er','Proporção ' + m.w + '×' + m.h + ' não serve para o feed. Use 1080×1350 ou 1080×1080.']);
+      if(CP_FMT !== 'feed' && !(p >= 0.5 && p <= 0.6)) r.push(['er','Precisa ser em pé, 9:16 (1080×1920). O arquivo tem ' + m.w + '×' + m.h + '.']);
+      if(Math.min(m.w, m.h) < 540) r.push(['er','Resolução baixa demais (' + m.w + '×' + m.h + ').']);
+      else if(m.w < 1080) r.push(['al','Resolução ' + m.w + '×' + m.h + ' — 1080 de largura fica mais nítido.']);
+    }
+    if(m && m.midia === 'video'){
+      const d = Number(m.duracao) || 0, max = CP_FMT === 'story' ? 60 : 90;
+      if(!(d >= 3 && d <= max)) r.push(['er','Vídeo com ' + Math.round(d) + ' s — ' + (CP_FMT === 'story' ? 'story aceita de 3 a 60 s.' : 'reel aceita de 3 a 90 s.')]);
+    }
+    if(!r.length) r.push(['ok','Arquivo no formato certo.']);
+    return r;
+  }
+
+  let CP_SEQ = 0;
+  async function cpAnalisar(arq){
+    const seq = ++CP_SEQ;            // so a ultima leitura vale (troca rapida de arquivo/formato)
+    CP_ARQ = arq; CP_MEDIA = null; CP_CAPA = null;
+    el('cpPrev').innerHTML = '<div class="vazio">Lendo o arquivo…</div>';
+    const m = await cpLerMidia(arq);
+    if(seq !== CP_SEQ) return;
+    CP_MEDIA = m; CP_CAPA = m.capa || null;
+    const chk = cpChecar(arq, m);
+    const prev = m.erro ? '' : (m.midia === 'video'
+      ? '<video src="' + m.url + '" controls muted playsinline preload="metadata"></video>'
+      : '<img src="' + m.url + '" alt="">');
+    el('cpPrev').innerHTML = '<div class="cpPrev"><div class="cpMidia">' + prev + '</div><div class="cpCheck">'
+      + '<div class="' + (chk.some(c => c[0] === 'er') ? 'er' : '') + '" style="font-weight:700">' + esc(arq.name) + ' · ' + (arq.size / 1048576).toFixed(1).replace('.', ',') + ' MB'
+      + (m.w ? ' · ' + m.w + '×' + m.h : '') + (m.midia === 'video' ? ' · ' + Math.round(m.duracao) + ' s' : '') + '</div>'
+      + chk.map(c => '<div class="' + (c[0] === 'ok' ? '' : c[0]) + '">' + esc(c[1]) + '</div>').join('')
+      + '</div></div>';
+  }
+
+  function cpAvisoLegenda(){
+    const t = (el('cpTitulo').value || '') + ' ' + (el('cpLegenda').value || '');
+    const achados = [];
+    CP_PROIBIDO.forEach(r => { const m = t.match(r); if(m) achados.push('“' + m[0] + '”'); });
+    txt('cpLegN', (el('cpLegenda').value || '').length + '/2200');
+    el('cpLegAviso').textContent = achados.length
+      ? 'Evite ' + achados.join(', ') + ': frase de promessa derruba a peça na aprovação e, se passar, o Moviki troca a sua legenda pela padrão.'
+      : '';
+  }
+
+  function cpMsg(t, tipo){ const n = el('cpMsg'); n.className = 'cpMsg' + (tipo ? ' ' + tipo : ''); n.textContent = t; }
+
+  function cpSubir(caminho, arq, tipo, pesoInicio, pesoFatia){
+    return new Promise((resolve, reject) => {
+      const tarefa = uploadBytesResumable(stRef(storage, caminho), arq, {contentType: tipo});
+      tarefa.on('state_changed',
+        s => { el('cpBarraI').style.width = Math.round(pesoInicio + pesoFatia * (s.bytesTransferred / Math.max(1, s.totalBytes))) + '%'; },
+        reject,
+        async () => { try{ resolve(await getDownloadURL(tarefa.snapshot.ref)); }catch(e){ reject(e); } });
+    });
+  }
+
+  async function cpEnviar(){
+    if(CP_ENVIANDO) return;
+    if(MEU.status !== 'aprovado'){ cpMsg('Seu cadastro de parceiro ainda não está aprovado.', 'er'); return; }
+    const chk = cpChecar(CP_ARQ, CP_MEDIA);
+    if(chk.some(c => c[0] === 'er')){ cpMsg(chk.filter(c => c[0] === 'er').map(c => c[1]).join(' '), 'er'); return; }
+    const titulo = (el('cpTitulo').value || '').trim();
+    if(titulo.length < 4){ cpMsg('Escreva um título (é ele que vai ao ar se a legenda não puder ser usada).', 'er'); el('cpTitulo').focus(); return; }
+    const autoriza = el('cpAutoriza').checked;
+
+    CP_ENVIANDO = true; el('cpEnviar').disabled = true;
+    show('cpBarra'); el('cpBarraI').style.width = '0%';
+    cpMsg('Enviando… não feche esta tela.');
+    const ext = CP_ARQ.type === 'video/mp4' ? 'mp4' : (CP_ARQ.type === 'image/png' ? 'png' : 'jpg');
+    const base = 'criadores/' + CP_UID + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+    const caminho = base + '.' + ext, caminhoCapa = base + '-capa.jpg';
+    let url = '', capa = '', subiuCapa = false;
+    try{
+      url = await cpSubir(caminho, CP_ARQ, CP_ARQ.type, 0, CP_CAPA ? 92 : 98);
+      if(CP_CAPA){
+        try{ capa = await cpSubir(caminhoCapa, CP_CAPA, 'image/jpeg', 92, 6); subiuCapa = true; }catch(_){ capa = ''; }
+      }
+      const reg = {
+        uid: CP_UID, formato: CP_FMT, midia: CP_MEDIA.midia, url: url, storagePath: caminho,
+        w: Math.round(CP_MEDIA.w || 0), h: Math.round(CP_MEDIA.h || 0),
+        titulo: titulo.slice(0,120), legenda: (el('cpLegenda').value || '').trim().slice(0,2200),
+        categoria: el('cpCat').value || 'geral',
+        status: 'aguardando', criadaEm: serverTimestamp()
+      };
+      if(CP_MEDIA.midia === 'video') reg.duracao = Math.round((Number(CP_MEDIA.duracao) || 0) * 10) / 10;
+      if(capa) reg.capa = capa;
+      if(autoriza){ reg.autorizaRedes = true; reg.autorizaRedesEm = serverTimestamp(); reg.termoVersao = CP_TERMO; }
+      await addDoc(collection(db,'criador_pecas'), reg);
+      el('cpBarraI').style.width = '100%';
+      cpMsg('Recebido! A equipe do Moviki confere e você acompanha em "Minhas peças".' + (autoriza ? '' : ' Lembre de autorizar lá quando quiser que ela vá para as redes.'), 'ok');
+      CP_ARQ = null; CP_MEDIA = null; CP_CAPA = null;
+      el('cpArq').value = ''; el('cpPrev').innerHTML = ''; el('cpTitulo').value = ''; el('cpLegenda').value = '';
+      el('cpAutoriza').checked = false; cpAvisoLegenda();
+      await cpCarregarPecas();
+    }catch(e){
+      // Arquivo sem registro vira lixo no Storage: apaga o que subiu.
+      if(url){ try{ await deleteObject(stRef(storage, caminho)); }catch(_){} }
+      if(subiuCapa){ try{ await deleteObject(stRef(storage, caminhoCapa)); }catch(_){} }
+      const cod = (e && e.code) || '';
+      cpMsg(cod.indexOf('permission') >= 0 || cod.indexOf('unauthorized') >= 0
+        ? 'O envio foi recusado. Confira se o seu cadastro está aprovado como criador — se estiver, fale com o suporte.'
+        : 'Não consegui enviar agora (' + (cod || 'erro de rede') + '). Tente de novo.', 'er');
+    }finally{
+      CP_ENVIANDO = false; el('cpEnviar').disabled = false;
+      setTimeout(() => hide('cpBarra'), 1500);
+    }
+  }
+
+  /* ---------- 2. MINHAS PECAS ---------- */
+  function cpCartao(x){
+    let midia = '<div class="vazio" style="padding:26px 6px">sem prévia</div>';
+    if(cpUrlOk(x.url)){
+      midia = x.midia === 'video'
+        ? '<video src="' + esc(x.url) + '" controls preload="none" playsinline' + (cpUrlOk(x.capa) ? ' poster="' + esc(x.capa) + '"' : '') + '></video>'
+        : '<img src="' + esc(x.url) + '" alt="" loading="lazy">';
+    }
+    const st = {aguardando:['al','Em análise pela equipe'], aprovada:['ok','Aprovada'], recusada:['er','Recusada'], suspensa:['al','Suspensa pela equipe']}[x.status] || ['', x.status || '?'];
+    let aut;
+    if(cpAutorizada(x)) aut = '<span class="cpTag ok">Autorizada até ' + dataBR(cpAutEm(x) + CP_VALIDADE) + '</span>';
+    else if(ms(x.revogadaEm)) aut = '<span class="cpTag er">Autorização revogada em ' + dataBR(ms(x.revogadaEm)) + '</span>';
+    else if(x.autorizaRedes === true) aut = '<span class="cpTag er">Autorização vencida</span>';
+    else aut = '<span class="cpTag al">Ainda não autorizada</span>';
+    const lib = cpLiberada(x) ? '<span class="cpTag ok">Liberada para as redes do Moviki</span>' : '';
+    const posts = (CP_HIST || []).filter(h => h.origem === 'criador' && h.peca === 'c:' + x.id).length;
+    let acoes = '';
+    if(!cpAutorizada(x) && x.status !== 'recusada') acoes += '<button type="button" class="cpBtn ok" data-cpautorizar="' + esc(x.id) + '">Autorizar nas redes</button>';
+    if(cpAutorizada(x)) acoes += '<button type="button" class="cpBtn perigo" data-cprevogar="' + esc(x.id) + '">Revogar</button>';
+    acoes += '<button type="button" class="cpBtn" data-cpapagar="' + esc(x.id) + '">Apagar</button>';
+    const dims = (x.w && x.h ? ' · ' + esc(x.w) + '×' + esc(x.h) : '') + (x.duracao ? ' · ' + esc(Math.round(Number(x.duracao))) + ' s' : '');
+    return '<div class="cpPeca"><div class="cpMidia">' + midia + '</div><div class="cpInfo">'
+      + '<b>' + esc(x.titulo || '(sem título)') + '</b><br>'
+      + esc({feed:'Feed', story:'Story', reel:'Reel'}[x.formato] || x.formato || '?') + dims + ' · enviada em ' + dataBR(ms(x.criadaEm)) + '<br>'
+      + '<span class="cpTag ' + st[0] + '">' + esc(st[1]) + '</span>' + aut + lib
+      + (posts ? '<span class="cpTag ok">' + posts + (posts === 1 ? ' post' : ' posts') + ' no Moviki</span>' : '')
+      + (x.status === 'recusada' && x.motivoRecusa ? '<div style="margin-top:6px"><b>Motivo:</b> ' + esc(x.motivoRecusa) + '</div>' : '')
+      + (x.status === 'suspensa' && x.motivoRecusa ? '<div style="margin-top:6px"><b>Motivo:</b> ' + esc(x.motivoRecusa) + '</div>' : '')
+      + '<div class="cpAcoes">' + acoes + '</div></div></div>';
+  }
+
+  function cpPintarLista(){
+    const box = el('cpLista'); if(!box) return;
+    if(CP_PECAS === null){ box.innerHTML = '<div class="vazio">Não consegui carregar suas peças agora. Tente atualizar.</div>'; return; }
+    box.innerHTML = CP_PECAS.length ? CP_PECAS.map(cpCartao).join('')
+      : '<div class="vazio">Você ainda não enviou nenhuma peça. Comece em "Enviar peça".</div>';
+  }
+
+  async function cpAutorizar(id, ligar){
+    try{
+      const d = ligar
+        ? {autorizaRedes: true, autorizaRedesEm: serverTimestamp(), termoVersao: CP_TERMO, revogadaEm: null}
+        : {autorizaRedes: false, revogadaEm: serverTimestamp()};
+      await updateDoc(doc(db,'criador_pecas',id), d);
+      await cpCarregarPecas();
+    }catch(e){ alert('Não consegui gravar agora (' + ((e && e.code) || 'erro') + '). Tente de novo.'); }
+  }
+
+  async function cpApagar(id){
+    const x = (CP_PECAS || []).find(q => q.id === id); if(!x) return;
+    try{
+      await deleteDoc(doc(db,'criador_pecas',id));
+      if(x.storagePath){
+        try{ await deleteObject(stRef(storage, x.storagePath)); }catch(_){}
+        if(x.capa){ try{ await deleteObject(stRef(storage, x.storagePath.replace(/\.[a-z0-9]+$/i, '') + '-capa.jpg')); }catch(_){} }
+      }
+      await cpCarregarPecas();
+    }catch(e){ alert('Não consegui apagar agora (' + ((e && e.code) || 'erro') + ').'); }
+  }
+
+  /* ---------- 3. MEUS RESULTADOS ---------- */
+  async function cpCarregarHist(){
+    try{
+      const r = await fetch(CP_HIST_URL, {cache:'no-store'});
+      const j = r.ok ? await r.json() : [];
+      CP_HIST = Array.isArray(j) ? j : [];
+    }catch(e){ CP_HIST = []; }
+  }
+
+  async function cpCarregarTrafego(){
+    CP_TRAF = null; CP_TRAF_ERRO = '';
+    try{
+      const tk = await auth.currentUser.getIdToken();
+      const r = await fetch(CP_API, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({acao:'meu_trafego', idToken: tk, dias: 400})});
+      const j = await r.json().catch(() => null);
+      if(j && j.ok){ CP_TRAF = j; return; }
+      CP_TRAF_ERRO = 'As visitas pelo seu link ainda não estão disponíveis aqui. Cadastros e comissões abaixo já valem.';
+    }catch(e){ CP_TRAF_ERRO = 'As visitas pelo seu link ainda não estão disponíveis aqui. Cadastros e comissões abaixo já valem.'; }
+  }
+
+  async function cpCarregarNumeros(){
+    if(CP_IND === null){
+      CP_IND = [];
+      if(MEU.slug){
+        try{
+          const q = await getDocs(query(collection(db,'indicacoes'), where('ref','==',MEU.slug)));
+          q.forEach(d => CP_IND.push(ms((d.data() || {}).criadoEm)));
+        }catch(e){}
+      }
+    }
+    if(CP_COMIS === null){
+      CP_COMIS = [];
+      try{
+        const q = await getDocs(query(collection(db,'comissoes'), where('parceiroUid','==',CP_UID)));
+        q.forEach(d => CP_COMIS.push(d.data()));
+      }catch(e){}
+    }
+  }
+
+  function cpBaldes(dias){
+    const out = [];
+    const n = Math.ceil(dias / (dias <= 90 ? 7 : 30));
+    const passo = (dias <= 90 ? 7 : 30) * 86400000;
+    for(let i = n - 1; i >= 0; i--){
+      const fim = Date.now() - i * passo, ini = fim - passo, d = new Date(ini + 86400000);
+      out.push({ini: ini, fim: fim, rot: String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0')});
+    }
+    return out;
+  }
+
+  function cpSvg(baldes, series, largura){
+    const W = Math.max(300, Math.min(900, Math.round(largura || 640))), H = 180, pl = 36, pr = 6, pt = 10, pb = 24;
+    const n = baldes.length, k = series.length;
+    let max = Math.max(0, ...series.map(s => Math.max(0, ...s.vals)));
+    max = max <= 0 ? 2 : (max < 10 ? Math.ceil(max / 2) * 2 : Math.ceil(max));
+    const iw = (W - pl - pr) / n, bw = Math.max(2, (iw * 0.78) / k), passo = Math.max(1, Math.ceil(38 / iw));
+    let g = '', ult = null;
+    [0, .5, 1].forEach(f => {
+      const y = pt + (H - pt - pb) * (1 - f), rot = String(Math.round(max * f));
+      g += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + y + '" y2="' + y + '" stroke="#1c3457" stroke-width="1"/>';
+      if(rot !== ult) g += '<text x="' + (pl - 6) + '" y="' + (y + 4) + '" text-anchor="end" font-size="11" fill="#8fa6c4">' + rot + '</text>';
+      ult = rot;
+    });
+    baldes.forEach((b, i) => {
+      const x0 = pl + i * iw + (iw - bw * k) / 2;
+      series.forEach((s, j) => {
+        const v = s.vals[i] || 0, h = (H - pt - pb) * Math.min(1, v / max);
+        g += '<rect x="' + (x0 + j * bw).toFixed(1) + '" y="' + (H - pb - h).toFixed(1) + '" width="' + Math.max(1, bw - 1.5).toFixed(1) + '" height="' + Math.max(0, h).toFixed(1) + '" rx="2" fill="' + s.cor + '"><title>' + esc(s.nome + ' · ' + b.rot + ': ' + v) + '</title></rect>';
+      });
+      if((n - 1 - i) % passo === 0) g += '<text x="' + (pl + i * iw + iw / 2).toFixed(1) + '" y="' + (H - 7) + '" text-anchor="middle" font-size="11" fill="#8fa6c4">' + esc(b.rot) + '</text>';
+    });
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" style="max-width:100%;height:auto" role="img" aria-label="' + esc(series.map(s => s.nome).join(', ')) + '">' + g + '</svg>'
+      + '<div class="cpLeg">' + series.map(s => '<span><i style="background:' + s.cor + '"></i>' + esc(s.nome) + '</span>').join('') + '</div>';
+  }
+
+  async function cpAbrirResultados(){
+    txt('cpLinkTxt', MEU.slug ? cpLink('') : 'Seu link aparece aqui quando o cadastro for aprovado.');
+    const bc = document.querySelector('[data-cpcopiar]'); if(bc) bc.setAttribute('data-cpcopiar', MEU.slug ? cpLink('') : '');
+    el('cpCanais').innerHTML = MEU.slug ? CP_CANAIS.map(c => '<button type="button" class="cpBtn" data-cpcopiar="' + esc(cpLink(c[0])) + '">' + esc(c[1]) + '</button>').join('') : '';
+    el('cpGraficos').innerHTML = '<div class="vazio" style="margin-top:12px">Carregando…</div>';
+    await Promise.all([
+      CP_HIST ? null : cpCarregarHist(),
+      (CP_TRAF || CP_TRAF_ERRO) ? null : cpCarregarTrafego(),
+      cpCarregarNumeros()
+    ]);
+    el('cpTrafAviso').innerHTML = CP_TRAF_ERRO ? '<div class="cdSub" style="margin-top:10px">' + esc(CP_TRAF_ERRO) + '</div>' : '';
+    cpKpis(); cpPintarResultados();
+  }
+
+  function cpPintarResultados(){
+    const dias = Number(el('cpPeriodo').value) || 90, desde = Date.now() - dias * 86400000;
+    const dia = d => Date.parse(d + 'T12:00:00');
+    const porDia = (CP_TRAF && CP_TRAF.porDia) || {}, porCanal = (CP_TRAF && CP_TRAF.porCanal) || {};
+    let vis = 0; Object.keys(porDia).forEach(d => { if(dia(d) >= desde) vis += Number(porDia[d].s) || 0; });
+    const cad = (CP_IND || []).filter(t => t >= desde).length;
+    const com = (CP_COMIS || []).filter(c => !c.estornada && ms(c.criadoEm) >= desde);
+    const pag = new Set(com.filter(c => Number(c.nivel) === 1).map(c => c.lojistaUid).filter(Boolean)).size;
+    txt('cpRVis', CP_TRAF ? vis.toLocaleString('pt-BR') : '—');
+    txt('cpRCad', cad); txt('cpRPag', pag);
+    txt('cpRCom', brl(com.reduce((s,c) => s + (Number(c.valor) || 0), 0)));
+
+    const bs = cpBaldes(dias), dentro = (t, b) => t >= b.ini && t < b.fim;
+    const larg = el('cpGraficos').clientWidth || 640;
+    const vs = bs.map(b => Object.keys(porDia).reduce((s,d) => s + (dentro(dia(d), b) ? (Number(porDia[d].s) || 0) : 0), 0));
+    const cs = bs.map(b => (CP_IND || []).filter(t => dentro(t, b)).length);
+    const ps = bs.map(b => (CP_COMIS || []).filter(c => !c.estornada && Number(c.nivel) === 1 && dentro(ms(c.criadoEm), b)).length);
+    el('cpGraficos').innerHTML =
+        (CP_TRAF ? '<div class="cpGraf"><h4>Visitas pelo seu link</h4>' + cpSvg(bs, [{nome:'Visitas', cor:'#00D4FF', vals:vs}], larg) + '</div>' : '')
+      + '<div class="cpGraf"><h4>Cadastros e mensalidades pagas</h4>' + cpSvg(bs, [{nome:'Cadastros', cor:'#a855f7', vals:cs}, {nome:'Mensalidades pagas', cor:'#25e39b', vals:ps}], larg) + '</div>';
+
+    // canais
+    const tot = {};
+    Object.keys(porCanal).forEach(d => { if(dia(d) >= desde) Object.keys(porCanal[d]).forEach(c => { tot[c] = (tot[c] || 0) + (Number(porCanal[d][c]) || 0); }); });
+    const linhas = Object.keys(tot).sort((a,b) => tot[b] - tot[a]);
+    el('cpCanalTab').innerHTML = !CP_TRAF ? '<div class="vazio">Aparece quando as visitas estiverem disponíveis.</div>'
+      : (linhas.length ? '<table class="cpTabela"><tr><th>Canal</th><th>Visitas</th></tr>' + linhas.map(c => '<tr><td>' + esc(CP_NOME_CANAL[c] || c) + '</td><td>' + tot[c].toLocaleString('pt-BR') + '</td></tr>').join('') + '</table>'
+                       : '<div class="vazio">Nenhuma visita no período.</div>');
+
+    // posts do Moviki com peca dele
+    const posts = (CP_HIST || []).filter(h => h.origem === 'criador' && h.criador === CP_UID && Date.parse(h.quando) >= desde);
+    const titulo = id => { const x = (CP_PECAS || []).find(p => 'c:' + p.id === id); return x ? x.titulo : ''; };
+    el('cpPosts').innerHTML = posts.length
+      ? '<table class="cpTabela"><tr><th>Data</th><th>Formato</th><th>Rede</th><th>Peça</th></tr>' + posts.slice(0, 30).map(h =>
+          '<tr><td>' + dataBR(Date.parse(h.quando)) + '</td><td>' + esc({feed:'Feed', story:'Story', reel:'Reel'}[h.formato] || h.formato) + '</td><td>' + esc(h.rede === 'facebook' ? 'Facebook' : 'Instagram') + '</td><td>' + esc(titulo(h.peca) || h.descricao || '') + '</td></tr>').join('') + '</table>'
+      : '<div class="vazio">Nenhum post com peça sua no período. Peça aprovada e autorizada entra na fila das redes do Moviki.</div>';
+  }
+
+  /* ---------- eventos ---------- */
+  document.addEventListener('click', async ev => {
+    const a = ev.target && ev.target.closest ? ev.target : null; if(!a) return;
+    const ab = a.closest('[data-cpab]'); if(ab){ cpIrAba(ab.getAttribute('data-cpab')); return; }
+    const fm = a.closest('[data-cpfmt]'); if(fm){ cpEscolherFormato(fm.getAttribute('data-cpfmt')); return; }
+    const cp = a.closest('[data-cpcopiar]');
+    if(cp){
+      const v = cp.getAttribute('data-cpcopiar'); if(!v) return;
+      try{ await navigator.clipboard.writeText(v); }catch(_){
+        const t = document.createElement('textarea'); t.value = v; document.body.appendChild(t); t.select(); try{ document.execCommand('copy'); }catch(__){} t.remove();
+      }
+      const o = cp.textContent; cp.textContent = 'Copiado!'; setTimeout(() => { cp.textContent = o; }, 1400);
+      return;
+    }
+    const au = a.closest('[data-cpautorizar]');
+    if(au){ if(confirm(cpTextoAutorizacao() + '\n\nConfirmar?')){ au.disabled = true; await cpAutorizar(au.getAttribute('data-cpautorizar'), true); } return; }
+    const rv = a.closest('[data-cprevogar]');
+    if(rv){ if(confirm('Revogar a autorização? A peça deixa de ser usada pelo Moviki a partir de agora. Posts que já foram ao ar saem se você pedir pelo "Falar com o Vik".')){ rv.disabled = true; await cpAutorizar(rv.getAttribute('data-cprevogar'), false); } return; }
+    const ap = a.closest('[data-cpapagar]');
+    if(ap){ if(confirm('Apagar esta peça? O arquivo sai do Moviki e ela deixa de ser usada.')){ ap.disabled = true; await cpApagar(ap.getAttribute('data-cpapagar')); } return; }
+  });
+  el('cpArq').addEventListener('change', ev => { const f = ev.target.files && ev.target.files[0]; if(f) cpAnalisar(f); });
+  el('cpTitulo').addEventListener('input', cpAvisoLegenda);
+  el('cpLegenda').addEventListener('input', cpAvisoLegenda);
+  el('cpEnviar').addEventListener('click', cpEnviar);
+  el('cpPeriodo').addEventListener('change', cpPintarResultados);
+  el('cpRecarregar').addEventListener('click', cpCarregarPecas);
 </script>
 
 <script>
