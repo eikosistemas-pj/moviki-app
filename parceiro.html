@@ -615,6 +615,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
     if(LS.getItem('mv_sigilo_graf') === '1') r.classList.add('mvSigGraf');
   }catch(e){}
 </script>
+<script src="/mvmotion.js" defer></script><!-- 23/09/2026: movimento e lazy loading (mvmotion.js, do outro chat). Painel sem mvmetrica.js precisa desta linha. -->
 </head>
 <body>
 
@@ -1527,7 +1528,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-23-rodada2';
+  window.MOVIKI_VERSAO = '2026-09-23-seguranca';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -3000,6 +3001,12 @@ textarea.cpCampo{min-height:110px;resize:vertical}
     el('eNome').value = MEU.nome || '';
     el('ePix').value  = MEU.pix  || '';
     txt('avisoDados','');
+    /* 23/09/2026 (seguranca): o nome aparece no cracha publico (/v/). Depois
+       de aprovado, trocar o nome passa pela equipe — senao alguem aprovado
+       como "Joao" viraria "Suporte Moviki" sem ninguem conferir. */
+    el('eNome').disabled = (MEU.status === 'aprovado');
+    el('eNome').title = (MEU.status === 'aprovado') ? 'O nome aparece no seu crachá. Para trocar, fale com a gente pelo WhatsApp (41) 2018-6848.' : '';
+    if(MEU.status === 'aprovado'){ const av0 = el('avisoDados'); av0.className = 'aviso'; av0.textContent = 'O nome aparece no seu crachá. Para trocar, fale com a gente pelo WhatsApp (41) 2018-6848.'; }
     hide('dadosView'); show('dadosEdit');
   };
   el('btnCancelar').onclick = ()=>{ show('dadosView'); hide('dadosEdit'); };
@@ -3011,8 +3018,9 @@ textarea.cpCampo{min-height:110px;resize:vertical}
     if(pix.length  < 3){ av.textContent = 'Digite uma chave Pix válida.'; return; }
     const b = el('btnSalvar'); b.disabled = true; b.textContent = 'Salvando…';
     try{
-      await updateDoc(doc(db,'parceiros',MEU.uid), { nome, pix });
-      MEU.nome = nome; MEU.pix = pix; render();
+      const dadosNovos = (MEU.status === 'aprovado') ? { pix } : { nome, pix };  /* 23/09: aprovado nao troca o nome sozinho */
+      await updateDoc(doc(db,'parceiros',MEU.uid), dadosNovos);
+      if(MEU.status !== 'aprovado') MEU.nome = nome; MEU.pix = pix; render();
       show('dadosView'); hide('dadosEdit');
     }catch(e){ av.textContent = 'Não foi possível salvar agora. Tente de novo.'; }
     b.disabled = false; b.textContent = 'Salvar';

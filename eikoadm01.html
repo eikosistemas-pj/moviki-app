@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://unpkg.com https://*.tile.openstreetmap.org https://firebasestorage.googleapis.com; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://www.gstatic.com https://unpkg.com https://*.googleapis.com https://www.google.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://raw.githubusercontent.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://*.tile.openstreetmap.org https://firebasestorage.googleapis.com; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://www.google.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://raw.githubusercontent.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="robots" content="noindex,nofollow">
@@ -10,8 +10,8 @@
 <link rel="icon" href="favicon512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="vendor/leaflet-1.9.4/leaflet.css">
+<script src="vendor/leaflet-1.9.4/leaflet.js"></script><!-- 23/09/2026 (seguranca): Leaflet servido daqui, nao mais do unpkg. E a pagina com mais poder do sistema; nao pode depender de um servidor de terceiros nao ter sido adulterado. -->
 <script src="mvqr.js"></script>
 <link rel="stylesheet" href="movikiui.css">
 <style>
@@ -573,6 +573,7 @@ table.mvTab td b{font-weight:700}
 .crVer.er{border-color:rgba(255,107,107,.5)}
 @media(max-width:520px){.crPeca{grid-template-columns:1fr}.crMidia{width:100%}}
 </style>
+<script src="/mvmotion.js" defer></script><!-- 23/09/2026: movimento e lazy loading (mvmotion.js, do outro chat). Painel sem mvmetrica.js precisa desta linha. -->
 </head>
 <body>
 
@@ -1565,7 +1566,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-23-rodada3b';
+  window.MOVIKI_VERSAO = '2026-09-23-seguranca';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
