@@ -1,5 +1,5 @@
 {
-  "versao": "2026-09-24-shopping",
+  "versao": "2026-09-24-shopping3",
   "atualizado": "2026-09-24",
   "itens": [
     {
@@ -10,7 +10,7 @@
       "duracao": "0:39",
       "peso": "17,8 MB",
       "arquivo": "material/video-shopping-moda.mp4",
-      "capa": "material/video-shopping-moda-capa.webp",
+      "capa": "material/capas/video-shopping-moda.webp",
       "w": 1080,
       "h": 1920,
       "novo": true,
@@ -26,13 +26,45 @@
       "duracao": "0:38",
       "peso": "17,3 MB",
       "arquivo": "material/video-shopping-esportes.mp4",
-      "capa": "material/video-shopping-esportes-capa.webp",
+      "capa": "material/capas/video-shopping-esportes.webp",
       "w": 1080,
       "h": 1920,
       "novo": true,
       "legenda": "#publi Meio da semana, corredor vazio, tênis parado na vitrine. Enquanto isso, o seu cliente está no celular procurando o próximo par.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra o tênis de perto, tira dúvida de numeração no chat e lança a oferta. E quem quer experimentar antes toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "shopping"
+    },
+    {
+      "id": "video-shopping-moda-geral",
+      "tipo": "video",
+      "titulo": "Loja de shopping: moda — venda ao vivo",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:39",
+      "peso": "17,8 MB",
+      "arquivo": "material/video-shopping-moda.mp4",
+      "capa": "material/capas/video-shopping-moda.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi O corredor do shopping anda vazio no meio da semana. Mas a sua cliente não sumiu: ela está no celular, no sofá de casa.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra a peça, responde no chat e lança a oferta com contagem regressiva. E quem prefere ver de perto toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "geral"
+    },
+    {
+      "id": "video-shopping-esportes-geral",
+      "tipo": "video",
+      "titulo": "Loja de shopping: calçados e esportes — venda ao vivo",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:38",
+      "peso": "17,3 MB",
+      "arquivo": "material/video-shopping-esportes.mp4",
+      "capa": "material/capas/video-shopping-esportes.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Meio da semana, corredor vazio, tênis parado na vitrine. Enquanto isso, o seu cliente está no celular procurando o próximo par.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra o tênis de perto, tira dúvida de numeração no chat e lança a oferta. E quem quer experimentar antes toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "geral"
     },
     {
       "id": "video-parceiro-chama-parceiro",
