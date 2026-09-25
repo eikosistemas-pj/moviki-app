@@ -3,6 +3,18 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================================
+    //  v31 — 25/09/2026 — PACOTE A (antes do anuncio)
+    //    1. avaliacoes: o dono so grava a RESPOSTA (resposta + respostaEm);
+    //       nota, nome e comentario do cliente ficam intocaveis. Apagar: so admin.
+    //    2. slugs: endereco curto de negocio nao nasce por cima de ponto_slugs.
+    //    3. parceiros: o apelido do cadastro tem que ser o que o proprio
+    //       parceiro reservou em parceiro_slugs.
+    //    4. live_bloqueios: ler 1 documento continua publico; LISTAR so admin.
+    //    5. criador_pecas: url e capa so do bucket moviki-app, na pasta do criador.
+    //  O resto do arquivo e a v30, letra por letra.
+    // ==========================================================
+
+    // ==========================================================
     //  v30 — 23/09/2026 — VARREDURA DE SEGURANCA
     //    1. assinaturas: get publico, list so admin (acabou a lista de quem paga).
     //    2. indicacoes: dono, admin e o parceiro dono do apelido (nao e mais publica).
@@ -608,7 +620,16 @@ service cloud.firestore {
                       // botoes Responder/Editar do painel do lojista.
                       && avId.matches('^[A-Za-z0-9]{20}$');
         // v26: moderar (editar/apagar avaliacao) era o curinga que permitia.
-        allow update, delete: if donoOuAdmin(uid);
+        // v31 (25/09/2026): o dono so RESPONDE. Antes ele podia trocar a nota,
+        // o nome e o comentario do cliente (ou apagar a avaliacao ruim) e a
+        // pagina publica mostrava como se fosse do cliente.
+        allow update: if isAdmin()
+                      || ( request.auth != null && request.auth.uid == uid
+                           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['resposta','respostaEm'])
+                           && request.resource.data.resposta is string
+                           && request.resource.data.resposta.size() <= 500
+                           && request.resource.data.respostaEm == request.time );
+        allow delete: if isAdmin();
       }
 
       // ---- 26/08/2026: RESUMO DE AVALIAÇÕES ----
@@ -841,7 +862,10 @@ service cloud.firestore {
 
     // Quem esta proibido de transmitir (e de vender pelo Pix na live).
     match /live_bloqueios/{uid} {
-      allow read: if true;
+      // v31: a live le o documento do proprio lojista (get). A LISTA de quem
+      // esta bloqueado so o dono do Moviki ve.
+      allow get: if true;
+      allow list: if isAdmin();
       allow write: if isAdmin();
     }
 
@@ -1010,6 +1034,11 @@ service cloud.firestore {
                     && request.resource.data.pix.size() >= 3 && request.resource.data.pix.size() <= 140
                     && request.resource.data.slug is string
                     && request.resource.data.slug.size() >= 3 && request.resource.data.slug.size() <= 40
+                    // v31: o apelido e o que ESTE parceiro reservou antes (as telas
+                    // gravam parceiro_slugs/{slug} = {uid} e so depois o cadastro).
+                    // Antes dava para cadastrar com o apelido de outro parceiro.
+                    && exists(/databases/$(database)/documents/parceiro_slugs/$(request.resource.data.slug))
+                    && get(/databases/$(database)/documents/parceiro_slugs/$(request.resource.data.slug)).data.get('uid', '') == request.auth.uid
                     && request.resource.data.aceite is map
                     && ( !('indicadoPor' in request.resource.data)
                          || ( request.resource.data.indicadoPor is string
@@ -1211,13 +1240,16 @@ service cloud.firestore {
       return d.formato in ['feed', 'story', 'reel']
         && d.midia in ['imagem', 'video']
         && d.url is string && d.url.size() <= 1000
-        && d.url.matches('https://firebasestorage[.]googleapis[.]com/.*')
+        // v31: so o bucket do Moviki e so a pasta do proprio criador.
+        && d.url.matches('https://firebasestorage[.]googleapis[.]com/v0/b/moviki-app[.]firebasestorage[.]app/o/criadores%2F' + uid + '%2F.*')
         && d.storagePath is string && d.storagePath.size() <= 300
         && d.storagePath.matches('criadores/' + uid + '/.*')
         && d.get('titulo', '') is string && d.get('titulo', '').size() <= 120
         && d.get('legenda', '') is string && d.get('legenda', '').size() <= 2200
         && d.get('categoria', '') is string && d.get('categoria', '').size() <= 40
         && d.get('capa', '') is string && d.get('capa', '').size() <= 1000
+        && ( d.get('capa', '') == ''
+             || d.get('capa', '').matches('https://firebasestorage[.]googleapis[.]com/v0/b/moviki-app[.]firebasestorage[.]app/o/criadores%2F' + uid + '%2F.*') )
         && (d.get('w', 0) is int || d.get('w', 0) is float)
         && (d.get('h', 0) is int || d.get('h', 0) is float)
         && (d.get('duracao', 0) is int || d.get('duracao', 0) is float);
@@ -1356,6 +1388,8 @@ service cloud.firestore {
     match /slugs/{slug} {
       allow read: if true;
       allow create: if request.auth != null
+                    // v31: nao nasce por cima de endereco de ponto de venda.
+                    && !exists(/databases/$(database)/documents/ponto_slugs/$(slug))
                     && request.resource.data.keys().hasOnly(['uid'])
                     && request.resource.data.uid == request.auth.uid
                     && slug.size() >= 3 && slug.size() <= 40;
