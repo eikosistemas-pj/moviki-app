@@ -1,7 +1,23 @@
 {
-  "versao": "2026-09-25-bebe-planos",
-  "atualizado": "2026-09-24",
+  "versao": "2026-09-25-suplementos",
+  "atualizado": "2026-09-25",
   "itens": [
+    {
+      "id": "video-shopping-suplementos",
+      "tipo": "video",
+      "titulo": "Loja de shopping: suplementos — venda ao vivo",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:39",
+      "peso": "17,6 MB",
+      "arquivo": "material/video-shopping-suplementos.mp4",
+      "capa": "material/capas/video-shopping-suplementos.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Meio da semana, corredor do shopping vazio e a prateleira de whey cheia. Enquanto isso, o seu cliente está no sofá, comparando sabor e preço no celular.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra o pote de perto, responde \"tem sabor chocolate?\" e \"tem a versão sem lactose?\" no chat e lança a oferta. E quem quer conversar antes de levar toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "shopping"
+    },
     {
       "id": "video-shopping-bebe",
       "tipo": "video",
