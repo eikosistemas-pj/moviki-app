@@ -1,7 +1,23 @@
 {
-  "versao": "2026-09-24-pet-planos",
+  "versao": "2026-09-24-bebe",
   "atualizado": "2026-09-24",
   "itens": [
+    {
+      "id": "video-shopping-bebe",
+      "tipo": "video",
+      "titulo": "Loja de shopping: artigos para bebê — venda ao vivo",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:38",
+      "peso": "17,2 MB",
+      "arquivo": "material/video-shopping-bebe.mp4",
+      "capa": "material/capas/video-shopping-bebe.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Meio da semana, corredor do shopping vazio e o enxoval parado na arara. Enquanto isso, quem está montando o enxoval está no sofá de casa, pesquisando pelo celular.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra o body de pertinho, responde \"tem RN?\" e \"é 100% algodão?\" no chat e lança a oferta. E quem quer sentir o tecido antes toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "shopping"
+    },
     {
       "id": "video-shopping-pet",
       "tipo": "video",
@@ -13,7 +29,7 @@
       "capa": "material/capas/video-shopping-pet.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Meio da semana, corredor do shopping vazio e a caminha parada na vitrine. Enquanto isso, o tutor está no sofá de casa, com o pet no colo e o celular na mão.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra a roupinha no pet, responde \"tem no P?\" e \"serve em gato?\" no chat e lança a oferta. E quem quer provar no bichinho antes toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "shopping"
@@ -30,7 +46,7 @@
       "w": 1080,
       "h": 1920,
       "novo": false,
-      "legenda": "#publi O corredor do shopping anda vazio no meio da semana. Mas a sua cliente não sumiu: ela está no celular, no sofá de casa.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra a peça, responde no chat e deixa o produto em destaque na tela. E quem prefere ver de perto toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "legenda": "#publi O corredor do shopping anda vazio no meio da semana. Mas a sua cliente não sumiu: ela está no celular, no sofá de casa.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra a peça, responde no chat e lança a oferta com contagem regressiva. E quem prefere ver de perto toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "shopping"
     },
@@ -400,7 +416,7 @@
       "h": 1920,
       "peso": "711 KB",
       "novo": false,
-      "legenda": "#publi Oficina fechada não é loja parada.\n\nCom o Moviki você aparece no mapa de quem está procurando peça agora e ainda mostra as peças ao vivo, pelo celular, de onde estiver.\n\nNegócios em movimento vendem mais.\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "legenda": "#publi Oficina fechada não é loja parada.\n\nCom o Moviki você aparece no mapa de quem está procurando peça agora e ainda mostra o estoque ao vivo, pelo celular, de onde estiver.\n\nNegócios em movimento vendem mais.\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "automotivo",
       "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
     },
