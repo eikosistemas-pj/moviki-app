@@ -173,8 +173,12 @@ describe('avaliacoes — a nota de quem comprou', () => {
     }));
   });
 
-  test('o dono APAGA avaliacao (moderacao — so o curinga permite)', async () => {
-    await assertSucceeds(deleteDoc(doc(dono(), 'negocios', DONO, 'avaliacoes', 'av1')));
+  test('v31: o dono NAO apaga avaliacao (so a equipe modera)', async () => {
+    await assertFails(deleteDoc(doc(dono(), 'negocios', DONO, 'avaliacoes', 'av1')));
+  });
+
+  test('v31: o dono do Moviki APAGA avaliacao (moderacao)', async () => {
+    await assertSucceeds(deleteDoc(doc(admin(), 'negocios', DONO, 'avaliacoes', 'av1')));
   });
 });
 
@@ -510,5 +514,104 @@ describe('v30 — leitura de assinaturas/indicacoes, resumo e nome do parceiro',
   test('parceiro aprovado troca a chave Pix', async () => {
     const db = env.authenticatedContext(PARC).firestore();
     await assertSucceeds(updateDoc(doc(db, 'parceiros', PARC), { pix: 'ana2@pix.com' }));
+  });
+});
+
+
+/* ========== v31 (25/09/2026): pacote A, antes do anuncio ========== */
+describe('v31 — resposta de avaliacao, apelidos, bloqueios da live e pecas de criador', () => {
+  const PARC = 'parceiro-v31';
+  const OUTRO = 'parceiro-outro-v31';
+  const BUCKET = 'https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/';
+  before(async () => {
+    await env.clearFirestore();
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      await setDoc(doc(db, 'admins', ADM), { desde: 'sempre' });
+      await setDoc(doc(db, 'negocios', DONO), { nome: 'Food Truck do Teste' });
+      await setDoc(doc(db, 'negocios', DONO, 'avaliacoes', 'av1'), { nota: 1, nome: 'Ana', comentario: 'demorou' });
+      await setDoc(doc(db, 'live_bloqueios', DONO), { motivo: 'teste', ate: null });
+      await setDoc(doc(db, 'ponto_slugs', 'feira-centro'), { uid: 'ponto-1' });
+      await setDoc(doc(db, 'parceiro_slugs', 'apelido-do-outro'), { uid: OUTRO });
+      await setDoc(doc(db, 'parceiros', PARC), { nome: 'Cria', slug: 'cria', status: 'aprovado', criador: true, pix: 'c@pix.com' });
+    });
+  });
+
+  test('o dono RESPONDE a avaliacao', async () => {
+    await assertSucceeds(updateDoc(doc(dono(), 'negocios', DONO, 'avaliacoes', 'av1'),
+      { resposta: 'Obrigado, vamos melhorar.', respostaEm: serverTimestamp() }));
+  });
+  test('o dono NAO troca a nota do cliente', async () => {
+    await assertFails(updateDoc(doc(dono(), 'negocios', DONO, 'avaliacoes', 'av1'), { nota: 5 }));
+  });
+  test('o dono NAO reescreve o comentario do cliente', async () => {
+    await assertFails(updateDoc(doc(dono(), 'negocios', DONO, 'avaliacoes', 'av1'),
+      { comentario: 'perfeito', resposta: 'ok', respostaEm: serverTimestamp() }));
+  });
+  test('resposta acima de 500 letras e recusada', async () => {
+    await assertFails(updateDoc(doc(dono(), 'negocios', DONO, 'avaliacoes', 'av1'),
+      { resposta: 'x'.repeat(501), respostaEm: serverTimestamp() }));
+  });
+  test('estranho NAO responde avaliacao alheia', async () => {
+    await assertFails(updateDoc(doc(estranho(), 'negocios', DONO, 'avaliacoes', 'av1'),
+      { resposta: 'oi', respostaEm: serverTimestamp() }));
+  });
+
+  test('live_bloqueios: ler UM documento continua publico', async () => {
+    await assertSucceeds(getDoc(doc(anon(), 'live_bloqueios', DONO)));
+  });
+  test('live_bloqueios: LISTAR anonimo nao', async () => {
+    await assertFails(getDocs(collection(anon(), 'live_bloqueios')));
+  });
+  test('live_bloqueios: LISTAR admin sim', async () => {
+    await assertSucceeds(getDocs(collection(admin(), 'live_bloqueios')));
+  });
+
+  test('slugs: nao nasce por cima de endereco de ponto', async () => {
+    await assertFails(setDoc(doc(estranho(), 'slugs', 'feira-centro'), { uid: ESTRANHO }));
+  });
+  test('slugs: endereco livre continua passando', async () => {
+    await assertSucceeds(setDoc(doc(estranho(), 'slugs', 'meu-truck'), { uid: ESTRANHO }));
+  });
+
+  const cadastro = (slug) => ({
+    nome: 'Novo Parceiro', email: 'novo@exemplo.com', pix: 'novo@pix.com', slug,
+    status: 'pendente', aceite: { versao: '1.2' }, criadoEm: serverTimestamp(),
+  });
+  const novo = () => env.authenticatedContext('parceiro-novo', { email: 'novo@exemplo.com' }).firestore();
+
+  test('parceiro: cadastro com apelido de OUTRO e recusado', async () => {
+    await assertFails(setDoc(doc(novo(), 'parceiros', 'parceiro-novo'), cadastro('apelido-do-outro')));
+  });
+  test('parceiro: cadastro sem reservar o apelido e recusado', async () => {
+    await assertFails(setDoc(doc(novo(), 'parceiros', 'parceiro-novo'), cadastro('nao-reservado')));
+  });
+  test('parceiro: reserva e depois cadastro (caminho das telas) passa', async () => {
+    const db = novo();
+    await assertSucceeds(setDoc(doc(db, 'parceiro_slugs', 'apelido-novo'), { uid: 'parceiro-novo' }));
+    await assertSucceeds(setDoc(doc(db, 'parceiros', 'parceiro-novo'), cadastro('apelido-novo')));
+  });
+
+  const peca = (url, capa) => ({
+    uid: PARC, formato: 'reel', midia: 'video', url, storagePath: 'criadores/' + PARC + '/1-a.mp4',
+    capa, status: 'aguardando', criadaEm: serverTimestamp(),
+  });
+  const cria = () => env.authenticatedContext(PARC).firestore();
+
+  test('criador: url da propria pasta passa', async () => {
+    await assertSucceeds(setDoc(doc(cria(), 'criador_pecas', 'p1'),
+      peca(BUCKET + 'criadores%2F' + PARC + '%2F1-a.mp4?alt=media', BUCKET + 'criadores%2F' + PARC + '%2F1-a-capa.jpg?alt=media')));
+  });
+  test('criador: url de outro bucket e recusada', async () => {
+    await assertFails(setDoc(doc(cria(), 'criador_pecas', 'p2'),
+      peca('https://firebasestorage.googleapis.com/v0/b/outro-projeto.appspot.com/o/x.mp4', '')));
+  });
+  test('criador: url da pasta de OUTRO criador e recusada', async () => {
+    await assertFails(setDoc(doc(cria(), 'criador_pecas', 'p3'),
+      peca(BUCKET + 'criadores%2F' + OUTRO + '%2F1-a.mp4?alt=media', '')));
+  });
+  test('criador: capa de fora e recusada', async () => {
+    await assertFails(setDoc(doc(cria(), 'criador_pecas', 'p4'),
+      peca(BUCKET + 'criadores%2F' + PARC + '%2F1-a.mp4?alt=media', 'https://exemplo.com/capa.jpg')));
   });
 });
