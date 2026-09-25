@@ -1,5 +1,5 @@
 {
-  "versao": "2026-09-24-pet",
+  "versao": "2026-09-24-pet-planos",
   "atualizado": "2026-09-24",
   "itens": [
     {
@@ -30,7 +30,7 @@
       "w": 1080,
       "h": 1920,
       "novo": false,
-      "legenda": "#publi O corredor do shopping anda vazio no meio da semana. Mas a sua cliente não sumiu: ela está no celular, no sofá de casa.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra a peça, responde no chat e lança a oferta com contagem regressiva. E quem prefere ver de perto toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "legenda": "#publi O corredor do shopping anda vazio no meio da semana. Mas a sua cliente não sumiu: ela está no celular, no sofá de casa.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra a peça, responde no chat e deixa o produto em destaque na tela. E quem prefere ver de perto toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "shopping"
     },
@@ -400,7 +400,7 @@
       "h": 1920,
       "peso": "711 KB",
       "novo": false,
-      "legenda": "#publi Oficina fechada não é loja parada.\n\nCom o Moviki você aparece no mapa de quem está procurando peça agora e ainda mostra o estoque ao vivo, pelo celular, de onde estiver.\n\nNegócios em movimento vendem mais.\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "legenda": "#publi Oficina fechada não é loja parada.\n\nCom o Moviki você aparece no mapa de quem está procurando peça agora e ainda mostra as peças ao vivo, pelo celular, de onde estiver.\n\nNegócios em movimento vendem mais.\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "automotivo",
       "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
     },
