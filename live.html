@@ -306,7 +306,7 @@ svg{display:block}
 .ped .l1 strong{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ped .st{font-size:11px;font-weight:800;border-radius:6px;padding:2px 7px}
 .st.aguardando{background:rgba(255,176,32,.2);color:var(--mv-alerta)}.st.pago{background:rgba(37,227,155,.2);color:var(--mv-ok)}
-.st.entregue{background:rgba(0,212,255,.18);color:var(--mv-ciano)}.st.expirado,.st.cancelado,.st.estornado{background:rgba(255,107,107,.15);color:var(--mv-erro)}
+.st.entregue{background:rgba(0,212,255,.18);color:var(--mv-ciano)}.st.separando,.st.pronto,.st.saiu{background:rgba(155,120,255,.18);color:#c6b3ff}.st.expirado,.st.cancelado,.st.estornado{background:rgba(255,107,107,.15);color:var(--mv-erro)}
 .ped .l2{color:var(--mv-txt-3);margin-top:3px}
 .ped .l3{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .cm.venda{background:rgba(37,227,155,.16)}
@@ -628,7 +628,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-23-rodada2';
+  window.MOVIKI_VERSAO='2026-09-26-pedidos';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -1509,7 +1509,11 @@ svg{display:block}
     pedDes=onSnapshot(q,s=>{
       const l=[]; s.forEach(d=>{const x=d.data()||{};x.id=d.id;l.push(x);});
       l.sort((a,b)=>ms(b.criadoEm)-ms(a.criadoEm));
-      const pagos=l.filter(x=>x.status==='pago'||x.status==='entregue');
+      /* 26/09/2026: depois do Pix o pedido anda por etapas na Central de
+         Pedidos do painel (separando, pronto, saiu). Tudo isso continua
+         sendo venda paga. */
+      const PAGOS_=['pago','separando','pronto','saiu','entregue'];
+      const pagos=l.filter(x=>PAGOS_.indexOf(x.status)>=0);
       el('pxQtd').textContent=pagos.length; el('pxTotal').textContent=brl(pagos.reduce((t,x)=>t+Number(x.total||0),0));
       const conferindo=l.filter(x=>x.status==='conferindo');
       const abertos=l.filter(x=>x.status==='pago').length+conferindo.length, nb=el('nPix'); if(nb){nb.textContent=abertos;nb.classList.toggle('escondido',!abertos);}
@@ -1522,11 +1526,13 @@ svg{display:block}
         const it=(x.itens&&x.itens[0])||{}, c=x.comprador||{}, en=x.entrega||{};
         const d=document.createElement('div'); d.className='ped';
         const w=(function(x){x=String(x||'').replace(/\D/g,'').replace(/^0+/,'');return (x.length>=12&&x.slice(0,2)==='55')?x.slice(2):x;})(c.whatsapp);
-        const msg='Oi, '+String(c.nome||'').split(' ')[0]+'! Aqui é '+(neg.nome||'a loja')+'. Recebi seu pedido #'+x.id.slice(-6).toUpperCase()+' ('+(it.qtd>1?it.qtd+'x ':'')+(it.nome||'')+'). '+(en.tipo==='entrega'?'Vamos combinar a entrega?':'Pode retirar aqui comigo.');
-        d.innerHTML='<div class="l1"><strong>'+esc((it.qtd>1?it.qtd+'x ':'')+(it.nome||''))+'</strong><span>'+esc(brl(x.total))+'</span><span class="st '+esc(x.status)+'">'+esc(x.status)+'</span></div>'+
-          '<div class="l2">'+esc(c.nome||'')+' · #'+esc(x.id.slice(-6).toUpperCase())+' · '+(en.tipo==='entrega'?'Entrega: '+esc(en.detalhe||''):'Retirada no local')+'</div>'+
+        const nro=x.numero?String(x.numero).padStart(4,'0'):x.id.slice(-6).toUpperCase();
+        const msg='Oi, '+String(c.nome||'').split(' ')[0]+'! Aqui é '+(neg.nome||'a loja')+'. Recebi seu pedido nº '+nro+' ('+(it.qtd>1?it.qtd+'x ':'')+(it.nome||'')+'). '+(en.tipo==='entrega'?(en.aCombinar===false?'Já vamos preparar a entrega.':'Vamos combinar a entrega?'):'Pode retirar aqui comigo.');
+        const rotSt={separando:'separando',pronto:'pronto',saiu:'saiu p/ entrega'}[x.status]||x.status;
+        d.innerHTML='<div class="l1"><strong>'+esc((it.qtd>1?it.qtd+'x ':'')+(it.nome||''))+'</strong><span>'+esc(brl(x.total))+'</span><span class="st '+esc(x.status)+'">'+esc(rotSt)+'</span></div>'+
+          '<div class="l2">'+esc(c.nome||'')+' · nº '+esc(nro)+' · '+(en.tipo==='entrega'?'Entrega'+(en.bairro?' ('+esc(en.bairro)+')':'')+': '+esc(en.detalhe||''):'Retirada no local')+'</div>'+
           '<div class="l3">'+(w&&x.status!=='aguardando'?'<a class="btnMini on" target="_blank" rel="noopener" href="https://wa.me/55'+w+'?text='+encodeURIComponent(msg)+'">WhatsApp do cliente</a>':'')+
-          (x.status==='pago'?'<button type="button" class="btnMini" data-p="entregue">Marcar entregue</button>':'')+
+          (['pago','separando','pronto','saiu'].indexOf(x.status)>=0?'<button type="button" class="btnMini" data-p="entregue">Marcar entregue</button>':'')+
           /* No modo chave Pix propria nao ha gateway: "Conferir pagamento"
              nao tem a quem perguntar e sempre volta "ainda nao caiu". Quem
              confirma e o lojista, olhando o extrato pelos centavos. */
@@ -1553,7 +1559,7 @@ svg{display:block}
     const it=(alvo.itens&&alvo.itens[0])||{}, c=alvo.comprador||{};
     el('paValor').textContent=brl(alvo.total);
     /* o valor EXATO e a prova: os centavos identificam este pedido no extrato */
-    el('paSub').textContent=(c.nome||'Cliente')+' · '+(it.qtd>1?it.qtd+'x ':'')+(it.nome||'')+' · #'+String(alvo.id).slice(-6).toUpperCase()+' — confira este valor exato no seu extrato.';
+    el('paSub').textContent=(c.nome||'Cliente')+' · '+(it.qtd>1?it.qtd+'x ':'')+(it.nome||'')+' · nº '+(alvo.numero?String(alvo.numero).padStart(4,'0'):String(alvo.id).slice(-6).toUpperCase())+' — confira este valor exato no seu extrato.';
     const lk=el('paComp');
     if(alvo.comprovante){
       lk.style.display='';

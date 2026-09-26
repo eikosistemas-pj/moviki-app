@@ -22,10 +22,10 @@
    Bloco :root abaixo = rede de segurança se o movikiui.css não carregar.
    ========================================================================== */
 :root{
-  --mv-ciano:#00D4FF; --mv-azul:#0066FF;
-  --mv-grad:linear-gradient(135deg,#00D4FF,#0066FF);
-  --mv-bg:#060d18; --mv-bg-2:#0a1424; --mv-surf:#0e1c30; --mv-surf-2:#13263d;
-  --mv-campo:#0b1728; --mv-linha:#1c3457; --mv-linha-forte:#284a78;
+  --mv-ciano:#2EE59D; --mv-azul:#0FA36B;
+  --mv-grad:linear-gradient(135deg,#2EE59D,#0FA36B);
+  --mv-bg:#05110d; --mv-bg-2:#08180f; --mv-surf:#0b2019; --mv-surf-2:#10291f;
+  --mv-campo:#081a13; --mv-linha:#1b4535; --mv-linha-forte:#26604a;
   --mv-txt:#eaf6ff; --mv-txt-2:#c6d8ee; --mv-txt-3:#8fa6c4;
   --mv-ok:#25e39b; --mv-alerta:#ffb020; --mv-erro:#ff6b6b; --mv-roxo:#a855f7;
   --mv-laranja:#ff8a00; --mv-whats:#25D366;
@@ -67,7 +67,7 @@ input::placeholder{color:#6b7f96}
 
 /* ---------- cabeçalho do app ---------- */
 .mvTopo{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:10px var(--gut);background:rgba(6,13,24,.90);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  padding:10px var(--gut);background:rgba(5,17,13,.90);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   border-bottom:1px solid var(--mv-linha)}
 .mvTopo .logo{height:26px;flex:0 0 auto}
 .mvTopoDir{display:flex;align-items:center;gap:10px}
@@ -100,10 +100,10 @@ input::placeholder{color:#6b7f96}
 .mvNavIt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;border:1px solid transparent;
   border-radius:var(--mv-r);color:var(--mv-txt-2);font-size:14px;font-weight:600;padding:10px 11px;cursor:pointer;transition:.15s}
 .mvNavIt:hover{background:var(--mv-surf);border-color:var(--mv-linha);color:var(--mv-txt)}
-.mvNavIt.ativo{background:rgba(0,212,255,.10);border-color:rgba(0,212,255,.40);color:var(--mv-ciano)}
+.mvNavIt.ativo{background:rgba(46,229,157,.10);border-color:rgba(46,229,157,.40);color:var(--mv-ciano)}
 .mvNavIco{width:22px;height:22px;flex:0 0 auto;object-fit:contain}
-.mvSideCta{margin-top:14px;background:linear-gradient(160deg,rgba(0,102,255,.20),rgba(0,212,255,.05));
-  border:1px solid rgba(0,212,255,.34);border-radius:var(--mv-r-lg);padding:14px}
+.mvSideCta{margin-top:14px;background:linear-gradient(160deg,rgba(15,163,107,.20),rgba(46,229,157,.05));
+  border:1px solid rgba(46,229,157,.34);border-radius:var(--mv-r-lg);padding:14px}
 .mvSideCtaTit{font-size:14.5px;font-weight:700;margin-bottom:5px}
 .mvSideCta p{font-size:12.5px;color:var(--mv-txt-2);line-height:1.5;margin-bottom:11px}
 .mvSideCta button{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;border-radius:var(--mv-r);
@@ -137,7 +137,7 @@ input::placeholder{color:#6b7f96}
   padding:4px 2px;margin:10px 0;min-width:0}
 .pmBolha{max-width:86%;min-width:0;padding:10px 12px;border-radius:14px;font-size:14px;line-height:1.5;word-break:break-word}
 .pmBolha .pmQuando{display:block;font-size:11px;margin-top:5px;opacity:.62}
-.pmEu{align-self:flex-end;background:rgba(0,212,255,.14);border:1px solid rgba(0,212,255,.34);border-bottom-right-radius:5px}
+.pmEu{align-self:flex-end;background:rgba(46,229,157,.14);border:1px solid rgba(46,229,157,.34);border-bottom-right-radius:5px}
 .pmEle{align-self:flex-start;background:var(--mv-surf-2);border:1px solid var(--mv-linha);border-bottom-left-radius:5px}
 /* Bolha do assistente de IA: cor propria pra nao confundir robo com o dono. */
 .pmBot{align-self:flex-start;background:rgba(139,110,255,.13);border:1px solid rgba(139,110,255,.42);border-bottom-left-radius:5px}
@@ -197,10 +197,10 @@ input::placeholder{color:#6b7f96}
 .kTile{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:13px;min-width:0}
 .kIco{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
 .kIco svg{width:19px;height:19px}
-.kIco.azul{background:rgba(0,102,255,.16);color:#63b3ff}
+.kIco.azul{background:rgba(15,163,107,.16);color:#63b3ff}
 .kIco.roxo{background:rgba(168,85,247,.16);color:#c99bff}
 .kIco.verde{background:rgba(37,227,155,.14);color:var(--mv-ok)}
-.kIco.ciano{background:rgba(0,212,255,.14);color:var(--mv-ciano)}
+.kIco.ciano{background:rgba(46,229,157,.14);color:var(--mv-ciano)}
 .kV{font-size:clamp(17px,4.4vw,21px);font-weight:800;letter-spacing:-.5px;line-height:1.2;overflow-wrap:anywhere}
 .kR{font-size:12.5px;color:var(--mv-txt-2);margin-top:3px;line-height:1.4}
 .kN{font-size:12px;color:var(--mv-txt-3);margin-top:6px;line-height:1.4}
@@ -252,7 +252,7 @@ input::placeholder{color:#6b7f96}
 .pill.ok{color:var(--mv-ok);background:rgba(37,227,155,.13);border:1px solid rgba(37,227,155,.34)}
 .pill.warn{color:var(--mv-alerta);background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.34)}
 .pill.off{color:var(--mv-txt-3);background:var(--mv-campo);border:1px solid var(--mv-linha)}
-.pill.info{color:var(--mv-ciano);background:rgba(0,212,255,.10);border:1px solid rgba(0,212,255,.32)}
+.pill.info{color:var(--mv-ciano);background:rgba(46,229,157,.10);border:1px solid rgba(46,229,157,.32)}
 @media(min-width:1340px){
   .lCab{display:grid;grid-template-columns:38px minmax(0,1.6fr) 104px 96px 106px 118px;gap:11px;align-items:center;
     padding:0 0 9px;border-bottom:1px solid var(--mv-linha);font-size:12px;font-weight:700;color:var(--mv-txt-3);
@@ -326,7 +326,7 @@ input::placeholder{color:#6b7f96}
 .rcLista{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
 .rcLista li{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;color:var(--mv-txt-2);line-height:1.5}
 .rcLista li b{color:var(--mv-ciano);flex:0 0 auto;font-weight:800}
-.rcLink{display:block;background:var(--mv-campo);border:1px dashed rgba(0,212,255,.45);border-radius:var(--mv-r-sm);
+.rcLink{display:block;background:var(--mv-campo);border:1px dashed rgba(46,229,157,.45);border-radius:var(--mv-r-sm);
   padding:11px;color:#eaffff;font-size:13px;font-weight:700;word-break:break-all;margin-bottom:10px;text-align:center}
 .rcAcoes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .rcAcao{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--mv-campo);border:1px solid var(--mv-linha);
@@ -347,7 +347,7 @@ input::placeholder{color:#6b7f96}
    Travado, o botão NÃO some — sumir cria a dúvida "cadê?". Ele vira cadeado
    e leva para as aulas. */
 .rcCracha{display:flex;align-items:center;gap:11px;width:100%;margin-top:10px;text-align:left;cursor:pointer;font-family:inherit;
-  background:linear-gradient(180deg,rgba(0,212,255,.11),rgba(0,102,255,.05));border:1px solid rgba(0,212,255,.42);
+  background:linear-gradient(180deg,rgba(46,229,157,.11),rgba(15,163,107,.05));border:1px solid rgba(46,229,157,.42);
   border-radius:var(--mv-r);padding:11px 12px;color:var(--mv-txt)}
 .rcCracha:hover{border-color:var(--mv-ciano)}
 .crAtIco{flex:0 0 auto;width:26px;height:26px;color:var(--mv-ciano)}
@@ -359,7 +359,7 @@ input::placeholder{color:#6b7f96}
 [data-cracha].trancado .crAtIco,[data-cracha].trancado svg{color:var(--mv-alerta)}
 .folhaGrid button[data-cracha]{grid-column:1/-1;flex-direction:row;justify-content:center;gap:10px}
 .menuLista svg{width:22px;height:22px;flex:0 0 auto}
-@keyframes crFocoPulso{0%{box-shadow:0 0 0 0 rgba(0,212,255,.55)}100%{box-shadow:0 0 0 18px rgba(0,212,255,0)}}
+@keyframes crFocoPulso{0%{box-shadow:0 0 0 0 rgba(46,229,157,.55)}100%{box-shadow:0 0 0 18px rgba(46,229,157,0)}}
 #crachaCard.crFoco{border-color:var(--mv-ciano);animation:crFocoPulso 1.1s ease-out 2}
 
 /* ---------- selo de status do cadastro ---------- */
@@ -370,7 +370,7 @@ input::placeholder{color:#6b7f96}
 
 /* ---------- barra inferior (celular) ---------- */
 .mvBar{position:fixed;left:0;right:0;bottom:0;z-index:70;display:grid;grid-template-columns:repeat(5,1fr);align-items:end;
-  background:rgba(8,17,30,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--mv-linha);
+  background:rgba(7,20,15,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--mv-linha);
   padding-bottom:env(safe-area-inset-bottom)}
 @media(min-width:1120px){.mvBar{display:none}}
 .mvBar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;
@@ -378,10 +378,10 @@ input::placeholder{color:#6b7f96}
 .mvBar button svg{width:21px;height:21px}
 .mvBar button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mvBar button.on{color:var(--mv-ciano)}
-.mvBar button.on svg{filter:drop-shadow(0 0 7px rgba(0,212,255,.55))}
+.mvBar button.on svg{filter:drop-shadow(0 0 7px rgba(46,229,157,.55))}
 .mvBarFab{position:relative;color:var(--mv-ciano)!important}
 .mvFabCirc{display:flex;align-items:center;justify-content:center;width:50px;height:50px;margin-top:-22px;border-radius:50%;
-  background:var(--mv-grad);color:#02131f;box-shadow:0 10px 26px rgba(0,102,255,.5);border:3px solid var(--mv-bg)}
+  background:var(--mv-grad);color:#02131f;box-shadow:0 10px 26px rgba(15,163,107,.5);border:3px solid var(--mv-bg)}
 .mvFabCirc svg{width:22px;height:22px}
 
 /* ---------- folha que sobe (celular) e modal ---------- */
@@ -415,7 +415,7 @@ input::placeholder{color:#6b7f96}
 .mkcTxt{font-size:13.5px;color:var(--mv-txt-2);line-height:1.6}
 .mkcGanhos{margin:2px 0 12px;display:flex;flex-direction:column;gap:8px}
 .mkcGanhoItem{display:flex;gap:10px;align-items:flex-start;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:11px 12px}
-.mkcGanhoPct{flex:0 0 auto;min-width:46px;text-align:center;background:rgba(0,212,255,.14);color:var(--mv-ciano);font-weight:800;font-size:14px;border-radius:8px;padding:6px 4px}
+.mkcGanhoPct{flex:0 0 auto;min-width:46px;text-align:center;background:rgba(46,229,157,.14);color:var(--mv-ciano);font-weight:800;font-size:14px;border-radius:8px;padding:6px 4px}
 .mkcGanhoTxt{font-size:13px;color:var(--mv-txt-2);line-height:1.5}
 .mkcGanhoTxt b{color:var(--mv-txt)}
 .mkcLista{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
@@ -424,29 +424,29 @@ input::placeholder{color:#6b7f96}
 .mkcLista li img{width:24px;height:24px;object-fit:contain;flex:0 0 auto}
 
 /* ---------- simulador de ganhos (mantido da versão anterior) ---------- */
-.mkSim{position:relative;padding:18px 16px 20px;border-radius:var(--mv-r-lg);background:linear-gradient(160deg,rgba(19,38,61,.75),rgba(6,14,26,.85));
-  border:1px solid rgba(0,212,255,.28);overflow:hidden}
+.mkSim{position:relative;padding:18px 16px 20px;border-radius:var(--mv-r-lg);background:linear-gradient(160deg,rgba(16,41,31,.75),rgba(5,17,13,.85));
+  border:1px solid rgba(46,229,157,.28);overflow:hidden}
 .mkSimTitulo{font-size:13px;font-weight:800;color:#8fe9ff;text-transform:uppercase;letter-spacing:.05em;margin:0 0 12px}
 .mkSimTabs{display:flex;gap:8px;margin-bottom:16px}
 .mkSimTab{flex:1;min-width:0;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:9px 6px;color:var(--mv-txt-2);
   font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;text-align:center;display:flex;flex-direction:column;gap:2px}
 .mkSimTab .mkSimTabPreco{font-size:11px;font-weight:600;color:var(--mv-txt-3)}
-.mkSimTab.active{border-color:var(--mv-ciano);color:#eaffff;background:rgba(0,212,255,.12)}
+.mkSimTab.active{border-color:var(--mv-ciano);color:#eaffff;background:rgba(46,229,157,.12)}
 .mkSimTab.active .mkSimTabPreco{color:#8fe9ff}
 .mkSimGrupo{margin-bottom:16px}
 .mkSimLabel{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--mv-txt-2);font-weight:600;margin-bottom:8px;line-height:1.4}
 .mkSimValor{color:var(--mv-ok);font-weight:800;flex:0 0 auto}
 .mkSimSub{font-size:11.5px;color:var(--mv-txt-3);margin-top:6px}
-.mkSimRange{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:var(--mv-r-pill);background:linear-gradient(90deg,#00D4FF,#25e39b);outline:none;cursor:pointer;padding:0;border:none}
-.mkSimRange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #00D4FF;cursor:pointer}
-.mkSimRange::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #00D4FF;cursor:pointer}
+.mkSimRange{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:var(--mv-r-pill);background:linear-gradient(90deg,#2EE59D,#25e39b);outline:none;cursor:pointer;padding:0;border:none}
+.mkSimRange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #2EE59D;cursor:pointer}
+.mkSimRange::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid #2EE59D;cursor:pointer}
 .mkEqWrap{display:flex;flex-direction:column;width:100%;margin:20px 0 4px}
-.mkEqBloco{width:100%;border-radius:var(--mv-r);padding:16px 18px;text-align:center;background:rgba(10,25,47,.6)}
+.mkEqBloco{width:100%;border-radius:var(--mv-r);padding:16px 18px;text-align:center;background:rgba(9,30,22,.6)}
 .mkEqTitulo{display:block;font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px;line-height:1.4}
 .mkEqValor{display:block;font-size:clamp(20px,5vw,30px);font-weight:800;margin-top:6px;line-height:1.15}
 .mkEqBloco--laranja{border:1px solid rgba(255,122,26,.4);color:#ff9a3d}
 .mkEqBloco--laranja .mkEqValor{color:#ffb37a}
-.mkEqBloco--azul{border:1px solid rgba(0,212,255,.35);color:#4fd8ff}
+.mkEqBloco--azul{border:1px solid rgba(46,229,157,.35);color:#4fd8ff}
 .mkEqBloco--azul .mkEqValor{color:#7fe8ff}
 .mkEqBloco--verde{border:1px solid rgba(5,242,153,.35);color:#3df0ac}
 .mkEqBloco--verde .mkEqValor{color:#7cf6c6}
@@ -616,6 +616,38 @@ textarea.cpCampo{min-height:110px;resize:vertical}
   }catch(e){}
 </script>
 <script src="/mvmotion.js" defer></script><!-- 23/09/2026: movimento e lazy loading (mvmotion.js, do outro chat). Painel sem mvmetrica.js precisa desta linha. -->
+<style id="mvTemaParceiro">
+/* =====================================================================
+   TEMA VERDE DO PAINEL DO PARCEIRO — 26/09/2026
+   Os tres paineis eram iguais e ate o Paulo se confundia indo e voltando.
+   Agora cada um tem a sua cor: NEGOCIO azul (padrao Moviki), PARCEIRO verde,
+   CENTRAL DE PEDIDOS laranja. O botao de troca mostra sempre a cor do painel
+   de DESTINO — aqui, "Voltar ao painel do negocio" fica azul.
+   A logo e os icones 3D continuam os da marca: so o acento e as superficies
+   mudam. Graficos de canvas (cracha, QR) nao mudam: sao material da marca.
+   ===================================================================== */
+:root:root{
+  --mv-ciano:#2EE59D; --mv-azul:#0FA36B;
+  --mv-grad:linear-gradient(135deg,#2EE59D,#0FA36B);
+  --mv-grad-suave:linear-gradient(160deg,rgba(15,163,107,.18),rgba(46,229,157,.04));
+  --mv-glow:0 0 18px rgba(46,229,157,.32),0 0 46px rgba(46,229,157,.12);
+  --mv-borda-glow:1px solid rgba(46,229,157,.30);
+  --mv-bg:#05110d; --mv-bg-2:#08180f; --mv-surf:#0b2019; --mv-surf-2:#10291f;
+  --mv-campo:#081a13; --mv-linha:#1b4535; --mv-linha-forte:#26604a;
+  --mv-txt-2:#c7e6d8; --mv-txt-3:#8fb8a6;
+  --ciano:#2EE59D; --azul:#0FA36B; --card:#10291f; --card-borda:#1b4535; --campo:#081a13;
+}
+body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157,.12),transparent 70%)}
+.mvPainelTag{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;
+  background:rgba(46,229,157,.14);border:1px solid rgba(46,229,157,.45);color:#9ff5cf;font-size:11.5px;font-weight:800;
+  letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.mvTopo .mvPainelTag{margin-right:auto;margin-left:8px}
+.mvSideLogo .mvPainelTag{display:flex;width:max-content;margin-top:8px}
+/* troca de painel = cor do destino (negocio = azul) */
+.mvNavVolta{border-color:rgba(0,212,255,.40)!important;background:rgba(0,212,255,.08)!important}
+.mvNavVolta:hover{border-color:rgba(0,212,255,.70)!important;background:rgba(0,212,255,.14)!important}
+.mvVoltaTopo{border-color:rgba(0,212,255,.50)!important;background:rgba(0,212,255,.10)!important;color:#d6f4ff!important}
+</style>
 </head>
 <body>
 
@@ -659,6 +691,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
   <!-- cabeçalho do celular -->
   <header class="mvTopo">
     <img class="logo" src="logo.png" alt="Moviki" onerror="this.outerHTML='<span style=&quot;font-weight:800;font-size:19px&quot;>movi<span style=&quot;color:#00D4FF&quot;>ki</span></span>'">
+    <span class="mvPainelTag">Parceiro</span>
     <div class="mvTopoDir">
       <a class="mvVoltaTopo" id="topoVoltarNeg" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg><span>Meu negócio</span></a>
       <span class="mvSinoWrap">
@@ -676,7 +709,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
 
       <!-- ---------- lateral ---------- -->
       <aside class="mvSide" aria-label="Navegação">
-        <div class="mvSideLogo"><img src="logo.png" alt="Moviki" onerror="this.outerHTML='<span style=&quot;font-weight:800;font-size:21px&quot;>movi<span style=&quot;color:#00D4FF&quot;>ki</span></span>'"></div>
+        <div class="mvSideLogo"><img src="logo.png" alt="Moviki" onerror="this.outerHTML='<span style=&quot;font-weight:800;font-size:21px&quot;>movi<span style=&quot;color:#00D4FF&quot;>ki</span></span>'"><span class="mvPainelTag">Painel do parceiro</span></div>
         <nav class="mvNav" id="mvNav">
           <a class="mvNavIt mvNavVolta" id="navVoltarNeg" href="index.html" style="display:none"><img class="mvNavIco" src="icones/pagina.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Voltar ao painel do negócio</span></a>
           <div class="mvNavVoltaSep" id="navVoltarSep" style="display:none"></div>
@@ -1528,7 +1561,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-23-seguranca';
+  window.MOVIKI_VERSAO = '2026-09-26-verde';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2695,7 +2728,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
     partes.push(linha(serieB, px, py, '#25e39b'));
     serieA.forEach((v,i)=> partes.push('<circle cx="'+px(i).toFixed(1)+'" cy="'+py(v).toFixed(1)+'" r="3.4" fill="#3b9dff" stroke="#060d18" stroke-width="1.6"/>'));
     serieB.forEach((v,i)=> partes.push('<circle cx="'+px(i).toFixed(1)+'" cy="'+py(v).toFixed(1)+'" r="3.4" fill="#25e39b" stroke="#060d18" stroke-width="1.6"/>'));
-    partes.push('<line id="grafMarca" x1="0" y1="'+mT+'" x2="0" y2="'+(mT+altG)+'" stroke="#00D4FF" stroke-width="1" opacity="0"/>');
+    partes.push('<line id="grafMarca" x1="0" y1="'+mT+'" x2="0" y2="'+(mT+altG)+'" stroke="#2EE59D" stroke-width="1" opacity="0"/>');
 
     svg.setAttribute('viewBox','0 0 '+L+' '+alt);
     svg.setAttribute('width', L);
@@ -3525,7 +3558,7 @@ textarea.cpCampo{min-height:110px;resize:vertical}
     const cs = bs.map(b => (CP_IND || []).filter(t => dentro(t, b)).length);
     const ps = bs.map(b => (CP_COMIS || []).filter(c => !c.estornada && Number(c.nivel) === 1 && dentro(ms(c.criadoEm), b)).length);
     el('cpGraficos').innerHTML =
-        (CP_TRAF ? '<div class="cpGraf"><h4>Visitas pelo seu link</h4>' + cpSvg(bs, [{nome:'Visitas', cor:'#00D4FF', vals:vs}], larg) + '</div>' : '')
+        (CP_TRAF ? '<div class="cpGraf"><h4>Visitas pelo seu link</h4>' + cpSvg(bs, [{nome:'Visitas', cor:'#2EE59D', vals:vs}], larg) + '</div>' : '')
       + '<div class="cpGraf"><h4>Cadastros e mensalidades pagas</h4>' + cpSvg(bs, [{nome:'Cadastros', cor:'#a855f7', vals:cs}, {nome:'Mensalidades pagas', cor:'#25e39b', vals:ps}], larg) + '</div>';
 
     // canais
@@ -3711,28 +3744,28 @@ textarea.cpCampo{min-height:110px;resize:vertical}
    ======================================================================= */
 
 /* --- o player embutido no fim do bloco --- */
-.mvTutBox{margin:22px 0 6px;padding:14px;border-radius:14px;border:1px solid var(--card-borda,#1c3457);background:linear-gradient(180deg,rgba(0,212,255,.05),rgba(255,255,255,.01))}
+.mvTutBox{margin:22px 0 6px;padding:14px;border-radius:14px;border:1px solid var(--card-borda,#1b4535);background:linear-gradient(180deg,rgba(46,229,157,.05),rgba(255,255,255,.01))}
 .mvTutBoxTopo{display:flex;align-items:center;gap:9px;margin:0 0 11px}
-.mvTutBoxIco{width:26px;height:26px;border-radius:7px;flex:none;display:grid;place-items:center;background:rgba(0,212,255,.14);color:var(--ciano,#00D4FF)}
+.mvTutBoxIco{width:26px;height:26px;border-radius:7px;flex:none;display:grid;place-items:center;background:rgba(46,229,157,.14);color:var(--ciano,#2EE59D)}
 .mvTutBoxIco svg{width:14px;height:14px}
 .mvTutBoxTxt{min-width:0}
 .mvTutBoxTit{display:block;font-size:14.5px;font-weight:700;line-height:1.3}
 .mvTutBoxSub{display:block;font-size:12.5px;color:#7f95b3;margin-top:1px}
-.mvTutQuadro{position:relative;width:100%;padding-top:56.25%;border-radius:11px;overflow:hidden;background:#0b1728;border:1px solid var(--card-borda,#1c3457)}
+.mvTutQuadro{position:relative;width:100%;padding-top:56.25%;border-radius:11px;overflow:hidden;background:#081a13;border:1px solid var(--card-borda,#1b4535)}
 .mvTutQuadro img,.mvTutQuadro iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;display:block}
 .mvTutQuadro img{object-fit:cover}
 button.mvTutQuadro{padding-top:56.25%;cursor:pointer;font:inherit;color:inherit}
-button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
+button.mvTutQuadro:hover{border-color:var(--ciano,#2EE59D)}
 
 /* --- a aba Tutoriais: grade de capas --- */
 .mvTutGrade{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:22px 16px}
 .mvTutCard{display:block;min-width:0;width:100%;padding:0;margin:0;border:0;background:transparent;color:#e6eefb;font-family:inherit;text-align:left;cursor:pointer}
-.mvTutCapa{position:relative;display:block;width:100%;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#0b1728;border:1px solid var(--card-borda,#1c3457);transition:border-color .16s,transform .16s}
+.mvTutCapa{position:relative;display:block;width:100%;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#081a13;border:1px solid var(--card-borda,#1b4535);transition:border-color .16s,transform .16s}
 .mvTutCapa img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block}
-.mvTutCard:hover .mvTutCapa{border-color:var(--ciano,#00D4FF);transform:translateY(-2px)}
+.mvTutCard:hover .mvTutCapa{border-color:var(--ciano,#2EE59D);transform:translateY(-2px)}
 .mvTutPlayC{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(4,10,18,.62);color:#fff;border:1.5px solid rgba(255,255,255,.55);transition:background .16s,color .16s,transform .16s}
 .mvTutPlayC svg{width:15px;height:15px;margin-left:2px}
-.mvTutCard:hover .mvTutPlayC,button.mvTutQuadro:hover .mvTutPlayC{background:var(--ciano,#00D4FF);color:#04121f;border-color:transparent;transform:translate(-50%,-50%) scale(1.08)}
+.mvTutCard:hover .mvTutPlayC,button.mvTutQuadro:hover .mvTutPlayC{background:var(--ciano,#2EE59D);color:#04121f;border-color:transparent;transform:translate(-50%,-50%) scale(1.08)}
 .mvTutDurC{position:absolute;right:7px;bottom:7px;padding:2px 6px;border-radius:5px;background:rgba(4,10,18,.86);color:#fff;font-size:11.5px;font-weight:600;line-height:1.45}
 .mvTutRot{display:block;margin:10px 2px 3px;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#7f95b3;font-weight:700}
 .mvTutNome{display:block;margin:0 2px;font-size:15px;font-weight:600;line-height:1.35}
@@ -3740,7 +3773,7 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 
 .mvTutVideo{position:relative;width:100%;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000;margin:0 0 10px}
 .mvTutVideo iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
-.mvTutVoltar{background:transparent;border:0;color:var(--ciano,#00D4FF);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:6px 0;margin:0 0 4px}
+.mvTutVoltar{background:transparent;border:0;color:var(--ciano,#2EE59D);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:6px 0;margin:0 0 4px}
 .mvTutTit{font-size:16px;font-weight:700;margin:0 0 4px}
 .mvTutVazio{color:#7f95b3;font-size:14px;line-height:1.5}
 
@@ -3753,12 +3786,12 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .mvAu{position:fixed;inset:0;z-index:300;background:rgba(3,8,16,.88);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
   display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow:auto}
 .mvAu[hidden]{display:none!important}
-.mvAuCx{width:100%;max-width:1060px;background:#0a1524;border:1px solid var(--card-borda,#1c3457);
+.mvAuCx{width:100%;max-width:1060px;background:#08180f;border:1px solid var(--card-borda,#1b4535);
   border-radius:18px;padding:18px 18px 20px;position:relative;margin:auto}
 .mvAuX{position:absolute;top:13px;right:13px;width:34px;height:34px;border-radius:10px;
-  border:1px solid var(--card-borda,#1c3457);background:#0d1c30;color:#9fb4d0;font-size:16px;
+  border:1px solid var(--card-borda,#1b4535);background:#0b2019;color:#9fb4d0;font-size:16px;
   line-height:1;cursor:pointer;font-family:inherit}
-.mvAuX:hover{color:#fff;border-color:var(--ciano,#00D4FF)}
+.mvAuX:hover{color:#fff;border-color:var(--ciano,#2EE59D)}
 .mvAuTopo{margin:0 44px 14px 2px}
 .mvAuH{display:block;font-size:18px;font-weight:700;line-height:1.25}
 .mvAuSub{display:block;font-size:13px;color:#7f95b3;margin-top:3px;line-height:1.45}
@@ -3773,14 +3806,14 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .mvAuLista{display:flex;flex-direction:column;gap:8px;max-height:none}
 @media(min-width:900px){.mvAuLista{max-height:62vh;overflow:auto;padding-right:4px}}
 .mvAuIt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;cursor:pointer;
-  padding:10px 12px;border-radius:12px;border:1px solid var(--card-borda,#1c3457);
-  background:#0c1a2c;color:#e6eefb;font-family:inherit}
-.mvAuIt:hover{border-color:var(--ciano,#00D4FF)}
-.mvAuIt.tocando{border-color:var(--ciano,#00D4FF);background:rgba(0,212,255,.10)}
+  padding:10px 12px;border-radius:12px;border:1px solid var(--card-borda,#1b4535);
+  background:#0a1d16;color:#e6eefb;font-family:inherit}
+.mvAuIt:hover{border-color:var(--ciano,#2EE59D)}
+.mvAuIt.tocando{border-color:var(--ciano,#2EE59D);background:rgba(46,229,157,.10)}
 .mvAuIt.feita .mvAuNome{color:#9fb4d0}
 .mvAuNum{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
   font-size:13px;font-weight:700;background:rgba(255,255,255,.07);color:#9fb4d0;
-  border:1px solid var(--card-borda,#1c3457)}
+  border:1px solid var(--card-borda,#1b4535)}
 .mvAuNum.ok{background:#22c55e;color:#04210f;border-color:transparent}
 .mvAuNum.ok svg{width:14px;height:14px}
 .mvAuTxt{flex:1;min-width:0}
@@ -3856,7 +3889,7 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
    Estilo PROPRIO, sem reusar classe de outro arquivo. Reusar foi como o botao
    laranja das aulas do parceiro nasceu quebrado. */
 .crBox{border:1px solid var(--mv-linha-forte);border-radius:18px;overflow:hidden;
-  background:linear-gradient(150deg,rgba(0,212,255,.07),rgba(0,102,255,.05)),var(--mv-fundo-2, #0d1b2a)}
+  background:linear-gradient(150deg,rgba(46,229,157,.07),rgba(15,163,107,.05)),var(--mv-fundo-2, #0b1d17)}
 .crTopo{display:flex;align-items:center;justify-content:space-between;gap:10px;
   padding:12px 16px;border-bottom:1px solid var(--mv-linha)}
 .crMarca{font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--mv-txt-1)}
@@ -3867,7 +3900,7 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .crDir{flex:0 0 auto;text-align:center}
 .crFoto{width:66px;height:66px;border-radius:50%;margin-bottom:10px;display:flex;
   align-items:center;justify-content:center;font-size:26px;font-weight:800;color:var(--mv-ciano);
-  background:rgba(0,212,255,.10);border:2px solid var(--mv-linha-forte);
+  background:rgba(46,229,157,.10);border:2px solid var(--mv-linha-forte);
   background-size:cover;background-position:center;overflow:hidden}
 .crFoto.temFoto{font-size:0;color:transparent;border-color:var(--mv-ok)}
 .crNome{font-size:20px;font-weight:800;line-height:1.2;word-break:break-word;color:var(--mv-txt-1)}
@@ -3893,7 +3926,7 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
    multinivel, e foi por isso que a landing perdeu a piramide em 27/08. */
 .cvCalc{margin-top:14px;padding:18px 16px 20px;border-radius:18px;
   border:1px solid var(--mv-linha-forte);
-  background:linear-gradient(160deg,rgba(0,212,255,.06),rgba(0,102,255,.04))}
+  background:linear-gradient(160deg,rgba(46,229,157,.06),rgba(15,163,107,.04))}
 .cvTit{font-size:15px;font-weight:800;color:var(--mv-txt-1);margin-bottom:6px}
 .cvSub{font-size:13px;color:var(--mv-txt-3);line-height:1.55;margin-bottom:14px}
 .cvAbas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-bottom:14px}
@@ -3901,7 +3934,7 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
   border-radius:11px;padding:9px 5px;color:var(--mv-txt-2);font-family:inherit;
   font-size:12.5px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;gap:2px}
 .cvAba span{font-size:10.5px;font-weight:600;color:var(--mv-txt-3)}
-.cvAba.ativa{border-color:var(--mv-ciano);background:rgba(0,212,255,.11);color:var(--mv-txt-1)}
+.cvAba.ativa{border-color:var(--mv-ciano);background:rgba(46,229,157,.11);color:var(--mv-txt-1)}
 .cvAba.ativa span{color:var(--mv-ciano)}
 .cvDestaque{text-align:center;padding:16px 12px;border-radius:14px;
   border:1px solid var(--mv-linha);background:rgba(255,255,255,.03)}
@@ -3931,7 +3964,7 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .nvSelo[data-nivel="bronze"]  {color:#e0a274;border-color:rgba(201,140,90,.5);background:rgba(201,140,90,.14)}
 .nvSelo[data-nivel="prata"]   {color:#dfe8f2;border-color:rgba(195,206,217,.5);background:rgba(195,206,217,.14)}
 .nvSelo[data-nivel="ouro"]    {color:#ffd979;border-color:rgba(255,201,77,.5);background:rgba(255,201,77,.14)}
-.nvSelo[data-nivel="diamante"]{color:#9fefff;border-color:rgba(0,212,255,.5);background:rgba(0,212,255,.13)}
+.nvSelo[data-nivel="diamante"]{color:#9fefff;border-color:rgba(46,229,157,.5);background:rgba(46,229,157,.13)}
 .nvSelo[data-nivel="esmeralda"]{color:#7cf6c6;border-color:rgba(37,227,155,.5);background:rgba(37,227,155,.14)}
 .nvTopo{display:flex;align-items:flex-end;gap:14px;margin:14px 0 10px}
 .nvAtivosBloco{min-width:0}
@@ -3945,7 +3978,7 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .nvEscada{margin-top:14px;display:flex;flex-direction:column;gap:7px}
 .nvLinha{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;
   border:1px solid var(--mv-linha);background:rgba(255,255,255,.03)}
-.nvLinha.atual{border-color:var(--mv-ciano);background:rgba(0,212,255,.09)}
+.nvLinha.atual{border-color:var(--mv-ciano);background:rgba(46,229,157,.09)}
 .nvPonto{flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:var(--mv-linha-forte)}
 /* .nvPonto saiu da escada em 10/09/2026: quem marca o degrau agora e a propria
    medalha (colorida no alcancado, cinza no que falta) + a borda ciano no atual.
@@ -3980,7 +4013,7 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 .cvBarras .mkSimLabel{align-items:flex-start}
 .cvBarras .mkSimLabel span:first-child{min-width:0}
 .cvSoma{margin-top:14px;padding:13px 14px;border-radius:12px;
-  border:1px solid rgba(0,212,255,.28);background:rgba(0,212,255,.06)}
+  border:1px solid rgba(46,229,157,.28);background:rgba(46,229,157,.06)}
 .cvSomaLinha{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .cvSomaRot{font-size:12.5px;font-weight:700;color:var(--mv-txt-2);min-width:0}
 .cvSomaVal{flex:0 0 auto;font-size:19px;font-weight:800;color:var(--mv-ok);letter-spacing:-.02em}
@@ -5697,14 +5730,14 @@ function mvQR(texto){
 <style>
 /* ============ MATERIAL DE APOIO (11/09/2026) ============ */
 .mvNovo{margin-left:auto;font-size:9.5px;font-weight:800;letter-spacing:.6px;padding:3px 7px;border-radius:999px;
-  background:linear-gradient(135deg,#25e39b,#00D4FF);color:#02131f;line-height:1}
-.mvNavMat{border-color:rgba(37,227,155,.35)!important;background:linear-gradient(90deg,rgba(37,227,155,.10),rgba(0,212,255,.06))!important;color:var(--mv-txt)!important}
-.mvNavMat.ativo{border-color:rgba(0,212,255,.55)!important;color:var(--mv-ciano)!important}
+  background:linear-gradient(135deg,#25e39b,#2EE59D);color:#02131f;line-height:1}
+.mvNavMat{border-color:rgba(37,227,155,.35)!important;background:linear-gradient(90deg,rgba(37,227,155,.10),rgba(46,229,157,.06))!important;color:var(--mv-txt)!important}
+.mvNavMat.ativo{border-color:rgba(46,229,157,.55)!important;color:var(--mv-ciano)!important}
 .matDest{display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;font-family:inherit;color:var(--mv-txt);
   margin:0 0 14px;padding:14px 16px;border-radius:var(--mv-r-lg);border:1px solid transparent;
-  background:linear-gradient(var(--mv-surf),var(--mv-surf)) padding-box,linear-gradient(135deg,#25e39b,#00D4FF,#0066FF) border-box;
-  box-shadow:0 0 0 0 rgba(0,212,255,.0);animation:matPulso 3.2s ease-in-out infinite}
-@keyframes matPulso{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,0)}50%{box-shadow:0 0 22px 0 rgba(0,212,255,.22)}}
+  background:linear-gradient(var(--mv-surf),var(--mv-surf)) padding-box,linear-gradient(135deg,#25e39b,#2EE59D,#0FA36B) border-box;
+  box-shadow:0 0 0 0 rgba(46,229,157,.0);animation:matPulso 3.2s ease-in-out infinite}
+@keyframes matPulso{0%,100%{box-shadow:0 0 0 0 rgba(46,229,157,0)}50%{box-shadow:0 0 22px 0 rgba(46,229,157,.22)}}
 @media (prefers-reduced-motion:reduce){.matDest{animation:none}}
 .cpDest{animation:none;background:linear-gradient(var(--mv-surf),var(--mv-surf)) padding-box,linear-gradient(135deg,#ff9f43,#ff4d8d,#8b5cf6) border-box}
 .cpDest .matSeta{color:#ff9f43}
@@ -5728,7 +5761,7 @@ function mvQR(texto){
 .matFiltros::-webkit-scrollbar{display:none}
 .matFiltros button{flex:0 0 auto;border:1px solid var(--mv-linha);background:var(--mv-campo);color:var(--mv-txt-2);font-family:inherit;
   font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;cursor:pointer}
-.matFiltros button.on{border-color:var(--mv-ciano);background:rgba(0,212,255,.12);color:var(--mv-ciano)}
+.matFiltros button.on{border-color:var(--mv-ciano);background:rgba(46,229,157,.12);color:var(--mv-ciano)}
 /* ---------- faixa de CATEGORIA DE COMERCIO (15/09/2026) ----------
    Nivel 1 da navegacao do material. Fica ACIMA do filtro de tipo e e
    visualmente mais forte que ele: o parceiro escolhe primeiro o ramo do
@@ -5783,13 +5816,13 @@ function mvQR(texto){
 .mcV2 .mcTxt b{font-size:14px;font-weight:800}
 .mcV2 .mcTxt small{font-size:11.5px;font-weight:600;color:var(--mv-txt-3,#8fa6c4);margin-top:2px}
 .mcV2 .mcRamoBtn .mcTxt small{margin:0 0 2px;text-transform:uppercase;letter-spacing:.06em;font-size:10.5px}
-.mcV2 .n{font-size:11px;font-weight:700;background:rgba(0,212,255,.12);color:var(--mv-ciano,#00d4ff);border-radius:999px;padding:2px 8px;flex:0 0 auto}
+.mcV2 .n{font-size:11px;font-weight:700;background:rgba(46,229,157,.12);color:var(--mv-ciano,#2EE59D);border-radius:999px;padding:2px 8px;flex:0 0 auto}
 .mcV2 .mcPrinc.on,.mcV2 .mcRamoBtn.on,.mcV2 .mcRamo.on{color:var(--mv-txt,#eaf6ff)}
-.mcV2 .mcPrinc.on,.mcV2 .mcRamoBtn.on{border-color:var(--mv-ciano,#00d4ff);box-shadow:0 0 0 1px var(--mv-ciano,#00d4ff),0 8px 22px rgba(0,212,255,.14);
-  background:linear-gradient(150deg,rgba(0,212,255,.14),rgba(0,102,255,.06))}
+.mcV2 .mcPrinc.on,.mcV2 .mcRamoBtn.on{border-color:var(--mv-ciano,#2EE59D);box-shadow:0 0 0 1px var(--mv-ciano,#2EE59D),0 8px 22px rgba(46,229,157,.14);
+  background:linear-gradient(150deg,rgba(46,229,157,.14),rgba(15,163,107,.06))}
 .mcV2 .mcConvite{border-color:rgba(37,227,155,.35)}
 .mcV2 .mcConvite .n{background:rgba(37,227,155,.14);color:#25e39b}
-.mcV2 .mcConvite.on{border-color:#25e39b;box-shadow:0 0 0 1px #25e39b,0 8px 22px rgba(37,227,155,.16);background:linear-gradient(150deg,rgba(37,227,155,.14),rgba(0,102,255,.05))}
+.mcV2 .mcConvite.on{border-color:#25e39b;box-shadow:0 0 0 1px #25e39b,0 8px 22px rgba(37,227,155,.16);background:linear-gradient(150deg,rgba(37,227,155,.14),rgba(15,163,107,.05))}
 .mcV2 .mcSeta{font-size:14px;color:var(--mv-txt-3,#8fa6c4);transition:transform .2s ease;flex:0 0 auto}
 .mcV2 .mcRamoBtn.aberto .mcSeta{transform:rotate(180deg)}
 .mcV2 .mcRamos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px;padding:10px;border:1px solid var(--mv-linha);border-radius:14px;background:rgba(0,0,0,.18)}
@@ -5800,7 +5833,7 @@ function mvQR(texto){
 .mcV2 .mcRamo .mcEmj{font-size:26px}
 .mcV2 .mcRNome{font-size:12px;font-weight:700;line-height:1.2}
 .mcV2 .mcRamo .n{position:absolute;top:5px;right:5px;padding:1px 6px;font-size:10px}
-.mcV2 .mcRamo.on{border-color:var(--mv-ciano,#00d4ff);color:var(--mv-txt);background:linear-gradient(150deg,rgba(0,212,255,.16),rgba(0,102,255,.06))}
+.mcV2 .mcRamo.on{border-color:var(--mv-ciano,#2EE59D);color:var(--mv-txt);background:linear-gradient(150deg,rgba(46,229,157,.16),rgba(15,163,107,.06))}
 @media(max-width:620px){
   .mcV2 .mcTopo{gap:8px}
   .mcV2 .mcPrinc{flex-direction:column;align-items:flex-start;gap:6px;padding:10px 11px;position:relative}
@@ -5825,7 +5858,7 @@ function mvQR(texto){
 .matCard.dest .matCardTit{font-size:15.5px;-webkit-line-clamp:3}
 .matCardSub{font-size:11.5px;color:var(--mv-txt-3);padding:0 3px}
 .matTag{position:absolute;top:13px;right:13px;font-size:9.5px;font-weight:800;letter-spacing:.5px;padding:3px 7px;border-radius:999px;background:#25e39b;color:#02131f;z-index:2}
-.matTag.qr{background:#00D4FF}
+.matTag.qr{background:#2EE59D}
 .matTexto{grid-column:1/-1;background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);padding:13px 14px}
 .matTexto .matCardTit{padding:0;margin-bottom:8px;-webkit-line-clamp:unset}
 .matTextoCorpo{white-space:pre-wrap;font-size:13px;line-height:1.55;color:var(--mv-txt-2);background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:10px 12px;word-break:break-word}
@@ -5865,7 +5898,7 @@ function mvQR(texto){
 .matCard:not(.dest) .matRedes button span{display:none}
 .matCard:not(.dest) .matRedes button svg{width:18px;height:18px}
 .matToast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:120;max-width:92vw;width:max-content;
-  background:#0b1728;border:1px solid var(--mv-ciano);color:var(--mv-txt);font-size:13.5px;line-height:1.45;padding:11px 16px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.45);text-align:center}
+  background:#081a13;border:1px solid var(--mv-ciano);color:var(--mv-txt);font-size:13.5px;line-height:1.45;padding:11px 16px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.45);text-align:center}
 </style>
 <div class="matToast" id="matToast" hidden></div>
 

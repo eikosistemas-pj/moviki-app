@@ -1671,19 +1671,82 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
    A porta de ida existia num lugar so: o link "Abrir meu painel completo",
    no fim do modal "Indicar agora" - ou seja, tres toques e um rolar de tela.
    O caminho de volta (parceiro.html -> index.html) ja tinha virado item de
-   menu em 17/09; esta e a outra metade do par. Dourado de proposito: nao e
-   mais uma secao do painel do negocio, e a troca pro painel do dinheiro. */
-.mvNavParc,.drawerParc{border-color:rgba(232,169,0,.45)!important;
-  background:linear-gradient(160deg,rgba(255,199,64,.16),rgba(255,199,64,.04))!important;
-  color:#ffd98a!important;font-weight:700!important;text-decoration:none;}
-.mvNavParc:hover,.drawerParc:hover{border-color:rgba(255,207,77,.8)!important;
-  background:linear-gradient(160deg,rgba(255,199,64,.26),rgba(255,199,64,.08))!important;color:#ffe6b0!important;}
+   menu em 17/09; esta e a outra metade do par.
+   26/09/2026: VERDE, e nao mais dourado. Cada painel tem a sua cor — negocio
+   azul (padrao), parceiro verde, Central de Pedidos laranja — e o botao de
+   troca mostra a cor do painel de DESTINO. O dourado tambem colidia com o
+   selo Enterprise. */
+.mvNavParc,.drawerParc{border-color:rgba(46,229,157,.45)!important;
+  background:linear-gradient(160deg,rgba(46,229,157,.16),rgba(15,163,107,.05))!important;
+  color:#9ff5cf!important;font-weight:700!important;text-decoration:none;}
+.mvNavParc:hover,.drawerParc:hover{border-color:rgba(46,229,157,.8)!important;
+  background:linear-gradient(160deg,rgba(46,229,157,.26),rgba(15,163,107,.10))!important;color:#c9fbe4!important;}
 .mvNavParcSep,.drawerParcSep{height:1px;background:var(--mv-linha,rgba(255,255,255,.09));margin:8px 4px 6px;}
 /* O dourado chapado do botao do modal: ali ele e a acao principal da tela,
    nao um item de lista - por isso fundo cheio, e nao so a borda. */
-.idxBtn.ouro{background:linear-gradient(135deg,#ffe08a,#ffcf4d 45%,#e8a900);color:#3a2a00;
-  border:1px solid #d99e00;box-shadow:0 4px 16px rgba(224,168,0,.35);}
-.idxBtn.ouro:hover{background:linear-gradient(135deg,#ffe9a8,#ffd966 45%,#f0b400);}
+.idxBtn.ouro{background:linear-gradient(135deg,#6ff2b8,#2ee59d 45%,#0fa36b);color:#02291a;
+  border:1px solid #11a86f;box-shadow:0 4px 16px rgba(46,229,157,.30);}
+.idxBtn.ouro:hover{background:linear-gradient(135deg,#8ff6c9,#4beaa9 45%,#13b579);}
+
+/* ================= ENTERPRISE — identidade dourada (26/09/2026) =================
+   O Enterprise e um PLANO, nao um painel: a cor do painel continua dizendo ONDE
+   a pessoa esta (azul negocio, laranja Pedidos, verde parceiro). O dourado vira
+   DISTINTIVO: selo no topo, borda no cartao do negocio e etiqueta nos
+   recursos exclusivos. No Premium as mesmas etiquetas aparecem com cadeado —
+   e a vitrine do que o upgrade libera. */
+.mvEntSelo{display:none;align-items:center;gap:4px;margin-top:5px;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  color:#3a2a00;background:linear-gradient(135deg,#ffe08a,#ffcf4d 45%,#e8a900);border:1px solid #d99e00;border-radius:999px;padding:2px 9px;width:max-content}
+.mvEntSelo::before{content:"★";font-size:10px}
+body.mvEnterprise .mvEntSelo{display:inline-flex}
+body.mvEnterprise .mvSideNeg{border-color:rgba(232,169,0,.65);box-shadow:0 0 0 1px rgba(255,207,77,.18),0 8px 26px rgba(224,168,0,.14);
+  background:linear-gradient(160deg,rgba(255,207,77,.10),rgba(255,207,77,.02)),var(--mv-surf)}
+body.mvEnterprise.logado .marcaLogo{position:relative;margin-bottom:14px}
+body.mvEnterprise.logado .marcaLogo::after{content:"★ ENTERPRISE";position:absolute;left:50%;bottom:-17px;transform:translateX(-50%);white-space:nowrap;
+  font-size:9.5px;font-weight:800;letter-spacing:.08em;color:#3a2a00;background:linear-gradient(135deg,#ffe08a,#ffcf4d 45%,#e8a900);
+  border:1px solid #d99e00;border-radius:999px;padding:1px 8px;box-shadow:0 2px 10px rgba(224,168,0,.3)}
+@media(min-width:1120px){ body.mvEnterprise.logado .marcaLogo::after{display:none} body.mvEnterprise.logado .marcaLogo{margin-bottom:0} }
+.mvNavEnt span::after{content:"ENTERPRISE";margin-left:8px;font-size:9.5px;font-weight:800;letter-spacing:.05em;color:#3a2a00;
+  background:linear-gradient(135deg,#ffe08a,#e8a900);border-radius:999px;padding:1px 7px;vertical-align:2px}
+/* etiquetas dos recursos exclusivos da Central de Pedidos */
+.pedEnt{display:inline-block;margin-left:6px;font-size:9.5px!important;font-weight:800;letter-spacing:.05em;color:#3a2a00!important;
+  background:linear-gradient(135deg,#ffe08a,#ffcf4d 45%,#e8a900);border:1px solid #d99e00!important;border-radius:999px;padding:1px 7px!important;vertical-align:1px}
+body.mvNaoEnterprise .pedEnt::before{content:"🔒 ";}
+
+/* ================= CENTRAL DE PEDIDOS — cor propria (26/09/2026) =================
+   O lojista precisa SABER que esta na Central de Pedidos so de olhar. Com a
+   aba aberta o painel inteiro troca o acento de azul para LARANJA: menu,
+   botoes, foco, faixa do topo. body.mvNaPedidos liga e desliga em abrirTab;
+   :not(.naHome) garante que voltar ao inicio devolve o azul. */
+body.mvNaPedidos:not(.naHome){
+  --ciano:#ff9a1f; --azul:#ff5a1f;
+  --mv-ciano:#ff9a1f; --mv-azul:#ff5a1f;
+  --mv-grad:linear-gradient(135deg,#ffb23f,#ff5a1f);
+  --mv-grad-suave:linear-gradient(160deg,rgba(255,90,31,.16),rgba(255,154,31,.04));
+  --mv-glow:0 0 18px rgba(255,154,31,.35),0 0 46px rgba(255,154,31,.14);
+  --mv-borda-glow:1px solid rgba(255,154,31,.30);
+  background-image:radial-gradient(1200px 520px at 50% -140px,rgba(255,122,31,.14),transparent 70%);
+}
+body.mvNaPedidos:not(.naHome) .box{border-top:3px solid #ff8a1f;}
+body.mvNaPedidos:not(.naHome) .mvNavIt.ativo,
+body.mvNaPedidos:not(.naHome) .mvNavIt[data-sec="pedidos"]{border-color:rgba(255,154,31,.55)!important;background:rgba(255,154,31,.12)!important;color:#ffd3a1!important;}
+body.mvNaPedidos:not(.naHome) .btn{background:linear-gradient(135deg,#ffb23f,#ff5a1f);color:#2a1100;}
+body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
+/* No computador a Central usa a tela toda: some a coluna da direita
+   (desempenho, link, plano) e os pedidos vao em duas colunas — e o jeito de
+   ler a fila inteira no balcao sem rolar. */
+@media(min-width:1120px){
+  body.mvNaPedidos:not(.naHome) .mvShell{grid-template-columns:248px minmax(0,1fr);}
+  body.mvNaPedidos:not(.naHome) #mvRight{display:none;}
+}
+@media(min-width:1280px){
+  body.mvNaPedidos:not(.naHome) #pedLista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start;}
+  body.mvNaPedidos:not(.naHome) #pedLista .pedCard{margin-bottom:0;}
+  body.mvNaPedidos:not(.naHome) #pedLista .pedMais,body.mvNaPedidos:not(.naHome) #pedLista .finVazio{grid-column:1/-1;}
+  body.mvNaPedidos:not(.naHome) .pedBusca{grid-template-columns:minmax(0,2fr) minmax(0,1fr);}
+}
+@media(min-width:1700px){
+  body.mvNaPedidos:not(.naHome) #pedLista{grid-template-columns:repeat(3,minmax(0,1fr));}
+}
 </style>
 </head>
 <body>
@@ -2026,6 +2089,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
           <div class="mvSideTxt">
             <div class="mvSideNome" id="mvSideNome">Meu negócio</div>
             <span class="selo fechado" id="mvSideSelo"><span class="bol"></span>Fechado</span>
+            <span class="mvEntSelo">Enterprise</span>
           </div>
         </div>
         <nav class="mvNav">
@@ -2040,9 +2104,10 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         <button type="button" class="mvNavIt" data-sec="info" onclick="mvIr('info')"><img class="mvNavIco" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Informações</span></button>
         <button type="button" class="mvNavIt" data-sec="whatsapp" onclick="mvIr('whatsapp')"><img class="mvNavIco" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>WhatsApp</span></button>
         <button type="button" class="mvNavIt" data-sec="avaliacoes" onclick="mvIr('avaliacoes')"><img class="mvNavIco" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Avaliações</span></button>
+        <button type="button" class="mvNavIt" data-sec="pedidos" onclick="mvIr('pedidos')"><img class="mvNavIco" src="icones/vendas.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Pedidos</span></button>
         <button type="button" class="mvNavIt" data-sec="financeiro" onclick="mvIr('financeiro')"><img class="mvNavIco" src="icones/financeiro.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Financeiro</span></button>
         <button type="button" class="mvNavIt" onclick="abrirPlano()"><img class="mvNavIco" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meu Plano</span></button>
-          <button type="button" class="mvNavIt" id="mvNavPontos" style="display:none" onclick="abrirPontos()"><img class="mvNavIco" src="icones/multipontos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meus pontos</span></button>
+          <button type="button" class="mvNavIt mvNavEnt" id="mvNavPontos" style="display:none" onclick="abrirPontos()"><img class="mvNavIco" src="icones/multipontos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meus pontos</span></button>
         </nav>
         <div class="mvSideCta">
           <div class="mvSideCtaTit">Indique e receba</div>
@@ -2134,6 +2199,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
           <button type="button" class="gcard" onclick="irSecao('info')"><img class="gcImg" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Informações</span></button>
           <button type="button" class="gcard" onclick="irSecao('whatsapp')"><img class="gcImg" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">WhatsApp</span></button>
           <button type="button" class="gcard" onclick="irSecao('avaliacoes')"><img class="gcImg" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Avaliações</span></button>
+          <button type="button" class="gcard" id="gc-pedidos" onclick="irSecao('pedidos')"><img class="gcImg" src="icones/vendas.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Pedidos</span></button>
           <button type="button" class="gcard" id="gc-financeiro" onclick="irSecao('financeiro')"><img class="gcImg" src="icones/financeiro.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Financeiro</span></button>
           <button type="button" class="gcard" onclick="abrirPlano()"><img class="gcImg" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meu Plano</span></button>
           <button type="button" class="gcard" id="gc-mensagens" onclick="abrirMensagens()"><img class="gcImg" src="icones/mensagens.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Mensagens</span></button>
@@ -2153,6 +2219,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         <button class="tab" data-tab="info" onclick="abrirTab('info')">Informações</button>
         <button class="tab" data-tab="whatsapp" onclick="abrirTab('whatsapp')">WhatsApp</button>
         <button class="tab" data-tab="avaliacoes" onclick="abrirTab('avaliacoes')">Avaliações</button>
+        <button class="tab" data-tab="pedidos" onclick="abrirTab('pedidos')">Pedidos</button>
         <button class="tab" data-tab="financeiro" onclick="abrirTab('financeiro')">Financeiro</button>
       </div>
 
@@ -2710,14 +2777,7 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
         </button>
         <div class="mvAccBody" id="acc-fin-ligar-body">
 
-          <div class="campo">
-            <label for="finEntrega">Como o cliente recebe</label>
-            <select id="finEntrega">
-              <option value="retirada">Só retirada no local</option>
-              <option value="entrega">Só entrega</option>
-              <option value="ambos">Retirada ou entrega</option>
-            </select>
-          </div>
+          <div class="finCent" style="margin:0 0 12px">Retirada, entrega própria, bairros e taxa de entrega agora ficam em <b>Pedidos → Sua entrega</b>. <a href="#" onclick="irSecao('pedidos');setTimeout(function(){var a=document.getElementById('acc-ped-entrega');if(a&&a.querySelector('.mvAccHead').getAttribute('aria-expanded')!=='true')mvAccToggle('acc-ped-entrega');},250);return false;" style="color:#6fd0ff;font-weight:700">Configurar entrega →</a></div>
 
           <div class="secTitulo"><label>Termo de Venda do Moviki</label></div>
           <div class="finTermo" id="finTermoTexto">
@@ -2749,15 +2809,186 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
       <div class="mvAcc" id="acc-fin-vendas">
         <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-fin-vendas-body" onclick="mvAccToggle('acc-fin-vendas')">
           <span class="mvAccIco"><img src="icones/vendas.png" alt="" loading="lazy" onerror="mvI(this,'🧾')"></span>
-          <span class="mvAccTxt"><span class="mvAccTit">Vendas</span><span class="mvAccSub">Os pedidos que chegaram pelo cardápio e pela live.</span></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Vendas</span><span class="mvAccSub">Resumo. Os pedidos ficam na Central de Pedidos.</span></span>
           <span class="mvAccSelo" id="selo-acc-fin-vendas"></span>
           <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
         </button>
         <div class="mvAccBody" id="acc-fin-vendas-body">
           <div class="finCent" id="finDicaCent">Cada pedido tem <b>centavos diferentes</b> — R$ 20,07, R$ 20,13… É assim que você acha o pagamento certo no seu extrato, sem precisar procurar pelo nome.</div>
-          <div style="height:10px"></div>
-          <div id="finVendas"><div class="finVazio">Carregando…</div></div>
           <div class="finNota" id="finResumo"></div>
+          <div style="height:10px"></div>
+          <button type="button" class="btn" onclick="irSecao('pedidos')">Abrir a Central de Pedidos</button>
+        </div>
+      </div>
+
+      </div>
+
+      <!-- ================= PEDIDOS — Central de Pedidos, 26/09/2026 =================
+           Onde o lojista toca a venda DEPOIS do Pix: confere, separa, imprime a
+           comanda, avisa o cliente e marca entregue. Tambem e aqui que ele
+           configura a entrega (bairros e taxas).
+           Mesma regra do Financeiro: esta aba NAO grava nada em negocios/{uid}.
+           A lista le pedidos direto do Firestore (a regra ja da leitura ao dono)
+           e toda mudanca passa pelo /api/financeiro, com Admin SDK.
+           Premium: lista, etapas, entrega, comanda uma a uma, aviso ao cliente.
+           Enterprise: impressao em lote e lista de separacao por live.
+      =========================================================== -->
+      <div class="tabConteudo escondido" id="tab-pedidos">
+      <style>
+        .pedTrava{background:#141a24;border:1px solid #223040;border-radius:14px;padding:14px 16px;margin-bottom:14px;font-size:14px;line-height:1.55;color:#cfe0f0}
+        .pedTrava b{color:#fff}
+        .pedTrava button{margin-top:10px}
+        .pedResumo{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+        @media(max-width:640px){.pedResumo{grid-template-columns:repeat(2,1fr)}}
+        .pedNum{background:#121821;border:1px solid #223040;border-radius:12px;padding:10px 12px;cursor:pointer;text-align:left;color:#cfe0f0}
+        .pedNum b{display:block;font-size:20px;color:#fff;line-height:1.1}
+        .pedNum span{font-size:11.5px;color:#93a7bb}
+        .pedNum.alerta{border-color:#5c4415;background:#1d1810}
+        .pedNum.alerta b{color:#ffd36b}
+        .pedFiltros{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+        .pedFiltros button{border-radius:999px;padding:7px 12px;font-size:12.5px;font-weight:700;cursor:pointer;border:1px solid #2f4a63;background:#16202c;color:#cfe0f0}
+        .pedFiltros button.on{background:var(--mv-grad);border-color:transparent;color:#2a1100}
+        .pedBusca{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px}
+        .pedBusca input,.pedBusca select{width:100%;background:#0f1520;border:1px solid #223040;border-radius:10px;padding:10px 12px;color:#fff;font:inherit;font-size:14px}
+        .pedLote{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:#0f1520;border:1px dashed #2f4a63;border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13px;color:#a9bccf}
+        .pedLote button{border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid #2f4a63;background:#16202c;color:#cfe0f0}
+        .pedLote .pedPri{background:var(--mv-grad);border-color:transparent;color:#2a1100}
+        .pedLote .pedEnt{font-size:10.5px;font-weight:800;color:#ffd36b;border:1px solid #5c4415;border-radius:999px;padding:1px 7px;margin-left:4px}
+        .pedCard{background:#121821;border:1px solid #223040;border-radius:14px;padding:13px 14px;margin-bottom:10px}
+        .pedCard.sel{border-color:var(--mv-ciano)}
+        .pedTopo{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+        .pedId{display:flex;align-items:center;gap:9px}
+        .pedId input{width:18px;height:18px}
+        .pedId b{font-size:16px;color:#fff}
+        .pedVal{font-size:17px;font-weight:800;color:#fff}
+        .pedItens{font-size:13.5px;color:#cfe0f0;margin:8px 0 6px;line-height:1.5}
+        .pedLinha{font-size:12.5px;color:#93a7bb;line-height:1.55}
+        .pedLinha b{color:#cfe0f0}
+        .pedEndereco{background:#0f1520;border:1px solid #1c2735;border-radius:10px;padding:9px 11px;margin:8px 0;font-size:13px;color:#cfe0f0;line-height:1.5}
+        .pedCodigo{display:inline-block;font-weight:800;letter-spacing:2px;color:#fff;background:#16202c;border:1px solid #2f4a63;border-radius:8px;padding:1px 7px}
+        .pedBtns{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+        .pedBtns button,.pedBtns a{border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid #2f4a63;background:#16202c;color:#cfe0f0;text-decoration:none}
+        .pedBtns .pedAvancar{background:var(--mv-grad);border-color:transparent;color:#2a1100}
+        .pedBtns .finOk{background:#12351f;border-color:#1d5c38;color:#3ddc97}
+        .pedBtns .finNao{background:#2a1a1a;border-color:#5c2020;color:#ff8f8f}
+        .pedBtns .pedDesfaz{background:none;border-color:transparent;color:#7d92a8;font-weight:600;padding-left:4px;padding-right:4px}
+        .finSt.separando{background:#23202f;color:#c6b3ff}
+        .finSt.pronto,.finSt.saiu{background:#10222e;color:#6fd0ff}
+        .finSt.entregue{background:#16202c;color:#93a7bb}
+        .pedMais{display:block;width:100%;margin-top:6px;border-radius:10px;padding:10px;font-weight:700;cursor:pointer;border:1px solid #2f4a63;background:#16202c;color:#cfe0f0}
+        .pedBairros{display:flex;flex-direction:column;gap:7px;margin:8px 0}
+        .pedBairro{display:grid;grid-template-columns:1fr 110px 38px;gap:7px}
+        .pedBairro input{width:100%;background:#0f1520;border:1px solid #223040;border-radius:10px;padding:10px 11px;color:#fff;font:inherit;font-size:14px}
+        .pedBairro button{border-radius:10px;border:1px solid #5c2020;background:#2a1a1a;color:#ff8f8f;font-weight:800;cursor:pointer}
+        .pedAdd{border-radius:10px;padding:9px 13px;font-size:13px;font-weight:700;cursor:pointer;border:1px dashed #2f4a63;background:none;color:#6fd0ff}
+        .pedImp{display:flex;gap:8px;flex-wrap:wrap}
+        .pedFaixa{display:flex;align-items:center;gap:11px;background:linear-gradient(135deg,rgba(255,178,63,.18),rgba(255,90,31,.10));border:1px solid rgba(255,154,31,.45);border-radius:14px;padding:11px 14px;margin-bottom:12px;color:#ffe2c2;font-size:13px;line-height:1.45}
+        .pedFaixa img{width:34px;height:34px;object-fit:contain;flex:none}
+        .pedFaixa b{display:block;color:#fff;font-size:15px}
+        .pedLoteBox{margin-bottom:12px}
+        .pedLoteBox>summary{cursor:pointer;list-style:none;font-size:13px;font-weight:700;color:var(--mv-ciano);padding:6px 2px 8px}
+        .pedLoteBox>summary::-webkit-details-marker{display:none}
+        .pedLoteBox>summary::before{content:'▸ ';}
+        .pedLoteBox[open]>summary::before{content:'▾ ';}
+        .pedLoteBox .pedLote{margin-bottom:0}
+        @media(max-width:640px){.pedFaixa{display:none}}
+        .pedImp label{flex:1;min-width:120px;display:flex;gap:8px;align-items:center;background:#121821;border:1px solid #223040;border-radius:12px;padding:11px 12px;font-size:13.5px;color:#cfe0f0;cursor:pointer}
+      </style>
+
+      <div class="pedFaixa"><img src="icones/vendas.png" alt="" onerror="this.style.display='none'"><div><b>Central de Pedidos</b><span>Vendas da live e do cardápio: pagamento, separação, entrega e comanda.</span></div></div>
+
+      <div class="pedTrava escondido" id="pedTrava">
+        <b>A Central de Pedidos é dos planos Premium e Enterprise.</b><br>
+        É aqui que você confere o pagamento, separa, imprime a comanda, avisa o cliente e controla a entrega das vendas da live e do cardápio.
+        <br><button type="button" class="btn" onclick="abrirPlano()">Ver planos</button>
+      </div>
+
+      <div id="pedCorpo">
+        <div class="pedResumo" id="pedResumo"></div>
+
+        <div class="pedFiltros" id="pedFiltros">
+          <button type="button" data-f="ativos" class="on" onclick="pedFiltro('ativos')">Em andamento</button>
+          <button type="button" data-f="confirmar" onclick="pedFiltro('confirmar')">A confirmar</button>
+          <button type="button" data-f="pago" onclick="pedFiltro('pago')">Pagos</button>
+          <button type="button" data-f="separando" onclick="pedFiltro('separando')">Separando</button>
+          <button type="button" data-f="caminho" onclick="pedFiltro('caminho')">Prontos / saíram</button>
+          <button type="button" data-f="entregue" onclick="pedFiltro('entregue')">Entregues</button>
+          <button type="button" data-f="todos" onclick="pedFiltro('todos')">Todos</button>
+        </div>
+
+        <div class="pedBusca">
+          <input id="pedBusca" type="search" placeholder="Buscar por nome ou número do pedido" oninput="pedPintar()">
+          <select id="pedOrigem" onchange="pedPintar()" aria-label="Origem do pedido">
+            <option value="">Live e cardápio</option>
+            <option value="cardapio">Só cardápio</option>
+          </select>
+        </div>
+
+        <details class="pedLoteBox" id="pedLoteBox" open>
+          <summary>Imprimir vários pedidos e lista de separação</summary>
+        <div class="pedLote" id="pedLote">
+          <span id="pedSelInfo">Nenhum pedido marcado.</span>
+          <button type="button" onclick="pedMarcarVisiveis()">Marcar os pagos da lista</button>
+          <button type="button" class="pedPri" onclick="pedImprimirLote(false)">Imprimir comandas<span class="pedEnt" id="pedSeloLote1">ENTERPRISE</span></button>
+          <button type="button" onclick="pedImprimirLote(true)">Lista de separação<span class="pedEnt" id="pedSeloLote2">ENTERPRISE</span></button>
+          <button type="button" onclick="pedLimparSel()">Desmarcar</button>
+        </div>
+        </details>
+
+        <div id="pedLista"><div class="finVazio">Carregando…</div></div>
+      </div>
+
+      <!-- ENTREGA -->
+      <div class="mvAcc" id="acc-ped-entrega">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-ped-entrega-body" onclick="mvAccToggle('acc-ped-entrega')">
+          <span class="mvAccIco"><img src="icones/localizacao.png" alt="" loading="lazy" onerror="mvI(this,'🛵')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Sua entrega</span><span class="mvAccSub">Retirada, entrega própria, bairros e taxas.</span></span>
+          <span class="mvAccSelo" id="selo-acc-ped-entrega"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-ped-entrega-body">
+          <div class="finAlerta escondido" id="pedEntSusp"></div>
+          <div class="campo">
+            <label for="pedEntModo">Como o cliente recebe</label>
+            <select id="pedEntModo" onchange="pedEntModoMudou()">
+              <option value="retirada">Só retirada no local</option>
+              <option value="entrega">Só entrega</option>
+              <option value="ambos">Retirada ou entrega</option>
+            </select>
+          </div>
+          <div class="campo" id="pedEntRetBox"><label for="pedEntRet">Onde o cliente retira</label><input id="pedEntRet" type="text" maxlength="120" placeholder="Ex.: Av. Epitácio Pessoa, 1000 — balcão da farmácia"></div>
+          <div id="pedEntEntBox">
+            <div class="finLinha">
+              <div class="campo"><label for="pedEntCidade">Cidade onde você entrega</label><input id="pedEntCidade" type="text" maxlength="40" placeholder="Ex.: João Pessoa"></div>
+              <div class="campo"><label for="pedEntPrazo">Prazo de entrega</label><input id="pedEntPrazo" type="text" maxlength="40" placeholder="Ex.: 40 a 60 min"></div>
+            </div>
+            <div class="campo"><label for="pedEntMin">Pedido mínimo para entrega (R$)</label><input id="pedEntMin" type="text" inputmode="decimal" maxlength="8" placeholder="Deixe vazio para não ter mínimo"></div>
+            <div class="secTitulo"><label>Bairros que você atende e a taxa de cada um</label></div>
+            <div class="finNota" style="margin-top:0">A taxa entra no valor do Pix do cliente, sozinha. Taxa <b>0</b> = entrega grátis naquele bairro. Bairro fora da lista não aparece para o cliente. Sem nenhum bairro, a entrega fica <b>a combinar</b> pelo WhatsApp, como era antes.</div>
+            <div class="pedBairros" id="pedBairros"></div>
+            <button type="button" class="pedAdd" onclick="pedAddBairro()">+ Adicionar bairro</button>
+          </div>
+          <div style="height:12px"></div>
+          <button type="button" class="btn" id="pedBtnEntrega" onclick="pedSalvarEntrega()">Salvar entrega</button>
+          <div id="pedAvisoEntrega" class="aviso"></div>
+          <div class="finNota">A entrega é sua: o Moviki não faz entrega e não fica com a taxa. O valor vai inteiro para você, no mesmo Pix do pedido.</div>
+        </div>
+      </div>
+
+      <!-- IMPRESSAO -->
+      <div class="mvAcc" id="acc-ped-imp">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-ped-imp-body" onclick="mvAccToggle('acc-ped-imp')">
+          <span class="mvAccIco"><img src="icones/vendas.png" alt="" loading="lazy" onerror="mvI(this,'🖨️')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Impressão da comanda</span><span class="mvAccSub">Impressora térmica ou folha comum.</span></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-ped-imp-body">
+          <div class="pedImp">
+            <label><input type="radio" name="pedLarg" value="58" onchange="pedSalvarLargura()"> Térmica 58 mm</label>
+            <label><input type="radio" name="pedLarg" value="80" onchange="pedSalvarLargura()"> Térmica 80 mm</label>
+            <label><input type="radio" name="pedLarg" value="a4" onchange="pedSalvarLargura()"> Folha A4</label>
+          </div>
+          <div class="finNota">A comanda abre numa aba nova e o celular ou o computador manda para a impressora escolhida. Impressora térmica Bluetooth no Android costuma precisar de um aplicativo de impressão instalado (o da própria impressora serve). A comanda é <b>documento não fiscal</b>: a nota fiscal da venda continua sendo sua obrigação.</div>
         </div>
       </div>
 
@@ -2963,6 +3194,8 @@ body.logado .marcaSair:hover{border-color:var(--mv-erro);color:var(--mv-erro);}
   </div>
 </div>
 
+<!-- 26/09/2026: gerador de QR da casa, usado no QR de rota da comanda (Central de Pedidos). -->
+<script src="mvqr.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
@@ -3269,6 +3502,10 @@ window.mvAbaInicial=function(){
   }
   function aplicarPlanoNasAbas(){
     const libera=planoPainel==='pro'||planoPainel==='premium'||planoPainel==='enterprise';if(window.ptAtualizarDrawer)ptAtualizarDrawer();
+    /* 26/09/2026: identidade dourada do Enterprise (selo no topo, borda no
+       cartao do negocio, etiquetas nos recursos exclusivos). Vem da mesma
+       conta de plano do painel — nao e trava, e so aparencia. */
+    try{ const _ent=ehEnterprisePainel(); document.body.classList.toggle('mvEnterprise',_ent); document.body.classList.toggle('mvNaoEnterprise',!_ent); }catch(_){}
     atualizarSeloPlano();
     var _wl=el('wlRow');if(_wl)_wl.style.display=(planoPainel==='enterprise')?'block':'none';
     ['cardapio','promocoes','eventos'].forEach(t=>{const b=document.querySelector('.tab[data-tab="'+t+'"]');if(b)b.classList.toggle('travada',!libera);});
@@ -3291,7 +3528,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-25-checkout';
+  window.MOVIKI_VERSAO='2026-09-26-pedidos';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -4050,11 +4287,14 @@ window.mvAbaInicial=function(){
     /* Entrou no Financeiro: ele esta vendo os pedidos, o contador do titulo
        perdeu a funcao. */
     if(nome==='financeiro'&&window.finZerarAviso)window.finZerarAviso();
+    /* Central de Pedidos (26/09/2026): abre ja com a lista e zera o aviso. */
+    document.body.classList.toggle('mvNaPedidos', nome==='pedidos');
+    if(nome==='pedidos'){ if(window.pedAbrir)setTimeout(window.pedAbrir,60); if(window.finZerarAviso)window.finZerarAviso(); }
     /* O "Salvar tudo" salva o CADASTRO do negocio e nao tem nada a ver com o
        Financeiro, que grava pelo endpoint em cada botao proprio. Deixa-lo a
        vista aqui faria o lojista achar que precisa clicar nele para a chave
        Pix valer — e sair da tela sem clicar em "Salvar chave Pix". */
-    var _bs=el('btnSalvar'); if(_bs) _bs.style.display = (nome==='financeiro') ? 'none' : '';
+    var _bs=el('btnSalvar'); if(_bs) _bs.style.display = (nome==='financeiro'||nome==='pedidos') ? 'none' : '';
   };
 
   /* ---- PAINEL util ---- */
@@ -6411,7 +6651,6 @@ window.mvAbaInicial=function(){
     const dados = {
       modo: finModoTela || 'pix',
       ligado: ligando,
-      entrega: (el('finEntrega') && el('finEntrega').value) || 'retirada',
     };
     const aceite = el('finAceite');
     if (ligando && aceite && aceite.checked) dados.aceite = true;
@@ -6481,8 +6720,8 @@ window.mvAbaInicial=function(){
   try {
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState !== 'visible') return;
-      const sec = document.getElementById('tab-financeiro');
-      if (sec && !sec.classList.contains('escondido')) window.finZerarAviso();
+      const sec = document.getElementById('tab-financeiro'), sp = document.getElementById('tab-pedidos');
+      if ((sec && !sec.classList.contains('escondido')) || (sp && !sp.classList.contains('escondido'))) window.finZerarAviso();
     });
   } catch (_) {}
 
@@ -6513,9 +6752,10 @@ window.mvAbaInicial=function(){
         finPedidos.sort(function (a, b) { return finMs(b.criadoEm) - finMs(a.criadoEm); });
         finConferirNovidade(finPedidos);
         finPintarVendas();
+        if (window.pedPintar) window.pedPintar();
       }, function () {
-        const lista = el('finVendas');
-        if (lista) lista.innerHTML = '<div class="finVazio">Não consegui carregar suas vendas agora.</div>';
+        const lista = el('pedLista');
+        if (lista) lista.innerHTML = '<div class="finVazio">Não consegui carregar seus pedidos agora.</div>';
       });
     } catch (_) {}
   }
@@ -6524,50 +6764,16 @@ window.mvAbaInicial=function(){
   function finEsc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   const FIN_ST = { aguardando: 'aguardando pagamento', conferindo: 'conferir pagamento', pago: 'pago', entregue: 'entregue', recusado: 'recusado', cancelado: 'cancelado', expirado: 'expirou', estornado: 'estornado' };
 
+  /* 26/09/2026: a lista saiu daqui e foi para a Central de Pedidos. O
+     Financeiro guarda so o resumo do que ja e dinheiro na mao. */
   function finPintarVendas() {
-    const lista = el('finVendas'); if (!lista) return;
-    if (!finPedidos.length) {
-      lista.innerHTML = '<div class="finVazio">Nenhum pedido ainda. Quando alguém comprar pelo seu cardápio ou pela live, aparece aqui.</div>';
-      if (el('finResumo')) el('finResumo').textContent = '';
-      return;
-    }
-    let html = '', pagos = 0, soma = 0;
-    finPedidos.slice(0, 60).forEach(function (p) {
-      const st = String(p.status || 'aguardando');
-      if (st === 'pago' || st === 'entregue') { pagos++; soma += Number(p.total || 0); }
-      const itens = (Array.isArray(p.itens) ? p.itens : []).map(function (i) { return (i.qtd > 1 ? i.qtd + 'x ' : '') + finEsc(i.nome); }).join(', ');
-      const quem = (p.comprador && p.comprador.nome) ? finEsc(p.comprador.nome) : 'Cliente';
-      const wpp = (p.comprador && p.comprador.whatsapp) ? (function(x){x=String(x||'').replace(/\D/g,'').replace(/^0+/,'');return (x.length>=12&&x.slice(0,2)==='55')?x.slice(2):x;})(p.comprador.whatsapp) : '';
-      const ent = (p.entrega && p.entrega.tipo === 'entrega') ? ('Entrega: ' + finEsc(p.entrega.detalhe || '')) : 'Retirada no local';
-      const origem = p.origem === 'cardapio' ? 'cardápio' : 'live';
-      /* Privacidade do comprador, 15/09: o checkout guarda SO os dois ultimos
-         digitos (comprador.cpfFinal) e descarta o resto. Isso ja era verdade no
-         servidor, mas nao aparecia no painel -- o lojista nao tinha como saber
-         que o Moviki nao retem o documento inteiro. Mostrar e a prova. */
-      const fim = (p.comprador && p.comprador.cpfFinal)
-        ? ' · final ' + finEsc(p.comprador.cpfFinal) : '';
-
-      let botoes = '';
-      if (p.modo === 'pix' && (st === 'aguardando' || st === 'conferindo' || st === 'expirado')) {
-        botoes += '<button type="button" class="finOk" onclick="finPedidoAcao(\'' + p.__id + '\',\'pago\')">Recebi, confirmar</button>';
-        botoes += '<button type="button" class="finNao" onclick="finPedidoAcao(\'' + p.__id + '\',\'recusado\')">Não caiu</button>';
-      }
-      /* 23/09/2026: modos com Asaas - o lojista pode perguntar ao Asaas na hora (o robo tambem confere sozinho a cada 5 min). */
-      if (p.modo !== 'pix' && st === 'aguardando') botoes += '<button type="button" class="finOk" onclick="finPedidoAcao(\'' + p.__id + '\',\'conferir\')">Conferir no Asaas</button>';
-      if (st === 'pago') botoes += '<button type="button" onclick="finPedidoAcao(\'' + p.__id + '\',\'entregue\')">Marcar entregue</button>';
-      if (p.comprovante) botoes += '<button type="button" onclick="finVerComprovante(\'' + p.__id + '\')">Ver comprovante</button>';
-      if (wpp) botoes += '<button type="button" onclick="window.open(\'https://wa.me/55' + wpp + '\',\'_blank\',\'noopener\')">WhatsApp</button>';
-
-      html += '<div class="finVenda">'
-        + '<div class="finVendaTopo"><span class="finVendaVal">' + finReal(p.total) + '</span>'
-        + '<span class="finSt ' + finEsc(st) + '">' + (FIN_ST[st] || st) + '</span></div>'
-        + '<div class="finVendaItens">' + (itens || 'Pedido') + '</div>'
-        + '<div class="finVendaPe">' + quem + fim + ' · ' + ent + ' · veio da ' + origem + '</div>'
-        + (botoes ? '<div class="finVendaBtns">' + botoes + '</div>' : '')
-        + '</div>';
-    });
-    lista.innerHTML = html;
-    if (el('finResumo')) el('finResumo').innerHTML = '<b>' + pagos + '</b> pedido' + (pagos === 1 ? '' : 's') + ' pago' + (pagos === 1 ? '' : 's') + ' · <b>' + finReal(soma) + '</b> no total.';
+    const PAGOS = ['pago', 'separando', 'pronto', 'saiu', 'entregue'];
+    let pagos = 0, soma = 0;
+    finPedidos.forEach(function (p) { if (PAGOS.indexOf(String(p.status || '')) >= 0) { pagos++; soma += Number(p.total || 0); } });
+    const r = el('finResumo'); if (!r) return;
+    r.innerHTML = finPedidos.length
+      ? '<b>' + pagos + '</b> pedido' + (pagos === 1 ? '' : 's') + ' pago' + (pagos === 1 ? '' : 's') + ' · <b>' + finReal(soma) + '</b> no total (últimos 200 pedidos).'
+      : 'Nenhum pedido ainda.';
   }
 
   window.finPedidoAcao = async function (id, status) {
@@ -6579,7 +6785,7 @@ window.mvAbaInicial=function(){
         if (status === 'conferir') {
           const sc = r.j.status;
           toast(sc === 'pago' ? 'Pagamento confirmado no Asaas!' : (sc === 'expirado' ? 'O Pix expirou sem pagamento.' : (sc === 'divergente' ? 'O valor no Asaas não bate com o pedido. Confira no app do Asaas.' : 'Ainda não caiu no Asaas.')));
-        } else toast(status === 'pago' ? 'Pedido confirmado!' : (status === 'entregue' ? 'Marcado como entregue.' : 'Pedido recusado.'));
+        } else toast({ pago: 'Pedido confirmado!', entregue: 'Marcado como entregue.', recusado: 'Pedido recusado.', separando: 'Pedido em separação.', pronto: 'Pronto para retirar.', saiu: 'Saiu para entrega.' }[status] || 'Feito.');
       } catch (_) {}
     } catch (_) { alert('Falha de conexão. Tente de novo.'); }
   };
@@ -6592,10 +6798,528 @@ window.mvAbaInicial=function(){
     } catch (_) { alert('Falha de conexão. Tente de novo.'); }
   };
 
+  /* =====================================================================
+     CENTRAL DE PEDIDOS — 26/09/2026
+     A lista e a MESMA escuta do Financeiro (finEscutarVendas): uma consulta
+     so por igualdade em lojistaUid, limit 200, ordenada aqui. Duas escutas
+     seriam o dobro de leitura para mostrar a mesma coisa.
+
+     Etapas depois do pagamento: pago -> separando -> pronto (retirada) ou
+     saiu (entrega) -> entregue. Quem muda e o servidor (loja_pedido); aqui
+     so se pede.
+
+     Plano: Premium e Enterprise veem e operam tudo. A impressao EM LOTE e a
+     lista de separacao sao do Enterprise (decisao de 26/09/2026). A trava do
+     lote e de tela, de proposito: sao pedidos que o proprio lojista ja le —
+     juntar numa folha nao expoe nada que ele nao veja um a um.
+  ===================================================================== */
+  const PED_PAGOS = ['pago', 'separando', 'pronto', 'saiu', 'entregue'];
+  const PED_CONFIRMAR = ['aguardando', 'conferindo'];
+  const PED_ROT = {
+    aguardando: 'aguardando pagamento', conferindo: 'conferir pagamento', pago: 'pago',
+    separando: 'separando', pronto: 'pronto p/ retirar', saiu: 'saiu p/ entrega', entregue: 'entregue',
+    recusado: 'recusado', cancelado: 'cancelado', expirado: 'expirou', estornado: 'estornado'
+  };
+  let pedFiltroAtual = 'ativos', pedSel = {}, pedMostrar = 40, pedLigado = false;
+
+  function pedPlanoOk() { return planoPainel === 'premium' || planoPainel === 'enterprise'; }
+  function pedEnterprise() { try { return ehEnterprisePainel(); } catch (_) { return planoPainel === 'enterprise'; } }
+  function pedNumero(p) { return p.numero ? String(p.numero).padStart(4, '0') : String(p.__id || '').slice(-6).toUpperCase(); }
+  function pedWpp(p) {
+    let x = String((p.comprador && p.comprador.whatsapp) || '').replace(/\D/g, '').replace(/^0+/, '');
+    if (x.length >= 12 && x.slice(0, 2) === '55') x = x.slice(2);
+    return x;
+  }
+  function pedFone(x) {
+    x = String(x || '');
+    if (x.length === 11) return '(' + x.slice(0, 2) + ') ' + x.slice(2, 7) + '-' + x.slice(7);
+    if (x.length === 10) return '(' + x.slice(0, 2) + ') ' + x.slice(2, 6) + '-' + x.slice(6);
+    return x;
+  }
+  function pedData(p) {
+    const m = finMs(p.criadoEm); if (!m) return '';
+    const d = new Date(m);
+    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  }
+  function pedEhEntrega(p) { return !!(p.entrega && p.entrega.tipo === 'entrega'); }
+  function pedNegNome() { try { return (el('nome') && el('nome').value) || 'Seu negócio'; } catch (_) { return 'Seu negócio'; } }
+
+  /* Liga a escuta sozinho para quem vende: o aviso de pedido novo (som e
+     contador no titulo) passa a valer em qualquer tela do painel, e nao so
+     depois de abrir o Financeiro. */
+  (function pedAutoLigar() {
+    let n = 0;
+    const iv = setInterval(function () {
+      n++;
+      if (usuarioAtual && pedPlanoOk()) { clearInterval(iv); pedLigado = true; try { finEscutarVendas(); } catch (_) {} }
+      if (n > 60) clearInterval(iv);
+    }, 2000);
+  })();
+
+  window.pedAbrir = function () {
+    const ok = pedPlanoOk();
+    const tr = el('pedTrava'), co = el('pedCorpo');
+    if (tr) tr.classList.toggle('escondido', ok);
+    if (co) co.classList.toggle('escondido', !ok);
+    const ent = pedEnterprise();
+    /* 26/09: a etiqueta ENTERPRISE aparece para todos — com cadeado para quem
+       nao e Enterprise (CSS body.mvNaoEnterprise). */
+    void ent;
+    pedLerLargura();
+    /* No celular a caixa de impressao em lote nasce fechada: a fila de
+       pedidos e o que importa primeiro na tela pequena. */
+    try { const lb = el('pedLoteBox'); if (lb && !lb.dataset.mexeu) { lb.open = window.innerWidth >= 900; lb.addEventListener('toggle', function () { lb.dataset.mexeu = '1'; }, { once: true }); } } catch (_) {}
+    if (!ok) return;
+    try { finEscutarVendas(); } catch (_) {}
+    pedCarregarEntrega();
+    window.pedPintar();
+  };
+
+  window.pedFiltro = function (f) {
+    pedFiltroAtual = f; pedMostrar = 40;
+    document.querySelectorAll('#pedFiltros button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-f') === f); });
+    window.pedPintar();
+  };
+
+  function pedPassaFiltro(p) {
+    const st = String(p.status || 'aguardando');
+    const f = pedFiltroAtual;
+    if (f === 'ativos') return PED_CONFIRMAR.indexOf(st) >= 0 || ['pago', 'separando', 'pronto', 'saiu'].indexOf(st) >= 0;
+    if (f === 'confirmar') return PED_CONFIRMAR.indexOf(st) >= 0 || (p.modo === 'pix' && st === 'expirado');
+    if (f === 'caminho') return st === 'pronto' || st === 'saiu';
+    if (f === 'todos') return true;
+    return st === f;
+  }
+
+  /* Lives do periodo, para o filtro "Live de dd/mm". A live nao tem nome:
+     o rotulo e a hora do primeiro pedido dela. */
+  function pedOpcoesLive() {
+    const sel = el('pedOrigem'); if (!sel) return;
+    const lives = {};
+    finPedidos.forEach(function (p) {
+      if (p.origem !== 'live' || !p.liveId) return;
+      const m = finMs(p.criadoEm);
+      if (!lives[p.liveId] || (m && m < lives[p.liveId])) lives[p.liveId] = m || lives[p.liveId] || 0;
+    });
+    const ids = Object.keys(lives).sort(function (a, b) { return lives[b] - lives[a]; }).slice(0, 15);
+    const atual = sel.value;
+    let h = '<option value="">Live e cardápio</option><option value="cardapio">Só cardápio</option><option value="live">Só live (todas)</option>';
+    ids.forEach(function (id) {
+      const d = lives[id] ? new Date(lives[id]) : null;
+      const rot = d ? ('Live de ' + d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' às ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })) : 'Live';
+      h += '<option value="live:' + finEsc(id) + '">' + finEsc(rot) + '</option>';
+    });
+    sel.innerHTML = h;
+    if (atual && sel.querySelector('option[value="' + atual.replace(/"/g, '') + '"]')) sel.value = atual;
+  }
+  function pedPassaOrigem(p) {
+    const v = (el('pedOrigem') && el('pedOrigem').value) || '';
+    if (!v) return true;
+    if (v === 'cardapio') return p.origem === 'cardapio';
+    if (v === 'live') return p.origem !== 'cardapio';
+    if (v.indexOf('live:') === 0) return p.liveId === v.slice(5);
+    return true;
+  }
+  function pedPassaBusca(p) {
+    const q = String((el('pedBusca') && el('pedBusca').value) || '').trim().toLowerCase();
+    if (!q) return true;
+    const nome = String((p.comprador && p.comprador.nome) || '').toLowerCase();
+    return nome.indexOf(q) >= 0 || pedNumero(p).indexOf(q.replace(/^#/, '')) >= 0 || String(p.numero || '') === q.replace(/^#|^0+/g, '');
+  }
+
+  window.pedPintar = function () {
+    const lista = el('pedLista'); if (!lista) return;
+    pedOpcoesLive();
+
+    /* resumo */
+    const hoje = new Date().toDateString();
+    let nConf = 0, nPago = 0, nSep = 0, nCam = 0, somaHoje = 0;
+    finPedidos.forEach(function (p) {
+      const st = String(p.status || '');
+      if (PED_CONFIRMAR.indexOf(st) >= 0) nConf++;
+      if (st === 'pago') nPago++;
+      if (st === 'separando') nSep++;
+      if (st === 'pronto' || st === 'saiu') nCam++;
+      if (PED_PAGOS.indexOf(st) >= 0 && new Date(finMs(p.criadoEm)).toDateString() === hoje) somaHoje += Number(p.total || 0);
+    });
+    const res = el('pedResumo');
+    if (res) res.innerHTML =
+      '<button type="button" class="pedNum' + (nConf ? ' alerta' : '') + '" onclick="pedFiltro(\'confirmar\')"><b>' + nConf + '</b><span>a confirmar</span></button>' +
+      '<button type="button" class="pedNum" onclick="pedFiltro(\'pago\')"><b>' + nPago + '</b><span>pagos, a separar</span></button>' +
+      '<button type="button" class="pedNum" onclick="pedFiltro(\'separando\')"><b>' + nSep + '</b><span>separando</span></button>' +
+      '<button type="button" class="pedNum" onclick="pedFiltro(\'todos\')"><b>' + finReal(somaHoje) + '</b><span>vendido hoje</span></button>';
+
+    const vis = finPedidos.filter(function (p) { return pedPassaFiltro(p) && pedPassaOrigem(p) && pedPassaBusca(p); });
+    /* Em andamento: o mais antigo primeiro — e a fila de quem espera. Nos
+       outros filtros, o mais novo primeiro. */
+    if (pedFiltroAtual === 'ativos') vis.sort(function (a, b) { return finMs(a.criadoEm) - finMs(b.criadoEm); });
+
+    if (!vis.length) {
+      lista.innerHTML = '<div class="finVazio">' + (finPedidos.length ? 'Nenhum pedido neste filtro.' : 'Nenhum pedido ainda. Quando alguém comprar pelo seu cardápio ou pela live, aparece aqui.') + '</div>';
+      pedPintarSel();
+      return;
+    }
+    let html = '';
+    vis.slice(0, pedMostrar).forEach(function (p) { html += pedCardHtml(p); });
+    if (vis.length > pedMostrar) html += '<button type="button" class="pedMais" onclick="pedVerMais()">Ver mais ' + Math.min(40, vis.length - pedMostrar) + ' pedidos</button>';
+    lista.innerHTML = html;
+    pedPintarSel();
+  };
+  window.pedVerMais = function () { pedMostrar += 40; window.pedPintar(); };
+
+  function pedCardHtml(p) {
+    const id = String(p.__id || '');
+    if (!/^[A-Za-z0-9]{1,60}$/.test(id)) return '';
+    const st = String(p.status || 'aguardando');
+    const pago = PED_PAGOS.indexOf(st) >= 0;
+    const ent = pedEhEntrega(p);
+    const e = p.entrega || {};
+    const itens = (Array.isArray(p.itens) ? p.itens : []).map(function (i) {
+      return '<b>' + (Number(i.qtd) || 1) + 'x</b> ' + finEsc(i.nome);
+    }).join('<br>');
+    const quem = (p.comprador && p.comprador.nome) ? finEsc(p.comprador.nome) : 'Cliente';
+    const wpp = pedWpp(p);
+    const fim = (p.comprador && p.comprador.cpfFinal) ? ' · CPF final ' + finEsc(p.comprador.cpfFinal) : '';
+    const origem = p.origem === 'cardapio' ? 'do cardápio' : 'da live';
+
+    let endHtml = '', rota = '';
+    if (ent) {
+      const taxa = Number(p.frete || e.taxa || 0);
+      const cab = 'Entrega' + (e.bairro ? ' · ' + finEsc(e.bairro) : '') + (e.aCombinar === false ? ' · taxa ' + (taxa > 0 ? finReal(taxa) : 'grátis') : ' · a combinar');
+      rota = e.detalhe ? '<a href="https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(String(e.detalhe).replace(/ - Ref\.:.*$/, '')) + '" target="_blank" rel="noopener">Abrir rota</a>' : '';
+      endHtml = '<div class="pedEndereco"><b>' + cab + '</b><br>' + finEsc(e.detalhe || 'Endereço não informado') + '</div>';
+    } else {
+      endHtml = '<div class="pedEndereco"><b>Retirada no local</b></div>';
+    }
+    const cod = (pago && p.codigo) ? ' · código do cliente <span class="pedCodigo">' + finEsc(p.codigo) + '</span>' : '';
+    const valores = (Number(p.frete) > 0) ? ' <span style="color:#7d92a8;font-size:12px">(' + finReal(p.subtotal) + ' + entrega ' + finReal(p.frete) + ')</span>' : '';
+
+    let b = '';
+    /* confirmar pagamento — o mesmo fluxo que existia na aba Financeiro */
+    if (p.modo === 'pix' && (st === 'aguardando' || st === 'conferindo' || st === 'expirado')) {
+      b += '<button type="button" class="finOk" onclick="finPedidoAcao(\'' + id + '\',\'pago\')">Recebi, confirmar</button>';
+      b += '<button type="button" class="finNao" onclick="finPedidoAcao(\'' + id + '\',\'recusado\')">Não caiu</button>';
+    }
+    if (p.modo !== 'pix' && st === 'aguardando') b += '<button type="button" class="finOk" onclick="finPedidoAcao(\'' + id + '\',\'conferir\')">Conferir no Asaas</button>';
+    /* etapas */
+    if (st === 'pago') b += '<button type="button" class="pedAvancar" onclick="finPedidoAcao(\'' + id + '\',\'separando\')">Separar</button>';
+    if (st === 'pago' || st === 'separando') {
+      b += ent
+        ? '<button type="button" class="' + (st === 'separando' ? 'pedAvancar' : '') + '" onclick="finPedidoAcao(\'' + id + '\',\'saiu\')">Saiu para entrega</button>'
+        : '<button type="button" class="' + (st === 'separando' ? 'pedAvancar' : '') + '" onclick="finPedidoAcao(\'' + id + '\',\'pronto\')">Pronto p/ retirar</button>';
+    }
+    if (st === 'pronto' || st === 'saiu' || st === 'separando' || st === 'pago') b += '<button type="button" class="' + ((st === 'pronto' || st === 'saiu') ? 'pedAvancar' : '') + '" onclick="finPedidoAcao(\'' + id + '\',\'entregue\')">Entregue</button>';
+    if (pago) b += '<button type="button" onclick="pedImprimirUm(\'' + id + '\')">Imprimir</button>';
+    if (wpp && pago) b += '<button type="button" onclick="pedAvisar(\'' + id + '\')">Avisar cliente</button>';
+    else if (wpp) b += '<a href="https://wa.me/55' + wpp + '" target="_blank" rel="noopener">WhatsApp</a>';
+    if (ent && rota && pago) b += rota;
+    if (p.comprovante) b += '<button type="button" onclick="finVerComprovante(\'' + id + '\')">Ver comprovante</button>';
+    const volta = { separando: 'pago', pronto: 'separando', saiu: 'separando', entregue: ent ? 'saiu' : 'pronto' }[st];
+    if (volta && volta !== 'pago') b += '<button type="button" class="pedDesfaz" onclick="pedDesfazer(\'' + id + '\',\'' + volta + '\')">desfazer</button>';
+
+    const marca = pago ? '<input type="checkbox" aria-label="Marcar para imprimir" ' + (pedSel[id] ? 'checked' : '') + ' onchange="pedMarcar(\'' + id + '\',this.checked)">' : '';
+    return '<div class="pedCard' + (pedSel[id] ? ' sel' : '') + '" id="pedc-' + id + '">'
+      + '<div class="pedTopo"><div class="pedId">' + marca + '<b>Nº ' + pedNumero(p) + '</b><span class="finSt ' + finEsc(st) + '">' + (PED_ROT[st] || finEsc(st)) + '</span></div>'
+      + '<span class="pedVal">' + finReal(p.total) + valores + '</span></div>'
+      + '<div class="pedItens">' + (itens || 'Pedido') + '</div>'
+      + endHtml
+      + '<div class="pedLinha"><b>' + quem + '</b>' + (wpp ? ' · ' + pedFone(wpp) : '') + fim + '</div>'
+      + '<div class="pedLinha">' + pedData(p) + ' · veio ' + origem + cod + '</div>'
+      + (b ? '<div class="pedBtns">' + b + '</div>' : '')
+      + '</div>';
+  }
+
+  window.pedDesfazer = function (id, para) {
+    if (!confirm('Voltar este pedido para "' + (PED_ROT[para] || para) + '"?')) return;
+    window.finPedidoAcao(id, para);
+  };
+
+  /* ---------- aviso ao cliente pelo WhatsApp do PROPRIO lojista ----------
+     Abre o WhatsApp dele com a mensagem escrita; quem envia e ele. Sem API,
+     sem robo, sem risco com a Meta. O codigo NAO vai na mensagem: o cliente
+     ja tem, e numero digitado errado mandaria o codigo para um estranho. */
+  window.pedAvisar = function (id) {
+    const p = finPedidos.find(function (x) { return x.__id === id; }); if (!p) return;
+    const wpp = pedWpp(p); if (!wpp) return;
+    const nome = String((p.comprador && p.comprador.nome) || '').split(' ')[0] || '';
+    const neg = pedNegNome();
+    const num = 'nº ' + pedNumero(p);
+    const ret = (finEstado && finEstado.entregaCfg && finEstado.entregaCfg.retirada) ? ' em ' + finEstado.entregaCfg.retirada : '';
+    const txt = {
+      pago: 'recebemos o pagamento do seu pedido ' + num + ' na ' + neg + '. Já vamos separar!',
+      separando: 'seu pedido ' + num + ' na ' + neg + ' está sendo separado.',
+      pronto: 'seu pedido ' + num + ' está pronto para retirar' + ret + '. Na retirada, mostre o seu código do pedido.',
+      saiu: 'seu pedido ' + num + ' saiu para entrega. Tenha em mãos o seu código do pedido para mostrar a quem entregar.',
+      entregue: 'seu pedido ' + num + ' foi entregue. Obrigado pela compra na ' + neg + '!'
+    }[String(p.status)] || ('sobre o seu pedido ' + num + ' na ' + neg + ':');
+    window.open('https://wa.me/55' + wpp + '?text=' + encodeURIComponent('Olá' + (nome ? ', ' + nome : '') + '! ' + txt), '_blank', 'noopener');
+  };
+
+  /* ---------- selecao para o lote ---------- */
+  window.pedMarcar = function (id, v) { if (v) pedSel[id] = 1; else delete pedSel[id]; const c = el('pedc-' + id); if (c) c.classList.toggle('sel', !!v); pedPintarSel(); };
+  window.pedLimparSel = function () { pedSel = {}; window.pedPintar(); };
+  window.pedMarcarVisiveis = function () {
+    finPedidos.forEach(function (p) {
+      if (PED_PAGOS.indexOf(String(p.status)) >= 0 && p.status !== 'entregue' && pedPassaFiltro(p) && pedPassaOrigem(p) && pedPassaBusca(p)) pedSel[p.__id] = 1;
+    });
+    window.pedPintar();
+  };
+  function pedPintarSel() {
+    const n = Object.keys(pedSel).filter(function (id) { return finPedidos.some(function (p) { return p.__id === id; }); }).length;
+    const i = el('pedSelInfo');
+    if (i) i.textContent = n ? (n + (n === 1 ? ' pedido marcado.' : ' pedidos marcados.')) : 'Nenhum pedido marcado.';
+  }
+
+  /* ---------- impressao ---------- */
+  function pedLargura() {
+    let v = '';
+    try { v = localStorage.getItem('mv_imp_larg') || ''; } catch (_) {}
+    return (v === '58' || v === '80' || v === 'a4') ? v : '80';
+  }
+  function pedLerLargura() {
+    const v = pedLargura();
+    document.querySelectorAll('input[name="pedLarg"]').forEach(function (r) { r.checked = (r.value === v); });
+  }
+  window.pedSalvarLargura = function () {
+    const r = document.querySelector('input[name="pedLarg"]:checked');
+    try { if (r) localStorage.setItem('mv_imp_larg', r.value); } catch (_) {}
+  };
+
+  function pedQrRota(p) {
+    try {
+      if (!pedEhEntrega(p) || !p.entrega.detalhe || !window.mvQR) return '';
+      const url = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(String(p.entrega.detalhe).replace(/ - Ref\.:.*$/, ''));
+      const q = window.mvQR(url); if (!q) return '';
+      const cv = document.createElement('canvas');
+      window.mvQRDesenhar(cv, q, 240, '#ffffff', '#000000');
+      return cv.toDataURL('image/png');
+    } catch (_) { return ''; }
+  }
+  function pedLinhaValor(rot, v) { return '<div class="lv"><span>' + rot + '</span><span>' + v + '</span></div>'; }
+
+  function pedComandaHtml(p) {
+    const e = p.entrega || {};
+    const ent = pedEhEntrega(p);
+    let h = '<div class="cmd">';
+    h += '<div class="c neg">' + finEsc(pedNegNome()) + '</div>';
+    h += '<div class="c num">PEDIDO Nº ' + pedNumero(p) + '</div>';
+    h += '<div class="c pq">' + pedData(p) + ' · ' + (p.origem === 'cardapio' ? 'Cardápio' : 'Live') + '</div>';
+    h += '<div class="sep"></div>';
+    if (ent) {
+      h += '<div class="tit">ENTREGA' + (e.bairro ? ' · ' + finEsc(e.bairro) : '') + '</div>';
+      if (e.rua) {
+        h += '<div>' + finEsc(e.rua + ', ' + e.numero) + (e.complemento ? ' - ' + finEsc(e.complemento) : '') + '</div>';
+        h += '<div>' + finEsc(e.bairro || '') + (e.cidade ? ' - ' + finEsc(e.cidade) + (e.uf ? '/' + finEsc(e.uf) : '') : '') + '</div>';
+        if (e.cep) h += '<div>CEP ' + finEsc(String(e.cep).slice(0, 5) + '-' + String(e.cep).slice(5)) + '</div>';
+        if (e.referencia) h += '<div>Ref.: ' + finEsc(e.referencia) + '</div>';
+      } else {
+        h += '<div>' + finEsc(e.detalhe || '') + '</div>';
+      }
+      const qr = pedQrRota(p);
+      if (qr) h += '<div class="c"><img class="qr" src="' + qr + '" alt=""><div class="pq">Rota no celular</div></div>';
+    } else {
+      h += '<div class="tit">RETIRADA NO LOCAL</div><div class="pq">Confira o código com o cliente no painel.</div>';
+    }
+    h += '<div class="sep"></div>';
+    h += '<div>Cliente: <b>' + finEsc((p.comprador && p.comprador.nome) || '') + '</b></div>';
+    const w = pedWpp(p); if (w) h += '<div>WhatsApp: ' + finEsc(pedFone(w)) + '</div>';
+    h += '<div class="sep"></div>';
+    (Array.isArray(p.itens) ? p.itens : []).forEach(function (i) {
+      const q = Number(i.qtd) || 1;
+      h += pedLinhaValor('<b>' + q + 'x</b> ' + finEsc(i.nome), finReal(Number(i.preco || 0) * q).replace('R$ ', ''));
+    });
+    h += '<div class="sep"></div>';
+    const sub = (p.subtotal != null) ? Number(p.subtotal) : Number(p.totalBase || p.total || 0);
+    h += pedLinhaValor('Produtos', finReal(sub));
+    if (ent) h += pedLinhaValor('Entrega', Number(p.frete) > 0 ? finReal(p.frete) : (e.aCombinar === false ? 'grátis' : 'a combinar'));
+    const ajuste = Math.round((Number(p.total || 0) - sub - Number(p.frete || 0)) * 100) / 100;
+    if (ajuste > 0 && ajuste < 1) h += pedLinhaValor('Centavos do Pix', finReal(ajuste));
+    h += '<div class="lv tot"><span>TOTAL</span><span>' + finReal(p.total) + '</span></div>';
+    h += '<div class="pq">Pago por Pix · ' + (p.confirmadoPor === 'gateway' ? 'confirmado pelo banco' : 'confirmado pelo lojista') + '</div>';
+    h += '<div class="sep"></div>';
+    h += '<div class="c nf">DOCUMENTO NÃO FISCAL</div><div class="c pq">Pedido feito pelo Moviki · moviki.com.br</div>';
+    h += '</div>';
+    return h;
+  }
+
+  function pedSeparacaoHtml(lista, titulo) {
+    const soma = {};
+    let nItens = 0, total = 0;
+    lista.forEach(function (p) {
+      total += Number(p.total || 0);
+      (Array.isArray(p.itens) ? p.itens : []).forEach(function (i) {
+        /* Pelo NOME normalizado, nao pelo sku: o mesmo produto vendido na live
+           (sem sku) e no cardapio (com sku) tem que somar numa linha so. */
+        const k = String(i.nome || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim();
+        if (!soma[k]) soma[k] = { nome: i.nome, qtd: 0 };
+        soma[k].qtd += Number(i.qtd) || 1; nItens += Number(i.qtd) || 1;
+      });
+    });
+    const linhas = Object.keys(soma).map(function (k) { return soma[k]; }).sort(function (a, b) { return b.qtd - a.qtd || String(a.nome).localeCompare(String(b.nome)); });
+    let h = '<div class="cmd">';
+    h += '<div class="c neg">' + finEsc(pedNegNome()) + '</div>';
+    h += '<div class="c num">LISTA DE SEPARAÇÃO</div>';
+    h += '<div class="c pq">' + finEsc(titulo) + '</div><div class="sep"></div>';
+    linhas.forEach(function (l) { h += '<div class="lv"><span>[ ] ' + finEsc(l.nome) + '</span><span><b>' + l.qtd + '</b></span></div>'; });
+    h += '<div class="sep"></div>';
+    h += pedLinhaValor('Pedidos', String(lista.length));
+    h += pedLinhaValor('Itens', String(nItens));
+    h += '<div class="lv tot"><span>TOTAL</span><span>' + finReal(total) + '</span></div>';
+    h += '<div class="sep"></div><div class="pq">Pedidos: ' + lista.map(function (p) { return 'nº ' + pedNumero(p); }).join(', ') + '</div>';
+    h += '</div>';
+    return h;
+  }
+
+  function pedJanela(corpo, titulo) {
+    const larg = pedLargura();
+    const pagina = larg === 'a4' ? '@page{size:A4;margin:12mm}' : ('@page{size:' + larg + 'mm auto;margin:2mm}');
+    const cw = larg === '58' ? '48mm' : (larg === '80' ? '72mm' : '86mm');
+    const fs = larg === '58' ? '11px' : '12.5px';
+    const css = pagina +
+      '*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#000;background:#fff;font-size:' + fs + ';line-height:1.35}' +
+      '.cmd{width:' + cw + ';margin:0 auto;padding:2mm 0;page-break-after:always;break-after:page}' +
+      (larg === 'a4' ? '.cmd{border:1px dashed #999;padding:5mm;margin:0 0 6mm;display:inline-block;vertical-align:top;margin-right:4mm;page-break-after:auto;break-after:auto;break-inside:avoid;page-break-inside:avoid}' : '') +
+      '.cmd:last-child{page-break-after:auto;break-after:auto}' +
+      '.c{text-align:center}.neg{font-size:1.25em;font-weight:700}.num{font-size:1.35em;font-weight:800;margin:2px 0}.tit{font-weight:800;margin-bottom:2px}' +
+      '.pq{font-size:.85em}.nf{font-weight:800;letter-spacing:.5px}.sep{border-top:1px dashed #000;margin:5px 0}' +
+      '.lv{display:flex;justify-content:space-between;gap:6px}.lv span:first-child{flex:1}.tot{font-weight:800;font-size:1.2em;margin-top:2px}' +
+      '.qr{width:28mm;height:28mm;margin-top:4px;image-rendering:pixelated}';
+    const w = window.open('', '_blank');
+    if (!w) { alert('O navegador bloqueou a janela de impressão. Libere as janelas deste site e tente de novo.'); return; }
+    w.document.open();
+    w.document.write('<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + finEsc(titulo) + '</title><style>' + css + '</style></head><body>' + corpo + '</body></html>');
+    w.document.close();
+    setTimeout(function () { try { w.focus(); w.print(); } catch (_) {} }, 350);
+  }
+
+  window.pedImprimirUm = function (id) {
+    const p = finPedidos.find(function (x) { return x.__id === id; }); if (!p) return;
+    pedJanela(pedComandaHtml(p), 'Pedido ' + pedNumero(p));
+    try { if (window.mvEv) mvEv('pedido_impresso', { lote: 0 }); } catch (_) {}
+  };
+
+  window.pedImprimirLote = function (soSeparacao) {
+    if (!pedEnterprise()) {
+      if (confirm('Imprimir vários pedidos de uma vez e a lista de separação são do plano Enterprise. Quer ver o plano?')) {
+        try { abrirPlano(); setTimeout(function () { try { selecionarPlano('enterprise', 'mensal', null); } catch (_) {} }, 150); } catch (_) {}
+      }
+      return;
+    }
+    const lista = finPedidos.filter(function (p) { return pedSel[p.__id] && PED_PAGOS.indexOf(String(p.status)) >= 0; });
+    if (!lista.length) { alert('Marque os pedidos pagos que quer imprimir (ou toque em "Marcar os pagos da lista").'); return; }
+    lista.sort(function (a, b) { return (Number(a.numero) || 0) - (Number(b.numero) || 0) || finMs(a.criadoEm) - finMs(b.criadoEm); });
+    const origem = el('pedOrigem') && el('pedOrigem').selectedOptions && el('pedOrigem').selectedOptions[0] ? el('pedOrigem').selectedOptions[0].textContent : '';
+    const titulo = (origem && el('pedOrigem').value ? origem + ' · ' : '') + lista.length + (lista.length === 1 ? ' pedido' : ' pedidos');
+    let corpo = pedSeparacaoHtml(lista, titulo);
+    if (!soSeparacao) corpo += lista.map(pedComandaHtml).join('');
+    pedJanela(corpo, soSeparacao ? 'Lista de separação' : 'Comandas');
+    try { if (window.mvEv) mvEv('pedido_impresso', { lote: lista.length }); } catch (_) {}
+  };
+
+  /* ---------- configuracao de entrega ---------- */
+  function pedLinhaBairro(nome, taxa) {
+    const d = document.createElement('div');
+    d.className = 'pedBairro';
+    d.innerHTML = '<input type="text" maxlength="50" placeholder="Bairro" class="pbNome"><input type="text" inputmode="decimal" maxlength="7" placeholder="Taxa R$" class="pbTaxa"><button type="button" aria-label="Tirar bairro">×</button>';
+    d.querySelector('.pbNome').value = nome || '';
+    d.querySelector('.pbTaxa').value = (taxa === 0 || taxa) ? String(Number(taxa).toFixed(2)).replace('.', ',') : '';
+    d.querySelector('button').onclick = function () { d.remove(); };
+    return d;
+  }
+  window.pedAddBairro = function () {
+    const box = el('pedBairros'); if (!box) return;
+    const l = pedLinhaBairro('', '');
+    box.appendChild(l);
+    try { l.querySelector('.pbNome').focus(); } catch (_) {}
+  };
+  window.pedEntModoMudou = function () {
+    const m = (el('pedEntModo') && el('pedEntModo').value) || 'retirada';
+    const r = el('pedEntRetBox'), e = el('pedEntEntBox');
+    if (r) r.style.display = (m === 'entrega') ? 'none' : '';
+    if (e) e.style.display = (m === 'retirada') ? 'none' : '';
+  };
+  let pedEntregaCarregada = false;
+  async function pedCarregarEntrega() {
+    if (pedEntregaCarregada) return;
+    try {
+      if (!finEstado) { const r = await finPost('loja_recebimento'); if (r.j && r.j.ok) finEstado = r.j; }
+    } catch (_) {}
+    if (!finEstado) return;
+    pedEntregaCarregada = true;
+    pedPintarEntrega();
+  }
+  function pedPintarEntrega() {
+    const e = finEstado || {}, c = e.entregaCfg || {};
+    if (el('pedEntModo')) el('pedEntModo').value = e.entrega || 'retirada';
+    if (el('pedEntRet')) el('pedEntRet').value = c.retirada || '';
+    if (el('pedEntCidade')) el('pedEntCidade').value = c.cidade || '';
+    if (el('pedEntPrazo')) el('pedEntPrazo').value = c.prazo || '';
+    if (el('pedEntMin')) el('pedEntMin').value = c.minimoEntrega ? String(Number(c.minimoEntrega).toFixed(2)).replace('.', ',') : '';
+    const box = el('pedBairros');
+    if (box) {
+      box.innerHTML = '';
+      (Array.isArray(c.bairros) ? c.bairros : []).forEach(function (b) { box.appendChild(pedLinhaBairro(b.nome, b.taxa)); });
+    }
+    const s = el('selo-acc-ped-entrega');
+    if (s) s.textContent = (e.entrega && e.entrega !== 'retirada') ? ((c.bairros && c.bairros.length) ? c.bairros.length + ' bairros' : 'a combinar') : 'retirada';
+    /* Entrega suspensa pelo Moviki (26/09/2026): a configuracao continua
+       editavel, mas o cliente so ve retirada ate o suporte reativar. */
+    const sp = el('pedEntSusp'), susp = e.entregaSuspensa && e.entregaSuspensa.ativa;
+    if (sp) {
+      sp.classList.toggle('escondido', !susp);
+      sp.innerHTML = susp ? '<b>Sua entrega está suspensa pelo Moviki.</b> Enquanto isso, o cliente só consegue comprar com retirada no local.<br>Motivo: ' + finEsc(e.entregaSuspensa.motivo || '') + '<br><a href="https://wa.me/554120186848?text=' + encodeURIComponent('Olá! Minha entrega foi suspensa no Moviki e quero entender o motivo.') + '" target="_blank" rel="noopener" style="color:#ffd98a;font-weight:700">Falar com o suporte</a>' : '';
+    }
+    if (s && susp) s.textContent = 'suspensa';
+    window.pedEntModoMudou();
+  }
+  const PED_ERROS = {
+    entrega: 'Escolha como o cliente recebe.',
+    bairros_muitos: 'São no máximo 80 bairros.',
+    bairro_nome: 'Tem bairro sem nome. Escreva o nome ou tire a linha.',
+    taxa: 'Confira a taxa do bairro. Use só números, até R$ 200.',
+    bairro_repetido: 'Tem bairro repetido na lista.',
+    minimo_entrega: 'Confira o pedido mínimo para entrega.'
+  };
+  window.pedSalvarEntrega = async function () {
+    const b = el('pedBtnEntrega'); if (!b) return;
+    finAviso('pedAvisoEntrega', '');
+    const bairros = [];
+    document.querySelectorAll('#pedBairros .pedBairro').forEach(function (l) {
+      const nome = String(l.querySelector('.pbNome').value || '').trim();
+      const taxa = String(l.querySelector('.pbTaxa').value || '').trim().replace(/^R\$\s*/i, '');
+      if (!nome && !taxa) return;
+      bairros.push({ nome: nome, taxa: taxa === '' ? '0' : taxa });
+    });
+    const dados = {
+      entrega: (el('pedEntModo') && el('pedEntModo').value) || 'retirada',
+      bairros: bairros,
+      minimoEntrega: String((el('pedEntMin') && el('pedEntMin').value) || '').trim().replace(/^R\$\s*/i, ''),
+      prazo: (el('pedEntPrazo') && el('pedEntPrazo').value) || '',
+      cidade: (el('pedEntCidade') && el('pedEntCidade').value) || '',
+      retirada: (el('pedEntRet') && el('pedEntRet').value) || ''
+    };
+    b.disabled = true; const t = b.textContent; b.textContent = 'Salvando…';
+    try {
+      const r = await finPost('loja_entrega', dados);
+      if (r.j && r.j.ok) {
+        finEstado = r.j;
+        pedPintarEntrega();
+        finAviso('pedAvisoEntrega', 'Entrega salva ✓ Sua página já mostra as opções novas.', true);
+        try { toast('Entrega salva!'); } catch (_) {}
+        try { if (window.mvEv) mvEv('entrega_configurada', { bairros: bairros.length }); } catch (_) {}
+      } else {
+        let m = PED_ERROS[r.j && r.j.erro] || finMsg(r.j, r.http);
+        if (r.j && r.j.nome) m += ' (' + r.j.nome + ')';
+        finAviso('pedAvisoEntrega', m);
+      }
+    } catch (_) { finAviso('pedAvisoEntrega', 'Falha de conexão. Tente de novo.'); }
+    b.disabled = false; b.textContent = t;
+  };
+
 </script>
 <script>
 (function(){
-  var TIT={perfil:'Perfil',cardapio:'Cardápio',promocoes:'Promoções',eventos:'Eventos',local:'Localização',info:'Informações',whatsapp:'WhatsApp',avaliacoes:'Avaliações'};
+  var TIT={pedidos:'Central de Pedidos',perfil:'Perfil',cardapio:'Cardápio',promocoes:'Promoções',eventos:'Eventos',local:'Localização',info:'Informações',whatsapp:'WhatsApp',avaliacoes:'Avaliações'};
   function $(id){return document.getElementById(id);}
   function mostrarEditor(sec){
     var g=$('grade'),e=$('editor'),t=$('editorTit');

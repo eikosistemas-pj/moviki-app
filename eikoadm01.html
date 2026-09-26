@@ -641,6 +641,7 @@ table.mvTab td b{font-weight:700}
           <button type="button" class="mvNavIt" data-nav="mensagens"><img class="mvNavIco" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Mensagens</span><span class="bad hide" id="badMsg">0</span></button>
           <button type="button" class="mvNavIt" data-nav="metricas"><img class="mvNavIco" src="icones/alvo.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Métricas</span></button>
           <button type="button" class="mvNavIt" data-nav="lives"><img class="mvNavIco" src="icones/live.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Lives</span><span class="bad hide" id="badLive">0</span></button>
+          <button type="button" class="mvNavIt" data-nav="pedidos"><img class="mvNavIco" src="icones/vendas.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Pedidos</span></button>
           <button type="button" class="mvNavIt" data-nav="newsletter"><img class="mvNavIco" src="icones/recorrente.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Newsletter</span></button>
           <button type="button" class="mvNavIt" data-nav="relatorios"><img class="mvNavIco" src="icones/relatorios.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Relatórios</span></button>
           <button type="button" class="mvNavIt" data-nav="custos"><img class="mvNavIco" src="icones/comissoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Custos e margem</span></button>
@@ -1164,6 +1165,58 @@ table.mvTab td b{font-weight:700}
           </div>
         </section>
 
+        <!-- ============ SECAO: PEDIDOS (Central de Pedidos, 26/09/2026) ============
+             O dono acompanha a operacao de venda e entrega dos lojistas: pedidos
+             parados, recusas, taxas fora do normal, quem usa a Central, e pode
+             SUSPENDER A ENTREGA de um lojista sem tirar a venda dele do ar
+             (acao adm_entrega no robo — a trava mora no servidor, nao na tela).
+             So LE pedidos e checkout_publico (a regra ja libera ao admin). -->
+        <section data-sec="pedidos" class="hide">
+          <style>
+            .pdK{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+            @media(min-width:760px){.pdK{grid-template-columns:repeat(4,minmax(0,1fr))}}
+            .pdK div{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px}
+            .pdK small{display:block;font-size:11.5px;color:var(--mv-txt-3)}
+            .pdK b{font-size:21px;font-weight:800}
+            .pdAl{border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:var(--mv-campo);font-size:13px;line-height:1.5}
+            .pdAl b{color:#fff}
+            .pdAl.forte{border-color:rgba(255,107,107,.45);background:rgba(255,107,107,.07)}
+            .pdAl.medio{border-color:rgba(255,176,32,.45);background:rgba(255,176,32,.07)}
+            .pdAcao{display:inline-block;border-radius:9px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--mv-linha-forte);background:transparent;color:var(--mv-txt-2);margin:2px 4px 2px 0;font-family:inherit}
+            .pdAcao.perigo{border-color:rgba(255,107,107,.55);color:#ff9b9b}
+            .pdAcao.ok{border-color:rgba(37,227,155,.55);color:#7ff0c4}
+            .pdSt{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--mv-surf-2);color:var(--mv-txt-2)}
+            .pdSt.pago,.pdSt.separando,.pdSt.pronto,.pdSt.saiu{background:rgba(37,227,155,.13);color:var(--mv-ok)}
+            .pdSt.aguardando,.pdSt.conferindo{background:rgba(255,176,32,.13);color:var(--mv-alerta)}
+            .pdSt.recusado,.pdSt.cancelado,.pdSt.expirado,.pdSt.estornado{background:rgba(255,107,107,.12);color:#ff9b9b}
+            .pdSusp{color:#ff9b9b;font-weight:700}
+          </style>
+          <div class="cd">
+            <div class="cdTopo"><div><div class="cdTit">Pedidos dos lojistas</div><div class="cdSub">Últimos 30 dias, lidos direto do banco. Cada atualização lê todos os pedidos do período — por isso não fica ouvindo sozinho.</div></div>
+              <button type="button" class="pdAcao" id="pdAtualizar">Atualizar</button></div>
+            <div class="pdK">
+              <div><small>Pedidos (30 dias)</small><b id="pdKPed">—</b></div>
+              <div><small>Pagos · valor</small><b id="pdKPag">—</b></div>
+              <div><small>Entrega × retirada (pagos)</small><b id="pdKEnt">—</b></div>
+              <div><small>Lojistas com entrega configurada</small><b id="pdKLoj">—</b></div>
+            </div>
+          </div>
+          <div class="cd">
+            <div class="cdTopo"><div><div class="cdTit">Precisa de atenção</div><div class="cdSub">Pago sem entregar há mais de 24 h · aguardando confirmação há mais de 2 h · 3 ou mais recusas em 7 dias · taxa de entrega acima de R$ 30 ou mínimo acima de R$ 150.</div></div></div>
+            <div id="pdAlertas"><div class="vazio">Toque em Atualizar.</div></div>
+          </div>
+          <div class="cd">
+            <div class="cdTopo"><div><div class="cdTit">Por lojista</div><div class="cdSub">Suspender a entrega deixa o lojista vendendo só com retirada. Ele vê o motivo no painel dele. A configuração dele não se perde: reativar devolve tudo como estava.</div></div></div>
+            <div class="tabRola"><table class="lvTab"><thead><tr><th>Negócio</th><th>Plano</th><th>Entrega</th><th>Pedidos</th><th>Pagos</th><th>Valor pago</th><th>Parados</th><th>Recusas 7d</th></tr></thead><tbody id="pdLojistas"><tr><td colspan="8" class="vazio">Toque em Atualizar.</td></tr></tbody></table></div>
+            <div id="pdAviso" class="aviso"></div>
+          </div>
+          <div class="cd hide" id="pdDetCd">
+            <div class="cdTopo"><div><div class="cdTit" id="pdDetTit">Pedidos</div><div class="cdSub">Só o primeiro nome do cliente: para suporte basta o número do pedido. Os dados completos ficam com o lojista.</div></div><button type="button" class="pdAcao" id="pdDetFechar">Fechar</button></div>
+            <div class="tabRola"><table class="lvTab"><thead><tr><th>Nº</th><th>Data</th><th>Origem</th><th>Situação</th><th>Valor</th><th>Entrega</th><th>Cliente</th><th>Confirmado por</th></tr></thead><tbody id="pdDet"></tbody></table></div>
+          </div>
+        </section>
+
+
 
         <!-- ============ SECAO: CUSTOS E MARGEM (16/09/2026) ============
              O que esta tela responde: quanto a empresa gasta, quanto sobra de
@@ -1540,6 +1593,7 @@ table.mvTab td b{font-weight:700}
     <button type="button" data-ir="atalhos"><img src="icones/parceiros.png" alt="" onerror="this.style.display='none'">Meu crachá com QR</button>
     <div class="menuSec">Administração</div>
     <button type="button" data-ir="lives"><img src="icones/live.png" alt="" onerror="this.style.display='none'">Lives e moderação<span class="bad hide" id="badLiveM">0</span></button>
+    <button type="button" data-ir="pedidos"><img src="icones/vendas.png" alt="" onerror="this.style.display='none'">Pedidos dos lojistas</button>
     <button type="button" data-ir="exclusoes"><img src="icones/exclusoes.png" alt="" onerror="this.style.display='none'">Exclusões de conta<span class="bad hide" id="badExcM">0</span></button>
     <button type="button" data-ir="config"><img src="icones/escudo.png" alt="" onerror="this.style.display='none'">Configurações</button>
     <a href="https://moviki.com.br" target="_blank" rel="noopener"><img src="icones/ver-site.png" alt="" onerror="this.style.display='none'">Ver o site</a>
@@ -1566,7 +1620,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-23-seguranca';
+  window.MOVIKI_VERSAO = '2026-09-26-pedidos';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1659,6 +1713,7 @@ table.mvTab td b{font-weight:700}
     if(nome === 'lives') livesAbrir();
     if(nome === 'custos') csAbrir();
     if(nome === 'criadores') crAbrir();
+    if(nome === 'pedidos') pdAbrir();
   }
   window.mvIrSec = irSec;
 
@@ -4162,7 +4217,9 @@ table.mvTab td b{font-weight:700}
     cx.innerHTML=linhas.map(l=>l.html).join('')
       +'<p class="cdSub" style="margin-top:10px">O teto de R$ 2.000 do Asaas conta desde a criação da subconta; aqui aparecem só os últimos 30 dias. Ao chegar perto, peça a homologação ao Asaas antes de o lojista ser travado.</p>';
   }
-  function pagosDe(uid,liveId){return LV_PED.filter(p=>p.lojistaUid===uid&&(!liveId||p.liveId===liveId)&&(p.status==='pago'||p.status==='entregue'));}
+  /* 26/09/2026: separando/pronto/saiu (Central de Pedidos) continuam sendo venda paga. */
+  var LV_PAGOS=['pago','separando','pronto','saiu','entregue'];
+  function pagosDe(uid,liveId){return LV_PED.filter(p=>p.lojistaUid===uid&&(!liveId||p.liveId===liveId)&&LV_PAGOS.indexOf(p.status)>=0);}
   /* helpers da autoridade: o enfeite (doc `lives`) casa por lojistaUid */
   function lvEnfeite(uid){
     let melhor=null;
@@ -4210,7 +4267,7 @@ table.mvTab td b{font-weight:700}
       (r.ljN?'<br>No modo <b>chave Pix própria</b> não existe gateway: confirmar na mão é o único caminho, e ele é legítimo. O que não vale é somar os dois como se fossem a mesma prova.':'');
   }
   function lvKpis(){
-    const hoje=diaSP(), pagosHoje=LV_PED.filter(p=>p.dia===hoje&&(p.status==='pago'||p.status==='entregue'));
+    const hoje=diaSP(), pagosHoje=LV_PED.filter(p=>p.dia===hoje&&LV_PAGOS.indexOf(p.status)>=0);
     const bloq=LV_BLOQ.filter(b=>!b.ate||ms(b.ate)>Date.now());
     txt('lvKAgora',lvNoArErro&&!LV_NOAR.length?'?':LV_NOAR.length);
     txt('lvKAssist',LV_NOAR.reduce((t,x)=>t+Number((lvEnfeite(x.uid)||{}).assistindo||0),0));
@@ -4331,7 +4388,7 @@ table.mvTab td b{font-weight:700}
     el(idE).innerHTML=dias.map(d=>'<span>'+d.slice(8)+'</span>').join('');
   }
   function lvPintarAnalises(){
-    const pagos=LV_PED.filter(p=>p.status==='pago'||p.status==='entregue'), venda=pagos.reduce((t,p)=>t+Number(p.total||0),0);
+    const pagos=LV_PED.filter(p=>LV_PAGOS.indexOf(p.status)>=0), venda=pagos.reduce((t,p)=>t+Number(p.total||0),0);
     const mins=LV_HIST.reduce((t,l)=>t+Number(l.duracaoMin||0),0), picos=LV_HIST.map(l=>Number(l.pico||0));
     const lojas=new Set(LV_HIST.map(l=>l.lojistaUid)).size;
     const k=[['Lives',LV_HIST.length],['Minutos ao vivo',mins],['Pico médio',picos.length?Math.round(picos.reduce((a,b)=>a+b,0)/picos.length):0],['Lojistas que fizeram live',lojas],
@@ -5425,6 +5482,132 @@ table.mvTab td b{font-weight:700}
     feedback(el('crRecarregar'), 'Atualizando…');
     CR_HIST = null; CR_TRAF = null; CR_TRAF_ERRO = ''; CR_IND = {};
     await crAbrir();
+  });
+
+  /* =====================================================================
+     PEDIDOS — Central de Pedidos vista pelo dono (26/09/2026)
+  ===================================================================== */
+  const PD_PAGOS = ['pago','separando','pronto','saiu','entregue'];
+  const PD_API = 'https://moviki-robo.vercel.app/api/financeiro';
+  let PD_PED = [], PD_PUB = [], pdCarregado = false, pdCarregando = false;
+  const pdBrl = v => 'R$ ' + Number(v||0).toFixed(2).replace('.',',');
+  function pdNome(uid){ return (NEG.find(x=>x.uid===uid)||{}).nome || uid; }
+  function pdPlano(uid){ const p = PLANO_DE[uid] || 'basico'; return {basico:'Básico',pro:'Pró',premium:'Premium',enterprise:'Enterprise'}[p] || p; }
+  function pdNum(p){ return p.numero ? String(p.numero).padStart(4,'0') : String(p.id||'').slice(-6).toUpperCase(); }
+  function pdIdade(t){ const m = ms(t); if(!m) return ''; const h = (Date.now()-m)/3600000; return h < 24 ? Math.round(h)+' h' : Math.round(h/24)+' d'; }
+
+  async function pdCarregar(){
+    if(pdCarregando) return; pdCarregando = true;
+    const b = el('pdAtualizar'); if(b){ b.disabled = true; b.textContent = 'Carregando…'; }
+    try{
+      const desde = new Date(Date.now()-30*86400000-3*3600000).toISOString().slice(0,10);
+      const s = await getDocs(query(collection(db,'pedidos'), where('dia','>=',desde)));
+      PD_PED = []; s.forEach(d=>PD_PED.push(Object.assign({id:d.id}, d.data())));
+    }catch(e){ PD_PED = []; el('pdAlertas').innerHTML = '<div class="vazio">Não consegui ler os pedidos agora.</div>'; }
+    try{
+      const s = await getDocs(collection(db,'checkout_publico'));
+      PD_PUB = []; s.forEach(d=>PD_PUB.push(Object.assign({uid:d.id}, d.data())));
+    }catch(e){ PD_PUB = []; }
+    if(!NEG.length){ try{ await carregarNegocios(); }catch(_){} }
+    pdCarregado = true; pdCarregando = false;
+    if(b){ b.disabled = false; b.textContent = 'Atualizar'; }
+    pdPintar();
+  }
+  function pdAbrir(){ if(!pdCarregado) pdCarregar(); else pdPintar(); }
+
+  function pdPintar(){
+    const pagos = PD_PED.filter(p=>PD_PAGOS.indexOf(p.status)>=0);
+    const entregas = pagos.filter(p=>p.entrega && p.entrega.tipo==='entrega').length;
+    const comEntrega = PD_PUB.filter(c=>c.entrega && c.entrega!=='retirada' || (Array.isArray(c.bairros)&&c.bairros.length) || c.entregaSuspensa===true);
+    el('pdKPed').textContent = PD_PED.length;
+    el('pdKPag').textContent = pagos.length + ' · ' + pdBrl(pagos.reduce((t,p)=>t+Number(p.total||0),0));
+    el('pdKEnt').textContent = entregas + ' × ' + (pagos.length - entregas);
+    el('pdKLoj').textContent = comEntrega.length;
+
+    /* alertas */
+    const agora = Date.now(), al = [];
+    const parados = pagos.filter(p=>p.status!=='entregue' && ms(p.pagoEm) && agora-ms(p.pagoEm) > 24*3600000);
+    parados.sort((a,b)=>ms(a.pagoEm)-ms(b.pagoEm)).slice(0,30).forEach(p=>{
+      al.push({n:2, h:'<b>Pago e não entregue há '+pdIdade(p.pagoEm)+'</b> · '+esc(pdNome(p.lojistaUid))+' · nº '+esc(pdNum(p))+' · '+pdBrl(p.total)+' · '+esc(p.status)+' <button type="button" class="pdAcao" data-pdver="'+esc(p.lojistaUid)+'">Ver pedidos</button>'});
+    });
+    PD_PED.filter(p=>(p.status==='aguardando'||p.status==='conferindo') && p.modo==='pix' && ms(p.criadoEm) && agora-ms(p.criadoEm) > 2*3600000 && p.status==='conferindo').slice(0,20).forEach(p=>{
+      al.push({n:1, h:'<b>Cliente avisou que pagou há '+pdIdade(p.avisadoEm||p.criadoEm)+' e o lojista não confirmou</b> · '+esc(pdNome(p.lojistaUid))+' · nº '+esc(pdNum(p))+' · '+pdBrl(p.total)+' <button type="button" class="pdAcao" data-pdver="'+esc(p.lojistaUid)+'">Ver pedidos</button>'});
+    });
+    const rec = {};
+    PD_PED.filter(p=>p.status==='recusado' && agora-ms(p.recusadoEm||p.criadoEm) < 7*86400000).forEach(p=>{ rec[p.lojistaUid]=(rec[p.lojistaUid]||0)+1; });
+    Object.keys(rec).filter(u=>rec[u]>=3).forEach(u=>{
+      al.push({n:2, h:'<b>'+rec[u]+' recusas em 7 dias</b> · '+esc(pdNome(u))+' — golpe de comprador ou lojista confirmando errado. <button type="button" class="pdAcao" data-pdver="'+esc(u)+'">Ver pedidos</button>'});
+    });
+    PD_PUB.forEach(c=>{
+      const caras = (Array.isArray(c.bairros)?c.bairros:[]).filter(b=>Number(b.taxa)>30);
+      if(caras.length) al.push({n:1, h:'<b>Taxa de entrega alta</b> · '+esc(pdNome(c.uid))+' · '+caras.slice(0,4).map(b=>esc(b.nome)+' '+pdBrl(b.taxa)).join(', ')+(caras.length>4?' …':'')});
+      if(Number(c.minimoEntrega)>150) al.push({n:1, h:'<b>Pedido mínimo para entrega alto</b> · '+esc(pdNome(c.uid))+' · '+pdBrl(c.minimoEntrega)});
+    });
+    al.sort((a,b)=>b.n-a.n);
+    el('pdAlertas').innerHTML = al.length ? al.map(a=>'<div class="pdAl '+(a.n>=2?'forte':'medio')+'">'+a.h+'</div>').join('') : '<div class="vazio">Nada pedindo atenção agora.</div>';
+
+    /* por lojista: quem tem pedido OU configuracao de entrega */
+    const uids = new Set(PD_PED.map(p=>p.lojistaUid));
+    comEntrega.forEach(c=>uids.add(c.uid));
+    const linhas = [...uids].map(u=>{
+      const ps = PD_PED.filter(p=>p.lojistaUid===u), pg = ps.filter(p=>PD_PAGOS.indexOf(p.status)>=0);
+      const pub = PD_PUB.find(c=>c.uid===u) || {};
+      return { u, ps, pg, pub, valor: pg.reduce((t,p)=>t+Number(p.total||0),0),
+        parados: pg.filter(p=>p.status!=='entregue' && ms(p.pagoEm) && agora-ms(p.pagoEm) > 24*3600000).length, rec: rec[u]||0 };
+    }).sort((a,b)=>b.valor-a.valor || b.ps.length-a.ps.length);
+    el('pdLojistas').innerHTML = linhas.length ? linhas.map(l=>{
+      const pub = l.pub, nb = Array.isArray(pub.bairros)?pub.bairros.length:0;
+      const ent = pub.entregaSuspensa===true ? '<span class="pdSusp">SUSPENSA</span>'
+        : ({retirada:'só retirada', entrega:'só entrega', ambos:'retirada e entrega'}[pub.entrega]||'—') + (pub.entrega && pub.entrega!=='retirada' ? (nb ? ' · '+nb+' bairros' : ' · a combinar') : '');
+      const botao = pub.entregaSuspensa===true
+        ? '<button type="button" class="pdAcao ok" data-pdsusp="'+esc(l.u)+'" data-v="0">Reativar entrega</button>'
+        : ((pub.entrega && pub.entrega!=='retirada') ? '<button type="button" class="pdAcao perigo" data-pdsusp="'+esc(l.u)+'" data-v="1">Suspender entrega</button>' : '');
+      /* Botoes junto do nome: a tabela rola de lado no celular e no notebook,
+         e acao escondida na ultima coluna ninguem acha. */
+      return '<tr><td><b>'+esc(pdNome(l.u))+'</b><br><button type="button" class="pdAcao" data-pdver="'+esc(l.u)+'">Ver pedidos</button>'+botao+'</td><td>'+esc(pdPlano(l.u))+'</td><td>'+ent+'</td><td>'+l.ps.length+'</td><td>'+l.pg.length+'</td><td>'+pdBrl(l.valor)+'</td><td>'+(l.parados?'<b style="color:#ff9b9b">'+l.parados+'</b>':'0')+'</td><td>'+(l.rec>=3?'<b style="color:#ff9b9b">'+l.rec+'</b>':l.rec)+'</td></tr>';
+    }).join('') : '<tr><td colspan="8" class="vazio">Nenhum lojista com pedido ou entrega configurada.</td></tr>';
+  }
+
+  function pdVer(uid){
+    const ps = PD_PED.filter(p=>p.lojistaUid===uid).sort((a,b)=>ms(b.criadoEm)-ms(a.criadoEm)).slice(0,100);
+    el('pdDetTit').textContent = 'Pedidos de ' + pdNome(uid) + ' (30 dias)';
+    el('pdDet').innerHTML = ps.length ? ps.map(p=>{
+      const d = ms(p.criadoEm) ? new Date(ms(p.criadoEm)).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+      const e = p.entrega||{};
+      const ent = e.tipo==='entrega' ? 'entrega'+(e.bairro?' · '+esc(e.bairro):'')+(Number(p.frete)>0?' · '+pdBrl(p.frete):'') : 'retirada';
+      const cli = String((p.comprador&&p.comprador.nome)||'').split(' ')[0];
+      return '<tr><td>'+esc(pdNum(p))+'</td><td>'+d+'</td><td>'+(p.origem==='cardapio'?'cardápio':'live')+'</td><td><span class="pdSt '+esc(p.status)+'">'+esc(p.status)+'</span></td><td>'+pdBrl(p.total)+'</td><td>'+ent+'</td><td>'+esc(cli)+'</td><td>'+(p.confirmadoPor==='gateway'?'banco':(p.confirmadoPor==='lojista'?'lojista':'—'))+'</td></tr>';
+    }).join('') : '<tr><td colspan="8" class="vazio">Sem pedidos no período.</td></tr>';
+    show('pdDetCd');
+    try{ el('pdDetCd').scrollIntoView({behavior:'smooth',block:'start'}); }catch(_){}
+  }
+
+  async function pdSuspender(uid, suspender){
+    let motivo = '';
+    if(suspender){
+      motivo = prompt('Motivo da suspensão (o lojista vê este texto no painel dele):', 'Reclamações de pedido não entregue. Fale com o suporte do Moviki.');
+      if(motivo === null) return;
+      if(String(motivo).trim().length < 5){ alert('Escreva um motivo com pelo menos 5 letras.'); return; }
+      if(!confirm('Suspender a entrega de '+pdNome(uid)+'? Ele continua vendendo, só com retirada.')) return;
+    } else if(!confirm('Reativar a entrega de '+pdNome(uid)+'?')) return;
+    const av = el('pdAviso'); av.style.color=''; av.textContent = 'Enviando…';
+    try{
+      const idToken = await auth.currentUser.getIdToken();
+      const r = await fetch(PD_API, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({acao:'adm_entrega', idToken, dados:{uid, suspender, motivo: String(motivo||'').trim()}})});
+      const j = await r.json().catch(()=>({}));
+      if(!j.ok){ av.textContent = 'Não deu certo: ' + (j.erro||r.status); return; }
+      av.style.color = 'var(--mv-ok)'; av.textContent = suspender ? 'Entrega suspensa.' : 'Entrega reativada.';
+      try{ await addDoc(collection(db,'moderacao'), {acao: suspender?'entrega_suspensa':'entrega_reativada', lojistaUid: uid, nome: String(pdNome(uid)).slice(0,80), motivo: String(motivo||'').slice(0,200), dias: 0, por: USER.uid, criadoEm: serverTimestamp()}); }catch(_){}
+      await pdCarregar();
+    }catch(e){ av.textContent = 'Falha de conexão.'; }
+  }
+
+  document.addEventListener('click', ev=>{
+    const t = ev.target; if(!t || !t.closest) return;
+    const v = t.closest('[data-pdver]'); if(v){ pdVer(v.getAttribute('data-pdver')); return; }
+    const s = t.closest('[data-pdsusp]'); if(s){ pdSuspender(s.getAttribute('data-pdsusp'), s.getAttribute('data-v')==='1'); return; }
+    if(t.id === 'pdAtualizar'){ pdCarregar(); return; }
+    if(t.id === 'pdDetFechar'){ hide('pdDetCd'); return; }
   });
 </script>
 
