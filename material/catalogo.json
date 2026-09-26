@@ -1,7 +1,23 @@
 {
-  "versao": "2026-09-26-enterprise",
+  "versao": "2026-09-26-cosmeticos",
   "atualizado": "2026-09-26",
   "itens": [
+    {
+      "id": "video-comercio-cosmeticos",
+      "tipo": "video",
+      "titulo": "Cosméticos: venda ao vivo pelo celular",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:40",
+      "peso": "18,2 MB",
+      "arquivo": "material/video-comercio-cosmeticos.mp4",
+      "capa": "material/capas/video-comercio-cosmeticos.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Sua cliente assiste live de maquiagem todo dia — só que na live dos outros, e compra pelo aplicativo sem passar na sua loja.\n\nCom o Moviki, a sua loja abre uma live direto do celular. Mostra a cor na pele, responde \"tem tom mais escuro?\" no chat e lança a oferta. E quem quer testar antes toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "beleza"
+    },
     {
       "id": "video-comercio-farmacia",
       "tipo": "video",
@@ -13,7 +29,7 @@
       "capa": "material/capas/video-comercio-farmacia.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi A rede grande abriu na esquina e o seu cliente de sempre agora compara preço no aplicativo, do sofá de casa.\n\nCom o Moviki, a sua farmácia abre uma live direto do celular. Mostra o protetor solar de perto, responde \"serve pra pele oleosa?\" e \"tem FPS maior?\" no chat e lança a oferta. E quem prefere buscar toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "farmacia"
