@@ -1,5 +1,5 @@
 {
-  "versao": "2026-09-26-farmacia",
+  "versao": "2026-09-26-capas",
   "atualizado": "2026-09-26",
   "itens": [
     {
@@ -1131,7 +1131,7 @@
       "duracao": "1:07",
       "peso": "17 MB",
       "arquivo": "material/video-influencer-parceiro.mp4",
-      "capa": "material/video-influencer-parceiro-capa.webp",
+      "capa": "material/capas/video-influencer-parceiro.webp",
       "w": 1080,
       "h": 1920,
       "novo": false,
@@ -1147,7 +1147,7 @@
       "duracao": "0:18",
       "peso": "6,4 MB",
       "arquivo": "material/video-cada-negocio-tem-sua-rotina.mp4",
-      "capa": "material/video-cada-negocio-tem-sua-rotina-capa.webp",
+      "capa": "material/capas/video-cada-negocio-tem-sua-rotina.webp",
       "w": 1080,
       "h": 1920,
       "novo": false,
