@@ -1,7 +1,23 @@
 {
-  "versao": "2026-09-25-suplementos",
-  "atualizado": "2026-09-25",
+  "versao": "2026-09-26-farmacia",
+  "atualizado": "2026-09-26",
   "itens": [
+    {
+      "id": "video-comercio-farmacia",
+      "tipo": "video",
+      "titulo": "Farmácia: venda ao vivo no bairro",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:40",
+      "peso": "18,3 MB",
+      "arquivo": "material/video-comercio-farmacia.mp4",
+      "capa": "material/capas/video-comercio-farmacia.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi A rede grande abriu na esquina e o seu cliente de sempre agora compara preço no aplicativo, do sofá de casa.\n\nCom o Moviki, a sua farmácia abre uma live direto do celular. Mostra o protetor solar de perto, responde \"serve pra pele oleosa?\" e \"tem FPS maior?\" no chat e lança a oferta. E quem prefere buscar toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "farmacia"
+    },
     {
       "id": "video-shopping-suplementos",
       "tipo": "video",
@@ -13,7 +29,7 @@
       "capa": "material/capas/video-shopping-suplementos.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Meio da semana, corredor do shopping vazio e a prateleira de whey cheia. Enquanto isso, o seu cliente está no sofá, comparando sabor e preço no celular.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra o pote de perto, responde \"tem sabor chocolate?\" e \"tem a versão sem lactose?\" no chat e lança a oferta. E quem quer conversar antes de levar toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "shopping"
@@ -29,7 +45,7 @@
       "capa": "material/capas/video-shopping-bebe.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Meio da semana, corredor do shopping vazio e o enxoval parado na arara. Enquanto isso, quem está montando o enxoval está no sofá de casa, pesquisando pelo celular.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra o body de pertinho, responde \"tem RN?\" e \"é 100% algodão?\" no chat e lança a oferta. E quem quer sentir o tecido antes toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "shopping"
@@ -1412,6 +1428,13 @@
       "nome": "Eletrônicos",
       "emoji": "📱",
       "ico": "cat-eletronicos.png",
+      "grupo": "ramo"
+    },
+    {
+      "id": "farmacia",
+      "nome": "Farmácia",
+      "emoji": "💊",
+      "ico": "cat-farmacia.png",
       "grupo": "ramo"
     },
     {
