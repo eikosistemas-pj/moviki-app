@@ -1712,6 +1712,53 @@ body.mvEnterprise.logado .marcaLogo::after{content:"★ ENTERPRISE";position:abs
   background:linear-gradient(135deg,#ffe08a,#ffcf4d 45%,#e8a900);border:1px solid #d99e00!important;border-radius:999px;padding:1px 7px!important;vertical-align:1px}
 body.mvNaoEnterprise .pedEnt::before{content:"🔒 ";}
 
+/* ================= PEDIDOS EM DESTAQUE NA NAVEGACAO (26/09/2026) =================
+   Pedidos e a tela do dia a dia de quem vende. Laranja sempre (nao so dentro
+   da Central), logo abaixo do Inicio no computador, na barra de baixo e no
+   topo do menu no celular, e cartao largo no topo da grade. O contador conta
+   so o que pede acao AGORA: cliente avisou que pagou + pago esperando separar. */
+.pedBad{min-width:19px;height:19px;padding:0 6px;border-radius:10px;background:#ff5a1f;color:#fff;
+  font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;line-height:1;
+  box-shadow:0 0 0 2px var(--mv-bg,#07111e);flex:0 0 auto;}
+.pedBad.escondido{display:none!important;}
+.pedBad.urgente{animation:pedBadPulsa 1.4s ease-in-out infinite;}
+@keyframes pedBadPulsa{0%,100%{box-shadow:0 0 0 2px var(--mv-bg,#07111e),0 0 0 0 rgba(255,90,31,.75)}
+  60%{box-shadow:0 0 0 2px var(--mv-bg,#07111e),0 0 0 7px rgba(255,90,31,0)}}
+@media(prefers-reduced-motion:reduce){.pedBad.urgente{animation:none}}
+.mvNavIt.mvNavPed{background:linear-gradient(135deg,rgba(255,154,31,.17),rgba(255,90,31,.05));
+  border-color:rgba(255,154,31,.45);color:#ffd3a1;font-weight:700;margin:4px 0 0;padding:12px 11px;}
+.mvNavIt.mvNavPed:hover{border-color:rgba(255,154,31,.85);background:linear-gradient(135deg,rgba(255,154,31,.26),rgba(255,90,31,.09));color:#ffe6c9;}
+.mvNavIt.mvNavPed .pedBad{margin-left:auto;}
+.mvNavPedSep{height:1px;background:var(--mv-linha,rgba(255,255,255,.09));margin:8px 4px 6px;}
+#drawer>button.drawerPed{background:linear-gradient(135deg,rgba(255,154,31,.18),rgba(255,90,31,.05));
+  border-color:rgba(255,154,31,.5);color:#ffd3a1;font-weight:700;margin:4px 0 2px;}
+#drawer>button.drawerPed:hover{border-color:rgba(255,154,31,.85);color:#ffe6c9;}
+#drawer>button.drawerPed .pedBad{margin-left:auto;}
+.mvBar button.mvBarPed{position:relative;color:#ffb35c;}
+.mvBar button.mvBarPed.on{color:#ff9a1f;}
+.mvBar button.mvBarPed.on svg{filter:drop-shadow(0 0 7px rgba(255,154,31,.65));}
+.mvBar button.mvBarPed .pedBad{position:absolute;top:4px;left:calc(50% + 5px);height:17px;min-width:17px;padding:0 5px;font-size:10px;}
+.gcard.gcPed{grid-column:1/-1;flex-direction:row;justify-content:flex-start;align-items:center;gap:14px;
+  min-height:86px;padding:14px 16px;text-align:left;border-color:rgba(255,154,31,.5);
+  background:linear-gradient(135deg,rgba(255,154,31,.22),rgba(255,90,31,.06) 55%,var(--mv-surf));}
+.gcard.gcPed::before{background:radial-gradient(120% 90% at 0% 0%,rgba(255,154,31,.18),transparent 60%);}
+.gcard.gcPed:hover{border-color:rgba(255,154,31,.9);}
+.gcard.gcPed .gcImg{width:50px;height:50px;flex:0 0 auto;}
+.gcPedTxt{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1 1 auto;position:relative;}
+.gcard.gcPed .gcLabel{text-align:left;color:#ffd3a1;font-size:16px;font-weight:800;}
+.gcPedSub{font-size:12.5px;color:var(--mv-txt-2,#b8c7da);line-height:1.35;font-weight:500;}
+.gcPedSub b{color:#ffb35c;}
+.gcard.gcPed .pedBad{position:relative;height:24px;min-width:24px;border-radius:12px;font-size:13px;}
+.mvPedAlerta{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 14px;padding:12px 14px;text-align:left;
+  border:1px solid rgba(255,154,31,.7);border-radius:var(--mv-r-lg,16px);cursor:pointer;font-family:inherit;color:#ffe6c9;
+  background:linear-gradient(135deg,rgba(255,154,31,.28),rgba(255,90,31,.10));box-shadow:0 8px 24px rgba(255,90,31,.18);}
+.mvPedAlerta.escondido{display:none!important;}
+.mvPedAlerta img{width:36px;height:36px;object-fit:contain;flex:0 0 auto;}
+.mvPedAlertaTxt{flex:1 1 auto;min-width:0;font-size:14px;line-height:1.35;}
+.mvPedAlertaTxt b{color:#fff;}
+.mvPedAlertaBtn{flex:0 0 auto;font-weight:800;font-size:13.5px;color:#2a1100;background:linear-gradient(135deg,#ffb23f,#ff5a1f);
+  border-radius:var(--mv-r-pill,999px);padding:8px 14px;}
+.gcPedSeta{font-size:26px;line-height:1;color:#ffb35c;flex:0 0 auto;position:relative;}
 /* ================= CENTRAL DE PEDIDOS — cor propria (26/09/2026) =================
    O lojista precisa SABER que esta na Central de Pedidos so de olhar. Com a
    aba aberta o painel inteiro troca o acento de azul para LARANJA: menu,
@@ -1807,6 +1854,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
             <div id="seloDrawer" class="seloOuro" style="display:none">Cliente Enterprise</div>
           </div>
         </div>
+        <button type="button" class="drawerPed" onclick="fecharMenu();irSecao('pedidos')"><img class="diImg" src="icones/vendas.png" alt="" onerror="this.replaceWith(document.createTextNode('🛍️'))"> Central de Pedidos<span class="pedBad escondido" data-pedbad>0</span></button>
         <div class="drawerSec">Minha conta</div>
         <button type="button" onclick="fecharMenu();irSecao('perfil')"><img class="diImg" src="icones/perfil.png" alt="" onerror="this.replaceWith(document.createTextNode('👤'))"> Perfil do negócio</button>
         <button type="button" onclick="fecharMenu();abrirPlano()"><img class="diImg" src="icones/plano.png" alt="" onerror="this.replaceWith(document.createTextNode('💳'))"> Meu Plano</button>
@@ -2056,7 +2104,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         <button type="button" data-bar="home" onclick="mvBarIr('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.8V21h14V9.8"/></svg>Início</button>
         <button type="button" data-bar="cardapio" onclick="mvBarIr('cardapio')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v7a3 3 0 0 0 6 0V3"/><path d="M9 10v11"/><path d="M17 3c-1.7 1.6-2.5 3.6-2.5 6 0 1.7.8 2.8 2.5 3v9"/></svg>Cardápio</button>
         <button type="button" class="mvBarFab" onclick="mvAbrirRapida()" aria-label="Ação rápida"><span class="mvFabCirc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>Ação rápida</button>
-        <button type="button" data-bar="promocoes" onclick="mvBarIr('promocoes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0l-7.2-7.2a2 2 0 0 1-.6-1.4V4.5A1.5 1.5 0 0 1 4.3 3h7.5a2 2 0 0 1 1.4.6l7.4 7.4a2 2 0 0 1 0 2.4z"/><circle cx="7.5" cy="7.5" r="1.3"/></svg>Promoções</button>
+        <button type="button" data-bar="pedidos" class="mvBarPed" onclick="mvBarIr('pedidos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 7.5h13l-1.1 12.1a1.6 1.6 0 0 1-1.6 1.4H8.2a1.6 1.6 0 0 1-1.6-1.4z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg>Pedidos<span class="pedBad escondido" data-pedbad>0</span></button>
         <button type="button" data-bar="mais" onclick="mvBarIr('mais')"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>Mais</button>
       </nav>
 
@@ -2096,6 +2144,11 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         <a class="mvNavIt mvNavParc" id="mvNavParceiro" href="parceiro.html" style="display:none"><img class="mvNavIco" src="icones/comissoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Painel do parceiro</span></a>
         <div class="mvNavParcSep" id="mvNavParceiroSep" style="display:none"></div>
         <button type="button" class="mvNavIt" data-sec="home" onclick="mvIr('home')"><img class="mvNavIco" src="icones/inicio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Início</span></button>
+        <!-- 26/09/2026: Pedidos subiu para logo abaixo do Inicio, em destaque laranja
+             e com contador. E onde o lojista toca o dia: pedido da live e do
+             cardapio. No fim da lista, perto do Financeiro, ele se perdia. -->
+        <button type="button" class="mvNavIt mvNavPed" data-sec="pedidos" onclick="mvIr('pedidos')"><img class="mvNavIco" src="icones/vendas.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Central de Pedidos</span><span class="pedBad escondido" data-pedbad title="Pedidos para resolver agora">0</span></button>
+        <div class="mvNavPedSep"></div>
         <button type="button" class="mvNavIt" data-sec="cardapio" onclick="mvIr('cardapio')"><img class="mvNavIco" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Cardápio</span></button>
         <button type="button" class="mvNavIt" data-sec="promocoes" onclick="mvIr('promocoes')"><img class="mvNavIco" src="icones/promocoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Promoções</span></button>
         <button type="button" class="mvNavIt" data-sec="eventos" onclick="mvIr('eventos')"><img class="mvNavIco" src="icones/eventos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Eventos</span></button>
@@ -2104,7 +2157,6 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         <button type="button" class="mvNavIt" data-sec="info" onclick="mvIr('info')"><img class="mvNavIco" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Informações</span></button>
         <button type="button" class="mvNavIt" data-sec="whatsapp" onclick="mvIr('whatsapp')"><img class="mvNavIco" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>WhatsApp</span></button>
         <button type="button" class="mvNavIt" data-sec="avaliacoes" onclick="mvIr('avaliacoes')"><img class="mvNavIco" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Avaliações</span></button>
-        <button type="button" class="mvNavIt" data-sec="pedidos" onclick="mvIr('pedidos')"><img class="mvNavIco" src="icones/vendas.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Pedidos</span></button>
         <button type="button" class="mvNavIt" data-sec="financeiro" onclick="mvIr('financeiro')"><img class="mvNavIco" src="icones/financeiro.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Financeiro</span></button>
         <button type="button" class="mvNavIt" onclick="abrirPlano()"><img class="mvNavIco" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meu Plano</span></button>
           <button type="button" class="mvNavIt mvNavEnt" id="mvNavPontos" style="display:none" onclick="abrirPontos()"><img class="mvNavIco" src="icones/multipontos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meus pontos</span></button>
@@ -2122,6 +2174,9 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
           <h1 id="mvOlaTit">Olá! 👋</h1>
           <p>Aqui está o resumo do seu negócio hoje.</p>
         </div>
+        <!-- 26/09/2026: faixa laranja no topo do Inicio SO quando ha pedido pedindo
+             acao (Pix para conferir ou pago para separar). Sem pedido, some. -->
+        <button type="button" class="mvPedAlerta escondido" id="mvPedAlerta" onclick="irSecao('pedidos')"><img src="icones/vendas.png" alt="" onerror="this.style.display='none'"><span class="mvPedAlertaTxt" id="mvPedAlertaTxt"></span><span class="mvPedAlertaBtn">Abrir →</span></button>
 
         <!-- 31/08/2026: os dois cards viraram UM.
              Eram dois blocos falando da mesma coisa (a presenca do negocio no ar)
@@ -2189,6 +2244,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
           <p class="mvSecSub">Tudo que o seu negócio precisa, num lugar só.</p>
         </section>
         <div class="grid">
+          <button type="button" class="gcard gcPed" id="gc-pedidos" onclick="irSecao('pedidos')"><img class="gcImg" src="icones/vendas.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcPedTxt"><span class="gcLabel">Central de Pedidos</span><span class="gcPedSub" id="gcPedSub">Pedidos da live e do cardápio, num lugar só.</span></span><span class="pedBad escondido" data-pedbad>0</span><span class="gcPedSeta" aria-hidden="true">›</span></button>
           <button type="button" class="gcard mvBtnLive escondido" onclick="location.href='live.html'"><img class="gcImg" src="icones/live.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Fazer live</span></button>
           <button type="button" class="gcard" onclick="irSecao('perfil')"><img class="gcImg" src="icones/perfil.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Perfil</span></button>
           <button type="button" class="gcard" id="gc-cardapio" onclick="irSecao('cardapio')"><img class="gcImg" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Cardápio</span></button>
@@ -2199,7 +2255,6 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
           <button type="button" class="gcard" onclick="irSecao('info')"><img class="gcImg" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Informações</span></button>
           <button type="button" class="gcard" onclick="irSecao('whatsapp')"><img class="gcImg" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">WhatsApp</span></button>
           <button type="button" class="gcard" onclick="irSecao('avaliacoes')"><img class="gcImg" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Avaliações</span></button>
-          <button type="button" class="gcard" id="gc-pedidos" onclick="irSecao('pedidos')"><img class="gcImg" src="icones/vendas.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Pedidos</span></button>
           <button type="button" class="gcard" id="gc-financeiro" onclick="irSecao('financeiro')"><img class="gcImg" src="icones/financeiro.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Financeiro</span></button>
           <button type="button" class="gcard" onclick="abrirPlano()"><img class="gcImg" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meu Plano</span></button>
           <button type="button" class="gcard" id="gc-mensagens" onclick="abrirMensagens()"><img class="gcImg" src="icones/mensagens.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Mensagens</span></button>
@@ -3528,7 +3583,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-26-pedidos';
+  window.MOVIKI_VERSAO='2026-09-26-menupedidos';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -6927,6 +6982,38 @@ window.mvAbaInicial=function(){
     return nome.indexOf(q) >= 0 || pedNumero(p).indexOf(q.replace(/^#/, '')) >= 0 || String(p.numero || '') === q.replace(/^#|^0+/g, '');
   }
 
+  /* 26/09/2026: contador laranja em todos os caminhos para Pedidos (lateral,
+     barra de baixo, menu do celular e cartao do Inicio). Conta so o que pede
+     acao agora: cliente avisou que pagou (conferindo) + pago esperando
+     separar. "Aguardando pagamento" nao entra: ainda nao ha o que fazer. */
+  function nConfPago() {
+    let n = 0;
+    finPedidos.forEach(function (p) { const st = String(p.status || ''); if (st === 'conferindo' || st === 'pago') n++; });
+    return n;
+  }
+  function pedSelo(n) {
+    let nConfere = 0, nSepara = 0;
+    finPedidos.forEach(function (p) { const st = String(p.status || ''); if (st === 'conferindo') nConfere++; else if (st === 'pago') nSepara++; });
+    document.querySelectorAll('[data-pedbad]').forEach(function (b) {
+      b.textContent = n > 99 ? '99+' : String(n);
+      b.classList.toggle('escondido', !n);
+      b.classList.toggle('urgente', nConfere > 0);
+    });
+    const al = el('mvPedAlerta'), alt = el('mvPedAlertaTxt');
+    if (al) al.classList.toggle('escondido', !n);
+    if (alt && n) alt.innerHTML = '<b>' + n + ' pedido' + (n === 1 ? '' : 's') + '</b> esperando você' +
+      (nConfere ? ' · ' + nConfere + ' para conferir o Pix' : '') + (nSepara ? ' · ' + nSepara + ' para separar' : '');
+    const sub = el('gcPedSub');
+    if (sub) {
+      if (!n) sub.textContent = 'Pedidos da live e do cardápio, num lugar só.';
+      else {
+        const partes = [];
+        if (nConfere) partes.push('<b>' + nConfere + '</b> para conferir o Pix');
+        if (nSepara) partes.push('<b>' + nSepara + '</b> pago' + (nSepara === 1 ? '' : 's') + ' para separar');
+        sub.innerHTML = partes.join(' · ');
+      }
+    }
+  }
   window.pedPintar = function () {
     const lista = el('pedLista'); if (!lista) return;
     pedOpcoesLive();
@@ -6942,6 +7029,7 @@ window.mvAbaInicial=function(){
       if (st === 'pronto' || st === 'saiu') nCam++;
       if (PED_PAGOS.indexOf(st) >= 0 && new Date(finMs(p.criadoEm)).toDateString() === hoje) somaHoje += Number(p.total || 0);
     });
+    pedSelo(nConfPago());
     const res = el('pedResumo');
     if (res) res.innerHTML =
       '<button type="button" class="pedNum' + (nConf ? ' alerta' : '') + '" onclick="pedFiltro(\'confirmar\')"><b>' + nConf + '</b><span>a confirmar</span></button>' +
