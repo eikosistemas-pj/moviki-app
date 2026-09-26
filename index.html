@@ -162,6 +162,8 @@ window.mvAtrib = function(){
   .btnGoogle{width:100%;padding:12px;border:1px solid var(--card-borda);border-radius:11px;cursor:pointer;background:#fff;color:#1f2a3a;font-size:14.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;transition:.15s;margin-bottom:16px;font-family:inherit;}
   .btnGoogle:hover{filter:brightness(.96);}
   .btnGoogle:disabled{opacity:.6;cursor:default;}
+  .avisoWebview{font-size:13px;line-height:1.45;color:#ffe08a;background:rgba(255,193,64,.12);border:1px solid rgba(255,193,64,.45);border-radius:10px;padding:10px 12px;margin:0 0 12px}
+  .qzLgpd{font-size:12px;line-height:1.45;opacity:.85;margin:12px 0 0;text-align:center}.qzLgpd a{color:inherit;text-decoration:underline}
   .btnGoogleIcon{flex:0 0 auto;}
   .divisorOu{display:flex;align-items:center;gap:10px;margin:-4px 0 18px;color:#5f7794;font-size:12px;}
   .divisorOu::before,.divisorOu::after{content:'';flex:1;height:1px;background:var(--card-borda);}
@@ -1838,6 +1840,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
       <button id="btnAcao" class="btn" onclick="acao()">Entrar</button>
       <div id="aviso" class="aviso"></div>
       <div class="dica" id="dica"></div>
+      <p class="qzLgpd">Ao criar a conta ou entrar com o Google, você aceita os <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener">Termos de uso</a> e a <a href="https://moviki.com.br/privacidade.html" target="_blank" rel="noopener">Política de privacidade</a>.</p>
       <div class="qzVoltarQuiz"><button type="button" class="qzLink" onclick="mqzIrQuiz()">Novo por aqui? Fazer o quiz rápido</button></div>
     </div>
 
@@ -3212,6 +3215,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         <button type="button" id="qzA3Btn" class="qzBtnPrim" onclick="mqzSubmeterComerciante()">Finalizar Setup 🚀</button>
         <button type="button" class="qzVoltarAuth" onclick="mqzFecharEmailA()">‹ Prefiro entrar com o Google</button>
       </div>
+      <p class="qzLgpd">Ao criar a conta você aceita os <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener">Termos de uso</a> e a <a href="https://moviki.com.br/privacidade.html" target="_blank" rel="noopener">Política de privacidade</a>. O WhatsApp informado aparece na página pública do seu negócio.</p>
     </div>
 
     <!-- B2 — CANAL DE DIVULGAÇÃO (multi-seleção: pode marcar mais de um) -->
@@ -3305,6 +3309,11 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
     }catch(e){return null;}
   }
   let dadosAssinatura=null;
+  /* 25/09/2026 (A2): 'sem teste registrado' = mesma regra do jaTemRegistro do robo.
+     Antes o painel so pedia o teste com dadosAssinatura vazio, e uma cobranca
+     pendente (ativo:false) gravada pelo criar-assinatura fazia o lojista ficar
+     no Basico para sempre depois de confirmar o e-mail. */
+  function semTesteRegistrado(){const d=dadosAssinatura;return !d||!(d.vence_em||d.origem||d.ativo===true||d.testeAte);}
   const RESERVADOS=['index','mapa','404','assets','www','painel','login','moviki'];
   // Rastreio do Programa de Parceiros: captura ?ref da URL (limpo) e guarda no navegador.
   /* ORDEM DE PRIORIDADE — 04/09/2026: URL > cookie do dominio pai > localStorage.
@@ -3441,6 +3450,16 @@ window.mvAbaInicial=function(){
   // E-mail do Google já vem verificado -> não passa pelo bannerVerif nem pelo fluxo de sendEmailVerification.
   const GOOGLE_PROVIDER=new GoogleAuthProvider();
   const UA_WEBVIEW_SEM_POPUP=/FBAN|FBAV|Instagram|Line\/|MicroMessenger|TikTok|; ?wv\)/i.test(navigator.userAgent||'');
+  /* 25/09/2026 (A2): o Google recusa login dentro do navegador do Instagram, do Facebook
+     e do TikTok (erro 403 disallowed_useragent) - e e por eles que chega o anuncio da Meta.
+     Nesses navegadores o botao do Google some e aparece o caminho que funciona. */
+  if(UA_WEBVIEW_SEM_POPUP){try{
+    ['btnGoogle','qzA3BtnGoogle','qzB3BtnGoogle'].forEach(function(id){var b=el(id);if(!b||!b.parentNode)return;b.style.display='none';
+      var n=document.createElement('div');n.className='avisoWebview';
+      n.textContent='Você está no navegador do aplicativo (Instagram ou Facebook). Aqui, crie a conta com e-mail e senha. Para entrar com o Google, abra esta página no Chrome ou no Safari (menu ⋯ > Abrir no navegador).';
+      b.parentNode.insertBefore(n,b);});
+    document.querySelectorAll('.qzVoltarAuth').forEach(function(x){x.style.display='none';});
+  }catch(_){}}
   async function posLoginGoogleNovo(cred){
     const info=getAdditionalUserInfo(cred);
     if(!info||!info.isNewUser)return;
@@ -3509,7 +3528,7 @@ window.mvAbaInicial=function(){
            e repinta o plano na hora. */
         try{
           await auth.currentUser.getIdToken(true);
-          if(!dadosAssinatura){ await garantirTrial(); }
+          if(semTesteRegistrado()){ await garantirTrial(); }
           await carregarPlanoPainel(auth.currentUser.uid);
           aplicarPlanoNasAbas();
           mostrarBannerTrial();
@@ -3590,7 +3609,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-26-dados';
+  window.MOVIKI_VERSAO='2026-09-26-a2';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -6347,7 +6366,7 @@ window.mvAbaInicial=function(){
       msgIniciar(user);
       atualizarOnboarding(true);
       await carregarPlanoPainel(user.uid);
-      if(!dadosAssinatura){ const _t=await garantirTrial(); if(_t){ await carregarPlanoPainel(user.uid); } }
+      if(semTesteRegistrado()){ const _t=await garantirTrial(); if(_t){ await carregarPlanoPainel(user.uid); } }
       aplicarPlanoNasAbas();
       mostrarBannerTrial();
       carregarParceiroPainel(user.uid);
