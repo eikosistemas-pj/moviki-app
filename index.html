@@ -2847,6 +2847,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
               <li><b>Produto proibido, não.</b> Vale a lista das Regras do Moviki: nada de armas, entorpecentes, medicamentos de tarja, conteúdo adulto, produto falsificado, roubado ou de origem duvidosa.</li>
               <li><b>O cliente pode denunciar.</b> Denúncia com fundamento, pedido não entregue de forma repetida ou produto proibido levam ao bloqueio da venda na sua conta, sem devolução da mensalidade do período em uso.</li>
               <li><b>No Pix direto, quem confirma o pagamento é você.</b> Confirmar um pedido que não foi pago, ou recusar um pedido que foi, é responsabilidade sua — o Moviki não tem como ver o seu extrato.</li>
+              <li><b>Os dados do cliente são para atender o pedido.</b> Nome, WhatsApp e endereço servem só para separar, entregar e falar sobre aquela compra. Não use para propaganda sem o cliente autorizar, não passe para outra pessoa e guarde ou rasgue a comanda impressa depois da entrega. Pela Lei Geral de Proteção de Dados (LGPD), o uso que você fizer desses dados é responsabilidade sua. O Moviki apaga o contato e o endereço do pedido 90 dias depois da entrega.</li>
               <li><b>O Moviki pode desligar a venda</b> por segurança, ordem judicial ou suspeita de fraude, avisando você.</li>
             </ul>
           </div>
@@ -2854,6 +2855,9 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
           <div class="finTermoDica">↕ Role a caixa acima para ler o termo inteiro.</div>
 
           <label class="finAceite"><input type="checkbox" id="finAceite" onchange="finPintarBotaoLigar()"><span>Li e concordo com o Termo de Venda. Entendo que a venda é minha e que respondo pela entrega e pelo atendimento do cliente.</span></label>
+          <!-- 26/09/2026: termo de venda 2026-09-26 (dados do cliente). Quem ja
+               vendia continua vendendo; este bloco pede o aceite da versao nova. -->
+          <div class="finAlerta escondido" id="finTermoNovo"><b>O Termo de Venda mudou em 26/09.</b> Entrou o item "Os dados do cliente são para atender o pedido". Leia acima, marque a caixa acima e toque em <b>Aceitar o termo atualizado</b>. Sua venda continua ligada.<br><button type="button" class="btn" id="finBtnTermoNovo" style="margin-top:10px" onclick="finAceitarTermoNovo()">Aceitar o termo atualizado</button></div>
 
           <button type="button" class="btn" id="finBtnLigar" onclick="finLigar()">Ligar a venda</button>
           <div id="finAvisoLigar" class="aviso"></div>
@@ -2961,6 +2965,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
       </div>
 
       <div id="pedCorpo">
+        <div class="finAlerta escondido" id="pedTermoNovo">📄 <b>O Termo de Venda mudou</b> (dados do cliente). <a href="#" onclick="finIrTermoNovo();return false;" style="color:#ffd27a;font-weight:700">Ler e aceitar →</a></div>
         <div class="pedResumo" id="pedResumo"></div>
 
         <div class="pedFiltros" id="pedFiltros">
@@ -3585,7 +3590,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-26-aulasroxo';
+  window.MOVIKI_VERSAO='2026-09-26-dados';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -6580,6 +6585,10 @@ window.mvAbaInicial=function(){
     if (el('finEntrega') && e.entrega) el('finEntrega').value = e.entrega;
     const aceite = el('finAceite');
     if (aceite && e.termo && e.termo.aceito) { aceite.checked = true; aceite.disabled = true; }
+    /* Vendendo com o termo de versao antiga: pede o aceite da nova sem desligar. */
+    const termoVelho = !!(e.ligado && !(e.termo && e.termo.aceito));
+    const tn = el('finTermoNovo'); if (tn) tn.classList.toggle('escondido', !termoVelho);
+    const tp = el('pedTermoNovo'); if (tp) tp.classList.toggle('escondido', !termoVelho);
     const nota = el('finNotaMin');
     if (nota) {
       nota.innerHTML = e.modo === 'asaas'
@@ -6603,6 +6612,26 @@ window.mvAbaInicial=function(){
     finModoTela = m === 'asaas' ? 'asaas' : 'pix';
     finDesenharModo();
     if (finEstado) { finEstado.modo = finModoTela; finPintar(); }
+  };
+
+  window.finIrTermoNovo = function () {
+    if (window.irSecao) window.irSecao('financeiro');
+    setTimeout(function () {
+      const a = el('acc-fin-ligar');
+      if (a && a.querySelector('.mvAccHead').getAttribute('aria-expanded') !== 'true') mvAccToggle('acc-fin-ligar');
+      const tn = el('finTermoNovo'); if (tn) try { tn.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (_) {}
+    }, 250);
+  };
+  window.finAceitarTermoNovo = async function () {
+    const aceite = el('finAceite'), b = el('finBtnTermoNovo');
+    if (!aceite || !aceite.checked) { finAviso('finAvisoLigar', 'Marque que você leu e concorda com o Termo de Venda.'); try { aceite.focus(); } catch (_) {} return; }
+    if (b) b.disabled = true;
+    try {
+      const r = await finPost('loja_modo', { modo: (finEstado && finEstado.modo) || finModoTela || 'pix', ligado: true, aceite: true });
+      if (r.j && r.j.ok) { finEstado = r.j; finAviso('finAvisoLigar', 'Termo atualizado aceito ✓ Sua venda continua ligada.', true); finPintar(); }
+      else finAviso('finAvisoLigar', finMsg(r.j, r.http));
+    } catch (_) { finAviso('finAvisoLigar', 'Falha de conexão. Tente de novo.'); }
+    if (b) b.disabled = false;
   };
 
   window.finPintarBotaoLigar = function () {
@@ -7077,7 +7106,7 @@ window.mvAbaInicial=function(){
       const taxa = Number(p.frete || e.taxa || 0);
       const cab = 'Entrega' + (e.bairro ? ' · ' + finEsc(e.bairro) : '') + (e.aCombinar === false ? ' · taxa ' + (taxa > 0 ? finReal(taxa) : 'grátis') : ' · a combinar');
       rota = e.detalhe ? '<a href="https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(String(e.detalhe).replace(/ - Ref\.:.*$/, '')) + '" target="_blank" rel="noopener">Abrir rota</a>' : '';
-      endHtml = '<div class="pedEndereco"><b>' + cab + '</b><br>' + finEsc(e.detalhe || 'Endereço não informado') + '</div>';
+      endHtml = '<div class="pedEndereco"><b>' + cab + '</b><br>' + (p.dadosApagadosEm ? 'Endereço apagado pelo prazo de privacidade' : finEsc(e.detalhe || 'Endereço não informado')) + '</div>';
     } else {
       endHtml = '<div class="pedEndereco"><b>Retirada no local</b></div>';
     }
@@ -7115,6 +7144,7 @@ window.mvAbaInicial=function(){
       + endHtml
       + '<div class="pedLinha"><b>' + quem + '</b>' + (wpp ? ' · ' + pedFone(wpp) : '') + fim + '</div>'
       + '<div class="pedLinha">' + pedData(p) + ' · veio ' + origem + cod + '</div>'
+      + (p.dadosApagadosEm ? '<div class="pedLinha" style="color:#7d92a8;font-size:12px">Contato e endereço apagados pelo prazo de privacidade (LGPD).</div>' : '')
       + (b ? '<div class="pedBtns">' + b + '</div>' : '')
       + '</div>';
   }
@@ -7340,6 +7370,7 @@ window.mvAbaInicial=function(){
   }
   function pedPintarEntrega() {
     const e = finEstado || {}, c = e.entregaCfg || {};
+    const tp = el('pedTermoNovo'); if (tp) tp.classList.toggle('escondido', !(e.ligado && !(e.termo && e.termo.aceito)));
     if (el('pedEntModo')) el('pedEntModo').value = e.entrega || 'retirada';
     if (el('pedEntRet')) el('pedEntRet').value = c.retirada || '';
     if (el('pedEntCidade')) el('pedEntCidade').value = c.cidade || '';
