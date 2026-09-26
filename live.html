@@ -322,12 +322,13 @@ svg{display:block}
 #pedAviso .paBts button,#pedAviso .paBts a{flex:1;text-align:center;text-decoration:none}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:50;background:rgba(0,0,0,.88);color:#fff;border-radius:10px;padding:10px 14px;font-size:13.5px;max-width:90%;text-align:center}
 /* a faixa das aulas, na tela de antes da live */
-.lvTravaAulas{background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.45);border-radius:12px;padding:10px 12px;margin-top:10px;display:flex;flex-direction:column;gap:3px}
-.lvTravaAulas.lvOk{background:rgba(0,212,255,.10);border-color:rgba(0,212,255,.38)}
+/* 26/09/2026: aulas sao roxas em todos os paineis. */
+.lvTravaAulas{background:rgba(168,85,247,.14);border:1px solid rgba(168,85,247,.55);border-radius:12px;padding:10px 12px;margin-top:10px;display:flex;flex-direction:column;gap:3px}
+.lvTravaAulas.lvOk{background:rgba(168,85,247,.07);border-color:rgba(168,85,247,.35)}
 .lvTravaAulas b{font-size:14px}
 .lvTravaAulas>span{font-size:12px;color:var(--mv-txt-2)}
 .lvTravaBarra{height:5px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:6px}
-.lvTravaBarra>i{display:block;height:100%;width:0;border-radius:99px;background:var(--mv-grad);transition:width .35s ease}
+.lvTravaBarra>i{display:block;height:100%;width:0;border-radius:99px;background:#a855f7;transition:width .35s ease}
 #btnIniciar[disabled]{opacity:.55}
 </style>
 </head>
@@ -628,7 +629,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-26-pedidos';
+  window.MOVIKI_VERSAO='2026-09-26-aulasroxo';
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o

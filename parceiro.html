@@ -298,19 +298,19 @@ input::placeholder{color:#6b7f96}
 .certCarimbo{flex:0 0 auto;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid;position:relative}
 .certCarimbo svg{width:20px;height:20px}
 .certSelo.ok .certCarimbo{border-color:var(--mv-ok);color:var(--mv-ok);background:rgba(37,227,155,.10)}
-.certSelo.pend .certCarimbo{border-color:var(--mv-alerta);color:var(--mv-alerta);background:rgba(255,168,74,.10)}
+.certSelo.pend .certCarimbo{border-color:#a855f7;color:#c084fc;background:rgba(168,85,247,.12)} /* 26/09: aula e roxo */
 .certSelo.andando .certCarimbo{border-color:var(--mv-linha-forte);color:var(--mv-txt-3);background:var(--mv-campo)}
 .certTxt{flex:1 1 auto;min-width:0}
 /* certTit/certSub sao <span> dentro de um <span>: sem display:block eles saem
    grudados numa linha so ("Aulas em diaCertificado em..."). */
 .certTit{display:block;font-size:13.5px;font-weight:700;line-height:1.25}
 .certSelo.ok .certTit{color:var(--mv-ok)}
-.certSelo.pend .certTit{color:var(--mv-alerta)}
+.certSelo.pend .certTit{color:#d8b4fe}
 .certSub{display:block;font-size:12px;color:var(--mv-txt-3);margin-top:3px;line-height:1.4}
 .certBtn{margin-top:8px;border:1px solid var(--mv-linha-forte);background:var(--mv-campo);color:var(--mv-txt);
   border-radius:var(--mv-r-sm);padding:6px 11px;font-family:var(--mv-fonte);font-size:12.5px;font-weight:600;cursor:pointer}
 .certBtn:hover{border-color:var(--mv-ciano)}
-.certSelo.pend .certBtn{border-color:var(--mv-alerta);color:var(--mv-alerta)}
+.certSelo.pend .certBtn{border-color:#a855f7;color:#d8b4fe}
 
 /* ---------- rodapé institucional (03/09/2026) ---------- */
 .mvRodape{margin:26px 0 0;padding:18px 16px 26px;border-top:1px solid var(--mv-linha);text-align:center;
@@ -1561,7 +1561,7 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-26-verde';
+  window.MOVIKI_VERSAO = '2026-09-26-aulasroxo';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -3824,20 +3824,24 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#2EE59D)}
 .mvAuVazio{color:#7f95b3;font-size:14px;line-height:1.5;margin:0}
 
 /* --- trava das aulas do parceiro (so aparece no parceiro.html) --- */
-@keyframes mvPulsa{0%,100%{box-shadow:0 0 0 0 rgba(255,138,0,.55)}60%{box-shadow:0 0 0 12px rgba(255,138,0,0)}}
+/* 26/09/2026: AULAS SAO ROXAS, em todos os paineis. Laranja virou a cor da
+   Central de Pedidos e disputava com o cartao das aulas. Roxo (--mv-roxo) nao
+   e cor de nenhum painel (azul negocio, verde parceiro, laranja pedidos,
+   dourado Enterprise, vermelho live), entao "aula" fica igual em todo lugar. */
+@keyframes mvPulsa{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.55)}60%{box-shadow:0 0 0 12px rgba(168,85,247,0)}}
 .mvAviso{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 18px;padding:15px 17px;border-radius:14px;
-  border:1.5px solid #ff8a00;background:linear-gradient(135deg,rgba(255,138,0,.16),rgba(255,138,0,.06));
+  border:1.5px solid #a855f7;background:linear-gradient(135deg,rgba(168,85,247,.18),rgba(168,85,247,.06));
   animation:mvPulsa 2.4s ease-out infinite}
-.mvAvisoIco{width:36px;height:36px;flex:none;border-radius:10px;display:grid;place-items:center;background:rgba(255,138,0,.22);color:#ffb457}
+.mvAvisoIco{width:36px;height:36px;flex:none;border-radius:10px;display:grid;place-items:center;background:rgba(168,85,247,.24);color:#d8b4fe}
 .mvAvisoIco svg{width:19px;height:19px}
 .mvAvisoTxt{flex:1;min-width:200px}
-.mvAvisoTit{display:block;font-size:15.5px;font-weight:700;color:#ffcf9a;line-height:1.3}
-.mvAvisoSub{display:block;font-size:13px;color:#e2c6a6;margin-top:3px;line-height:1.45}
+.mvAvisoTit{display:block;font-size:15.5px;font-weight:700;color:#e9d5ff;line-height:1.3}
+.mvAvisoSub{display:block;font-size:13px;color:#d3c2ea;margin-top:3px;line-height:1.45}
 .mvAvisoBtn{flex:none;padding:11px 18px;border-radius:11px;border:0;cursor:pointer;font-family:inherit;
-  font-size:14px;font-weight:700;color:#2a1400;background:#ff8a00}
-.mvAvisoBtn:hover{background:#ffa032}
+  font-size:14px;font-weight:700;color:#fff;background:#a855f7}
+.mvAvisoBtn:hover{background:#b872ff}
 .mvAvisoBarra{flex-basis:100%;height:7px;border-radius:99px;background:rgba(255,255,255,.10);overflow:hidden}
-.mvAvisoBarra i{display:block;height:100%;border-radius:99px;background:#ff8a00;transition:width .4s}
+.mvAvisoBarra i{display:block;height:100%;border-radius:99px;background:#a855f7;transition:width .4s}
 .mvSelinho{margin-left:7px;font-size:12px;line-height:1;display:inline-block;animation:mvPisca 1.6s ease-in-out infinite}
 @keyframes mvPisca{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.88)}}
 .mvTravado{position:relative}
