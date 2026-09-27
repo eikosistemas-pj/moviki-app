@@ -1,7 +1,65 @@
 {
-  "versao": "2026-09-27-bijuteria",
+  "versao": "2026-09-27-farmacia",
   "atualizado": "2026-09-27",
   "itens": [
+    {
+      "id": "story-farmacia-ao-vivo",
+      "tipo": "story",
+      "titulo": "Farmácia ao vivo com o Moviki",
+      "formato": "Story 9:16",
+      "arquivo": "material/stories/story-farmacia-ao-vivo.jpg",
+      "capa": "material/capas/story-farmacia-ao-vivo.webp",
+      "w": 1080,
+      "h": 1920,
+      "peso": "602 KB",
+      "novo": true,
+      "legenda": "#publi A cliente perguntou no balcão se você tinha o protetor solar que ela viu na internet. Tinha. Mas ela só soube depois de comprar em outro lugar.\n\nCom o Moviki, a sua farmácia faz live do próprio perfil: mostra as ofertas do dia, responde \"tem entrega?\" e \"qual o horário?\" no chat, e o pedido chega no seu WhatsApp.\n\nHigiene, dermocosméticos e cuidado pessoal, mostrados de perto por quem entende.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "farmacia",
+      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
+    },
+    {
+      "id": "feed-farmacia-atenda-ao-vivo",
+      "tipo": "feed",
+      "titulo": "Atenda ao vivo com o Moviki",
+      "formato": "Feed 1:1",
+      "arquivo": "material/feed/feed-farmacia-atenda-ao-vivo.jpg",
+      "capa": "material/capas/feed-farmacia-atenda-ao-vivo.webp",
+      "w": 1080,
+      "h": 1080,
+      "peso": "372 KB",
+      "novo": true,
+      "legenda": "#publi Farmácia de bairro vive de confiança. O problema é que confiança não aparece no celular de quem está na sua rua procurando o que você tem na prateleira.\n\nCom o Moviki, você atende ao vivo: mostra a oferta, tira a dúvida no chat e recebe o pedido pelo WhatsApp. E no mapa, quem está perto encontra a sua farmácia na hora.\n\nSua farmácia mais visível, sem comissão por venda.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "farmacia"
+    },
+    {
+      "id": "story-farmacia-mostre-ao-vivo",
+      "tipo": "story",
+      "titulo": "Mostre sua farmácia ao vivo",
+      "formato": "Story 9:16",
+      "arquivo": "material/stories/story-farmacia-mostre-ao-vivo.jpg",
+      "capa": "material/capas/story-farmacia-mostre-ao-vivo.webp",
+      "w": 1080,
+      "h": 1920,
+      "peso": "583 KB",
+      "novo": true,
+      "legenda": "#publi \"Tem protetor solar?\" \"Qual o horário?\" Essas perguntas estão sendo feitas agora, no celular de alguém do seu bairro. A resposta está na sua prateleira — mas ninguém está vendo.\n\nCom o Moviki, você mostra a sua farmácia ao vivo, apresenta as ofertas do dia e responde na hora. Quem gostou chama no WhatsApp.\n\nHigiene, cuidado e bem-estar: a farmácia do bairro mais perto de quem precisa.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "farmacia",
+      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
+    },
+    {
+      "id": "feed-farmacia-no-mapa",
+      "tipo": "feed",
+      "titulo": "Sua farmácia no mapa e ao vivo",
+      "formato": "Feed 1:1",
+      "arquivo": "material/feed/feed-farmacia-no-mapa.jpg",
+      "capa": "material/capas/feed-farmacia-no-mapa.webp",
+      "w": 1080,
+      "h": 1080,
+      "peso": "380 KB",
+      "novo": true,
+      "legenda": "#publi Quem precisa de farmácia precisa agora. E vai na primeira que aparece no celular — não necessariamente na mais perto.\n\nNo mapa do Moviki, a sua farmácia aparece em tempo real para quem está na região, com as ofertas e o botão do WhatsApp. E quando quiser, você entra ao vivo e mostra a prateleira.\n\nCuidado também se move.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "farmacia"
+    },
     {
       "id": "video-comercio-bijuteria",
       "tipo": "video",
@@ -13,7 +71,7 @@
       "capa": "material/capas/video-comercio-bijuteria.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Brinco novo na vitrine e ninguém entra pra ver o brilho de perto. Enquanto isso, as suas clientes de sempre estão em casa, com o celular na mão.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra o brilho da peça de pertinho, monta o conjunto com a cliente no chat e lança a oferta. E quem prefere buscar toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "moda"
@@ -29,7 +87,7 @@
       "capa": "material/capas/video-comercio-acessorios-celular.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi O cliente vê a capinha no balcão e compra pela internet. E o cliente de sempre está em casa, com o celular na mão.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra a capinha de pertinho, testa o fone ao vivo, responde \"tem pro meu modelo?\" no chat e lança a oferta. E quem prefere buscar toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "eletronicos"
@@ -45,7 +103,7 @@
       "capa": "material/capas/video-comercio-brinquedos.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Outubro chegando e o brinquedo parado na prateleira. Enquanto isso, quem vai dar o presente está em casa, com o celular na mão.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra o brinquedo funcionando, responde \"serve pra qual idade?\" e \"faz embrulho?\" no chat e lança a oferta. E quem prefere buscar toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "infantil"
@@ -61,7 +119,7 @@
       "capa": "material/capas/video-comercio-acai.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Cada pedido do aplicativo leva uma fatia do lucro da loja. E o seu cliente de sempre está em casa, com o celular na mão.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra o copo sendo montado, responde \"tem paçoca?\" e \"entrega no meu bairro?\" no chat e lança a oferta. Quem prefere buscar toca em \"Como chegar\" e retira no balcão.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "alimentacao"
@@ -77,7 +135,7 @@
       "capa": "material/capas/video-comercio-boutique.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Arara cheia de peça nova e a rua vazia. Enquanto isso, as suas clientes de sempre estão em casa, com o celular na mão.\n\nCom o Moviki, você abre uma live da sua boutique direto do celular. Mostra a peça de perto, responde \"tem no M?\" e \"qual o comprimento?\" no chat e lança a oferta. E quem quer provar toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "moda"
@@ -93,7 +151,7 @@
       "capa": "material/capas/video-comercio-cosmeticos.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Sua cliente assiste live de maquiagem todo dia — só que na live dos outros, e compra pelo aplicativo sem passar na sua loja.\n\nCom o Moviki, a sua loja abre uma live direto do celular. Mostra a cor na pele, responde \"tem tom mais escuro?\" no chat e lança a oferta. E quem quer testar antes toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "beleza"
