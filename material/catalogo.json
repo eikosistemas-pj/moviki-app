@@ -1,7 +1,39 @@
 {
-  "versao": "2026-09-27-brinquedos",
+  "versao": "2026-09-27-bijuteria",
   "atualizado": "2026-09-27",
   "itens": [
+    {
+      "id": "video-comercio-bijuteria",
+      "tipo": "video",
+      "titulo": "Bijuteria: venda ao vivo pelo celular",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:40",
+      "peso": "17,9 MB",
+      "arquivo": "material/video-comercio-bijuteria.mp4",
+      "capa": "material/capas/video-comercio-bijuteria.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Brinco novo na vitrine e ninguém entra pra ver o brilho de perto. Enquanto isso, as suas clientes de sempre estão em casa, com o celular na mão.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra o brilho da peça de pertinho, monta o conjunto com a cliente no chat e lança a oferta. E quem prefere buscar toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "moda"
+    },
+    {
+      "id": "video-comercio-acessorios-celular",
+      "tipo": "video",
+      "titulo": "Acessórios de celular: venda ao vivo pelo celular",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:40",
+      "peso": "18,1 MB",
+      "arquivo": "material/video-comercio-acessorios-celular.mp4",
+      "capa": "material/capas/video-comercio-acessorios-celular.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi O cliente vê a capinha no balcão e compra pela internet. E o cliente de sempre está em casa, com o celular na mão.\n\nCom o Moviki, você abre uma live da sua loja direto do celular. Mostra a capinha de pertinho, testa o fone ao vivo, responde \"tem pro meu modelo?\" no chat e lança a oferta. E quem prefere buscar toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "eletronicos"
+    },
     {
       "id": "video-comercio-brinquedos",
       "tipo": "video",
