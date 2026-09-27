@@ -3674,7 +3674,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-27-aulaspedidos';
+  window.MOVIKI_VERSAO='2026-09-27-trilhaped';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -9161,6 +9161,8 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   }
   function tocar(k){
     var v=achar(k); if(!v) return;
+    /* aula da Central de Pedidos abre na trilha, com a lista ao lado */
+    try{ if(PEDAULAS.indexOf(k)>-1){ fechar(); abrirTrilhaPed(k); return; } }catch(_){}
     pararTodos();
     montar();
     var volta=document.createElement('button');
@@ -9342,7 +9344,18 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   var ABRIR_SEMPRE=true;    /* true: reabre a cada entrada ate concluir */
 
   var au=null, auPal=null, auLista=null, auPTit=null, auPSub=null, auCont=null, auBar=null, auFim=null, auMed=null, auMedPct=null, auMedTxt=null, auMedBar=null, auH=null;
-  var auTocando=null, LOCAIS=[];
+  var auTocando=null, LOCAIS=[], auSubTxt=null;
+  /* 27/09/2026: a MESMA janela (palco + lista ao lado + medidor) serve duas
+     trilhas: as boas-vindas ('bv') e as aulas da Central de Pedidos ('ped').
+     Antes, o cartao da Central abria a aula sozinha, sem a lista do lado. */
+  var TRILHA='bv';
+  function tAulas(){ return TRILHA==='ped' ? pedAulas() : bvAulas(); }
+  function tFeitas(){ return TRILHA==='ped' ? pedFeitas() : bvFeitas(); }
+  function tProxima(){
+    var f=tFeitas(), t=tAulas();
+    for(var i=0;i<t.length;i++){ if(f.indexOf(t[i].k)===-1) return t[i]; }
+    return t[0]||null;
+  }
   var VISTO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>';
 
   /* so as tres de boas-vindas, e so as que ja tem video no ar */
@@ -9366,6 +9379,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   /* chamada pelo player quando o YouTube confirma 90% */
   function marcar(k){
     try{ pedMarcar(k); }catch(e){}
+    try{ if(PEDAULAS.indexOf(k)>-1) pintarAulas(); }catch(e){}
     if(BOASVINDAS.indexOf(k)>-1){
       if(LOCAIS.indexOf(k)<0) LOCAIS.push(k);
       var P=window.__mvLojistaTut;
@@ -9383,9 +9397,9 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      trocar de aula apaga o iframe - era isso que cortava o fim do video.
      acabou() so e chamada quando o YouTube avisa que o video terminou. */
   function acabou(k){
-    if(BOASVINDAS.indexOf(k)===-1) return;
+    if(!tAulas().some(function(v){ return v.k===k; })) return;
     if(!au || au.hidden || auTocando!==k) return;
-    var f=bvFeitas(), t=bvAulas(), p=null;
+    var f=tFeitas(), t=tAulas(), p=null;
     for(var i=0;i<t.length;i++){ if(f.indexOf(t[i].k)===-1){ p=t[i]; break; } }
     /* p.k===k acontece em dois casos: viu tudo (nao volta pro comeco sozinho)
        e a aula atual NAO contou (adiantou o video) - nos dois, fica onde esta. */
@@ -9409,9 +9423,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     var topo=document.createElement('div'); topo.className='mvAuTopo';
     auH=document.createElement('b'); auH.className='mvAuH'; auH.textContent='Bem-vindo ao Moviki!';
     var sub=document.createElement('span'); sub.className='mvAuSub';
-    sub.textContent='Um recado rápido de boas-vindas e três aulas curtas pra você se situar: '+
-      'o que tem em cada canto do painel, como ler os seus números, e o que fazer todo dia. '+
-      'Menos de cinco minutos no total.';
+    auSubTxt=sub;
     topo.appendChild(auH); topo.appendChild(sub);
     var prog=document.createElement('div'); prog.className='mvAuProg';
     prog.innerHTML='<span class="mvAuBarra"><i></i></span><span class="mvAuCont"></span>';
@@ -9476,7 +9488,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     }
     auPTit.textContent=v.t;
     auPSub.textContent = v.d ? ('Duração ' + v.d) : '';
-    medidor(pctDoPalco(v.k), bvFeitas().indexOf(v.k) > -1 ? 1 : 0);
+    medidor(pctDoPalco(v.k), tFeitas().indexOf(v.k) > -1 ? 1 : 0);
     pintarAulas();
   }
   /* O lojista precisa VER o quanto ja assistiu - senao a trava do cursor vira
@@ -9522,7 +9534,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       if(!au || au.hidden || auTocando !== k || !auPSub) return;
       var v = achar(k); if(!v) return;
       var base = v.d ? ('Duração ' + v.d) : '';
-      if(bvFeitas().indexOf(k) > -1){ auPSub.textContent = base + ' · Assistida'; medidor(100, 1); return; }
+      if(tFeitas().indexOf(k) > -1){ auPSub.textContent = base + ' · Assistida'; medidor(100, 1); return; }
       if(!(dur > 0)) return;
       var pc = Math.min(100, Math.round(trilha(k).n / dur * 100));
       auPSub.textContent = base + ' · Assistido ' + pc + '%';
@@ -9538,11 +9550,20 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   }
   function pintarAulas(){
     if(!au) return;
-    var t=bvAulas(), f=bvFeitas();
+    var t=tAulas(), f=tFeitas(), ped=(TRILHA==='ped');
     if(auH){
       var n=(window.__mvLojistaTut && window.__mvLojistaTut.nome) || '';
-      auH.textContent = n ? ('Bem-vindo ao Moviki, ' + n + '!') : 'Bem-vindo ao Moviki!';
+      auH.textContent = ped ? 'Aulas da Central de Pedidos'
+                            : (n ? ('Bem-vindo ao Moviki, ' + n + '!') : 'Bem-vindo ao Moviki!');
     }
+    if(auSubTxt) auSubTxt.textContent = ped
+      ? 'Do Pix à entrega, a comanda, a sua entrega, os dados do cliente e como o dinheiro chega. '+
+        'Assista em sequência: quando uma aula termina, a próxima já entra.'
+      : 'Um recado rápido de boas-vindas e três aulas curtas pra você se situar: '+
+        'o que tem em cada canto do painel, como ler os seus números, e o que fazer todo dia. '+
+        'Menos de cinco minutos no total.';
+    if(auFim) auFim.textContent = ped ? 'Pronto! Você viu todas as aulas da Central de Pedidos.'
+                                      : 'Pronto! Agora você conhece o painel. Bom trabalho.';
     if(auCont) auCont.textContent = f.length + ' de ' + t.length;
     if(auBar) auBar.style.width = t.length ? Math.round(f.length/t.length*100)+'%' : '0%';
     if(auFim) auFim.hidden = !(t.length && f.length>=t.length);
@@ -9560,7 +9581,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       var tx=document.createElement('span'); tx.className='mvAuTxt';
       var nome=document.createElement('span'); nome.className='mvAuNome'; nome.textContent=v.t;
       var min=document.createElement('span'); min.className='mvAuMin';
-      min.textContent=(ok?'Assistida':(i===0?'Comece por aqui':'Aula '+i))+(v.d?' · '+v.d:'');
+      min.textContent=(ok?'Assistida':(ped?'Aula '+(i+1):(i===0?'Comece por aqui':'Aula '+i)))+(v.d?' · '+v.d:'');
       tx.appendChild(nome); tx.appendChild(min);
       bt.appendChild(nu); bt.appendChild(tx);
       auLista.appendChild(bt);
@@ -9568,15 +9589,26 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   }
   function abrirAulas(k){
     if(!bvPronto()) return;
+    TRILHA='bv';
     montarAulas(); pararTodos();
     au.hidden=false; document.body.style.overflow='hidden';
     porNoPalco(k ? achar(k) : bvProxima(), !!k);
     pintarAulas();
   }
+  /* a trilha da Central de Pedidos, na mesma janela das boas-vindas */
+  function abrirTrilhaPed(k){
+    if(!pedAulas().length) return;
+    TRILHA='ped';
+    montarAulas(); pararTodos();
+    au.hidden=false; document.body.style.overflow='hidden';
+    porNoPalco(k ? achar(k) : tProxima(), !!k);
+    pintarAulas();
+  }
+  window.mvAbrirAulasPed=function(k){ try{ abrirTrilhaPed(k); }catch(e){} };
   function fecharAulas(){
     if(!au || au.hidden) return;
     limparPalco(); au.hidden=true; document.body.style.overflow='';
-    pintarAulas(); faixa();
+    pintarAulas(); TRILHA='bv'; faixa();
   }
   window.abrirBoasVindas=function(){ try{ abrirAulas(); }catch(e){} };
 
@@ -9689,7 +9721,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   document.addEventListener('click',function(e){
     var b=e.target && e.target.closest ? e.target.closest('[data-pedaula]') : null;
     if(!b) return;
-    try{ window.abrirTutoriais(b.getAttribute('data-pedaula')); }catch(_){}
+    try{ abrirTrilhaPed(b.getAttribute('data-pedaula')); }catch(_){}
   },false);
 
   /* ---------- o card das AULAS DA LIVE ----------
