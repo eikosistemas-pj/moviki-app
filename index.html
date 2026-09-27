@@ -3674,7 +3674,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-27-quadro';
+  window.MOVIKI_VERSAO='2026-09-27-aulaspedidos';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -6469,6 +6469,36 @@ window.mvAbaInicial=function(){
         window.dispatchEvent(new Event('mv-lojista-pronto'));
       }catch(_){}
 
+      /* ---- 27/09/2026: as aulas da CENTRAL DE PEDIDOS ----
+         Mesmo desenho das boas-vindas: o bloco de tutoriais nao fala com o
+         Firebase, quem le e grava e aqui. negocios/{uid}/estado/pedidosaulas
+         cai no match recursivo do dono - sem regra nova. So guarda quais
+         aulas foram vistas e quando o lojista ficou em dia. */
+      try{
+        const _paRef = doc(db,'negocios',user.uid,'estado','pedidosaulas');
+        let _paV = [], _paEm = '';
+        try{
+          const _paS = await getDoc(_paRef);
+          if(_paS.exists()){
+            const _d = _paS.data();
+            if(Array.isArray(_d.vistas)) _paV = _d.vistas.slice();
+            _paEm = _d.em || '';
+          }
+        }catch(_){}
+        window.__mvPedAulas = {
+          vistas: _paV,
+          em: _paEm,
+          salvar: async function(lista, fim){
+            try{
+              const d = { vistas: lista };
+              if(fim) d.em = new Date().toISOString();
+              await setDoc(_paRef, d, { merge:true });
+            }catch(_){}
+          }
+        };
+        window.dispatchEvent(new Event('mv-pedaulas-pronto'));
+      }catch(_){}
+
       /* ---- 15/09/2026: as aulas do MODO LIVE ----
          Mesmo desenho do bloco acima: o liveaulas.js nao fala com o Firebase,
          quem le e grava e aqui. Guarda em negocios/{uid}/estado/liveaulas, que
@@ -7009,6 +7039,7 @@ window.mvAbaInicial=function(){
   let pedLigado = false, pqMontado = false, pqHist = false, pqMostrar = 40, pqArr = null, pqOcup = {}, pqAba = 'novos', pqEscolheuAba = false, pqFichaId = null, pqContAnt = {};
 
   function pedPlanoOk() { return planoPainel === 'premium' || planoPainel === 'enterprise'; }
+  window.mvPedPlanoOk = pedPlanoOk;
   function pedEnterprise() { try { return ehEnterprisePainel(); } catch (_) { return planoPainel === 'enterprise'; } }
   function pedNumero(p) { return p.numero ? String(p.numero).padStart(4, '0') : String(p.__id || '').slice(-6).toUpperCase(); }
   function pedWpp(p) {
@@ -7038,7 +7069,7 @@ window.mvAbaInicial=function(){
     let n = 0;
     const iv = setInterval(function () {
       n++;
-      if (usuarioAtual && pedPlanoOk()) { clearInterval(iv); pedLigado = true; try { finEscutarVendas(); } catch (_) {} }
+      if (usuarioAtual && pedPlanoOk()) { clearInterval(iv); pedLigado = true; try { finEscutarVendas(); } catch (_) {} try { if (window.mvPedAulasFaixa) window.mvPedAulasFaixa(); } catch (_) {} }
       if (n > 60) clearInterval(iv);
     }, 2000);
   })();
@@ -7054,6 +7085,7 @@ window.mvAbaInicial=function(){
     try { finEscutarVendas(); } catch (_) {}
     pedCarregarEntrega();
     window.pedPintar();
+    try { if (window.mvPedAulasFaixa) window.mvPedAulasFaixa(); } catch (_) {}
     setTimeout(function () { if (pqEscolheuAba) window.pqIrAba(pqAba, false); }, 60);
   };
   window.pqFecharDica = function () {
@@ -8722,14 +8754,25 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     { k:'mod-whatsapp',   t:'WhatsApp: o botão mais clicado da sua página',        d:'0:26', id:'uwmEi1ha49Q' } ]},
   { n:'Avaliações', sel:'#tab-avaliacoes', v:[
     { k:'mod-avaliacoes', t:'Avaliações: ver, entender e pedir nota',              d:'0:34', id:'OmdZ5Csm6t4' } ]},
-  /* FINANCEIRO - 16/09/2026. A aba esta no ar desde 14/09 e passou dois dias
-     sem aula nenhuma. Esta cobre os tres blocos: os dois modos de receber,
-     ligar a venda com o aceite do termo, e a lista de Vendas.
-     A aba tambem recebe a caixa da aula da live (mod-live-pedidos, pelo
-     liveaulas.js). As duas convivem: uma ensina a RECEBER, a outra ensina o
-     PEDIDO que chega. Os titulos nao se confundem. */
+  /* CENTRAL DE PEDIDOS - 27/09/2026. Seis aulas do quadro de pedidos (o jeito
+     do iFood). Modulo SEM `sel` de proposito: embutir() so mostra a primeira
+     aula do modulo, e uma aula so no fim da aba nao ensina o resto. Quem leva
+     o lojista a elas e o CARTAO ROXO "Aulas da Central de Pedidos" (no Inicio
+     e no alto da aba Pedidos), que conta as seis mais a do Financeiro.
+     Ids do YouTube de 27/09 (Nao listados). As antigas c0tHy37jv7o e
+     qx4dFUC9ORs saem do ar depois deste painel publicado. */
+  { n:'Central de Pedidos', sel:'', v:[
+    { k:'mod-pedidos-central', t:'Central de Pedidos: o quadro das suas vendas',                d:'2:53', id:'ztL9i37y8NM' },
+    { k:'mod-pedidos-etapas',  t:'Do Pix à entrega: o pedido andando no quadro',                d:'2:09', id:'77kequeuJ6U' },
+    { k:'mod-pedidos-entrega', t:'Sua entrega: bairros, taxa e pedido mínimo',                  d:'1:32', id:'j9KZrmDBCXE' },
+    { k:'mod-pedidos-comanda', t:'Imprimir a comanda do pedido',                                d:'1:08', id:'1KRjmefJFbk' },
+    { k:'mod-pedidos-lote',    t:'Enterprise: imprimir a coluna inteira e a lista de separação', d:'1:11', id:'myU8_lgHhnw' },
+    { k:'mod-pedidos-dados',   t:'Os dados do seu cliente: cuidado e prazo',                    d:'1:13', id:'1zMvqXPedD8' } ]},
+  /* FINANCEIRO - 16/09/2026, regravada em 27/09 (a lista de vendas mudou para
+     a Central de Pedidos). Cobre os dois modos de receber e ligar a venda com
+     o aceite do termo. Continua embutida no fim da propria aba. */
   { n:'Financeiro', sel:'#tab-financeiro', v:[
-    { k:'mod-financeiro', t:'Financeiro: como você recebe o dinheiro das vendas', d:'3:27', id:'c0tHy37jv7o' } ]},
+    { k:'mod-financeiro', t:'Financeiro: como você recebe o dinheiro das vendas', d:'1:39', id:'AEPxpKOp1YM' } ]},
   { n:'Meu plano', sel:'#modalPlano .mpCaixa', v:[
     /* O teste de 30 dias e automatico (garantirTrial roda sozinho), entao
        nao ha nada pro cliente fazer - saiu do titulo e do video. */
@@ -9322,6 +9365,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   }
   /* chamada pelo player quando o YouTube confirma 90% */
   function marcar(k){
+    try{ pedMarcar(k); }catch(e){}
     if(BOASVINDAS.indexOf(k)>-1){
       if(LOCAIS.indexOf(k)<0) LOCAIS.push(k);
       var P=window.__mvLojistaTut;
@@ -9541,8 +9585,8 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     try{
       var velhas=document.querySelectorAll('.mvAviso');
       for(var i=0;i<velhas.length;i++) velhas[i].remove();
-      if(!bvPronto() || bvConcluiu() || !window.__mvLojistaTut) return;
-      var alvo=document.querySelector('.mvMapaCard'); if(!alvo) return;
+      if(!bvPronto() || bvConcluiu() || !window.__mvLojistaTut){ try{ faixaPed(); }catch(_){} return; }
+      var alvo=document.querySelector('.mvMapaCard'); if(!alvo){ try{ faixaPed(); }catch(_){} return; }
       var f=bvFeitas(), t=bvAulas(), falta=t.length-f.length;
       var a=document.createElement('div');
       a.className='mvAviso';
@@ -9557,9 +9601,96 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       /* a faixa da live e reinserida DEPOIS desta, e a remocao la em cima
          apaga as duas (as duas usam .mvAviso) */
       try{ if(window.mvLiveAulasFaixa) window.mvLiveAulasFaixa(); }catch(_){}
+      try{ faixaPed(); }catch(_){}
     }catch(e){}
   }
   window.mvBvFaixa=faixa;
+
+  /* ---------- o cartao das AULAS DA CENTRAL DE PEDIDOS — 27/09/2026 ----------
+     Pedido do Paulo: o lojista precisa ser levado a assistir TODAS as aulas
+     da Central, como o parceiro e levado as dele. Regra da casa (a mesma do
+     parceiro e da live): AULA NAO TRANCA O LOJISTA. Ele e cliente pagante;
+     o cartao insiste, nunca tranca. E AULA NOVA NAO RETRANCA NINGUEM: quem
+     concluiu ganha o carimbo `em`, e aula publicada depois vira um aviso
+     calmo ("Tem 1 aula nova"), nunca o cartao de quem nunca viu nada.
+
+     Aparece so para quem tem a Central (Premium e Enterprise), em dois
+     lugares: no Inicio, abaixo das outras faixas roxas, e no alto da aba
+     Pedidos. Conta as seis da Central + a do Financeiro (as sete da serie).
+     O botao abre a proxima aula que falta, na janela de tutoriais; a aula
+     conta aos 90% percorridos, pelo mesmo relogio de todas as outras. */
+  var PEDAULAS=['mod-pedidos-central','mod-pedidos-etapas','mod-pedidos-entrega',
+                'mod-pedidos-comanda','mod-pedidos-lote','mod-pedidos-dados','mod-financeiro'];
+  var PED_LOCAIS=[];
+  function pedAulas(){ var r=[]; PEDAULAS.forEach(function(k){ var v=achar(k); if(v) r.push(v); }); return r; }
+  function pedFeitas(){
+    var P=window.__mvPedAulas;
+    var r=(P && P.vistas) ? P.vistas.slice() : [];
+    PED_LOCAIS.forEach(function(k){ if(r.indexOf(k)<0) r.push(k); });
+    return r.filter(function(k){ return PEDAULAS.indexOf(k)>-1; });
+  }
+  function pedMarcar(k){
+    if(PEDAULAS.indexOf(k)===-1) return;
+    if(PED_LOCAIS.indexOf(k)<0) PED_LOCAIS.push(k);
+    var P=window.__mvPedAulas;
+    if(P){
+      var l=pedFeitas(), fim=pedAulas().every(function(v){ return l.indexOf(v.k)>-1; });
+      var novoFim = fim && !P.em;
+      P.vistas=l.slice();
+      if(novoFim) P.em=new Date().toISOString();
+      try{ P.salvar(l, novoFim); }catch(e){}
+    }
+    faixaPed();
+  }
+  function pedTemCentral(){
+    try{ return typeof window.mvPedPlanoOk==='function' && window.mvPedPlanoOk(); }catch(e){ return false; }
+  }
+  function faixaPed(){
+    try{
+      var velhas=document.querySelectorAll('.mvAvisoPed');
+      for(var i=0;i<velhas.length;i++) velhas[i].remove();
+      if(!window.__mvPedAulas || !pedTemCentral()) return;
+      var t=pedAulas(); if(!t.length) return;
+      var f=pedFeitas();
+      var falta=t.filter(function(v){ return f.indexOf(v.k)===-1; });
+      if(!falta.length) return;                         /* em dia: nao aparece */
+      var formado=!!window.__mvPedAulas.em;
+      var feitas=t.length-falta.length;
+      var tit=formado
+        ? (falta.length===1?'Tem uma aula nova da Central de Pedidos':'Tem '+falta.length+' aulas novas da Central de Pedidos')
+        : 'Aulas da Central de Pedidos: '+feitas+' de '+t.length;
+      var sub=formado
+        ? 'O painel ganhou novidade e ganhou aula. Nada foi trancado: é só para ficar em dia.'
+        : 'Do Pix à entrega, comanda, entrega e os dados do cliente. São curtas, e depois o quadro fica fácil.';
+      var bot=formado ? 'Ver o que mudou' : (feitas ? 'Continuar' : 'Ver as aulas');
+      function cartao(id){
+        var a=document.createElement('div');
+        a.className='mvAviso mvAvisoPed'+(formado?' mvAvisoLiveOk':'');
+        a.id=id;
+        a.innerHTML=
+          '<span class="mvAvisoIco"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+
+          '<rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg></span>'+
+          '<span class="mvAvisoTxt"><b class="mvAvisoTit">'+tit+'</b>'+
+          '<span class="mvAvisoSub">'+sub+'</span></span>'+
+          '<button type="button" class="mvAvisoBtn" data-pedaula="'+falta[0].k+'">'+bot+'</button>'+
+          (formado?'':'<span class="mvAvisoBarra"><i style="width:'+Math.round(feitas/t.length*100)+'%"></i></span>');
+        return a;
+      }
+      /* no Inicio: depois das outras faixas roxas, antes do mapa */
+      var mapa=document.querySelector('.mvMapaCard');
+      if(mapa && mapa.parentNode) mapa.parentNode.insertBefore(cartao('mvAvisoPedIni'), mapa);
+      /* no alto da aba Pedidos */
+      var corpo=document.getElementById('pedCorpo');
+      if(corpo) corpo.insertBefore(cartao('mvAvisoPedTab'), corpo.firstChild);
+    }catch(e){}
+  }
+  window.mvPedAulasFaixa=faixaPed;
+  window.addEventListener('mv-pedaulas-pronto',faixaPed);
+  document.addEventListener('click',function(e){
+    var b=e.target && e.target.closest ? e.target.closest('[data-pedaula]') : null;
+    if(!b) return;
+    try{ window.abrirTutoriais(b.getAttribute('data-pedaula')); }catch(_){}
+  },false);
 
   /* ---------- o card das AULAS DA LIVE ----------
      Gemeo da faixa de boas-vindas, e logo abaixo dela. So aparece para quem

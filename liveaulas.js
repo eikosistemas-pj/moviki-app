@@ -1,4 +1,4 @@
-/*! MOVIKI liveaulas.js | versao 2026-09-17-percurso | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-09-27-quadro | repo: moviki-app
  *
  * O MODULO DE AULAS DO MODO LIVE — catalogo e motor, num arquivo so.
  *
@@ -89,13 +89,15 @@
         { k: 'mod-live-pix', t: 'Como você recebe o dinheiro',
           d: '1:14', id: 'xxulNw7JRhQ', plano: 'Enterprise', em: '2026-09-15' } ]},
 
-      /* PEDIDOS E CARDAPIO MORAM NO PAINEL, nao no estudio: o pedido pago cai
-         no Financeiro e o cardapio compravel e a aba Cardapio. Como embutir()
-         so procura o alvo, o mesmo catalogo serve as duas paginas — no estudio
-         estes dois seletores nao existem e as aulas ficam so na biblioteca. */
-      { n: 'Pedidos', sel: '#tab-financeiro', rot: 'O pedido que vem da live', v: [
-        { k: 'mod-live-pedidos', t: 'Pedidos: conferir, confirmar e entregar',
-          d: '1:00', id: 'qx4dFUC9ORs', plano: 'Enterprise', em: '2026-09-15' } ]},
+      /* PEDIDOS MORAM NO PAINEL, na Central de Pedidos. 27/09/2026: a aula foi
+         REGRAVADA para o quadro de colunas e aponta para a aula 2 da Central
+         ('Do Pix a entrega'). `sel` vazio: a aba Pedidos ja tem o cartao das
+         aulas dela, e a caixa no fim do Financeiro ensinava uma lista que nao
+         existe mais. O id antigo 'qx4dFUC9ORs' NAO pode voltar.
+         `em` continua 2026-09-15 DE PROPOSITO: regravacao nao e aula nova. */
+      { n: 'Pedidos', sel: '', rot: 'O pedido que vem da live', v: [
+        { k: 'mod-live-pedidos', t: 'Do Pix à entrega: o pedido andando no quadro',
+          d: '2:09', id: '77kequeuJ6U', plano: 'Premium', em: '2026-09-15' } ]},
 
       { n: 'Oferta relâmpago', sel: '.painelAba[data-aba="oferta"]', v: [
         { k: 'mod-live-oferta', t: 'Oferta relâmpago e estoque ao vivo',

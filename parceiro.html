@@ -1561,7 +1561,7 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-26-aulasroxo';
+  window.MOVIKI_VERSAO = '2026-09-27-aulaspedidos';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -4091,8 +4091,8 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      Este arquivo NAO carrega liveaulas.js de proposito: aquele script traz o
      motor do estudio junto, e ele nao tem o que fazer no painel do parceiro.
      ===================================================================== */
-  { n:'Conhecer o estúdio por dentro', opcional:true,
-    nota:'São as aulas que o lojista vê. Não trancam nada: assista se quiser mostrar o Moviki por dentro na hora da visita.', v:[
+  { n:'Conhecer o Moviki do lojista por dentro', opcional:true,
+    nota:'São as aulas que o lojista vê: a live e a Central de Pedidos. Não trancam nada: assista se quiser mostrar o Moviki por dentro na hora da visita.', v:[
     { k:'mod-live-abertura',   t:'Live no Moviki: o que é e como funciona',          d:'1:20', id:'1TqgHffAyYU' },
     { k:'mod-live-regras',     t:'O que pode e o que não pode na live',              d:'1:04', id:'3WceM12RkWE' },
     { k:'mod-live-primeira',   t:'Sua primeira live: título, câmera e entrar ao vivo', d:'1:16', id:'sngj1eUC7kU' },
@@ -4106,13 +4106,25 @@ window.MOVIKI_TUTORIAIS = { modulos: [
        duracao tambem estava errada (1:30 contra 1:14 reais), e e ela que
        alimenta a porcentagem mostrada na lista. */
     { k:'mod-live-pix',        t:'Como você recebe o dinheiro',                      d:'1:14', id:'xxulNw7JRhQ' },
-    { k:'mod-live-pedidos',    t:'Pedidos: conferir, confirmar e entregar',          d:'1:00', id:'qx4dFUC9ORs' },
     { k:'mod-live-oferta',     t:'Oferta relâmpago e estoque ao vivo',               d:'0:55', id:'pbWfLHoKGag' },
     { k:'mod-live-cupom',      t:'Cupom, brinde e "Estou aqui agora"',               d:'0:50', id:'BQPflIBLNG0' },
     { k:'mod-live-fila',       t:'Fila de pedidos',                                  d:'0:21', id:'hhooJvRXx2Q' },
     { k:'mod-live-dados',      t:'Dados ao vivo e o resumo da live',                 d:'0:31', id:'07rQewrYNaI' },
     { k:'mod-live-cortes',     t:'Cortes para Reels e Status',                       d:'0:24', id:'vzZOyzzfYHM' },
-    { k:'mod-live-cardapio',   t:'Seu cardápio vendendo sozinho',                    d:'1:18', id:'2_ty4YrgZ0I' } ]}
+    { k:'mod-live-cardapio',   t:'Seu cardápio vendendo sozinho',                    d:'1:18', id:'2_ty4YrgZ0I' },
+    /* 27/09/2026: as sete aulas da CENTRAL DE PEDIDOS do lojista (quadro de
+       colunas + Financeiro). Entram no mesmo modulo OPCIONAL: o parceiro pode
+       mostrar o pos-venda por dentro, e nada disso entra na trava do link nem
+       no selo — aula de lojista nao vira imposto sobre a ativacao do parceiro.
+       A aula 2 substitui a antiga 'mod-live-pedidos' (qx4dFUC9ORs), que ensinava
+       a lista de pedidos que nao existe mais. Mesmos ids do index.html. */
+    { k:'mod-pedidos-central', t:'Central de Pedidos: o quadro das suas vendas',                d:'2:53', id:'ztL9i37y8NM' },
+    { k:'mod-pedidos-etapas',  t:'Do Pix à entrega: o pedido andando no quadro',                d:'2:09', id:'77kequeuJ6U' },
+    { k:'mod-pedidos-entrega', t:'Sua entrega: bairros, taxa e pedido mínimo',                  d:'1:32', id:'j9KZrmDBCXE' },
+    { k:'mod-pedidos-comanda', t:'Imprimir a comanda do pedido',                                d:'1:08', id:'1KRjmefJFbk' },
+    { k:'mod-pedidos-lote',    t:'Enterprise: imprimir a coluna inteira e a lista de separação', d:'1:11', id:'myU8_lgHhnw' },
+    { k:'mod-pedidos-dados',   t:'Os dados do seu cliente: cuidado e prazo',                    d:'1:13', id:'1zMvqXPedD8' },
+    { k:'mod-financeiro',      t:'Financeiro: como o lojista recebe o dinheiro das vendas',     d:'1:39', id:'AEPxpKOp1YM' } ]}
 ]};
 </script>
 <script>
@@ -4674,10 +4686,10 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       var ct=document.createElement('b');
       ct.style.cssText='display:block;font-size:13px;font-weight:700';
       var fe=ex.filter(function(v){ return f.indexOf(v.k)>-1; }).length;
-      ct.textContent='Opcional · Conhecer o estúdio por dentro ('+fe+' de '+ex.length+')';
+      ct.textContent='Opcional · O Moviki do lojista por dentro ('+fe+' de '+ex.length+')';
       var cs=document.createElement('span');
       cs.style.cssText='display:block;font-size:11.5px;line-height:1.5;opacity:.75;margin-top:2px';
-      cs.textContent='São as aulas que o lojista vê. Não trancam nada e não contam para o seu selo.';
+      cs.textContent='São as aulas que o lojista vê: a live e a Central de Pedidos. Não trancam nada e não contam para o seu selo.';
       cab.appendChild(ct); cab.appendChild(cs);
       auLista.appendChild(cab);
       ex.forEach(function(v){
