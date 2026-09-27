@@ -1,7 +1,65 @@
 {
-  "versao": "2026-09-27-farmacia",
+  "versao": "2026-09-27-tenis",
   "atualizado": "2026-09-27",
   "itens": [
+    {
+      "id": "story-tenis-esportivos-ao-vivo",
+      "tipo": "story",
+      "titulo": "Seus sapatos esportivos ao vivo",
+      "formato": "Story 9:16",
+      "arquivo": "material/stories/story-tenis-esportivos-ao-vivo.jpg",
+      "capa": "material/capas/story-tenis-esportivos-ao-vivo.webp",
+      "w": 1080,
+      "h": 1920,
+      "peso": "628 KB",
+      "novo": true,
+      "legenda": "#publi Ela viu o tênis na sua vitrine do Instagram e gostou da cor. Mas não sabia se tinha o número dela — e comprou no aplicativo que mostrava tudo na hora.\n\nCom o Moviki, você faz live do perfil da sua loja: mostra o modelo de todos os ângulos, responde \"tem branco?\" e \"qual o valor?\" no chat, e o pedido chega no seu WhatsApp.\n\nSeu estilo em movimento.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "moda",
+      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
+    },
+    {
+      "id": "feed-tenis-loja-ao-vivo",
+      "tipo": "feed",
+      "titulo": "Loja de tênis ao vivo com o Moviki",
+      "formato": "Feed 1:1",
+      "arquivo": "material/feed/feed-tenis-loja-ao-vivo.jpg",
+      "capa": "material/capas/feed-tenis-loja-ao-vivo.webp",
+      "w": 1080,
+      "h": 1080,
+      "peso": "380 KB",
+      "novo": true,
+      "legenda": "#publi \"Tem na cor preta?\" \"Tem o 41?\" Quem pergunta isso quer comprar. O problema é quando a pergunta fica sem resposta até o dia seguinte.\n\nCom o Moviki, a sua loja de tênis mostra os lançamentos ao vivo, responde na hora e recebe o pedido pelo WhatsApp. E no mapa, quem está perto encontra você.\n\nEsporte e estilo mais perto, sem comissão por venda.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "moda"
+    },
+    {
+      "id": "story-tenis-mostre-ao-vivo",
+      "tipo": "story",
+      "titulo": "Mostre seus tênis ao vivo",
+      "formato": "Story 9:16",
+      "arquivo": "material/stories/story-tenis-mostre-ao-vivo.jpg",
+      "capa": "material/capas/story-tenis-mostre-ao-vivo.webp",
+      "w": 1080,
+      "h": 1920,
+      "peso": "661 KB",
+      "novo": true,
+      "legenda": "#publi Tênis se compra com o olho: a cor de verdade, o solado, como fica no pé. Foto parada não mostra nada disso — e a cliente passa para o próximo post.\n\nCom o Moviki, você apresenta modelos, cores e numerações ao vivo, conversa com quem está assistindo e recebe o pedido pelo WhatsApp.\n\nÉ assim que as grandes lojas vendem. A sua também pode.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "moda",
+      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
+    },
+    {
+      "id": "feed-tenis-mostre-ao-vivo",
+      "tipo": "feed",
+      "titulo": "Mostre seus tênis ao vivo com o Moviki",
+      "formato": "Feed 1:1",
+      "arquivo": "material/feed/feed-tenis-mostre-ao-vivo.jpg",
+      "capa": "material/capas/feed-tenis-mostre-ao-vivo.webp",
+      "w": 1080,
+      "h": 1080,
+      "peso": "380 KB",
+      "novo": true,
+      "legenda": "#publi Hoje alguém perto da sua loja procurou um tênis para correr. Achou no celular, na loja que apareceu primeiro — não na que tinha o modelo certo.\n\nNo mapa do Moviki, a sua loja aparece em tempo real para quem está na região. E quando quiser, você entra ao vivo e mostra cores e numerações.\n\nSeu estilo em movimento.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "moda"
+    },
     {
       "id": "story-farmacia-ao-vivo",
       "tipo": "story",
@@ -12,7 +70,7 @@
       "w": 1080,
       "h": 1920,
       "peso": "602 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi A cliente perguntou no balcão se você tinha o protetor solar que ela viu na internet. Tinha. Mas ela só soube depois de comprar em outro lugar.\n\nCom o Moviki, a sua farmácia faz live do próprio perfil: mostra as ofertas do dia, responde \"tem entrega?\" e \"qual o horário?\" no chat, e o pedido chega no seu WhatsApp.\n\nHigiene, dermocosméticos e cuidado pessoal, mostrados de perto por quem entende.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "farmacia",
       "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
@@ -27,7 +85,7 @@
       "w": 1080,
       "h": 1080,
       "peso": "372 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Farmácia de bairro vive de confiança. O problema é que confiança não aparece no celular de quem está na sua rua procurando o que você tem na prateleira.\n\nCom o Moviki, você atende ao vivo: mostra a oferta, tira a dúvida no chat e recebe o pedido pelo WhatsApp. E no mapa, quem está perto encontra a sua farmácia na hora.\n\nSua farmácia mais visível, sem comissão por venda.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "farmacia"
     },
@@ -41,7 +99,7 @@
       "w": 1080,
       "h": 1920,
       "peso": "583 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi \"Tem protetor solar?\" \"Qual o horário?\" Essas perguntas estão sendo feitas agora, no celular de alguém do seu bairro. A resposta está na sua prateleira — mas ninguém está vendo.\n\nCom o Moviki, você mostra a sua farmácia ao vivo, apresenta as ofertas do dia e responde na hora. Quem gostou chama no WhatsApp.\n\nHigiene, cuidado e bem-estar: a farmácia do bairro mais perto de quem precisa.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "farmacia",
       "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
@@ -56,7 +114,7 @@
       "w": 1080,
       "h": 1080,
       "peso": "380 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Quem precisa de farmácia precisa agora. E vai na primeira que aparece no celular — não necessariamente na mais perto.\n\nNo mapa do Moviki, a sua farmácia aparece em tempo real para quem está na região, com as ofertas e o botão do WhatsApp. E quando quiser, você entra ao vivo e mostra a prateleira.\n\nCuidado também se move.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "farmacia"
     },
