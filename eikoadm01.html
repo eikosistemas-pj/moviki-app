@@ -1407,6 +1407,30 @@ table.mvTab td b{font-weight:700}
             .rsBarra{height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:6px}
             .rsBarra i{display:block;height:100%;background:var(--mv-ciano)}
             .rsTag{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(255,107,107,.15);color:var(--mv-erro)}
+            /* Kit TikTok do dia (28/09/2026) */
+            .tkHoje{display:grid;grid-template-columns:1fr;gap:14px}
+            @media(min-width:760px){.tkHoje{grid-template-columns:minmax(0,260px) 1fr}}
+            .tkVid{background:#0b1530;border:1px solid var(--mv-linha);border-radius:14px;overflow:hidden;aspect-ratio:9/16;max-height:460px;width:100%;max-width:260px;justify-self:center}
+            .tkVid video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+            .tkLado{display:flex;flex-direction:column;gap:10px;min-width:0}
+            .tkTit{font-weight:800;font-size:15px;line-height:1.35}
+            .tkLeg{width:100%;min-height:170px;resize:vertical;background:var(--mv-campo);color:inherit;border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px;font-family:inherit;font-size:13px;line-height:1.5;box-sizing:border-box}
+            .tkBts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+            @media(max-width:420px){.tkBts{grid-template-columns:1fr}}
+            .tkBts .btnMini{width:100%;padding:12px 10px;font-weight:800}
+            .tkBts .pri{background:var(--mv-grad);color:#02131f;border-color:transparent;text-decoration:none}
+            .tkBts .on{border-color:var(--mv-ok);color:var(--mv-ok);background:rgba(37,227,155,.10)}
+            .tkPasso{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.55;margin-top:12px}
+            .tkPasso summary{cursor:pointer;font-weight:700}
+            .tkPasso ol{margin:8px 0 0 18px;padding:0}
+            .tkProx{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+            .tkDia{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;padding:0;color:inherit;font-family:inherit;display:flex;flex-direction:column}
+            .tkDia.sel{border-color:var(--mv-ciano);box-shadow:0 0 0 1px var(--mv-ciano)}
+            .tkDia .m{aspect-ratio:9/16;max-height:130px;background:#0b1530;overflow:hidden}
+            .tkDia img{width:100%;height:100%;object-fit:cover;display:block}
+            .tkDia span{display:block;padding:6px 8px;font-size:11.5px;line-height:1.35}
+            .tkDia b{display:block;font-size:12px}
+            .tkDia .ok{color:var(--mv-ok);font-weight:800}
           </style>
           <div class="cd">
             <div class="cdTopo"><div><div class="cdTit">Redes sociais</div><div class="cdSub">O que o robô social publicou no Instagram @moviki.oficial e na Página do Facebook, com curtidas e comentários. O relatório é montado pelo próprio robô às ~08h e às ~22h; o painel só lê — nenhum token da Meta passa pelo navegador.</div></div><button type="button" class="btnMini" id="rsAtualizar">Atualizar</button></div>
@@ -1419,6 +1443,25 @@ table.mvTab td b{font-weight:700}
               <div><small>Comentários (7 dias)</small><b id="rsKCom">—</b><em id="rsKComSub"></em></div>
             </div>
             <div class="rsAl" id="rsAlertas"></div>
+          </div>
+
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo"><div><div class="cdTit">Kit TikTok do dia</div><div class="cdSub">Um vídeo por dia, já liberado para a página oficial, com a legenda pronta. Você posta pelo app do TikTok em 1 minuto — a API do TikTok não publica em público para ferramenta de conta própria. Toque num dia abaixo para adiantar os próximos.</div></div><span class="cdChip" id="tkChip">—</span></div>
+            <div id="tkHoje"><div class="vazio">Carregando…</div></div>
+            <details class="tkPasso">
+              <summary>Como postar no TikTok (passo a passo)</summary>
+              <ol>
+                <li>Toque em <b>Baixar vídeo</b>. No Android vai para Downloads; no iPhone, para Arquivos &gt; Downloads.</li>
+                <li>Toque em <b>Copiar legenda</b>.</li>
+                <li>Abra o TikTok, toque em <b>+</b> e depois em <b>Carregar</b>. Escolha o vídeo.</li>
+                <li>Toque em <b>Sons</b> e escolha um som em alta da <b>Biblioteca Comercial</b> (conta de empresa não pode usar música de artista). Como o vídeo já tem narração, em <b>Volume</b> deixe o som adicionado baixinho (uns 15%).</li>
+                <li>Toque em <b>Avançar</b>, cole a legenda e toque em <b>Publicar</b>.</li>
+                <li>Volte aqui e toque em <b>Já postei</b>.</li>
+              </ol>
+            </details>
+            <div class="cdSub" style="margin:14px 0 8px">Próximos dias</div>
+            <div class="tkProx" id="tkProx"></div>
+            <div class="rsMeta" id="tkTriagem" style="margin-top:12px"></div>
           </div>
 
           <div class="cd" style="margin-top:14px">
@@ -1726,7 +1769,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-28-redes2';
+  window.MOVIKI_VERSAO = '2026-09-28-tiktok';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -5760,6 +5803,7 @@ table.mvTab td b{font-weight:700}
       el('rsAgenda').innerHTML = '<tr><td colspan="4" class="vazio">Sem relatório.</td></tr>';
       el('rsGrade').innerHTML = '<div class="vazio">Sem relatório.</div>';
       el('rsTotais').innerHTML = '<tr><td colspan="6" class="vazio">Sem relatório.</td></tr>';
+      if(el('tkHoje')) el('tkHoje').innerHTML = '<div class="vazio">Sem relatório.</div>';
       return;
     }
     const idadeH = (Date.now() - new Date(RS.gerado).getTime()) / 3600000;
@@ -5792,6 +5836,7 @@ table.mvTab td b{font-weight:700}
     if(bad){ bad.textContent = graves; bad.classList.toggle('hide', !graves); }
 
     rsPintarCrescimento();
+    tkPintar();
 
     /* canal */
     const rampa = RS.rampa || {};
@@ -5908,9 +5953,108 @@ table.mvTab td b{font-weight:700}
     }).join('');
   }
 
+  /* ---------- Kit TikTok do dia (28/09/2026) ----------
+     O robo monta a agenda de 7 dias (estado/tiktok.json) com videos 9:16 do
+     Material de apoio que passaram pelas travas da pagina oficial. O video
+     mora em app.moviki.com.br — mesma origem deste painel, entao "Baixar"
+     funciona no celular. "Ja postei" fica so neste aparelho (localStorage). */
+  let TK_SEL = 0;
+  /* Video no app.moviki.com.br hoje; no Firebase Storage depois da P46
+     (URL com ?alt=media&token=...). */
+  const tkCaminho = u => { try{ return decodeURIComponent(new URL(u).pathname).toLowerCase(); }catch(e){ return ''; } };
+  const tkDom = u => /^https:\/\/(app\.moviki\.com\.br|firebasestorage\.googleapis\.com)\//.test(u||'');
+  const tkVidOk = u => tkDom(u) && /\.mp4$/.test(tkCaminho(u));
+  const tkImgOk = u => tkDom(u) && /\.(jpe?g|png|webp)$/.test(tkCaminho(u));
+  const tkMesmaOrigem = u => { try{ return new URL(u).origin === location.origin; }catch(e){ return false; } };
+  const tkChave = k => 'mv_tiktok_postado:' + k.dia + ':' + k.id;
+  function tkPostado(k){ try{ return localStorage.getItem(tkChave(k)) === '1'; }catch(e){ return false; } }
+  function tkMarcar(k, v){ try{ if(v) localStorage.setItem(tkChave(k), '1'); else localStorage.removeItem(tkChave(k)); }catch(e){} }
+  function tkDiaTxt(iso, hoje){
+    const p = String(iso).split('-'); const dt = new Date(iso + 'T12:00:00');
+    const sem = ['dom','seg','ter','qua','qui','sex','sáb'][dt.getDay()];
+    return (hoje ? 'Hoje, ' : '') + sem + ' ' + p[2] + '/' + p[1];
+  }
+  function tkDias(){ return ((RS && RS.tiktok) || {}).dias || []; }
+  function tkPintar(){
+    const cx = el('tkHoje'), px = el('tkProx'), tr = el('tkTriagem'), chip = el('tkChip');
+    if(!cx) return;
+    const tk = RS.tiktok, dias = tkDias();
+    if(!tk){ cx.innerHTML = '<div class="vazio">O kit aparece depois que o robô novo rodar o “Metricas” (Actions → Metricas → Run workflow).</div>'; px.innerHTML = ''; chip.textContent = '—'; }
+    else if(!dias.length){
+      cx.innerHTML = '<div class="vazio">' + (tk.erro ? esc(tk.erro) : 'Nenhum vídeo 9:16 do Material de apoio liberado para a página oficial.' +
+        (tk.live_na_pagina === false ? ' Os vídeos de live estão de fora porque o secret <code>LIVE_NA_PAGINA</code> não está em 1.' : '')) + '</div>';
+      px.innerHTML = ''; chip.textContent = '0 vídeos';
+    } else {
+      if(TK_SEL >= dias.length) TK_SEL = 0;
+      const k = dias[TK_SEL], feito = tkPostado(k);
+      const vid = tkVidOk(k.video) ? k.video : '', capa = tkImgOk(k.capa) ? k.capa : '';
+      const nome = 'moviki-tiktok-' + k.dia + '.mp4';
+      cx.innerHTML = '<div class="tkHoje">' +
+        '<div class="tkVid">' + (vid ? '<video controls playsinline preload="metadata"' + (capa ? ' poster="' + esc(capa) + '"' : '') + ' src="' + esc(vid) + '"></video>' : '<div class="vazio">Vídeo fora do endereço esperado.</div>') + '</div>' +
+        '<div class="tkLado">' +
+          '<div class="rsMeta">' + esc(tkDiaTxt(k.dia, k.hoje)) + ' · ' + esc(k.ramo || 'geral') + (k.duracao ? ' · ' + Math.round(k.duracao) + ' s' : '') + '</div>' +
+          '<div class="tkTit">' + esc(k.titulo) + '</div>' +
+          '<textarea class="tkLeg" id="tkLeg" readonly>' + esc(k.legenda) + '</textarea>' +
+          '<div class="tkBts">' +
+            (vid ? (tkMesmaOrigem(vid)
+                ? '<a class="btnMini pri" href="' + esc(vid) + '" download="' + esc(nome) + '">Baixar vídeo</a>'
+                : '<button type="button" class="btnMini pri" id="tkBaixar" data-url="' + esc(vid) + '" data-nome="' + esc(nome) + '">Baixar vídeo</button>')
+              : '<span></span>') +
+            '<button type="button" class="btnMini" id="tkCopiar">Copiar legenda</button>' +
+            '<button type="button" class="btnMini' + (feito ? ' on' : '') + '" id="tkPostei">' + (feito ? 'Postado ✓' : 'Já postei') + '</button>' +
+          '</div>' +
+        '</div></div>';
+      px.innerHTML = dias.map((d, i) => {
+        const c = tkImgOk(d.capa) ? d.capa : '';
+        return '<button type="button" class="tkDia' + (i === TK_SEL ? ' sel' : '') + '" data-tkdia="' + i + '">' +
+          '<div class="m">' + (c ? '<img loading="lazy" alt="" src="' + esc(c) + '">' : '') + '</div>' +
+          '<span><b>' + esc(tkDiaTxt(d.dia, d.hoje)) + '</b>' + esc(d.titulo) + (tkPostado(d) ? '<br><span class="ok" style="padding:0">postado ✓</span>' : '') + '</span></button>';
+      }).join('');
+      const h = dias.find(d => d.hoje);
+      chip.textContent = h ? (tkPostado(h) ? 'hoje: postado ✓' : 'hoje: falta postar') : dias.length + ' dias prontos';
+    }
+    const t = RS.triagem;
+    tr.innerHTML = !t ? '' :
+      (t.ligada === false ? '<span style="color:#ffb020">Triagem por imagem desligada</span> — falta o secret <code>ANTHROPIC_API_KEY</code> no workflow Metricas.'
+        : 'Triagem do Material de apoio: <b>' + rsN(t.liberadas) + '</b> peças liberadas para as redes · <b>' + rsN(t.barradas) + '</b> barradas como “só parceiro”' +
+          (t.pendentes ? ' · <b>' + rsN(t.pendentes) + '</b> aguardando' : '') + '.' +
+          ((t.lista_barradas || []).length ? '<details style="margin-top:6px"><summary>Ver as barradas</summary>' +
+            t.lista_barradas.map(b => '<div>' + esc(b.id) + (b.trecho ? ' — “' + esc(b.trecho) + '”' : '') + '</div>').join('') + '</details>' : ''));
+  }
+  /* Video de outro dominio (Storage): o atributo download e ignorado entre
+     dominios. Tenta baixar como arquivo; se o bucket nao liberar (CORS), abre
+     o video numa aba — ai e segurar o dedo e "Baixar". */
+  async function tkBaixar(b){
+    const url = b.getAttribute('data-url'), nome = b.getAttribute('data-nome');
+    b.disabled = true; b.textContent = 'Baixando…';
+    try{
+      const r = await fetch(url); if(!r.ok) throw new Error('http');
+      const blob = await r.blob(), obj = URL.createObjectURL(blob), a = document.createElement('a');
+      a.href = obj; a.download = nome; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(obj), 60000);
+      b.textContent = 'Baixado ✓';
+    }catch(e){
+      window.open(url, '_blank', 'noopener');
+      b.textContent = 'Segure o dedo no vídeo e toque em Baixar';
+    }
+    b.disabled = false;
+  }
+  async function tkCopiar(){
+    const ta = el('tkLeg'), b = el('tkCopiar'); if(!ta) return;
+    let ok = false;
+    try{ await navigator.clipboard.writeText(ta.value); ok = true; }
+    catch(e){ try{ ta.removeAttribute('readonly'); ta.select(); ok = document.execCommand('copy'); ta.setAttribute('readonly',''); }catch(e2){} }
+    if(b){ b.textContent = ok ? 'Copiada ✓' : 'Selecione e copie'; setTimeout(()=>{ if(el('tkCopiar')) el('tkCopiar').textContent = 'Copiar legenda'; }, 2200); }
+  }
+
   document.addEventListener('click', ev=>{
     const t = ev.target; if(!t || !t.closest) return;
     if(t.id === 'rsAtualizar'){ rsCarregar(); return; }
+    if(t.id === 'tkCopiar'){ tkCopiar(); return; }
+    if(t.id === 'tkBaixar'){ tkBaixar(t); return; }
+    if(t.id === 'tkPostei'){ const k = tkDias()[TK_SEL]; if(k){ tkMarcar(k, !tkPostado(k)); tkPintar(); } return; }
+    const tkd = t.closest('[data-tkdia]');
+    if(tkd){ TK_SEL = Number(tkd.getAttribute('data-tkdia')) || 0; tkPintar(); const c = el('tkHoje'); if(c && c.scrollIntoView) c.scrollIntoView({behavior:'smooth', block:'start'}); return; }
     const f = t.closest('[data-rsfmt]');
     if(f){ RS_FMT = f.getAttribute('data-rsfmt'); document.querySelectorAll('[data-rsfmt]').forEach(b=>b.classList.toggle('on', b===f)); if(RS) rsPintarPosts(); return; }
     const d = t.closest('[data-rsdias]');
