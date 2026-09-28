@@ -1732,6 +1732,7 @@ table.mvTab td b{font-weight:700}
     <button type="button" data-ir="comissoes"><img src="icones/comissoes.png" alt="" onerror="this.style.display='none'">Comissões e saques<span class="bad hide" id="badComM">0</span></button>
     <button type="button" data-ir="mensagens"><img src="icones/sobre.png" alt="" onerror="this.style.display='none'">Mensagens<span class="bad hide" id="badMsgM">0</span></button>
     <button type="button" data-ir="metricas"><img src="icones/alvo.png" alt="" onerror="this.style.display='none'">Métricas</button>
+    <button type="button" data-ir="redes"><img src="icones/qz-instagram.png" alt="" onerror="this.style.display='none'">Redes sociais e TikTok<span class="bad hide" id="badRedesM">0</span></button>
     <button type="button" data-ir="newsletter"><img src="icones/recorrente.png" alt="" onerror="this.style.display='none'">Newsletter</button>
     <button type="button" data-ir="relatorios"><img src="icones/relatorios.png" alt="" onerror="this.style.display='none'">Relatórios</button>
     <button type="button" data-ir="custos"><img src="icones/comissoes.png" alt="" onerror="this.style.display='none'">Custos e margem</button>
@@ -1769,7 +1770,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-28-tiktok';
+  window.MOVIKI_VERSAO = '2026-09-28-tiktok2';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -5834,6 +5835,8 @@ table.mvTab td b{font-weight:700}
       ? al.map(a=>'<div class="'+(a.nivel==='grave'?'grave':'atencao')+'">'+esc(a.texto)+'</div>').join('')
       : '<div class="ok">Tudo certo: nenhum post faltando, nenhuma falha do Instagram.</div>';
     if(bad){ bad.textContent = graves; bad.classList.toggle('hide', !graves); }
+    const badM = el('badRedesM');   /* menu do celular (28/09/2026) */
+    if(badM){ badM.textContent = graves; badM.classList.toggle('hide', !graves); }
 
     rsPintarCrescimento();
     tkPintar();
