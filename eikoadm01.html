@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://*.tile.openstreetmap.org https://firebasestorage.googleapis.com; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://www.google.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://raw.githubusercontent.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://*.tile.openstreetmap.org https://firebasestorage.googleapis.com https://raw.githubusercontent.com; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://www.google.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://raw.githubusercontent.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="robots" content="noindex,nofollow">
@@ -637,6 +637,7 @@ table.mvTab td b{font-weight:700}
           <button type="button" class="mvNavIt" data-nav="negocios"><img class="mvNavIco" src="icones/usuarios.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Negócios</span></button>
           <button type="button" class="mvNavIt" data-nav="parceiros"><img class="mvNavIco" src="icones/parceiros.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Parceiros</span><span class="bad hide" id="badParc">0</span></button>
           <button type="button" class="mvNavIt" data-nav="criadores"><img class="mvNavIco" src="icones/live.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Criadores</span><span class="bad hide" id="badCri">0</span></button>
+          <button type="button" class="mvNavIt" data-nav="redes"><img class="mvNavIco" src="icones/qz-instagram.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Redes sociais</span><span class="bad hide" id="badRedes">0</span></button>
           <button type="button" class="mvNavIt" data-nav="comissoes"><img class="mvNavIco" src="icones/comissoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Comissões e saques</span><span class="bad hide" id="badCom">0</span></button>
           <button type="button" class="mvNavIt" data-nav="mensagens"><img class="mvNavIco" src="icones/sobre.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Mensagens</span><span class="bad hide" id="badMsg">0</span></button>
           <button type="button" class="mvNavIt" data-nav="metricas"><img class="mvNavIco" src="icones/alvo.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Métricas</span></button>
@@ -1351,6 +1352,96 @@ table.mvTab td b{font-weight:700}
           </div>
         </section>
 
+        <!-- ============ SEÇÃO: REDES SOCIAIS (28/09/2026) ============ -->
+        <section data-sec="redes" class="hide">
+          <style>
+            .rsK{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+            @media(min-width:760px){.rsK{grid-template-columns:repeat(5,minmax(0,1fr))}}
+            .rsK div{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px;min-width:0}
+            .rsK small{display:block;font-size:11.5px;color:var(--mv-txt-3)}
+            .rsK b{font-size:21px;font-weight:800}
+            .rsK em{display:block;font-style:normal;font-size:11.5px;color:var(--mv-txt-3);margin-top:2px}
+            .rsAl{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+            .rsAl div{border-radius:10px;padding:9px 12px;font-size:13px;line-height:1.45;border:1px solid var(--mv-linha);background:var(--mv-campo)}
+            .rsAl .grave{border-color:rgba(255,107,107,.5);background:rgba(255,107,107,.10)}
+            .rsAl .atencao{border-color:rgba(255,176,32,.45);background:rgba(255,176,32,.08)}
+            .rsAl .ok{border-color:rgba(37,227,155,.4);background:rgba(37,227,155,.08);color:var(--mv-ok)}
+            .rsCanal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+            @media(max-width:560px){.rsCanal{grid-template-columns:1fr}}
+            .rsCanal div{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px}
+            .rsCanal b{display:block;font-size:14px;margin:2px 0}
+            .rsCanal .ig b{color:var(--mv-ok)}
+            .rsCanal small{font-size:11.5px;color:var(--mv-txt-3)}
+            .rsAg td,.rsAg th{text-align:center}
+            .rsAg td:first-child,.rsAg th:first-child{text-align:left}
+            .rsAg .ok{color:var(--mv-ok);font-weight:700}
+            .rsAg .falta{color:var(--mv-erro);font-weight:700}
+            .rsAg .nada{color:var(--mv-txt-3)}
+            .rsFil{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+            .rsGrade{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+            .rsPost{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+            .rsPost.pb{border-color:rgba(255,107,107,.55)}
+            .rsMini{position:relative;background:#0b1530;aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;overflow:hidden}
+            .rsMini.v{aspect-ratio:9/16;max-height:320px}
+            .rsMini img{width:100%;height:100%;object-fit:cover;display:block}
+            .rsMini span.sem{font-size:12px;color:var(--mv-txt-3);padding:10px;text-align:center}
+            .rsFmt{position:absolute;top:8px;left:8px;font-size:11px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:rgba(3,16,48,.85);color:#fff}
+            .rsFmt.feed{box-shadow:inset 0 0 0 1px #00D4FF}.rsFmt.story{box-shadow:inset 0 0 0 1px #ffb020}.rsFmt.reel{box-shadow:inset 0 0 0 1px #a855f7}
+            .rsCorpo{padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:12.5px}
+            .rsTit{font-weight:700;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+            .rsMeta{color:var(--mv-txt-3);font-size:11.5px}
+            .rsRede{display:flex;justify-content:space-between;gap:8px;align-items:center;border-top:1px solid var(--mv-linha);padding-top:6px}
+            .rsRede b{font-size:11.5px}
+            .rsRede a{color:var(--mv-ciano,#00D4FF);text-decoration:none;font-size:11.5px;white-space:nowrap}
+            .rsNum{font-variant-numeric:tabular-nums}
+            .rsFil .btnMini.on{border-color:var(--mv-ciano);color:var(--mv-ciano);background:rgba(0,212,255,.10)}
+            .rsMini.sem,.rsMini.v.sem{aspect-ratio:auto;height:92px}
+            .rsTag{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(255,107,107,.15);color:var(--mv-erro)}
+          </style>
+          <div class="cd">
+            <div class="cdTopo"><div><div class="cdTit">Redes sociais</div><div class="cdSub">O que o robô social publicou no Instagram @moviki.oficial e na Página do Facebook, com curtidas e comentários. O relatório é montado pelo próprio robô às ~08h e às ~22h; o painel só lê — nenhum token da Meta passa pelo navegador.</div></div><button type="button" class="btnMini" id="rsAtualizar">Atualizar</button></div>
+            <div class="rsMeta" id="rsGerado" style="margin-bottom:10px">Carregando…</div>
+            <div class="rsK">
+              <div><small>Instagram</small><b id="rsKIg">—</b><em id="rsKIgSub"></em></div>
+              <div><small>Página do Facebook</small><b id="rsKFb">—</b><em id="rsKFbSub"></em></div>
+              <div><small>Posts (7 dias)</small><b id="rsKPosts">—</b><em id="rsKPostsSub"></em></div>
+              <div><small>Curtidas (7 dias)</small><b id="rsKCurt">—</b><em id="rsKCurtSub"></em></div>
+              <div><small>Comentários (7 dias)</small><b id="rsKCom">—</b><em id="rsKComSub"></em></div>
+            </div>
+            <div class="rsAl" id="rsAlertas"></div>
+          </div>
+
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo"><div><div class="cdTit">Onde cada formato sai hoje</div><div class="cdSub">A liberação do Instagram é por formato e por data (secret <code>IG_FORMATOS</code>). Se o Instagram recusar 2 vezes seguidas, o freio tira ele do ar por 72 h e tudo sai só no Facebook — sozinho.</div></div></div>
+            <div class="rsCanal" id="rsCanal"></div>
+            <div class="rsMeta" id="rsFreio" style="margin-top:10px"></div>
+          </div>
+
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo"><div><div class="cdTit">Agenda dos últimos 7 dias</div><div class="cdSub">Saiu / esperado. Feed: seg a sex · Story: 2 por dia · Reel: ter e sáb. Vermelho = faltou post num dia já fechado.</div></div></div>
+            <div class="tabRola"><table class="lvTab rsAg" style="min-width:420px"><thead><tr><th>Dia</th><th>Feed</th><th>Story</th><th>Reel</th></tr></thead><tbody id="rsAgenda"><tr><td colspan="4" class="vazio">Carregando…</td></tr></tbody></table></div>
+          </div>
+
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo"><div><div class="cdTit">Posts publicados</div><div class="cdSub">Story do Instagram some da API depois de 24 h e story da Página não mostra curtida: nesses casos aparece “—”. Borda vermelha = o Instagram falhou e o post saiu só no Facebook.</div></div><span class="cdChip" id="rsChip">0</span></div>
+            <div class="rsFil">
+              <button type="button" class="btnMini on" data-rsfmt="">Todos</button>
+              <button type="button" class="btnMini" data-rsfmt="feed">Feed</button>
+              <button type="button" class="btnMini" data-rsfmt="story">Stories</button>
+              <button type="button" class="btnMini" data-rsfmt="reel">Reels</button>
+              <span style="flex:1"></span>
+              <button type="button" class="btnMini on" data-rsdias="7">7 dias</button>
+              <button type="button" class="btnMini" data-rsdias="30">30 dias</button>
+            </div>
+            <div class="rsGrade" id="rsGrade"><div class="vazio">Carregando…</div></div>
+          </div>
+
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo"><div><div class="cdTit">Totais por formato (30 dias)</div><div class="cdSub">Soma do que a API da Meta devolveu. Post sem número (story expirado) conta no total de posts, não nas curtidas.</div></div></div>
+            <div class="tabRola"><table class="lvTab" style="min-width:520px"><thead><tr><th>Rede</th><th>Formato</th><th>Posts</th><th>Curtidas</th><th>Comentários</th><th>Média de curtidas</th></tr></thead><tbody id="rsTotais"><tr><td colspan="6" class="vazio">Carregando…</td></tr></tbody></table></div>
+          </div>
+        </section>
+
         <!-- ============ SEÇÃO: EXCLUSÕES ============ -->
         <section data-sec="exclusoes" class="hide">
           <div class="cd">
@@ -1620,7 +1711,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-26-pedidos';
+  window.MOVIKI_VERSAO = '2026-09-28-redes';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1714,6 +1805,7 @@ table.mvTab td b{font-weight:700}
     if(nome === 'custos') csAbrir();
     if(nome === 'criadores') crAbrir();
     if(nome === 'pedidos') pdAbrir();
+    if(nome === 'redes') rsAbrir();
   }
   window.mvIrSec = irSec;
 
@@ -1836,6 +1928,9 @@ table.mvTab td b{font-weight:700}
     // que ele existe pra evitar.
     ouvirConversas();
     try{ livesOuvir(); }catch(e){}
+    // 28/09/2026: le o relatorio das redes em segundo plano so para acender o
+    // numero vermelho do menu quando o robo social tiver alerta grave.
+    setTimeout(()=>{ try{ rsCarregar(); }catch(e){} }, 4000);
   });
 
   async function carregarTudo(recarregando){
@@ -5608,6 +5703,152 @@ table.mvTab td b{font-weight:700}
     const s = t.closest('[data-pdsusp]'); if(s){ pdSuspender(s.getAttribute('data-pdsusp'), s.getAttribute('data-v')==='1'); return; }
     if(t.id === 'pdAtualizar'){ pdCarregar(); return; }
     if(t.id === 'pdDetFechar'){ hide('pdDetCd'); return; }
+  });
+
+  /* =====================================================================
+     REDES SOCIAIS — relatorio do robo social (28/09/2026)
+     Fonte: estado/redes.json do moviki-assistente-social (repo publico),
+     gerado pelo proprio robo 2x por dia (metricas.yml). O token da Meta
+     nunca chega ao navegador; aqui so se le numero publico.
+     Miniatura = a propria peca (app.moviki.com.br, raw do GitHub ou Storage),
+     nunca a URL do CDN da Meta (expira e a CSP bloqueia).
+  ===================================================================== */
+  const RS_URL = 'https://raw.githubusercontent.com/eikosistemas-pj/moviki-assistente-social/main/estado/redes.json';
+  const RS_NOME = {feed:'Feed', story:'Story', reel:'Reel'};
+  let RS = null, rsCarregando = false, RS_FMT = '', RS_DIAS = 7;
+  const rsN = v => (v === null || v === undefined || v === '') ? '—' : Number(v).toLocaleString('pt-BR');
+  const rsUrl = u => (typeof u === 'string' && /^https:\/\//.test(u)) ? u : '';
+  const rsImgOk = u => /^https:\/\/(app\.moviki\.com\.br|raw\.githubusercontent\.com|firebasestorage\.googleapis\.com)\//.test(u||'');
+  function rsDataHora(iso){
+    const d = new Date(iso); if(isNaN(d)) return '';
+    return d.toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  }
+
+  async function rsCarregar(){
+    if(rsCarregando) return; rsCarregando = true;
+    const b = el('rsAtualizar'); if(b){ b.disabled = true; b.textContent = 'Carregando…'; }
+    try{
+      const r = await fetch(RS_URL + '?t=' + Date.now(), {cache:'no-store'});
+      if(r.status === 404){ RS = null; el('rsGerado').textContent = 'O relatório ainda não foi gerado. Ele nasce na primeira execução do “Metricas” no GitHub (Actions → Metricas → Run workflow).'; }
+      else { RS = await r.json(); }
+    }catch(e){ RS = null; el('rsGerado').textContent = 'Não consegui ler o relatório agora. Tente “Atualizar” em instantes.'; }
+    rsCarregando = false;
+    if(b){ b.disabled = false; b.textContent = 'Atualizar'; }
+    rsPintar();
+  }
+  function rsAbrir(){ if(!RS) rsCarregar(); else rsPintar(); }
+
+  function rsPintar(){
+    const bad = el('badRedes');
+    if(!RS){
+      ['rsAlertas','rsCanal','rsFreio'].forEach(i=>{ if(el(i)) el(i).innerHTML=''; });
+      el('rsAgenda').innerHTML = '<tr><td colspan="4" class="vazio">Sem relatório.</td></tr>';
+      el('rsGrade').innerHTML = '<div class="vazio">Sem relatório.</div>';
+      el('rsTotais').innerHTML = '<tr><td colspan="6" class="vazio">Sem relatório.</td></tr>';
+      return;
+    }
+    const idadeH = (Date.now() - new Date(RS.gerado).getTime()) / 3600000;
+    el('rsGerado').innerHTML = 'Relatório de <b>' + esc(rsDataHora(RS.gerado)) + '</b> · robô ' + esc(RS.versao||'') +
+      (idadeH > 16 ? ' · <span style="color:var(--mv-erro)">atrasado: o relatório deveria sair a cada ~12 h</span>' : '');
+
+    /* contas */
+    const ig = (RS.contas||{}).instagram, fb = (RS.contas||{}).facebook;
+    el('rsKIg').textContent = ig && !ig.erro ? rsN(ig.seguidores) : (ig && ig.erro ? 'erro' : 'desligado');
+    el('rsKIgSub').textContent = ig && !ig.erro ? ('@' + (ig.usuario||'') + ' · ' + rsN(ig.posts) + ' posts' + (ig.cota_total ? ' · cota ' + ig.cota_usada + '/' + ig.cota_total : '')) : (ig && ig.erro ? String(ig.erro).slice(0,60) : 'seguidores');
+    el('rsKFb').textContent = fb && !fb.erro ? rsN(fb.seguidores != null ? fb.seguidores : fb.curtidas_pagina) : (fb && fb.erro ? 'erro' : '—');
+    el('rsKFbSub').textContent = fb && !fb.erro ? ('seguidores · ' + rsN(fb.curtidas_pagina) + ' curtidas na Página') : (fb && fb.erro ? String(fb.erro).slice(0,60) : '');
+
+    const t7 = (RS.totais||{})['7d'] || {};
+    const soma = (rede, campo) => Object.values(t7[rede]||{}).reduce((s,x)=>s+Number(x[campo]||0),0);
+    const posts7 = RS.posts.filter(p => Date.now() - new Date(p.quando).getTime() <= 7*86400000);
+    el('rsKPosts').textContent = posts7.length;
+    el('rsKPostsSub').textContent = posts7.filter(p=>p.rede==='instagram').length + ' no Instagram';
+    el('rsKCurt').textContent = rsN(soma('ig','curtidas') + soma('fb','curtidas'));
+    el('rsKCurtSub').textContent = 'IG ' + rsN(soma('ig','curtidas')) + ' · FB ' + rsN(soma('fb','curtidas'));
+    el('rsKCom').textContent = rsN(soma('ig','comentarios') + soma('fb','comentarios'));
+    el('rsKComSub').textContent = 'IG ' + rsN(soma('ig','comentarios')) + ' · FB ' + rsN(soma('fb','comentarios'));
+
+    /* alertas */
+    const al = RS.alertas || [];
+    const graves = al.filter(a=>a.nivel==='grave').length + (idadeH > 16 ? 1 : 0);
+    el('rsAlertas').innerHTML = al.length
+      ? al.map(a=>'<div class="'+(a.nivel==='grave'?'grave':'atencao')+'">'+esc(a.texto)+'</div>').join('')
+      : '<div class="ok">Tudo certo: nenhum post faltando, nenhuma falha do Instagram.</div>';
+    if(bad){ bad.textContent = graves; bad.classList.toggle('hide', !graves); }
+
+    /* canal */
+    const rampa = RS.rampa || {};
+    el('rsCanal').innerHTML = ['feed','story','reel'].map(f=>{
+      const noIg = (RS.canal_hoje||{})[f] === 'instagram+facebook';
+      let sub = noIg ? 'com cópia na Página' : 'Instagram ainda não';
+      if(!noIg && rampa[f]){ const d = rampa[f].split('-'); sub = 'entra no Instagram em ' + d[2] + '/' + d[1]; }
+      if(!noIg && RS.so_facebook) sub = 'SO_FACEBOOK ligado';
+      if(!noIg && RS.freio && RS.freio.ativo_ate) sub = 'freio ligado';
+      return '<div class="'+(noIg?'ig':'')+'"><small>'+RS_NOME[f]+'</small><b>'+(noIg?'Instagram + Facebook':'Só Facebook')+'</b><small>'+esc(sub)+'</small></div>';
+    }).join('');
+    const fr = RS.freio || {};
+    el('rsFreio').innerHTML = fr.ativo_ate
+      ? '<span style="color:var(--mv-erro)">Freio ligado até ' + esc(rsDataHora(fr.ativo_ate)) + '.</span> Para soltar antes: apagar <code>estado/instagram_freio.json</code> no GitHub.'
+      : 'Freio solto' + (fr.falhas_seguidas ? ' · ' + fr.falhas_seguidas + ' falha seguida do Instagram (o freio liga na 2ª)' : '') +
+        (fr.ultimo_acionamento ? ' · último acionamento ' + esc(rsDataHora(fr.ultimo_acionamento)) : '') + '.';
+
+    /* agenda */
+    el('rsAgenda').innerHTML = (RS.agenda||[]).slice().reverse().map(d=>{
+      const [a,m,dd] = d.dia.split('-'); const dt = new Date(d.dia+'T12:00:00');
+      const sem = ['dom','seg','ter','qua','qui','sex','sáb'][dt.getDay()];
+      const cel = f => { const x = d[f]; if(!x.esperado && !x.feito) return '<td class="nada">—</td>';
+        const cls = x.feito >= x.esperado ? 'ok' : (d.hoje ? 'nada' : 'falta'); return '<td class="'+cls+'">'+x.feito+' / '+x.esperado+'</td>'; };
+      return '<tr><td>'+sem+' '+dd+'/'+m+(d.hoje?' <small class="rsMeta">(hoje)</small>':'')+'</td>'+cel('feed')+cel('story')+cel('reel')+'</tr>';
+    }).join('');
+
+    rsPintarPosts();
+
+    /* totais 30d */
+    const t30 = (RS.totais||{})['30d'] || {}, linhas = [];
+    [['ig','Instagram'],['fb','Facebook']].forEach(([k,nome])=>{
+      ['feed','story','reel'].forEach(f=>{ const x = (t30[k]||{})[f]; if(!x) return;
+        linhas.push('<tr><td>'+nome+'</td><td>'+RS_NOME[f]+'</td><td>'+x.posts+'</td><td>'+rsN(x.curtidas)+'</td><td>'+rsN(x.comentarios)+'</td><td>'+(x.posts?(x.curtidas/x.posts).toFixed(1).replace('.',','):'—')+'</td></tr>'); });
+    });
+    el('rsTotais').innerHTML = linhas.join('') || '<tr><td colspan="6" class="vazio">Nada publicado em 30 dias.</td></tr>';
+  }
+
+  function rsLinhaRede(nome, m){
+    if(!m) return '';
+    const link = rsUrl(m.link);
+    const num = m.erro ? '<span class="rsMeta">sem número</span>'
+      : '<span class="rsNum">' + rsN(m.curtidas) + ' curtidas · ' + rsN(m.comentarios) + ' coment.</span>';
+    return '<div class="rsRede"><b>'+nome+'</b>'+num+(link?'<a href="'+esc(link)+'" target="_blank" rel="noopener">abrir</a>':'')+'</div>';
+  }
+
+  function rsPintarPosts(){
+    const corte = Date.now() - RS_DIAS*86400000;
+    const lista = (RS.posts||[]).filter(p => new Date(p.quando).getTime() >= corte && (!RS_FMT || p.formato === RS_FMT));
+    el('rsChip').textContent = lista.length;
+    if(!lista.length){ el('rsGrade').innerHTML = '<div class="vazio">Nenhum post nesse filtro.</div>'; return; }
+    el('rsGrade').innerHTML = lista.map(p=>{
+      const mini = rsImgOk(p.miniatura) ? p.miniatura : '';
+      const vert = p.formato !== 'feed';
+      const img = mini
+        ? '<img src="'+esc(mini)+'" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{className:\'sem\',textContent:\'Miniatura indisponível\'}))">'
+        : '<span class="sem">'+(p.origem==='criador'?'Peça de criador':'Sem miniatura')+'</span>';
+      const ondeTxt = p.rede === 'instagram' ? ('Instagram' + (p.fb && p.fb.id ? ' + Facebook' : '')) : 'Só Facebook';
+      return '<div class="rsPost'+(p.planoB?' pb':'')+'">' +
+        '<div class="rsMini'+(vert?' v':'')+(mini?'':' sem')+'">'+img+'<span class="rsFmt '+esc(p.formato)+'">'+(RS_NOME[p.formato]||esc(p.formato))+'</span></div>' +
+        '<div class="rsCorpo"><div class="rsTit">'+esc(p.titulo||p.peca||'')+'</div>' +
+        '<div class="rsMeta">'+esc(rsDataHora(p.quando))+' · '+esc(ondeTxt)+(p.ramo?' · '+esc(p.ramo):'')+(p.origem==='criador'?' · criador':'')+'</div>' +
+        (p.planoB ? '<div><span class="rsTag">Instagram falhou</span></div>' : '') +
+        rsLinhaRede('Instagram', p.ig) + rsLinhaRede('Facebook', p.fb) +
+        '</div></div>';
+    }).join('');
+  }
+
+  document.addEventListener('click', ev=>{
+    const t = ev.target; if(!t || !t.closest) return;
+    if(t.id === 'rsAtualizar'){ rsCarregar(); return; }
+    const f = t.closest('[data-rsfmt]');
+    if(f){ RS_FMT = f.getAttribute('data-rsfmt'); document.querySelectorAll('[data-rsfmt]').forEach(b=>b.classList.toggle('on', b===f)); if(RS) rsPintarPosts(); return; }
+    const d = t.closest('[data-rsdias]');
+    if(d){ RS_DIAS = Number(d.getAttribute('data-rsdias')); document.querySelectorAll('[data-rsdias]').forEach(b=>b.classList.toggle('on', b===d)); if(RS) rsPintarPosts(); return; }
   });
 </script>
 
