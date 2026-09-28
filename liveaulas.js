@@ -1,4 +1,4 @@
-/*! MOVIKI liveaulas.js | versao 2026-09-27-quadro | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-09-28-motorunico | repo: moviki-app
  *
  * O MODULO DE AULAS DO MODO LIVE — catalogo e motor, num arquivo so.
  *
@@ -36,6 +36,17 @@
  */
 (function () {
   'use strict';
+
+  /* 28/09/2026: o player e a medicao vem do motor unico /mvaulaplayer.js.
+     O painel ja o carrega antes deste arquivo; o estudio (live.html) nao,
+     entao ele e buscado aqui, uma vez so. */
+  try {
+    if (!window.MvAulaPlayer && !document.getElementById('mvAulaPlayerJs')) {
+      var _mp = document.createElement('script');
+      _mp.id = 'mvAulaPlayerJs'; _mp.src = '/mvaulaplayer.js';
+      (document.head || document.documentElement).appendChild(_mp);
+    }
+  } catch (e) {}
 
   /* =====================================================================
      1. O CATALOGO
@@ -201,7 +212,7 @@
      ===================================================================== */
   var PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
              '<path d="M8 5.4v13.2L19 12z"/></svg>';
-  var ytPronto = false, ytFila = [], seq = 0;
+  var seq = 0;
 
   /* =====================================================================
      17/09/2026 — OS TRES CONSERTOS QUE O PAINEL JA TINHA E ESTE ARQUIVO NAO
@@ -227,45 +238,17 @@
      o que ja foi assistido. E o fim do video nao e prova de nada: o estado
      ENDED so fecha a aula se os 90% percorridos ja estiverem la.
      ===================================================================== */
-  var PERCORRIDO = {};                 /* chave da aula -> { s:{}, n:segundos } */
+  /* 28/09/2026: o percurso, o carregador da API e o player moram no motor
+     unico (/mvaulaplayer.js). Aqui fica so a CHAVE do percurso, que e deste
+     modulo: 'mvTrilhaLv:' + uid + ':' + aula — igual a de antes, entao
+     ninguem perde o que ja tinha assistido. */
   var dono = '';                       /* uid, para o percurso nao vazar entre contas */
 
   function chaveTrilha(k) { return 'mvTrilhaLv:' + (dono || 'anon') + ':' + k; }
   function trilha(k) {
-    if (!PERCORRIDO[k]) {
-      var t = { s: {}, n: 0 };
-      try {
-        var cru = window.localStorage && localStorage.getItem(chaveTrilha(k));
-        var l = cru ? JSON.parse(cru) : null;
-        if (l && l.length) {
-          for (var i = 0; i < l.length; i++) {
-            var x = Number(l[i]);
-            if (x >= 0 && !t.s[x]) { t.s[x] = 1; t.n++; }
-          }
-        }
-      } catch (e) {}
-      PERCORRIDO[k] = t;
-    }
-    return PERCORRIDO[k];
+    try { if (window.MvAulaPlayer) return window.MvAulaPlayer.trilha(chaveTrilha(k)); } catch (e) {}
+    return { s: {}, n: 0 };
   }
-  function guardarTrilha(k) {
-    try {
-      var t = PERCORRIDO[k]; if (!t || !window.localStorage) return;
-      var l = [];
-      for (var x in t.s) { if (t.s[x]) l.push(Number(x)); }
-      localStorage.setItem(chaveTrilha(k), JSON.stringify(l));
-    } catch (e) {}
-  }
-  function limparTrilha(k) {
-    try { if (window.localStorage) localStorage.removeItem(chaveTrilha(k)); } catch (e) {}
-  }
-  /* fechar a aba ou recarregar e o jeito mais comum de sair no meio da aula.
-     `pagehide` pega os dois, e ainda funciona no iPhone. */
-  try {
-    window.addEventListener('pagehide', function () {
-      try { for (var k in PERCORRIDO) { if (PERCORRIDO[k] && PERCORRIDO[k].n) guardarTrilha(k); } } catch (e) {}
-    });
-  } catch (e) {}
   function segsDe(d) {
     var m = /^(\d+):(\d{1,2})$/.exec(String(d || ''));
     return m ? (Number(m[1]) * 60 + Number(m[2])) : 0;
@@ -279,20 +262,6 @@
     } catch (e) { return 0; }
   }
 
-  function carregarYT(cb) {
-    if (ytPronto) return cb();
-    ytFila.push(cb);
-    if (document.getElementById('mvYTApi')) return;
-    var antes = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = function () {
-      ytPronto = true;
-      try { if (typeof antes === 'function') antes(); } catch (e) {}
-      ytFila.splice(0).forEach(function (f) { try { f(); } catch (e) {} });
-    };
-    var sc = document.createElement('script');
-    sc.id = 'mvYTApi'; sc.src = 'https://www.youtube.com/iframe_api';
-    document.head.appendChild(sc);
-  }
   function capa(id, q) {
     return 'https://i.ytimg.com/vi/' + encodeURIComponent(id) + '/' + q + '.jpg';
   }
@@ -323,95 +292,9 @@
   }
   function matar(fr) {
     if (!fr) return;
-    try { clearInterval(fr.__t); } catch (e) {}
-    fr.__t = null;
+    try { if (window.MvAulaPlayer) { window.MvAulaPlayer.matar(fr); return; } } catch (e) {}
     try { if (fr.__p && typeof fr.__p.destroy === 'function') fr.__p.destroy(); } catch (e) {}
     fr.__p = null;
-  }
-  function vigiar(f, v) {
-    carregarYT(function () {
-      var n = 0;
-      (function esperar() {
-        /* iframe() devolve o elemento ANTES de quem chamou anexa-lo. Montar o
-           player num id que ainda nao esta no documento faz o player nunca
-           nascer — e a aula nunca ficava verde da segunda em diante. */
-        if (!document.getElementById(f.id)) {
-          if (++n > 60) return;                  // 3 s e desiste, sem quebrar nada
-          setTimeout(esperar, 50); return;
-        }
-        montar();
-      })();
-      function montar() {
-        try {
-          var t = trilha(v.k), ultimo = -1, ultimoMs = 0, dur = 0;
-          f.__gravou = 0;
-          /* guarda o rascunho ao parar: trocar de aula, fechar a biblioteca ou
-             sair do estudio nao pode custar o que ja foi assistido */
-          function pararRelogio() {
-            try { clearInterval(f.__t); } catch (e) {}
-            f.__t = null;
-            try { guardarTrilha(v.k); } catch (e) {}
-          }
-          /* fecha a aula SO com 90% PERCORRIDOS — uma gravacao por iframe */
-          function fechar() {
-            if (f.__contado) return true;
-            if (!(dur > 0 && t.n >= dur * 0.9)) return false;
-            f.__contado = 1;
-            pararRelogio();
-            limparTrilha(v.k);
-            marcar(v.k);
-            /* o relogio para aqui: sem este empurrao o medidor congelaria em
-               "Assistido 100%" em vez de dizer que a aula fechou */
-            andamento(v.k, dur);
-            return true;
-          }
-          function relogio(p) {
-            pararRelogio();
-            f.__t = setInterval(function () {
-              try {
-                if (!document.body.contains(f)) { pararRelogio(); return; }
-                if (!dur) { try { dur = p.getDuration() || 0; } catch (e) { dur = 0; } }
-                var tt = p.getCurrentTime();
-                if (!(tt >= 0)) return;
-                var agora = Date.now();
-                var real = ultimoMs ? ((agora - ultimoMs) / 1000) : 0;
-                ultimoMs = agora;
-                var sg = Math.floor(tt);
-                /* so conta o trecho se o avanco couber no tempo que passou de
-                   verdade — a folga de 1,6x deixa o 2x passar e barra o arrasto */
-                if (ultimo >= 0 && (tt - ultimo) <= real * 1.6 + 0.6) {
-                  for (var i = Math.floor(ultimo); i <= sg; i++) {
-                    if (i >= 0 && !t.s[i]) { t.s[i] = 1; t.n++; }
-                  }
-                } else if (sg >= 0 && !t.s[sg]) { t.s[sg] = 1; t.n++; }
-                ultimo = tt;
-                andamento(v.k, dur);
-                /* grava de 2 em 2 segundos: gravar raro demais perde o comeco
-                   da aula de quem sai rapido, e e esse pedaco que faz a pessoa
-                   achar que nao contou nada */
-                if ((++f.__gravou % 4) === 0) guardarTrilha(v.k);
-                fechar();
-              } catch (e) {}
-            }, 500);
-          }
-          f.__p = new YT.Player(f.id, { events: {
-            onReady: function (e) {
-              try { dur = e.target.getDuration() || 0; } catch (_) {}
-              relogio(f.__p);
-            },
-            onStateChange: function (e) {
-              if (e.data === YT.PlayerState.PLAYING) { ultimoMs = 0; relogio(f.__p); return; }
-              if (e.data === YT.PlayerState.ENDED) {
-                pararRelogio();
-                /* o fim do video nao e prova de nada: quem arrasta a agulha ate
-                   o fim tambem cai em ENDED */
-                if (!fechar()) adiantou(v.k);
-              }
-            }
-          } });
-        } catch (e) {}
-      }
-    });
   }
 
   /* ---------- o medidor visivel ----------
@@ -462,14 +345,20 @@
     try { if (medK === k && med) medidor(pctDe(k), 2); } catch (e) {}
   }
   function iframe(v) {
+    try {
+      if (window.MvAulaPlayer) return window.MvAulaPlayer.criar(v, {
+        prefixo: 'mvLV', chave: chaveTrilha,
+        marcar: marcar, andamento: andamento, adiantou: adiantou
+      });
+    } catch (e) {}
+    /* sem o motor (ainda carregando): o video toca, so nao mede */
     var f = document.createElement('iframe');
-    f.id = 'mvLV' + (++seq);
+    f.id = 'mvLVs' + (++seq);
     f.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(v.id) +
-            '?rel=0&modestbranding=1&playsinline=1&autoplay=1&enablejsapi=1';
+            '?rel=0&modestbranding=1&playsinline=1&autoplay=1';
     f.title = v.t;
     f.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen';
     f.setAttribute('allowfullscreen', '');
-    vigiar(f, v);
     return f;
   }
   /* devolve a capa no lugar do player: sem isso o iframe continua tocando

@@ -52,6 +52,9 @@ window.mvAtrib = function(){
 <!-- o modulo de aulas da LIVE. Separado do MOVIKI_TUTORIAIS de proposito:
      ensina a transmitir, nao a preencher o cadastro, e onze das catorze
      aulas vivem em abas do ESTUDIO. O mesmo arquivo serve os dois. -->
+<!-- 28/09/2026: motor UNICO das videoaulas (player, 90%, percurso, vigia do
+     YouTube). Vem ANTES do liveaulas.js, que tambem usa. -->
+<script src="/mvaulaplayer.js"></script>
 <script src="/liveaulas.js"></script>
 <style>
   :root{--ciano:#00D4FF;--azul:#0066FF;--escuro:#0D1B2A;--claro:#F2F5F9;--card:#13263d;--card-borda:#223a5c;--campo:#0d1c30;}
@@ -8825,223 +8828,45 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     if(v.d){ var d=document.createElement('span'); d.className='mvTutDurC'; d.textContent=v.d; b.appendChild(d); }
     return b;
   }
-  /* ---------- quanto foi assistido DE VERDADE ----------
-     Sem a API oficial do YouTube, "assistiu" seria so "clicou" - e clicar
-     em oito videos leva vinte segundos. Com ela da pra medir o tempo de
-     reproducao e so contar a aula em 90%. Custa uma linha no script-src. */
-  var ytPronto=false, ytFila=[];
-  function carregarYT(cb){
-    if(ytPronto) return cb();
-    ytFila.push(cb);
-    if(document.getElementById('mvYTApi')) return;
-    var pronto=window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady=function(){
-      ytPronto=true;
-      try{ if(typeof pronto==='function') pronto(); }catch(e){}
-      ytFila.splice(0).forEach(function(f){ try{ f(); }catch(e){} });
-    };
-    var sc=document.createElement('script');
-    sc.id='mvYTApi'; sc.src='https://www.youtube.com/iframe_api';
-    document.head.appendChild(sc);
-  }
-  var seq=0;
-  /* ---------- POR QUE ESTA ESPERA EXISTE (conserto de 03/09/2026) ----------
-     `iframe(v)` chama `vigiar()` e SO DEPOIS quem chamou anexa o elemento na
-     pagina. Enquanto a API do YouTube ainda estava carregando, o callback do
-     `carregarYT` caia tarde e o elemento ja estava la - por acidente.
-     Da SEGUNDA aula em diante a API ja esta pronta, o callback roda na hora,
-     e `new YT.Player(f.id)` procura um id que ainda nao existe no documento.
-     O player nunca nascia, `onStateChange` nunca disparava, e a aula nunca
-     ficava verde. Sintoma exato relatado: so a primeira contava.
-     Conserto: esperar o elemento aparecer antes de montar o player.
-     Falha calada e com teto - tutorial nao derruba painel.
-
-     ---------- DOIS CONSERTOS DE 10/09/2026 (relatados no uso real) ----------
-     (1) "O video para uns segundos antes de acabar." Nao era o YouTube: aos
-         90% a aula era marcada e, 1,1s depois, a proxima entrava no palco -
-         e por o proximo no palco APAGA o iframe da que ainda estava tocando.
-         Numa aula de 1:46 isso corta 10 segundos. Agora a troca so acontece
-         no estado ENDED, ou seja, quando o video acaba de verdade.
-     (2) "Da segunda/terceira aula em diante o visto verde nao aparece mais."
-         O YT.Player antigo nunca era destruido. Ao apagar o iframe, a API do
-         YouTube continua tentando falar com uma janela que nao existe mais,
-         e para de entregar eventos aos players seguintes - o onStateChange
-         nunca mais dispara e a aula nunca chega aos 90%. Agora todo player e
-         destruido (funcao matar()) e a medicao roda em relogio proprio, que
-         nao depende de onStateChange ter disparado. */
   /* =====================================================================
-     15/09/2026 - A TRAVA DO CURSOR, E O FIM DO VISTO QUE SUMIA
-
-     Dois defeitos, relatados juntos pelo Paulo na conta de teste:
-
-     (a) ARRASTAR A AGULHA CONTAVA COMO ASSISTIR. A medicao olhava a POSICAO
-         (tempo atual / duracao >= 0,9). Puxar a barrinha ate perto do fim
-         marcava a aula em dois segundos. Isso ja tinha sido consertado no
-         painel do parceiro em 10/09 e NUNCA foi trazido para ca.
-
-     (b) A AULA ASSISTIDA NAO FICAVA VERDE. A marcacao dependia de o iframe
-         continuar VIVO ate o proximo tique do relogio. Quem chegava nos 90% e
-         trocava de aula antes disso perdia a aula inteira - e, como a medicao
-         recomecava do zero a cada player, reassistir pela metade nunca fechava.
-         Era esse o "assisti duas vezes e mesmo assim nao ficou verde".
-
-     O conserto e um so: vale o CAMINHO PERCORRIDO, nao a posicao da agulha.
-     A cada 500 ms anota-se o segundo que esta tocando, e o salto so entra se
-     couber no tempo real decorrido - entao arrastar nao soma nada. O que foi
-     percorrido fica guardado POR AULA (PERCORRIDO), e nao por iframe: fechar,
-     trocar e voltar continua de onde parou. 2x continua valendo, de proposito.
-
-     ⚠️ O FIM DO VIDEO NAO E PROVA DE NADA. Quem arrasta a agulha ate o fim
-     tambem cai no estado ENDED. Por isso o ENDED nao marca mais sozinho: ele
-     so fecha a aula se os 90% percorridos ja estiverem la.
+     28/09/2026 - O MOTOR DAS AULAS MORA EM /mvaulaplayer.js
+     O player, a medicao dos 90%, o percurso guardado e o vigia de conexao
+     com o YouTube deixaram de ser copiados aqui. Este painel, o outro painel
+     e o liveaulas.js usam o MESMO motor. A historia dos consertos (03/09,
+     10/09, 15/09, 16/09, 17/09, 28/09) esta no topo daquele arquivo.
+     >>> NAO recriar aqui carregarYT, vigiar, YT.Player nem iframe proprio.
+     >>> Aula nova = linha no catalogo. Trilha nova = iframe(v) daqui.
      ===================================================================== */
-  var PERCORRIDO = {};                 /* chave da aula -> { s:{}, n:segundos } */
-
-  /* ---------- 16/09/2026: O PERCURSO PASSA A SOBREVIVER AO RECARREGAMENTO ----
-     Ate aqui o percurso vivia SO em memoria. Quem assistia metade da aula,
-     fechava o painel e voltava depois recomecava do zero — e a aula nunca
-     ficava verde, por mais vezes que a pessoa assistisse. Numa aula de dois
-     minutos e meio, e a diferenca entre concluir e desistir. Foi exatamente
-     este o relato de 16/09: "assisti e nao fica verde".
-     Agora o percurso fica no proprio navegador, por conta e por aula. NAO vai
-     para o banco: medicao e local; o que o banco guarda continua sendo a aula
-     CONCLUIDA. Falha calado — aba anonima, armazenamento cheio ou bloqueado
-     volta ao comportamento antigo, sem quebrar nada. */
   function donoTrilha(){
     var P = window.__mvParceiroTut || window.__mvLojistaTut;
     return (P && P.uid) || 'anon';
   }
   function chaveTrilha(k){ return 'mvTrilha:' + donoTrilha() + ':' + k; }
   function trilha(k){
-    if(!PERCORRIDO[k]){
-      var t = { s:{}, n:0 };
-      try{
-        var cru = window.localStorage && localStorage.getItem(chaveTrilha(k));
-        var l = cru ? JSON.parse(cru) : null;
-        if(l && l.length){
-          for(var i=0;i<l.length;i++){
-            var x = Number(l[i]);
-            if(x >= 0 && !t.s[x]){ t.s[x] = 1; t.n++; }
-          }
-        }
-      }catch(_){}
-      PERCORRIDO[k] = t;
-    }
-    return PERCORRIDO[k];
+    try{ if(window.MvAulaPlayer) return window.MvAulaPlayer.trilha(chaveTrilha(k)); }catch(_){}
+    return { s:{}, n:0 };
   }
-  function guardarTrilha(k){
-    try{
-      var t = PERCORRIDO[k]; if(!t || !window.localStorage) return;
-      var l = [];
-      for(var s in t.s){ if(t.s[s]) l.push(Number(s)); }
-      localStorage.setItem(chaveTrilha(k), JSON.stringify(l));
-    }catch(_){}
-  }
-  /* Fechar a aba ou recarregar tambem tem que guardar: e o caminho mais comum
-     de sair no meio de uma aula. `pagehide` pega os dois, e ainda funciona no
-     iPhone, onde `beforeunload` nao dispara. */
-  try{
-    window.addEventListener('pagehide', function(){
-      try{ for(var k in PERCORRIDO){ if(PERCORRIDO[k] && PERCORRIDO[k].n) guardarTrilha(k); } }catch(_){}
-    });
-  }catch(_){}
-  /* aula fechada nao precisa mais de rascunho ocupando lugar */
-  function limparTrilha(k){ try{ if(window.localStorage) localStorage.removeItem(chaveTrilha(k)); }catch(_){} }
-
-  function vigiar(f,v){
-    carregarYT(function(){
-      var tentativas = 0;
-      (function esperar(){
-        if(!document.getElementById(f.id)){
-          if(++tentativas > 60) return;          /* 3 s e desiste, sem quebrar nada */
-          setTimeout(esperar, 50);
-          return;
-        }
-        montar();
-      })();
-      function montar(){
-        try{
-          var t = trilha(v.k), ultimo = -1, ultimoMs = 0, dur = 0;
-          f.__gravou = 0;
-          /* guarda o rascunho ao parar: sair da tela, trocar de aula ou fechar o
-             painel nao pode mais custar o que ja foi assistido */
-          function pararRelogio(){ try{ clearInterval(f.__t); }catch(_){} f.__t=null; try{ guardarTrilha(v.k); }catch(_){} }
-          /* fecha a aula SO com 90% percorridos - uma gravacao por iframe */
-          function fechar(){
-            if(f.__contado) return true;
-            if(!(dur > 0 && t.n >= dur * 0.9)) return false;
-            f.__contado = 1;
-            pararRelogio();
-            limparTrilha(v.k);
-            marcar(v.k);
-            return true;
-          }
-          function relogio(p){
-            pararRelogio();
-            f.__t = setInterval(function(){
-              try{
-                if(!document.body.contains(f)){ pararRelogio(); return; }   /* saiu da tela */
-                if(!dur){ try{ dur = p.getDuration() || 0; }catch(_){ dur = 0; } }
-                var tt = p.getCurrentTime();
-                if(!(tt >= 0)) return;
-                var agora = Date.now();
-                var real = ultimoMs ? ((agora - ultimoMs) / 1000) : 0;
-                ultimoMs = agora;
-                var s = Math.floor(tt);
-                /* so conta o trecho se o avanco couber no tempo que passou de
-                   verdade - a folga de 1,6x deixa o 2x passar e barra o arrasto */
-                if(ultimo >= 0 && (tt - ultimo) <= real * 1.6 + 0.6){
-                  for(var i = Math.floor(ultimo); i <= s; i++){
-                    if(i >= 0 && !t.s[i]){ t.s[i] = 1; t.n++; }
-                  }
-                } else if(s >= 0 && !t.s[s]){ t.s[s] = 1; t.n++; }
-                ultimo = tt;
-                andamento(v.k, dur);
-                /* grava de 2 em 2 segundos, nao a cada tique. Nao e so
-                   economia: gravar raro demais perde o comeco da aula de quem
-                   sai rapido, e e justamente esse pedaco que faz a pessoa
-                   achar que "nao contou nada". */
-                if((++f.__gravou % 4) === 0) guardarTrilha(v.k);
-                fechar();
-              }catch(_){}
-            }, 500);
-          }
-          f.__p = new YT.Player(f.id, { events:{
-            onReady: function(e){
-              try{ dur = e.target.getDuration() || 0; }catch(_){}
-              relogio(f.__p);
-            },
-            onStateChange: function(e){
-              if(e.data === YT.PlayerState.PLAYING){ ultimoMs = 0; relogio(f.__p); return; }
-              if(e.data === YT.PlayerState.ENDED){
-                pararRelogio();
-                if(!fechar()) adiantou(v.k);     /* chegou no fim sem assistir */
-                try{ acabou(v.k); }catch(_){}
-              }
-            }
-          } });
-        }catch(e){}
-      }
-    });
-  }
-  /* Encerra de verdade um iframe de aula: para o relogio E destroi o player.
-     Sem o destroy() a API do YouTube fica presa a uma janela que ja saiu da
-     pagina - foi o que travava o visto verde da segunda aula em diante. */
   function matar(fr){
     if(!fr) return;
-    try{ clearInterval(fr.__t); }catch(e){}
-    fr.__t=null;
-    try{ if(fr.__p && typeof fr.__p.destroy==='function') fr.__p.destroy(); }catch(e){}
+    try{ if(window.MvAulaPlayer){ window.MvAulaPlayer.matar(fr); return; } }catch(_){}
+    try{ if(fr.__p && typeof fr.__p.destroy==='function') fr.__p.destroy(); }catch(_){}
     fr.__p=null;
   }
+  var seq=0;
   function iframe(v){
+    try{
+      if(window.MvAulaPlayer) return window.MvAulaPlayer.criar(v, {
+        prefixo:'mvYT', chave:chaveTrilha,
+        marcar:marcar, andamento:andamento, adiantou:adiantou, acabou:acabou
+      });
+    }catch(_){}
+    /* sem o motor (arquivo ainda subindo): o video toca, so nao mede */
     var f=document.createElement('iframe');
-    f.id='mvYT'+(++seq);
+    f.id='mvYTs'+(++seq);
     f.src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(v.id)+
-          '?rel=0&modestbranding=1&playsinline=1&autoplay=1&enablejsapi=1';
+          '?rel=0&modestbranding=1&playsinline=1&autoplay=1';
     f.title=v.t; f.allow='accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen';
     f.setAttribute('allowfullscreen','');
-    vigiar(f,v);
     return f;
   }
 
