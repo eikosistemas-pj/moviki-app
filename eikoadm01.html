@@ -1396,6 +1396,16 @@ table.mvTab td b{font-weight:700}
             .rsNum{font-variant-numeric:tabular-nums}
             .rsFil .btnMini.on{border-color:var(--mv-ciano);color:var(--mv-ciano);background:rgba(0,212,255,.10)}
             .rsMini.sem,.rsMini.v.sem{aspect-ratio:auto;height:92px}
+            .rsTag.col{background:rgba(0,212,255,.12);color:var(--mv-ciano)}
+            .rsCres{display:grid;grid-template-columns:1fr;gap:12px}
+            @media(min-width:900px){.rsCres{grid-template-columns:2fr 1fr}}
+            .rsGraf{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:10px;min-height:190px}
+            .rsGraf svg{width:100%;height:190px;display:block}
+            .rsMetas{display:flex;flex-direction:column;gap:10px}
+            .rsMetas>div{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px;font-size:12.5px;line-height:1.5}
+            .rsMetas>div>b{font-size:18px}
+            .rsBarra{height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:6px}
+            .rsBarra i{display:block;height:100%;background:var(--mv-ciano)}
             .rsTag{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(255,107,107,.15);color:var(--mv-erro)}
           </style>
           <div class="cd">
@@ -1409,6 +1419,11 @@ table.mvTab td b{font-weight:700}
               <div><small>Comentários (7 dias)</small><b id="rsKCom">—</b><em id="rsKComSub"></em></div>
             </div>
             <div class="rsAl" id="rsAlertas"></div>
+          </div>
+
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo"><div><div class="cdTit">Crescimento do Instagram</div><div class="cdSub">Seguidores do @moviki.oficial, um ponto por dia (a leitura começou em 28/09/2026). A linha tracejada é o ritmo que leva à próxima meta.</div></div></div>
+            <div class="rsCres"><div class="rsGraf" id="rsGraf"><div class="vazio">Carregando…</div></div><div class="rsMetas" id="rsMetas"></div></div>
           </div>
 
           <div class="cd" style="margin-top:14px">
@@ -1711,7 +1726,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-28-redes';
+  window.MOVIKI_VERSAO = '2026-09-28-redes2';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -5776,6 +5791,8 @@ table.mvTab td b{font-weight:700}
       : '<div class="ok">Tudo certo: nenhum post faltando, nenhuma falha do Instagram.</div>';
     if(bad){ bad.textContent = graves; bad.classList.toggle('hide', !graves); }
 
+    rsPintarCrescimento();
+
     /* canal */
     const rampa = RS.rampa || {};
     el('rsCanal').innerHTML = ['feed','story','reel'].map(f=>{
@@ -5812,6 +5829,54 @@ table.mvTab td b{font-weight:700}
     el('rsTotais').innerHTML = linhas.join('') || '<tr><td colspan="6" class="vazio">Nada publicado em 30 dias.</td></tr>';
   }
 
+  function rsPintarCrescimento(){
+    const g = el('rsGraf'), mt = el('rsMetas'); if(!g || !mt) return;
+    const serie = (RS.seguidores_hist || []).filter(x => typeof x.ig === 'number');
+    const res = RS.seguidores || {};
+    const fmtD = d => { const p = String(d).split('-'); return p[2] + '/' + p[1]; };
+    if(!serie.length){
+      g.innerHTML = '<div class="vazio">O histórico começa na próxima leitura do relatório (~08h e ~22h). Um ponto por dia.</div>';
+      mt.innerHTML = ''; return;
+    }
+    const metas = res.metas || [];
+    const meta1 = metas.find(m => m.dias > 0) || null;
+    const t0 = new Date(serie[0].dia + 'T12:00:00').getTime();
+    const tFim = meta1 ? new Date(meta1.ate + 'T12:00:00').getTime() : new Date(serie[serie.length-1].dia + 'T12:00:00').getTime() + 86400000;
+    const vMin = Math.min.apply(null, serie.map(x=>x.ig)) * 0.97;
+    const vMax = Math.max(meta1 ? meta1.alvo : 0, Math.max.apply(null, serie.map(x=>x.ig))) * 1.03;
+    const W = Math.max(280, Math.round((g.clientWidth || 600) - 20)), H = 190, pl = 44, pr = 10, pt = 10, pb = 22;
+    const X = t => pl + (W-pl-pr) * ((t - t0) / Math.max(1, tFim - t0));
+    const Y = v => pt + (H-pt-pb) * (1 - (v - vMin) / Math.max(1, vMax - vMin));
+    const pts = serie.map(x => [X(new Date(x.dia + 'T12:00:00').getTime()), Y(x.ig)]);
+    const ult = serie[serie.length-1];
+    let svg = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Seguidores do Instagram por dia">';
+    [vMin, (vMin+vMax)/2, vMax].forEach(v=>{ const y = Y(v).toFixed(1);
+      svg += '<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y+'" y2="'+y+'" stroke="rgba(255,255,255,.08)"/>' +
+             '<text x="'+(pl-6)+'" y="'+(+y+4)+'" text-anchor="end" font-size="10" fill="#8a9bbd">'+Math.round(v).toLocaleString('pt-BR')+'</text>'; });
+    if(meta1){
+      svg += '<line x1="'+pts[pts.length-1][0].toFixed(1)+'" y1="'+pts[pts.length-1][1].toFixed(1)+'" x2="'+X(tFim).toFixed(1)+'" y2="'+Y(meta1.alvo).toFixed(1)+'" stroke="#ffb020" stroke-width="1.5" stroke-dasharray="5 5"/>' +
+             '<text x="'+(X(tFim)-4).toFixed(1)+'" y="'+(Y(meta1.alvo)-6).toFixed(1)+'" text-anchor="end" font-size="10.5" fill="#ffb020">meta '+meta1.alvo.toLocaleString('pt-BR')+' em '+fmtD(meta1.ate)+'</text>';
+    }
+    svg += '<polyline fill="none" stroke="#00D4FF" stroke-width="2.5" stroke-linejoin="round" points="'+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')+'"/>';
+    pts.forEach(p=>{ svg += '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3" fill="#00D4FF"/>'; });
+    svg += '<text x="'+pl+'" y="'+(H-6)+'" font-size="10" fill="#8a9bbd">'+fmtD(serie[0].dia)+'</text>' +
+           '<text x="'+(W-pr)+'" y="'+(H-6)+'" text-anchor="end" font-size="10" fill="#8a9bbd">'+fmtD(meta1 ? meta1.ate : ult.dia)+'</text></svg>';
+    g.innerHTML = svg;
+    const sinal = n => (n > 0 ? '+' : '') + Number(n||0).toLocaleString('pt-BR');
+    let h = '<div><small class="rsMeta">Seguidores hoje</small><br><b>'+Number(res.atual||ult.ig).toLocaleString('pt-BR')+'</b>' +
+            '<br><span class="rsMeta">7 dias: '+sinal(res.ganho_7d)+' · 30 dias: '+sinal(res.ganho_30d)+(serie.length < 8 ? ' (histórico ainda curto)' : '')+'</span></div>';
+    metas.forEach(m=>{
+      const pct = Math.min(100, Math.round(100 * Number(res.atual||0) / m.alvo));
+      const ritmo7 = Number(res.ganho_7d||0) / 7;
+      const noRitmo = m.por_dia != null && ritmo7 >= m.por_dia;
+      h += '<div><small class="rsMeta">Meta '+m.alvo.toLocaleString('pt-BR')+' até '+fmtD(m.ate)+'</small><br>' +
+           (m.falta ? 'Faltam <b>'+m.falta.toLocaleString('pt-BR')+'</b> · '+(m.dias > 0 ? 'precisa de <b style="font-size:14px">'+String(m.por_dia).replace('.',',')+'/dia</b>' : 'prazo encerrado') : '<b style="color:var(--mv-ok)">Meta batida</b>') +
+           (m.falta && serie.length >= 8 ? '<br><span class="rsMeta" style="color:'+(noRitmo?'var(--mv-ok)':'var(--mv-erro)')+'">Ritmo atual: '+ritmo7.toFixed(1).replace('.',',')+'/dia '+(noRitmo?'— no ritmo':'— abaixo do necessário')+'</span>' : '') +
+           '<div class="rsBarra"><i style="width:'+pct+'%"></i></div></div>';
+    });
+    mt.innerHTML = h;
+  }
+
   function rsLinhaRede(nome, m){
     if(!m) return '';
     const link = rsUrl(m.link);
@@ -5837,6 +5902,7 @@ table.mvTab td b{font-weight:700}
         '<div class="rsCorpo"><div class="rsTit">'+esc(p.titulo||p.peca||'')+'</div>' +
         '<div class="rsMeta">'+esc(rsDataHora(p.quando))+' · '+esc(ondeTxt)+(p.ramo?' · '+esc(p.ramo):'')+(p.origem==='criador'?' · criador':'')+'</div>' +
         (p.planoB ? '<div><span class="rsTag">Instagram falhou</span></div>' : '') +
+        (p.collab ? '<div><span class="rsTag col">Parceria com '+esc(p.collab)+'</span></div>' : '') +
         rsLinhaRede('Instagram', p.ig) + rsLinhaRede('Facebook', p.fb) +
         '</div></div>';
     }).join('');
