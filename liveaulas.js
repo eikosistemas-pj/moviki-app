@@ -1,4 +1,4 @@
-/*! MOVIKI liveaulas.js | versao 2026-09-28-motorunico | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-09-28-bibliopalco | repo: moviki-app
  *
  * O MODULO DE AULAS DO MODO LIVE — catalogo e motor, num arquivo so.
  *
@@ -11,7 +11,7 @@
  *
  * O QUE ELE FAZ
  *  - guarda o catalogo das catorze aulas, com o id do YouTube de cada uma;
- *  - pinta a biblioteca (a aba "Aulas da live");
+ *  - pinta a biblioteca (a janela "Aulas da live": palco + lista por grupo);
  *  - embute cada aula de ferramenta DENTRO da sua aba do estudio, que e onde
  *    a duvida nasce;
  *  - mede o quanto foi assistido DE VERDADE (90% do video, pela API do
@@ -64,12 +64,15 @@
      um alerta dizendo "11 aulas novas" — as onze de ferramenta, que sempre
      estiveram ali e sao referencia opcional. Aula com `em` posterior ao
      carimbo de conclusao do lojista, e so ela, vira alerta.
+     `g` e o GRUPO da aula na biblioteca (28/09/2026): comece | durante |
+     vender | antes. A biblioteca agrupa por momento de uso, nao por aba.
+     Aula nova sem `g` aparece em "Outras aulas", no fim da lista.
      ===================================================================== */
   var CAT = {
     /* as tres que o lojista precisa ver antes da primeira transmissao */
     trava: ['mod-live-abertura', 'mod-live-regras', 'mod-live-primeira'],
     modulos: [
-      { n: 'Comece por aqui', sel: '', v: [
+      { n: 'Comece por aqui', g: 'comece', sel: '', v: [
         { k: 'mod-live-abertura', t: 'Live no Moviki: o que é e como funciona',
           d: '1:20', id: '1TqgHffAyYU', em: '2026-09-15' },
         { k: 'mod-live-regras',   t: 'O que pode e o que não pode na live',
@@ -77,15 +80,15 @@
         { k: 'mod-live-primeira', t: 'Sua primeira live: título, câmera e entrar ao vivo',
           d: '1:16', id: 'sngj1eUC7kU', em: '2026-09-15' } ]},
 
-      { n: 'Produtos', sel: '.painelAba[data-aba="produtos"]', v: [
+      { n: 'Produtos', g: 'durante', sel: '.painelAba[data-aba="produtos"]', v: [
         { k: 'mod-live-sacolinha', t: 'Sacolinha e produto em destaque',
           d: '0:55', id: '3Fsofzdj0u4', plano: 'Premium', em: '2026-09-15' } ]},
 
-      { n: 'Chat', sel: '.painelAba[data-aba="chat"]', v: [
+      { n: 'Chat', g: 'durante', sel: '.painelAba[data-aba="chat"]', v: [
         { k: 'mod-live-chat', t: 'Chat da live: responder e apagar',
           d: '0:33', id: 'V6WZqQ0s-bY', plano: 'Premium', em: '2026-09-15' } ]},
 
-      { n: 'Agendar', sel: '.painelAba[data-aba="agendar"]', v: [
+      { n: 'Agendar', g: 'antes', sel: '.painelAba[data-aba="agendar"]', v: [
         { k: 'mod-live-agendar', t: 'Agendar a próxima live e divulgar o link',
           d: '0:31', id: 'cWG2cWGMrII', plano: 'Premium', em: '2026-09-15' } ]},
 
@@ -96,7 +99,7 @@
          voltar a catalogo nenhum.
          `em` continua 2026-09-15 DE PROPOSITO: regravacao nao e aula nova, e
          nao pode virar alerta de "aula nova" para quem ja concluiu. */
-      { n: 'Receber no Pix', sel: '.painelAba[data-aba="pix"]', v: [
+      { n: 'Receber no Pix', g: 'vender', sel: '.painelAba[data-aba="pix"]', v: [
         { k: 'mod-live-pix', t: 'Como você recebe o dinheiro',
           d: '1:14', id: 'xxulNw7JRhQ', plano: 'Enterprise', em: '2026-09-15' } ]},
 
@@ -106,34 +109,34 @@
          aulas dela, e a caixa no fim do Financeiro ensinava uma lista que nao
          existe mais. O id antigo 'qx4dFUC9ORs' NAO pode voltar.
          `em` continua 2026-09-15 DE PROPOSITO: regravacao nao e aula nova. */
-      { n: 'Pedidos', sel: '', rot: 'O pedido que vem da live', v: [
+      { n: 'Pedidos', g: 'vender', sel: '', rot: 'O pedido que vem da live', v: [
         { k: 'mod-live-pedidos', t: 'Do Pix à entrega: o pedido andando no quadro',
           d: '2:09', id: '77kequeuJ6U', plano: 'Premium', em: '2026-09-15' } ]},
 
-      { n: 'Oferta relâmpago', sel: '.painelAba[data-aba="oferta"]', v: [
+      { n: 'Oferta relâmpago', g: 'durante', sel: '.painelAba[data-aba="oferta"]', v: [
         { k: 'mod-live-oferta', t: 'Oferta relâmpago e estoque ao vivo',
           d: '0:55', id: 'pbWfLHoKGag', plano: 'Enterprise', em: '2026-09-15' } ]},
 
-      { n: 'Cupom e brinde', sel: '.painelAba[data-aba="cupom"]', v: [
+      { n: 'Cupom e brinde', g: 'durante', sel: '.painelAba[data-aba="cupom"]', v: [
         { k: 'mod-live-cupom', t: 'Cupom, brinde e "Estou aqui agora"',
           d: '0:50', id: 'BQPflIBLNG0', plano: 'Enterprise', em: '2026-09-15' } ]},
 
-      { n: 'Fila de pedidos', sel: '.painelAba[data-aba="fila"]', v: [
+      { n: 'Fila de pedidos', g: 'vender', sel: '.painelAba[data-aba="fila"]', v: [
         { k: 'mod-live-fila', t: 'Fila de pedidos',
           d: '0:21', id: 'hhooJvRXx2Q', plano: 'Enterprise', em: '2026-09-15' } ]},
 
-      { n: 'Dados', sel: '.painelAba[data-aba="dados"]', v: [
+      { n: 'Dados', g: 'antes', sel: '.painelAba[data-aba="dados"]', v: [
         { k: 'mod-live-dados', t: 'Dados ao vivo e o resumo da live',
           d: '0:31', id: '07rQewrYNaI', plano: 'Enterprise', em: '2026-09-15' } ]},
 
-      { n: 'Cortes', sel: '.painelAba[data-aba="cortes"]', v: [
+      { n: 'Cortes', g: 'antes', sel: '.painelAba[data-aba="cortes"]', v: [
         { k: 'mod-live-cortes', t: 'Cortes para Reels e Status',
           d: '0:24', id: 'vzZOyzzfYHM', plano: 'Enterprise', em: '2026-09-15' } ]},
 
       /* Esta aba ja tem a aula do painel (mod-cardapio, que ensina a MONTAR o
          cardapio). Esta ensina o cardapio a VENDER, que e outro assunto — as
          duas caixas convivem, com titulos que nao se confundem. */
-      { n: 'Cardápio', sel: '#tab-cardapio', rot: 'Vender pelo cardápio, sem live', v: [
+      { n: 'Cardápio', g: 'vender', sel: '#tab-cardapio', rot: 'Vender pelo cardápio, sem live', v: [
         { k: 'mod-live-cardapio', t: 'Seu cardápio vendendo sozinho',
           d: '1:18', id: '2_ty4YrgZ0I', plano: 'Enterprise', em: '2026-09-15' } ]}
     ]
@@ -433,30 +436,128 @@
   }
 
   /* =====================================================================
-     5. A BIBLIOTECA
+     5. A BIBLIOTECA — PALCO + LISTA (28/09/2026)
+
+     POR QUE MUDOU. A versao anterior era uma grade com UMA SECAO POR ABA DO
+     ESTUDIO. Onze secoes com um video cada: cada linha ocupava um terco da
+     largura e deixava dois tercos vazios, e as aulas saiam na ordem das abas,
+     misturando Premium e Enterprise. O proprio player nascia dentro do cartao
+     da grade — um video de 250 px de largura. O Paulo viu e chamou de "tudo
+     sem organizacao" (28/09).
+
+     AGORA E O MESMO DESENHO DA CENTRAL DE PEDIDOS E DO PAINEL DO PARCEIRO:
+     palco a esquerda (o video grande, o titulo e o medidor), lista numerada a
+     direita, barra "X de N" no topo. A lista e agrupada por MOMENTO DE USO,
+     nao por aba: Comece por aqui (as tres da trava), Durante a live, Vender e
+     receber, Antes e depois da live. O grupo vem do campo `g` de cada modulo
+     do catalogo; modulo sem `g` cai em "Outras aulas", no fim — aula nova
+     nunca some por falta do campo.
+
+     O PALCO NUNCA E REPINTADO POR TABELA. A lista, a barra e o aviso sao
+     refeitos a vontade; o palco so muda quando o lojista escolhe outra aula.
+     Isso elimina de vez o risco de 17/09 (repintar apagava o iframe que
+     estava tocando e a aula cortava aos 90%).
      ===================================================================== */
-  var cx = null, corpo = null;
+  var GRUPOS = [
+    { g: 'comece',  n: 'Comece por aqui',        s: 'Obrigatórias para entrar ao vivo' },
+    { g: 'durante', n: 'Durante a live',         s: 'O que você usa com a câmera ligada' },
+    { g: 'vender',  n: 'Vender e receber',       s: 'Pix, pedidos e o cardápio' },
+    { g: 'antes',   n: 'Antes e depois da live', s: 'Agendar, números e cortes' },
+    { g: '',        n: 'Outras aulas',           s: '' }
+  ];
+  /* aulas publicadas, na ordem em que aparecem na lista: grupo a grupo */
+  function emOrdem() {
+    var r = [];
+    GRUPOS.forEach(function (G) {
+      MOD().forEach(function (m) {
+        var g = m.g || '';
+        var conhecido = GRUPOS.some(function (x) { return x.g && x.g === g; });
+        if ((G.g && g === G.g) || (!G.g && !conhecido)) {
+          prontos(m).forEach(function (v) { r.push({ v: v, m: m, G: G }); });
+        }
+      });
+    });
+    return r;
+  }
+  function itemDe(k) {
+    var r = null; emOrdem().forEach(function (it) { if (it.v.k === k) r = it; }); return r;
+  }
+  function eNova(k) { return novas().some(function (v) { return v.k === k; }); }
+  function rotuloPlano(it) {
+    if ((CAT.trava || []).indexOf(it.v.k) > -1) return 'Obrigatória';
+    return it.v.plano || 'Todos os planos';
+  }
+  /* a aula que o palco mostra ao abrir: a primeira que falta para a trava,
+     senao a primeira aula nova, senao a primeira nao vista, senao a primeira */
+  function sugerida() {
+    var lista = emOrdem(); if (!lista.length) return null;
+    var f = faltam(); if (f.length) return f[0];
+    var n = novas(); if (n.length) return n[0];
+    for (var i = 0; i < lista.length; i++) if (!viu(lista[i].v.k)) return lista[i].v;
+    return lista[0].v;
+  }
+  function proxima(k) {
+    var lista = emOrdem(), achou = false;
+    for (var i = 0; i < lista.length; i++) {
+      if (achou && !viu(lista[i].v.k)) return lista[i].v;
+      if (lista[i].v.k === k) achou = true;
+    }
+    for (var j = 0; j < lista.length; j++) if (!viu(lista[j].v.k)) return lista[j].v;
+    return null;
+  }
+
+  var cx = null, corpo = null, caixaEl = null, palco = null, pTit = null, pSub = null,
+      pProx = null, lst = null, pBar = null, pCont = null, palcoK = '';
   function montarBiblioteca() {
     if (cx) return;
     cx = document.createElement('div');
     cx.id = 'lvAulasModal'; cx.className = 'lvAulasModal escondido';
-    var caixa = document.createElement('div'); caixa.className = 'lvAulasCaixa';
+    cx.setAttribute('role', 'dialog'); cx.setAttribute('aria-modal', 'true');
+    cx.setAttribute('aria-label', 'Aulas da live');
+    caixaEl = document.createElement('div'); caixaEl.className = 'lvAulasCaixa';
+
     var topo = document.createElement('div'); topo.className = 'lvAulasCabeca';
-    topo.innerHTML = '<h2>' + PLAY.replace('viewBox', 'class="lvAulasH2Ico" viewBox') +
-                     'Aulas da live</h2>';
+    var tt = document.createElement('div'); tt.className = 'lvAulasTitulos';
+    tt.innerHTML = '<h2>' + PLAY.replace('viewBox', 'class="lvAulasH2Ico" viewBox') +
+                   'Aulas da live</h2>' +
+                   '<p>Curtas e na ordem. A aula fica verde quando você assiste até 90%.</p>';
     var fechar = document.createElement('button');
-    fechar.type = 'button'; fechar.className = 'lvAulasFechar'; fechar.textContent = 'Fechar';
+    fechar.type = 'button'; fechar.className = 'lvAulasFechar';
+    fechar.setAttribute('aria-label', 'Fechar'); fechar.textContent = '×';
     fechar.addEventListener('click', fecharBiblioteca);
-    topo.appendChild(fechar);
+    topo.appendChild(tt); topo.appendChild(fechar);
+
+    var prog = document.createElement('div'); prog.className = 'lvAulasProg';
+    var fora = document.createElement('span'); fora.className = 'lvAulasProgFora';
+    pBar = document.createElement('i'); fora.appendChild(pBar);
+    pCont = document.createElement('b'); pCont.className = 'lvAulasTotTxt';
+    prog.appendChild(fora); prog.appendChild(pCont);
+
     corpo = document.createElement('div'); corpo.className = 'lvAulasCorpo';
-    caixa.appendChild(topo); caixa.appendChild(corpo);
-    cx.appendChild(caixa);
+    var grade = document.createElement('div'); grade.className = 'lvAulasPalcoGrade';
+    var esq = document.createElement('div'); esq.className = 'lvAulasEsq';
+    palco = document.createElement('div'); palco.className = 'lvAulaBox lvAulasPalco';
+    pTit = document.createElement('b'); pTit.className = 'lvAulasPTit';
+    pSub = document.createElement('span'); pSub.className = 'lvAulasPSub';
+    pProx = document.createElement('button'); pProx.type = 'button';
+    pProx.className = 'lvAulasProx'; pProx.hidden = true;
+    pProx.addEventListener('click', function () {
+      var k = pProx.getAttribute('data-k'); if (k) escolher(k, true);
+    });
+    esq.appendChild(palco); esq.appendChild(pTit); esq.appendChild(pSub); esq.appendChild(pProx);
+    lst = document.createElement('div'); lst.className = 'lvAulasLista';
+    grade.appendChild(esq); grade.appendChild(lst);
+    corpo.appendChild(grade);
+
+    caixaEl.appendChild(topo); caixaEl.appendChild(prog); caixaEl.appendChild(corpo);
+    cx.appendChild(caixaEl);
     cx.addEventListener('click', function (e) { if (e.target === cx) fecharBiblioteca(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && cx && !cx.classList.contains('escondido')) fecharBiblioteca();
+    });
     document.body.appendChild(cx);
   }
-  /* O aviso do topo mora num bloco proprio para poder ser refeito SOZINHO.
-     Sem isso, atualizar o aviso obrigava a repintar a biblioteca inteira — e
-     repintar apaga o video que estiver tocando dentro dela. */
+  /* O aviso do topo mora num bloco proprio para ser refeito SOZINHO. */
   function pintarAviso() {
     if (!corpo) return;
     var velho = corpo.querySelector('.lvAulasAviso');
@@ -466,8 +567,8 @@
     if (f.length) {
       var av = document.createElement('div'); av.className = 'lvAulasTrava';
       av.innerHTML = '<b>Falta' + (f.length > 1 ? 'm ' + f.length + ' aulas' : ' 1 aula') +
-        ' para você entrar ao vivo.</b><span>São as três do começo. As outras ficam ' +
-        'aqui para consultar quando precisar.</span>';
+        ' para você entrar ao vivo.</b><span>São as do grupo "Comece por aqui". As outras ' +
+        'ficam aqui para consultar quando precisar.</span>';
       cxa.appendChild(av);
     } else if (novas().length) {
       var nv = document.createElement('div'); nv.className = 'lvAulasNovo';
@@ -475,49 +576,108 @@
         'Você já pode transmitir — isto é só para ficar em dia.</span>';
       cxa.appendChild(nv);
     }
-    if (corpo.firstChild) corpo.insertBefore(cxa, corpo.firstChild);
-    else corpo.appendChild(cxa);
+    if (cxa.firstChild) corpo.insertBefore(cxa, corpo.firstChild);
   }
-  /* Repintar e DESTRUTIVO: `innerHTML=''` apaga o iframe que estiver tocando.
-     Por isso todo player e destruido antes — so apagar o elemento deixa a API
-     do YouTube presa a uma janela morta, e ela para de entregar evento aos
-     players seguintes (era isso que travava o visto verde da segunda aula em
-     diante). */
-  function pintarBiblioteca() {
-    if (!corpo) return;
-    try {
-      var fs = corpo.querySelectorAll('iframe');
-      for (var i = 0; i < fs.length; i++) matar(fs[i]);
-    } catch (e) {}
-    soltarMedidor();
-    corpo.innerHTML = '';
+  /* Lista, barra, aviso e legenda do palco. NAO toca no video. */
+  function pintarLista() {
+    if (!lst) return;
+    var lista = emOrdem(), vistas = 0;
+    lista.forEach(function (it) { if (viu(it.v.k)) vistas++; });
+    if (pCont) pCont.textContent = vistas + ' de ' + lista.length;
+    if (pBar) pBar.style.width = lista.length ? Math.round(vistas / lista.length * 100) + '%' : '0%';
     pintarAviso();
-    MOD().forEach(function (m) {
-      var vs = prontos(m); if (!vs.length) return;
-      var sec = document.createElement('section'); sec.className = 'lvAulasSec';
-      var h = document.createElement('h3'); h.textContent = m.n; sec.appendChild(h);
-      var grade = document.createElement('div'); grade.className = 'lvAulasGrade';
-      vs.forEach(function (v) {
-        var cel = document.createElement('div');
-        cel.className = 'lvAulaBox lvAulaCel'; cel.setAttribute('data-lvk', v.k);
-        cel.appendChild(moldura(v));
-        var leg = document.createElement('div'); leg.className = 'lvAulaLeg';
-        var t = document.createElement('b'); t.textContent = v.t; leg.appendChild(t);
-        var s = document.createElement('span');
-        s.textContent = (viu(v.k) ? 'Assistida' : (v.plano || 'Todos os planos')) +
-                        (v.d ? ' · ' + v.d : '');
-        leg.appendChild(s);
-        cel.appendChild(leg);
-        grade.appendChild(cel);
-      });
-      sec.appendChild(grade);
-      corpo.appendChild(sec);
+
+    lst.innerHTML = '';
+    var gAtual = null, sec = null, n = 0;
+    lista.forEach(function (it) {
+      n++;
+      if (it.G !== gAtual) {
+        gAtual = it.G;
+        var doGrupo = lista.filter(function (x) { return x.G === it.G; });
+        var vGrupo = doGrupo.filter(function (x) { return viu(x.v.k); }).length;
+        sec = document.createElement('div'); sec.className = 'lvAulasGrupo';
+        var h = document.createElement('div'); h.className = 'lvAulasGrupoCab';
+        var hn = document.createElement('b'); hn.textContent = it.G.n;
+        var hc = document.createElement('span'); hc.className = 'lvAulasGrupoCont';
+        hc.setAttribute('data-lvcont', it.G.g || 'outras');
+        hc.textContent = vGrupo + ' de ' + doGrupo.length;
+        h.appendChild(hn); h.appendChild(hc); sec.appendChild(h);
+        if (it.G.s) {
+          var hs = document.createElement('span'); hs.className = 'lvAulasGrupoSub';
+          hs.textContent = it.G.s; sec.appendChild(hs);
+        }
+        lst.appendChild(sec);
+      }
+      var ok = viu(it.v.k);
+      var bt = document.createElement('button');
+      bt.type = 'button';
+      bt.className = 'lvAulasIt' + (ok ? ' feita' : '') + (palcoK === it.v.k ? ' noPalco' : '');
+      bt.setAttribute('data-lvaula', it.v.k);
+      var nu = document.createElement('span'); nu.className = 'lvAulasNum' + (ok ? ' ok' : '');
+      nu.innerHTML = ok ? VISTO : String(n);
+      var tx = document.createElement('span'); tx.className = 'lvAulasItTxt';
+      var nome = document.createElement('span'); nome.className = 'lvAulasItNome';
+      nome.textContent = it.v.t;
+      var meta = document.createElement('span'); meta.className = 'lvAulasItMeta';
+      meta.textContent = (ok ? 'Assistida' : rotuloPlano(it)) + (it.v.d ? ' · ' + it.v.d : '');
+      tx.appendChild(nome); tx.appendChild(meta);
+      if (!ok && eNova(it.v.k)) {
+        var nv = document.createElement('span'); nv.className = 'lvAulasSelo'; nv.textContent = 'Nova';
+        tx.appendChild(nv);
+      }
+      bt.appendChild(nu); bt.appendChild(tx);
+      sec.appendChild(bt);
     });
+    pintarLegendaPalco();
   }
-  function abrirBiblioteca() {
-    montarBiblioteca(); pintarBiblioteca();
+  function pintarLegendaPalco() {
+    if (!pTit) return;
+    var it = itemDe(palcoK);
+    if (!it) { pTit.textContent = ''; pSub.textContent = ''; pProx.hidden = true; return; }
+    pTit.textContent = it.v.t;
+    pSub.textContent = it.G.n + ' · ' + (viu(it.v.k) ? 'Assistida' : rotuloPlano(it)) +
+                       (it.v.d ? ' · ' + it.v.d : '');
+    var px = viu(it.v.k) ? proxima(it.v.k) : null;
+    if (px) {
+      pProx.hidden = false; pProx.setAttribute('data-k', px.k);
+      pProx.textContent = 'Próxima aula: ' + px.t + ' →';
+    } else { pProx.hidden = true; pProx.removeAttribute('data-k'); }
+  }
+  /* troca a aula do palco. `tocarJa` = o lojista clicou: ja comeca a tocar */
+  function escolher(k, tocarJa) {
+    var v = achar(k); if (!v || !palco) return;
+    pararTodos();
+    try { var fr = palco.querySelector('iframe'); if (fr) matar(fr); } catch (e) {}
+    var m = palco.querySelector('.lvAulaMed'); if (m) { if (m === med) soltarMedidor(); m.parentNode.removeChild(m); }
+    palco.innerHTML = '';
+    palcoK = k;
+    palco.setAttribute('data-lvk', k);
+    var capaBt = moldura(v);
+    palco.appendChild(capaBt);
+    pintarLista();
+    if (tocarJa) {
+      tocar(capaBt, k);
+      /* no celular o palco fica em cima da lista: sobe ate ele */
+      try {
+        var r = palco.getBoundingClientRect();
+        if (r.top < 0 || r.top > window.innerHeight * 0.5) caixaEl.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (e) {}
+    }
+  }
+  /* compatibilidade: o nome antigo continua existindo */
+  function pintarBiblioteca() { pintarLista(); }
+  function abrirBiblioteca(k) {
+    montarBiblioteca();
     cx.classList.remove('escondido');
     document.body.classList.add('lvAulasAberto');
+    var alvo = (typeof k === 'string' && achar(k)) ? k : '';
+    if (!alvo) { var s = sugerida(); alvo = s ? s.k : ''; }
+    if (alvo) escolher(alvo, false); else pintarLista();
+    try { lst.scrollTop = 0; caixaEl.scrollTop = 0; } catch (e) {}
+    try {
+      var sel = lst.querySelector('.lvAulasIt.noPalco');
+      if (sel && sel.scrollIntoView && sel.offsetTop > lst.clientHeight - 60) sel.scrollIntoView({ block: 'center' });
+    } catch (e) {}
   }
   function fecharBiblioteca() {
     if (!cx) return;
@@ -526,42 +686,19 @@
     cx.classList.add('escondido');
     document.body.classList.remove('lvAulasAberto');
   }
+  var VISTO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" ' +
+              'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+              '<path d="M5 12.5l4.2 4.2L19 7"/></svg>';
 
-  function tocandoNaBiblioteca() {
-    try { return !!(corpo && corpo.querySelector('div.lvAulaQuadro iframe')); }
-    catch (e) { return false; }
-  }
-  /* legenda do cartao, atualizada NO LUGAR — serve para a aula ficar
-     "Assistida" sem precisar refazer a biblioteca inteira */
-  function pintarLegendas() {
-    try {
-      var cs = document.querySelectorAll('.lvAulaCel[data-lvk]');
-      for (var i = 0; i < cs.length; i++) {
-        var k = cs[i].getAttribute('data-lvk'), v = achar(k);
-        if (!v || !viu(k)) continue;
-        var sp = cs[i].querySelector('.lvAulaLeg span');
-        if (sp) sp.textContent = 'Assistida' + (v.d ? ' · ' + v.d : '');
-      }
-    } catch (e) {}
-  }
-  /* ⚠️ ESTE E O CONSERTO DE 17/09/2026 (o "as aulas travam").
-     `marcar()` chama pintarTudo() no instante em que a aula chega aos 90% —
-     e repintar a biblioteca APAGA o iframe que ainda esta tocando. Como as
-     tres aulas da trava so existem na biblioteca, eram justamente elas que
-     cortavam sozinhas perto do fim. Agora, com uma aula tocando ali dentro,
-     so o que e seguro e atualizado: o visto verde, a legenda e o aviso do
-     topo. A biblioteca inteira e refeita na proxima vez que abrir. */
   function pintarTudo() {
     try {
       /* repinta as capas ja na tela para o visto verde aparecer na hora */
-      var bs = document.querySelectorAll('button[data-lvaula]');
+      var bs = document.querySelectorAll('button.lvAulaQuadro[data-lvaula]');
       for (var i = 0; i < bs.length; i++) {
         if (viu(bs[i].getAttribute('data-lvaula'))) bs[i].classList.add('lvAulaVista');
       }
-      var aberta = corpo && cx && !cx.classList.contains('escondido');
-      if (!aberta) return;
-      if (tocandoNaBiblioteca()) { pintarLegendas(); pintarAviso(); return; }
-      pintarBiblioteca();
+      var aberta = cx && !cx.classList.contains('escondido');
+      if (aberta) pintarLista();
     } catch (e) {}
   }
 
@@ -605,33 +742,82 @@
     '.lvAulaMedOk .lvAulaMedFora>i{background:#25e39b}',
     '.lvAulaMedErro{background:rgba(255,138,0,.10);border-color:rgba(255,138,0,.42)}',
     '.lvAulaMedErro .lvAulaMedPct{color:#ffb020}',
-    /* biblioteca */
-    '.lvAulasModal{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.72);',
-      'display:flex;align-items:flex-end;justify-content:center}',
+    /* biblioteca: palco + lista, o mesmo desenho da Central de Pedidos */
+    '.lvAulasModal{position:fixed;inset:0;z-index:70;background:rgba(2,8,18,.78);',
+      'display:flex;align-items:center;justify-content:center;padding:24px}',
     '.lvAulasModal.escondido{display:none}',
-    '.lvAulasCaixa{width:100%;max-width:820px;max-height:90vh;overflow:auto;',
-      'background:var(--mv-surf,#0e1c30);border-radius:20px 20px 0 0;',
-      'padding:16px 16px calc(env(safe-area-inset-bottom) + 18px)}',
-    '.lvAulasCabeca{display:flex;align-items:center;justify-content:space-between;',
-      'gap:10px;margin-bottom:10px}',
-    '.lvAulasCabeca h2{display:flex;align-items:center;gap:8px;font-size:18px;margin:0}',
-    '.lvAulasH2Ico{width:22px;height:22px;color:var(--mv-ciano,#00D4FF)}',
-    '.lvAulasFechar{background:transparent;border:1px solid var(--mv-linha,#1c3457);',
-      'color:var(--mv-txt-2,#c6d8ee);border-radius:10px;padding:6px 12px;cursor:pointer}',
-    '.lvAulasSec{margin-top:14px}',
-    '.lvAulasSec h3{font-size:13px;color:var(--mv-txt-3,#8fa6c4);margin:0 0 8px;',
-      'text-transform:uppercase;letter-spacing:.4px}',
-    '.lvAulasGrade{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}',
-    '.lvAulaCel{margin-top:0}',
-    '.lvAulaLeg{margin-top:6px;display:flex;flex-direction:column;gap:2px}',
-    '.lvAulaLeg b{font-size:13px;line-height:1.25}',
-    '.lvAulaLeg span{font-size:11px;color:var(--mv-txt-3,#8fa6c4)}',
-    '.lvAulasTrava,.lvAulasNovo{border-radius:12px;padding:10px 12px;margin-bottom:6px;',
+    '.lvAulasCaixa{position:relative;width:100%;max-width:1060px;max-height:calc(100vh - 48px);',
+      'display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box;',
+      'background:var(--mv-surf,#0b1627);border:1px solid rgba(0,212,255,.16);',
+      'border-radius:20px;padding:20px 20px 18px;color:var(--mv-txt-1,#eaf2ff);',
+      'box-shadow:0 24px 70px rgba(0,0,0,.55)}',
+    '.lvAulasCabeca{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}',
+    '.lvAulasTitulos{min-width:0}',
+    '.lvAulasCabeca h2{display:flex;align-items:center;gap:8px;font-size:20px;line-height:1.2;margin:0}',
+    '.lvAulasTitulos p{margin:4px 0 0;font-size:13px;color:var(--mv-txt-3,#8fa6c4)}',
+    '.lvAulasH2Ico{width:22px;height:22px;flex:0 0 22px;color:var(--mv-ciano,#00D4FF)}',
+    '.lvAulasFechar{flex:0 0 36px;width:36px;height:36px;border-radius:10px;cursor:pointer;',
+      'background:rgba(255,255,255,.04);border:1px solid var(--mv-linha,#1c3457);',
+      'color:var(--mv-txt-2,#c6d8ee);font-size:20px;line-height:1;padding:0}',
+    '.lvAulasFechar:hover{border-color:rgba(0,212,255,.5);color:#fff}',
+    '.lvAulasProg{display:flex;align-items:center;gap:12px;margin:14px 0 12px}',
+    '.lvAulasProgFora{flex:1;height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}',
+    '.lvAulasProgFora>i{display:block;height:100%;width:0;border-radius:999px;',
+      'background:linear-gradient(90deg,#00D4FF,#25e39b);transition:width .35s ease}',
+    '.lvAulasTotTxt{font-size:12.5px;color:var(--mv-txt-2,#c6d8ee);white-space:nowrap}',
+    '.lvAulasCorpo{flex:1;min-height:0;display:flex;flex-direction:column}',
+    '.lvAulasAviso:empty{display:none}',
+    '.lvAulasTrava,.lvAulasNovo{border-radius:12px;padding:10px 12px;margin-bottom:12px;',
       'display:flex;flex-direction:column;gap:2px}',
-    '.lvAulasTrava{background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.45)}',
+    '.lvAulasTrava{background:rgba(255,176,32,.10);border:1px solid rgba(255,176,32,.45)}',
     '.lvAulasNovo{background:rgba(0,212,255,.10);border:1px solid rgba(0,212,255,.38)}',
     '.lvAulasTrava b,.lvAulasNovo b{font-size:14px}',
     '.lvAulasTrava span,.lvAulasNovo span{font-size:12px;color:var(--mv-txt-2,#c6d8ee)}',
+    '.lvAulasPalcoGrade{flex:1;min-height:0;display:grid;',
+      'grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:18px}',
+    '.lvAulasEsq{min-width:0;display:flex;flex-direction:column;gap:4px;overflow:auto}',
+    '.lvAulasPalco{margin-top:0;margin-bottom:6px}',
+    '.lvAulasPTit{font-size:15px;line-height:1.3}',
+    '.lvAulasPSub{font-size:12px;color:var(--mv-txt-3,#8fa6c4)}',
+    '.lvAulasProx{align-self:flex-start;margin-top:10px;padding:9px 14px;border-radius:10px;',
+      'cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:#06131f;',
+      'background:linear-gradient(90deg,#00D4FF,#25e39b);border:0;text-align:left;max-width:100%}',
+    '.lvAulasProx[hidden]{display:none}',
+    '.lvAulasLista{min-height:0;overflow:auto;padding-right:4px;display:flex;flex-direction:column;gap:14px}',
+    '.lvAulasGrupo{display:flex;flex-direction:column;gap:6px}',
+    '.lvAulasGrupoCab{display:flex;align-items:baseline;justify-content:space-between;gap:8px}',
+    '.lvAulasGrupoCab b{font-size:12px;text-transform:uppercase;letter-spacing:.5px;',
+      'color:var(--mv-ciano,#00D4FF)}',
+    '.lvAulasGrupoCont{font-size:11px;color:var(--mv-txt-3,#8fa6c4);white-space:nowrap}',
+    '.lvAulasGrupoSub{font-size:11.5px;color:var(--mv-txt-3,#8fa6c4);margin:-4px 0 2px}',
+    '.lvAulasIt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;',
+      'font:inherit;color:inherit;padding:10px 12px;border-radius:12px;',
+      'background:rgba(255,255,255,.025);border:1px solid var(--mv-linha,#1c3457);',
+      'transition:border-color .15s,background .15s}',
+    '.lvAulasIt:hover{border-color:rgba(0,212,255,.45)}',
+    '.lvAulasIt.noPalco{border-color:#00D4FF;background:rgba(0,212,255,.08)}',
+    '.lvAulasIt.feita.noPalco{border-color:#25e39b;background:rgba(37,227,155,.08)}',
+    '.lvAulasNum{flex:0 0 28px;width:28px;height:28px;border-radius:50%;display:flex;',
+      'align-items:center;justify-content:center;font-size:12px;font-weight:700;',
+      'background:rgba(255,255,255,.07);color:var(--mv-txt-2,#c6d8ee)}',
+    '.lvAulasNum.ok{background:rgba(37,227,155,.18);color:#25e39b}',
+    '.lvAulasNum svg{width:15px;height:15px}',
+    '.lvAulasItTxt{display:flex;flex-direction:column;gap:2px;min-width:0}',
+    '.lvAulasItNome{font-size:13.5px;font-weight:600;line-height:1.3}',
+    '.lvAulasItMeta{font-size:11.5px;color:var(--mv-txt-3,#8fa6c4)}',
+    '.lvAulasSelo{align-self:flex-start;margin-top:2px;font-size:10.5px;font-weight:700;',
+      'padding:1px 7px;border-radius:999px;background:rgba(0,212,255,.16);color:#00D4FF}',
+    /* celular: vira folha que sobe de baixo, palco em cima e lista embaixo,
+       a caixa inteira rola */
+    '@media (max-width:760px){',
+      '.lvAulasModal{padding:0;align-items:flex-end}',
+      '.lvAulasCaixa{max-height:94vh;border-radius:20px 20px 0 0;overflow:auto;',
+        'padding:16px 14px calc(env(safe-area-inset-bottom) + 18px)}',
+      '.lvAulasCorpo,.lvAulasPalcoGrade{flex:none}',
+      '.lvAulasPalcoGrade{grid-template-columns:1fr;gap:16px}',
+      '.lvAulasEsq,.lvAulasLista{overflow:visible}',
+      '.lvAulasCabeca h2{font-size:18px}',
+    '}',
     'body.lvAulasAberto{overflow:hidden}'
   ].join('');
 
@@ -646,9 +832,13 @@
      ===================================================================== */
   document.addEventListener('click', function (e) {
     var a = e.target && e.target.closest ? e.target.closest('[data-lvaula]') : null;
-    if (a) { tocar(a, a.getAttribute('data-lvaula')); return; }
+    if (a) {
+      /* item da lista da biblioteca: leva a aula para o palco e toca */
+      if (a.classList.contains('lvAulasIt')) { escolher(a.getAttribute('data-lvaula'), true); return; }
+      tocar(a, a.getAttribute('data-lvaula')); return;
+    }
     var b = e.target && e.target.closest ? e.target.closest('[data-lvaulas-abrir]') : null;
-    if (b) { abrirBiblioteca(); }
+    if (b) { abrirBiblioteca(b.getAttribute('data-lvaulas-abrir')); }
   }, true);
 
   /* troca de aba para o video que saiu da tela: sem isto o audio continua
@@ -690,7 +880,7 @@
       return est;
     },
     embutir: embutir,
-    abrir: abrirBiblioteca,
+    abrir: function (k) { abrirBiblioteca(k); },
     fechar: fecharBiblioteca,
     pararTodos: pararTodos,
     apto: apto,
