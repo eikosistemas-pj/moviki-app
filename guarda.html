@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://www.google.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
+<meta name="robots" content="noindex,nofollow">
+<title>Moviki — Guarda</title>
+<link rel="icon" href="favicon512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- MOVIKI guarda.html | versao 2026-09-28-guarda1 | painel da Guarda anticlonagem (so admin) -->
+<style>
+  :root{--fundo:#0b1530;--card:#121f45;--linha:#23346a;--texto:#eef2ff;--suave:#9fb0d9;--ciano:#27c3f3;--verde:#22c55e;--amarelo:#f5b301;--vermelho:#ef4444;--roxo:#a78bfa}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--fundo);color:var(--texto);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:15px;line-height:1.45}
+  header{position:sticky;top:0;z-index:5;background:rgba(11,21,48,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--linha);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  header h1{font-size:18px;margin:0;font-weight:700}
+  header .v{font-size:12px;color:var(--suave)}
+  header .dir{margin-left:auto;display:flex;gap:8px;align-items:center;font-size:13px;color:var(--suave)}
+  main{max-width:1080px;margin:0 auto;padding:16px;display:grid;gap:16px}
+  .card{background:var(--card);border:1px solid var(--linha);border-radius:14px;padding:16px}
+  .card h2{font-size:16px;margin:0 0 4px}
+  .card .sub{color:var(--suave);font-size:13px;margin:0 0 12px}
+  button,.btn{font:inherit;font-size:14px;border:0;border-radius:10px;padding:9px 14px;cursor:pointer;background:#1d2d5e;color:var(--texto)}
+  button:hover{filter:brightness(1.15)}
+  button:disabled{opacity:.5;cursor:default}
+  .b-verm{background:var(--vermelho);color:#fff}.b-ama{background:var(--amarelo);color:#1a1a1a}.b-verde{background:var(--verde);color:#062b12}.b-ciano{background:var(--ciano);color:#062033}
+  input,select,textarea{font:inherit;font-size:14px;background:#0d1838;color:var(--texto);border:1px solid var(--linha);border-radius:10px;padding:9px 10px;width:100%}
+  label{font-size:13px;color:var(--suave);display:block;margin-bottom:4px}
+  .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+  .lista{display:grid;gap:8px}
+  .item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:10px 12px;border:1px solid var(--linha);border-radius:12px;background:#0f1a3c;cursor:pointer}
+  .item:hover{border-color:var(--ciano)}
+  .item .t{font-weight:600;word-break:break-all}
+  .item .s{font-size:12px;color:var(--suave)}
+  .pill{font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .e-ok{background:#12351f;color:#7ee2a0}.e-alerta{background:#3a3006;color:#ffd666}.e-congelado{background:#0f3350;color:#8fd8ff}.e-suspenso{background:#4a1520;color:#ff9aa8}.e-banido{background:#3b0a0a;color:#ff6b6b}
+  .vazio{color:var(--suave);font-size:14px;padding:6px 0}
+  .linha{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .kv{display:grid;grid-template-columns:150px 1fr;gap:4px 12px;font-size:14px}
+  .kv div:nth-child(odd){color:var(--suave)}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{text-align:left;padding:6px 6px;border-bottom:1px solid var(--linha);vertical-align:top}
+  th{color:var(--suave);font-weight:500}
+  .rolar{overflow-x:auto}
+  .aviso{background:#0f2a44;border:1px solid #1f5a86;border-radius:12px;padding:10px 12px;font-size:13.5px}
+  .aviso.verm{background:#3a0f16;border-color:#7a1f2c}
+  .esc{display:none}
+  canvas{max-width:100%;border-radius:10px;border:1px solid var(--linha);background:#000}
+  .msg{font-size:13px;min-height:18px;color:var(--suave)}
+  ul.chk{margin:6px 0 0 0;padding-left:18px;font-size:13.5px}
+  ul.chk li{margin:4px 0}
+  code{background:#0d1838;border:1px solid var(--linha);border-radius:6px;padding:1px 6px;font-size:13px}
+  @media (max-width:600px){.kv{grid-template-columns:1fr}.kv div:nth-child(odd){margin-top:6px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Guarda anticlonagem</h1><span class="v" id="versao">guarda1</span>
+  <div class="dir"><span id="quem"></span><button id="btSair" class="esc">Sair</button></div>
+</header>
+
+<main>
+  <section class="card esc" id="cardLogin">
+    <h2>Entrar</h2>
+    <p class="sub">Só administradores (documento em <code>admins/</code>). Use a mesma conta do painel do dono.</p>
+    <div class="grade">
+      <div><label>E-mail</label><input id="lgEmail" type="email" autocomplete="username"></div>
+      <div><label>Senha</label><input id="lgSenha" type="password" autocomplete="current-password"></div>
+    </div>
+    <div class="linha" style="margin-top:12px"><button class="b-ciano" id="btEntrar">Entrar</button><span class="msg" id="lgMsg"></span></div>
+  </section>
+
+  <section class="card esc" id="cardConfig">
+    <h2>Configuração</h2>
+    <p class="sub">Vale na hora, sem deploy. <strong>Observar</strong> calcula e avisa no Telegram, mas nunca trava ninguém — use para calibrar os limites.</p>
+    <div class="grade">
+      <div><label>Guarda</label><select id="cfLigado"><option value="1">Ligada</option><option value="0">Desligada (chave-mestra)</option></select></div>
+      <div><label>Modo</label><select id="cfModo"><option value="agir">Agir (suspende e congela)</option><option value="observar">Observar (só avisa)</option></select></div>
+      <div><label>Alerta a partir de (pontos/dia)</label><input id="cfAlerta" type="number" min="1"></div>
+      <div><label>Congelar a partir de (pontos/dia)</label><input id="cfCongelar" type="number" min="1"></div>
+      <div><label>Marca d'água na tela</label><select id="cfVisual"><option value="1">Ligada</option><option value="0">Desligada</option></select></div>
+      <div><label>Força da marca (0,015 a 0,12)</label><input id="cfOpac" type="number" step="0.005" min="0.015" max="0.12"></div>
+    </div>
+    <div class="linha" style="margin-top:12px"><button class="b-ciano" id="btCfg">Salvar configuração</button><span class="msg" id="cfMsg"></span></div>
+  </section>
+
+  <section class="card esc" id="cardFila">
+    <h2>Precisa de você</h2>
+    <p class="sub">Contas suspensas (robô), congeladas (passaram do limite), banidas e em alerta. Toque para abrir.</p>
+    <div class="lista" id="filaTrav"></div>
+    <h2 style="margin-top:18px">Maior risco hoje</h2>
+    <p class="sub">Pontos do dia, do maior para o menor. Serve para calibrar os limites.</p>
+    <div class="lista" id="filaTopo"></div>
+    <div class="linha" style="margin-top:12px"><button id="btAtualizar">Atualizar</button><span class="msg" id="filaMsg"></span></div>
+  </section>
+
+  <section class="card esc" id="cardConta">
+    <div class="linha"><h2 id="ctTitulo" style="flex:1">Conta</h2><button id="btFecharConta">Fechar</button></div>
+    <div id="ctCorpo"></div>
+  </section>
+
+  <section class="card esc" id="cardVazou">
+    <h2>Descobrir quem vazou</h2>
+    <p class="sub">Toda tela logada carrega a marca da conta: escondida no texto copiado, no HTML salvo e quase invisível na imagem.</p>
+
+    <label>1 · Cole aqui o texto suspeito (de um site clonado, post, PDF, documento)</label>
+    <textarea id="vzTexto" rows="4" placeholder="Cole o texto como veio. A marca é invisível; não precisa achar nada."></textarea>
+    <div class="linha" style="margin-top:8px"><button class="b-ciano" id="btTexto">Procurar marca no texto</button><span class="msg" id="vzTextoMsg"></span></div>
+
+    <label style="margin-top:16px">2 · Já tem a marca? (6 letras e números — ex.: aparece como <code>moviki · K7M2QX</code> na imagem revelada, ou <code>data-mv-sessao</code> no HTML)</label>
+    <div class="linha"><input id="vzMarca" maxlength="6" style="max-width:160px;text-transform:uppercase" placeholder="K7M2QX"><button class="b-ciano" id="btMarca">Buscar conta</button><span class="msg" id="vzMarcaMsg"></span></div>
+
+    <label style="margin-top:16px">3 · Revelar a marca num print ou foto de tela</label>
+    <input id="vzImg" type="file" accept="image/*">
+    <div class="linha" style="margin-top:8px"><label style="margin:0">Realce</label><input id="vzGanho" type="range" min="8" max="80" value="32" style="max-width:220px"><span class="msg">Aumente até aparecer o texto inclinado repetido.</span></div>
+    <canvas id="vzCanvas" class="esc" style="margin-top:8px"></canvas>
+    <div id="vzRes" style="margin-top:10px"></div>
+  </section>
+</main>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  window.MOVIKI_VERSAO = '2026-09-28-guarda1';
+  const API = '/api/guarda';
+  const ALFA = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  const firebaseConfig = {
+    apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
+    authDomain: "moviki-app.firebaseapp.com",
+    projectId: "moviki-app",
+    storageBucket: "moviki-app.firebasestorage.app",
+    messagingSenderId: "451920150738",
+    appId: "1:451920150738:web:be458392064c964c792d0b"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const mostra = (id, on) => $(id).classList.toggle('esc', !on);
+  const dataHora = ms => ms ? new Date(ms).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }) : '—';
+  const NOME_ESTADO = { ok: 'ok', alerta: 'alerta', congelado: 'congelado', suspenso: 'suspenso (robô)', banido: 'banido' };
+  const pill = e => '<span class="pill e-' + esc(e || 'ok') + '">' + esc(NOME_ESTADO[e] || e || 'ok') + '</span>';
+
+  async function chamar(acao, extra) {
+    const u = auth.currentUser;
+    if (!u) throw new Error('sem login');
+    const t = await u.getIdToken();
+    const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ acao, t }, extra || {})), cache: 'no-store' });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.erro || ('HTTP ' + r.status));
+    return j;
+  }
+
+  /* ---------------- login ---------------- */
+  $('btEntrar').onclick = async () => {
+    $('lgMsg').textContent = 'Entrando…';
+    try { await signInWithEmailAndPassword(auth, $('lgEmail').value.trim(), $('lgSenha').value); $('lgMsg').textContent = ''; }
+    catch (e) { $('lgMsg').textContent = 'Não entrou: ' + (e.code || e.message); }
+  };
+  $('btSair').onclick = () => signOut(auth);
+
+  onAuthStateChanged(auth, async u => {
+    ['cardConfig', 'cardFila', 'cardVazou', 'cardConta'].forEach(id => mostra(id, false));
+    mostra('btSair', !!u);
+    $('quem').textContent = u ? (u.email || '') : '';
+    if (!u) { mostra('cardLogin', true); return; }
+    mostra('cardLogin', false);
+    try {
+      await carregar();
+      ['cardConfig', 'cardFila', 'cardVazou'].forEach(id => mostra(id, true));
+      const q = new URLSearchParams(location.search).get('uid');
+      if (q) abrirConta(q);
+    } catch (e) {
+      mostra('cardLogin', true);
+      $('lgMsg').textContent = e.message === 'nao_admin' ? 'Esta conta não é administradora.' : ('Erro: ' + e.message);
+    }
+  });
+
+  /* ---------------- fila + config ---------------- */
+  let CFG = null;
+  function pintarCfg(c) {
+    CFG = c;
+    $('cfLigado').value = c.ligado ? '1' : '0';
+    $('cfModo').value = c.modo;
+    $('cfAlerta').value = c.alerta;
+    $('cfCongelar').value = c.congelar;
+    $('cfVisual').value = c.marcaVisual ? '1' : '0';
+    $('cfOpac').value = c.opacidade;
+  }
+  function itemHtml(x) {
+    return '<div class="item" data-uid="' + esc(x.uid) + '"><div><div class="t">' + esc(x.email || x.uid) + (x.isento ? ' · <span class="s">isento</span>' : '') + '</div>' +
+      '<div class="s">' + esc(x.pontos) + ' pts' + (x.dia ? ' em ' + esc(x.dia) : '') + (x.porque ? ' · ' + esc(x.porque) : '') + (x.pagina ? ' · ' + esc(x.pagina) : '') + ' · ' + esc(dataHora(x.ultimaEm)) + '</div></div>' + pill(x.estado) + '</div>';
+  }
+  async function carregar() {
+    $('filaMsg').textContent = 'Carregando…';
+    const r = await chamar('adm_lista');
+    $('versao').textContent = r.versao || '';
+    pintarCfg(r.cfg);
+    const ordem = { suspenso: 0, congelado: 1, alerta: 2, banido: 3 };
+    const trav = (r.travados || []).sort((a, b) => (ordem[a.estado] - ordem[b.estado]) || (b.ultimaEm - a.ultimaEm));
+    $('filaTrav').innerHTML = trav.length ? trav.map(itemHtml).join('') : '<div class="vazio">Nada pendente.</div>';
+    $('filaTopo').innerHTML = (r.topo || []).length ? r.topo.map(itemHtml).join('') : '<div class="vazio">Nenhuma conta pontuou hoje.</div>';
+    document.querySelectorAll('.item[data-uid]').forEach(el => el.onclick = () => abrirConta(el.getAttribute('data-uid')));
+    $('filaMsg').textContent = 'Atualizado ' + new Date().toLocaleTimeString('pt-BR');
+  }
+  $('btAtualizar').onclick = () => carregar().catch(e => $('filaMsg').textContent = 'Erro: ' + e.message);
+  $('btCfg').onclick = async () => {
+    $('cfMsg').textContent = 'Salvando…';
+    try {
+      const r = await chamar('adm_config', { cfg: {
+        ligado: $('cfLigado').value === '1', modo: $('cfModo').value,
+        alerta: Number($('cfAlerta').value), congelar: Number($('cfCongelar').value),
+        marcaVisual: $('cfVisual').value === '1', opacidade: Number($('cfOpac').value),
+      } });
+      pintarCfg(r.cfg);
+      $('cfMsg').textContent = 'Salvo.';
+    } catch (e) { $('cfMsg').textContent = 'Erro: ' + e.message; }
+  };
+
+  /* ---------------- conta ---------------- */
+  let CONTA = null;
+  async function abrirConta(uid) {
+    mostra('cardConta', true);
+    $('ctTitulo').textContent = 'Conta';
+    $('ctCorpo').innerHTML = '<div class="vazio">Carregando…</div>';
+    $('cardConta').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    try { pintarConta(await chamar('adm_conta', { uid })); }
+    catch (e) { $('ctCorpo').innerHTML = '<div class="aviso verm">Erro: ' + esc(e.message) + '</div>'; }
+  }
+  $('btFecharConta').onclick = () => mostra('cardConta', false);
+
+  function pintarConta(r) {
+    CONTA = r;
+    const g = r.guarda || {}, a = r.auth || {}, h = g.hoje || {};
+    const estado = g.estado || 'ok';
+    $('ctTitulo').innerHTML = esc(a.email || g.email || r.uid) + ' ' + pill(estado);
+    const sinais = Object.keys(h.c || {}).map(k => esc(k) + ' ×' + esc(h.c[k])).join(' · ') || '—';
+    const hist = (g.historico || []).slice().reverse();
+    const passos = [];
+    if (estado === 'banido') {
+      if (r.assinatura && r.assinatura.ativo) passos.push('<strong>Cancelar a assinatura no Asaas</strong> (plano ' + esc(r.assinatura.plano) + ') — banir não para a cobrança.');
+      if (r.parceiro) passos.push('<strong>Suspender o parceiro</strong> no painel do dono › Parceiros (derruba o crachá /v/ e a geração de comissão).');
+      passos.push('<strong>Baixar a prova</strong> (botão abaixo) e guardar fora do sistema — é o que sustenta notificação e ação judicial.');
+      passos.push('Enviar a notificação ao titular citando a cláusula 8-A dos Termos (modelo no documento de entrega).');
+    }
+    $('ctCorpo').innerHTML =
+      (a.desativado ? '<div class="aviso verm" style="margin-bottom:10px">Login desativado no Firebase Auth.</div>' : '') +
+      '<div class="kv">' +
+      '<div>uid</div><div><code>' + esc(r.uid) + '</code></div>' +
+      '<div>Negócio</div><div>' + (r.negocio ? esc(r.negocio.nome) + ' · /' + esc(r.negocio.slug) : '—') + '</div>' +
+      '<div>Parceiro</div><div>' + (r.parceiro ? esc(r.parceiro.nome) + ' · /p/' + esc(r.parceiro.slug) + ' · ' + esc(r.parceiro.status) : '—') + '</div>' +
+      '<div>Assinatura</div><div>' + (r.assinatura ? esc(r.assinatura.plano) + (r.assinatura.ativo ? ' (ativa)' : ' (inativa)') + (r.assinatura.periodo ? ' · ' + esc(r.assinatura.periodo) : '') : '—') + '</div>' +
+      '<div>Conta criada</div><div>' + esc(a.criada || '—') + '</div>' +
+      '<div>Último login</div><div>' + esc(a.ultimoLogin || '—') + '</div>' +
+      '<div>Marca d\'água</div><div><code>' + esc(g.marca || '—') + '</code></div>' +
+      '<div>Pontos hoje</div><div><strong>' + esc(g.pontosHoje || 0) + '</strong>' + (h.dia ? ' (' + esc(h.dia) + ')' : '') + '</div>' +
+      '<div>Por quê</div><div>' + esc(g.porque || '—') + (g.porqueDono ? '<br><span class="s">Nota do dono: ' + esc(g.porqueDono) + '</span>' : '') + '</div>' +
+      '<div>Conta dos pontos</div><div>' + ((g.motivos || []).map(esc).join('<br>') || '—') + '</div>' +
+      '<div>Sinais hoje</div><div>' + sinais + '</div>' +
+      '<div>Telas diferentes</div><div>' + esc((h.telas || []).length) + ' no dia · máx. ' + esc(h.max10 || 0) + ' em 10 min' + (h.ritmo ? ' · <strong>ritmo de máquina</strong>' : '') + '</div>' +
+      '<div>Robô</div><div>' + ((h.robo || []).map(esc).join(', ') || '—') + '</div>' +
+      '<div>Aparelhos</div><div>' + esc((g.disps || []).length) + ' navegador(es) · ' + esc((g.fps || []).length) + ' impressão(ões)</div>' +
+      '</div>' +
+      (passos.length ? '<div class="aviso" style="margin-top:12px"><strong>Depois do banimento</strong><ul class="chk">' + passos.map(p => '<li>' + p + '</li>').join('') + '</ul></div>' : '') +
+      '<div style="margin-top:14px"><label>Nota (vai para o registro da decisão)</label><input id="ctNota" maxlength="300" placeholder="Ex.: varreu as 10 seções em 3 min, 2º dia de conta"></div>' +
+      '<div class="linha" style="margin-top:10px">' +
+        '<button class="b-verm" data-a="banir">Banir</button>' +
+        '<button class="b-ciano" data-a="congelar">Congelar</button>' +
+        '<button class="b-verde" data-a="liberar">Liberar</button>' +
+        (g.isento ? '<button data-a="tirar_isencao">Tirar isenção</button>' : '<button data-a="isentar">Isentar (conta de teste/confiança)</button>') +
+        '<button id="btProva">Baixar prova (JSON)</button>' +
+      '</div><div class="msg" id="ctMsg" style="margin-top:8px"></div>' +
+      '<h2 style="margin-top:16px;font-size:15px">Histórico (mais recente primeiro)</h2>' +
+      '<div class="rolar"><table><tr><th>Quando</th><th>Pts</th><th>Sinais</th><th>Tela</th><th>IP</th><th>Navegador</th></tr>' +
+      (hist.length ? hist.map(x => '<tr><td>' + esc(dataHora(x.em)) + (x.e ? '<br>' + pill(x.e) : '') + '</td><td>' + esc(x.pts) + '</td><td>' + esc(x.s || '—') + '</td><td>' + esc(x.p || '') + '</td><td>' + esc(x.ip || '') + '</td><td>' + esc(x.ua || '') + '</td></tr>').join('') : '<tr><td colspan="6" class="vazio">Sem registro.</td></tr>') +
+      '</table></div>';
+    document.querySelectorAll('#ctCorpo button[data-a]').forEach(b => b.onclick = () => agir(b.getAttribute('data-a')));
+    $('btProva').onclick = baixarProva;
+  }
+
+  const CONFIRMA = {
+    banir: 'BANIR esta conta?\n\nO login é desativado e os aparelhos dela ficam marcados. Uma conta nova no mesmo navegador nasce congelada.\n\nDepois: cancelar a assinatura no Asaas (se houver) e suspender o parceiro no painel do dono.',
+    congelar: 'Congelar o acesso desta conta até nova decisão?',
+    liberar: 'Liberar esta conta? O login volta a funcionar e os pontos do dia são zerados.',
+    isentar: 'Isentar esta conta? Ela nunca mais é pontuada nem travada (use para contas de teste e de confiança).',
+    tirar_isencao: 'Voltar a vigiar esta conta?',
+  };
+  async function agir(tipo) {
+    if (!CONTA) return;
+    if (!confirm(CONFIRMA[tipo] || 'Confirmar?')) return;
+    $('ctMsg').textContent = 'Aplicando…';
+    try {
+      const r = await chamar('adm_acao', { uid: CONTA.uid, tipo, nota: ($('ctNota') || {}).value || '' });
+      if (r.erro) { $('ctMsg').textContent = r.erro === 'alvo_admin' ? 'Conta de administrador não pode ser travada.' : 'Erro: ' + r.erro; return; }
+      $('ctMsg').textContent = 'Feito. Login ' + (r.login === false ? '— falhou ao mudar no Firebase Auth (tente de novo)' : 'atualizado') + '.';
+      await abrirConta(CONTA.uid);
+      carregar().catch(() => {});
+    } catch (e) { $('ctMsg').textContent = 'Erro: ' + e.message; }
+  }
+  function baixarProva() {
+    if (!CONTA) return;
+    const dados = { geradoEm: new Date().toISOString(), geradoPor: (auth.currentUser || {}).email || '', sistema: 'Moviki Guarda ' + window.MOVIKI_VERSAO, conta: CONTA };
+    const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'prova-guarda-' + CONTA.uid.slice(0, 8) + '-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }
+
+  /* ---------------- descobrir quem vazou ---------------- */
+  function marcasNoTexto(s) {
+    const achadas = [];
+    const re = /⁠([​‌]{30})⁠/g;
+    let m;
+    while ((m = re.exec(s))) {
+      let out = '';
+      for (let i = 0; i < 30; i += 5) {
+        let v = 0;
+        for (let b = 0; b < 5; b++) v = v * 2 + (m[1][i + b] === '‌' ? 1 : 0);
+        out += ALFA[v] || '?';
+      }
+      if (out.indexOf('?') < 0 && achadas.indexOf(out) < 0) achadas.push(out);
+    }
+    const attr = /data-mv-sessao=["']?([A-Z2-9]{6})/g;
+    while ((m = attr.exec(s))) if (achadas.indexOf(m[1]) < 0) achadas.push(m[1]);
+    const com = /mv:([A-Z2-9]{6})/g;
+    while ((m = com.exec(s))) if (achadas.indexOf(m[1]) < 0) achadas.push(m[1]);
+    return achadas;
+  }
+  async function buscarMarca(marca, alvoMsg) {
+    $(alvoMsg).textContent = 'Buscando ' + marca + '…';
+    try {
+      const r = await chamar('adm_marca', { marca });
+      if (r.erro) { $(alvoMsg).textContent = 'Marca inválida.'; return; }
+      if (!r.achou) { $(alvoMsg).textContent = 'Nenhuma conta com a marca ' + marca + '.'; return; }
+      $(alvoMsg).textContent = 'Marca ' + marca + ' = ' + ((r.auth && r.auth.email) || r.uid) + '.';
+      pintarConta(r); mostra('cardConta', true);
+      $('cardConta').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) { $(alvoMsg).textContent = 'Erro: ' + e.message; }
+  }
+  $('btTexto').onclick = () => {
+    const achadas = marcasNoTexto($('vzTexto').value || '');
+    if (!achadas.length) { $('vzTextoMsg').textContent = 'Nenhuma marca no texto. (Texto redigitado ou reescrito por IA perde a marca; tente pelo print.)'; return; }
+    $('vzTextoMsg').textContent = 'Marca(s): ' + achadas.join(', ');
+    buscarMarca(achadas[0], 'vzTextoMsg');
+  };
+  $('btMarca').onclick = () => {
+    const m = ($('vzMarca').value || '').toUpperCase().trim();
+    if (!/^[A-Z2-9]{6}$/.test(m)) { $('vzMarcaMsg').textContent = 'A marca tem 6 letras/números.'; return; }
+    buscarMarca(m, 'vzMarcaMsg');
+  };
+
+</script>
+<script>
+/* Revelar a marca num print: script comum, separado do login de propósito —
+   funciona mesmo se o Firebase não carregar. */
+(function () {
+  // Login não carregou em 10 s (rede, bloqueador, gstatic fora): avisa em vez de tela vazia.
+  setTimeout(function () {
+    var algum = ['cardLogin', 'cardConfig', 'cardFila'].some(function (id) { return !document.getElementById(id).classList.contains('esc'); });
+    if (!algum) {
+      var c = document.getElementById('cardLogin');
+      c.classList.remove('esc');
+      document.getElementById('lgMsg').textContent = 'O login do Firebase não carregou. Confira a internet ou desligue o bloqueador de anúncios e recarregue (Ctrl+Shift+R).';
+    }
+  }, 10000);
+
+  // Realce: tira o "fundo" (versão borrada da própria imagem) e amplia a
+  // diferença. A marca, que está 3% acima do fundo, vira texto legível.
+  const $ = id => document.getElementById(id);
+  let IMG = null;
+  function revelar() {
+    if (!IMG) return;
+    const cv = $('vzCanvas');
+    const esc2 = Math.min(1, 2200 / Math.max(IMG.width, IMG.height));
+    const w = Math.round(IMG.width * esc2), h = Math.round(IMG.height * esc2);
+    cv.width = w; cv.height = h;
+    const x = cv.getContext('2d', { willReadFrequently: true });
+    x.imageSmoothingEnabled = true;
+    x.drawImage(IMG, 0, 0, w, h);
+    const orig = x.getImageData(0, 0, w, h);
+    const peq = document.createElement('canvas');
+    peq.width = Math.max(1, Math.round(w / 10)); peq.height = Math.max(1, Math.round(h / 10));
+    const px = peq.getContext('2d');
+    px.imageSmoothingEnabled = true; px.imageSmoothingQuality = 'high';
+    px.drawImage(IMG, 0, 0, peq.width, peq.height);
+    x.drawImage(peq, 0, 0, w, h);
+    const fundo = x.getImageData(0, 0, w, h);
+    const g = Number($('vzGanho').value) || 32;
+    const o = orig.data, f = fundo.data;
+    for (let i = 0; i < o.length; i += 4) {
+      const lo = 0.299 * o[i] + 0.587 * o[i + 1] + 0.114 * o[i + 2];
+      const lf = 0.299 * f[i] + 0.587 * f[i + 1] + 0.114 * f[i + 2];
+      const v = Math.max(0, Math.min(255, 128 + (lo - lf) * g));
+      o[i] = o[i + 1] = o[i + 2] = v; o[i + 3] = 255;
+    }
+    x.putImageData(orig, 0, 0);
+    $('vzCanvas').classList.remove('esc');
+    $('vzRes').innerHTML = '<div class="aviso">Procure o texto inclinado <code>moviki · XXXXXX</code> repetido na imagem e digite as 6 letras no campo 2. Se não aparecer: aumente o realce; print muito comprimido (enviado por WhatsApp) pode ter apagado a marca.</div>';
+  }
+  $('vzImg').onchange = e => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const img = new Image();
+    img.onload = () => { IMG = img; revelar(); URL.revokeObjectURL(img.src); };
+    img.src = URL.createObjectURL(f);
+  };
+  $('vzGanho').oninput = () => revelar();
+})();
+</script>
+</body>
+</html>

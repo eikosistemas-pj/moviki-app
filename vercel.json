@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/guarda",
+      "destination": "https://moviki-ai.vercel.app/api/guarda"
+    },
+    {
       "source": "/criador",
       "destination": "/parceiro.html"
     },
