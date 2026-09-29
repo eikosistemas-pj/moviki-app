@@ -1,7 +1,23 @@
 {
-  "versao": "2026-09-28-beleza-artes",
+  "versao": "2026-09-28-moda-masculina",
   "atualizado": "2026-09-28",
   "itens": [
+    {
+      "id": "video-comercio-moda-masculina",
+      "tipo": "video",
+      "titulo": "Moda masculina: venda ao vivo pelo celular",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:39",
+      "peso": "17,4 MB",
+      "arquivo": "material/video-comercio-moda-masculina.mp4",
+      "capa": "material/capas/video-comercio-moda-masculina.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Camisa boa na arara, e a loja sem movimento. Enquanto isso, o seu cliente de sempre está em casa, com o celular na mão.\n\nCom o Moviki, você abre uma live da sua loja de moda masculina direto do celular. Mostra o caimento da camisa, tira a dúvida do tamanho no chat e lança a oferta. E quem quer provar toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "moda"
+    },
     {
       "id": "story-perfumaria-ao-vivo",
       "tipo": "story",
