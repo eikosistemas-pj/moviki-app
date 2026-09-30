@@ -1562,7 +1562,7 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-27-aulaspedidos';
+  window.MOVIKI_VERSAO = '2026-09-30-p46';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -5811,7 +5811,16 @@ function mvQR(texto){
   /* caminho aceito: relativo dentro de material/ ou https. Evita que um
      erro de digitacao no catalogo vire javascript: ou caminho estranho. */
   function urlOk(u){ return typeof u === 'string' && (/^material\/[A-Za-z0-9_\-\/\.]+$/.test(u) || /^https:\/\/[^\s"'<>]+$/.test(u)); }
-  function nomeArq(u){ var p = String(u).split('?')[0].split('/'); return p[p.length-1] || 'material-moviki'; }
+  /* URL do Storage traz a pasta codificada no fim (material%2Fvideo.mp4):
+     decodifica antes de pegar o nome, senao o arquivo baixa com "%2F". */
+  function nomeArq(u){
+    var ult = String(u).split('?')[0].split('/').pop() || '';
+    try{ ult = decodeURIComponent(ult); }catch(e){}
+    return ult.split('/').pop() || 'material-moviki';
+  }
+  /* Busca o arquivo cheio. Resposta de erro (403, 404) nunca vira "arquivo":
+     sem esta checagem o parceiro baixaria um JSON de erro com nome de .mp4. */
+  function buscarBlob(u){ return fetch(u).then(function(r){ if(!r.ok) throw new Error('http ' + r.status); return r.blob(); }); }
 
   /* ------------------------------------------------------------ portas */
   function porta(){
@@ -6177,7 +6186,9 @@ function mvQR(texto){
       BLOBNOME = nomeArq(it.arquivo);
       /* celular: o arquivo precisa estar em maos ANTES do toque em Enviar —
          o Safari so abre o compartilhar dentro do proprio toque. */
-      if(podeCompartilhar() && !/^https:/.test(it.arquivo)) prepararBlob(it, fetch(it.arquivo).then(function(r){ return r.blob(); }));
+      /* 30/09/2026 (P46): o video mora no Firebase Storage, com CORS
+         liberado no balde. O arquivo desce ja na previa, como antes. */
+      if(podeCompartilhar()) prepararBlob(it, buscarBlob(it.arquivo));
       return;
     }
 
@@ -6234,9 +6245,21 @@ function mvQR(texto){
       if(!BLOB){ msg('Aguarde, o panfleto ainda está sendo montado.'); return; }
       liberarBlobUrl(); BLOBURL = URL.createObjectURL(BLOB);
       a.href = BLOBURL; a.download = BLOBNOME;
+    } else if(/^https:/.test(it.arquivo)){
+      /* 30/09/2026 (P46): arquivo em outro dominio (Storage). O atributo
+         download e ignorado entre dominios e o video abriria numa aba.
+         Baixa como arquivo; se falhar, ai sim abre na aba (segurar e salvar). */
+      var bBx = el('matBaixar'), rot = bBx ? bBx.textContent : '';
+      if(bBx){ bBx.disabled = true; bBx.textContent = 'Baixando…'; }
+      obter(it).then(function(o){
+        baixarObj(o); msg('Download iniciado.'); ev('baixar', it.id);
+      }).catch(function(){
+        try{ window.open(it.arquivo, '_blank', 'noopener'); }catch(e){}
+        msg('Abri o vídeo numa aba: segure o dedo nele e escolha Baixar.'); ev('baixar_aba', it.id);
+      }).then(function(){ if(bBx){ bBx.disabled = false; bBx.textContent = rot; } });
+      return;
     } else {
       a.href = it.arquivo; a.download = BLOBNOME || nomeArq(it.arquivo);
-      if(/^https:/.test(it.arquivo)){ a.target = '_blank'; a.rel = 'noopener'; }
     }
     document.body.appendChild(a); a.click(); a.remove();
     msg(it.qr ? 'Panfleto salvo com o seu QR code.' : 'Download iniciado.');
@@ -6286,7 +6309,7 @@ function mvQR(texto){
   function obter(it){
     if(BLOBS[it.id]) return Promise.resolve(BLOBS[it.id]);
     var pr = it.qr ? compor(it).then(function(r){ return r.blob; })
-                   : fetch(it.arquivo).then(function(r){ if(!r.ok) throw new Error('http'); return r.blob(); });
+                   : buscarBlob(it.arquivo);
     return pr.then(function(b){ var o = { blob: b, nome: nomeDe(it) }; BLOBS[it.id] = o; return o; });
   }
   function arquivoDe(o){

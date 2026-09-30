@@ -8,7 +8,7 @@ mexe no `parceiro.html`.**
 - `panfletos/` — arte cheia para imprimir (JPG). Se tiver espaço de QR, o QR do parceiro é desenhado por cima no navegador dele.
 - `feed/` — 1080x1350 (4:5) e 1080x1080 (1:1), JPG qualidade 88.
 - `stories/` — 1080x1920 (9:16), JPG qualidade 88.
-- `videos/` — MP4 H.264, até 20 MB (limite de upload do GitHub web é 25 MB). Maior que isso: anexo de Release do GitHub e `arquivo` com a URL https.
+- **Vídeo NÃO mora mais aqui (desde 30/09/2026, P46).** MP4 H.264 vai para o Firebase Storage, pasta `material/` do balde `moviki-app.firebasestorage.app`, com o mesmo nome. No catálogo, `arquivo` é a URL `https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/material%2F<nome>.mp4?alt=media`. Só a capa WebP continua no repositório.
 - `capas/` — WebP de 320 px de largura, qualidade 64. É o que a grade carrega. Toda imagem e todo vídeo têm capa.
 
 ## Campos de um item no catalogo.json
@@ -61,3 +61,16 @@ publica na página oficial do Moviki, sem repetir até girar o catálogo:
   - vídeo: `video-cada-negocio`, `video-live-parceiro`, `video-live-parceiro-4x5`,
     `video-parceiro-chama-parceiro`.
 - Categoria `recrutar` não vai para a página oficial.
+
+## Vídeos no Firebase Storage (P46, 30/09/2026)
+
+- **Por quê:** 27 vídeos somavam 420 MB dentro do Git. Cada vídeo novo engordava o repositório para sempre (o histórico guarda tudo) e cada deploy da Vercel carregava o peso.
+- **Onde:** `gs://moviki-app.firebasestorage.app/material/<nome>.mp4`. Leitura pública pela regra `match /material/{arquivo=**}` do `firebase/storage.rules`; escrita só pelo console do Firebase ou pelo Cloud Shell.
+- **CORS do balde:** liberado para `GET`/`HEAD`. É o que permite ao painel baixar o vídeo como arquivo e ao celular abrir o "Postar agora" com o vídeo junto. Sem CORS o vídeo toca, mas o compartilhar falha.
+- **Vídeo novo:**
+  1. subir o `.mp4` no console do Firebase: Storage → pasta `material` → Enviar arquivo;
+  2. no `catalogo.json`, `arquivo` com a URL acima;
+  3. capa WebP em `material/capas/`, como sempre.
+- **Nunca** trocar o conteúdo de um vídeo mantendo o mesmo nome: versão nova ganha nome novo (`-2`, `-3`). O navegador e o robô guardam cópia pelo endereço.
+- **Nunca** vídeo de lojista nesta pasta: vídeo de lojista (Vitrine em vídeo) mora só no Cloudflare Stream.
+
