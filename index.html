@@ -3714,7 +3714,14 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-30-estoque';
+  /* 2026-09-30-alertaoferta — a Central de Pedidos avisa da peca que ja e de
+     outro comprador (alertaEstoque) em TODO momento de decisao: cartao e ficha
+     ANTES do "Recebi o Pix" (conferindo), confirm() do Recebi e do arrastar
+     para Pagos, "O Pix caiu: confirmar", comanda impressa. Etiqueta propria
+     para a oferta ("peca ja e de outro"). Botao novo "Nao tenho a
+     peca" (recusa com motivo, sem somar Vendidos na oferta) e "Avisar
+     cliente" com texto de devolucao. Nada muda no robo. */
+  window.MOVIKI_VERSAO='2026-09-30-alertaoferta';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -7404,6 +7411,43 @@ window.mvAbaInicial=function(){
     if (q && col && window.innerWidth < 1120) { if (suave) q.scrollTo({ left: col.offsetLeft, behavior: 'smooth' }); else q.scrollLeft = col.offsetLeft; }
   };
 
+  /* ---------- peca que ja e de outro comprador (30/09/2026, alertaoferta) ----------
+     O robo grava alertaEstoque no pedido: 'sem_reserva' = Pix da OFERTA
+     RELAMPAGO pago depois que a unidade foi reservada para outra pessoa
+     (gravado ja no "Ja paguei", status conferindo); 'sem_estoque' = estoque do
+     produto furou na confirmacao. estoqueFurou e o nome antigo.
+     Antes o aviso so aparecia DEPOIS de pago. O momento que mais importa e
+     ANTES do "Recebi o Pix": ali ainda da para recusar sem baixar a peca de
+     novo. Vale para quem ainda decide algo; entregue, desfeito e estornado
+     ja foram resolvidos. */
+  const PQ_ALERTA_ANTES = ['aguardando', 'conferindo'];
+  const PQ_ALERTA_REABRE = ['recusado', 'cancelado', 'expirado'];
+  function pqAlertaEst(p) {
+    if (!(p && (p.alertaEstoque || p.estoqueFurou))) return '';
+    const st = String(p.status || 'aguardando');
+    if (st === 'entregue' || (PED_PAGOS.indexOf(st) < 0 && PQ_ALERTA_ANTES.indexOf(st) < 0 && PQ_ALERTA_REABRE.indexOf(st) < 0)) return '';
+    if (st === 'recusado' && pqSemPeca(p)) return '';
+    return p.alertaEstoque === 'sem_reserva' ? 'oferta' : 'estoque';
+  }
+  /* Recusado pelo botao "Nao tenho a peca": o Pix CAIU e o lojista devolve. */
+  function pqSemPeca(p) { return String(p.status || '') === 'recusado' && /^Sem a pe/i.test(String(p.recusaMotivo || '')); }
+  function pqAlertaTag(p) {
+    const a = pqAlertaEst(p), st = String(p.status || '');
+    if (pqSemPeca(p)) return '<span class="pqTag ruim">sem a peça: devolva o Pix</span>';
+    if (!a || PQ_ALERTA_REABRE.indexOf(st) >= 0) return '';
+    return '<span class="pqTag ruim">' + (a === 'oferta' ? 'peça já é de outro' : 'sem estoque: confira') + '</span>';
+  }
+  /* Texto do confirm() de quem confirma o Pix (Recebi, arrastar para Pagos,
+     "O Pix caiu: confirmar"). */
+  function pqAlertaConfirm(p) {
+    const a = pqAlertaEst(p);
+    if (!a) return '';
+    return (a === 'oferta'
+      ? '⚠ ATENÇÃO: este cliente pagou depois que a peça da oferta foi reservada para outra pessoa.'
+      : '⚠ ATENÇÃO: outra pessoa pode ter comprado a última peça deste produto.')
+      + '\nConfirme só se você AINDA TEM a peça para este cliente. Se não tiver, toque em Cancelar e use "Não tenho a peça".\n\n';
+  }
+
   /* ---------- cartao ---------- */
   function pqCardHtml(p, hist) {
     const id = String(p.__id || '');
@@ -7421,7 +7465,7 @@ window.mvAbaInicial=function(){
     let tags = ent ? '<span class="pqTag ent">🛵 ' + (e.bairro ? finEsc(e.bairro) : 'Entrega') + '</span>' : '<span class="pqTag">🏪 Retirada</span>';
     if (hist) tags += '<span class="pqTag">' + (p.origem === 'cardapio' ? 'Cardápio' : 'Live') + '</span>';
     if (hist) tags += '<span class="pqTag' + (['recusado', 'cancelado', 'expirado', 'estornado', 'devolvido'].indexOf(st) >= 0 ? ' ruim' : '') + '">' + (PED_ROT[st] || finEsc(st)) + '</span>';
-    if ((p.alertaEstoque || p.estoqueFurou) && PED_PAGOS.indexOf(st) >= 0 && st !== 'entregue') tags += '<span class="pqTag ruim">sem estoque: confira</span>';
+    tags += pqAlertaTag(p);
     if (!hist && st === 'conferindo') tags += '<span class="pqTag alerta">cliente diz que pagou</span>';
     if (!hist && st === 'conferindo' && p.pagouAtrasado) tags += '<span class="pqTag ruim">pagou depois do prazo</span>';
     if (!hist && st === 'aguardando') tags += '<span class="pqTag">cliente ainda pagando</span>';
@@ -7542,12 +7586,20 @@ window.mvAbaInicial=function(){
     const de = pqColDe(p);
     if (pqDestinos(p).indexOf(col) < 0) { toast('Esse pedido não pode ir para essa coluna.', true); return; }
     const st = pqStatusPara(p, col);
-    if (st === 'pago' && !confirm('Confirmar o pagamento do pedido nº ' + pedNumero(p) + '?\n\nAntes, abra o app do seu banco e confira se o Pix de ' + finReal(p.total) + ' caiu na sua conta.')) return;
+    if (st === 'pago' && !confirm(pqAlertaConfirm(p) + 'Confirmar o pagamento do pedido nº ' + pedNumero(p) + '?\n\nAntes, abra o app do seu banco e confira se o Pix de ' + finReal(p.total) + ' caiu na sua conta.')) return;
     if (PQ_ORD[col] < PQ_ORD[de]) {
       const t = (PQ_COLS.find(function (c) { return c.k === col; }) || {}).t || col;
       if (!confirm('Voltar o pedido nº ' + pedNumero(p) + ' para "' + t + '"?')) return;
     }
     await pqAcao(id, st);
+  };
+  /* Pix caiu, mas a peca da oferta ja era de outro: recusa SEM passar por
+     "Recebi". Pelo Recebi + Desfazer venda a oferta contaria uma venda a mais
+     no estudio (o robo soma Vendidos no pago e nao desconta no desfazer). */
+  window.pedSemPeca = function (id) {
+    const p = pedAchar(id); if (!p) return;
+    if (!confirm('Recusar o pedido nº ' + pedNumero(p) + ' porque você não tem a peça?\n\nO Pix de ' + finReal(p.total) + ' caiu na sua conta: devolva ao cliente pelo app do seu banco. O Moviki não mexe no dinheiro.\n\nO pedido vai para o Histórico. Depois, toque em "Avisar cliente" para explicar pelo WhatsApp.')) return;
+    pqAcao(id, 'recusado', { motivo: 'Sem a peça da oferta: devolver o Pix' });
   };
   window.pedNaoCaiu = function (id) {
     const p = pedAchar(id); if (!p) return;
@@ -7569,7 +7621,7 @@ window.mvAbaInicial=function(){
       } else {
         /* A escuta do Firestore confirma em seguida; o cartao ja anda agora. */
         p.status = (r.j.status && r.j.status !== 'divergente') ? r.j.status : status;
-        if (status === 'recusado') toast('Pedido recusado.');
+        if (status === 'recusado') { if (extra && extra.motivo) p.recusaMotivo = extra.motivo; toast(extra && extra.motivo ? 'Pedido recusado. Devolva o Pix ao cliente pelo seu banco.' : 'Pedido recusado.'); }
         else if (status === 'devolvido') toast('Venda desfeita. Devolva o Pix ao cliente pelo seu banco.');
         else pqSnack(id, p.status, antes);
       }
@@ -7649,7 +7701,11 @@ window.mvAbaInicial=function(){
     /* 30/09/2026 (P53): avisos que mudam o que o lojista faz com o pedido. */
     if (st === 'estornado') h += '<div class="pqFSec pqFAlerta"><h4>⚠ O banco devolveu este Pix ao cliente</h4>Não entregue este pedido. Se já entregou, fale com o cliente.' + (p.estornoDe && p.estornoDe !== 'entregue' ? ' Se você controla estoque, a peça voltou para ele.' : '') + '</div>';
     if (st === 'devolvido') h += '<div class="pqFSec pqFAlerta"><h4>Venda desfeita por você</h4>' + finEsc((p.devolucao && p.devolucao.motivo) || '') + ((p.devolucao && p.devolucao.voltaEstoque) ? ' · a peça voltou ao estoque' : '') + '<br><span style="color:#7d92a8;font-size:12.5px">Devolva o Pix ao cliente pelo app do seu banco' + (p.modo === 'pix' ? '' : ' ou pelo Asaas') + ', se ainda não devolveu.</span></div>';
-    if ((p.alertaEstoque || p.estoqueFurou) && pago && st !== 'entregue') h += '<div class="pqFSec pqFAlerta"><h4>⚠ Pago quando a peça já era de outro comprador</h4>' + (p.alertaEstoque === 'sem_reserva' ? 'O Pix foi pago depois que a unidade da oferta foi reservada por outra pessoa.' : 'O Pix deste pedido foi confirmado depois do prazo, e outra pessoa comprou a última peça nesse meio tempo.') + ' Confira se você tem o produto antes de separar. Se não tiver, use <b>Desfazer venda</b> e devolva o Pix ao cliente.</div>';
+    const alertaE = pqAlertaEst(p);
+    if (alertaE && pago) h += '<div class="pqFSec pqFAlerta"><h4>⚠ Pago quando a peça já era de outro comprador</h4>' + (alertaE === 'oferta' ? 'O Pix foi pago depois que a unidade da oferta foi reservada por outra pessoa.' : 'O Pix deste pedido foi confirmado depois do prazo, e outra pessoa comprou a última peça nesse meio tempo.') + ' Confira se você tem o produto antes de separar. Se não tiver, use <b>Desfazer venda</b> e devolva o Pix ao cliente.</div>';
+    else if (alertaE && PQ_ALERTA_ANTES.indexOf(st) >= 0) h += '<div class="pqFSec pqFAlerta"><h4>⚠ ' + (alertaE === 'oferta' ? 'A peça da oferta já é de outro comprador' : 'A última peça pode já ter sido vendida') + '</h4>' + (alertaE === 'oferta' ? 'Este cliente pagou depois que a peça da oferta foi reservada para outra pessoa.' : 'Outra pessoa comprou a última peça deste produto enquanto este Pix estava aberto.') + ' Confira se ainda tem a peça antes de tocar em <b>Recebi o Pix</b>. Se não tiver, toque em <b>Não tenho a peça</b> e devolva o Pix ao cliente pelo app do seu banco.</div>';
+    else if (alertaE && p.modo === 'pix') h += '<div class="pqFSec pqFAlerta"><h4>⚠ A peça ' + (alertaE === 'oferta' ? 'da oferta ' : '') + 'já era de outro comprador</h4>Se o Pix caiu depois, confira se ainda tem a peça antes de tocar em <b>O Pix caiu: confirmar</b>. Se não tiver, não confirme: devolva o Pix ao cliente pelo app do seu banco.</div>';
+    if (pqSemPeca(p)) h += '<div class="pqFSec pqFAlerta"><h4>Recusado por falta da peça</h4>O Pix de ' + finReal(p.total) + ' caiu na sua conta. Devolva ao cliente pelo app do seu banco, se ainda não devolveu, e avise pelo WhatsApp.</div>';
     if (pqFichaModo === 'devolver' && pago) {
       /* a escuta repinta a ficha a cada pedido que chega: guarda o que ja foi escolhido */
       const mAnt = el('pqDevMot') ? el('pqDevMot').value : '', cAnt = el('pqDevEst') ? el('pqDevEst').checked : null;
@@ -7667,11 +7723,13 @@ window.mvAbaInicial=function(){
     let b = '';
     const rot = pqRotBotao(p);
     if (rot) b += '<button type="button" class="pqPri' + (col === 'novos' ? ' pix' : '') + '" onclick="pedAvancar(\'' + id + '\')">' + rot  + '</button>';
+    if (col === 'novos' && p.modo === 'pix' && alertaE) b += '<button type="button" class="pqNao" onclick="pedSemPeca(\'' + id + '\')">Não tenho a peça</button>';
     if (col === 'novos' && p.modo === 'pix') b += '<button type="button" class="pqNao" onclick="pedNaoCaiu(\'' + id + '\')">Não caiu</button>';
     /* Pix direto recusado, cancelado ou vencido: o dinheiro pode ter caido
        depois. "Nao caiu" tocado por engano passa a ter volta. */
     if (!col && p.modo === 'pix' && ['recusado', 'cancelado', 'expirado'].indexOf(st) >= 0) b += '<button type="button" class="pqPri pix" onclick="pedReabrirPix(\'' + id + '\')">O Pix caiu: confirmar</button>';
-    if (wpp && pago) b += '<button type="button" onclick="pedAvisar(\'' + id + '\')">Avisar cliente</button>';
+    if (wpp && pqSemPeca(p)) b += '<button type="button" onclick="pedAvisar(\'' + id + '\',\'sempeca\')">Avisar cliente</button>';
+    else if (wpp && pago) b += '<button type="button" onclick="pedAvisar(\'' + id + '\')">Avisar cliente</button>';
     else if (wpp) b += '<a href="https://wa.me/55' + wpp + '" target="_blank" rel="noopener">WhatsApp</a>';
     if (pago) b += '<button type="button" onclick="pedImprimirUm(\'' + id + '\')">Imprimir comanda</button>';
     if (rota && pago) b += '<a href="' + rota + '" target="_blank" rel="noopener">Abrir rota</a>';
@@ -7695,7 +7753,7 @@ window.mvAbaInicial=function(){
   };
   window.pedReabrirPix = function (id) {
     const p = pedAchar(id); if (!p) return;
-    if (!confirm('O Pix de ' + finReal(p.total) + ' do pedido nº ' + pedNumero(p) + ' caiu na sua conta?\n\nConfira no app do seu banco antes. O pedido volta como PAGO.')) return;
+    if (!confirm((pqSemPeca(p) ? 'Você recusou este pedido por falta da peça. Confirme só se achou a peça e ainda NÃO devolveu o Pix.\n\n' : '') + pqAlertaConfirm(p).replace('Se não tiver, toque em Cancelar e use "Não tenho a peça".', 'Se não tiver, toque em Cancelar e devolva o Pix pelo seu banco.') + 'O Pix de ' + finReal(p.total) + ' do pedido nº ' + pedNumero(p) + ' caiu na sua conta?\n\nConfira no app do seu banco antes. O pedido volta como PAGO.')) return;
     pqAcao(id, 'pago');
   };
   /* Estorno visto: some da faixa vermelha (fica so no aparelho). */
@@ -7726,7 +7784,8 @@ window.mvAbaInicial=function(){
       separando: 'seu pedido ' + num + ' na ' + neg + ' está sendo separado.',
       pronto: 'seu pedido ' + num + ' está pronto para retirar' + ret + '. Na retirada, mostre o seu código do pedido.',
       saiu: 'seu pedido ' + num + ' saiu para entrega. Tenha em mãos o seu código do pedido para mostrar a quem entregar.',
-      entregue: 'seu pedido ' + num + ' foi entregue. Obrigado pela compra na ' + neg + '!'
+      entregue: 'seu pedido ' + num + ' foi entregue. Obrigado pela compra na ' + neg + '!',
+      sempeca: 'o seu Pix do pedido ' + num + ' na ' + neg + ' caiu, mas a peça da oferta acabou antes de eu confirmar. Vou devolver o seu Pix pelo banco. Desculpe o transtorno!'
     }[String(stForcado || p.status)] || ('sobre o seu pedido ' + num + ' na ' + neg + ':');
     window.open('https://wa.me/55' + wpp + '?text=' + encodeURIComponent('Olá' + (nome ? ', ' + nome : '') + '! ' + txt), '_blank', 'noopener');
   };
@@ -7765,6 +7824,7 @@ window.mvAbaInicial=function(){
     h += '<div class="c neg">' + finEsc(pedNegNome()) + '</div>';
     h += '<div class="c num">PEDIDO Nº ' + pedNumero(p) + '</div>';
     h += '<div class="c pq">' + pedData(p) + ' · ' + (p.origem === 'cardapio' ? 'Cardápio' : 'Live') + '</div>';
+    if (pqAlertaEst(p)) h += '<div class="sep"></div><div class="c tit">CONFIRA A PEÇA ANTES DE SEPARAR</div><div class="c pq">Pago quando a peça já era de outro comprador</div>';
     h += '<div class="sep"></div>';
     if (ent) {
       h += '<div class="tit">ENTREGA' + (e.bairro ? ' · ' + finEsc(e.bairro) : '') + '</div>';
