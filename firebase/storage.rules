@@ -3,6 +3,7 @@ rules_version = '2';
 // ==========================================================
 //  MOVIKI — REGRAS DO CLOUD STORAGE — 27/08/2026
 //  22/09/2026: + criadores/{uid}/ (pecas dos influenciadores)
+//  30/09/2026: + material/ (videos do Material de apoio, leitura publica - P46)
 //  Balde: moviki-app.firebasestorage.app
 //
 //  Até hoje o projeto NÃO gravava no Storage pelo navegador: as imagens
@@ -76,6 +77,17 @@ service firebase.storage {
       allow update: if false;
       allow delete: if request.auth != null
                     && (request.auth.uid == uid || ehAdmin());
+    }
+
+    // Videos do Material de apoio do parceiro (30/09/2026, P46). Sairam do
+    // repositorio moviki-app (420 MB de mp4 no Git). Sao pecas de divulgacao
+    // do proprio Moviki: qualquer um le, como logos/ e
+    // produtos/, para o painel do parceiro, a pagina e o robo social
+    // baixarem sem token. Escrita: so o dono pelo console ou o Cloud Shell
+    // (fora destas regras). Nunca video de lojista aqui.
+    match /material/{arquivo=**} {
+      allow read: if true;
+      allow write: if false;
     }
 
     // Todo o resto do balde: fechado para o navegador.
