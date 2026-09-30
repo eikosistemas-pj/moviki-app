@@ -512,7 +512,7 @@ svg{display:block}
           <div class="linha2"><div><label class="rot">Duração</label><select class="campo" id="ofMin"><option value="5">5 min</option><option value="10" selected>10 min</option><option value="15">15 min</option><option value="30">30 min</option></select></div><div><label class="rot">Quantidade (opcional)</label><input class="campo" id="ofEstoque" type="number" min="0" max="999" placeholder="sem limite"></div></div>
           <button type="button" class="btnGrad" id="btnOferta" style="margin-top:12px">Lançar oferta</button>
           <div id="ofAtiva" class="escondido" style="margin-top:12px">
-            <div class="kpis"><div class="kpi"><small>Vendidos</small><strong id="ofVend">0</strong></div><div class="kpi"><small>Restam</small><strong id="ofResta">—</strong></div></div>
+            <div class="kpis" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div class="kpi"><small>Vendidos</small><strong id="ofVend">0</strong></div><div class="kpi"><small>Aguardando Pix</small><strong id="ofReserv">0</strong></div><div class="kpi"><small>Restam</small><strong id="ofResta">—</strong></div></div>
             <div style="display:flex;gap:8px;margin-top:10px"><button type="button" class="btnGrad" id="btnVendeu" style="flex:2">Vendi +1</button><button type="button" class="btnSec" id="btnDesvendeu" style="flex:1">−1</button><button type="button" class="btnMini perigo" id="btnFimOferta">Encerrar</button></div>
           </div>
         </div>
@@ -626,10 +626,10 @@ svg{display:block}
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer }
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer, increment }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-26-aulasroxo';
+  window.MOVIKI_VERSAO='2026-09-30-reserva';   /* anterior: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -743,7 +743,7 @@ svg{display:block}
     sacola=sacola.slice(0,nivel.sacolaMax);
     el('titulo').value=est.titulo||'';
     if(est.agendada&&est.agendada.em){const d=new Date(ms(est.agendada.em));el('agQuando').value=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);el('agTitulo').value=est.agendada.titulo||'';}
-    montarAbas(); pintarProdutos(); pintarOfertaSelect(); ouvirPedidos();
+    montarAbas(); pintarProdutos(); pintarOfertaSelect(); ouvirPedidos(); ouvirOferta();
     getDoc(doc(db,'negocios',uid,'estado','liveAceite')).then(a=>{aceiteOk=!!(a.exists()&&a.data().versao===ACEITE_VERSAO);}).catch(()=>{});
     ligarAulas();
     carregarSaldo();
@@ -1393,12 +1393,42 @@ svg{display:block}
     if(fixado!==nome){fixado=nome;if(!sacola.includes(nome))sacola.push(nome);pintarProdutos();publicarProdutos();}
     pintarOferta(); ev('live_oferta');
   };
+  /* 30/09/2026: quem gera o Pix de uma oferta com estoque SEGURA a unidade
+     (o servidor grava em oferta.reservas o horario em que cada uma volta), e
+     o Pix pago baixa o estoque no servidor. O estudio passa a ler o documento
+     da live para mostrar os dois numeros de verdade — antes ele so via o que
+     ele mesmo tinha contado, e o "+1" do balcao sobrescrevia a venda do Pix. */
+  const ofReserv=()=>(oferta&&Array.isArray(oferta.reservas))?oferta.reservas.filter(t=>Number(t)>Date.now()).length:0;
   function pintarOferta(){
     el('ofAtiva').classList.toggle('escondido',!oferta);
     if(!oferta)return;
-    el('ofVend').textContent=oferta.vendidos; el('ofResta').textContent=oferta.estoque?Math.max(0,oferta.estoque-oferta.vendidos):'—';
+    const rs=ofReserv();
+    el('ofVend').textContent=oferta.vendidos; el('ofReserv').textContent=rs;
+    el('ofResta').textContent=oferta.estoque?Math.max(0,oferta.estoque-oferta.vendidos-rs):'—';
   }
-  function mudarVenda(d){if(!oferta)return;oferta.vendidos=Math.max(0,oferta.vendidos+d);if(oferta.estoque)oferta.vendidos=Math.min(oferta.vendidos,oferta.estoque);updateDoc(refLive(),{'oferta.vendidos':oferta.vendidos}).catch(()=>{});pintarOferta();}
+  let ofDes=null;
+  function ouvirOferta(){
+    if(!ent()||ofDes)return;
+    ofDes=onSnapshot(refLive(),sn=>{
+      const o=sn.exists()?((sn.data()||{}).oferta||null):null;
+      if(!o||!o.nome||!(ms(o.fimEm)>Date.now()))return;
+      /* recarregou a pagina no meio da oferta: ela volta para o painel */
+      if(!oferta)oferta={nome:o.nome,precoDe:o.precoDe||'',precoPor:o.precoPor||'',fimEm:ms(o.fimEm),estoque:Number(o.estoque||0),vendidos:0};
+      if(oferta.nome!==o.nome||Number(oferta.fimEm)!==ms(o.fimEm))return;
+      oferta.vendidos=Number(o.vendidos||0); oferta.reservas=Array.isArray(o.reservas)?o.reservas:[];
+      pintarOferta();
+    },()=>{});
+  }
+  /* reserva vencida devolve a unidade sem mudar o documento: recalcula sozinho */
+  setInterval(()=>{if(oferta&&oferta.estoque)pintarOferta();},5000);
+  /* Venda no balcao: soma no servidor (increment), nunca grava o numero
+     local por cima — o Pix pago pode ter somado enquanto isso. */
+  function mudarVenda(d){if(!oferta)return;
+    if(d<0&&!(oferta.vendidos>0))return;
+    const rs=ofReserv();
+    if(d>0&&oferta.estoque&&oferta.vendidos+rs>=oferta.estoque&&!confirm(rs?('Tem '+rs+' unidade(s) reservada(s) por quem já gerou o Pix. Vender no balcão pode deixar sem peça quem pagar. Marcar a venda mesmo assim?'):'O estoque da oferta já acabou. Marcar mais uma venda mesmo assim?'))return;
+    oferta.vendidos=Math.max(0,oferta.vendidos+d);
+    updateDoc(refLive(),{'oferta.vendidos':increment(d)}).catch(()=>{});pintarOferta();}
   el('btnVendeu').onclick=()=>mudarVenda(1); el('btnDesvendeu').onclick=()=>mudarVenda(-1);
   el('btnFimOferta').onclick=()=>{oferta=null;updateDoc(refLive(),{oferta:null}).catch(()=>{});pintarOferta();};
 
@@ -1532,12 +1562,14 @@ svg{display:block}
         const rotSt={separando:'separando',pronto:'pronto',saiu:'saiu p/ entrega'}[x.status]||x.status;
         d.innerHTML='<div class="l1"><strong>'+esc((it.qtd>1?it.qtd+'x ':'')+(it.nome||''))+'</strong><span>'+esc(brl(x.total))+'</span><span class="st '+esc(x.status)+'">'+esc(rotSt)+'</span></div>'+
           '<div class="l2">'+esc(c.nome||'')+' · nº '+esc(nro)+' · '+(en.tipo==='entrega'?'Entrega'+(en.bairro?' ('+esc(en.bairro)+')':'')+': '+esc(en.detalhe||''):'Retirada no local')+'</div>'+
+          (x.alertaEstoque?'<div class="l2" style="color:#ffd36b">Pago depois que a unidade da oferta foi reservada por outro comprador. Confira se ainda tem a peça; se não tiver, devolva o Pix.</div>':(x.pagouAtrasado?'<div class="l2" style="color:#ffd36b">Pagou depois do prazo do Pix. Confira o valor exato no extrato.</div>':''))+
           '<div class="l3">'+(w&&x.status!=='aguardando'?'<a class="btnMini on" target="_blank" rel="noopener" href="https://wa.me/55'+w+'?text='+encodeURIComponent(msg)+'">WhatsApp do cliente</a>':'')+
           (['pago','separando','pronto','saiu'].indexOf(x.status)>=0?'<button type="button" class="btnMini" data-p="entregue">Marcar entregue</button>':'')+
           /* No modo chave Pix propria nao ha gateway: "Conferir pagamento"
              nao tem a quem perguntar e sempre volta "ainda nao caiu". Quem
              confirma e o lojista, olhando o extrato pelos centavos. */
           (x.status==='conferindo'?'<button type="button" class="btnMini on" data-p="pago">Recebi — marcar pago</button><button type="button" class="btnMini perigo" data-p="cancelado">Cancelar</button>':'')+
+          (x.status==='expirado'&&x.modo==='pix'?'<button type="button" class="btnMini" data-p="pago">Recebi — marcar pago</button>':'')+
           (x.status==='aguardando'?(x.modo==='pix'
               ?'<button type="button" class="btnMini" data-p="pago">Recebi — marcar pago</button><button type="button" class="btnMini perigo" data-p="cancelado">Cancelar</button>'
               :'<button type="button" class="btnMini" data-p="conferir">Conferir pagamento</button><button type="button" class="btnMini perigo" data-p="cancelado">Cancelar</button>'):'')+'</div>';
@@ -1560,7 +1592,8 @@ svg{display:block}
     const it=(alvo.itens&&alvo.itens[0])||{}, c=alvo.comprador||{};
     el('paValor').textContent=brl(alvo.total);
     /* o valor EXATO e a prova: os centavos identificam este pedido no extrato */
-    el('paSub').textContent=(c.nome||'Cliente')+' · '+(it.qtd>1?it.qtd+'x ':'')+(it.nome||'')+' · nº '+(alvo.numero?String(alvo.numero).padStart(4,'0'):String(alvo.id).slice(-6).toUpperCase())+' — confira este valor exato no seu extrato.';
+    el('paSub').textContent=(c.nome||'Cliente')+' · '+(it.qtd>1?it.qtd+'x ':'')+(it.nome||'')+' · nº '+(alvo.numero?String(alvo.numero).padStart(4,'0'):String(alvo.id).slice(-6).toUpperCase())+' — confira este valor exato no seu extrato.'+
+      (alvo.alertaEstoque?' ATENÇÃO: pagou depois que a unidade da oferta foi reservada por outro comprador. Se não tiver a peça, devolva o Pix.':(alvo.pagouAtrasado?' Pagou depois do prazo do Pix.':''));
     const lk=el('paComp');
     if(alvo.comprovante){
       lk.style.display='';
