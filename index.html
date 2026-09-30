@@ -2937,6 +2937,22 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         .pqDica button{margin-left:auto;flex:none;border:0;background:#1c2735;color:#cfe0f0;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:15px}
         .pqDicaM{display:none}
         .pqAbas{display:none}
+        .pqEstornos{display:flex;flex-direction:column;gap:6px;margin:0 0 10px}
+        .pqEstornos button{all:unset;cursor:pointer;display:block;background:rgba(255,80,80,.14);border:1px solid rgba(255,107,107,.55);color:#ffb3b3;border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.4}
+        .pqEstornos button b{color:#fff}
+        .pqFAlerta{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.4) !important;border-radius:12px;padding:10px 12px !important;margin-top:8px}
+        .pqFAlerta h4{color:#ff9d9d !important}
+        .pqFDev label{display:block;font-size:13px;color:#c6d8ee;margin:6px 0 4px}
+        .pqFDev select{width:100%;margin-bottom:8px}
+        .pqFDev .pqDevChk{display:flex;align-items:center;gap:8px;margin:6px 0 10px}
+        .pqFDev .pqDevChk input{width:auto !important}
+        .pqFBtns .pqFDesf{grid-column:1/-1;background:transparent !important;border:1px dashed rgba(255,107,107,.5) !important;color:#ff9d9d !important}
+        .pedEstRow{display:grid;grid-template-columns:1fr auto 96px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+        .pedEstRow .nm{font-size:14px;color:#eaf6ff;overflow:hidden;text-overflow:ellipsis}
+        .pedEstRow .ct{font-size:11.5px;color:#7d92a8;display:block}
+        .pedEstRow .rs{font-size:11.5px;color:#ffd27a;white-space:nowrap}
+        .pedEstRow .zero{color:#ff8f8f;font-weight:700}
+        .pedEstRow input{width:96px !important;text-align:center}
         .pqQuadro{position:relative;display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:10px;overflow-x:auto;padding-bottom:6px;align-items:start}
         .pqCol{background:#0d131c;border:1px solid #1c2735;border-top:3px solid var(--c);border-radius:14px;display:flex;flex-direction:column;min-width:0;transition:opacity .15s,border-color .15s,background .15s}
         .pqColCab{display:flex;align-items:center;gap:6px;padding:9px 8px 8px 11px;border-bottom:1px solid #1c2735}
@@ -3056,6 +3072,8 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
           </div>
         </div>
 
+        <div class="pqEstornos escondido" id="pqEstornos" role="alert"></div>
+
         <div class="pqDica escondido" id="pqDica">
           <span class="pqDicaD"><b>Arraste o pedido</b> para a próxima coluna, ou use o botão do cartão. Toque no pedido para ver tudo dele.</span>
           <span class="pqDicaM"><b>Toque no botão do pedido</b> para passar à próxima etapa. Deslize para o lado para ver as outras colunas.</span>
@@ -3105,6 +3123,25 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
           <button type="button" class="btn" id="pedBtnEntrega" onclick="pedSalvarEntrega()">Salvar entrega</button>
           <div id="pedAvisoEntrega" class="aviso"></div>
           <div class="finNota">A entrega é sua: o Moviki não faz entrega e não fica com a taxa. O valor vai inteiro para você, no mesmo Pix do pedido.</div>
+        </div>
+      </div>
+
+      <!-- ESTOQUE (30/09/2026, P53) -->
+      <div class="mvAcc" id="acc-ped-estoque">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-ped-estoque-body" onclick="mvAccToggle('acc-ped-estoque');pedEstAbrir()">
+          <span class="mvAccIco"><img src="icones/cardapio.png" alt="" loading="lazy" onerror="mvI(this,'📦')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Estoque</span><span class="mvAccSub">Quantas peças ainda pode vender, na live e no cardápio.</span></span>
+          <span class="mvAccSelo" id="selo-acc-ped-estoque"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-ped-estoque-body">
+          <div class="finNota" style="margin-top:0">Escreva quantas unidades <b>ainda pode vender</b> de cada produto. O número baixa sozinho quando o cliente gera o Pix, e a peça volta se o Pix vencer, for recusado ou você desfizer a venda. Chegou a zero, a live e o cardápio mostram <b>Esgotado</b> e ninguém consegue comprar. <b>Deixe vazio</b> para vender sem limite, como antes. O produto da live usa o estoque do produto do cardápio com o <b>mesmo nome</b>.</div>
+          <div id="pedEstLista"></div>
+          <div style="height:12px"></div>
+          <button type="button" class="btn" id="pedBtnEst" onclick="pedSalvarEstoque()">Salvar estoque</button>
+          <button type="button" class="pqBtnSec" style="margin-top:8px" onclick="pedEstAbrir(true)">Atualizar números</button>
+          <div id="pedAvisoEst" class="aviso"></div>
+          <div class="finNota">Vendeu no balcão? Baixe o número aqui. Recebeu mercadoria? Suba. O Moviki soma a diferença, então uma venda que entrou enquanto você digitava não se perde.</div>
         </div>
       </div>
 
@@ -3677,7 +3714,7 @@ window.mvAbaInicial=function(){
         '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
     }
   }
-  window.MOVIKI_VERSAO='2026-09-27-trilhaped';
+  window.MOVIKI_VERSAO='2026-09-30-estoque';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -6614,6 +6651,12 @@ window.mvAbaInicial=function(){
     conta_pendente: 'Sua conta no Asaas ainda não foi aprovada.',
     sessao: 'Sua sessão expirou. Saia e entre de novo.',
     origem: 'Abra o painel por app.moviki.com.br.',
+    motivo: 'Escolha o motivo.',
+    so_pago: 'Só dá para desfazer venda que já foi paga.',
+    so_aguardando: 'Esse pedido já mudou de situação. Atualize a tela.',
+    estoque_qtd: 'Use só números inteiros, de 0 a 99999.',
+    estoque_reservado: 'Esse produto tem Pix aberto agora. Espere o cliente pagar ou o Pix vencer para tirar o limite.',
+    estoque_muitos: 'Limite de 400 produtos com estoque.',
   };
   function finMsg(j, http) {
     if (j && FIN_ERROS[j.erro]) return FIN_ERROS[j.erro];
@@ -6945,27 +6988,83 @@ window.mvAbaInicial=function(){
     if (tocar) { finBip(); finTitulo(); }
   }
 
+  /* DUAS ESCUTAS — 30/09/2026 (P53).
+     A escuta unica era `lojistaUid == uid` com limit 200 e SEM ordem: o
+     Firestore devolve na ordem do id do documento, que e aleatorio. Passando
+     de 200 pedidos (e uma live cheia de Pix abandonado chega la rapido), o
+     quadro mostrava 200 QUAISQUER — pedido pago de agora podia simplesmente
+     nao aparecer para despachar.
+     1) ATIVOS: tudo que ainda pede acao (status in [...]) — quadro sempre
+        completo. Igualdade + "in" nao exige indice composto.
+     2) RECENTES: historico, entregues e expirados. Tenta os 200 MAIS NOVOS
+        (precisa do indice composto pedidos: lojistaUid + criadoEm desc); sem
+        o indice, cai na consulta antiga, sem quebrar nada.
+     Pedido que sai dos ativos (entregue, devolvido) e relido uma vez, para
+     nao sumir da coluna Entregues. */
+  const FIN_ATIVOS_ST = ['aguardando', 'conferindo', 'pago', 'separando', 'pronto', 'saiu', 'estornado'];
+  let finAtivos = {}, finRecentes = [], finSaidos = {}, finParar2 = null;
+  /* O aviso de pedido novo (som e contador) so compara depois que as DUAS
+     escutas chegaram: senao a segunda a chegar tocaria o bip para pedidos
+     antigos. */
+  const finProntas = { r: false, a: false };
+  setTimeout(function () { finProntas.r = true; finProntas.a = true; }, 12000);
+  function finJuntar() {
+    const m = {};
+    finRecentes.forEach(function (p) { m[p.__id] = p; });
+    Object.keys(finSaidos).forEach(function (id) { m[id] = finSaidos[id]; });
+    Object.keys(finAtivos).forEach(function (id) { m[id] = finAtivos[id]; });
+    finPedidos = Object.keys(m).map(function (id) { return m[id]; });
+    finPedidos.sort(function (a, b) { return finMs(b.criadoEm) - finMs(a.criadoEm); });
+    if (finProntas.r && finProntas.a) finConferirNovidade(finPedidos);
+    finPintarVendas();
+    if (window.pedPintar) window.pedPintar();
+  }
+  function finErroEscuta() {
+    const res = el('pedResumo');
+    if (res) res.textContent = 'Não consegui carregar seus pedidos agora.';
+  }
+  function finEscutarRecentes(ordenada) {
+    const uid = usuarioAtual.uid;
+    const q = ordenada
+      ? query(collection(db, 'pedidos'), where('lojistaUid', '==', uid), orderBy('criadoEm', 'desc'), limit(200))
+      : query(collection(db, 'pedidos'), where('lojistaUid', '==', uid), limit(200));
+    finParar = onSnapshot(q, function (qs) {
+      finRecentes = [];
+      qs.forEach(function (d) { finRecentes.push(Object.assign({ __id: d.id }, d.data())); });
+      finProntas.r = true;
+      finJuntar();
+    }, function () {
+      /* sem o indice composto: volta para a consulta de antes */
+      if (ordenada) { finParar = null; try { finEscutarRecentes(false); } catch (_) { finErroEscuta(); } }
+      else finErroEscuta();
+    });
+  }
   function finEscutarVendas() {
     if (finParar || !usuarioAtual) return;
+    try { finEscutarRecentes(true); } catch (_) {}
     try {
-      const q = query(collection(db, 'pedidos'), where('lojistaUid', '==', usuarioAtual.uid), limit(200));
-      finParar = onSnapshot(q, function (qs) {
-        finPedidos = [];
-        qs.forEach(function (d) { finPedidos.push(Object.assign({ __id: d.id }, d.data())); });
-        finPedidos.sort(function (a, b) { return finMs(b.criadoEm) - finMs(a.criadoEm); });
-        finConferirNovidade(finPedidos);
-        finPintarVendas();
-        if (window.pedPintar) window.pedPintar();
-      }, function () {
-        const res = el('pedResumo');
-        if (res) res.textContent = 'Não consegui carregar seus pedidos agora.';
-      });
+      const qa = query(collection(db, 'pedidos'), where('lojistaUid', '==', usuarioAtual.uid), where('status', 'in', FIN_ATIVOS_ST), limit(500));
+      finParar2 = onSnapshot(qa, function (qs) {
+        const novo = {};
+        qs.forEach(function (d) { novo[d.id] = Object.assign({ __id: d.id }, d.data()); });
+        Object.keys(finAtivos).forEach(function (id) {
+          if (novo[id]) return;
+          /* saiu dos ativos: rele uma vez para ficar com o status novo */
+          getDoc(doc(db, 'pedidos', id)).then(function (s) {
+            if (s.exists()) { finSaidos[id] = Object.assign({ __id: id }, s.data()); finJuntar(); }
+          }).catch(function () {});
+        });
+        Object.keys(novo).forEach(function (id) { delete finSaidos[id]; });
+        finAtivos = novo;
+        finProntas.a = true;
+        finJuntar();
+      }, function () { finProntas.a = true; /* sem esta escuta, fica a de recentes, como antes */ });
     } catch (_) {}
   }
   function finMs(t) { return t && typeof t.toMillis === 'function' ? t.toMillis() : 0; }
   function finReal(v) { return 'R$ ' + Number(v || 0).toFixed(2).replace('.', ','); }
   function finEsc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  const FIN_ST = { aguardando: 'aguardando pagamento', conferindo: 'conferir pagamento', pago: 'pago', entregue: 'entregue', recusado: 'recusado', cancelado: 'cancelado', expirado: 'expirou', estornado: 'estornado' };
+  const FIN_ST = { aguardando: 'aguardando pagamento', conferindo: 'conferir pagamento', pago: 'pago', entregue: 'entregue', recusado: 'recusado', cancelado: 'cancelado', expirado: 'expirou', estornado: 'estornado', devolvido: 'devolvido' };
 
   /* 26/09/2026: a lista saiu daqui e foi para a Central de Pedidos. O
      Financeiro guarda so o resumo do que ja e dinheiro na mao. */
@@ -7021,7 +7120,7 @@ window.mvAbaInicial=function(){
   const PED_ROT = {
     aguardando: 'aguardando pagamento', conferindo: 'conferir pagamento', pago: 'pago',
     separando: 'separando', pronto: 'pronto p/ retirar', saiu: 'saiu p/ entrega', entregue: 'entregue',
-    recusado: 'recusado', cancelado: 'cancelado', expirado: 'expirou', estornado: 'estornado'
+    recusado: 'recusado', cancelado: 'cancelado', expirado: 'expirou', estornado: 'Pix devolvido pelo banco', devolvido: 'venda desfeita'
   };
   /* QUADRO — 27/09/2026, decisao do Paulo: a lista com filtros e muitos
      botoes virou um quadro de colunas, no jeito do iFood. Uma coluna por
@@ -7096,12 +7195,15 @@ window.mvAbaInicial=function(){
     try { localStorage.setItem('mv_pq_dica', '1'); } catch (_) {}
   };
 
-  /* Em que coluna o pedido esta. Pix direto que expirou fica 12 h em Novos:
-     o dinheiro pode ter caido atrasado e quem confere e o lojista. */
+  /* Em que coluna o pedido esta. Pix direto que expirou fica 2 h em Novos,
+     no fim da coluna: o dinheiro pode ter caido atrasado. Depois disso ele
+     continua no Historico, com o botao "O Pix caiu: confirmar".
+     30/09/2026: eram 12 h. Com o cron vencendo todo Pix abandonado, uma live
+     cheia deixava Novos entupido a noite inteira. */
   function pqColDe(p) {
     const st = String(p.status || 'aguardando');
     if (PED_CONFIRMAR.indexOf(st) >= 0) return 'novos';
-    if (st === 'expirado' && p.modo === 'pix' && Date.now() - finMs(p.criadoEm) < 12 * 3600000) return 'novos';
+    if (st === 'expirado' && p.modo === 'pix' && Date.now() - finMs(p.criadoEm) < 2 * 3600000) return 'novos';
     if (st === 'pago') return 'pago';
     if (st === 'separando') return 'separando';
     if (st === 'pronto' || st === 'saiu') return 'pronto';
@@ -7318,8 +7420,10 @@ window.mvAbaInicial=function(){
     const tarde = !hist && (col === 'novos' || col === 'pago' || col === 'separando') && min >= 20;
     let tags = ent ? '<span class="pqTag ent">🛵 ' + (e.bairro ? finEsc(e.bairro) : 'Entrega') + '</span>' : '<span class="pqTag">🏪 Retirada</span>';
     if (hist) tags += '<span class="pqTag">' + (p.origem === 'cardapio' ? 'Cardápio' : 'Live') + '</span>';
-    if (hist) tags += '<span class="pqTag' + (['recusado', 'cancelado', 'expirado', 'estornado'].indexOf(st) >= 0 ? ' ruim' : '') + '">' + (PED_ROT[st] || finEsc(st)) + '</span>';
+    if (hist) tags += '<span class="pqTag' + (['recusado', 'cancelado', 'expirado', 'estornado', 'devolvido'].indexOf(st) >= 0 ? ' ruim' : '') + '">' + (PED_ROT[st] || finEsc(st)) + '</span>';
+    if ((p.alertaEstoque || p.estoqueFurou) && PED_PAGOS.indexOf(st) >= 0 && st !== 'entregue') tags += '<span class="pqTag ruim">sem estoque: confira</span>';
     if (!hist && st === 'conferindo') tags += '<span class="pqTag alerta">cliente diz que pagou</span>';
+    if (!hist && st === 'conferindo' && p.pagouAtrasado) tags += '<span class="pqTag ruim">pagou depois do prazo</span>';
     if (!hist && st === 'aguardando') tags += '<span class="pqTag">cliente ainda pagando</span>';
     if (!hist && st === 'expirado') tags += '<span class="pqTag ruim">o Pix expirou</span>';
     let acoes = '';
@@ -7352,6 +7456,18 @@ window.mvAbaInicial=function(){
     const res = el('pedResumo');
     if (res) res.innerHTML = 'Hoje: <b>' + finReal(somaHoje) + '</b> em ' + nHoje + ' pedido' + (nHoje === 1 ? '' : 's') + ' pago' + (nHoje === 1 ? '' : 's');
 
+    /* Faixa vermelha: Pix devolvido pelo banco em venda que ja estava paga.
+       Antes o pedido sumia do quadro em silencio e podia ser entregue. */
+    const fx = el('pqEstornos');
+    if (fx) {
+      const est = pqEstornosNovos();
+      fx.classList.toggle('escondido', !est.length);
+      const hx = est.slice(0, 5).map(function (p) {
+        return '<button type="button" onclick="pedFicha(\'' + p.__id + '\')">⚠ Pix devolvido pelo banco: <b>nº ' + pedNumero(p) + '</b> · ' + finReal(p.total) + ' · ' + finEsc((p.comprador && p.comprador.nome) || 'Cliente') + ' — <u>não entregue</u></button>';
+      }).join('');
+      if (fx._h !== hx) { fx.innerHTML = hx; fx._h = hx; }
+    }
+
     if (pqHist) { pqPintarHist(); if (pqFichaId) pqPintarFicha(); return; }
 
     const busca = !!pqBusca();
@@ -7364,7 +7480,8 @@ window.mvAbaInicial=function(){
     });
     /* Fila: quem espera ha mais tempo primeiro. Em Novos, quem ja avisou que
        pagou vem antes. Entregues: o mais recente em cima. */
-    g.novos.sort(function (a, b) { return (b.status === 'conferindo') - (a.status === 'conferindo') || finMs(a.criadoEm) - finMs(b.criadoEm); });
+    const pqPesoNovo = function (p) { return p.status === 'conferindo' ? 0 : (p.status === 'expirado' ? 2 : 1); };
+    g.novos.sort(function (a, b) { return pqPesoNovo(a) - pqPesoNovo(b) || finMs(a.criadoEm) - finMs(b.criadoEm); });
     ['pago', 'separando', 'pronto'].forEach(function (k) { g[k].sort(function (a, b) { return pqMsEtapa(a) - pqMsEtapa(b); }); });
     g.entregue.sort(function (a, b) { return pqMsEtapa(b) - pqMsEtapa(a); });
 
@@ -7437,13 +7554,13 @@ window.mvAbaInicial=function(){
     if (!confirm('O Pix do pedido nº ' + pedNumero(p) + ' não caiu?\n\nRecuse só depois de conferir no app do seu banco. O pedido sai de Novos e vai para o Histórico.')) return;
     pqAcao(id, 'recusado');
   };
-  async function pqAcao(id, status) {
+  async function pqAcao(id, status, extra) {
     const p = pedAchar(id); if (!p || pqOcup[id]) return;
     const antes = String(p.status || '');
     pqOcup[id] = 1;
     const c = el('pedc-' + id); if (c) c.classList.add('ocupado');
     try {
-      const r = await finPost('loja_pedido', null, { pedidoId: id, status: status });
+      const r = await finPost('loja_pedido', null, Object.assign({ pedidoId: id, status: status }, extra || {}));
       if (!(r.j && r.j.ok)) { alert(finMsg(r.j, r.http)); return; }
       if (status === 'conferir') {
         const sc = r.j.status;
@@ -7453,6 +7570,7 @@ window.mvAbaInicial=function(){
         /* A escuta do Firestore confirma em seguida; o cartao ja anda agora. */
         p.status = (r.j.status && r.j.status !== 'divergente') ? r.j.status : status;
         if (status === 'recusado') toast('Pedido recusado.');
+        else if (status === 'devolvido') toast('Venda desfeita. Devolva o Pix ao cliente pelo seu banco.');
         else pqSnack(id, p.status, antes);
       }
     } catch (_) { alert('Falha de conexão. Tente de novo.'); }
@@ -7491,14 +7609,15 @@ window.mvAbaInicial=function(){
     }
     return o;
   }
+  let pqFichaModo = '';
   window.pedFicha = function (id) {
     if (!pqIdOk(id) || !pedAchar(id)) return;
-    pqFichaId = id;
+    pqFichaId = id; pqFichaModo = '';
     pqOverlay().classList.remove('escondido');
     pqPintarFicha();
   };
   window.pedFecharFicha = function () {
-    pqFichaId = null;
+    pqFichaId = null; pqFichaModo = '';
     const o = el('pqFicha'); if (o) o.classList.add('escondido');
   };
   function pqPintarFicha() {
@@ -7527,10 +7646,31 @@ window.mvAbaInicial=function(){
       + (pago && p.codigo ? '<br>Código do cliente: <span class="pedCodigo">' + finEsc(p.codigo) + '</span> <span style="color:#7d92a8;font-size:12px">peça na ' + (ent ? 'entrega' : 'retirada') + '</span>' : '')
       + '<br><span style="color:#7d92a8;font-size:12.5px">' + pedData(p) + ' · veio ' + (p.origem === 'cardapio' ? 'do cardápio' : 'da live') + '</span>'
       + (p.dadosApagadosEm ? '<br><span style="color:#7d92a8;font-size:12px">Contato e endereço apagados pelo prazo de privacidade (LGPD).</span>' : '') + '</div>';
+    /* 30/09/2026 (P53): avisos que mudam o que o lojista faz com o pedido. */
+    if (st === 'estornado') h += '<div class="pqFSec pqFAlerta"><h4>⚠ O banco devolveu este Pix ao cliente</h4>Não entregue este pedido. Se já entregou, fale com o cliente.' + (p.estornoDe && p.estornoDe !== 'entregue' ? ' Se você controla estoque, a peça voltou para ele.' : '') + '</div>';
+    if (st === 'devolvido') h += '<div class="pqFSec pqFAlerta"><h4>Venda desfeita por você</h4>' + finEsc((p.devolucao && p.devolucao.motivo) || '') + ((p.devolucao && p.devolucao.voltaEstoque) ? ' · a peça voltou ao estoque' : '') + '<br><span style="color:#7d92a8;font-size:12.5px">Devolva o Pix ao cliente pelo app do seu banco' + (p.modo === 'pix' ? '' : ' ou pelo Asaas') + ', se ainda não devolveu.</span></div>';
+    if ((p.alertaEstoque || p.estoqueFurou) && pago && st !== 'entregue') h += '<div class="pqFSec pqFAlerta"><h4>⚠ Pago quando a peça já era de outro comprador</h4>' + (p.alertaEstoque === 'sem_reserva' ? 'O Pix foi pago depois que a unidade da oferta foi reservada por outra pessoa.' : 'O Pix deste pedido foi confirmado depois do prazo, e outra pessoa comprou a última peça nesse meio tempo.') + ' Confira se você tem o produto antes de separar. Se não tiver, use <b>Desfazer venda</b> e devolva o Pix ao cliente.</div>';
+    if (pqFichaModo === 'devolver' && pago) {
+      /* a escuta repinta a ficha a cada pedido que chega: guarda o que ja foi escolhido */
+      const mAnt = el('pqDevMot') ? el('pqDevMot').value : '', cAnt = el('pqDevEst') ? el('pqDevEst').checked : null;
+      const entregue = st === 'entregue';
+      h += '<div class="pqFSec pqFDev"><h4>Desfazer esta venda</h4>'
+        + '<label for="pqDevMot">Por quê?</label><select id="pqDevMot"><option value="">Escolha</option><option>Cliente desistiu</option><option>Não tenho a peça</option><option>Produto com defeito</option><option>Cliente devolveu o produto</option><option>Pedido em dobro</option><option>Outro motivo</option></select>'
+        + '<label class="pqDevChk"><input type="checkbox" id="pqDevEst"' + (entregue ? '' : ' checked') + '> A peça volta para o estoque</label>'
+        + '<div style="color:#ffd27a;font-size:12.5px;line-height:1.5">O Moviki não mexe no dinheiro: <b>você devolve o Pix ao cliente</b> pelo app do seu banco' + (p.modo === 'pix' ? '' : ' ou pelo Asaas') + '. O pedido sai das vendas e vai para o Histórico.</div></div>';
+      h += '<div class="pqFBtns"><button type="button" class="pqNao" onclick="pedDevolverOk(\'' + id + '\')">Desfazer a venda</button><button type="button" onclick="pedDevolverAbrir(\'' + id + '\',false)">Voltar</button></div>';
+      box.innerHTML = h;
+      if (mAnt && el('pqDevMot')) el('pqDevMot').value = mAnt;
+      if (cAnt !== null && el('pqDevEst')) el('pqDevEst').checked = cAnt;
+      return;
+    }
     let b = '';
     const rot = pqRotBotao(p);
     if (rot) b += '<button type="button" class="pqPri' + (col === 'novos' ? ' pix' : '') + '" onclick="pedAvancar(\'' + id + '\')">' + rot  + '</button>';
     if (col === 'novos' && p.modo === 'pix') b += '<button type="button" class="pqNao" onclick="pedNaoCaiu(\'' + id + '\')">Não caiu</button>';
+    /* Pix direto recusado, cancelado ou vencido: o dinheiro pode ter caido
+       depois. "Nao caiu" tocado por engano passa a ter volta. */
+    if (!col && p.modo === 'pix' && ['recusado', 'cancelado', 'expirado'].indexOf(st) >= 0) b += '<button type="button" class="pqPri pix" onclick="pedReabrirPix(\'' + id + '\')">O Pix caiu: confirmar</button>';
     if (wpp && pago) b += '<button type="button" onclick="pedAvisar(\'' + id + '\')">Avisar cliente</button>';
     else if (wpp) b += '<a href="https://wa.me/55' + wpp + '" target="_blank" rel="noopener">WhatsApp</a>';
     if (pago) b += '<button type="button" onclick="pedImprimirUm(\'' + id + '\')">Imprimir comanda</button>';
@@ -7538,8 +7678,36 @@ window.mvAbaInicial=function(){
     if (p.comprovante) b += '<button type="button" onclick="finVerComprovante(\'' + id + '\')">Ver comprovante</button>';
     const volta = pqDestinos(p).filter(function (k) { return PQ_ORD[k] < PQ_ORD[col]; })[0];
     if (volta) b += '<button type="button" class="pqFVolta" onclick="pedMover(\'' + id + '\',\'' + volta + '\')">‹ Voltar para ' + (PQ_COLS.find(function (c) { return c.k === volta; }) || {}).t + '</button>';
+    if (pago) b += '<button type="button" class="pqFDesf" onclick="pedDevolverAbrir(\'' + id + '\',true)">Desfazer venda / devolver</button>';
+    if (st === 'estornado' && p.alerta === 'estornado') b += '<button type="button" onclick="pedEstornoVisto(\'' + id + '\')">Entendi, não vou entregar</button>';
     h += '<div class="pqFBtns">' + b + '</div>';
     box.innerHTML = h;
+  }
+  window.pedDevolverAbrir = function (id, liga) { if (pqFichaId !== id) return; pqFichaModo = liga ? 'devolver' : ''; pqPintarFicha(); };
+  window.pedDevolverOk = function (id) {
+    const p = pedAchar(id); if (!p) return;
+    const mot = (el('pqDevMot') && el('pqDevMot').value) || '';
+    if (!mot) { alert('Escolha o motivo.'); return; }
+    const volta = !!(el('pqDevEst') && el('pqDevEst').checked);
+    if (!confirm('Desfazer a venda nº ' + pedNumero(p) + ' (' + finReal(p.total) + ')?\n\nLembre de devolver o Pix ao cliente pelo seu banco. Isso não tem volta no Moviki.')) return;
+    pqFichaModo = '';
+    pqAcao(id, 'devolvido', { motivo: mot, voltaEstoque: volta });
+  };
+  window.pedReabrirPix = function (id) {
+    const p = pedAchar(id); if (!p) return;
+    if (!confirm('O Pix de ' + finReal(p.total) + ' do pedido nº ' + pedNumero(p) + ' caiu na sua conta?\n\nConfira no app do seu banco antes. O pedido volta como PAGO.')) return;
+    pqAcao(id, 'pago');
+  };
+  /* Estorno visto: some da faixa vermelha (fica so no aparelho). */
+  window.pedEstornoVisto = function (id) {
+    try { localStorage.setItem('mv_estorno_' + id, '1'); } catch (_) {}
+    window.pedFecharFicha(); window.pedPintar();
+  };
+  function pqEstornosNovos() {
+    return finPedidos.filter(function (p) {
+      if (p.status !== 'estornado' || p.alerta !== 'estornado') return false;
+      try { return localStorage.getItem('mv_estorno_' + p.__id) !== '1'; } catch (_) { return true; }
+    });
   }
 
   /* ---------- aviso ao cliente pelo WhatsApp do PROPRIO lojista ----------
@@ -7730,6 +7898,82 @@ window.mvAbaInicial=function(){
     window.pedFecharFicha();
     pedJanela(corpo, soSeparacao ? 'Lista de separação' : 'Comandas');
     try { if (window.mvEv) mvEv('pedido_impresso', { lote: lista.length }); } catch (_) {}
+  };
+
+  /* ---------- estoque (30/09/2026, P53) ----------
+     O numero mora no robo (estoque/{uid}); aqui so se pede. Cada linha manda
+     o numero que a tela MOSTROU e o novo: o robo aplica a diferenca. */
+  let pedEstItens = null;
+  function pedEstNorm(x) { return String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\s+/g, ' ').trim(); }
+  function pedEstProdutos() {
+    const out = [], vistos = {};
+    document.querySelectorAll('#listaCategorias .catBloco').forEach(function (b) {
+      const cat = ((b.querySelector('.cat-nome') || {}).value || '').trim();
+      b.querySelectorAll('.prodRow').forEach(function (r) {
+        const nome = ((r.querySelector('.p-nome') || {}).value || '').trim(); if (!nome) return;
+        const k = pedEstNorm(nome); if (vistos[k]) return; vistos[k] = 1;
+        out.push({ nome: nome.slice(0, 60), sku: r._sku || '', cat: cat });
+      });
+    });
+    return out;
+  }
+  function pedEstAchar(prod) {
+    if (!pedEstItens) return null;
+    const n = pedEstNorm(prod.nome);
+    return pedEstItens.find(function (e) { return prod.sku && e.sku === prod.sku; }) || pedEstItens.find(function (e) { return pedEstNorm(e.nome) === n; }) || null;
+  }
+  window.pedEstAbrir = async function (forcar) {
+    const box = el('pedEstLista'); if (!box) return;
+    if (pedEstItens && !forcar) { pedEstPintar(); return; }
+    box.innerHTML = '<div class="finNota">Carregando…</div>';
+    try {
+      const r = await finPost('loja_estoque', { itens: [] });
+      if (!(r.j && r.j.ok)) { box.innerHTML = '<div class="finNota">' + finEsc(finMsg(r.j, r.http)) + '</div>'; return; }
+      pedEstItens = r.j.itens || [];
+      pedEstPintar();
+    } catch (_) { box.innerHTML = '<div class="finNota">Falha de conexão. Tente de novo.</div>'; }
+  };
+  function pedEstPintar() {
+    const box = el('pedEstLista'); if (!box) return;
+    const prods = pedEstProdutos();
+    (pedEstItens || []).forEach(function (e) {
+      const esta = prods.some(function (p) { return (p.sku && p.sku === e.sku) || pedEstNorm(p.nome) === pedEstNorm(e.nome); });
+      if (!esta) prods.push({ nome: e.nome, sku: e.sku, cat: 'Fora do cardápio (deixe vazio para tirar)' });
+    });
+    if (!prods.length) { box.innerHTML = '<div class="finNota">Seu cardápio ainda não tem produtos. Cadastre na aba Cardápio e salve.</div>'; return; }
+    let h = '', nZero = 0;
+    prods.forEach(function (p) {
+      const e = pedEstAchar(p);
+      const de = e ? String(e.qtd) : '';
+      const zero = !!(e && e.qtd <= 0);
+      if (zero) nZero++;
+      h += '<div class="pedEstRow"><span class="nm">' + finEsc(p.nome) + '<span class="ct">' + finEsc(p.cat || '') + (zero ? ' · <span class="zero">ESGOTADO</span>' : '') + '</span></span>'
+        + '<span class="rs">' + (e && e.res > 0 ? e.res + ' em Pix aberto' : '') + '</span>'
+        + '<input type="number" min="0" max="99999" step="1" inputmode="numeric" placeholder="sem limite" value="' + finEsc(de) + '" data-de="' + finEsc(de) + '" data-nome="' + finEsc(p.nome) + '" data-sku="' + finEsc(p.sku || '') + '" aria-label="Estoque de ' + finEsc(p.nome) + '"></div>';
+    });
+    box.innerHTML = h;
+    const s = el('selo-acc-ped-estoque'); if (s) s.textContent = nZero ? (nZero + ' esgotado' + (nZero === 1 ? '' : 's')) : '';
+  }
+  window.pedSalvarEstoque = async function () {
+    const itens = [];
+    let erro = '';
+    document.querySelectorAll('#pedEstLista input').forEach(function (x) {
+      const v = String(x.value || '').trim(), de = x.getAttribute('data-de') || '';
+      if (v === de) return;
+      if (v !== '' && !/^\d{1,5}$/.test(v)) { erro = 'Use só números inteiros, de 0 a 99999 (' + x.getAttribute('data-nome') + ').'; return; }
+      itens.push({ nome: x.getAttribute('data-nome'), sku: x.getAttribute('data-sku') || '', de: de === '' ? null : Number(de), para: v === '' ? null : Number(v) });
+    });
+    if (erro) { finAviso('pedAvisoEst', erro, false); return; }
+    if (!itens.length) { finAviso('pedAvisoEst', 'Nada mudou.', true); return; }
+    const b = el('pedBtnEst'); if (b) { b.disabled = true; b.textContent = 'Salvando…'; }
+    try {
+      const r = await finPost('loja_estoque', { itens: itens });
+      if (!(r.j && r.j.ok)) { finAviso('pedAvisoEst', finMsg(r.j, r.http), false); return; }
+      pedEstItens = r.j.itens || [];
+      pedEstPintar();
+      finAviso('pedAvisoEst', '✅ Estoque salvo. A live e o cardápio já mostram.', true);
+    } catch (_) { finAviso('pedAvisoEst', 'Falha de conexão. Tente de novo.', false); }
+    finally { if (b) { b.disabled = false; b.textContent = 'Salvar estoque'; } }
   };
 
   /* ---------- configuracao de entrega ---------- */
