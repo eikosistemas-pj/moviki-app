@@ -3909,7 +3909,10 @@ window.mvAbaInicial=function(){
      nao pago, devolvido, live x cardapio, mais vendidos, dia e hora mais
      fortes, onde o dinheiro esta e extrato com planilha (CSV). So leitura dos
      pedidos do proprio lojista: nada muda no robo nem na regra. */
-  window.MOVIKI_VERSAO='2026-09-30-meudinheiro2';
+  /* 2026-09-30-meudinheiro3 — aula "Meu dinheiro: quanto voce vendeu"
+     (mod-meu-dinheiro, 1kDHQ7kxY2I) no catalogo de tutoriais, no fim da aba e
+     na serie do cartao roxo da Central (oitava aula). */
+  window.MOVIKI_VERSAO='2026-09-30-meudinheiro3';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -9682,6 +9685,11 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      o aceite do termo. Continua embutida no fim da propria aba. */
   { n:'Financeiro', sel:'#tab-financeiro', v:[
     { k:'mod-financeiro', t:'Financeiro: como você recebe o dinheiro das vendas', d:'1:39', id:'AEPxpKOp1YM' } ]},
+  /* MEU DINHEIRO - 30/09/2026. Aula nova (em novo), embutida no fim da aba e
+     contada no cartao roxo da serie da Central (vira "Tem uma aula nova" para
+     quem ja tinha as sete). */
+  { n:'Meu dinheiro', sel:'#tab-dinheiro', v:[
+    { k:'mod-meu-dinheiro', t:'Meu dinheiro: quanto você vendeu', d:'1:43', id:'1kDHQ7kxY2I' } ]},
   { n:'Meu plano', sel:'#modalPlano .mpCaixa', v:[
     /* O teste de 30 dias e automatico (garantirTrial roda sozinho), entao
        nao ha nada pro cliente fazer - saiu do titulo e do video. */
@@ -10288,7 +10296,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
                             : (n ? ('Bem-vindo ao Moviki, ' + n + '!') : 'Bem-vindo ao Moviki!');
     }
     if(auSubTxt) auSubTxt.textContent = ped
-      ? 'Do Pix à entrega, a comanda, a sua entrega, os dados do cliente e como o dinheiro chega. '+
+      ? 'Do Pix à entrega, a comanda, a sua entrega, os dados do cliente, como o dinheiro chega e quanto você vendeu. '+
         'Assista em sequência: quando uma aula termina, a próxima já entra.'
       : 'Um recado rápido de boas-vindas e três aulas curtas pra você se situar: '+
         'o que tem em cada canto do painel, como ler os seus números, e o que fazer todo dia. '+
@@ -10379,11 +10387,11 @@ window.MOVIKI_TUTORIAIS = { modulos: [
 
      Aparece so para quem tem a Central (Premium e Enterprise), em dois
      lugares: no Inicio, abaixo das outras faixas roxas, e no alto da aba
-     Pedidos. Conta as seis da Central + a do Financeiro (as sete da serie).
+     Pedidos. Conta as seis da Central + a do Financeiro + a do Meu dinheiro (30/09).
      O botao abre a proxima aula que falta, na janela de tutoriais; a aula
      conta aos 90% percorridos, pelo mesmo relogio de todas as outras. */
   var PEDAULAS=['mod-pedidos-central','mod-pedidos-etapas','mod-pedidos-entrega',
-                'mod-pedidos-comanda','mod-pedidos-lote','mod-pedidos-dados','mod-financeiro'];
+                'mod-pedidos-comanda','mod-pedidos-lote','mod-pedidos-dados','mod-financeiro','mod-meu-dinheiro'];
   var PED_LOCAIS=[];
   function pedAulas(){ var r=[]; PEDAULAS.forEach(function(k){ var v=achar(k); if(v) r.push(v); }); return r; }
   function pedFeitas(){
