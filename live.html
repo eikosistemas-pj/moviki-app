@@ -318,6 +318,8 @@ svg{display:block}
 #pedAviso .paTopo{font-size:12px;color:var(--mv-txt-3);text-transform:uppercase;letter-spacing:.5px}
 #pedAviso .paValor{font-size:26px;font-weight:800;color:var(--mv-ok);line-height:1.15;margin:2px 0 2px}
 #pedAviso .paSub{font-size:13px;color:var(--mv-txt-2);margin-bottom:10px}
+#pedAviso.alerta{border-color:#ffd36b}
+#pedAviso .paAlerta{font-size:13px;font-weight:600;color:#ffd36b;margin:-4px 0 10px;line-height:1.35}
 #pedAviso .paBts{display:flex;gap:8px}
 #pedAviso .paBts button,#pedAviso .paBts a{flex:1;text-align:center;text-decoration:none}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:50;background:rgba(0,0,0,.88);color:#fff;border-radius:10px;padding:10px 14px;font-size:13.5px;max-width:90%;text-align:center}
@@ -506,7 +508,7 @@ svg{display:block}
       <div class="painelAba" data-aba="oferta" data-ent="1">
         <div class="card">
           <h3>Oferta relâmpago</h3>
-          <p class="sub">Um produto com preço da live e contagem regressiva no topo da tela. Com estoque, aparece <b>"Restam N"</b> — e quem baixa o número é você, a cada venda. Nunca invente escassez: o que a tela diz tem que ser verdade.</p>
+          <p class="sub">Um produto com preço da live e contagem regressiva no topo da tela. Com quantidade, aparece <b>"Restam N"</b>. Quem gera o Pix segura a peça por alguns minutos (<b>Aguardando Pix</b>); o Pix pago e confirmado entra em Vendidos sozinho. Venda no balcão você marca em <b>Vendi +1</b>. Nunca invente escassez: o que a tela diz tem que ser verdade.</p>
           <label class="rot">Produto</label><select class="campo" id="ofProd"></select>
           <div class="linha2"><div><label class="rot">Preço normal</label><input class="campo" id="ofDe" maxlength="12" placeholder="20,00"></div><div><label class="rot">Preço da live</label><input class="campo" id="ofPor" maxlength="12" placeholder="15,00"></div></div>
           <div class="linha2"><div><label class="rot">Duração</label><select class="campo" id="ofMin"><option value="5">5 min</option><option value="10" selected>10 min</option><option value="15">15 min</option><option value="30">30 min</option></select></div><div><label class="rot">Quantidade (opcional)</label><input class="campo" id="ofEstoque" type="number" min="0" max="999" placeholder="sem limite"></div></div>
@@ -614,6 +616,7 @@ svg{display:block}
   <div class="paTopo">Cliente avisou que pagou</div>
   <div class="paValor" id="paValor">R$ 0,00</div>
   <div class="paSub" id="paSub"></div>
+  <div class="paAlerta escondido" id="paAlerta"></div>
   <div class="paBts">
     <button type="button" class="btnGrad" id="paRecebi">Recebi</button>
     <a class="btnSec" id="paComp" target="_blank" rel="noopener" style="display:none">Ver comprovante</a>
@@ -629,7 +632,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer, increment }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-30-estoque';   /* anterior: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
+  window.MOVIKI_VERSAO='2026-09-30-estoque2';   /* anterior: 2026-09-30-estoque (30/09 madrugada: texto da aba Oferta, alerta amarelo no aviso de pagamento, Recebi/Depois nao fecham a folha, "1 peca reservada"). Antes: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -788,7 +791,8 @@ svg{display:block}
     if(!imersivo())return;
     const f=el('lvFolha');
     if(f&&f.classList.contains('aberta')){
-      if(e.target.closest('#lvFolha'))return;
+      /* 30/09: responder o aviso de pagamento nao fecha a folha aberta */
+      if(e.target.closest('#lvFolha')||e.target.closest('#pedAviso'))return;
       folhaFechar(); return;
     }
     /* toque no VIDEO abaixa tudo e deixa so o risquinho. Toque em botao,
@@ -1436,7 +1440,7 @@ svg{display:block}
   function mudarVenda(d){if(!oferta)return;
     if(d<0&&!(oferta.vendidos>0))return;
     const rs=ofReserv();
-    if(d>0&&oferta.estoque&&oferta.vendidos+rs>=oferta.estoque&&!confirm(rs?('Tem '+rs+' unidade(s) reservada(s) por quem já gerou o Pix. Vender no balcão pode deixar sem peça quem pagar. Marcar a venda mesmo assim?'):'O estoque da oferta já acabou. Marcar mais uma venda mesmo assim?'))return;
+    if(d>0&&oferta.estoque&&oferta.vendidos+rs>=oferta.estoque&&!confirm(rs?((rs===1?'Tem 1 peça reservada':'Tem '+rs+' peças reservadas')+' por quem já gerou o Pix. Vender no balcão pode deixar sem peça para quem pagar. Marcar a venda mesmo assim?'):'O estoque da oferta já acabou. Marcar mais uma venda mesmo assim?'))return;
     oferta.vendidos=Math.max(0,oferta.vendidos+d);
     updateDoc(refLive(),{'oferta.vendidos':increment(d)}).catch(()=>{});pintarOferta();}
   el('btnVendeu').onclick=()=>mudarVenda(1); el('btnDesvendeu').onclick=()=>mudarVenda(-1);
@@ -1602,8 +1606,12 @@ svg{display:block}
     const it=(alvo.itens&&alvo.itens[0])||{}, c=alvo.comprador||{};
     el('paValor').textContent=brl(alvo.total);
     /* o valor EXATO e a prova: os centavos identificam este pedido no extrato */
-    el('paSub').textContent=(c.nome||'Cliente')+' · '+(it.qtd>1?it.qtd+'x ':'')+(it.nome||'')+' · nº '+(alvo.numero?String(alvo.numero).padStart(4,'0'):String(alvo.id).slice(-6).toUpperCase())+' — confira este valor exato no seu extrato.'+
-      (alvo.alertaEstoque==='sem_estoque'?' ATENÇÃO: a última peça já tinha sido vendida para outra pessoa. Se não tiver o produto, desfaça a venda e devolva o Pix.':alvo.alertaEstoque?' ATENÇÃO: pagou depois que a unidade da oferta foi reservada por outro comprador. Se não tiver a peça, devolva o Pix.':(alvo.pagouAtrasado?' Pagou depois do prazo do Pix.':''));
+    el('paSub').textContent=(c.nome||'Cliente')+' · '+(it.qtd>1?it.qtd+'x ':'')+(it.nome||'')+' · nº '+(alvo.numero?String(alvo.numero).padStart(4,'0'):String(alvo.id).slice(-6).toUpperCase())+' — confira este valor exato no seu extrato.';
+    /* 30/09/2026: o alerta sai do texto cinza e ganha linha propria em
+       amarelo, com a borda do aviso na mesma cor: e o caso em que o lojista
+       pode ter de devolver o Pix. */
+    const al=alvo.alertaEstoque==='sem_estoque'?'Atenção: a última peça já tinha sido vendida para outra pessoa. Se não tiver o produto, desfaça a venda e devolva o Pix.':(alvo.alertaEstoque?'Atenção: pagou depois que a peça da oferta foi reservada para outra pessoa. Confira se ainda tem a peça. Se não tiver, devolva o Pix.':(alvo.pagouAtrasado?'Pagou depois do prazo do Pix.':''));
+    el('paAlerta').textContent=al; el('paAlerta').classList.toggle('escondido',!al); cx.classList.toggle('alerta',!!alvo.alertaEstoque);
     const lk=el('paComp');
     if(alvo.comprovante){
       lk.style.display='';
