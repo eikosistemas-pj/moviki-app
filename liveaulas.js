@@ -1,4 +1,4 @@
-/*! MOVIKI liveaulas.js | versao 2026-09-28-bibliopalco | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-09-30-aula09 | repo: moviki-app
  *
  * O MODULO DE AULAS DO MODO LIVE — catalogo e motor, num arquivo so.
  *
@@ -115,7 +115,10 @@
 
       { n: 'Oferta relâmpago', g: 'durante', sel: '.painelAba[data-aba="oferta"]', v: [
         { k: 'mod-live-oferta', t: 'Oferta relâmpago e estoque ao vivo',
-          d: '0:55', id: 'pbWfLHoKGag', plano: 'Enterprise', em: '2026-09-15' } ]},
+          /* 30/09/2026: regravada com a reserva da oferta (quem gera o Pix segura a
+             peca). Regravacao: o 'em' NAO muda, senao vira "aula nova" para quem ja
+             estava em dia. Id antigo pbWfLHoKGag so sai do YouTube depois disto no ar. */
+          d: '1:55', id: 'L2flcBpTDxw', plano: 'Enterprise', em: '2026-09-15' } ]},
 
       { n: 'Cupom e brinde', g: 'durante', sel: '.painelAba[data-aba="cupom"]', v: [
         { k: 'mod-live-cupom', t: 'Cupom, brinde e "Estou aqui agora"',
