@@ -1863,6 +1863,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
           </div>
         </div>
         <button type="button" class="drawerPed" onclick="fecharMenu();irSecao('pedidos')"><img class="diImg" src="icones/vendas.png" alt="" onerror="this.replaceWith(document.createTextNode('🛍️'))"> Central de Pedidos<span class="pedBad escondido" data-pedbad>0</span></button>
+        <button type="button" onclick="fecharMenu();irSecao('dinheiro')"><img class="diImg" src="icones/meudinheiro.png" alt="" onerror="this.replaceWith(document.createTextNode('💰'))"> Meu dinheiro</button>
         <div class="drawerSec">Minha conta</div>
         <button type="button" onclick="fecharMenu();irSecao('perfil')"><img class="diImg" src="icones/perfil.png" alt="" onerror="this.replaceWith(document.createTextNode('👤'))"> Perfil do negócio</button>
         <button type="button" onclick="fecharMenu();abrirPlano()"><img class="diImg" src="icones/plano.png" alt="" onerror="this.replaceWith(document.createTextNode('💳'))"> Meu Plano</button>
@@ -2157,6 +2158,8 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
              cardapio. No fim da lista, perto do Financeiro, ele se perdia. -->
         <button type="button" class="mvNavIt mvNavPed" data-sec="pedidos" onclick="mvIr('pedidos')"><img class="mvNavIco" src="icones/vendas.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Central de Pedidos</span><span class="pedBad escondido" data-pedbad title="Pedidos para resolver agora">0</span></button>
         <div class="mvNavPedSep"></div>
+        <!-- 30/09/2026: Meu dinheiro — o que ele vendeu, logo abaixo da Central. -->
+        <button type="button" class="mvNavIt" data-sec="dinheiro" onclick="mvIr('dinheiro')"><img class="mvNavIco" src="icones/meudinheiro.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meu dinheiro</span></button>
         <button type="button" class="mvNavIt" data-sec="cardapio" onclick="mvIr('cardapio')"><img class="mvNavIco" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Cardápio</span></button>
         <button type="button" class="mvNavIt" data-sec="promocoes" onclick="mvIr('promocoes')"><img class="mvNavIco" src="icones/promocoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Promoções</span></button>
         <button type="button" class="mvNavIt" data-sec="eventos" onclick="mvIr('eventos')"><img class="mvNavIco" src="icones/eventos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Eventos</span></button>
@@ -2253,6 +2256,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         </section>
         <div class="grid">
           <button type="button" class="gcard gcPed" id="gc-pedidos" onclick="irSecao('pedidos')"><img class="gcImg" src="icones/vendas.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcPedTxt"><span class="gcLabel">Central de Pedidos</span><span class="gcPedSub" id="gcPedSub">Pedidos da live e do cardápio, num lugar só.</span></span><span class="pedBad escondido" data-pedbad>0</span><span class="gcPedSeta" aria-hidden="true">›</span></button>
+          <button type="button" class="gcard" id="gc-dinheiro" onclick="irSecao('dinheiro')"><img class="gcImg" src="icones/meudinheiro.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Meu dinheiro</span></button>
           <button type="button" class="gcard mvBtnLive escondido" onclick="location.href='live.html'"><img class="gcImg" src="icones/live.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Fazer live</span></button>
           <button type="button" class="gcard" onclick="irSecao('perfil')"><img class="gcImg" src="icones/perfil.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Perfil</span></button>
           <button type="button" class="gcard" id="gc-cardapio" onclick="irSecao('cardapio')"><img class="gcImg" src="icones/cardapio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span class="gcLabel">Cardápio</span></button>
@@ -2283,6 +2287,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         <button class="tab" data-tab="whatsapp" onclick="abrirTab('whatsapp')">WhatsApp</button>
         <button class="tab" data-tab="avaliacoes" onclick="abrirTab('avaliacoes')">Avaliações</button>
         <button class="tab" data-tab="pedidos" onclick="abrirTab('pedidos')">Pedidos</button>
+        <button class="tab" data-tab="dinheiro" onclick="abrirTab('dinheiro')">Meu dinheiro</button>
         <button class="tab" data-tab="financeiro" onclick="abrirTab('financeiro')">Financeiro</button>
       </div>
 
@@ -2885,7 +2890,183 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
           <div class="finNota" id="finResumo"></div>
           <div style="height:10px"></div>
           <button type="button" class="btn" onclick="irSecao('pedidos')">Abrir a Central de Pedidos</button>
+          <div style="height:8px"></div>
+          <button type="button" class="btn" style="background:#12351f;color:#3ddc97;border:1px solid #1d5c38" onclick="irSecao('dinheiro')">Ver Meu dinheiro: quanto vendi</button>
         </div>
+      </div>
+
+      </div>
+
+      <!-- ================= MEU DINHEIRO — 30/09/2026 =================
+           O que o lojista GANHOU com o Moviki: quanto vendeu no periodo,
+           comparacao com o periodo anterior, o que falta confirmar, Pix que
+           nao foi pago, devolucoes, de onde veio (live x cardapio), os mais
+           vendidos, onde o dinheiro esta e o extrato em planilha.
+           E a "carteira" no jeito do iFood Pago SEM o Moviki guardar dinheiro:
+           o dinheiro continua indo direto do cliente para a conta do lojista.
+           Esta aba NAO grava nada: so LE os pedidos do proprio lojista (a
+           regra ja da essa leitura). Consulta por igualdade em lojistaUid +
+           "in" no dia do pedido, sem indice composto.
+      =========================================================== -->
+      <div class="tabConteudo escondido" id="tab-dinheiro">
+      <style>
+        #tab-dinheiro{--md-ok:#3ddc97;--md-alerta:#ffd36b;--md-ruim:#ff8f8f}
+        .mdPer{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+        .mdPer button{border-radius:999px;padding:8px 14px;font-size:13.5px;font-weight:700;cursor:pointer;border:1px solid #2f4a63;background:#121821;color:#cfe0f0;white-space:nowrap}
+        .mdPer button.on{background:var(--mv-grad);border-color:transparent;color:#04121f}
+        .mdPer select{width:auto;min-width:0;flex:0 1 170px;background:#121821;border:1px solid #2f4a63;border-radius:999px;padding:8px 12px;color:#cfe0f0;font:inherit;font-size:13.5px;font-weight:700}
+        .mdPer select.on{border-color:var(--mv-ciano);color:#fff}
+        .mdHero{position:relative;overflow:hidden;background:linear-gradient(135deg,#0f2436,#0b1826 60%);border:1px solid #1f3a55;border-radius:18px;padding:18px 18px 16px;margin-bottom:12px}
+        .mdHero:after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(61,220,151,.18),transparent 70%);pointer-events:none}
+        .mdHeroRot{font-size:13.5px;color:#a9bccf;font-weight:600}
+        .mdHeroVal{font-size:34px;font-weight:800;color:#fff;letter-spacing:-.5px;margin:4px 0 2px;line-height:1.1}
+        .mdHeroVal.carregando{color:#4d6278}
+        .mdComp{display:inline-block;font-size:12.5px;font-weight:800;border-radius:999px;padding:3px 10px;margin:4px 0 8px}
+        .mdComp.sobe{background:#12351f;color:var(--md-ok)}
+        .mdComp.desce{background:#2a1a1a;color:var(--md-ruim)}
+        .mdComp.igual{background:#16202c;color:#a9bccf}
+        .mdComp.vazio{display:none}
+        .mdHeroSub{font-size:13.5px;color:#cfe0f0;line-height:1.5}
+        .mdHeroSub b{color:#fff}
+        .mdConf{font-size:12.5px;color:#93a7bb;margin-top:6px;line-height:1.45}
+        .mdMini{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}
+        @media(max-width:560px){.mdMini{grid-template-columns:1fr 1fr}.mdMini .mdCard:first-child{grid-column:1/-1}}
+        .mdCard{box-sizing:border-box;text-align:left;background:#121821;border:1px solid #223040;border-radius:14px;padding:11px 12px;color:#cfe0f0;font:inherit;min-width:0}
+        button.mdCard{cursor:pointer}
+        button.mdCard:hover{border-color:#2f4a63}
+        .mdCardRot{display:flex;align-items:center;gap:6px;font-size:12px;color:#93a7bb;font-weight:700}
+        .mdPonto{width:8px;height:8px;border-radius:50%;flex:none;background:#5f7489}
+        .mdCardVal{display:block;font-size:18px;font-weight:800;color:#fff;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .mdCardSub{display:block;font-size:11.5px;color:#7d92a8;margin-top:2px;line-height:1.35}
+        .mdBox{background:#0f1520;border:1px solid #1c2735;border-radius:16px;padding:14px;margin-bottom:12px}
+        .mdBox h3{margin:0 0 10px;font-size:14.5px;color:#fff}
+        .mdDuas{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .mdDuas .mdBox{margin-bottom:12px}
+        @media(max-width:760px){.mdDuas{grid-template-columns:1fr}}
+        .mdGraf{display:flex;align-items:flex-end;gap:3px;height:150px;padding-top:18px;border-bottom:1px solid #223040;position:relative}
+        .mdBar{flex:1 1 0;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;position:relative}
+        .mdBar i{display:block;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,#3ddc97,#1f9d5c);min-height:2px;transition:height .3s}
+        .mdBar.zero i{background:#1c2735}
+        .mdBar.hoje i{background:linear-gradient(180deg,#6fe6ff,#0a8fd6)}
+        .mdBar:hover i{filter:brightness(1.25)}
+        .mdBar b{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(var(--h) + 3px);font-size:10px;color:#cfe0f0;white-space:nowrap;font-weight:700;pointer-events:none}
+        .mdEixo{display:flex;gap:3px;margin-top:5px}
+        .mdEixo span{flex:1 1 0;min-width:0;text-align:center;font-size:10.5px;color:#7d92a8;overflow:visible;white-space:nowrap}
+        .mdDica{margin-top:12px;font-size:13px;color:#cfe0f0;line-height:1.55;background:#101a26;border:1px dashed #2f4a63;border-radius:12px;padding:9px 12px}
+        .mdDica:empty{display:none}
+        .mdDica b{color:#fff}
+        .mdLinha{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13.5px}
+        .mdLinha:last-child{border-bottom:0}
+        .mdLinha .nm{color:#eaf6ff;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .mdLinha .vl{color:#fff;font-weight:800;white-space:nowrap}
+        .mdLinha .sb{grid-column:1/-1;font-size:12px;color:#7d92a8}
+        .mdTrilho{grid-column:1/-1;height:6px;border-radius:99px;background:#1c2735;overflow:hidden}
+        .mdTrilho i{display:block;height:100%;border-radius:99px;background:var(--c,#3ddc97)}
+        .mdPos{display:inline-flex;width:20px;height:20px;border-radius:50%;background:#1c2735;color:#cfe0f0;font-size:11px;font-weight:800;align-items:center;justify-content:center;margin-right:7px;vertical-align:middle}
+        .mdVazioTxt{color:#7d92a8;font-size:13px;padding:6px 0;line-height:1.5}
+        .mdOnde p{margin:0 0 9px;font-size:13.5px;line-height:1.55;color:#cfe0f0}
+        .mdOnde p:last-child{margin-bottom:0}
+        .mdOnde b{color:#fff}
+        .mdSelo{display:inline-block;font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;background:#12351f;color:#3ddc97;border:1px solid #1d5c38;vertical-align:middle}
+        .mdExtCab{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+        .mdExtCab h3{margin:0}
+        .mdCsv{flex:none;border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid #1d5c38;background:#12351f;color:#3ddc97;white-space:nowrap}
+        .mdCsv:disabled{opacity:.45;cursor:default}
+        .mdExt{display:grid;grid-template-columns:auto 1fr auto;gap:2px 12px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+        .mdExt:last-child{border-bottom:0}
+        .mdExtData{font-size:12px;color:#93a7bb;line-height:1.3;text-align:center;min-width:44px}
+        .mdExtData b{display:block;font-size:14px;color:#fff}
+        .mdExtMeio{min-width:0;font-size:13.5px;color:#eaf6ff;line-height:1.35}
+        .mdExtMeio span{display:block;font-size:12px;color:#7d92a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .mdExtVal{text-align:right;font-weight:800;color:#fff;font-size:14px;white-space:nowrap}
+        .mdExtVal small{display:block;font-size:11px;font-weight:700;color:#3ddc97}
+        .mdExt.dev .mdExtVal{color:#ff8f8f;text-decoration:line-through}
+        .mdExt.dev .mdExtVal small{color:#ff8f8f;text-decoration:none}
+        .mdMais{display:block;width:100%;margin-top:8px;border-radius:10px;padding:10px;font-weight:700;cursor:pointer;border:1px solid #2f4a63;background:#16202c;color:#cfe0f0}
+        .mdAtalho{box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;background:rgba(255,154,31,.1);border:1px solid rgba(255,154,31,.45);border-radius:12px;padding:10px 12px;margin:0 0 12px;font-size:13.5px;color:#ffd3a1;cursor:pointer;width:100%;text-align:left;font-family:inherit}
+        .mdAtalho b{color:#fff}
+        .mdAtalho span{margin-left:auto;font-weight:800;white-space:nowrap}
+        .mdVerHist{display:inline-block;margin-top:10px;background:none;border:0;color:#6fd0ff;font-weight:700;cursor:pointer;padding:0;font-size:13.5px}
+      </style>
+
+      <div class="pedTrava escondido" id="mdTrava">
+        <b>Vender pelo cardápio e pela live é dos planos Premium e Enterprise.</b><br>
+        Com a venda ligada, esta tela mostra quanto você vendeu, o que falta confirmar, de onde veio cada venda, os produtos que mais saem e o extrato para baixar.
+        <br><button type="button" class="btn" onclick="abrirPlano()">Ver planos</button>
+        <button type="button" class="mdVerHist" onclick="mdVerMesmoAssim()">Ver meu histórico de vendas mesmo assim ›</button>
+      </div>
+
+      <div id="mdCorpo">
+        <div class="mdPer" id="mdPer">
+          <button type="button" data-p="hoje" onclick="mdPeriodo('hoje')">Hoje</button>
+          <button type="button" data-p="7d" onclick="mdPeriodo('7d')">7 dias</button>
+          <button type="button" data-p="mes" class="on" onclick="mdPeriodo('mes')">Este mês</button>
+          <button type="button" data-p="mespass" onclick="mdPeriodo('mespass')">Mês passado</button>
+          <button type="button" data-p="ano" onclick="mdPeriodo('ano')">Este ano</button>
+          <select id="mdMesSel" aria-label="Escolher outro mês" onchange="mdPeriodo(this.value)"></select>
+        </div>
+
+        <div class="mdHero">
+          <div class="mdHeroRot" id="mdHeroRot">Este mês você vendeu</div>
+          <div class="mdHeroVal carregando" id="mdTotal">R$ 0,00</div>
+          <span class="mdComp vazio" id="mdComp"></span>
+          <div class="mdHeroSub" id="mdHeroSub">Carregando suas vendas…</div>
+          <div class="mdConf" id="mdConf"></div>
+        </div>
+
+        <button type="button" class="mdAtalho escondido" id="mdAtalho" onclick="irSecao('pedidos')"></button>
+
+        <div class="mdMini">
+          <button type="button" class="mdCard" onclick="irSecao('pedidos')" title="Abrir a Central de Pedidos">
+            <span class="mdCardRot"><span class="mdPonto" style="background:var(--md-alerta)"></span>A confirmar</span>
+            <span class="mdCardVal" id="mdAconf">R$ 0,00</span>
+            <span class="mdCardSub" id="mdAconfSub">nenhum pedido esperando</span>
+          </button>
+          <div class="mdCard">
+            <span class="mdCardRot"><span class="mdPonto"></span>Pix não pago</span>
+            <span class="mdCardVal" id="mdNaoPago">R$ 0,00</span>
+            <span class="mdCardSub" id="mdNaoPagoSub">cliente gerou o Pix e não pagou</span>
+          </div>
+          <div class="mdCard">
+            <span class="mdCardRot"><span class="mdPonto" style="background:var(--md-ruim)"></span>Devolvido</span>
+            <span class="mdCardVal" id="mdDevol">R$ 0,00</span>
+            <span class="mdCardSub" id="mdDevolSub">vendas desfeitas ou Pix devolvido</span>
+          </div>
+        </div>
+
+        <section class="mdBox">
+          <h3 id="mdGrafTit">Vendas por dia</h3>
+          <div class="mdGraf" id="mdGraf" role="img" aria-label="Gráfico das vendas no período"></div>
+          <div class="mdEixo" id="mdEixo"></div>
+          <div class="mdDica" id="mdDica"></div>
+        </section>
+
+        <div class="mdDuas">
+          <section class="mdBox">
+            <h3>De onde veio o dinheiro</h3>
+            <div id="mdOrigem"><div class="mdVazioTxt">Sem vendas pagas no período.</div></div>
+          </section>
+          <section class="mdBox">
+            <h3>Os que mais vendem</h3>
+            <div id="mdTop"><div class="mdVazioTxt">Sem vendas pagas no período.</div></div>
+          </section>
+        </div>
+
+        <section class="mdBox mdOnde">
+          <h3>Onde está o seu dinheiro</h3>
+          <div id="mdOnde"><p>O Moviki <b>não guarda o seu dinheiro</b>: cada venda vai direto do cliente para a sua conta.</p></div>
+        </section>
+
+        <section class="mdBox">
+          <div class="mdExtCab">
+            <h3>Extrato das vendas</h3>
+            <button type="button" class="mdCsv" id="mdCsv" onclick="mdBaixarPlanilha()" disabled>⬇ Baixar planilha</button>
+          </div>
+          <div id="mdExtrato"><div class="mdVazioTxt">Sem vendas pagas no período.</div></div>
+          <button type="button" class="mdMais escondido" id="mdMais" onclick="mdVerMais()">Ver mais vendas</button>
+        </section>
+
+        <div class="finNota" id="mdRodape">Aqui entram as vendas feitas pelo Moviki (live e cardápio) e pagas por Pix. Venda feita fora do Moviki não aparece. Pix gerado e não pago some depois de 7 dias.</div>
       </div>
 
       </div>
@@ -3721,7 +3902,14 @@ window.mvAbaInicial=function(){
      para a oferta ("peca ja e de outro"). Botao novo "Nao tenho a
      peca" (recusa com motivo, sem somar Vendidos na oferta) e "Avisar
      cliente" com texto de devolucao. Nada muda no robo. */
-  window.MOVIKI_VERSAO='2026-09-30-alertaoferta';
+  /* 2026-09-30-meudinheiro2 (icone 3D proprio icones/meudinheiro.png) sobre 2026-09-30-meudinheiro — aba nova MEU DINHEIRO (menu lateral logo abaixo
+     da Central, menu do celular, cartao em Ferramentas e botao no Financeiro >
+     Vendas): total vendido no periodo (hoje, 7 dias, este mes, mes passado,
+     este ano, outro mes), comparacao com o periodo anterior, a confirmar, Pix
+     nao pago, devolvido, live x cardapio, mais vendidos, dia e hora mais
+     fortes, onde o dinheiro esta e extrato com planilha (CSV). So leitura dos
+     pedidos do proprio lojista: nada muda no robo nem na regra. */
+  window.MOVIKI_VERSAO='2026-09-30-meudinheiro2';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -4483,11 +4671,13 @@ window.mvAbaInicial=function(){
     /* Central de Pedidos (26/09/2026): abre ja com a lista e zera o aviso. */
     document.body.classList.toggle('mvNaPedidos', nome==='pedidos');
     if(nome==='pedidos'){ if(window.pedAbrir)setTimeout(window.pedAbrir,60); if(window.finZerarAviso)window.finZerarAviso(); }
+    /* Meu dinheiro (30/09/2026): so leitura; carrega o periodo ao abrir. */
+    if(nome==='dinheiro'&&window.mdAbrir){setTimeout(window.mdAbrir,60);}
     /* O "Salvar tudo" salva o CADASTRO do negocio e nao tem nada a ver com o
        Financeiro, que grava pelo endpoint em cada botao proprio. Deixa-lo a
        vista aqui faria o lojista achar que precisa clicar nele para a chave
        Pix valer — e sair da tela sem clicar em "Salvar chave Pix". */
-    var _bs=el('btnSalvar'); if(_bs) _bs.style.display = (nome==='financeiro'||nome==='pedidos') ? 'none' : '';
+    var _bs=el('btnSalvar'); if(_bs) _bs.style.display = (nome==='financeiro'||nome==='pedidos'||nome==='dinheiro') ? 'none' : '';
   };
 
   /* ---- PAINEL util ---- */
@@ -7108,6 +7298,418 @@ window.mvAbaInicial=function(){
   };
 
   /* =====================================================================
+     MEU DINHEIRO — 30/09/2026
+     A "carteira" do lojista, no jeito do iFood Pago, mas SEM o Moviki
+     guardar dinheiro (decisao de 15/09: nada de BaaS). Mostra o que ele
+     GANHOU: total do periodo, comparacao, a confirmar, Pix nao pago,
+     devolvido, live x cardapio, mais vendidos, onde o dinheiro esta e o
+     extrato em planilha.
+
+     SO LEITURA. Nada aqui grava em lugar nenhum.
+
+     A CONSULTA: igualdade em lojistaUid + "in" no campo `dia` (AAAA-MM-DD,
+     horario de Brasilia, gravado pelo robo em todo pedido), em lotes de 30
+     dias. Igualdade + "in" nao pede indice composto — a mesma familia da
+     escuta dos ativos da Central. Se a consulta falhar mesmo assim, cai no
+     plano B: todos os pedidos do lojista (limit 3000) filtrados aqui.
+     Nao usa a escuta da Central (200 mais recentes): um mes cheio passa
+     disso e o total sairia menor que o real sem ninguem perceber.
+
+     Dias passados ficam em memoria na sessao; o dia de hoje e relido a
+     cada abertura. Pedido nao pago some em 7 dias (TTL do robo), por isso
+     "Pix nao pago" e a taxa de pagamento so valem para periodos curtos.
+  ===================================================================== */
+  const MD_PAGOS = ['pago', 'separando', 'pronto', 'saiu', 'entregue'];
+  const MD_ACONF = ['aguardando', 'conferindo'];
+  const MD_NAOPAGO = ['expirado', 'recusado', 'cancelado'];
+  const MD_MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+  const MD_MES_C = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  const MD_SEMANA = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
+  const MD_LOTE = 1500;
+  let mdTodosProm = null, mdPer = 'mes', mdCache = {}, mdCacheEm = {}, mdPlanoB = false, mdSeq = 0, mdLinhas = [], mdMostrar = 30, mdCheio = false, mdForcado = false, mdAtual = null;
+
+  function mdHoje() { return new Date(Date.now() - 3 * 3600000).toISOString().slice(0, 10); }
+  function mdDiaMs(s) { return Date.parse(s + 'T00:00:00Z'); }
+  function mdSoma(s, n) { return new Date(mdDiaMs(s) + n * 86400000).toISOString().slice(0, 10); }
+  function mdDias(ini, fim) { const r = []; for (let d = ini; d <= fim; d = mdSoma(d, 1)) r.push(d); return r; }
+  function mdFimMes(am) { const y = +am.slice(0, 4), m = +am.slice(5, 7); return new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10); }
+  function mdMesAnt(am) { const y = +am.slice(0, 4), m = +am.slice(5, 7); return m === 1 ? (y - 1) + '-12' : y + '-' + String(m - 1).padStart(2, '0'); }
+  function mdNomeMes(am) { return MD_MESES[+am.slice(5, 7) - 1]; }
+  /* horario de Brasilia do pagamento (ou da criacao), como Date "deslocada" */
+  function mdQuando(p) { const t = finMs(p.pagoEm) || finMs(p.criadoEm); return t ? new Date(t - 3 * 3600000) : null; }
+  function mdDiaDe(p) { if (p.dia && /^\d{4}-\d{2}-\d{2}$/.test(p.dia)) return p.dia; const q = mdQuando(p); return q ? q.toISOString().slice(0, 10) : ''; }
+  /* R$ 3.401,31 — com ponto de milhar (o finReal do Financeiro nao tem). */
+  function mdReal(v) { return 'R$ ' + Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function mdPct(a, b) { return b > 0 ? Math.round(a / b * 100) : 0; }
+
+  /* Periodo escolhido -> { ini, fim, rotulo, antes: {ini, fim} | null, antesTxt, tipo } */
+  function mdJanela(per) {
+    const h = mdHoje(), am = h.slice(0, 7), dNum = +h.slice(8, 10);
+    if (per === 'hoje') return { ini: h, fim: h, tipo: 'hora', rot: 'Hoje você vendeu', antes: { ini: mdSoma(h, -1), fim: mdSoma(h, -1) }, antesTxt: 'ontem' };
+    if (per === '7d') return { ini: mdSoma(h, -6), fim: h, tipo: 'dia', rot: 'Nos últimos 7 dias você vendeu', antes: { ini: mdSoma(h, -13), fim: mdSoma(h, -7) }, antesTxt: 'os 7 dias anteriores' };
+    if (per === 'ano') return { ini: h.slice(0, 4) + '-01-01', fim: h, tipo: 'mes', rot: 'Em ' + h.slice(0, 4) + ' você vendeu', antes: null, antesTxt: '' };
+    let alvo = am;
+    if (per === 'mespass') alvo = mdMesAnt(am);
+    else if (/^m:\d{4}-\d{2}$/.test(per)) alvo = per.slice(2);
+    if (alvo === am) {
+      const ant = mdMesAnt(am), fimAnt = mdFimMes(ant);
+      const corte = ant + '-' + String(dNum).padStart(2, '0');
+      return { ini: am + '-01', fim: h, tipo: 'dia', rot: 'Este mês você vendeu', antes: { ini: ant + '-01', fim: corte < fimAnt ? corte : fimAnt }, antesTxt: 'o mesmo período de ' + mdNomeMes(ant) };
+    }
+    const ant = mdMesAnt(alvo);
+    return { ini: alvo + '-01', fim: mdFimMes(alvo), tipo: 'dia', rot: 'Em ' + mdNomeMes(alvo) + ' de ' + alvo.slice(0, 4) + ' você vendeu', antes: { ini: ant + '-01', fim: mdFimMes(ant) }, antesTxt: mdNomeMes(ant) };
+  }
+
+  /* Busca os dias que faltam no cache. Devolve a lista de pedidos dos dias pedidos. */
+  async function mdBuscar(dias) {
+    const uid = usuarioAtual && usuarioAtual.uid; if (!uid) return [];
+    const h = mdHoje();
+    if (!mdPlanoB) {
+      const falta = dias.filter(function (d) { return !mdCache[d] || (d === h && Date.now() - (mdCacheEm[d] || 0) > 30000); });
+      const lotes = [];
+      for (let i = 0; i < falta.length; i += 30) lotes.push(falta.slice(i, i + 30));
+      try {
+        const res = await Promise.all(lotes.map(function (lt) {
+          return getDocs(query(collection(db, 'pedidos'), where('lojistaUid', '==', uid), where('dia', 'in', lt), limit(MD_LOTE)));
+        }));
+        if (!mdPlanoB) res.forEach(function (qs, i) {
+          if (qs.size >= MD_LOTE) mdCheio = true;
+          lotes[i].forEach(function (d) { mdCache[d] = []; mdCacheEm[d] = Date.now(); });
+          qs.forEach(function (s) { const p = Object.assign({ __id: s.id }, s.data()); const d = mdDiaDe(p); if (mdCache[d]) mdCache[d].push(p); });
+        });
+      } catch (e) {
+        console.warn('meu dinheiro: consulta por dia falhou, usando plano B', e && e.code);
+        mdPlanoB = true; mdCache = {}; mdCacheEm = {};
+      }
+    }
+    if (mdPlanoB && !mdCache.__todos) {
+      /* Uma carga so, mesmo com o periodo atual e o anterior pedindo juntos:
+         sem a promessa compartilhada, as duas chamadas somavam em dobro. */
+      if (!mdTodosProm) mdTodosProm = getDocs(query(collection(db, 'pedidos'), where('lojistaUid', '==', uid), limit(3000))).then(function (qs) {
+        if (qs.size >= 3000) mdCheio = true;
+        const m = { __todos: true };
+        qs.forEach(function (s) { const p = Object.assign({ __id: s.id }, s.data()); const d = mdDiaDe(p); (m[d] = m[d] || []).push(p); });
+        mdCache = m;
+      }, function (e) { mdTodosProm = null; throw e; });
+      await mdTodosProm;
+    }
+    let out = [];
+    dias.forEach(function (d) { if (mdCache[d]) out = out.concat(mdCache[d]); });
+    return out;
+  }
+
+  function mdCalcular(lista, jan) {
+    const r = { receb: 0, n: 0, frete: 0, aconf: 0, nAconf: 0, nConferindo: 0, naoPago: 0, nNaoPago: 0, devol: 0, nDevol: 0,
+      porBanco: 0, porVoce: 0, live: 0, nLive: 0, card: 0, nCard: 0, oferta: 0, nOferta: 0, modos: {}, itens: {}, serie: {}, semana: [0, 0, 0, 0, 0, 0, 0], hora: new Array(24).fill(0), linhas: [] };
+    lista.forEach(function (p) {
+      const st = String(p.status || 'aguardando'), tot = Number(p.total || 0);
+      if (MD_PAGOS.indexOf(st) >= 0) {
+        r.receb += tot; r.n++;
+        const fr = Number(p.frete || 0); r.frete += fr;
+        const banco = p.confirmadoPor ? p.confirmadoPor === 'gateway' : p.modo !== 'pix';
+        if (banco) r.porBanco += tot; else r.porVoce += tot;
+        if (p.origem === 'cardapio') { r.card += tot; r.nCard++; } else { r.live += tot; r.nLive++; if (p.oferta) { r.oferta += tot; r.nOferta++; } }
+        const md = p.modo === 'pix' ? 'pix' : 'asaas';
+        r.modos[md] = (r.modos[md] || 0) + tot;
+        (Array.isArray(p.itens) ? p.itens : []).forEach(function (i) {
+          const nm = String(i.nome || 'Produto').trim().slice(0, 60) || 'Produto', q = Number(i.qtd) || 1;
+          const k = nm.toLowerCase();
+          const o = r.itens[k] || (r.itens[k] = { nome: nm, qtd: 0, valor: 0 });
+          o.qtd += q; o.valor += Number(i.preco || 0) * q;
+        });
+        const q = mdQuando(p);
+        let chave = mdDiaDe(p);
+        if (jan.tipo === 'hora') chave = q ? q.getUTCHours() : 0;
+        else if (jan.tipo === 'mes') chave = chave.slice(0, 7);
+        r.serie[chave] = (r.serie[chave] || 0) + tot;
+        if (q) { r.semana[q.getUTCDay()] += tot; r.hora[q.getUTCHours()] += tot; }
+        r.linhas.push(p);
+      } else if (st === 'devolvido' || (st === 'estornado' && p.estornoDe)) {
+        r.devol += tot; r.nDevol++; r.linhas.push(p);
+      } else if (MD_ACONF.indexOf(st) >= 0) {
+        r.aconf += tot; r.nAconf++; if (st === 'conferindo') r.nConferindo++;
+      } else if (MD_NAOPAGO.indexOf(st) >= 0 || st === 'estornado') {
+        r.naoPago += tot; r.nNaoPago++;
+      }
+    });
+    r.linhas.sort(function (a, b) { return (finMs(b.pagoEm) || finMs(b.criadoEm)) - (finMs(a.pagoEm) || finMs(a.criadoEm)); });
+    return r;
+  }
+
+  function mdTxt(id, t) { const e = el(id); if (e) e.textContent = t; }
+  function mdPlural(n, s, p) { return n + ' ' + (n === 1 ? s : p); }
+
+  function mdMontarMeses() {
+    const s = el('mdMesSel'); if (!s || s.options.length) return;
+    const h = mdHoje();
+    let am = mdMesAnt(mdMesAnt(h.slice(0, 7)));
+    const op0 = document.createElement('option'); op0.value = ''; op0.textContent = 'Outro mês…'; s.appendChild(op0);
+    for (let i = 0; i < 10; i++) {
+      if (am < '2026-08') break;  /* o Pix do Moviki comecou em setembro de 2026; agosto fica de folga */
+      const op = document.createElement('option'); op.value = 'm:' + am;
+      op.textContent = MD_MESES[+am.slice(5, 7) - 1].replace(/^./, function (c) { return c.toUpperCase(); }) + ' ' + am.slice(0, 4);
+      s.appendChild(op); am = mdMesAnt(am);
+    }
+    if (s.options.length < 2) s.style.display = 'none';
+  }
+
+  window.mdAbrir = function () {
+    if (!usuarioAtual) return;
+    mdMontarMeses();
+    const ok = pedPlanoOk() || mdForcado;
+    const tr = el('mdTrava'), co = el('mdCorpo');
+    if (tr) tr.classList.toggle('escondido', ok);
+    if (co) co.classList.toggle('escondido', !ok);
+    if (!ok) return;
+    try { if (window.mvEv) mvEv('meu_dinheiro_aberto', { periodo: mdPer }); } catch (_) {}
+    window.mdPeriodo(mdPer);
+    if (!finEstado) {
+      finPost('loja_recebimento').then(function (r) { if (r.j && r.j.ok && !finEstado) { finEstado = r.j; if (mdAtual) mdPintarOnde(mdAtual); } }).catch(function () {});
+    }
+  };
+  window.mdVerMesmoAssim = function () { mdForcado = true; window.mdAbrir(); };
+
+  window.mdPeriodo = async function (per) {
+    if (!per) return;
+    mdPer = per; mdMostrar = 30; mdCheio = false;
+    document.querySelectorAll('#mdPer button[data-p]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-p') === per); });
+    const sel = el('mdMesSel'); if (sel) { sel.value = /^m:/.test(per) ? per : ''; sel.classList.toggle('on', /^m:/.test(per)); }
+    const jan = mdJanela(per), seq = ++mdSeq;
+    mdTxt('mdHeroRot', jan.rot);
+    const tv = el('mdTotal'); if (tv) tv.classList.add('carregando');
+    mdTxt('mdHeroSub', 'Carregando suas vendas…');
+    try {
+      const pedAtual = mdBuscar(mdDias(jan.ini, jan.fim));
+      const pedAntes = jan.antes ? mdBuscar(mdDias(jan.antes.ini, jan.antes.fim)) : Promise.resolve(null);
+      const lista = await pedAtual, listaAntes = await pedAntes;
+      if (seq !== mdSeq) return;
+      const r = mdCalcular(lista, jan);
+      r.antes = listaAntes ? mdCalcular(listaAntes, jan).receb : null;
+      mdAtual = r;
+      mdPintar(r, jan, per);
+    } catch (e) {
+      if (seq !== mdSeq) return;
+      console.warn('meu dinheiro', e);
+      if (tv) tv.classList.remove('carregando');
+      mdTxt('mdHeroSub', 'Não consegui carregar suas vendas agora. Verifique sua conexão e toque no período de novo.');
+    }
+  };
+
+  function mdPintar(r, jan, per) {
+    const tv = el('mdTotal'); if (tv) { tv.classList.remove('carregando'); tv.textContent = mdReal(r.receb); }
+    /* comparacao */
+    const cp = el('mdComp');
+    if (cp) {
+      if (r.antes == null || (r.antes === 0 && r.receb === 0)) { cp.className = 'mdComp vazio'; cp.textContent = ''; }
+      else if (r.antes === 0) { cp.className = 'mdComp sobe'; cp.textContent = '▲ primeiras vendas · nada em ' + jan.antesTxt; }
+      else {
+        const v = Math.round((r.receb - r.antes) / r.antes * 100);
+        cp.className = 'mdComp ' + (v > 0 ? 'sobe' : (v < 0 ? 'desce' : 'igual'));
+        cp.textContent = (v > 0 ? '▲ ' : (v < 0 ? '▼ ' : '')) + Math.abs(v) + '% sobre ' + jan.antesTxt + ' (' + mdReal(r.antes) + ')';
+      }
+    }
+    const tick = r.n ? r.receb / r.n : 0;
+    const sub = el('mdHeroSub');
+    if (sub) {
+      if (r.n) sub.innerHTML = '<b>' + mdPlural(r.n, 'venda paga', 'vendas pagas') + '</b> · ticket médio <b>' + mdReal(tick) + '</b>'
+        + (r.frete > 0 ? '<br>' + mdReal(r.receb - r.frete) + ' em produtos + ' + mdReal(r.frete) + ' de taxa de entrega' : '');
+      else sub.textContent = (per === 'hoje' ? 'Nenhuma venda paga hoje ainda.' : 'Nenhuma venda paga neste período.')
+        + (per === 'hoje' || per === '7d' || per === 'mes' ? ' Mande o link do seu cardápio no WhatsApp ou abra uma live para vender.' : '');
+    }
+    const cf = el('mdConf');
+    if (cf) {
+      cf.textContent = r.porVoce > 0
+        ? mdReal(r.porVoce) + ' foi confirmado por você (Pix direto)' + (r.porBanco > 0 ? ' e ' + mdReal(r.porBanco) + ' pelo Asaas' : '') + '. Confira no extrato do seu banco se está tudo lá.'
+        : (r.porBanco > 0 ? 'Tudo confirmado automaticamente pelo Asaas.' : '');
+    }
+
+    /* atalho para a Central quando ha Pix para conferir */
+    const at = el('mdAtalho');
+    if (at) {
+      const hojeNoPer = jan.fim === mdHoje();
+      at.classList.toggle('escondido', !(hojeNoPer && r.nConferindo > 0));
+      if (r.nConferindo > 0) at.innerHTML = '🔔 <b>' + mdPlural(r.nConferindo, 'cliente diz', 'clientes dizem') + ' que já pagou.</b> Confira o Pix na Central de Pedidos.<span>Conferir ›</span>';
+    }
+
+    /* cartoes pequenos */
+    mdTxt('mdAconf', mdReal(r.aconf));
+    mdTxt('mdAconfSub', r.nAconf ? mdPlural(r.nAconf, 'pedido esperando', 'pedidos esperando') + ' o Pix' : 'nenhum pedido esperando');
+    mdTxt('mdNaoPago', mdReal(r.naoPago));
+    const curto = per === 'hoje' || per === '7d';
+    const tx = r.n + r.nDevol + r.nNaoPago > 0 ? mdPct(r.n + r.nDevol, r.n + r.nDevol + r.nNaoPago) : 0;
+    mdTxt('mdNaoPagoSub', r.nNaoPago
+      ? mdPlural(r.nNaoPago, 'Pix gerado', 'Pix gerados') + ' e não pago' + (r.nNaoPago === 1 ? '' : 's') + (curto && r.n ? ' · ' + tx + '% dos clientes pagaram' : '')
+      : (curto ? (r.n ? 'todo Pix gerado foi pago' : 'nenhum Pix gerado') : 'só aparece dos últimos 7 dias'));
+    mdTxt('mdDevol', mdReal(r.devol));
+    mdTxt('mdDevolSub', r.nDevol ? mdPlural(r.nDevol, 'venda desfeita ou Pix devolvido', 'vendas desfeitas ou Pix devolvidos') : 'nenhuma devolução');
+
+    mdPintarGrafico(r, jan);
+    mdPintarOrigem(r);
+    mdPintarTop(r);
+    mdPintarOnde(r);
+    mdLinhas = r.linhas;
+    mdPintarExtrato();
+    const rod = el('mdRodape');
+    if (rod) rod.textContent = 'Aqui entram as vendas feitas pelo Moviki (live e cardápio) e pagas por Pix. Venda feita fora do Moviki não aparece. Pix gerado e não pago some depois de 7 dias.'
+      + (mdCheio ? ' Este período tem mais pedidos do que a tela consegue somar de uma vez: fale com o suporte para o relatório completo.' : '');
+  }
+
+  function mdPintarGrafico(r, jan) {
+    const g = el('mdGraf'), ex = el('mdEixo'); if (!g || !ex) return;
+    let chaves = [], rot = [], tit = 'Vendas por dia';
+    const h = mdHoje();
+    let marcaHoje = null;
+    if (jan.tipo === 'hora') {
+      tit = 'Vendas por hora';
+      const agora = new Date(Date.now() - 3 * 3600000).getUTCHours();
+      let ini = 24, fim = agora;
+      for (let i = 0; i < 24; i++) if (r.serie[i]) { ini = Math.min(ini, i); fim = Math.max(fim, i); }
+      ini = Math.max(0, Math.min(ini - 1, agora - 1, 8));
+      for (let i = ini; i <= fim; i++) { chaves.push(i); rot.push(i + 'h'); }
+      marcaHoje = agora;
+    } else if (jan.tipo === 'mes') {
+      tit = 'Vendas por mês';
+      const ult = +jan.fim.slice(5, 7);
+      for (let m = 1; m <= ult; m++) { const k = jan.ini.slice(0, 4) + '-' + String(m).padStart(2, '0'); chaves.push(k); rot.push(MD_MES_C[m - 1]); }
+      marcaHoje = h.slice(0, 7);
+    } else {
+      chaves = mdDias(jan.ini, jan.fim);
+      const passo = chaves.length > 16 ? 5 : 1;
+      rot = chaves.map(function (d, i) {
+        if (chaves.length <= 7) return MD_SEMANA[new Date(mdDiaMs(d)).getUTCDay()].slice(0, 3);
+        const n = +d.slice(8, 10);
+        return (n === 1 || i === chaves.length - 1 || n % passo === 0) ? String(n) : '';
+      });
+      marcaHoje = h;
+    }
+    mdTxt('mdGrafTit', tit);
+    let max = 0; chaves.forEach(function (k) { max = Math.max(max, r.serie[k] || 0); });
+    const poucas = chaves.length <= 12;
+    g.innerHTML = chaves.map(function (k, i) {
+      const v = r.serie[k] || 0, hp = max ? Math.max(2, Math.round(v / max * 100)) : 2;
+      const dica = (jan.tipo === 'dia' ? k.slice(8, 10) + '/' + k.slice(5, 7) : rot[i]) + ': ' + mdReal(v);
+      const cls = 'mdBar' + (v ? '' : ' zero') + (k === marcaHoje ? ' hoje' : '');
+      const valor = poucas && v ? '<b>' + (v >= 1000 ? (v / 1000).toFixed(1).replace('.', ',') + ' mil' : Math.round(v)) + '</b>' : '';
+      return '<div class="' + cls + '" style="--h:' + hp + '%" title="' + finEsc(dica) + '">' + valor + '<i style="height:' + hp + '%"></i></div>';
+    }).join('');
+    ex.innerHTML = rot.map(function (t) { return '<span>' + finEsc(t) + '</span>'; }).join('');
+
+    /* dica: dia e horario mais fortes (so com base suficiente) */
+    const dc = el('mdDica'); if (!dc) return;
+    if (r.n >= 5 && jan.tipo !== 'hora') {
+      let bd = 0; for (let i = 1; i < 7; i++) if (r.semana[i] > r.semana[bd]) bd = i;
+      let bh = 0; for (let i = 1; i < 24; i++) if (r.hora[i] > r.hora[bh]) bh = i;
+      dc.innerHTML = '💡 Seu dia mais forte é <b>' + MD_SEMANA[bd] + '</b> e o horário que mais vende é <b>das ' + bh + 'h às ' + ((bh + 1) % 24) + 'h</b>. Bom momento para abrir a live e postar o seu link.';
+    } else if (r.n >= 3 && jan.tipo === 'hora') {
+      let bh = 0; for (let i = 1; i < 24; i++) if (r.hora[i] > r.hora[bh]) bh = i;
+      dc.innerHTML = '💡 Hoje o horário que mais vendeu foi <b>das ' + bh + 'h às ' + ((bh + 1) % 24) + 'h</b>.';
+    } else dc.textContent = '';
+  }
+
+  function mdLinhaBarra(nome, valor, sub, pct, cor) {
+    return '<div class="mdLinha"><span class="nm">' + finEsc(nome) + '</span><span class="vl">' + mdReal(valor) + '</span>'
+      + '<span class="mdTrilho" style="--c:' + cor + '"><i style="width:' + Math.max(pct, valor > 0 ? 2 : 0) + '%"></i></span>'
+      + '<span class="sb">' + finEsc(sub) + '</span></div>';
+  }
+
+  function mdPintarOrigem(r) {
+    const b = el('mdOrigem'); if (!b) return;
+    if (!r.n) { b.innerHTML = '<div class="mdVazioTxt">Sem vendas pagas no período.</div>'; return; }
+    let h = mdLinhaBarra('Live', r.live, mdPlural(r.nLive, 'venda', 'vendas') + ' · ' + mdPct(r.live, r.receb) + '% do total', mdPct(r.live, r.receb), '#ff5a8a')
+      + mdLinhaBarra('Cardápio', r.card, mdPlural(r.nCard, 'venda', 'vendas') + ' · ' + mdPct(r.card, r.receb) + '% do total', mdPct(r.card, r.receb), '#6fd0ff');
+    if (r.nOferta) h += mdLinhaBarra('Oferta relâmpago', r.oferta, 'dentro da live · ' + mdPlural(r.nOferta, 'venda', 'vendas'), mdPct(r.oferta, r.receb), '#ffd36b');
+    if (r.frete > 0) h += mdLinhaBarra('Taxa de entrega', r.frete, 'recebida junto, já somada no total', mdPct(r.frete, r.receb), '#c6b3ff');
+    b.innerHTML = h;
+  }
+
+  function mdPintarTop(r) {
+    const b = el('mdTop'); if (!b) return;
+    const lst = Object.keys(r.itens).map(function (k) { return r.itens[k]; }).sort(function (a, c) { return c.valor - a.valor || c.qtd - a.qtd; }).slice(0, 5);
+    if (!lst.length) { b.innerHTML = '<div class="mdVazioTxt">Sem vendas pagas no período.</div>'; return; }
+    const max = lst[0].valor || 1;
+    b.innerHTML = lst.map(function (it, i) {
+      return '<div class="mdLinha"><span class="nm"><span class="mdPos">' + (i + 1) + '</span>' + finEsc(it.nome) + '</span><span class="vl">' + mdReal(it.valor) + '</span>'
+        + '<span class="mdTrilho"><i style="width:' + Math.max(2, Math.round(it.valor / max * 100)) + '%"></i></span>'
+        + '<span class="sb">' + mdPlural(it.qtd, 'unidade vendida', 'unidades vendidas') + '</span></div>';
+    }).join('');
+  }
+
+  function mdPintarOnde(r) {
+    const b = el('mdOnde'); if (!b) return;
+    const e = finEstado || {};
+    const pix = r.modos.pix || 0, asa = r.modos.asaas || 0;
+    let h = '<p>O Moviki <b>não guarda o seu dinheiro</b> <span class="mdSelo">direto para você</span><br>Cada venda vai do cliente para a sua conta, sem passar pelo Moviki e sem esperar repasse.</p>';
+    if (pix > 0 || e.modo === 'pix') {
+      const ch = e.pix && e.pix.tem && e.pix.mascara ? ' (chave ' + finEsc(e.pix.mascara) + ')' : '';
+      h += pix > 0
+        ? '<p><b>Pix direto: ' + mdReal(pix) + '</b><br>Já caiu na conta do seu banco' + ch + ', na hora em que o cliente pagou. Para conferir, abra o extrato do seu banco: cada pedido tem centavos diferentes, o que ajuda a achar.</p>'
+        : '<p><b>Pix direto</b><br>Quando o cliente paga, o dinheiro cai na hora na conta do seu banco' + ch + '.</p>';
+    }
+    if (asa > 0 || e.modo === 'asaas' || e.modo === 'subconta') {
+      h += '<p><b>Pix automático pelo Asaas' + (asa > 0 ? ': ' + mdReal(asa) : '') + '</b><br>' + (asa > 0 ? 'Está' : 'Cai') + ' no saldo da <b>sua</b> conta Asaas, já com a tarifa do Asaas descontada. Para levar ao seu banco, faça a transferência pelo aplicativo ou pelo site do Asaas.</p>';
+    }
+    if (!pix && !asa && !e.modo) h += '<p>Ainda não há venda paga para mostrar. <a href="#" onclick="irSecao(\'financeiro\');return false;" style="color:#6fd0ff;font-weight:700">Ver como você recebe →</a></p>';
+    if (e.ligado === false) h += '<p style="color:#ffd27a">⚠️ Sua venda está <b>desligada</b>: o cliente vê o cardápio, mas não consegue comprar. <a href="#" onclick="irSecao(\'financeiro\');return false;" style="color:#ffd27a;font-weight:700">Ligar no Financeiro →</a></p>';
+    b.innerHTML = h;
+  }
+
+  function mdRotSt(p) {
+    const st = String(p.status || '');
+    if (st === 'devolvido') return 'desfeita';
+    if (st === 'estornado') return 'Pix devolvido';
+    return ({ pago: 'pago', separando: 'separando', pronto: 'pronto', saiu: 'saiu p/ entrega', entregue: 'entregue' })[st] || st;
+  }
+  function mdPrimeiroNome(p) { return String((p.comprador && p.comprador.nome) || 'Cliente').trim().split(/\s+/)[0].slice(0, 20) || 'Cliente'; }
+  function mdNumero(p) { return p.numero ? String(p.numero).padStart(4, '0') : String(p.__id || '').slice(-6).toUpperCase(); }
+
+  function mdPintarExtrato() {
+    const b = el('mdExtrato'), mais = el('mdMais'), csv = el('mdCsv'); if (!b) return;
+    if (csv) csv.disabled = !mdLinhas.length;
+    if (!mdLinhas.length) { b.innerHTML = '<div class="mdVazioTxt">Sem vendas pagas no período.</div>'; if (mais) mais.classList.add('escondido'); return; }
+    b.innerHTML = mdLinhas.slice(0, mdMostrar).map(function (p) {
+      const q = mdQuando(p), dev = MD_PAGOS.indexOf(String(p.status || '')) < 0;
+      const dt = q ? String(q.getUTCDate()).padStart(2, '0') + '/' + String(q.getUTCMonth() + 1).padStart(2, '0') : '--';
+      const hr = q ? String(q.getUTCHours()).padStart(2, '0') + ':' + String(q.getUTCMinutes()).padStart(2, '0') : '';
+      const itens = (Array.isArray(p.itens) ? p.itens : []).map(function (i) { return (Number(i.qtd) > 1 ? i.qtd + 'x ' : '') + i.nome; }).join(', ');
+      return '<div class="mdExt' + (dev ? ' dev' : '') + '"><div class="mdExtData"><b>' + dt + '</b>' + hr + '</div>'
+        + '<div class="mdExtMeio">nº ' + finEsc(mdNumero(p)) + ' · ' + finEsc(mdPrimeiroNome(p)) + '<span>' + (p.origem === 'cardapio' ? 'Cardápio' : (p.oferta ? 'Live · oferta' : 'Live')) + ' · ' + finEsc(itens) + '</span></div>'
+        + '<div class="mdExtVal">' + mdReal(p.total) + '<small>' + finEsc(mdRotSt(p)) + '</small></div></div>';
+    }).join('');
+    if (mais) mais.classList.toggle('escondido', mdLinhas.length <= mdMostrar);
+  }
+  window.mdVerMais = function () { mdMostrar += 30; mdPintarExtrato(); };
+
+  /* Planilha: CSV com ponto e virgula e virgula decimal (abre certo no
+     Excel em portugues). So primeiro nome do cliente, nunca contato. */
+  window.mdBaixarPlanilha = function () {
+    if (!mdLinhas.length) return;
+    const jan = mdJanela(mdPer);
+    const num = function (v) { return Number(v || 0).toFixed(2).replace('.', ','); };
+    const cel = function (s) { s = String(s == null ? '' : s).replace(/[\r\n;]+/g, ' ').trim(); if (/^[=+\-@]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; };
+    const cab = ['Data', 'Hora', 'Pedido', 'Cliente', 'Origem', 'Forma de pagamento', 'Itens', 'Produtos (R$)', 'Entrega (R$)', 'Total recebido (R$)', 'Devolvido (R$)', 'Situação', 'Confirmado por'];
+    const linhas = [cab.map(cel).join(';')];
+    mdLinhas.slice().reverse().forEach(function (p) {
+      const q = mdQuando(p), dev = MD_PAGOS.indexOf(String(p.status || '')) < 0, fr = Number(p.frete || 0);
+      linhas.push([
+        q ? q.toISOString().slice(0, 10).split('-').reverse().join('/') : '',
+        q ? q.toISOString().slice(11, 16) : '',
+        mdNumero(p), mdPrimeiroNome(p),
+        p.origem === 'cardapio' ? 'Cardápio' : (p.oferta ? 'Live (oferta relâmpago)' : 'Live'),
+        p.modo === 'pix' ? 'Pix direto' : 'Pix Asaas',
+        (Array.isArray(p.itens) ? p.itens : []).map(function (i) { return (Number(i.qtd) || 1) + 'x ' + i.nome; }).join(' + '),
+      ].map(cel).concat([num(Number(p.total || 0) - fr), num(fr), num(dev ? 0 : p.total), num(dev ? p.total : 0)])
+        .concat([cel(mdRotSt(p)), cel(p.confirmadoPor === 'gateway' ? 'Asaas' : (p.confirmadoPor === 'lojista' ? 'Você' : (p.modo === 'pix' ? 'Você' : 'Asaas')))]).join(';'));
+    });
+    const blob = new Blob(['\ufeff' + linhas.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'moviki-vendas-' + jan.ini + (jan.fim !== jan.ini ? '-a-' + jan.fim : '') + '.csv';
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+    try { if (window.mvEv) mvEv('meu_dinheiro_planilha', { periodo: mdPer, linhas: mdLinhas.length }); } catch (_) {}
+  };
+
+  /* =====================================================================
      CENTRAL DE PEDIDOS — 26/09/2026
      A lista e a MESMA escuta do Financeiro (finEscutarVendas): uma consulta
      so por igualdade em lojistaUid, limit 200, ordenada aqui. Duas escutas
@@ -8140,7 +8742,7 @@ window.mvAbaInicial=function(){
 </script>
 <script>
 (function(){
-  var TIT={pedidos:'Central de Pedidos',perfil:'Perfil',cardapio:'Cardápio',promocoes:'Promoções',eventos:'Eventos',local:'Localização',info:'Informações',whatsapp:'WhatsApp',avaliacoes:'Avaliações'};
+  var TIT={pedidos:'Central de Pedidos',dinheiro:'Meu dinheiro',perfil:'Perfil',cardapio:'Cardápio',promocoes:'Promoções',eventos:'Eventos',local:'Localização',info:'Informações',whatsapp:'WhatsApp',avaliacoes:'Avaliações'};
   function $(id){return document.getElementById(id);}
   function mostrarEditor(sec){
     var g=$('grade'),e=$('editor'),t=$('editorTit');
