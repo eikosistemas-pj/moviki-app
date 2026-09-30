@@ -629,7 +629,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer, increment }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-09-30-reserva';   /* anterior: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
+  window.MOVIKI_VERSAO='2026-09-30-estoque';   /* anterior: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -743,7 +743,7 @@ svg{display:block}
     sacola=sacola.slice(0,nivel.sacolaMax);
     el('titulo').value=est.titulo||'';
     if(est.agendada&&est.agendada.em){const d=new Date(ms(est.agendada.em));el('agQuando').value=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);el('agTitulo').value=est.agendada.titulo||'';}
-    montarAbas(); pintarProdutos(); pintarOfertaSelect(); ouvirPedidos(); ouvirOferta();
+    montarAbas(); pintarProdutos(); pintarOfertaSelect(); ouvirPedidos(); ouvirOferta(); ouvirEstoque();
     getDoc(doc(db,'negocios',uid,'estado','liveAceite')).then(a=>{aceiteOk=!!(a.exists()&&a.data().versao===ACEITE_VERSAO);}).catch(()=>{});
     ligarAulas();
     carregarSaldo();
@@ -967,13 +967,23 @@ svg{display:block}
   window.addEventListener('mv-liveaula-vista',pintarAulas);
 
   /* ================= produtos ================= */
+  /* ESTOQUE DO PRODUTO (30/09/2026, P53): so leitura aqui. Quem mexe e a
+     sanfona "Estoque" da Central de Pedidos; o numero baixa sozinho no Pix.
+     Mesmo espelho publico que a tela do cliente le (checkout_publico). */
+  let estPub={},estDes=null;
+  function ouvirEstoque(){
+    if(estDes)return;
+    estDes=onSnapshot(doc(db,'checkout_publico',uid),s=>{estPub=(s.exists()&&(s.data()||{}).estoque)||{};pintarProdutos();},()=>{});
+  }
+  function estoqueDe(nome){const k='n:'+String(nome||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();return Object.prototype.hasOwnProperty.call(estPub,k)?Math.max(0,Number(estPub[k])||0):null;}
   function pintarProdutos(){
     const box=el('listaProd'); box.innerHTML='';
     if(!produtos.length){box.innerHTML='<div class="pPreco">Seu cardápio está vazio. Adicione um produto aqui embaixo ou cadastre no painel.</div>';return;}
     produtos.forEach((p,i)=>{
       const naSac=sacola.includes(p.nome), dest=fixado===p.nome;
       const w=document.createElement('div');
-      w.innerHTML='<div class="prod"><div class="pFoto"'+(p.foto?' style="background-image:url(&quot;'+esc(p.foto)+'&quot;)"':'')+'></div><div class="pInfo"><div class="pNome">'+esc(p.nome)+'</div><div class="pPreco">'+esc(fmtPreco(p.preco)||'sem preço')+(p.precoLive?' · live '+esc(fmtPreco(p.precoLive)):'')+(p.link?' · com link':'')+'</div></div>'+
+      const eq=estoqueDe(p.nome);
+      w.innerHTML='<div class="prod"><div class="pFoto"'+(p.foto?' style="background-image:url(&quot;'+esc(p.foto)+'&quot;)"':'')+'></div><div class="pInfo"><div class="pNome">'+esc(p.nome)+'</div><div class="pPreco">'+esc(fmtPreco(p.preco)||'sem preço')+(p.precoLive?' · live '+esc(fmtPreco(p.precoLive)):'')+(p.link?' · com link':'')+(eq===null?'':(eq>0?' · <b>estoque '+eq+'</b>':' · <b style="color:#ff8f8f">ESGOTADO</b>'))+'</div></div>'+
         '<div class="pAcoes"><button type="button" class="btnMini'+(naSac?' on':'')+'" data-a="sac">'+(naSac?'Na sacolinha':'+ Sacolinha')+'</button><button type="button" class="btnMini'+(dest?' on':'')+'" data-a="dest">'+(dest?'Em destaque':'Destacar')+'</button><button type="button" class="btnMini" data-a="edit">Editar</button></div></div>'+
         '<div class="prodEdit escondido"><input class="campo" data-c="precoLive" maxlength="12" placeholder="Preço da live" value="'+esc(p.precoLive)+'"><input class="campo" data-c="link" maxlength="500" placeholder="Link do produto (https://…)" value="'+esc(p.link)+'"></div>';
       w.querySelector('[data-a="sac"]').onclick=()=>{
@@ -1562,7 +1572,7 @@ svg{display:block}
         const rotSt={separando:'separando',pronto:'pronto',saiu:'saiu p/ entrega'}[x.status]||x.status;
         d.innerHTML='<div class="l1"><strong>'+esc((it.qtd>1?it.qtd+'x ':'')+(it.nome||''))+'</strong><span>'+esc(brl(x.total))+'</span><span class="st '+esc(x.status)+'">'+esc(rotSt)+'</span></div>'+
           '<div class="l2">'+esc(c.nome||'')+' · nº '+esc(nro)+' · '+(en.tipo==='entrega'?'Entrega'+(en.bairro?' ('+esc(en.bairro)+')':'')+': '+esc(en.detalhe||''):'Retirada no local')+'</div>'+
-          (x.alertaEstoque?'<div class="l2" style="color:#ffd36b">Pago depois que a unidade da oferta foi reservada por outro comprador. Confira se ainda tem a peça; se não tiver, devolva o Pix.</div>':(x.pagouAtrasado?'<div class="l2" style="color:#ffd36b">Pagou depois do prazo do Pix. Confira o valor exato no extrato.</div>':''))+
+          (x.alertaEstoque==='sem_estoque'?'<div class="l2" style="color:#ffd36b">Confirmado depois do prazo, quando a última peça já tinha sido vendida. Confira se ainda tem o produto; se não tiver, desfaça a venda na Central de Pedidos e devolva o Pix.</div>':x.alertaEstoque?'<div class="l2" style="color:#ffd36b">Pago depois que a unidade da oferta foi reservada por outro comprador. Confira se ainda tem a peça; se não tiver, devolva o Pix.</div>':(x.pagouAtrasado?'<div class="l2" style="color:#ffd36b">Pagou depois do prazo do Pix. Confira o valor exato no extrato.</div>':''))+
           '<div class="l3">'+(w&&x.status!=='aguardando'?'<a class="btnMini on" target="_blank" rel="noopener" href="https://wa.me/55'+w+'?text='+encodeURIComponent(msg)+'">WhatsApp do cliente</a>':'')+
           (['pago','separando','pronto','saiu'].indexOf(x.status)>=0?'<button type="button" class="btnMini" data-p="entregue">Marcar entregue</button>':'')+
           /* No modo chave Pix propria nao ha gateway: "Conferir pagamento"
@@ -1593,7 +1603,7 @@ svg{display:block}
     el('paValor').textContent=brl(alvo.total);
     /* o valor EXATO e a prova: os centavos identificam este pedido no extrato */
     el('paSub').textContent=(c.nome||'Cliente')+' · '+(it.qtd>1?it.qtd+'x ':'')+(it.nome||'')+' · nº '+(alvo.numero?String(alvo.numero).padStart(4,'0'):String(alvo.id).slice(-6).toUpperCase())+' — confira este valor exato no seu extrato.'+
-      (alvo.alertaEstoque?' ATENÇÃO: pagou depois que a unidade da oferta foi reservada por outro comprador. Se não tiver a peça, devolva o Pix.':(alvo.pagouAtrasado?' Pagou depois do prazo do Pix.':''));
+      (alvo.alertaEstoque==='sem_estoque'?' ATENÇÃO: a última peça já tinha sido vendida para outra pessoa. Se não tiver o produto, desfaça a venda e devolva o Pix.':alvo.alertaEstoque?' ATENÇÃO: pagou depois que a unidade da oferta foi reservada por outro comprador. Se não tiver a peça, devolva o Pix.':(alvo.pagouAtrasado?' Pagou depois do prazo do Pix.':''));
     const lk=el('paComp');
     if(alvo.comprovante){
       lk.style.display='';
