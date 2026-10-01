@@ -1597,6 +1597,11 @@ table.mvTab td b{font-weight:700}
             <div class="cdTopo"><div><div class="cdTit">Link de acesso dos criadores</div><div class="cdSub">Um link só, igual para todos. Porta própria do criador: tela de entrada com o nome “Área do criador” e, depois do login, direto nas peças dele. A conta é a do cadastro de parceiro (é ela que dá o link /c/, a comissão e o aceite de conduta). Quem ainda não foi marcado vê o aviso “avise o Moviki”.</div></div></div>
             <div class="convLinha"><input id="crLinkAcesso2" type="text" readonly value="https://app.moviki.com.br/criador"><button type="button" class="btnMini" data-copiarcampo="crLinkAcesso2">Copiar</button><a class="btnMini" href="https://app.moviki.com.br/criador" target="_blank" rel="noopener" style="text-decoration:none">Abrir</a><button type="button" class="btnMini" data-wpp="cri">Enviar pelo WhatsApp</button></div>
           </div>
+          <!-- 2026-10-01-eventos: eventos do Material de apoio (lidos do catalogo) -->
+          <div class="cd" id="evDonoCard">
+            <div class="cdTopo"><div><div class="cdTit">Eventos do Material de apoio</div><div class="cdSub">Cartões que o parceiro e o criador veem no período de cada evento. Vêm do <code>material/catalogo.json</code> ("eventos"). Para mudar data ou peças, peça ao Claude.</div></div></div>
+            <div id="evDonoLista"><div class="vazio">Carregando…</div></div>
+          </div>
           <div class="cd">
             <div class="cdTopo"><div><div class="cdTit">Páginas do Moviki</div><div class="cdSub">Todas as páginas no ar, por assunto. As de fora abrem em outra aba.</div></div></div>
             <div class="cdGrupo">Venda e oferta</div>
@@ -1848,7 +1853,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-01-atalhos';
+  window.MOVIKI_VERSAO = '2026-10-01-eventos';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -6483,6 +6488,41 @@ table.mvTab td b{font-weight:700}
   else ligar();
 
   window.mvCrachaDono = { mostrar: mostrar, semCadastro: semCadastro, aviso: aviso, baixar: baixar };
+})();
+
+/* 2026-10-01-eventos — lista dos eventos do Material de apoio, lida do
+   catalogo estatico (nada do banco). Mostra: no ar / em breve / encerrado,
+   periodo, pecas, peca que falta no catalogo e peca de oferta vencida. */
+(function(){
+  'use strict';
+  function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function hoje(){ return new Date(Date.now() - 3*3600000).toISOString().slice(0,10); }
+  function br(d){ var p = String(d||'').split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : '—'; }
+  function carregar(){
+    var box = el('evDonoLista'); if(!box) return;
+    fetch('material/catalogo.json', { cache:'no-cache' }).then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){
+      var itens = Array.isArray(j.itens) ? j.itens : [], ids = {}, venc = 0, h = hoje();
+      itens.forEach(function(i){ if(i && i.id){ ids[i.id] = i; if(i.valido_ate && String(i.valido_ate) < h) venc++; } });
+      var evs = Array.isArray(j.eventos) ? j.eventos : [];
+      if(!evs.length){ box.innerHTML = '<div class="vazio">Nenhum evento no catálogo.</div>'; return; }
+      evs.sort(function(a,b){ return String(a.inicio).localeCompare(String(b.inicio)); });
+      box.innerHTML = '<div class="cdSub" style="margin-bottom:8px">Catálogo <b>' + esc(j.versao || '—') + '</b>' + (venc ? ' · ' + venc + ' peça(s) de oferta vencida(s) escondida(s) do parceiro' : '') + '</div>' +
+        evs.map(function(e){
+          var st = (e.inicio <= h && h <= e.fim) ? ['No ar','ok'] : (h < e.inicio ? ['Em breve','info'] : ['Encerrado','off']);
+          var lista = Array.isArray(e.itens) ? e.itens : [];
+          var falta = lista.filter(function(x){ return !ids[x]; });
+          var vencE = lista.filter(function(x){ return ids[x] && ids[x].valido_ate && String(ids[x].valido_ate) < h; });
+          return '<div class="icard"><div class="icTopo"><div class="icNome">' + esc(e.titulo) + ' <span class="pill ' + st[1] + '">' + st[0] + '</span></div>' +
+            '<span class="icData">' + br(e.inicio) + ' a ' + br(e.fim) + '</span></div>' +
+            '<div class="icInfo"><div><span class="icK">Peças</span><span class="icV">' + (lista.length - falta.length) + (falta.length ? ' <span style="color:var(--mv-erro)">· faltam no catálogo: ' + esc(falta.join(', ')) + '</span>' : '') + (vencE.length ? ' <span style="color:var(--mv-alerta)">· vencidas: ' + vencE.length + '</span>' : '') + '</span></div>' +
+            '<div><span class="icK">Link</span><span class="icV">' + (e.link === 'fundador' ? '/f/apelido (criador /fc/)' : '/p/apelido (criador /c/)') + '</span></div></div>' +
+            '<div class="icAcoes"><a class="btnMini" href="parceiro.html?evento=' + encodeURIComponent(e.id) + '" target="_blank" rel="noopener">Ver como o parceiro vê</a></div></div>';
+        }).join('');
+    }).catch(function(){ box.innerHTML = '<div class="vazio">Não deu para ler o catálogo agora.</div>'; });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(carregar, 1500); });
+  else setTimeout(carregar, 1500);
 })();
 </script>
 
