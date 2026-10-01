@@ -27,7 +27,8 @@ mexe no `parceiro.html`.**
 | `destaque` | cartão largo no topo |
 | `novo` | etiqueta NOVO |
 | `qrDestino` | `"fundador"`: o QR do panfleto leva para `moviki.com.br/f/apelido?canal=qr` (Lote Fundador) em vez do `/v/`. Sem o campo `texto`: o endereço escrito embaixo do QR é sempre o do `/v/` |
-| `valido_ate` | `AAAA-MM-DD`. O robô social para de publicar a peça no dia seguinte. **O painel do parceiro ainda mostra**: tirar a peça do catálogo no dia seguinte |
+| `valido_ate` | `AAAA-MM-DD`. No dia seguinte a peça some do Material de apoio, do cartão do evento e do robô social (desde 01/10/2026) |
+| `a_partir_de` | `AAAA-MM-DD`. Peça de época: antes do dia ela não aparece no Material de apoio, no cartão do evento nem no robô social (desde 01/10/2026; vídeos de Natal da Onda 3 = 20/11). A prévia `?evento=<id>` mostra mesmo antes |
 | `texto` (tipo texto) | mensagem pronta; aceita `{link}`, `{verificacao}` e `{meu_nome}` |
 
 Toda vez que o catálogo muda, **trocar o `versao`** — é isso que reacende o
@@ -48,7 +49,7 @@ Campo `eventos` no topo do `catalogo.json`. Cada evento vira um **cartão** no p
 | `itens` | ids das peças do evento (precisam existir em `itens`) |
 
 - **Peça de oferta** (preço, prazo, vaga) leva `valido_ate`: no dia seguinte ela some do Material de apoio, do cartão e do robô social. Divulgar oferta que acabou é propaganda enganosa.
-- Peça só de época (sem preço) pode ficar sem `valido_ate`.
+- Peça só de época (sem preço) pode ficar sem `valido_ate`. Se a cena é de uma data (árvore de Natal, Réveillon), use `a_partir_de` e `valido_ate` para ela aparecer só na época.
 - Conferir antes de entrar no ar: `app.moviki.com.br/parceiro.html?evento=<id>` mostra o cartão fora do prazo, marcado "prévia". O painel do dono lista os eventos em Atalhos do dono.
 - Evento novo = só o catálogo (e as artes). O `parceiro.html` não muda.
 
