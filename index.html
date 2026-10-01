@@ -115,6 +115,15 @@ window.mvAtrib = function(){
   .bannerTrial.urgente{background:rgba(255,159,64,.14);border-color:rgba(255,159,64,.55);}
   .bannerTrial.fim{background:rgba(231,76,60,.15);border-color:rgba(231,76,60,.55);}
   .bannerTrial.escondido{display:none;}
+  /* 2026-10-01-faixafundador: faixa dourada do Lote Fundador no Inicio */
+  .bannerFund{display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:relative;background:linear-gradient(135deg,rgba(255,193,64,.16),rgba(255,153,0,.08));border:1px solid rgba(255,193,64,.6);border-radius:12px;padding:13px 40px 13px 15px;margin-bottom:14px;}
+  .bannerFund.escondido{display:none;}
+  .bannerFund .bfTexto{flex:1;min-width:190px;}
+  .bannerFund .bfTit{font-weight:800;font-size:15px;color:#ffc340;margin-bottom:3px;}
+  .bannerFund .bfVagas{display:inline-block;background:#ffc340;color:#3d2b00;font-weight:800;font-size:12px;padding:2px 8px;border-radius:8px;margin-left:6px;vertical-align:1px;}
+  .bannerFund .bfSub{font-size:13px;line-height:1.45;color:#ffe08a;}
+  .bannerFund .bfBtn{flex-shrink:0;background:#ffc340;color:#3d2b00;font-weight:800;border:none;border-radius:10px;padding:11px 18px;font-size:14px;cursor:pointer;font-family:inherit;text-decoration:none;}
+  .bannerFund .bfX{position:absolute;top:6px;right:8px;background:none;border:none;color:#c9a65a;font-size:18px;line-height:1;cursor:pointer;padding:4px;}
   .bannerTrial .btTexto{flex:1;min-width:180px;}
   .bannerTrial .btTitulo{font-weight:700;font-size:15px;color:#eaf6ff;margin-bottom:3px;}
   .bannerTrial.urgente .btTitulo{color:#ffe0b3;}
@@ -2244,6 +2253,8 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         <div class="onbFinal" id="onbFinal"></div>
       </div>
         <div id="bannerTrial" class="bannerTrial escondido"></div>
+        <!-- 2026-10-01-faixafundador: Lote Fundador para quem ainda nao e Enterprise -->
+        <div id="bannerFund" class="bannerFund escondido"></div>
         <div id="bannerParceiro" class="bannerTrial escondido"></div>
         <section class="mvSec" id="mvAcoesSec">
           <div class="mvSecTopo">
@@ -3828,6 +3839,7 @@ window.mvAbaInicial=function(){
           await carregarPlanoPainel(auth.currentUser.uid);
           aplicarPlanoNasAbas();
           mostrarBannerTrial();
+          mostrarBannerFundador();
           if(typeof renderStatusPlano==='function') renderStatusPlano();
           el('bvTexto').innerHTML=(dadosAssinatura&&dadosAssinatura.periodo==='trial')?'✅ <b>E-mail confirmado!</b> Seus 30 dias grátis do Pró estão liberados.':'✅ <b>E-mail confirmado!</b> Tudo certo, obrigado.';
         }catch(_){ el('bvTexto').innerHTML='✅ <b>E-mail confirmado!</b> Tudo certo, obrigado.'; }
@@ -3956,7 +3968,12 @@ window.mvAbaInicial=function(){
      sozinho); 50 vagas com placar "restam N", ate 27/11/2026, garantia de 30
      dias. Link ?plano=enterprise&periodo=fundador|fundador12x abre ja
      selecionado. Lote esgotado/encerrado: o bloco some. */
-  window.MOVIKI_VERSAO='2026-10-01-fundador';
+  /* 2026-10-01-faixafundador — faixa dourada do Lote Fundador no Inicio,
+     abaixo do aviso do teste gratis: teste e Basico abrem o Meu plano no bloco
+     do fundador; Pro/Premium pagante vai ao WhatsApp (troca pela equipe);
+     Enterprise nao ve; some depois de 27/11 ou com o lote fechado; "x" esconde
+     por 3 dias. */
+  window.MOVIKI_VERSAO='2026-10-01-faixafundador';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -4637,6 +4654,48 @@ window.mvAbaInicial=function(){
     }
     b.className='bannerTrial'+(urg?(' '+urg):'');
     b.innerHTML='<div class="btTexto"><div class="btTitulo">'+titulo+'</div><div class="btSub">'+txt+'</div></div><button type="button" class="btBtn" onclick="abrirPlano()">Assinar agora</button>';
+  }
+  /* 2026-10-01-faixafundador — FAIXA DO LOTE FUNDADOR no Inicio.
+     Aparece para quem ainda nao e Enterprise, ate 27/11/2026 ou enquanto o
+     placar do robo disser que ha vaga (GET do criar-assinatura). Teste gratis
+     e Basico: o botao abre o Meu plano ja no bloco do fundador. Quem ja paga
+     Pro ou Premium: a troca e pela equipe (o robo responde ja_ativo), entao o
+     botao abre o WhatsApp. "x" esconde por 3 dias neste aparelho. */
+  var BF_CHAVE='mv_fund_oculto';
+  function bfOculto(){ try{ var t=+localStorage.getItem(BF_CHAVE)||0; return t&&Date.now()-t<3*86400000; }catch(_){ return false; } }
+  window.bfOcultar=function(){ try{ localStorage.setItem(BF_CHAVE,String(Date.now())); }catch(_){} var b=el('bannerFund'); if(b) b.className='bannerFund escondido'; try{ if(window.mvEv) mvEv('cta_click',{cta:'fundador_faixa_ocultar',pagina:'painel'}); }catch(_){} };
+  window.bfAbrir=function(){
+    try{ if(window.mvEv) mvEv('cta_click',{cta:'fundador_faixa',pagina:'painel'}); }catch(_){}
+    window._mvOrigem='faixa_fundador'; abrirPlano();
+    setTimeout(function(){ var f=el('mpFund'); if(f&&f.scrollIntoView) f.scrollIntoView({behavior:'smooth',block:'center'}); },350);
+  };
+  async function mostrarBannerFundador(){
+    var b=el('bannerFund'); if(!b) return;
+    var esconde=function(){ b.className='bannerFund escondido'; };
+    if(Date.now()>MP_FUND_FIM||ehEnterprisePainel()||bfOculto()){ esconde(); return; }
+    if(mpFundEstado&&mpFundEstado.aberto===false){ esconde(); return; }
+    var d=dadosAssinatura;
+    var trial=!!(d&&d.periodo==='trial'&&d.ativo===true);
+    var pagaOutro=ehPagante();
+    var sub=trial
+      ? 'Enterprise por 12 meses: R$ 990 à vista ou 12x de R$ 89,90 no cartão. Os 12 meses só começam quando o seu teste grátis acaba. Pix dentro da live, vários pontos no mapa e garantia de 30 dias.'
+      : 'Enterprise por 12 meses: R$ 990 à vista ou 12x de R$ 89,90 no cartão. Pix dentro da live, vários pontos no mapa e garantia de 30 dias.';
+    var btn=pagaOutro
+      ? '<a class="bfBtn" href="https://wa.me/554120186848?text='+encodeURIComponent('Olá! Quero trocar meu plano pelo Lote Fundador do Moviki.')+'" target="_blank" rel="noopener" onclick="try{if(window.mvEv)mvEv(\'cta_click\',{cta:\'fundador_faixa_troca\',pagina:\'painel\'});}catch(_){}">Trocar pelo fundador</a>'
+      : '<button type="button" class="bfBtn" onclick="bfAbrir()">Quero o fundador</button>';
+    if(pagaOutro) sub+=' Você já assina outro plano: a troca é feita pela equipe, sem perder o que já pagou.';
+    var vag=(mpFundEstado&&typeof mpFundEstado.restam==='number')?'<span class="bfVagas" id="bfVagas">restam '+mpFundEstado.restam+' de '+mpFundEstado.vagas+'</span>':'<span class="bfVagas" id="bfVagas" style="display:none"></span>';
+    b.className='bannerFund';
+    b.innerHTML='<div class="bfTexto"><div class="bfTit">🏅 Lote Fundador · só até 27/11'+vag+'</div><div class="bfSub">'+sub+'</div></div>'+btn+
+      '<button type="button" class="bfX" aria-label="Ocultar" onclick="bfOcultar()">×</button>';
+    if(!mpFundEstado){
+      try{
+        var r=await fetch(ROBO+'/api/criar-assinatura',{method:'GET'}); if(!r.ok) return;
+        mpFundEstado=await r.json();
+      }catch(_){ return; }
+    }
+    if(mpFundEstado.aberto===false){ esconde(); return; }
+    var v=el('bfVagas'); if(v&&typeof mpFundEstado.restam==='number'){ v.textContent='restam '+mpFundEstado.restam+' de '+mpFundEstado.vagas; v.style.display=''; }
   }
   function renderStatusPlano(){
     const s=el('mpStatus');if(!s)return;
@@ -6722,6 +6781,7 @@ window.mvAbaInicial=function(){
       if(semTesteRegistrado()){ const _t=await garantirTrial(); if(_t){ await carregarPlanoPainel(user.uid); } }
       aplicarPlanoNasAbas();
       mostrarBannerTrial();
+      mostrarBannerFundador();
       carregarParceiroPainel(user.uid);
 
       /* ---- 02/09/2026: boas-vindas em video ----
