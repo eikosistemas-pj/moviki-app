@@ -1633,7 +1633,12 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
      "valido_ate" vencido some tambem do Material de apoio (oferta que acabou
      nao pode continuar sendo divulgada). ?evento=<id> mostra o evento fora do
      prazo, so para conferencia. */
-  window.MOVIKI_VERSAO = '2026-10-01-eventos';
+  /* 2026-10-01-epoca — PECA DE EPOCA: o catalogo aceita "a_partir_de"
+     (AAAA-MM-DD). Antes do dia, a peca nao aparece no Material de apoio nem no
+     cartao do evento (os videos de Natal da Onda 3 tem arvore e pisca-pisca e
+     so entram em 20/11). Com ?evento=<id> na previa, tudo aparece, para
+     conferir antes. */
+  window.MOVIKI_VERSAO = '2026-10-01-epoca';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -5919,6 +5924,15 @@ function mvQR(texto){
     var v = String(it.valido_ate);
     return !DATA_OK.test(v) || v < hojeBR();
   }
+  /* 2026-10-01-epoca: a_partir_de ainda nao chegou. Data ilegivel conta como
+     "ainda nao": peca de epoca nunca aparece fora dela por erro de digitacao.
+     Na previa (?evento=) aparece, para o dono conferir antes. */
+  var PREVIA_URL = (function(){ try{ return !!new URLSearchParams(location.search).get('evento'); }catch(e){ return false; } })();
+  function cedo(it){
+    if(!it || !it.a_partir_de || PREVIA_URL) return false;
+    var v = String(it.a_partir_de);
+    return !DATA_OK.test(v) || v > hojeBR();
+  }
   function ev(acao, id){ try{ if(window.mvEv) window.mvEv('material_' + acao, { item: id || '' }); }catch(e){} }
   function dados(){ return window.__mvCracha || null; }
   function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
@@ -5986,6 +6000,7 @@ function mvQR(texto){
         itens = itens.filter(function(it){
           if(!it || !it.id || !it.tipo) return false;
           if(vencido(it)) return false;   /* 2026-10-01-eventos: oferta que acabou sai */
+          if(cedo(it)) return false;      /* 2026-10-01-epoca: peca de epoca antes do dia */
           if(it.tipo === 'texto') return typeof it.texto === 'string';
           return urlOk(it.arquivo) && (!it.capa || urlOk(it.capa));
         });
