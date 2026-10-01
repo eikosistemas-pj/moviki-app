@@ -20,12 +20,14 @@ mexe no `parceiro.html`.**
 | `arquivo` | caminho `material/...` ou URL `https://` |
 | `capa` | caminho da capa WebP |
 | `w`, `h` | tamanho da arte (dá a proporção da capa) |
-| `legenda` | legenda sugerida; `{link}` vira o link do parceiro |
+| `legenda` | legenda sugerida; `{link}` vira o link do parceiro; `{link_fundador}` vira `moviki.com.br/f/apelido` (Lote Fundador, desde 01/10/2026) |
 | `dica` | frase curta embaixo da prévia |
 | `qr` | `{x, y, l}` em pixels da arte: canto e lado do quadrado do QR. `fundo` opcional pinta o quadrado antes |
 | `texto` | `{x, y, w, cor}`: centro, topo e largura do endereço escrito embaixo do QR |
 | `destaque` | cartão largo no topo |
 | `novo` | etiqueta NOVO |
+| `qrDestino` | `"fundador"`: o QR do panfleto leva para `moviki.com.br/f/apelido?canal=qr` (Lote Fundador) em vez do `/v/`. Sem o campo `texto`: o endereço escrito embaixo do QR é sempre o do `/v/` |
+| `valido_ate` | `AAAA-MM-DD`. O robô social para de publicar a peça no dia seguinte. **O painel do parceiro ainda mostra**: tirar a peça do catálogo no dia seguinte |
 | `texto` (tipo texto) | mensagem pronta; aceita `{link}`, `{verificacao}` e `{meu_nome}` |
 
 Toda vez que o catálogo muda, **trocar o `versao`** — é isso que reacende o
@@ -61,6 +63,7 @@ publica na página oficial do Moviki, sem repetir até girar o catálogo:
   - vídeo: `video-cada-negocio`, `video-live-parceiro`, `video-live-parceiro-4x5`,
     `video-parceiro-chama-parceiro`.
 - Categoria `recrutar` não vai para a página oficial.
+- `{link_fundador}` na página oficial vira `moviki.com.br/fundador`. Qualquer outro marcador entre chaves que o robô não conheça descarta a peça (01/10/2026).
 
 ## Vídeos no Firebase Storage (P46, 30/09/2026)
 
