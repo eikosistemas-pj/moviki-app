@@ -452,6 +452,12 @@ window.mvAtrib = function(){
   @keyframes mpPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 var(--pulseColor)}50%{transform:scale(1.03);box-shadow:0 0 20px 5px var(--pulseColor)}}
   .mpBtnConf.pulsar:not(:disabled){animation:mpPulse 1.15s ease-in-out infinite}
   .mpBtnEnt{width:auto!important;margin:0!important;background:linear-gradient(135deg,#25D366,#128C4B)!important;color:#fff!important;padding:11px 18px!important;font-weight:700}
+  /* Lote Fundador (01/10/2026) */
+  .mpFund{flex-basis:100%;margin-top:10px;padding:12px;border:1px dashed rgba(255,193,64,.6);border-radius:12px;background:rgba(255,193,64,.07)}
+  .mpFundTit{font-weight:800;color:#ffc340;font-size:15px}
+  .mpFundSub{color:#ffe08a;font-size:12.5px;margin:4px 0 8px;line-height:1.45}
+  .mpFundVagas{display:inline-block;background:#ffc340;color:#3d2b00;font-weight:800;font-size:12px;padding:2px 8px;border-radius:8px;margin-left:6px}
+  .mpFund .mpBtn{border-color:rgba(255,193,64,.7)}
   .appMenu{flex:0 0 auto;background:none;border:none;color:var(--ciano);cursor:pointer;padding:2px 4px 2px 0;display:flex;align-items:center;}
   .appMenu svg{width:24px;height:24px;}
   .drawerOv{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;visibility:hidden;transition:.2s;z-index:900;}
@@ -3582,6 +3588,9 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
   const el = id => document.getElementById(id);
   let modo='entrar', usuarioAtual=null, statusAtual='fechado', coords=null, slugSalvo='';
   const ROBO='https://moviki-robo.vercel.app';
+  /* Lote Fundador (01/10/2026): guarda a intencao vinda da pagina /fundador
+     antes do login/cadastro; o bloco do deep-link usa depois do e-mail confirmado. */
+  try{ var _qsF=new URLSearchParams(location.search); if(_qsF.get('plano')==='enterprise'&&/^fundador(12x)?$/.test(_qsF.get('periodo')||'')) localStorage.setItem('mv_intencao_plano',JSON.stringify({pl:'enterprise',pr:_qsF.get('periodo'),em:Date.now()})); }catch(_){}
   // Garante o trial de 30 dias (Pró). Idempotente: o robô só concede 1x por conta.
   // Retorna o JSON do robô se deu certo (ou já existia), ou null se falhou.
   async function garantirTrial(){
@@ -3600,7 +3609,8 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
      pendente (ativo:false) gravada pelo criar-assinatura fazia o lojista ficar
      no Basico para sempre depois de confirmar o e-mail. */
   function semTesteRegistrado(){const d=dadosAssinatura;return !d||!(d.vence_em||d.origem||d.ativo===true||d.testeAte);}
-  const RESERVADOS=['index','mapa','404','assets','www','painel','login','moviki'];
+  /* 01/10/2026: + rotas do site que vem ANTES do curinga /:slug no vercel.json do moviki (a pagina do lojista com esse apelido nunca abriria). */
+  const RESERVADOS=['index','mapa','404','assets','www','painel','login','moviki','aovivo','live','regras-da-live','criadores','live-shop','guia','fundador','api','termos','privacidade','enterprise','premium','parceiros','comerciantes','regulamento','descadastro'];
   // Rastreio do Programa de Parceiros: captura ?ref da URL (limpo) e guarda no navegador.
   /* ORDEM DE PRIORIDADE — 04/09/2026: URL > cookie do dominio pai > localStorage.
      O cookie mv_ref (.moviki.com.br) e a peca que faltava: o localStorage deste
@@ -3892,8 +3902,36 @@ window.mvAbaInicial=function(){
         '<button class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important" onclick="fecharPlano();abrirPontos()">⚙️ Gerenciar meus pontos</button>';
     }else{
       box.innerHTML='<span style="color:#9fb3c8;font-size:13px">Vários pontos, relatórios e mais</span>'+
-        '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>';
+        '<a class="mpBtn mpBtnEnt" style="background:linear-gradient(135deg,#0066FF,#00D4FF)!important;text-decoration:none;text-align:center;display:inline-block" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener">Conhecer o Enterprise →</a>'+
+        mpFundHtml();
+      mpFundPlacar();
     }
+  }
+  /* LOTE FUNDADOR (01/10/2026). Enterprise por 12 meses: R$ 990 a vista (Pix,
+     boleto ou cartao) ou 12x de R$ 89,90 no cartao. 50 vagas, ate 27/11/2026.
+     A vaga e contada no robo (reserva ao gerar a cobranca, vendida no
+     pagamento); o placar vem do GET do criar-assinatura. Sem placar o bloco
+     aparece sem o numero; com lote fechado (prazo ou esgotado) some. */
+  var MP_FUND_FIM=Date.parse('2026-11-27T23:59:59-03:00');
+  var mpFundEstado=null;
+  function mpFundHtml(){
+    if(Date.now()>MP_FUND_FIM) return '';
+    if(mpFundEstado&&mpFundEstado.aberto===false) return '';
+    var vag=(mpFundEstado&&typeof mpFundEstado.restam==='number')?'<span class="mpFundVagas" id="mpFundVagas">restam '+mpFundEstado.restam+' de '+mpFundEstado.vagas+'</span>':'<span class="mpFundVagas" id="mpFundVagas" style="display:none"></span>';
+    return '<div class="mpFund" id="mpFund"><div class="mpFundTit">🏅 Lote Fundador'+vag+'</div>'+
+      '<div class="mpFundSub">12 meses de Enterprise pelo preço de ~7,6 meses. Renovando sem interrupção, o preço de fundador fica travado. Garantia de 30 dias. Só até 27/11 ou enquanto houver vaga.'+((dadosAssinatura&&dadosAssinatura.periodo==='trial')?' <b>No teste grátis, os 12 meses só começam quando o teste acaba.</b>':'')+'</div>'+
+      '<button class="mpBtn" onclick="selecionarPlano(\'enterprise\',\'fundador\',this)">R$ 990 à vista <span class="mpTag">Pix, boleto ou cartão</span></button>'+
+      '<button class="mpBtn" onclick="selecionarPlano(\'enterprise\',\'fundador12x\',this)">12x de R$ 89,90 <span class="mpTag">no cartão</span></button></div>';
+  }
+  async function mpFundPlacar(){
+    if(Date.now()>MP_FUND_FIM) return;
+    try{
+      var r=await fetch(ROBO+'/api/criar-assinatura',{method:'GET'}); if(!r.ok) return;
+      var d=await r.json(); mpFundEstado=d;
+      var bx=el('mpFund');
+      if(d.aberto===false){ if(bx) bx.remove(); return; }
+      var v=el('mpFundVagas'); if(v&&typeof d.restam==='number'){ v.textContent='restam '+d.restam+' de '+d.vagas; v.style.display=''; }
+    }catch(_){}
   }
   /* 2026-09-30-alertaoferta — a Central de Pedidos avisa da peca que ja e de
      outro comprador (alertaEstoque) em TODO momento de decisao: cartao e ficha
@@ -3912,7 +3950,13 @@ window.mvAbaInicial=function(){
   /* 2026-09-30-meudinheiro3 — aula "Meu dinheiro: quanto voce vendeu"
      (mod-meu-dinheiro, 1kDHQ7kxY2I) no catalogo de tutoriais, no fim da aba e
      na serie do cartao roxo da Central (oitava aula). */
-  window.MOVIKI_VERSAO='2026-09-30-meudinheiro3';
+  /* 2026-10-01-fundador — LOTE FUNDADOR no Meu plano: dentro do card
+     Enterprise, R$ 990 a vista (12 meses, Pix/boleto/cartao, renova por R$ 990
+     enquanto nao houver interrupcao) ou 12x de R$ 89,90 no cartao (nao renova
+     sozinho); 50 vagas com placar "restam N", ate 27/11/2026, garantia de 30
+     dias. Link ?plano=enterprise&periodo=fundador|fundador12x abre ja
+     selecionado. Lote esgotado/encerrado: o bloco some. */
+  window.MOVIKI_VERSAO='2026-10-01-fundador';
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -4613,7 +4657,7 @@ window.mvAbaInicial=function(){
      trimestral aqui: link antigo com ?periodo=trimestral ainda chega, e o
      deep-link abaixo o redireciona para o mensal antes de pintar a tela.
      A linha de guarda dentro de selecionarPlano e a segunda trava. */
-  const _precoLabel={pro:{mensal:'Mensal · R$ 39,90',anual:'Anual · R$ 399,00'},premium:{mensal:'Mensal · R$ 69,90',anual:'Anual · R$ 699,00'},enterprise:{mensal:'Mensal · R$ 129,90'}};
+  const _precoLabel={pro:{mensal:'Mensal · R$ 39,90',anual:'Anual · R$ 399,00'},premium:{mensal:'Mensal · R$ 69,90',anual:'Anual · R$ 699,00'},enterprise:{mensal:'Mensal · R$ 129,90',fundador:'Lote Fundador · R$ 990 à vista (12 meses)',fundador12x:'Lote Fundador · 12x de R$ 89,90 no cartão'}};
   window.selecionarPlano=function(plano,periodo,btn){
     if(!_precoLabel[plano]||!_precoLabel[plano][periodo]) periodo='mensal';  /* trimestral aposentado: nunca deixa rotulo vazio */
     planoSel=plano;periodoSel=periodo;
@@ -4627,7 +4671,10 @@ window.mvAbaInicial=function(){
     const nome=plano==='enterprise'?'Enterprise':plano==='premium'?'Premium':'Pró';
     const info=el('mpSelInfo');info.classList.remove('escondido');
     info.classList.toggle('selEnt', plano==='enterprise');
-    info.innerHTML='Selecionado: <b>'+nome+'</b> · '+_precoLabel[plano][periodo]+' · renova '+(periodo==='anual'?'todo ano':'todo mês')+' até você cancelar';
+    var _ren=periodo==='fundador'?'cobrança hoje, 12 meses de Enterprise · renova todo ano por R$ 990 enquanto não houver interrupção · garantia de 30 dias':
+             periodo==='fundador12x'?'cobrança hoje no cartão, 12 meses de Enterprise · não renova sozinho · garantia de 30 dias':
+             'renova '+(periodo==='anual'?'todo ano':'todo mês')+' até você cancelar';
+    info.innerHTML='Selecionado: <b>'+nome+'</b> · '+_precoLabel[plano][periodo]+' · '+_ren;
     var cf=el('mpConfirmar'); cf.disabled=false;
     cf.classList.add('pulsar');
     cf.classList.toggle('entMode', plano==='enterprise');
@@ -4653,6 +4700,7 @@ window.mvAbaInicial=function(){
       const data=await r.json();
       if(r.ok&&data.invoiceUrl){try{ if(window.mvEv) mvEv('checkout_redirecionado',{plano:planoSel,periodo:periodoSel}); }catch(_){}window.location.href=data.invoiceUrl;return;}
       if(data&&data.motivo==='ja_ativo'){av.style.color='#8fd8a0';av.textContent=data.erro||'Você já tem um plano ativo — ele renova sozinho.';}else{av.style.color='#ff9b9b';av.textContent=data.erro||'Não consegui gerar o pagamento. Tente de novo.';}
+      if(data&&(data.motivo==='fundador_esgotado'||data.motivo==='fundador_encerrado')){ try{ mpFundEstado={aberto:false}; var _bf=el('mpFund'); if(_bf)_bf.remove(); planoSel=null; periodoSel=null; el('mpSelInfo').classList.add('escondido'); }catch(_){} }
       try{ if(window.mvEv) mvEv('checkout_falhou',{plano:planoSel,periodo:periodoSel,motivo:(data&&data.motivo)||'erro'}); }catch(_){}
       c.disabled=false;c.textContent=txt;
     }catch(e){try{ if(window.mvEv) mvEv('checkout_falhou',{plano:planoSel,periodo:periodoSel,motivo:'conexao'}); }catch(_){}av.style.color='#ff9b9b';av.textContent='Erro de conexão. Tente de novo.';c.disabled=false;c.textContent=txt;}
@@ -6770,7 +6818,20 @@ window.mvAbaInicial=function(){
       }catch(_){}
       try{
         var _qs=new URLSearchParams(location.search), _pl=_qs.get('plano'), _pr=_qs.get('periodo')||'mensal';
-        if(_pl==='enterprise' && !ehEnterprisePainel()){ abrirPlano(); setTimeout(function(){ try{selecionarPlano('enterprise','mensal',null);}catch(_){}} ,150); }
+        /* 01/10/2026: a intencao do Lote Fundador sobrevive ao cadastro e a
+           confirmacao do e-mail (o link do e-mail volta sem ?plano). Guardada
+           no topo do modulo; usada uma vez, so com o e-mail ja confirmado. */
+        if(!_pl){ try{ var _it=JSON.parse(localStorage.getItem('mv_intencao_plano')||'null');
+          if(_it&&_it.pl==='enterprise'&&Date.now()-Number(_it.em||0)<7*86400000&&user.emailVerified){ _pl=_it.pl; _pr=_it.pr; }
+        }catch(_){} }
+        if(_pl==='enterprise'&&user.emailVerified){ try{ localStorage.removeItem('mv_intencao_plano'); }catch(_){} }
+        if(_pl==='enterprise' && !ehEnterprisePainel()){
+          /* 01/10/2026: ?periodo=fundador|fundador12x abre ja no Lote Fundador (link da pagina /fundador) */
+          var _pe=(_pr==='fundador'||_pr==='fundador12x')&&Date.now()<=MP_FUND_FIM?_pr:'mensal';
+          abrirPlano(); setTimeout(function(){ try{
+            var _bE=_pe==='mensal'?null:document.querySelector('.mpFund .mpBtn[onclick*="\''+_pe+'\'"]');
+            selecionarPlano('enterprise',_pe,_bE); if(_bE&&_bE.scrollIntoView)_bE.scrollIntoView({block:'center'});
+          }catch(_){}} ,150); }
         else if(_pl==='premium'||_pl==='pro'){
           /* trimestral aposentado em 16/09: link antigo cai no mensal, nunca em tela vazia */
           if(['mensal','anual'].indexOf(_pr)<0)_pr='mensal';
