@@ -24,7 +24,7 @@
 <meta name="twitter:title" content="Seja um Parceiro Moviki">
 <meta name="twitter:description" content="Cadastre-se no Programa de Parceiros Moviki: indique comerciantes e receba 15% de cada mensalidade paga, enquanto o negócio continuar cliente. Grátis pra participar.">
 <meta name="twitter:image" content="https://www.moviki.com.br/og-parceiros.jpg">
-<script>window.MOVIKI_VERSAO='2026-09-28-reg13';</script>
+<script>window.MOVIKI_VERSAO='2026-10-01-criadores';</script>
 <script src="/mvmetrica.js"></script>
 <script>
 /* 16/09/2026 — ATRIBUICAO DO LEAD (mvAtrib).
@@ -66,6 +66,16 @@ window.mvAtrib = function(){
   input:focus{outline:none;border-color:var(--ciano)}
   input::placeholder{color:#6b7f96}
   .dica{font-size:11.5px;color:#8fa6c4;margin-top:5px}
+  /* 2026-10-01-criadores: quem chega pela pagina /criadores (?origem=criadores)
+     informa o @ e o cadastro sai marcado (canais:['criadores']) para o menu
+     Criadores do painel do dono. Fora dessa origem nada disso aparece. */
+  .soCri{display:none}
+  body.criador .soCri{display:block}
+  body.criador li.soCri{display:list-item}
+  .igCard{display:none;align-items:center;gap:11px;margin-top:8px;background:rgba(37,227,155,.08);border:1px solid rgba(37,227,155,.3);border-radius:12px;padding:9px 12px;font-size:12.8px;color:#d7f7ec}
+  .igCard.on{display:flex}
+  .igCard img{width:38px;height:38px;border-radius:50%;object-fit:cover;flex:none;background:#0b1a2c}
+  .igCard b{display:block;color:#fff;font-size:13.5px}
   /* ===== 2026-09-16-parceirolive: contexto do produto e o que vem depois =====
      Quem chega pelo /pp/<apelido> caia direto num formulario pedindo chave Pix,
      sem uma linha dizendo o que e o Moviki nem o que acontece depois de enviar.
@@ -111,7 +121,8 @@ window.mvAtrib = function(){
   <div class="card">
 
     <div id="form">
-      <h1>Seja um Parceiro Moviki</h1>
+      <h1 id="tit">Seja um Parceiro Moviki</h1>
+      <p class="sub soCri" style="margin-bottom:6px">Você veio da página dos criadores. É o mesmo Programa de Parceiros, com a mesma regra: o cadastro de criador só pede o seu @ a mais.</p>
       <p class="sub">Indique o Moviki e receba <b>15% da mensalidade</b> de cada assinatura efetivamente paga que vier pelo seu link, enquanto o comerciante seguir pagando. Preencha abaixo pra começar.</p>
 
       <div class="oque">
@@ -124,6 +135,13 @@ window.mvAtrib = function(){
 
       <label for="email">E-mail</label>
       <input id="email" type="email" placeholder="voce@email.com" autocomplete="email">
+
+      <div class="soCri">
+        <label for="arroba">Seu @ no Instagram, TikTok ou YouTube</label>
+        <input id="arroba" type="text" placeholder="@seuperfil" maxlength="60" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <p class="dica">É por ele que o Moviki confere o perfil e libera a Área do criador. Cole o @ ou o link do perfil.</p>
+        <div class="igCard" id="igCard"><img id="igFoto" alt=""><div><b id="igNome"></b><span id="igInfo"></span></div></div>
+      </div>
 
       <label for="senha">Senha</label>
       <input id="senha" type="password" placeholder="mínimo 6 caracteres" autocomplete="current-password">
@@ -154,6 +172,7 @@ window.mvAtrib = function(){
         <ol>
           <li><b>Análise.</b> Todo cadastro entra como pendente e passa por aprovação. Você recebe um e-mail quando for aprovado.</li>
           <li><b>Aulas do programa.</b> Curtas, no seu painel. Explicam como a comissão nasce e o que pode e o que não pode ser dito ao divulgar. <b>A aba de Divulgação abre quando você termina</b> — é assim porque conteúdo que gera comissão é publicidade, e o que você publica responde junto com a gente.</li>
+          <li class="soCri"><b>Área do criador.</b> Com o cadastro aprovado, o Moviki confere o seu perfil e libera a Área do criador, em <b>app.moviki.com.br/criador</b>, para enviar peças e ver os seus resultados.</li>
           <li><b>Seu link, seu crachá e as artes prontas.</b> Aí sim você sai divulgando, e acompanha tudo pelo painel.</li>
         </ol>
       </div>
@@ -165,10 +184,11 @@ window.mvAtrib = function(){
 
     <div id="sucesso">
       <div class="ic"><img class="vikFesta" src="/icones/vik-comemorando.webp" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></div>
-      <h2>Cadastro recebido!</h2>
+      <h2 id="sucTit">Cadastro recebido!</h2>
       <p>Bem-vindo(a) ao Programa de Parceiros Moviki. Seu cadastro foi registrado com sucesso.</p>
       <div class="box">Seu acesso está <b>em análise</b>. Assim que for aprovado, seu link de parceiro é ativado e você recebe um e-mail de boas-vindas. 💚</div>
       <p style="font-size:13px;color:#9fb3c8;line-height:1.6;margin-top:14px">Enquanto isso, já dá pra entrar no painel e começar as <b style="color:#cfe0f5">aulas do programa</b>. São curtas, e são elas que abrem a aba de Divulgação com as artes prontas e o seu crachá.</p>
+      <p class="soCri" style="font-size:13px;color:#9fb3c8;line-height:1.6;margin-top:10px">Como você veio pela página dos criadores, o seu cadastro já chega marcado para o Moviki conferir o seu perfil.</p>
       <p style="font-size:13px;margin-top:12px"><a href="parceiro.html" style="color:var(--ciano);font-weight:700" data-ev="ir_painel_sucesso">Ir para o meu painel →</a></p>
     </div>
 
@@ -218,18 +238,59 @@ window.mvAtrib = function(){
   const _r = limpaSlug(new URLSearchParams(location.search).get('ref'));
   const refUpline = (_r.length >= 3) ? _r : '';
 
+  /* 2026-10-01-criadores: chegou pela pagina www.moviki.com.br/criadores.
+     A marca vai em canais:['criadores'] (campo que a regra do Firestore ja
+     aceita: lista de ate 3) e o @ em arroba — nenhuma regra nova, nenhum
+     campo novo. O painel do dono le essa marca no menu Criadores. */
+  const ORIGEM_CRI = new URLSearchParams(location.search).get('origem') === 'criadores';
+  if (ORIGEM_CRI) {
+    document.body.classList.add('criador');
+    el('tit').textContent = 'Cadastro do criador parceiro';
+    document.title = 'Cadastro do criador parceiro | Moviki';
+  }
+  const limpaArroba = s => {
+    let v = (s||'').toString().trim();
+    v = v.replace(/^(https?:\/\/)?(www\.|m\.)?(instagram\.com|tiktok\.com|youtube\.com)\//i, '');
+    v = v.split(/[/?#\s]/)[0].replace(/^@+/, '').toLowerCase();
+    return v.replace(/[^a-z0-9._-]/g, '').slice(0, 30);
+  };
+  if (ORIGEM_CRI) {
+    let igT = null, igUlt = '';
+    el('arroba').addEventListener('input', () => {
+      clearTimeout(igT);
+      const a = limpaArroba(el('arroba').value);
+      if (a.length < 2) { el('igCard').classList.remove('on'); return; }
+      igT = setTimeout(async () => {
+        if (a === igUlt) return; igUlt = a;
+        try {
+          const r = await fetch('https://moviki-robo.vercel.app/api/novo-parceiro?instagram=' + encodeURIComponent(a));
+          const j = await r.json();
+          if (a !== limpaArroba(el('arroba').value)) return;
+          if (j && j.achou) {
+            const f = String(j.foto || '');
+            if (/^data:image\//.test(f)) { el('igFoto').src = f; el('igFoto').style.display = ''; } else el('igFoto').style.display = 'none';
+            el('igNome').textContent = (j.nome || ('@' + a));
+            const seg = Number(j.seguidores) || 0;
+            el('igInfo').textContent = '@' + (j.arroba || a) + (seg ? ' · ' + seg.toLocaleString('pt-BR') + ' seguidores no Instagram' : '');
+            el('igCard').classList.add('on');
+          } else el('igCard').classList.remove('on');
+        } catch (_) { el('igCard').classList.remove('on'); }
+      }, 700);
+    });
+  }
+
   // ---- Medicao (GA4) ----
   // O /pp/<apelido> carimba o destino com UTM e manda pra CA. Sem estas linhas o
   // carimbo chegava aqui e morria: a pagina nao media nada.
   const mvEv = (n,p) => { try{ window.mvEv && window.mvEv(n, p||{}); }catch(_){} };
-  mvEv('pagina_seja_parceiro', { tem_upline: refUpline ? 'sim' : 'nao' });
+  mvEv('pagina_seja_parceiro', { tem_upline: refUpline ? 'sim' : 'nao', origem: ORIGEM_CRI ? 'criadores' : 'direto' });
   if (refUpline) mvEv('chegou_por_indicacao', { ref: refUpline, destino: 'seja_parceiro' });
   let _iniciou = 0;
-  ['nome','email','senha','pix','slug'].forEach(id => {
+  ['nome','email','arroba','senha','pix','slug'].forEach(id => {
     const c = el(id);
     if (c) c.addEventListener('focus', () => {
       if (_iniciou) return; _iniciou = 1;
-      mvEv('parceiro_cadastro_iniciado', { tem_upline: refUpline ? 'sim' : 'nao' });
+      mvEv('parceiro_cadastro_iniciado', { tem_upline: refUpline ? 'sim' : 'nao', origem: ORIGEM_CRI ? 'criadores' : 'direto' });
     }, { once:true });
   });
 
@@ -265,6 +326,8 @@ window.mvAtrib = function(){
 
     if(nome.length<2) return erro('Preencha seu nome completo.');
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return erro('Digite um e-mail válido.');
+    const arroba = ORIGEM_CRI ? limpaArroba(el('arroba').value) : '';
+    if(ORIGEM_CRI && arroba.length < 2) return erro('Informe o seu @ no Instagram, TikTok ou YouTube.');
     if(senha.length<6) return erro('A senha precisa de pelo menos 6 caracteres.');
     if(pix.length<3) return erro('Informe sua chave Pix pra receber as comissões.');
     if(slug.length<3) return erro('Escolha um apelido pro seu link (mín. 3 caracteres).');
@@ -327,6 +390,7 @@ window.mvAtrib = function(){
       };
       // níveis 2/3: registra quem indicou este parceiro (se houver e não for ele mesmo)
       if (refUpline && refUpline !== slug) dadosParceiro.indicadoPor = refUpline;
+      if (ORIGEM_CRI) { dadosParceiro.arroba = '@' + arroba; dadosParceiro.canais = ['criadores']; }
       await setDoc(doc(db,'parceiros',uid), dadosParceiro);
 
       /* Só faz sentido em conta nova: quem já usava o Moviki não precisa
@@ -344,11 +408,12 @@ window.mvAtrib = function(){
       }catch(_){}
 
       window.mvSignup && window.mvSignup('parceiro_email');
-      mvEv('parceiro_cadastrado', { tem_upline: refUpline ? 'sim' : 'nao', origem: 'seja_parceiro',
+      mvEv('parceiro_cadastrado', { tem_upline: refUpline ? 'sim' : 'nao', origem: ORIGEM_CRI ? 'criadores' : 'seja_parceiro',
                                     metodo: contaNova ? 'email' : 'conta_existente' });
       /* 2026-09-19-tipocadastro: mesmo par de eventos do quiz do app —
          cadastro_parceiro sempre; cadastro_indicado quando veio de /pp/apelido. */
       if (contaNova) mvEv('cadastro_parceiro', { ref: refUpline || '(direto)', method: 'parceiro_email' });
+      if (ORIGEM_CRI) mvEv('cadastro_criador', { ref: refUpline || '(direto)', conta: contaNova ? 'nova' : 'existente' });
       if (contaNova && refUpline) mvEv('cadastro_indicado', { ref: refUpline, tipo: 'parceiro', method: 'parceiro_email' });
 
       el('form').style.display='none';
