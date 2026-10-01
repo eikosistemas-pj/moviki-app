@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://*.tile.openstreetmap.org https://firebasestorage.googleapis.com https://raw.githubusercontent.com; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://www.google.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://raw.githubusercontent.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://firebasestorage.googleapis.com https://raw.githubusercontent.com; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://www.google.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://raw.githubusercontent.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="robots" content="noindex,nofollow">
@@ -456,6 +456,39 @@ table.mvTab td b{font-weight:700}
 /* mapa */
 .mapaCaixa{height:340px;border-radius:var(--mv-r);overflow:hidden;border:1px solid var(--mv-linha);background:var(--mv-surf-2)}
 .leaflet-container{background:#0a1424}
+/* 01/10/2026 (2026-10-01-mapa): mapa escuro, legenda, agrupamento e aviso */
+.mapaWrap{position:relative}
+#admMapa .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.92) contrast(.88) saturate(.55)}
+#admMapa .leaflet-control-attribution{background:rgba(6,13,24,.6);color:var(--mv-txt-3);font-size:10px;line-height:1.4;padding:0 6px;opacity:.75}
+#admMapa .leaflet-control-attribution a{color:var(--mv-txt-2)}
+#admMapa .leaflet-bar a{background:var(--mv-surf);color:var(--mv-txt);border-color:var(--mv-linha)}
+#admMapa .leaflet-popup-content-wrapper,#admMapa .leaflet-popup-tip{background:var(--mv-surf);color:var(--mv-txt);box-shadow:var(--mv-sombra)}
+#admMapa .leaflet-popup-content{margin:12px 14px;font-family:var(--mv-fonte);font-size:13px;line-height:1.45}
+#admMapa .leaflet-container a.leaflet-popup-close-button{color:var(--mv-txt-3)}
+.mpItem+.mpItem{margin-top:9px;padding-top:9px;border-top:1px solid var(--mv-linha)}
+.mpNome{font-weight:700;font-size:14px}
+.mpSub{color:var(--mv-txt-3);font-size:12px}
+.mpItem a{color:var(--mv-ciano);font-weight:600}
+.mpTag{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:var(--mv-r-pill);margin:3px 0}
+.mpTag.neg{background:rgba(0,212,255,.14);color:var(--mv-ciano)}
+.mpTag.velho{background:rgba(255,176,32,.15);color:var(--mv-alerta)}
+.mpTag.ponto{background:rgba(168,85,247,.16);color:#c79bff}
+.mpTag.semplano{background:rgba(143,166,196,.15);color:var(--mv-txt-3)}
+.mpGrupo{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;
+  font:700 13px/1 var(--mv-fonte);color:#06101e;border:2px solid #eaf6ff;box-shadow:0 0 0 3px rgba(0,0,0,.35)}
+.mapaVazio{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;
+  z-index:500;pointer-events:none;color:var(--mv-txt-2);font-size:14px}
+.mapaVazio[hidden]{display:none}
+.mapaVazio span{background:rgba(6,13,24,.85);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:12px 16px}
+.mapaTopoDir{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.mapaBtn{font:600 12px/1 var(--mv-fonte);color:var(--mv-txt-2);background:transparent;border:1px solid var(--mv-linha);
+  border-radius:var(--mv-r-pill);padding:7px 11px;cursor:pointer}
+.mapaBtn:hover{border-color:var(--mv-linha-forte);color:var(--mv-txt)}
+.mapaLeg{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:12.5px;color:var(--mv-txt-2)}
+.mapaLeg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.mapaLeg b{color:var(--mv-txt)}
+.mapaAviso{margin-top:8px;font-size:12.5px;color:var(--mv-alerta);line-height:1.5}
+.mapaAviso:empty{display:none}
 
 /* barras horizontais (ranking / horários) */
 .bLinha{display:grid;grid-template-columns:minmax(0,1fr) 62px;gap:10px;align-items:center;padding:8px 0}
@@ -749,9 +782,11 @@ table.mvTab td b{font-weight:700}
           </div>
 
           <div class="cd">
-            <div class="cdTopo"><div class="cdTit">Quem está no mapa agora</div><span class="cdChip" id="mapaCont">—</span></div>
-            <div class="mapaCaixa" id="admMapa"></div>
-            <div class="cdSub" style="margin-top:10px">Ponto aceso = negócio com o status “aberto” e localização preenchida, mais os pontos extras dos planos Enterprise.</div>
+            <div class="cdTopo"><div class="cdTit">Quem está no mapa agora</div><div class="mapaTopoDir"><button type="button" class="mapaBtn" id="mapaVerTodos">Ver todos</button><span class="cdChip" id="mapaCont">—</span></div></div>
+            <div class="mapaWrap"><div class="mapaCaixa" id="admMapa"></div><div class="mapaVazio" id="mapaVazio" hidden><span>Ninguém aberto no mapa agora.</span></div></div>
+            <div class="mapaLeg" id="mapaLeg"></div>
+            <div class="mapaAviso" id="mapaAviso"></div>
+            <div class="cdSub" style="margin-top:10px">Toque num ponto para ver quem é. <b>Aberto</b> = status “aberto” com localização. <b>Sem atualizar</b> = aberto, mas o lojista não salva nada há mais de 12 h (pode ter esquecido aberto). <b>Ponto extra</b> = unidade paga do Enterprise. Marcadores no mesmo lugar viram um número.</div>
           </div>
 
           <div class="cd">
@@ -1853,7 +1888,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-01-eventos';
+  window.MOVIKI_VERSAO = '2026-10-01-mapa';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -1939,7 +1974,7 @@ table.mvTab td b{font-weight:700}
       b.classList.toggle('on', b.getAttribute('data-bar') === nome);
     });
     window.scrollTo({top:0,behavior:'smooth'});
-    if(nome === 'visao') setTimeout(()=>{ try{ if(_map) _map.invalidateSize(); }catch(e){} }, 120);
+    if(nome === 'visao') setTimeout(()=>{ try{ if(_map){ _map.invalidateSize(); if(_mapaReenquadrar) mapaEnquadrar(); } }catch(e){} }, 120);
     if(nome === 'exclusoes'){ carregarExclusoes(); excDelRender(); }
     if(nome === 'newsletter' && SAUDE.newsletter === undefined) carregarNewsletter();
     if(nome === 'mensagens') ouvirConversas();
@@ -2244,10 +2279,16 @@ table.mvTab td b{font-weight:700}
   /* ==========================================================
      PONTOS (Enterprise)
      ========================================================== */
+  /* 01/10/2026: guarda os documentos para o mapa (antes o mapa lia a colecao
+     de novo) e conta so os ATIVOS. Ponto extra criado e ainda nao pago fica
+     ativo:false e nao aparece no mapa — antes entrava no numero do cartao. */
+  let PONTOS_DOCS = [];
   async function carregarPontos(){
+    PONTOS_DOCS = [];
     try{
       const s = await getDocs(collection(db,'pontos'));
-      PONTOS = s.size;
+      s.forEach(d => PONTOS_DOCS.push(Object.assign({id:d.id}, d.data()||{})));
+      PONTOS = PONTOS_DOCS.filter(p => p.ativo === true).length;
       SAUDE.pontos = true;
     }catch(e){ PONTOS = 0; SAUDE.pontos = false; }
     txt('kPontos', SAUDE.pontos ? num(PONTOS) : '—');
@@ -2256,32 +2297,146 @@ table.mvTab td b{font-weight:700}
   /* ==========================================================
      MAPA
      ========================================================== */
-  let _map = null, _camada = null;
+  /* 01/10/2026 (2026-10-01-mapa). Defeitos que este bloco corrige:
+     - marcadores no mesmo lugar (negocio + ponto extra no mesmo endereco)
+       ficavam um embaixo do outro: o chip dizia 3 e a tela mostrava 2;
+     - com um ponto so, o enquadramento ia ao zoom 19 (nivel de calcada);
+     - desenhado com a secao escondida, o enquadramento saia errado;
+     - "Atualizar" duas vezes seguidas podia desenhar marcador em dobro;
+     - falha ao ler os pontos virava mapa incompleto em silencio;
+     - nao dava para saber quem era cada ponto, nem quem esqueceu aberto;
+     - ponto extra de quem perdeu o Enterprise continuava aceso igual aos outros;
+     - atribuicao do OSM fora do exigido pela licenca ("contributors" + link). */
+  let _map = null, _camada = null, _mapaGer = 0, _mapaLim = null, _mapaReenquadrar = false;
+  const MAPA_VELHO_H = 12;
+  const MAPA_COR = {neg:'#00D4FF', velho:'#ffb020', ponto:'#a855f7', semplano:'#8fa6c4'};
+  const MAPA_NOME = {neg:'Aberto', velho:'Aberto, sem atualizar', ponto:'Ponto extra (Enterprise)', semplano:'Ponto extra sem Enterprise'};
+  function mapaHa(m){
+    if(!m) return 'sem data';
+    const min = Math.max(1, Math.round((Date.now() - m) / 60000));
+    if(min < 60) return 'há ' + min + ' min';
+    const h = Math.round(min / 60);
+    if(h < 48) return 'há ' + h + ' h';
+    return 'há ' + Math.round(h / 24) + ' dias';
+  }
+  function mapaCoordOk(a, b){
+    return typeof a === 'number' && typeof b === 'number' && isFinite(a) && isFinite(b) &&
+      Math.abs(a) <= 90 && Math.abs(b) <= 180 && !(a === 0 && b === 0);
+  }
+  function mapaEnquadrar(){
+    if(!_map) return;
+    const box = el('admMapa');
+    if(!box || !box.offsetWidth){ _mapaReenquadrar = true; return; }
+    _mapaReenquadrar = false;
+    try{
+      if(_mapaLim) _map.fitBounds(_mapaLim, {padding:[28,28], maxZoom:15});
+      else _map.setView([-14.2,-51.9], 4);
+    }catch(e){}
+  }
+  function mapaPopup(lista){
+    return lista.map(it => {
+      const pag = it.slug ? '<a href="https://moviki.com.br/' + encodeURIComponent(it.slug) + '" target="_blank" rel="noopener">Ver página</a>' : '<span class="mpSub">sem link</span>';
+      return '<div class="mpItem"><div class="mpNome">' + esc(it.nome) + '</div>' +
+        '<span class="mpTag ' + it.tipo + '">' + esc(MAPA_NOME[it.tipo]) + '</span>' +
+        '<div class="mpSub">' + esc(it.sub) + '</div>' + pag + '</div>';
+    }).join('');
+  }
   function carregarMapa(){
     const box = el('admMapa');
-    if(!box || typeof L === 'undefined') return;
+    if(!box || typeof L === 'undefined'){ txt('mapaCont', 'mapa não carregou'); return; }
+    const ger = ++_mapaGer;
     try{
       if(!_map){
-        _map = L.map('admMapa',{scrollWheelZoom:false}).setView([-8.05,-34.9],11);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(_map);
+        _map = L.map('admMapa', {scrollWheelZoom:false}).setView([-14.2,-51.9], 4);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom:19,
+          attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+        }).addTo(_map);
+        // 01/10: sem o selo "Leaflet" com bandeira (pedido do Paulo). O credito do OSM fica: a licenca exige.
+        try{ _map.attributionControl.setPrefix(false); }catch(e){}
+        const bt = el('mapaVerTodos');
+        if(bt) bt.addEventListener('click', mapaEnquadrar);
       }
+      if(ger !== _mapaGer) return;
       if(_camada) _camada.remove();
       _camada = L.layerGroup().addTo(_map);
-      const pts = [];
-      NEG.forEach(n=>{
-        if((n.status||'') === 'aberto' && typeof n.lat === 'number' && typeof n.lng === 'number') pts.push([n.lat,n.lng]);
+
+      const agora = Date.now(), itens = [];
+      let semLocal = 0;
+      const porUid = {};
+      NEG.forEach(n => { porUid[n.uid] = n; });
+      NEG.forEach(n => {
+        if((n.status||'') !== 'aberto') return;
+        if(!mapaCoordOk(n.lat, n.lng)){ semLocal++; return; }
+        const m = ms(n.atualizadoEm);
+        const velho = !m || (agora - m) > MAPA_VELHO_H * 3600000;
+        const pl = PLANO_DE[n.uid] || 'basico';
+        itens.push({tipo: velho ? 'velho' : 'neg', lat:n.lat, lng:n.lng, nome:n.nome || '(sem nome)', slug:n.slug || '',
+          sub: (PLANOS[pl] ? PLANOS[pl].n : 'Básico') + (EM_TESTE[n.uid] ? ' · teste grátis' : '') + ' · salvou ' + mapaHa(m)});
       });
-      getDocs(collection(db,'pontos')).then(s=>{
-        s.forEach(d=>{ const p = d.data()||{}; if(p.ativo === true && typeof p.lat === 'number' && typeof p.lng === 'number') pts.push([p.lat,p.lng]); });
-        desenhar();
-      }).catch(()=>desenhar());
-      function desenhar(){
-        pts.forEach(c=>{ L.circleMarker(c,{radius:7,color:'#00D4FF',weight:2,fillColor:'#0066FF',fillOpacity:.85}).addTo(_camada); });
-        txt('mapaCont', pts.length + (pts.length === 1 ? ' ponto aceso' : ' pontos acesos'));
-        if(pts.length){ try{ _map.fitBounds(L.latLngBounds(pts).pad(0.2)); }catch(e){} }
-        setTimeout(()=>{ try{ _map.invalidateSize(); }catch(e){} }, 200);
-      }
-    }catch(e){}
+      (PONTOS_DOCS || []).forEach(p => {
+        if(p.ativo !== true || !mapaCoordOk(p.lat, p.lng)) return;
+        const dono = porUid[p.ownerUid] || {};
+        const ent = PLANO_DE[p.ownerUid] === 'enterprise';
+        itens.push({tipo: ent ? 'ponto' : 'semplano', lat:p.lat, lng:p.lng, nome:p.nome || 'Ponto extra', slug:dono.slug || '',
+          sub: 'de ' + (dono.nome || 'negócio não encontrado') + (ent ? '' : ' · plano Enterprise não está ativo')});
+      });
+
+      // agrupa o que cai no mesmo lugar (~10 m)
+      const grupos = {};
+      itens.forEach(it => {
+        const k = it.lat.toFixed(4) + ',' + it.lng.toFixed(4);
+        (grupos[k] = grupos[k] || []).push(it);
+      });
+      const ordem = ['velho', 'semplano', 'ponto', 'neg'];
+      let empilhados = 0;
+      Object.keys(grupos).forEach(k => {
+        const g = grupos[k];
+        const c = [g[0].lat, g[0].lng];
+        const pior = ordem.find(o => g.some(it => it.tipo === o)) || 'neg';
+        let mk;
+        if(g.length === 1){
+          mk = L.circleMarker(c, {radius:8, color:'#eaf6ff', weight:2, fillColor:MAPA_COR[pior], fillOpacity:.95,
+            dashArray: pior === 'semplano' ? '3 3' : null});
+        }else{
+          empilhados += g.length;
+          mk = L.marker(c, {icon: L.divIcon({className:'', iconSize:[30,30], iconAnchor:[15,15],
+            html:'<div class="mpGrupo" style="background:' + MAPA_COR[pior] + '">' + g.length + '</div>'})});
+        }
+        mk.bindPopup(mapaPopup(g), {maxWidth:260});
+        mk.bindTooltip(g.length === 1 ? esc(g[0].nome) : g.length + ' no mesmo lugar', {direction:'top', offset:[0,-8]});
+        mk.addTo(_camada);
+      });
+
+      const pts = itens.map(it => [it.lat, it.lng]);
+      _mapaLim = pts.length ? L.latLngBounds(pts) : null;
+      const locais = Object.keys(grupos).length;
+      txt('mapaCont', itens.length === 0 ? 'ninguém aceso' :
+        itens.length + (itens.length === 1 ? ' aceso' : ' acesos') + (locais !== itens.length ? ' · ' + locais + (locais === 1 ? ' lugar' : ' lugares') : ''));
+      const vz = el('mapaVazio'); if(vz) vz.hidden = itens.length > 0;
+
+      const cont = {neg:0, velho:0, ponto:0, semplano:0};
+      itens.forEach(it => cont[it.tipo]++);
+      const leg = el('mapaLeg');
+      if(leg) leg.innerHTML = ['neg', 'velho', 'ponto', 'semplano']
+        .filter(tp => tp !== 'semplano' || cont.semplano)
+        .map(tp => '<span><i style="background:' + MAPA_COR[tp] + '"></i>' + MAPA_NOME[tp] + ': <b>' + cont[tp] + '</b></span>').join('');
+
+      const av = [];
+      if(!SAUDE.negocios) av.push('Não consegui ler os negócios — o mapa está vazio por falha de leitura, não por falta de gente.');
+      if(SAUDE.pontos === false) av.push('Não consegui ler os pontos extras do Enterprise — o mapa pode estar incompleto.');
+      if(semLocal) av.push(semLocal + (semLocal === 1 ? ' negócio está' : ' negócios estão') + ' “aberto” sem localização salva: não aparece no mapa para o cliente.');
+      if(cont.velho) av.push(cont.velho + (cont.velho === 1 ? ' negócio aparece' : ' negócios aparecem') + ' aberto sem salvar nada há mais de ' + MAPA_VELHO_H + ' h — confira se não esqueceu aberto.');
+      if(cont.semplano) av.push(cont.semplano + (cont.semplano === 1 ? ' ponto extra continua ativo' : ' pontos extras continuam ativos') + ' sem o plano Enterprise do dono estar ativo.');
+      if(empilhados) av.push(empilhados + ' marcadores estão no mesmo lugar e aparecem como número.');
+      const ae = el('mapaAviso'); if(ae) ae.textContent = av.join(' ');
+
+      _map.invalidateSize();
+      mapaEnquadrar();
+    }catch(e){
+      txt('mapaCont', 'erro no mapa');
+      try{ console.warn('[mapa]', e); }catch(_){}
+    }
   }
 
   /* ==========================================================
