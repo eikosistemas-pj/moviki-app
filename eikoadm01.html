@@ -346,6 +346,12 @@ table.mvTab td b{font-weight:700}
   border:1px solid var(--mv-linha);border-radius:6px;padding:2px 6px;display:inline-block;overflow-wrap:anywhere}
 .icAcoes{display:flex;flex-wrap:wrap;gap:8px}
 .icMsg{font-size:12.5px;margin-top:9px;line-height:1.5}
+/* 2026-10-01-apelido: formulario de troca de apelido do parceiro */
+.icTroca{margin-top:10px;padding:12px;border:1px solid var(--mv-linha);border-radius:12px;background:var(--mv-campo);display:grid;gap:8px}
+.icTroca label{font-size:12px;color:var(--mv-txt-3)}
+.icTroca input{width:100%;box-sizing:border-box;background:transparent;border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:9px 10px;font:inherit}
+.icTroca .icTrPrev{font-size:12.5px;color:var(--mv-txt-3);line-height:1.5}
+.icTroca .icTrPrev b{color:var(--mv-ciano)}
 .chipCanal{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:3px 9px;border-radius:var(--mv-r-pill);
   margin:2px 6px 2px 0;border:1px solid var(--mv-linha);background:var(--mv-surf-2);color:var(--mv-txt-3)}
 .chipCanal.on{border-color:rgba(37,227,155,.4);background:rgba(37,227,155,.12);color:var(--mv-ok)}
@@ -469,6 +475,8 @@ table.mvTab td b{font-weight:700}
 .convLinha{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0}
 .convLinha input{flex:1 1 220px;min-width:0;width:auto}
 .gridAcoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:9px}
+.cdGrupo{font-size:11.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--mv-txt-3);margin:14px 0 8px}
+.cdGrupo:first-of-type{margin-top:4px}
 .gridAcoes:has(.linkFora){grid-template-columns:repeat(auto-fit,minmax(216px,1fr))}
 .gridAcoes .btnMini{width:100%}
 .linkFora{display:flex;align-items:center;gap:10px;background:var(--mv-campo);border:1px solid var(--mv-linha);
@@ -1577,7 +1585,8 @@ table.mvTab td b{font-weight:700}
                   <button type="button" class="btnMini" id="btnCrDonoPNG">Baixar imagem</button>
                   <button type="button" class="btnMini" id="btnCrDonoCopiar">Copiar link</button>
                   <a class="btnMini" id="btnCrDonoAbrir" href="#" target="_blank" rel="noopener">Abrir a página</a>
-                  <button type="button" class="btnMini" id="btnCrDonoTrocar">Trocar apelido</button>
+                  <button type="button" class="btnMini ok" id="btnCrDonoMudar">Mudar meu apelido</button>
+                  <button type="button" class="btnMini" id="btnCrDonoTrocar">Mostrar outro crachá</button>
                 </div>
                 <div class="crDAviso" id="crDonoAviso"></div>
               </div>
@@ -1589,18 +1598,66 @@ table.mvTab td b{font-weight:700}
             <div class="convLinha"><input id="crLinkAcesso2" type="text" readonly value="https://app.moviki.com.br/criador"><button type="button" class="btnMini" data-copiarcampo="crLinkAcesso2">Copiar</button><a class="btnMini" href="https://app.moviki.com.br/criador" target="_blank" rel="noopener" style="text-decoration:none">Abrir</a><button type="button" class="btnMini" data-wpp="cri">Enviar pelo WhatsApp</button></div>
           </div>
           <div class="cd">
-            <div class="cdTopo"><div><div class="cdTit">Páginas do Moviki</div><div class="cdSub">Abre em outra aba.</div></div></div>
+            <div class="cdTopo"><div><div class="cdTit">Páginas do Moviki</div><div class="cdSub">Todas as páginas no ar, por assunto. As de fora abrem em outra aba.</div></div></div>
+            <div class="cdGrupo">Venda e oferta</div>
             <div class="gridAcoes">
-              <a class="linkFora" href="https://moviki.com.br" target="_blank" rel="noopener"><img src="icones/ver-site.png" alt="" onerror="this.style.display='none'"><span>Site (mapa)</span></a>
-              <a class="linkFora" href="https://moviki.com.br/premium.html" target="_blank" rel="noopener"><img src="icones/plano.png" alt="" onerror="this.style.display='none'"><span>Landing Premium</span></a>
-              <a class="linkFora" href="https://moviki.com.br/enterprise.html" target="_blank" rel="noopener"><img src="icones/multipontos.png" alt="" onerror="this.style.display='none'"><span>Landing Enterprise</span></a>
-              <a class="linkFora" href="https://moviki.com.br/comerciantes.html" target="_blank" rel="noopener"><img src="icones/convidar-comerciante.png" alt="" onerror="this.style.display='none'"><span>Landing comerciantes</span></a>
-              <a class="linkFora" href="https://moviki.com.br/parceiros.html" target="_blank" rel="noopener"><img src="icones/convidar-parceiro.png" alt="" onerror="this.style.display='none'"><span>Landing parceiros</span></a>
-              <a class="linkFora" href="https://moviki.com.br/parceiros-ganhos.html" target="_blank" rel="noopener"><img src="icones/comissoes.png" alt="" onerror="this.style.display='none'"><span>Parceiros — ganhos</span></a>
+              <a class="linkFora" href="https://www.moviki.com.br" target="_blank" rel="noopener"><img src="icones/ver-site.png" alt="" onerror="this.style.display='none'"><span>Site (mapa)</span></a>
+              <a class="linkFora" href="https://www.moviki.com.br/aovivo" target="_blank" rel="noopener"><img src="icones/live.png" alt="" onerror="this.style.display='none'"><span>Venda ao vivo (/aovivo)</span></a>
+              <a class="linkFora" href="https://www.moviki.com.br/fundador" target="_blank" rel="noopener"><img src="icones/coroa.png" alt="" onerror="this.style.display='none'"><span>Lote Fundador (/fundador)</span></a>
+              <a class="linkFora" href="https://www.moviki.com.br/live-shop" target="_blank" rel="noopener"><img src="icones/vendas.png" alt="" onerror="this.style.display='none'"><span>Live shop</span></a>
+              <a class="linkFora" href="https://www.moviki.com.br/guia/taxas-live-shop" target="_blank" rel="noopener"><img src="icones/financeiro.png" alt="" onerror="this.style.display='none'"><span>Guia de taxas da live shop</span></a>
+              <a class="linkFora" href="https://www.moviki.com.br/comerciantes.html" target="_blank" rel="noopener"><img src="icones/convidar-comerciante.png" alt="" onerror="this.style.display='none'"><span>Landing comerciantes</span></a>
+              <a class="linkFora" href="https://www.moviki.com.br/premium.html" target="_blank" rel="noopener"><img src="icones/plano.png" alt="" onerror="this.style.display='none'"><span>Landing Premium</span></a>
+              <a class="linkFora" href="https://www.moviki.com.br/enterprise.html" target="_blank" rel="noopener"><img src="icones/multipontos.png" alt="" onerror="this.style.display='none'"><span>Landing Enterprise</span></a>
+            </div>
+            <div class="cdGrupo">Parceiros e criadores</div>
+            <div class="gridAcoes">
+              <a class="linkFora" href="https://www.moviki.com.br/parceiros.html" target="_blank" rel="noopener"><img src="icones/convidar-parceiro.png" alt="" onerror="this.style.display='none'"><span>Landing parceiros</span></a>
+              <a class="linkFora" href="https://www.moviki.com.br/parceiros-ganhos.html" target="_blank" rel="noopener"><img src="icones/comissoes.png" alt="" onerror="this.style.display='none'"><span>Parceiros — ganhos</span></a>
+              <a class="linkFora" href="https://www.moviki.com.br/criadores" target="_blank" rel="noopener"><img src="icones/qz-instagram.png" alt="" onerror="this.style.display='none'"><span>Página dos criadores</span></a>
+              <a class="linkFora" href="seja-parceiro.html" target="_blank" rel="noopener"><img src="icones/indicar.png" alt="" onerror="this.style.display='none'"><span>Cadastro de parceiro</span></a>
+              <a class="linkFora" href="/criador" target="_blank" rel="noopener"><img src="icones/live.png" alt="" onerror="this.style.display='none'"><span>Área do criador (login)</span></a>
+              <a class="linkFora" href="material/catalogo.json" target="_blank" rel="noopener"><img src="icones/material.png" alt="" onerror="this.style.display='none'"><span>Catálogo do Material de apoio</span></a>
+            </div>
+            <div class="cdGrupo">Painéis</div>
+            <div class="gridAcoes">
               <a class="linkFora" href="index.html"><img src="icones/pagina.png" alt="" onerror="this.style.display='none'"><span>Painel do lojista</span></a>
               <a class="linkFora" href="parceiro.html"><img src="icones/parceiros.png" alt="" onerror="this.style.display='none'"><span>Painel do parceiro</span></a>
-              <a class="linkFora" href="/criador" target="_blank" rel="noopener"><img src="icones/live.png" alt="" onerror="this.style.display='none'"><span>Área do criador (login)</span></a>
-              <a class="linkFora" href="regulamento.html"><img src="icones/termos.png" alt="" onerror="this.style.display='none'"><span>Regulamento</span></a>
+              <a class="linkFora" href="live.html" target="_blank" rel="noopener"><img src="icones/qz-live.png" alt="" onerror="this.style.display='none'"><span>Estúdio da live</span></a>
+              <a class="linkFora" href="guarda.html" target="_blank" rel="noopener"><img src="icones/escudo.png" alt="" onerror="this.style.display='none'"><span>Guarda (segurança)</span></a>
+            </div>
+            <div class="cdGrupo">Regras e documentos</div>
+            <div class="gridAcoes">
+              <a class="linkFora" href="https://www.moviki.com.br/termos.html" target="_blank" rel="noopener"><img src="icones/termos.png" alt="" onerror="this.style.display='none'"><span>Termos de uso</span></a>
+              <a class="linkFora" href="https://www.moviki.com.br/privacidade.html" target="_blank" rel="noopener"><img src="icones/politicas.png" alt="" onerror="this.style.display='none'"><span>Privacidade</span></a>
+              <a class="linkFora" href="https://www.moviki.com.br/regras-da-live" target="_blank" rel="noopener"><img src="icones/sobre.png" alt="" onerror="this.style.display='none'"><span>Regras da live</span></a>
+              <a class="linkFora" href="regulamento.html"><img src="icones/termos.png" alt="" onerror="this.style.display='none'"><span>Regulamento do Programa</span></a>
+              <a class="linkFora" href="https://www.moviki.com.br/excluir-conta.html" target="_blank" rel="noopener"><img src="icones/exclusoes.png" alt="" onerror="this.style.display='none'"><span>Exclusão de conta (página)</span></a>
+            </div>
+          </div>
+          <!-- 2026-10-01-atalhos: as ferramentas de fora que o dono usa todo dia -->
+          <div class="cd">
+            <div class="cdTopo"><div><div class="cdTit">Ferramentas de fora</div><div class="cdSub">Contas que tocam o Moviki. Abrem em outra aba, com o seu login.</div></div></div>
+            <div class="cdGrupo">Anúncios e medição</div>
+            <div class="gridAcoes">
+              <a class="linkFora" href="https://ads.google.com/aw/overview" target="_blank" rel="noopener"><img src="icones/google.png" alt="" onerror="this.style.display='none'"><span>Google Ads</span></a>
+              <a class="linkFora" href="https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=920636768619509" target="_blank" rel="noopener"><img src="icones/alvo.png" alt="" onerror="this.style.display='none'"><span>Meta: Gerenciador de Anúncios</span></a>
+              <a class="linkFora" href="https://business.facebook.com/latest/home" target="_blank" rel="noopener"><img src="icones/qz-instagram.png" alt="" onerror="this.style.display='none'"><span>Meta Business Suite</span></a>
+              <a class="linkFora" href="https://analytics.google.com/analytics/web/#/p551687492/reports/intelligenthome" target="_blank" rel="noopener"><img src="icones/relatorios.png" alt="" onerror="this.style.display='none'"><span>Google Analytics (GA4)</span></a>
+              <a class="linkFora" href="https://search.google.com/search-console" target="_blank" rel="noopener"><img src="icones/lampada.png" alt="" onerror="this.style.display='none'"><span>Search Console</span></a>
+              <a class="linkFora" href="https://studio.youtube.com" target="_blank" rel="noopener"><img src="icones/qz-live.png" alt="" onerror="this.style.display='none'"><span>YouTube Studio</span></a>
+            </div>
+            <div class="cdGrupo">Sistema e dinheiro</div>
+            <div class="gridAcoes">
+              <a class="linkFora" href="https://console.firebase.google.com/project/moviki-app/overview" target="_blank" rel="noopener"><img src="icones/escudo.png" alt="" onerror="this.style.display='none'"><span>Firebase (banco e login)</span></a>
+              <a class="linkFora" href="https://vercel.com/dashboard" target="_blank" rel="noopener"><img src="icones/foguete.png" alt="" onerror="this.style.display='none'"><span>Vercel (publicação)</span></a>
+              <a class="linkFora" href="https://github.com/eikosistemas-pj" target="_blank" rel="noopener"><img src="icones/tecnologia.png" alt="" onerror="this.style.display='none'"><span>GitHub (repositórios)</span></a>
+              <a class="linkFora" href="https://www.asaas.com/" target="_blank" rel="noopener"><img src="icones/financeiro.png" alt="" onerror="this.style.display='none'"><span>Asaas (cobrança)</span></a>
+              <a class="linkFora" href="https://dash.cloudflare.com/" target="_blank" rel="noopener"><img src="icones/live.png" alt="" onerror="this.style.display='none'"><span>Cloudflare (vídeo da live)</span></a>
+              <a class="linkFora" href="https://resend.com/emails" target="_blank" rel="noopener"><img src="icones/mensagens.png" alt="" onerror="this.style.display='none'"><span>Resend (e-mails)</span></a>
+              <a class="linkFora" href="https://console.anthropic.com/usage" target="_blank" rel="noopener"><img src="icones/lampada.png" alt="" onerror="this.style.display='none'"><span>Anthropic (custo do Vik)</span></a>
+              <a class="linkFora" href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener"><img src="icones/sobre.png" alt="" onerror="this.style.display='none'"><span>Google Drive</span></a>
+              <a class="linkFora" href="https://web.whatsapp.com" target="_blank" rel="noopener"><img src="icones/mensagens.png" alt="" onerror="this.style.display='none'"><span>WhatsApp Web</span></a>
             </div>
           </div>
           <div class="cd">
@@ -1700,6 +1757,10 @@ table.mvTab td b{font-weight:700}
             <button type="button" class="rcAcao" data-ir="newsletter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg><span>Newsletter</span></button>
             <button type="button" class="rcAcao" data-ir="metricas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 3.5-4 3 2.5L20 7"/></svg><span>Métricas</span></button>
             <a class="rcAcao" href="https://moviki.com.br" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/></svg><span>Ver site</span></a>
+            <button type="button" class="rcAcao" data-ir="parceiros"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20v-1.4A3.6 3.6 0 0 1 6.6 15h4.8a3.6 3.6 0 0 1 3.6 3.6V20"/><circle cx="17.5" cy="9" r="2.5"/><path d="M21 20v-1a3 3 0 0 0-2.5-3"/></svg><span>Parceiros</span></button>
+            <button type="button" class="rcAcao" data-ir="pedidos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7z"/><path d="M9 7V5a3 3 0 0 1 6 0v2"/></svg><span>Pedidos</span></button>
+            <a class="rcAcao" href="https://www.moviki.com.br/fundador" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5"/><path d="m9 13.5-1.5 7L12 18l4.5 2.5-1.5-7"/></svg><span>Fundador</span></a>
+            <button type="button" class="rcAcao" data-ir="atalhos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Todos</span></button>
           </div>
         </div>
 
@@ -1787,7 +1848,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-01-criadores';
+  window.MOVIKI_VERSAO = '2026-10-01-atalhos';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2282,6 +2343,8 @@ table.mvTab td b{font-weight:700}
       } else {
         acoes = '<button type="button" class="btnMini ok" data-acao="aprovar" data-uid="'+esc(p.uid)+'">Reativar</button>';
       }
+      /* 2026-10-01-apelido: trocar apelido e nome exibido (pelo robo). */
+      acoes += '<button type="button" class="btnMini" data-acao="apelido" data-uid="'+esc(p.uid)+'">Trocar apelido</button>';
       const sel = Array.isArray(p.canais) ? p.canais : [];
       const chips = (sel.length || p.arroba)
         ? '<div style="margin-top:2px"><span class="icK">Onde divulga</span>'+
@@ -2299,9 +2362,113 @@ table.mvTab td b{font-weight:700}
         '</div>'+ chips +
         (crDaPagina(p) ? '<div style="margin-top:4px"><span class="chipCanal on">Veio da página dos criadores</span></div>' : '')+
         '<div class="icAcoes">'+acoes+'</div>'+
+        '<div class="icTroca hide" id="ptroca_'+esc(p.uid)+'">'+
+          '<label for="ptrA_'+esc(p.uid)+'">Novo apelido do link (letras, números e hífen)</label>'+
+          '<input id="ptrA_'+esc(p.uid)+'" data-trcampo="apelido" data-uid="'+esc(p.uid)+'" maxlength="40" autocomplete="off" value="'+esc(p.slug||'')+'">'+
+          '<label for="ptrN_'+esc(p.uid)+'">Nome que aparece no crachá e na verificação</label>'+
+          '<input id="ptrN_'+esc(p.uid)+'" data-trcampo="nome" data-uid="'+esc(p.uid)+'" maxlength="80" autocomplete="off" value="'+esc(p.nome||'')+'">'+
+          '<div class="icTrPrev" id="ptrP_'+esc(p.uid)+'"></div>'+
+          '<div class="icAcoes"><button type="button" class="btnMini ok" data-acao="apelidoSalvar" data-uid="'+esc(p.uid)+'">Salvar troca</button>'+
+          '<button type="button" class="btnMini" data-acao="apelidoCancelar" data-uid="'+esc(p.uid)+'">Cancelar</button></div>'+
+        '</div>'+
         '<div class="icMsg" id="pmsg_'+esc(p.uid)+'"></div>'+
       '</div>';
     }).join('');
+  }
+
+  /* ==========================================================
+     TROCAR APELIDO DO PARCEIRO — 2026-10-01-apelido
+     Quem troca e o robo (api/parceiro-aprovado, acao 'trocar_apelido'):
+     reserva o novo, o velho continua apontando para o mesmo parceiro (link
+     impresso e indicacao antiga seguem contando para ele, nunca para outro),
+     indicacoes e parceiros de baixo passam para o novo e o cracha /v/ e
+     refeito. O painel so mostra e manda.
+     ========================================================== */
+  function trLimpa(v){
+    return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .trim().replace(/\s+/g,'-').replace(/[^a-z0-9_-]/g,'').replace(/-+/g,'-').replace(/^[-_]+|[-_]+$/g,'').slice(0,40);
+  }
+  function trPrevia(uid){
+    const p = PARC.filter(x=>x.uid === uid)[0] || {};
+    const a = el('ptrA_'+uid), pv = el('ptrP_'+uid);
+    if(!a || !pv) return;
+    const novo = trLimpa(a.value), velho = String(p.slug||'');
+    let h = novo.length >= 3
+      ? 'Link novo: <b>moviki.com.br/p/'+esc(novo)+'</b> · fundador: <b>/f/'+esc(novo)+'</b> · crachá: <b>/v/'+esc(novo)+'</b>'
+      : 'O apelido precisa ter pelo menos 3 letras ou números.';
+    if(velho && novo && novo !== velho){
+      h += '<br>O link antigo <b>/'+esc(velho)+'</b> continua funcionando e contando para este parceiro. Ninguém mais pode usar esse apelido.';
+    }
+    pv.innerHTML = h;
+  }
+  el('parcBox').addEventListener('input', ev=>{
+    const c = ev.target && ev.target.getAttribute ? ev.target.getAttribute('data-trcampo') : null;
+    if(c === 'apelido') trPrevia(ev.target.getAttribute('data-uid'));
+  });
+  const TR_ERRO = {
+    ocupado: 'Esse apelido já é de outro parceiro (ou de um parceiro excluído). Escolha outro.',
+    reservado: 'Esse apelido é reservado do Moviki. Escolha outro.',
+    apelido_invalido: 'Apelido inválido: use de 3 a 40 letras, números ou hífen, começando por letra ou número.',
+    nome_curto: 'O nome precisa ter pelo menos 2 letras.',
+    nada_mudou: 'Nada mudou: o apelido e o nome são os mesmos de hoje.',
+    mudou_agora: 'O apelido deste parceiro mudou agora há pouco. Recarregue a página e tente de novo.',
+    sem_parceiro: 'Parceiro não encontrado.'
+  };
+  /* 2026-10-01-atalhos: abre a troca de apelido do parceiro deste apelido
+     (botao "Mudar meu apelido" do cracha do dono). */
+  window.mvAbrirTrocaApelido = async function(slug){
+    irSec('parceiros');
+    try{ if(!PARC.length) await carregarParceiros(); }catch(_){}
+    const p = PARC.filter(x => x.slug === slug)[0];
+    if(!p){ return false; }
+    const bx = el('buscaParc'); if(bx){ bx.value = slug; }
+    pintarParceiros();
+    const f = el('ptroca_'+p.uid);
+    if(f){
+      f.classList.remove('hide'); trPrevia(p.uid);
+      setTimeout(function(){ try{ f.scrollIntoView({behavior:'smooth', block:'center'}); const a = el('ptrA_'+p.uid); if(a){ a.focus(); a.select(); } }catch(_){} }, 150);
+    }
+    return true;
+  };
+  async function trocarApelidoParceiro(uid, btn, msg){
+    const p = PARC.filter(x=>x.uid === uid)[0] || {};
+    const novo = trLimpa((el('ptrA_'+uid)||{}).value);
+    const nome = String((el('ptrN_'+uid)||{}).value||'').trim();
+    if(novo.length < 3){ if(msg){ msg.style.color='var(--mv-erro)'; msg.textContent = TR_ERRO.apelido_invalido; } return; }
+    const velho = String(p.slug||'');
+    if(novo !== velho && !confirm('Trocar o apelido de "'+velho+'" para "'+novo+'"?\n\nO link antigo continua valendo para este parceiro. Os links que ele já mandou seguem funcionando.')) return;
+    btn.disabled = true; const t = btn.textContent; btn.textContent = 'Salvando…';
+    if(msg){ msg.style.color = 'var(--mv-txt-3)'; msg.textContent = 'Salvando…'; }
+    try{
+      const idToken = await auth.currentUser.getIdToken();
+      const r = await fetch('https://moviki-robo.vercel.app/api/parceiro-aprovado', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({idToken, uid, acao:'trocar_apelido', novo, nome})
+      });
+      const j = await r.json().catch(()=>({}));
+      if(r.ok && j.ok){
+        /* o cracha do dono segue o apelido novo */
+        try{ if(velho && localStorage.getItem('mv_cracha_slug') === velho) localStorage.setItem('mv_cracha_slug', j.novo || novo); }catch(_){}
+        try{ crachaDonoIniciar(); }catch(_){}
+        await carregarParceiros();
+        const m2 = el('pmsg_'+uid);
+        if(m2){
+          m2.style.color = 'var(--mv-ok)';
+          m2.textContent = 'Pronto: apelido "'+(j.novo||novo)+'"'+(j.nome ? ', nome "'+j.nome+'"' : '')+'. '+
+            (j.indicacoes||0)+' indicação(ões) e '+(j.parceiros||0)+' parceiro(s) da rede passaram para o apelido novo.'+
+            (j.espelho === 'falhou' ? ' O crachá público não atualizou: abra o painel do parceiro uma vez para refazer.' : '');
+        }
+        return;
+      }
+      let m = TR_ERRO[j.erro] || 'Não deu certo. Tente de novo.';
+      if(r.status === 403) m = 'Sem permissão: seu usuário não está na coleção admins do banco.';
+      else if(r.status === 401) m = 'Sessão expirada — saia e entre de novo.';
+      else if(r.status === 404 && !j.erro) m = 'O robô ainda não tem a troca de apelido. Suba o pacote do moviki-robo primeiro.';
+      if(msg){ msg.style.color = 'var(--mv-erro)'; msg.textContent = m; }
+    }catch(e){
+      if(msg){ msg.style.color = 'var(--mv-erro)'; msg.textContent = 'Não consegui falar com o servidor.'; }
+    }
+    btn.disabled = false; btn.textContent = t;
   }
   el('buscaParc').addEventListener('input', pintarParceiros);
   el('filtroParc').addEventListener('change', pintarParceiros);
@@ -2323,6 +2490,9 @@ table.mvTab td b{font-weight:700}
     if(acao === 'recusar' && !confirm('Recusar este parceiro?')) return;
     if(acao === 'suspender' && !confirm('Suspender este parceiro?')) return;
     if(acao === 'reenviar'){ await reenviarBoasVindas(uid, b, msg); return; }
+    if(acao === 'apelido'){ const f = el('ptroca_'+uid); if(f){ f.classList.toggle('hide'); trPrevia(uid); } if(msg) msg.textContent = ''; return; }
+    if(acao === 'apelidoCancelar'){ const f = el('ptroca_'+uid); if(f) f.classList.add('hide'); if(msg) msg.textContent = ''; return; }
+    if(acao === 'apelidoSalvar'){ await trocarApelidoParceiro(uid, b, msg); return; }
     const novo = acao === 'aprovar' ? 'aprovado' : (acao === 'recusar' ? 'recusado' : 'suspenso');
     const antes = p.status || '';
     b.disabled = true;
@@ -4139,6 +4309,12 @@ table.mvTab td b{font-weight:700}
       const sn = await getDoc(doc(db,'parceiros_publicos',slug));
       if(!sn.exists()) return null;
       const d = sn.data() || {};
+      /* 2026-10-01-atalhos: apelido trocado -> segue para o novo (um salto) */
+      if(d.movidoPara && d.movidoPara !== slug && !crachaEspelho._salto){
+        crachaEspelho._salto = true;
+        try{ const r = await crachaEspelho(d.movidoPara); if(r){ try{ localStorage.setItem(CR_CHAVE, r.slug); }catch(e){} } return r; }
+        finally{ crachaEspelho._salto = false; }
+      }
       if(d.ativo === false) return null;
       return { slug: slug, nome: d.nome || '', arroba: d.arroba || '' };
     }catch(e){ return null; }
@@ -6283,6 +6459,18 @@ table.mvTab td b{font-weight:700}
         try{ document.execCommand('copy'); aviso('Link copiado.'); }catch(e){ aviso('Não deu para copiar.'); }
         t.remove();
       }
+    };
+    /* 2026-10-01-atalhos: "Mudar meu apelido" abre a troca de verdade (robo),
+       no cartao deste parceiro em Parceiros. O botao de baixo so escolhe
+       QUAL crache mostrar aqui; nao muda apelido de ninguem. */
+    if((b = el('btnCrDonoMudar'))) b.onclick = function(){
+      var s = '';
+      try{ s = localStorage.getItem('mv_cracha_slug') || ''; }catch(e){}
+      if(!s){ var u = el('crDonoUrl'); s = ((u && u.textContent) || '').split('/v/')[1] || ''; }
+      s = s.trim();
+      if(!s){ aviso('Escolha primeiro o crachá.'); return; }
+      if(window.mvAbrirTrocaApelido) window.mvAbrirTrocaApelido(s);
+      else aviso('Recarregue a página (Ctrl+Shift+R) e tente de novo.');
     };
     if((b = el('btnCrDonoTrocar'))) b.onclick = function(){
       try{ localStorage.removeItem('mv_cracha_slug'); }catch(e){}
