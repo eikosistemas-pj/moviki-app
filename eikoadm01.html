@@ -346,6 +346,12 @@ table.mvTab td b{font-weight:700}
   border:1px solid var(--mv-linha);border-radius:6px;padding:2px 6px;display:inline-block;overflow-wrap:anywhere}
 .icAcoes{display:flex;flex-wrap:wrap;gap:8px}
 .icMsg{font-size:12.5px;margin-top:9px;line-height:1.5}
+/* 2026-10-01-apelido: formulario de troca de apelido do parceiro */
+.icTroca{margin-top:10px;padding:12px;border:1px solid var(--mv-linha);border-radius:12px;background:var(--mv-campo);display:grid;gap:8px}
+.icTroca label{font-size:12px;color:var(--mv-txt-3)}
+.icTroca input{width:100%;box-sizing:border-box;background:transparent;border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:9px 10px;font:inherit}
+.icTroca .icTrPrev{font-size:12.5px;color:var(--mv-txt-3);line-height:1.5}
+.icTroca .icTrPrev b{color:var(--mv-ciano)}
 .chipCanal{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:3px 9px;border-radius:var(--mv-r-pill);
   margin:2px 6px 2px 0;border:1px solid var(--mv-linha);background:var(--mv-surf-2);color:var(--mv-txt-3)}
 .chipCanal.on{border-color:rgba(37,227,155,.4);background:rgba(37,227,155,.12);color:var(--mv-ok)}
@@ -1787,7 +1793,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-01-criadores';
+  window.MOVIKI_VERSAO = '2026-10-01-apelido';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2282,6 +2288,8 @@ table.mvTab td b{font-weight:700}
       } else {
         acoes = '<button type="button" class="btnMini ok" data-acao="aprovar" data-uid="'+esc(p.uid)+'">Reativar</button>';
       }
+      /* 2026-10-01-apelido: trocar apelido e nome exibido (pelo robo). */
+      acoes += '<button type="button" class="btnMini" data-acao="apelido" data-uid="'+esc(p.uid)+'">Trocar apelido</button>';
       const sel = Array.isArray(p.canais) ? p.canais : [];
       const chips = (sel.length || p.arroba)
         ? '<div style="margin-top:2px"><span class="icK">Onde divulga</span>'+
@@ -2299,9 +2307,94 @@ table.mvTab td b{font-weight:700}
         '</div>'+ chips +
         (crDaPagina(p) ? '<div style="margin-top:4px"><span class="chipCanal on">Veio da página dos criadores</span></div>' : '')+
         '<div class="icAcoes">'+acoes+'</div>'+
+        '<div class="icTroca hide" id="ptroca_'+esc(p.uid)+'">'+
+          '<label for="ptrA_'+esc(p.uid)+'">Novo apelido do link (letras, números e hífen)</label>'+
+          '<input id="ptrA_'+esc(p.uid)+'" data-trcampo="apelido" data-uid="'+esc(p.uid)+'" maxlength="40" autocomplete="off" value="'+esc(p.slug||'')+'">'+
+          '<label for="ptrN_'+esc(p.uid)+'">Nome que aparece no crachá e na verificação</label>'+
+          '<input id="ptrN_'+esc(p.uid)+'" data-trcampo="nome" data-uid="'+esc(p.uid)+'" maxlength="80" autocomplete="off" value="'+esc(p.nome||'')+'">'+
+          '<div class="icTrPrev" id="ptrP_'+esc(p.uid)+'"></div>'+
+          '<div class="icAcoes"><button type="button" class="btnMini ok" data-acao="apelidoSalvar" data-uid="'+esc(p.uid)+'">Salvar troca</button>'+
+          '<button type="button" class="btnMini" data-acao="apelidoCancelar" data-uid="'+esc(p.uid)+'">Cancelar</button></div>'+
+        '</div>'+
         '<div class="icMsg" id="pmsg_'+esc(p.uid)+'"></div>'+
       '</div>';
     }).join('');
+  }
+
+  /* ==========================================================
+     TROCAR APELIDO DO PARCEIRO — 2026-10-01-apelido
+     Quem troca e o robo (api/parceiro-aprovado, acao 'trocar_apelido'):
+     reserva o novo, o velho continua apontando para o mesmo parceiro (link
+     impresso e indicacao antiga seguem contando para ele, nunca para outro),
+     indicacoes e parceiros de baixo passam para o novo e o cracha /v/ e
+     refeito. O painel so mostra e manda.
+     ========================================================== */
+  function trLimpa(v){
+    return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .trim().replace(/\s+/g,'-').replace(/[^a-z0-9_-]/g,'').replace(/-+/g,'-').replace(/^[-_]+|[-_]+$/g,'').slice(0,40);
+  }
+  function trPrevia(uid){
+    const p = PARC.filter(x=>x.uid === uid)[0] || {};
+    const a = el('ptrA_'+uid), pv = el('ptrP_'+uid);
+    if(!a || !pv) return;
+    const novo = trLimpa(a.value), velho = String(p.slug||'');
+    let h = novo.length >= 3
+      ? 'Link novo: <b>moviki.com.br/p/'+esc(novo)+'</b> · fundador: <b>/f/'+esc(novo)+'</b> · crachá: <b>/v/'+esc(novo)+'</b>'
+      : 'O apelido precisa ter pelo menos 3 letras ou números.';
+    if(velho && novo && novo !== velho){
+      h += '<br>O link antigo <b>/'+esc(velho)+'</b> continua funcionando e contando para este parceiro. Ninguém mais pode usar esse apelido.';
+    }
+    pv.innerHTML = h;
+  }
+  el('parcBox').addEventListener('input', ev=>{
+    const c = ev.target && ev.target.getAttribute ? ev.target.getAttribute('data-trcampo') : null;
+    if(c === 'apelido') trPrevia(ev.target.getAttribute('data-uid'));
+  });
+  const TR_ERRO = {
+    ocupado: 'Esse apelido já é de outro parceiro (ou de um parceiro excluído). Escolha outro.',
+    reservado: 'Esse apelido é reservado do Moviki. Escolha outro.',
+    apelido_invalido: 'Apelido inválido: use de 3 a 40 letras, números ou hífen, começando por letra ou número.',
+    nome_curto: 'O nome precisa ter pelo menos 2 letras.',
+    nada_mudou: 'Nada mudou: o apelido e o nome são os mesmos de hoje.',
+    mudou_agora: 'O apelido deste parceiro mudou agora há pouco. Recarregue a página e tente de novo.',
+    sem_parceiro: 'Parceiro não encontrado.'
+  };
+  async function trocarApelidoParceiro(uid, btn, msg){
+    const p = PARC.filter(x=>x.uid === uid)[0] || {};
+    const novo = trLimpa((el('ptrA_'+uid)||{}).value);
+    const nome = String((el('ptrN_'+uid)||{}).value||'').trim();
+    if(novo.length < 3){ if(msg){ msg.style.color='var(--mv-erro)'; msg.textContent = TR_ERRO.apelido_invalido; } return; }
+    const velho = String(p.slug||'');
+    if(novo !== velho && !confirm('Trocar o apelido de "'+velho+'" para "'+novo+'"?\n\nO link antigo continua valendo para este parceiro. Os links que ele já mandou seguem funcionando.')) return;
+    btn.disabled = true; const t = btn.textContent; btn.textContent = 'Salvando…';
+    if(msg){ msg.style.color = 'var(--mv-txt-3)'; msg.textContent = 'Salvando…'; }
+    try{
+      const idToken = await auth.currentUser.getIdToken();
+      const r = await fetch('https://moviki-robo.vercel.app/api/parceiro-aprovado', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({idToken, uid, acao:'trocar_apelido', novo, nome})
+      });
+      const j = await r.json().catch(()=>({}));
+      if(r.ok && j.ok){
+        await carregarParceiros();
+        const m2 = el('pmsg_'+uid);
+        if(m2){
+          m2.style.color = 'var(--mv-ok)';
+          m2.textContent = 'Pronto: apelido "'+(j.novo||novo)+'"'+(j.nome ? ', nome "'+j.nome+'"' : '')+'. '+
+            (j.indicacoes||0)+' indicação(ões) e '+(j.parceiros||0)+' parceiro(s) da rede passaram para o apelido novo.'+
+            (j.espelho === 'falhou' ? ' O crachá público não atualizou: abra o painel do parceiro uma vez para refazer.' : '');
+        }
+        return;
+      }
+      let m = TR_ERRO[j.erro] || 'Não deu certo. Tente de novo.';
+      if(r.status === 403) m = 'Sem permissão: seu usuário não está na coleção admins do banco.';
+      else if(r.status === 401) m = 'Sessão expirada — saia e entre de novo.';
+      else if(r.status === 404 && !j.erro) m = 'O robô ainda não tem a troca de apelido. Suba o pacote do moviki-robo primeiro.';
+      if(msg){ msg.style.color = 'var(--mv-erro)'; msg.textContent = m; }
+    }catch(e){
+      if(msg){ msg.style.color = 'var(--mv-erro)'; msg.textContent = 'Não consegui falar com o servidor.'; }
+    }
+    btn.disabled = false; btn.textContent = t;
   }
   el('buscaParc').addEventListener('input', pintarParceiros);
   el('filtroParc').addEventListener('change', pintarParceiros);
@@ -2323,6 +2416,9 @@ table.mvTab td b{font-weight:700}
     if(acao === 'recusar' && !confirm('Recusar este parceiro?')) return;
     if(acao === 'suspender' && !confirm('Suspender este parceiro?')) return;
     if(acao === 'reenviar'){ await reenviarBoasVindas(uid, b, msg); return; }
+    if(acao === 'apelido'){ const f = el('ptroca_'+uid); if(f){ f.classList.toggle('hide'); trPrevia(uid); } if(msg) msg.textContent = ''; return; }
+    if(acao === 'apelidoCancelar'){ const f = el('ptroca_'+uid); if(f) f.classList.add('hide'); if(msg) msg.textContent = ''; return; }
+    if(acao === 'apelidoSalvar'){ await trocarApelidoParceiro(uid, b, msg); return; }
     const novo = acao === 'aprovar' ? 'aprovado' : (acao === 'recusar' ? 'recusado' : 'suspenso');
     const antes = p.status || '';
     b.disabled = true;
