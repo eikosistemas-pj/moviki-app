@@ -1,7 +1,55 @@
 {
-  "versao": "2026-09-28-moda-masculina",
+  "versao": "2026-09-30-criadores",
   "atualizado": "2026-09-30",
   "itens": [
+    {
+      "id": "video-criador-gancho",
+      "tipo": "video",
+      "titulo": "Criador: apresente a live do Moviki",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:35",
+      "peso": "15,8 MB",
+      "arquivo": "https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/material%2Fvideo-criador-gancho.mp4?alt=media",
+      "capa": "material/capas/video-criador-gancho.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Você cria conteúdo e conhece comércio que precisava vender ao vivo?\n\nNo Moviki, o lojista abre a live pelo próprio celular, sem aplicativo e sem número mínimo de seguidores. Quem assiste escolhe na sacolinha e paga por Pix dentro da live. O pedido cai na Central de Pedidos.\n\nComo parceiro, você apresenta isso aos comércios que te acompanham, com material pronto. A comissão só existe sobre mensalidade paga e pode ser zero.\n\nPix dentro da live: recurso do plano Enterprise.\n\nConheça o Programa de Parceiros 👉 {link_parceiro}",
+      "dica": "Este vídeo é para chamar criador de conteúdo a ser parceiro, não para o comerciante. Mande por DM ou WhatsApp junto com o Guia do criador. No Reels, deixe o seu link de parceiro (o /pp/) na bio enquanto o post estiver no ar e escreva #publi no começo da legenda.",
+      "categoria": "recrutar"
+    },
+    {
+      "id": "video-criador-guia",
+      "tipo": "video",
+      "titulo": "Guia do criador: como funciona a parceria",
+      "formato": "Reels/Story 9:16",
+      "duracao": "2:18",
+      "peso": "19,4 MB",
+      "arquivo": "https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/material%2Fvideo-criador-guia.mp4?alt=media",
+      "capa": "material/capas/video-criador-guia.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Guia rápido para quem cria conteúdo e quer entender a parceria com o Moviki.\n\nO que o Moviki faz: o comércio aparece no mapa em tempo real e vende ao vivo pelo celular, com Pix direto na conta do lojista, oferta relâmpago e Central de Pedidos.\n\nO que o parceiro recebe: link com o próprio apelido, crachá com QR Code, página pública de verificação, artes e vídeos prontos por ramo e, para criador, uma área para enviar as próprias peças.\n\nA regra: comissão sobre a mensalidade paga de quem assinar pelo link, enquanto continuar assinando. Plano grátis não gera comissão. Pode ser zero.\n\nOs combinados: #publi no começo da legenda, nunca prometer ganho, valor ou prazo, e falar do que a ferramenta faz.\n\nPix e oferta relâmpago dentro da live: recursos do plano Enterprise.\n\nCadastro de parceiro 👉 {link_parceiro}",
+      "dica": "Guia completo para quem já demonstrou interesse. Mande depois do vídeo curto, por DM ou WhatsApp. Não é peça de anúncio pago.",
+      "categoria": "recrutar"
+    },
+    {
+      "id": "video-live-demonstracao",
+      "tipo": "video",
+      "titulo": "Uma live do começo ao fim, com telas reais",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:52",
+      "peso": "18,4 MB",
+      "arquivo": "https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/material%2Fvideo-live-demonstracao.mp4?alt=media",
+      "capa": "material/capas/video-live-demonstracao.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Uma live do Moviki do começo ao fim, com as telas de verdade e uma loja de demonstração.\n\nO lojista entra ao vivo pelo celular e avisa os clientes com o link. Quem assiste vê o produto na tela, conversa pelo chat e paga por Pix ali mesmo. O lojista confere no extrato, confirma, e o pedido vai para a Central de Pedidos para separar e entregar.\n\nSem comissão sobre a venda: o Pix cai direto na conta do lojista.\nPix dentro da live: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. É a resposta para \"isso funciona mesmo?\": mostra a live inteira, do estúdio ao pedido na Central. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "geral"
+    },
     {
       "id": "video-comercio-moda-masculina",
       "tipo": "video",
@@ -13,7 +61,7 @@
       "capa": "material/capas/video-comercio-moda-masculina.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Camisa boa na arara, e a loja sem movimento. Enquanto isso, o seu cliente de sempre está em casa, com o celular na mão.\n\nCom o Moviki, você abre uma live da sua loja de moda masculina direto do celular. Mostra o caimento da camisa, tira a dúvida do tamanho no chat e lança a oferta. E quem quer provar toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "moda"
@@ -28,7 +76,7 @@
       "w": 1080,
       "h": 1920,
       "peso": "630 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Perfume não tem cheiro na foto. A cliente vê o frasco bonito no seu story, fica na dúvida se a fragrância é doce ou amadeirada — e não compra.\n\nCom o Moviki, você descreve as notas ao vivo, mostra o kit de perto e responde \"tem kit masculino?\" na hora. O pedido chega organizado, com retirada na loja ou entrega.\n\nSua vitrine em movimento.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "beleza",
       "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
@@ -43,7 +91,7 @@
       "w": 1080,
       "h": 1350,
       "peso": "520 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Tem cliente que passa na frente da sua perfumaria toda semana e nunca entra. Não é falta de interesse: é vergonha de pedir para testar e sair sem levar.\n\nNa live do Moviki, ela pergunta do sofá, você mostra cada frasco e ela pede ali mesmo. Sem pagar comissão por venda.\n\nSeu aroma em movimento.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "beleza"
     },
@@ -57,7 +105,7 @@
       "w": 1080,
       "h": 1920,
       "peso": "624 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Kit presente se vende na véspera: aniversário, Dia dos Pais, amigo secreto. E quem compra de última hora compra de quem aparece primeiro no celular.\n\nCom o Moviki, sua perfumaria entra ao vivo, mostra o kit aberto, tira as dúvidas no chat e acompanha cada pedido até a entrega.\n\nSeu aroma em movimento.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "beleza",
       "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
@@ -72,7 +120,7 @@
       "w": 1080,
       "h": 1350,
       "peso": "494 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi \"Tem kit masculino?\" \"Qual o valor?\" \"Faz entrega hoje?\" Essas perguntas chegam no seu direct à noite e ficam sem resposta até o dia seguinte. Aí o presente já foi comprado em outro lugar.\n\nNa live do Moviki, você responde todo mundo de uma vez, com o kit na mão e o preço na tela. É assim que as grandes lojas vendem.\n\nSua vitrine em movimento.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "beleza"
     },
@@ -86,7 +134,7 @@
       "w": 1080,
       "h": 1920,
       "peso": "620 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi \"Serve para pele oleosa?\" Quem pergunta isso já quer comprar. Só que no post parado ninguém responde, e a cliente fecha o app.\n\nCom o Moviki, você mostra o produto ao vivo, explica para que tipo de pele serve e o pedido chega organizado, com retirada na loja ou entrega.\n\nSua beleza em movimento.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "beleza",
       "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
@@ -101,7 +149,7 @@
       "w": 1080,
       "h": 1920,
       "peso": "582 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Sua loja tem dezenas de cremes, séruns e hidratantes na prateleira. A cliente que está em casa não conhece nenhum.\n\nCom o Moviki, você leva a prateleira para o celular dela: mostra ao vivo, tira as dúvidas na hora e acompanha cada pedido até a entrega, sem pagar comissão por venda.\n\nSua vitrine em movimento.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "beleza",
       "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
@@ -116,7 +164,7 @@
       "w": 1080,
       "h": 1350,
       "peso": "507 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Hoje alguém perto da sua loja está procurando presente no celular. Vai comprar de quem mostrar primeiro o kit e o preço.\n\nCom o Moviki, você transmite pelo celular, com o produto e o preço fixos na tela, vende na hora e acompanha cada pedido até a entrega.\n\nSua vitrine em movimento.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "beleza"
     },
@@ -130,7 +178,7 @@
       "w": 1080,
       "h": 1350,
       "peso": "495 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Cosmético se escolhe pela textura, pelo tom e pelo tipo de pele. Por foto, a cliente não decide — e deixa para \"passar na loja um dia\".\n\nCom o Moviki, você mostra o produto ao vivo, na mão, responde \"serve para pele oleosa?\" no chat e o pedido chega organizado, com retirada na loja ou entrega.\n\nSua beleza em movimento.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "beleza"
     },
