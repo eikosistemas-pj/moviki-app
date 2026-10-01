@@ -1,10 +1,13 @@
-/* mvtema.js — 2026-10-01-conforto (P65)
+/* mvtema.js — 2026-10-01-conforto2 (P65; claro so dentro do painel)
    Botao "Aparencia" (Escuro / Claro) no menu do painel do negocio e do parceiro.
    - A escolha fica no aparelho (localStorage "mv_tema"); a mesma vale nos dois paineis.
    - O CSS do modo claro ja vem pronto em cada pagina (regras gemeas com
      :where(html[data-tema="claro"])). Este arquivo so liga/desliga o atributo
      e ajusta as cores escritas direto no elemento (style="..."), que o CSS
      nao alcanca. Ao voltar para o escuro, devolve as cores originais.
+   - O claro so vale DENTRO do painel (depois do login). Tela de carregando,
+     login, cadastro e quiz ficam sempre escuras, mesmo com "Claro" escolhido
+     (pedido do Paulo, 01/10).
    - O estudio da live (live.html) fica sempre escuro: e tela de camera. */
 (function () {
   'use strict';
@@ -124,13 +127,32 @@
     for (var i = 0; i < bs.length; i++) bs[i].setAttribute('aria-pressed', bs[i].getAttribute('data-cf-tema') === t ? 'true' : 'false');
   }
 
-  function aplicar(t, salvar) {
+  /* Dentro do sistema = painel aberto e nenhum quiz/carregando por cima. */
+  function visivel(el) { return !!el && getComputedStyle(el).display !== 'none'; }
+  function dentroDoSistema() {
+    var painel = document.getElementById('painel');
+    if (!visivel(painel)) return false;
+    var quiz = document.getElementById('quizModal'), carregando = document.getElementById('qzLoader');
+    if (quiz && !quiz.classList.contains('qzEscondido') && visivel(quiz)) return false;
+    if (carregando && !carregando.classList.contains('qzEscondido') && visivel(carregando)) return false;
+    return true;
+  }
+
+  var preferido = 'escuro', efetivo = null;
+  function atualizar() {
+    var t = (preferido === 'claro' && dentroDoSistema()) ? 'claro' : 'escuro';
+    if (t === efetivo) return;
+    efetivo = t;
     if (t === 'claro') RAIZ.setAttribute('data-tema', 'claro'); else RAIZ.removeAttribute('data-tema');
-    if (salvar) gravarTema(t);
-    marcarBotoes(t);
     if (!document.body) return;
     if (t === 'claro') { varrer(document.body, claroNoElemento); observar(true); }
     else { observar(false); varrer(document.body, escuroNoElemento); }
+  }
+  function aplicar(t, salvar) {
+    preferido = t;
+    if (salvar) gravarTema(t);
+    marcarBotoes(t);
+    atualizar();
   }
   window.mvTema = function (t) { aplicar(t === 'claro' ? 'claro' : 'escuro', true); };
 
@@ -141,6 +163,13 @@
     window.mvTema(b.getAttribute('data-cf-tema'));
   }, true);
 
-  function iniciar() { aplicar(lerTema(), false); }
+  /* Login, logout, quiz abrindo ou fechando: reavalia na hora (antes de pintar). */
+  function vigiar() {
+    if (!window.MutationObserver) return;
+    var o = new MutationObserver(atualizar), alvos = [document.body, document.getElementById('painel'), document.getElementById('quizModal'), document.getElementById('qzLoader')];
+    for (var i = 0; i < alvos.length; i++) if (alvos[i]) o.observe(alvos[i], { attributes: true, attributeFilter: ['class', 'style', 'hidden'] });
+  }
+
+  function iniciar() { RAIZ.removeAttribute('data-tema'); vigiar(); aplicar(lerTema(), false); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar); else iniciar();
 })();
