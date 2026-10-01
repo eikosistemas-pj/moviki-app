@@ -33,6 +33,25 @@ mexe no `parceiro.html`.**
 Toda vez que o catálogo muda, **trocar o `versao`** — é isso que reacende o
 "NOVO" no menu de todos os parceiros.
 
+## Eventos (desde 01/10/2026)
+Campo `eventos` no topo do `catalogo.json`. Cada evento vira um **cartão** no painel do parceiro (Divulgação, atalho na Visão geral e Área do criador) só entre `inicio` e `fim` (dias de Brasília). Fora do prazo, o cartão some sozinho. As peças continuam também no Material de apoio.
+
+| campo | uso |
+|---|---|
+| `id` | letras minúsculas, números e hífen |
+| `titulo`, `sub` | título e frase do cartão |
+| `inicio`, `fim` | `AAAA-MM-DD` |
+| `cor` | `#rrggbb` |
+| `link` | `fundador` (link `/f/` e `/fc/`) ou `parceiro` (link `/p/` e `/c/`) |
+| `ancora` | opcional: id de um cartão que já existe no painel (o Lote Fundador usa `fundCard`); as peças entram dentro dele |
+| `mensagem` | texto do botão "Mandar no WhatsApp", com `{link}` |
+| `itens` | ids das peças do evento (precisam existir em `itens`) |
+
+- **Peça de oferta** (preço, prazo, vaga) leva `valido_ate`: no dia seguinte ela some do Material de apoio, do cartão e do robô social. Divulgar oferta que acabou é propaganda enganosa.
+- Peça só de época (sem preço) pode ficar sem `valido_ate`.
+- Conferir antes de entrar no ar: `app.moviki.com.br/parceiro.html?evento=<id>` mostra o cartão fora do prazo, marcado "prévia". O painel do dono lista os eventos em Atalhos do dono.
+- Evento novo = só o catálogo (e as artes). O `parceiro.html` não muda.
+
 ## Regras de conteúdo
 - Toda legenda começa com `#publi` (Guia CONAR 2026: conteúdo comissionado é publicidade).
 - Nunca prometer ganho, venda, "garantido", "sem risco". O Moviki entrega ser encontrado.

@@ -49,6 +49,14 @@ body{font-family:var(--mv-fonte);background:var(--mv-bg);color:var(--mv-txt);min
 .fdRegra{font-size:13px;color:var(--mv-texto2,#9fb3c8);margin-top:10px;line-height:1.5}
 .fdRegra b{color:#ffe08a}
 .fdDest{border-color:rgba(255,193,64,.55)!important}
+/* 2026-10-01-eventos: cartao de evento (cor vem do catalogo) */
+.evCard{border-color:var(--evCor,#00d4ff)!important;background:linear-gradient(160deg,color-mix(in srgb,var(--evCor,#00d4ff) 12%,transparent),transparent 70%)!important}
+.evCard .evTit{color:var(--evCor,#00d4ff)}
+.evPer{display:inline-block;background:var(--evCor,#00d4ff);color:#0b1220;font-weight:800;font-size:12px;padding:2px 9px;border-radius:8px;margin-left:6px;vertical-align:middle}
+.evAcoes{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+.evMatTit{font-weight:800;font-size:14px;margin:16px 0 10px;color:var(--mv-txt)}
+.evMat .matGrade,.evCard .matGrade{margin-top:4px}
+.matDest.evDest{animation:none;background:linear-gradient(var(--mv-surf),var(--mv-surf)) padding-box,linear-gradient(135deg,var(--evCor,#00d4ff),#0066ff) border-box}
 img{max-width:100%}
 button{font-family:inherit}
 
@@ -790,6 +798,8 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
             <span class="mvNovo">NOVO</span>
             <svg class="matSeta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
           </button>
+          <!-- 2026-10-01-eventos: atalhos dos eventos no ar (material/catalogo.json, "eventos") -->
+          <div id="evHome"></div>
           <!-- 22/09/2026: atalho da Area do criador na Visao geral. So aparece
                para parceiro marcado como criador (cpIniciar). -->
           <button type="button" class="matDest cpDest hide" id="cpCardHome" data-ir="criador">
@@ -1044,6 +1054,11 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
             <div class="aviso ok" id="avisoLink"></div>
           </div>
 
+          <!-- 2026-10-01-eventos: cartoes de evento (Black Friday, Natal...). O
+               Lote Fundador continua no cartao proprio logo abaixo, que ganha
+               o material do evento dentro dele ("ancora" no catalogo). -->
+          <div id="evCards"></div>
+
           <!-- 01/10/2026: LOTE FUNDADOR. Link proprio da oferta (/f/apelido):
                mesma indicacao e mesmo cookie do /p/, mas cai direto na
                /fundador. O /p/ leva para a comerciantes, onde a oferta nao
@@ -1258,6 +1273,8 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
             </div>
             <div id="cpAvisoCad"></div>
           </div>
+          <!-- 2026-10-01-eventos: os mesmos eventos, com o link de criador -->
+          <div id="cpEvCards"></div>
 
           <div class="cd" data-cppainel="enviar">
             <div class="cdTit">Enviar peça</div>
@@ -1608,7 +1625,15 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
      da comissao), {link_fundador} no Material de apoio, QR do panfleto para
      /f/ com "qrDestino":"fundador", e link /fc/apelido na Area do criador.
      Tudo some depois de 27/11/2026 ou com o lote esgotado. */
-  window.MOVIKI_VERSAO = '2026-10-01-fundador';
+  /* 2026-10-01-eventos — EVENTOS DO MATERIAL DE APOIO: o catalogo ganha
+     "eventos" (Lote Fundador, Black Friday, Natal...). Durante o evento, um
+     cartao com o link e TODAS as pecas daquele evento aparece na Divulgacao,
+     na Visao geral (atalho) e na Area do criador; o Lote Fundador recebe as
+     pecas dentro do cartao dele. Fora do prazo o cartao some. Peca com
+     "valido_ate" vencido some tambem do Material de apoio (oferta que acabou
+     nao pode continuar sendo divulgada). ?evento=<id> mostra o evento fora do
+     prazo, so para conferencia. */
+  window.MOVIKI_VERSAO = '2026-10-01-eventos';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -5884,6 +5909,16 @@ function mvQR(texto){
 
   function el(id){ return document.getElementById(id); }
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  /* 2026-10-01-eventos: datas do catalogo sao do dia em Brasilia (UTC-3) */
+  var DATA_OK = /^\d{4}-\d{2}-\d{2}$/;
+  function hojeBR(){ return new Date(Date.now() - 3*3600000).toISOString().slice(0,10); }
+  /* valido_ate: some no dia SEGUINTE. Data ilegivel conta como vencida:
+     oferta com prazo nunca fica no ar sem saber quando acaba. */
+  function vencido(it){
+    if(!it || !it.valido_ate) return false;
+    var v = String(it.valido_ate);
+    return !DATA_OK.test(v) || v < hojeBR();
+  }
   function ev(acao, id){ try{ if(window.mvEv) window.mvEv('material_' + acao, { item: id || '' }); }catch(e){} }
   function dados(){ return window.__mvCracha || null; }
   function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
@@ -5950,6 +5985,7 @@ function mvQR(texto){
         var itens = (j && Array.isArray(j.itens)) ? j.itens : [];
         itens = itens.filter(function(it){
           if(!it || !it.id || !it.tipo) return false;
+          if(vencido(it)) return false;   /* 2026-10-01-eventos: oferta que acabou sai */
           if(it.tipo === 'texto') return typeof it.texto === 'string';
           return urlOk(it.arquivo) && (!it.capa || urlOk(it.capa));
         });
@@ -5968,7 +6004,11 @@ function mvQR(texto){
           cats.forEach(function(c){ valida[c.id] = 1; if(c.id === 'geral') padrao = 'geral'; });
           itens.forEach(function(it){ if(!it.categoria || !valida[it.categoria]) it.categoria = padrao; });
         }
-        CAT = { versao: String((j && j.versao) || ''), itens: itens, cats: cats };
+        var evs = (j && Array.isArray(j.eventos)) ? j.eventos.filter(function(e){
+          return e && /^[a-z0-9-]{2,40}$/.test(e.id || '') && DATA_OK.test(e.inicio || '') && DATA_OK.test(e.fim || '') &&
+                 typeof e.titulo === 'string' && e.titulo && Array.isArray(e.itens);
+        }) : [];
+        CAT = { versao: String((j && j.versao) || ''), itens: itens, cats: cats, eventos: evs };
         return CAT;
       })
       .catch(function(e){ PEDINDO = null; throw e; });
@@ -6477,6 +6517,101 @@ function mvQR(texto){
     return CAT.itens.filter(function(i){ return i.id === id && i.tipo === 'texto'; })[0] || null;
   }
 
+  /* ============================================================ EVENTOS
+     2026-10-01-eventos. "eventos" no catalogo:
+       { id, titulo, sub, inicio:'AAAA-MM-DD', fim:'AAAA-MM-DD', cor:'#rrggbb',
+         link:'fundador'|'parceiro', ancora:'<id de um cartao>' (opcional),
+         mensagem:'texto do WhatsApp com {link}', itens:[ids de pecas] }
+     O cartao aparece de inicio a fim (dias de Brasilia). As pecas continuam
+     tambem no Material de apoio; a peca com "valido_ate" sai dos dois lugares
+     no dia seguinte. Cartao com "ancora" (Lote Fundador) nao ganha cartao
+     proprio: o material entra dentro do cartao que ja existe.
+     ============================================================ */
+  var EV_PREVIA = (function(){ try{ return (new URLSearchParams(location.search).get('evento') || '').toLowerCase(); }catch(e){ return ''; } })();
+  var EV_CHAVE = '';
+  function eventosAtivos(){
+    if(!CAT || !CAT.eventos) return [];
+    var h = hojeBR();
+    return CAT.eventos.filter(function(e){ return (e.inicio <= h && h <= e.fim) || e.id === EV_PREVIA; });
+  }
+  function evCor(e){ return /^#[0-9a-fA-F]{6}$/.test(e.cor || '') ? e.cor : '#00d4ff'; }
+  function evData(d){ var p = String(d).split('-'); return p[2] + '/' + p[1]; }
+  function evItens(e){ return e.itens.map(acharItem).filter(Boolean); }
+  function evLink(e, criador){
+    var d = dados() || {}; if(!d.slug) return '';
+    var base = e.link === 'fundador' ? (criador ? '/fc/' : '/f/') : (criador ? '/c/' : '/p/');
+    return 'https://moviki.com.br' + base + d.slug;
+  }
+  function evPeca(it, lib){
+    if(it.tipo === 'texto'){
+      return '<div class="matTexto"><div class="matCardTit">' + esc(it.titulo) + '</div>' +
+        '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto) : it.texto.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
+        '<div class="matAcoes"><button type="button" class="pri" data-matcopiar="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Copiar texto</button>' +
+        '<button type="button" class="wpp" data-matwpp="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Mandar no WhatsApp</button></div></div>';
+    }
+    var ar = (it.w && it.h) ? (it.w + '/' + it.h) : '4/5';
+    var tag = it.qr ? '<span class="matTag qr">SEU QR CODE</span>' : '';
+    var play = it.tipo === 'video' ? '<span class="matPlay"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>' : '';
+    var sub = [it.formato, it.duracao, it.peso].filter(Boolean).join(' · ');
+    return '<div class="matCard">' + tag +
+      '<button type="button" class="matAbre" data-mat="' + esc(it.id) + '">' +
+      '<span class="matThumb" style="aspect-ratio:' + ar + '">' +
+      (it.capa ? '<img src="' + esc(it.capa) + '" alt="" loading="lazy" decoding="async" onerror="this.style.visibility=\'hidden\'">' : '') + play + '</span>' +
+      '<span style="display:flex;flex-direction:column;gap:5px;min-width:0"><span class="matCardTit">' + esc(it.titulo) + '</span>' +
+      '<span class="matCardSub">' + esc(sub) + '</span></span></button>' + redesHTML(it.id, lib, false) + '</div>';
+  }
+  function evGrade(e, lib){
+    var itens = evItens(e);
+    if(!itens.length) return '';
+    return '<div class="evMatTit">Material do evento (' + itens.length + ')</div><div class="matGrade">' +
+      itens.map(function(it){ return evPeca(it, lib); }).join('') + '</div>';
+  }
+  function evCartao(e, lib, criador){
+    var url = evLink(e, criador), p = porta();
+    var h = '<div class="cd evCard" id="ev_' + (criador ? 'c_' : '') + esc(e.id) + '" style="--evCor:' + evCor(e) + '">' +
+      '<div class="cdTit evTit">' + esc(e.titulo) + ' <span class="evPer">' + (e.id === EV_PREVIA && !(e.inicio <= hojeBR() && hojeBR() <= e.fim) ? 'prévia · ' : '') + evData(e.inicio) + ' a ' + evData(e.fim) + '</span></div>' +
+      (e.sub ? '<p class="cdSub">' + esc(e.sub) + '</p>' : '');
+    if(lib && url){
+      h += '<div class="rcLink">' + esc(url.replace('https://','')) + '</div>' +
+        '<div class="evAcoes"><button type="button" class="cpBtn" data-evcopiar="' + esc(url) + '">Copiar link</button>' +
+        '<button type="button" class="cpBtn" data-evwpp="' + esc(e.id) + '" data-evcri="' + (criador ? '1' : '') + '">Mandar no WhatsApp</button></div>';
+    } else if(!lib){ h += portaHTML(p); }
+    return h + evGrade(e, lib) + '</div>';
+  }
+  function evAtalho(e){
+    return '<button type="button" class="matDest evDest soAprovado" style="--evCor:' + evCor(e) + '" data-ir="divulgacao" data-evir="' + esc(e.id) + '">' +
+      '<img src="icones/material.png" alt="" onerror="this.style.display=\'none\'">' +
+      '<span class="matDestTxt"><b>' + esc(e.titulo) + ' · até ' + evData(e.fim) + '</b><span>' + esc(e.sub || 'Material e link do evento na Divulgação.') + '</span></span>' +
+      '<svg class="matSeta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>';
+  }
+  function evPintar(forcar){
+    if(!CAT) return;
+    var d = dados() || {}, p = porta(), ativos = eventosAtivos();
+    var chave = p.tipo + '|' + (d.slug || '') + '|' + (d.aprovado ? 1 : 0) + '|' + ativos.map(function(e){ return e.id; }).join(',');
+    if(!forcar && chave === EV_CHAVE) return;
+    EV_CHAVE = chave;
+    var lib = p.ok, hD = '', hH = '', hC = '';
+    ativos.forEach(function(e){
+      if(e.ancora){
+        var anc = el(e.ancora);
+        if(anc){
+          var m = anc.querySelector('.evMat');
+          if(!m){ m = document.createElement('div'); m.className = 'evMat'; anc.appendChild(m); }
+          m.innerHTML = (lib ? '' : portaHTML(p)) + evGrade(e, lib);
+        }
+      } else {
+        hD += evCartao(e, lib, false);
+        if(d.aprovado) hH += evAtalho(e);
+      }
+      hC += evCartao(e, lib, true);
+    });
+    var a = el('evCards'), b = el('evHome'), c = el('cpEvCards');
+    if(a) a.innerHTML = hD;
+    if(b) b.innerHTML = hH;
+    if(c) c.innerHTML = hC;
+  }
+  function evTentar(){ pedir().then(function(){ evPintar(false); }).catch(function(){}); }
+
   /* ---------------------------------------------------------- amarracao */
   document.addEventListener('click', function(e){
     var t = e.target; if(!t || !t.closest) return;
@@ -6502,6 +6637,28 @@ function mvQR(texto){
       for(var i=0;i<bs.length;i++) bs[i].classList.toggle('on', bs[i] === b);
       grade(); return;
     }
+    /* 2026-10-01-eventos */
+    if((b = t.closest('[data-evcopiar]'))){
+      if(!porta().ok) return;
+      var u = b.getAttribute('data-evcopiar'), bb0 = b;
+      copiar(u).then(function(){ bb0.textContent = 'Copiado ✓'; setTimeout(function(){ bb0.textContent = 'Copiar link'; }, 2200); ev('evento_copiar', u); })
+        .catch(function(){ toast(u, 8000); });
+      return;
+    }
+    if((b = t.closest('[data-evwpp]'))){
+      if(!porta().ok || !CAT) return;
+      var eid = b.getAttribute('data-evwpp'), evo = (CAT.eventos || []).filter(function(x){ return x.id === eid; })[0];
+      if(!evo) return;
+      var lk = evLink(evo, b.getAttribute('data-evcri') === '1');
+      var txw = String(evo.mensagem || 'Conheça o Moviki: {link}').replace(/\{link\}/g, lk);
+      window.open('https://wa.me/?text=' + encodeURIComponent(txw), '_blank', 'noopener');
+      ev('evento_whatsapp', eid); return;
+    }
+    if((b = t.closest('[data-evir]'))){
+      var alvoEv = 'ev_' + b.getAttribute('data-evir');
+      setTimeout(function(){ var c = el(alvoEv); if(c && c.scrollIntoView) c.scrollIntoView({ behavior:'smooth', block:'start' }); }, 380);
+    }
+    if(CAT) setTimeout(function(){ evPintar(false); }, 450);
     if((b = t.closest('[data-matrede]'))){ if(!b.disabled) postar(b); return; }
     if((b = t.closest('[data-mat]'))){ abrir(b.getAttribute('data-mat')); ev('abrir', b.getAttribute('data-mat')); return; }
     if((b = t.closest('[data-matrecarregar]'))){ montar(); return; }
@@ -6542,10 +6699,11 @@ function mvQR(texto){
 
   window.addEventListener('mv-parceiro-pronto', function(){
     setTimeout(function(){ var r = el('matRaiz'); if(r && r.__montado) montar(); }, 600);
+    setTimeout(evTentar, 700);
   });
   /* 6 s depois: so o catalogo (5 KB), para saber se ha versao nova */
   pintarNovo();
-  setTimeout(function(){ pedir().then(pintarNovo).catch(function(){}); }, 6000);
+  setTimeout(function(){ pedir().then(function(){ pintarNovo(); evPintar(false); }).catch(function(){}); }, 6000);
 
   window.mvMaterial = { abrir: function(){ try{ window.mvIrSec('material'); }catch(e){} var r = el('matRaiz'); if(r && !r.__montado){ r.__montado = 1; montar(); } } };
 })();

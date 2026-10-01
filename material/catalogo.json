@@ -1,6 +1,73 @@
 {
-  "versao": "2026-10-01-fundador",
+  "versao": "2026-10-01-eventos",
   "atualizado": "2026-10-01",
+  "eventos": [
+    {
+      "id": "fundador",
+      "titulo": "Lote Fundador",
+      "sub": "Enterprise por 12 meses: R$ 990 à vista ou 12x de R$ 89,90 no cartão. 50 vagas, até 27/11.",
+      "inicio": "2026-10-01",
+      "fim": "2026-11-27",
+      "cor": "#ffc340",
+      "link": "fundador",
+      "ancora": "fundCard",
+      "mensagem": "Oi! O Moviki abriu o Lote Fundador: o plano Enterprise por 12 meses, R$ 990 à vista ou 12x de R$ 89,90 no cartão, com garantia de 30 dias. São 50 vagas, até 27/11: {link}",
+      "itens": [
+        "fundador-panfleto",
+        "fundador-feed",
+        "fundador-quadrado",
+        "fundador-story"
+      ]
+    },
+    {
+      "id": "black-friday",
+      "titulo": "Black Friday",
+      "sub": "Em novembro o cliente procura oferta pelo celular. Mostre ao lojista que ele pode fazer a live da loja e vender ao vivo na semana da Black Friday.",
+      "inicio": "2026-11-01",
+      "fim": "2026-11-30",
+      "cor": "#ff7a1a",
+      "link": "parceiro",
+      "mensagem": "Oi! Na Black Friday muita gente compra pelo celular. Com o Moviki você faz a live da sua loja e vende ao vivo, sem aplicativo e sem precisar de seguidores. Dá para testar 30 dias grátis: {link}",
+      "itens": [
+        "video-live-demonstracao",
+        "video-comercio-moda-masculina",
+        "video-comercio-calcados",
+        "video-comercio-brecho",
+        "video-comercio-perfumaria",
+        "video-comercio-utilidades",
+        "video-comercio-cama-mesa-banho",
+        "video-comercio-boutique",
+        "video-comercio-acessorios-celular",
+        "video-shopping-moda",
+        "texto-abordagem-live",
+        "texto-objecao-seguidores"
+      ]
+    },
+    {
+      "id": "natal",
+      "titulo": "Natal",
+      "sub": "Dezembro é o mês dos presentes. Mostre ao lojista como mostrar os produtos ao vivo e receber o pedido pelo celular.",
+      "inicio": "2026-11-20",
+      "fim": "2026-12-24",
+      "cor": "#e8414f",
+      "link": "parceiro",
+      "mensagem": "Oi! No Natal o cliente procura presente pelo celular. Com o Moviki você mostra seus produtos ao vivo e recebe o pedido na hora. Dá para testar 30 dias grátis: {link}",
+      "itens": [
+        "video-live-demonstracao",
+        "video-comercio-brinquedos",
+        "video-comercio-perfumaria",
+        "video-comercio-cosmeticos",
+        "video-comercio-bijuteria",
+        "video-comercio-calcados",
+        "video-comercio-confeitaria",
+        "feed-joias-venda-ao-vivo",
+        "story-joias-venda-ao-vivo",
+        "feed-brinquedos-loja-ao-vivo",
+        "story-brinquedos-loja-ao-vivo",
+        "texto-abordagem-live"
+      ]
+    }
+  ],
   "itens": [
     {
       "id": "fundador-panfleto",
