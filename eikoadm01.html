@@ -1315,7 +1315,7 @@ table.mvTab td b{font-weight:700}
             <div class="crAbas" style="margin-top:14px">
               <button type="button" class="btnMini on" data-crab="fila">Aprovar peças</button>
               <button type="button" class="btnMini" data-crab="desempenho">Desempenho</button>
-              <button type="button" class="btnMini" data-crab="gerir">Quem é criador</button>
+              <button type="button" class="btnMini" data-crab="gerir">Quem é criador <span class="cdChip" id="crVindosChip" style="display:none;margin-left:4px">0</span></button>
             </div>
             <div id="crAviso"></div>
           </div>
@@ -1344,6 +1344,7 @@ table.mvTab td b{font-weight:700}
 
           <div class="cd hide" style="margin-top:14px" data-crpainel="gerir">
             <div class="cdTopo"><div><div class="cdTit">Quem é criador</div><div class="cdSub">Só parceiro <b>aprovado</b> e marcado como criador consegue enviar peça e aparecer no endpoint do robô. A marca fica em <code>parceiros/{uid}.criador</code>.</div></div></div>
+            <div id="crVindos" style="margin-bottom:14px"></div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
               <select id="crNovo" class="campo" style="flex:1;min-width:220px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:9px;font:inherit"></select>
               <button type="button" class="btnMini ok" id="crMarcar">Marcar como criador</button>
@@ -1786,7 +1787,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-30-grade';
+  window.MOVIKI_VERSAO = '2026-10-01-criadores';
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2296,6 +2297,7 @@ table.mvTab td b{font-weight:700}
           '<div><span class="icK">Pix</span><span class="icV"><code>'+esc(p.pix||'—')+'</code> <button type="button" class="btnMini" data-acao="pix" data-uid="'+esc(p.uid)+'">copiar</button></span></div>'+
           '<div><span class="icK">Identificador (uid)</span><span class="icV"><code>'+esc(p.uid||'—')+'</code> <button type="button" class="btnMini" data-acao="uid" data-uid="'+esc(p.uid)+'">copiar</button></span></div>'+
         '</div>'+ chips +
+        (crDaPagina(p) ? '<div style="margin-top:4px"><span class="chipCanal on">Veio da página dos criadores</span></div>' : '')+
         '<div class="icAcoes">'+acoes+'</div>'+
         '<div class="icMsg" id="pmsg_'+esc(p.uid)+'"></div>'+
       '</div>';
@@ -5225,6 +5227,17 @@ table.mvTab td b{font-weight:700}
   }
   const crLiberada = x => x.status === 'aprovada' && crAutorizada(x);
   const crParc = uid => PARC.find(p => p.uid === uid) || null;
+  /* 2026-10-01-criadores: o cadastro feito a partir de www.moviki.com.br/criadores
+     chega com canais:['criadores'] e o @ em arroba (seja-parceiro.html). */
+  function crDaPagina(p){ return !!(p && Array.isArray(p.canais) && p.canais.indexOf('criadores') !== -1); }
+  const crLinksPerfil = a => {
+    const u = String(a || '').replace(/^@+/, '').replace(/[^a-zA-Z0-9._-]/g, '');
+    if(!u) return '';
+    return ' <small style="white-space:nowrap">' +
+      '<a href="https://www.instagram.com/' + encodeURIComponent(u) + '/" target="_blank" rel="noopener">Instagram</a> · ' +
+      '<a href="https://www.tiktok.com/@' + encodeURIComponent(u) + '" target="_blank" rel="noopener">TikTok</a> · ' +
+      '<a href="https://www.youtube.com/@' + encodeURIComponent(u) + '" target="_blank" rel="noopener">YouTube</a></small>';
+  };
 
   function crLista(){
     const uids = new Set(PARC.filter(crEhCriador).map(p => p.uid));
@@ -5550,6 +5563,21 @@ table.mvTab td b{font-weight:700}
   }
 
   function crPintarGerir(){
+    const vindos = PARC.filter(p => crDaPagina(p) && !crEhCriador(p) && p.status !== 'recusado' && p.status !== 'suspenso')
+                       .sort((a,b) => (ms(b.criadoEm) || 0) - (ms(a.criadoEm) || 0));
+    const chip = el('crVindosChip');
+    if(chip){ chip.textContent = vindos.length; chip.style.display = vindos.length ? '' : 'none'; }
+    el('crVindos').innerHTML = '<div class="cdTit" style="font-size:14px">Vieram pela página dos criadores</div>' +
+      '<div class="cdSub" style="margin-bottom:6px">Cadastros feitos a partir de <a href="https://www.moviki.com.br/criadores" target="_blank" rel="noopener">moviki.com.br/criadores</a> que ainda não têm a marca. Confira o perfil; aprove o cadastro em <b>Parceiros</b> e marque aqui.</div>' +
+      (vindos.length ? vindos.map(p =>
+        '<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--mv-linha)"><div><b>' + esc(p.nome || p.uid) + '</b>' +
+        (p.arroba ? ' · ' + esc(p.arroba) + crLinksPerfil(p.arroba) : '') +
+        '<br><small style="color:var(--mv-txt-3)">cadastro ' + esc(p.status || '?') + ' · ' + esc(dataBR(ms(p.criadoEm))) + (p.indicadoPor ? ' · indicado por ' + esc(p.indicadoPor) : '') + '</small>' + crOfertaTag(p) + '</div>' +
+        (p.status === 'aprovado'
+          ? '<button type="button" class="btnMini ok" data-crmarcarvindo="' + esc(p.uid) + '">Marcar como criador</button>'
+          : '<small style="color:var(--mv-txt-3);text-align:right">aprove em Parceiros<br>para marcar</small>') +
+        '</div>').join('')
+      : '<div class="vazio">Nenhum cadastro novo pela página dos criadores.</div>');
     const cands = PARC.filter(p => p.status === 'aprovado' && !crEhCriador(p))
                       .sort((a,b) => String(a.nome || '').localeCompare(String(b.nome || '')));
     el('crNovo').innerHTML = cands.length
@@ -5634,6 +5662,12 @@ table.mvTab td b{font-weight:700}
       const v = Math.max(0, Math.round((Number(String(el('crFixo').value || '0').replace(',', '.')) || 0) * 100) / 100);
       try{ await updateDoc(doc(db,'parceiros',uid), {criadorCustoMes: v}); const p = crParc(uid); if(p) p.criadorCustoMes = v; feedback(fx,'Salvo!'); crPintarRank(); crPintarDet(); }
       catch(e){ alert('Não gravou (' + ((e && e.code) || e) + ').'); }
+      return;
+    }
+    const mv = a.closest('[data-crmarcarvindo]');
+    if(mv){
+      const uid = mv.getAttribute('data-crmarcarvindo'), p = crParc(uid);
+      if(confirm('Marcar ' + ((p && p.nome) || uid) + ' como criador? Ele passa a poder enviar peças para as redes do Moviki (sempre com a sua aprovação).\n\nOferta: ' + crOferta(p).txt + '.')) await crMarca(uid, true);
       return;
     }
     const dm = a.closest('[data-crdesmarcar]');
