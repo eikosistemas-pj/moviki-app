@@ -42,6 +42,13 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--mv-fonte);background:var(--mv-bg);color:var(--mv-txt);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .hide{display:none!important}
+/* Lote Fundador (01/10/2026) */
+.fdCard{border-color:rgba(255,193,64,.55)!important;background:linear-gradient(160deg,rgba(255,193,64,.10),rgba(255,193,64,.02))!important}
+.fdCard .cdTit{color:#ffc340}
+.fdVagas{display:inline-block;background:#ffc340;color:#3d2b00;font-weight:800;font-size:12px;padding:2px 9px;border-radius:8px;margin-left:6px;vertical-align:middle}
+.fdRegra{font-size:13px;color:var(--mv-texto2,#9fb3c8);margin-top:10px;line-height:1.5}
+.fdRegra b{color:#ffe08a}
+.fdDest{border-color:rgba(255,193,64,.55)!important}
 img{max-width:100%}
 button{font-family:inherit}
 
@@ -774,6 +781,15 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
             <span class="mvNovo" data-matnovo="1" hidden>NOVO</span>
             <svg class="matSeta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
           </button>
+          <!-- 01/10/2026: Lote Fundador. Leva ao cartao do link do fundador na
+               Divulgacao (que fica atras do mesmo cadeado das aulas). Some
+               depois de 27/11/2026. -->
+          <button type="button" class="matDest fdDest soAprovado" id="fdHome" data-ir="divulgacao">
+            <img src="icones/live.png" alt="" onerror="this.style.display='none'">
+            <span class="matDestTxt"><b>Lote Fundador · link novo</b><span id="fdHomeTxt">Enterprise por 12 meses, R$ 990 ou 12x de R$ 89,90. Seu link próprio da oferta está na Divulgação.</span></span>
+            <span class="mvNovo">NOVO</span>
+            <svg class="matSeta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
           <!-- 22/09/2026: atalho da Area do criador na Visao geral. So aparece
                para parceiro marcado como criador (cpIniciar). -->
           <button type="button" class="matDest cpDest hide" id="cpCardHome" data-ir="criador">
@@ -1028,6 +1044,25 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
             <div class="aviso ok" id="avisoLink"></div>
           </div>
 
+          <!-- 01/10/2026: LOTE FUNDADOR. Link proprio da oferta (/f/apelido):
+               mesma indicacao e mesmo cookie do /p/, mas cai direto na
+               /fundador. O /p/ leva para a comerciantes, onde a oferta nao
+               aparece. Regra, nunca resultado: a comissao e escrita como regra
+               aplicada ao preco publico. Some depois de 27/11/2026. -->
+          <div class="cd soAprovado fdCard" id="fundCard">
+            <div class="cdTit">Lote Fundador <span class="fdVagas" id="fdVagas" hidden></span></div>
+            <p class="cdSub" style="margin-bottom:12px">Oferta do Moviki até 27/11/2026 ou enquanto houver vaga (50): o plano Enterprise por 12 meses, <b>R$ 990 à vista</b> (Pix, boleto ou cartão) ou <b>12x de R$ 89,90</b> no cartão. Use este link para a oferta: ele leva direto para a página do Lote Fundador e a indicação fica com você.</p>
+            <div class="rcLink" id="meuLinkFund">moviki.com.br/f/…</div>
+            <div class="rcAcoes">
+              <button type="button" class="rcAcao" id="btnCopiarF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar</span></button>
+              <button type="button" class="rcAcao" id="btnWppF"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.2 14.8l-.4-.2-2.6.7.7-2.5-.2-.4A8 8 0 0 1 12 4z"/></svg><span>WhatsApp</span></button>
+              <button type="button" class="rcAcao" id="btnShareF"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg><span>Mais</span></button>
+            </div>
+            <div class="fdRegra"><b>Como a comissão funciona nesta oferta:</b> 15% de cada pagamento confirmado (de 16% a 18% nos níveis Ouro, Diamante e Esmeralda). No à vista, 15% de R$ 990 = R$ 148,50; no 12x, 15% de cada parcela paga = R$ 13,49. O bônus de 2º e 3º nível vale só no primeiro pagamento. A comissão do Lote Fundador fica <b>retida 30 dias</b> (o prazo da garantia da oferta) e, no cartão, só libera depois que o valor cai para o Moviki — regulamento, item 5.2.</div>
+            <div class="fdRegra">Na divulgação vale a regra de sempre: fale da oferta (preço, prazo, vagas, garantia de 30 dias), nunca de quanto o negócio vai vender.</div>
+            <div class="aviso ok" id="avisoLinkF"></div>
+          </div>
+
           <!-- ====================== CRACHA DE PARCEIRO ======================
                Mora AQUI dentro, atras da mesma trava das aulas, e nao por
                simetria: o cracha afirma "treinamento concluido". Mostra-lo
@@ -1275,6 +1310,12 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
             <div class="cpLink"><span id="cpLinkTxt">—</span><button type="button" class="cpBtn" data-cpcopiar="">Copiar</button></div>
             <div class="cdSub">Use um link por lugar e veja abaixo de onde vem cada visita:</div>
             <div class="cpCanais" id="cpCanais"></div>
+            <div id="cpFundBox">
+              <label class="cpRot">Link do Lote Fundador (até 27/11/2026)</label>
+              <div class="cpLink"><span id="cpLinkFTxt">—</span><button type="button" class="cpBtn" data-cpcopiar="" id="cpLinkFBtn">Copiar</button></div>
+              <div class="cdSub">Leva direto para a oferta (Enterprise 12 meses: R$ 990 ou 12x de R$ 89,90). As visitas entram nos seus resultados como as do link de criador. Por lugar:</div>
+              <div class="cpCanais" id="cpCanaisF"></div>
+            </div>
             <div id="cpTrafAviso"></div>
             <div class="cpK" style="margin-top:14px">
               <div><small>Visitas pelo seu link</small><b id="cpRVis">—</b></div>
@@ -1562,7 +1603,12 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-09-30-aula09';
+  /* 2026-10-01-fundador — Lote Fundador: atalho na Visao geral, cartao com o
+     link /f/apelido na Divulgacao (copiar, WhatsApp, mais; "restam N"; regra
+     da comissao), {link_fundador} no Material de apoio, QR do panfleto para
+     /f/ com "qrDestino":"fundador", e link /fc/apelido na Area do criador.
+     Tudo some depois de 27/11/2026 ou com o lote esgotado. */
+  window.MOVIKI_VERSAO = '2026-10-01-fundador';
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -2356,6 +2402,7 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
     const linkP = 'moviki.com.br/pp/' + slug;
     ['meuLink','meuLink2','meuLink3'].forEach(id=>txt(id, link));
     txt('meuLinkParc', linkP);
+    txt('meuLinkFund', 'moviki.com.br/f/' + slug);
 
     document.querySelectorAll('.soAprovado').forEach(n=>n.classList.toggle('hide', status !== 'aprovado'));
     pintarCardStatus();
@@ -2975,6 +3022,31 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
     if(navigator.share){ try{ await navigator.share(dados); }catch(_){} }
     else copiarLink();
   }
+  /* ---------- Lote Fundador (01/10/2026) ---------- */
+  const FD_FIM = Date.parse('2026-11-27T23:59:59-03:00');
+  function urlFund(){ return 'https://moviki.com.br/f/' + (MEU.slug || ''); }
+  function textoFund(){ return 'Lote Fundador do Moviki: o plano Enterprise por 12 meses, R$ 990 à vista ou 12x de R$ 89,90 no cartão. Live com Pix dentro da transmissão, vários pontos no mapa e Central de Pedidos. 50 vagas, até 27/11 👉 ' + urlFund(); }
+  el('btnCopiarF').onclick = async ()=>{
+    try{ await navigator.clipboard.writeText(urlFund()); recado('avisoLinkF','Link do Lote Fundador copiado!'); }
+    catch(_){ recado('avisoLinkF', urlFund()); }
+  };
+  el('btnWppF').onclick = ()=>{ window.open('https://wa.me/?text=' + encodeURIComponent(textoFund()), '_blank', 'noopener'); };
+  el('btnShareF').onclick = async ()=>{
+    const d = { title:'Lote Fundador Moviki', text:textoFund(), url:urlFund() };
+    if(navigator.share){ try{ await navigator.share(d); }catch(_){} } else el('btnCopiarF').onclick();
+  };
+  /* Atalho da Visao geral: abre a Divulgacao e rola ate o cartao. */
+  { const h = el('fdHome'); if(h) h.addEventListener('click', ()=>{ setTimeout(()=>{ const c = el('fundCard'); if(c && c.scrollIntoView) c.scrollIntoView({behavior:'smooth', block:'center'}); }, 380); }); }
+  /* Depois do prazo, a oferta some do painel (o link /f/ continua abrindo e
+     a /fundador mostra que encerrou). Com o lote esgotado tambem. */
+  function fdPintar(d){
+    const fim = Date.now() > FD_FIM || (d && d.aberto === false);
+    ['fundCard','fdHome'].forEach(id=>{ const n = el(id); if(n){ n.classList.toggle('fdFim', fim); if(fim) n.remove(); } });
+    if(!fim && d && typeof d.restam === 'number'){ const v = el('fdVagas'); if(v){ v.textContent = 'restam ' + d.restam + ' de ' + d.vagas; v.hidden = false; } }
+  }
+  fdPintar(null);
+  if(Date.now() <= FD_FIM){ fetch('https://moviki-robo.vercel.app/api/criar-assinatura', {method:'GET'}).then(r=>r.ok?r.json():null).then(fdPintar).catch(()=>{}); }
+
   el('btnCopiarP').onclick = async ()=>{
     try{ await navigator.clipboard.writeText(urlParceiro()); recado('avisoLinkP','Link copiado!'); }
     catch(_){ recado('avisoLinkP', urlParceiro()); }
@@ -3118,6 +3190,7 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
   const cpLiberada = x => x.status === 'aprovada' && cpAutorizada(x);
   const cpUrlOk = u => typeof u === 'string' && /^https:\/\/firebasestorage\.googleapis\.com\//.test(u);
   const cpLink = canal => 'https://moviki.com.br/c/' + encodeURIComponent(MEU.slug || '') + (canal ? '?canal=' + canal : '');
+  const cpLinkF = canal => 'https://moviki.com.br/fc/' + encodeURIComponent(MEU.slug || '') + (canal ? '?canal=' + canal : '');
 
   function cpTextoAutorizacao(){
     const arroba = MEU.arroba ? String(MEU.arroba) : 'meu @';
@@ -3531,6 +3604,14 @@ body{background-image:radial-gradient(1200px 560px at 50% -160px,rgba(46,229,157
     txt('cpLinkTxt', MEU.slug ? cpLink('') : 'Seu link aparece aqui quando o cadastro for aprovado.');
     const bc = document.querySelector('[data-cpcopiar]'); if(bc) bc.setAttribute('data-cpcopiar', MEU.slug ? cpLink('') : '');
     el('cpCanais').innerHTML = MEU.slug ? CP_CANAIS.map(c => '<button type="button" class="cpBtn" data-cpcopiar="' + esc(cpLink(c[0])) + '">' + esc(c[1]) + '</button>').join('') : '';
+    /* Lote Fundador (01/10/2026): /fc/apelido; some depois de 27/11. */
+    { const fb = el('cpFundBox'), fim = Date.now() > Date.parse('2026-11-27T23:59:59-03:00');
+      if(fb) fb.classList.toggle('hide', fim || !MEU.slug);
+      if(!fim && MEU.slug){
+        txt('cpLinkFTxt', cpLinkF(''));
+        const bf = el('cpLinkFBtn'); if(bf) bf.setAttribute('data-cpcopiar', cpLinkF(''));
+        el('cpCanaisF').innerHTML = CP_CANAIS.map(c => '<button type="button" class="cpBtn" data-cpcopiar="' + esc(cpLinkF(c[0])) + '">' + esc(c[1]) + '</button>').join('');
+      } }
     el('cpGraficos').innerHTML = '<div class="vazio" style="margin-top:12px">Carregando…</div>';
     await Promise.all([
       CP_HIST ? null : cpCarregarHist(),
@@ -5854,6 +5935,8 @@ function mvQR(texto){
          "parceiro chama parceiro" (vai para o seja-parceiro com utm
          upline_parceiros e ref). Pecas da categoria "Chamar parceiro". */
       .replace(/\{link_parceiro\}/g, slug ? 'https://moviki.com.br/pp/' + slug : 'moviki.com.br')
+      /* 2026-10-01-fundador: {link_fundador} = /f/apelido, cai direto na /fundador. */
+      .replace(/\{link_fundador\}/g, slug ? 'https://moviki.com.br/f/' + slug : 'moviki.com.br/fundador')
       .replace(/\{meu_nome\}/g, nome);
   }
 
@@ -6063,7 +6146,7 @@ function mvQR(texto){
     itens.forEach(function(it){
       if(it.tipo === 'texto'){
         h += '<div class="matTexto"><div class="matCardTit">' + esc(it.titulo) + '</div>' +
-             '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto) : it.texto.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
+             '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto) : it.texto.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
              '<div class="matAcoes"><button type="button" class="pri" data-matcopiar="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Copiar texto</button>' +
              '<button type="button" class="wpp" data-matwpp="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Mandar no WhatsApp</button></div></div>';
         return;
@@ -6101,7 +6184,13 @@ function mvQR(texto){
       i.src = src;
     });
   }
-  function urlQR(slug){
+  function urlQR(slug, it){
+    /* 2026-10-01-fundador: panfleto do Lote Fundador ("qrDestino":"fundador"
+       no catalogo) leva o QR para /f/apelido. Os outros continuam no /v/. */
+    if(it && it.qrDestino === 'fundador'){
+      var fb = 'https://moviki.com.br/f/' + slug;
+      return [fb + '?canal=qr', fb];
+    }
     var base = 'https://moviki.com.br/v/' + slug;
     return [base + '?utm_source=panfleto&utm_medium=qr', base];
   }
@@ -6118,7 +6207,7 @@ function mvQR(texto){
       var x = cv.getContext('2d');
       x.drawImage(img, 0, 0);
 
-      var q = null, urls = urlQR(d.slug);
+      var q = null, urls = urlQR(d.slug, it);
       for(var u=0; u<urls.length && !q; u++){ try{ q = window.__mvQR(urls[u]); }catch(e){ q = null; } }
       if(!q) throw new Error('qr');
       var Q = it.qr, n = q.tam + 8, p = Math.floor(Q.l / n), off = Math.floor((Q.l - p*n)/2);
@@ -6161,7 +6250,7 @@ function mvQR(texto){
     el('matOvDica').textContent = it.dica || '';
     el('matOvDica').hidden = !it.dica;
     el('matOvPorta').innerHTML = p.ok ? '' : portaHTML(p);
-    var leg = it.legenda ? (p.ok ? trocar(it.legenda) : it.legenda.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}/g,'(seu link aparece aqui)')) : '';
+    var leg = it.legenda ? (p.ok ? trocar(it.legenda) : it.legenda.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}/g,'(seu link aparece aqui)')) : '';
     el('matOvLeg').textContent = leg;
     el('matOvLegBox').hidden = !leg;
     el('matOvAcoes').hidden = !p.ok;
