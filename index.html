@@ -3810,6 +3810,22 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
             <div class="pedBairros" id="pedBairros"></div>
             <button type="button" class="pedAdd" onclick="pedAddBairro()">+ Adicionar bairro</button>
           </div>
+          <!-- 03/10/2026 (P70 etapa 2): ENVIO PARA OUTRAS CIDADES. So aparece com o recurso
+               ligado pelo dono (finEstado.recursos.freteBrasil). Tabela sem peso: valor por
+               regiao e pelo proprio estado; vazio = nao envia para la. -->
+          <div id="pedEnvBox" class="escondido" style="margin-top:16px;border-top:1px solid var(--mv-linha);padding-top:14px">
+            <div class="secTitulo"><label>Envio para outras cidades (correio ou transportadora)</label></div>
+            <label class="acabLbl" style="display:flex;gap:8px;align-items:center;margin:4px 0 10px"><input type="checkbox" id="pedEnvAtivo"> Enviar pedidos para outras cidades</label>
+            <div class="finNota" style="margin-top:0">Só vale para os produtos marcados <b>“pode ir pelo correio”</b> no cardápio. Deixe vazia a região para onde você não envia. O valor entra no Pix do cliente pelo estado do CEP dele, e o envio é por sua conta.</div>
+            <div class="finLinha">
+              <div class="campo"><label for="pedEnvUf">Seu estado (de onde o pacote sai)</label><select id="pedEnvUf"><option value="">Escolha</option><option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option></select></div>
+              <div class="campo"><label for="pedEnvMesmo">Frete dentro do seu estado (R$)</label><input id="pedEnvMesmo" type="text" inputmode="decimal" maxlength="7" placeholder="Ex.: 15"></div>
+            </div>
+            <div class="finLinha"><div class="campo"><label for="pedEnvNE">Nordeste (R$)</label><input id="pedEnvNE" type="text" inputmode="decimal" maxlength="7" placeholder="vazio = não envia"></div><div class="campo"><label for="pedEnvSE">Sudeste (R$)</label><input id="pedEnvSE" type="text" inputmode="decimal" maxlength="7" placeholder="vazio = não envia"></div></div>
+            <div class="finLinha"><div class="campo"><label for="pedEnvS">Sul (R$)</label><input id="pedEnvS" type="text" inputmode="decimal" maxlength="7" placeholder="vazio = não envia"></div><div class="campo"><label for="pedEnvCO">Centro-Oeste (R$)</label><input id="pedEnvCO" type="text" inputmode="decimal" maxlength="7" placeholder="vazio = não envia"></div></div>
+            <div class="finLinha"><div class="campo"><label for="pedEnvN">Norte (R$)</label><input id="pedEnvN" type="text" inputmode="decimal" maxlength="7" placeholder="vazio = não envia"></div><div class="campo"><label for="pedEnvGratis">Frete grátis acima de (R$)</label><input id="pedEnvGratis" type="text" inputmode="decimal" maxlength="7" placeholder="vazio = nunca"></div></div>
+            <div class="campo"><label for="pedEnvPrazo">Prazo de envio</label><input id="pedEnvPrazo" type="text" maxlength="40" placeholder="Ex.: 5 a 10 dias úteis"></div>
+          </div>
           <div style="height:12px"></div>
           <button type="button" class="btn" id="pedBtnEntrega" onclick="pedSalvarEntrega()">Salvar entrega</button>
           <div id="pedAvisoEntrega" class="aviso"></div>
@@ -4466,7 +4482,7 @@ window.mvAbaInicial=function(){
      do fundador; Pro/Premium pagante vai ao WhatsApp (troca pela equipe);
      Enterprise nao ve; some depois de 27/11 ou com o lote fechado; "x" esconde
      por 3 dias. */
-  window.MOVIKI_VERSAO='2026-10-01-conforto2';   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-03-envio';   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5824,8 +5840,13 @@ window.mvAbaInicial=function(){
     }
     return 'p'+Date.now().toString(36).slice(-5);
   }
-  function novaProdRow(catBloco,nome='',preco='',acabando=false,fotos=[],descricao='',sku=''){
+  /* 03/10/2026 (P70 etapa 2): "pode ir pelo correio". So aparece com o recurso
+     de envio ligado pelo dono E fora dos ramos de comida (alimentacao, bebidas,
+     hortifruti): pastel e bolo nunca veem a opcao. Escondida, a marca que veio
+     do banco e mantida (r._envia). */
+  function novaProdRow(catBloco,nome='',preco='',acabando=false,fotos=[],descricao='',sku='',envia=false){
     const r=document.createElement('div');r.className='prodRow mvItem';
+    r._envia=envia===true;
     r._fotos=Array.isArray(fotos)?fotos.filter(Boolean).slice(0,3):[];
     r._sku=(typeof sku==='string'?sku:'').replace(/[^a-z0-9]/gi,'').slice(0,40);
     r.innerHTML='<div class="mvItemHead" onclick="mvItemToggle(this.parentNode,null,event)">'
@@ -5836,9 +5857,10 @@ window.mvAbaInicial=function(){
       +'<span class="mvItemSeta" aria-hidden="true">&#9662;</span>'
       +'</div>'
       +'<div class="mvItemBody">'
-      +'<input class="p-nome" type="text" placeholder="Nome do produto ou serviço"><div class="prodLinha2"><input class="p-preco" type="text" placeholder="R$ 0,00"><label class="acabLbl"><input type="checkbox" class="p-acab"> acabando</label></div><textarea class="p-desc" rows="2" maxlength="280" placeholder="Descrição (opcional) — conte o que tem, ingredientes ou detalhes que ajudem o cliente a escolher"></textarea><div class="prodGaleria"></div>'
+      +'<input class="p-nome" type="text" placeholder="Nome do produto ou serviço"><div class="prodLinha2"><input class="p-preco" type="text" placeholder="R$ 0,00"><label class="acabLbl"><input type="checkbox" class="p-acab"> acabando</label><label class="acabLbl envLbl"'+(window.MV_ENVIO_PROD?'':' style="display:none"')+'><input type="checkbox" class="p-env"> pode ir pelo correio</label></div><textarea class="p-desc" rows="2" maxlength="280" placeholder="Descrição (opcional) — conte o que tem, ingredientes ou detalhes que ajudem o cliente a escolher"></textarea><div class="prodGaleria"></div>'
       +'</div>';
     r.querySelector('.p-nome').value=nome;r.querySelector('.p-preco').value=preco;r.querySelector('.p-acab').checked=!!acabando;r.querySelector('.p-desc').value=descricao||'';
+    r.querySelector('.p-env').checked=r._envia;r.querySelector('.p-env').addEventListener('change',function(){r._envia=this.checked;resumoProd(r);});
     r.querySelector('.rmv').onclick=(e)=>{if(e)e.stopPropagation();const c=r.closest('.catBloco');r.remove();if(c)resumoCat(c);};
     const atualiza=()=>{resumoProd(r);const c=r.closest('.catBloco');if(c)resumoCat(c);};
     r.querySelector('.p-nome').addEventListener('input',atualiza);
@@ -5870,7 +5892,7 @@ window.mvAbaInicial=function(){
     const nome=txtDe(r,'.p-nome'), preco=txtDe(r,'.p-preco'), desc=txtDe(r,'.p-desc');
     const ac=r.querySelector('.p-acab')&&r.querySelector('.p-acab').checked;
     r.querySelector('.prodTit').textContent=nome||'Produto sem nome';
-    r.querySelector('.prodSub').textContent=(preco?fmtResumoPreco(preco):'Sem preço')+(desc?' · com descrição':'')+((r._fotos&&r._fotos.length)?' · '+r._fotos.length+' foto'+(r._fotos.length>1?'s':''):'');
+    r.querySelector('.prodSub').textContent=(preco?fmtResumoPreco(preco):'Sem preço')+((window.MV_ENVIO_PROD&&r._envia)?' · vai pelo correio':'')+(desc?' · com descrição':'')+((r._fotos&&r._fotos.length)?' · '+r._fotos.length+' foto'+(r._fotos.length>1?'s':''):'');
     const tag=r.querySelector('.prodTag'); if(tag)tag.style.display=ac?'':'none';
     miniatura(r.querySelector('.prodThumb'),(r._fotos&&r._fotos[0])||'',SVG_PRATO);
   }
@@ -6526,7 +6548,7 @@ window.mvAbaInicial=function(){
     b.querySelector('.addProd').onclick=()=>novaProdRow(b);
     el('listaCategorias').appendChild(b);
     renderCapaCat(b);
-    (produtos&&produtos.length?produtos:[{}]).forEach(p=>novaProdRow(b,p.nome||'',p.preco||'',p.acabando,p.fotos||[],p.descricao||'',p.sku||''));
+    (produtos&&produtos.length?produtos:[{}]).forEach(p=>novaProdRow(b,p.nome||'',p.preco||'',p.acabando,p.fotos||[],p.descricao||'',p.sku||'',p.envia===true));
     resumoCat(b);
     /* Categoria nova nasce aberta; categoria vinda do banco nasce fechada.
        novaProdRow abriu o produto vazio da categoria nova — fechar a categoria
@@ -6583,6 +6605,7 @@ window.mvAbaInicial=function(){
         /* sku: mantem o que veio do banco, cria so para produto novo */
         if(!r._sku||usados.has(r._sku)) r._sku=mvNovoSku(usados); else usados.add(r._sku);
         it.sku=r._sku;
+        if(r._envia===true)it.envia=true;
         produtos.push(it);});
       const catObj={categoria:nome,produtos};if(b._capa)catObj.capa=b._capa;cats.push(catObj);
     });
@@ -6933,6 +6956,8 @@ window.mvAbaInicial=function(){
         if(el('corInput'))el('corInput').value=(typeof d.cor==='string'&&/^#[0-9a-fA-F]{6}$/.test(d.cor))?d.cor:'#00D4FF';if(el('wlToggle'))el('wlToggle').checked=(d.whiteLabel===true);if(el('divulgaToggle'))el('divulgaToggle').checked=(d.autorizaDivulgacao===true);
         setStatus(d.status||'fechado');
         if(d.slug) mostrarLink(d.slug);
+        /* 03/10 (P70 etapa 2): opcao "pode ir pelo correio" no produto */
+        try{const cp=await getDoc(doc(db,'checkout_publico',uid));const rec=cp.exists()?((cp.data()||{}).recursos||{}):{};const mac=String(d.segmentoMacro||buscarMacroQuiz(d.segmento)||'');window.MV_ENVIO_PROD=rec.freteBrasil===true&&['alimentacao','bebidas','hortifruti'].indexOf(mac)<0;}catch(_e){window.MV_ENVIO_PROD=false;}
         el('listaCategorias').innerHTML='';(d.cardapio||[]).forEach(c=>adicionarCategoria(c.categoria||'',c.produtos||[],c.capa||''));vazioCat();
         el('listaPromos').innerHTML='';(d.promocoes||[]).forEach(p=>adicionarPromo(p.titulo||'',p.detalhe||'',p.capa||''));vazioPromo();
         el('listaEventos').innerHTML='';(d.eventos||[]).forEach(e2=>adicionarEvento(e2.titulo||'',e2.quando||'',e2.detalhe||'',e2.capa||''));vazioEvento();
@@ -8681,7 +8706,7 @@ window.mvAbaInicial=function(){
     const ms = hist ? finMs(p.criadoEm) : (col === 'novos' ? finMs(p.criadoEm) : pqMsEtapa(p));
     const min = ms ? (Date.now() - ms) / 60000 : 0;
     const tarde = !hist && (col === 'novos' || col === 'pago' || col === 'separando') && min >= 20;
-    let tags = ent ? '<span class="pqTag ent">🛵 ' + (e.bairro ? finEsc(e.bairro) : 'Entrega') + '</span>' : '<span class="pqTag">🏪 Retirada</span>';
+    let tags = ent ? (e.envio ? '<span class="pqTag ent">📦 Envio' + (e.uf ? ' · ' + finEsc(e.uf) : '') + '</span>' : '<span class="pqTag ent">🛵 ' + (e.bairro ? finEsc(e.bairro) : 'Entrega') + '</span>') : '<span class="pqTag">🏪 Retirada</span>';
     if (hist) tags += '<span class="pqTag">' + (p.origem === 'cardapio' ? 'Cardápio' : 'Live') + '</span>';
     if (hist) tags += '<span class="pqTag' + (['recusado', 'cancelado', 'expirado', 'estornado', 'devolvido'].indexOf(st) >= 0 ? ' ruim' : '') + '">' + (PED_ROT[st] || finEsc(st)) + '</span>';
     tags += pqAlertaTag(p);
@@ -8906,7 +8931,7 @@ window.mvAbaInicial=function(){
     let rota = '';
     if (ent) {
       const taxa = Number(p.frete || e.taxa || 0);
-      h += '<div class="pqFSec"><h4>Entrega' + (e.bairro ? ' · ' + finEsc(e.bairro) : '') + (e.aCombinar === false ? ' · taxa ' + (taxa > 0 ? finReal(taxa) : 'grátis') : ' · a combinar') + '</h4>'
+      h += '<div class="pqFSec"><h4>' + (e.envio ? ('Envio para ' + finEsc((e.cidade || '') + (e.uf ? '/' + e.uf : '')) + ' · frete ' + (taxa > 0 ? finReal(taxa) : 'grátis') + (e.prazo ? ' · ' + finEsc(e.prazo) : '')) : ('Entrega' + (e.bairro ? ' · ' + finEsc(e.bairro) : '') + (e.aCombinar === false ? ' · taxa ' + (taxa > 0 ? finReal(taxa) : 'grátis') : ' · a combinar'))) + '</h4>'
         + '<div class="pedEndereco">' + (p.dadosApagadosEm ? 'Endereço apagado pelo prazo de privacidade' : finEsc(e.detalhe || 'Endereço não informado')) + '</div></div>';
       if (e.detalhe && !p.dadosApagadosEm) rota = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(String(e.detalhe).replace(/ - Ref\.:.*$/, ''));
     } else {
@@ -9046,7 +9071,7 @@ window.mvAbaInicial=function(){
     if (pqAlertaEst(p)) h += '<div class="sep"></div><div class="c tit">CONFIRA A PEÇA ANTES DE SEPARAR</div><div class="c pq">Pago quando a peça já era de outro comprador</div>';
     h += '<div class="sep"></div>';
     if (ent) {
-      h += '<div class="tit">ENTREGA' + (e.bairro ? ' · ' + finEsc(e.bairro) : '') + '</div>';
+      h += '<div class="tit">' + (e.envio ? 'ENVIO · ' + finEsc((e.cidade || '') + (e.uf ? '/' + e.uf : '')) : 'ENTREGA' + (e.bairro ? ' · ' + finEsc(e.bairro) : '')) + '</div>';
       if (e.rua) {
         h += '<div>' + finEsc(e.rua + ', ' + e.numero) + (e.complemento ? ' - ' + finEsc(e.complemento) : '') + '</div>';
         h += '<div>' + finEsc(e.bairro || '') + (e.cidade ? ' - ' + finEsc(e.cidade) + (e.uf ? '/' + finEsc(e.uf) : '') : '') + '</div>';
@@ -9071,7 +9096,7 @@ window.mvAbaInicial=function(){
     h += '<div class="sep"></div>';
     const sub = (p.subtotal != null) ? Number(p.subtotal) : Number(p.totalBase || p.total || 0);
     h += pedLinhaValor('Produtos', finReal(sub));
-    if (ent) h += pedLinhaValor('Entrega', Number(p.frete) > 0 ? finReal(p.frete) : (e.aCombinar === false ? 'grátis' : 'a combinar'));
+    if (ent) h += pedLinhaValor(e.envio ? 'Frete' : 'Entrega', Number(p.frete) > 0 ? finReal(p.frete) : (e.aCombinar === false ? 'grátis' : 'a combinar'));
     const ajuste = Math.round((Number(p.total || 0) - sub - Number(p.frete || 0)) * 100) / 100;
     if (ajuste > 0 && ajuste < 1) h += pedLinhaValor('Centavos do Pix', finReal(ajuste));
     h += '<div class="lv tot"><span>TOTAL</span><span>' + finReal(p.total) + '</span></div>';
@@ -9310,6 +9335,19 @@ window.mvAbaInicial=function(){
       sp.innerHTML = susp ? '<b>Sua entrega está suspensa pelo Moviki.</b> Enquanto isso, o cliente só consegue comprar com retirada no local.<br>Motivo: ' + finEsc(e.entregaSuspensa.motivo || '') + '<br><a href="https://wa.me/554120186848?text=' + encodeURIComponent('Olá! Minha entrega foi suspensa no Moviki e quero entender o motivo.') + '" target="_blank" rel="noopener" style="color:#ffd98a;font-weight:700">Falar com o suporte</a>' : '';
     }
     if (s && susp) s.textContent = 'suspensa';
+    /* 03/10 (P70 etapa 2): envio para outras cidades */
+    const envOn = !!(e.recursos && e.recursos.freteBrasil === true), ev = (c.envio || {}), bx = el('pedEnvBox');
+    if (bx) bx.classList.toggle('escondido', !envOn);
+    if (envOn) {
+      const fmt = function (v) { return (typeof v === 'number') ? String(v.toFixed(2)).replace('.', ',') : ''; };
+      el('pedEnvAtivo').checked = ev.ativo === true;
+      el('pedEnvUf').value = ev.ufOrigem || '';
+      el('pedEnvMesmo').value = fmt(ev.mesmoEstado);
+      ['N', 'NE', 'CO', 'SE', 'S'].forEach(function (k) { el('pedEnv' + k).value = fmt(ev.regioes && ev.regioes[k]); });
+      el('pedEnvGratis').value = Number(ev.gratisAcima) > 0 ? fmt(Number(ev.gratisAcima)) : '';
+      el('pedEnvPrazo').value = ev.prazo || '';
+      if (s && ev.ativo === true && !susp) s.textContent += ' · envia';
+    }
     window.pedEntModoMudou();
   }
   const PED_ERROS = {
@@ -9318,7 +9356,11 @@ window.mvAbaInicial=function(){
     bairro_nome: 'Tem bairro sem nome. Escreva o nome ou tire a linha.',
     taxa: 'Confira a taxa do bairro. Use só números, até R$ 200.',
     bairro_repetido: 'Tem bairro repetido na lista.',
-    minimo_entrega: 'Confira o pedido mínimo para entrega.'
+    minimo_entrega: 'Confira o pedido mínimo para entrega.',
+    taxa_envio: 'Confira o frete de envio. Use só números, até R$ 500.',
+    uf_origem: 'Escolha o seu estado (de onde o pacote sai).',
+    envio_vazio: 'Para ligar o envio, preencha o frete de pelo menos uma região ou do seu estado.',
+    gratis_acima: 'Confira o valor do frete grátis.'
   };
   window.pedSalvarEntrega = async function () {
     const b = el('pedBtnEntrega'); if (!b) return;
@@ -9338,6 +9380,14 @@ window.mvAbaInicial=function(){
       cidade: (el('pedEntCidade') && el('pedEntCidade').value) || '',
       retirada: (el('pedEntRet') && el('pedEntRet').value) || ''
     };
+    /* 03/10 (P70 etapa 2): so manda o envio se a caixa existe (recurso ligado);
+       sem o bloco, o robo mantem a tabela que ja estava salva. */
+    if (el('pedEnvBox') && !el('pedEnvBox').classList.contains('escondido')) {
+      const vv = function (id) { return String((el(id) && el(id).value) || '').trim().replace(/^R\$\s*/i, ''); };
+      dados.envio = { ativo: !!el('pedEnvAtivo').checked, ufOrigem: vv('pedEnvUf'), mesmoEstado: vv('pedEnvMesmo'),
+        regioes: { N: vv('pedEnvN'), NE: vv('pedEnvNE'), CO: vv('pedEnvCO'), SE: vv('pedEnvSE'), S: vv('pedEnvS') },
+        gratisAcima: vv('pedEnvGratis'), prazo: vv('pedEnvPrazo') };
+    }
     b.disabled = true; const t = b.textContent; b.textContent = 'Salvando…';
     try {
       const r = await finPost('loja_entrega', dados);
@@ -9350,6 +9400,7 @@ window.mvAbaInicial=function(){
       } else {
         let m = PED_ERROS[r.j && r.j.erro] || finMsg(r.j, r.http);
         if (r.j && r.j.nome) m += ' (' + r.j.nome + ')';
+        if (r.j && r.j.regiao) m += ' (' + ({ N: 'Norte', NE: 'Nordeste', CO: 'Centro-Oeste', SE: 'Sudeste', S: 'Sul', UF: 'seu estado' }[r.j.regiao] || r.j.regiao) + ')';
         finAviso('pedAvisoEntrega', m);
       }
     } catch (_) { finAviso('pedAvisoEntrega', 'Falha de conexão. Tente de novo.'); }
