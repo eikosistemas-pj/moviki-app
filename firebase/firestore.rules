@@ -3,6 +3,18 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================================
+    //  v32 — 03/10/2026 — DONO SO COM O GOOGLE
+    //    isAdmin() passa a exigir, alem do documento em admins/{uid}, que a
+    //    sessao tenha sido aberta pelo Google (sign_in_provider 'google.com').
+    //    A conta Google do dono tem verificacao em 2 etapas: e o segundo fator.
+    //    Quem entra com a senha do dono nao tem mais poder de dono no banco.
+    //    O robo (lib/admin.js) cobra o mesmo nas acoes de dinheiro.
+    //  O resto do arquivo e a v31, letra por letra.
+    //  ORDEM: publicar DEPOIS que o dono entrar uma vez pelo Google no
+    //  eikoadm01.html 2026-10-03-google e ver "Entrou com: Google".
+    // ==========================================================
+
+    // ==========================================================
     //  v31 — 25/09/2026 — PACOTE A (antes do anuncio)
     //    1. avaliacoes: o dono so grava a RESPOSTA (resposta + respostaEm);
     //       nota, nome e comentario do cliente ficam intocaveis. Apagar: so admin.
@@ -1585,6 +1597,7 @@ service cloud.firestore {
 
     function isAdmin() {
       return request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 

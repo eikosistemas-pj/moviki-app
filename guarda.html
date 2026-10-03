@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://www.google.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; frame-src https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="robots" content="noindex,nofollow">
@@ -10,7 +10,7 @@
 <link rel="icon" href="favicon512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<!-- MOVIKI guarda.html | versao 2026-09-28-guarda1 | painel da Guarda anticlonagem (so admin) -->
+<!-- MOVIKI guarda.html | versao 2026-10-03-google (so entra com o Google) | base 2026-09-28-guarda1 | painel da Guarda anticlonagem (so admin) -->
 <style>
   :root{--fundo:#0b1530;--card:#121f45;--linha:#23346a;--texto:#eef2ff;--suave:#9fb0d9;--ciano:#27c3f3;--verde:#22c55e;--amarelo:#f5b301;--vermelho:#ef4444;--roxo:#a78bfa}
   *{box-sizing:border-box}
@@ -65,12 +65,16 @@
 <main>
   <section class="card esc" id="cardLogin">
     <h2>Entrar</h2>
-    <p class="sub">Só administradores (documento em <code>admins/</code>). Use a mesma conta do painel do dono.</p>
+    <p class="sub">Só administradores (documento em <code>admins/</code>). Entra com o Google, a mesma conta do painel do dono.</p>
+    <div class="linha" style="margin-top:12px"><button class="b-ciano" id="btGoogle">Entrar com o Google</button></div>
+    <div id="lgSenhaBloco" class="esc">
     <div class="grade">
       <div><label>E-mail</label><input id="lgEmail" type="email" autocomplete="username"></div>
       <div><label>Senha</label><input id="lgSenha" type="password" autocomplete="current-password"></div>
     </div>
-    <div class="linha" style="margin-top:12px"><button class="b-ciano" id="btEntrar">Entrar</button><span class="msg" id="lgMsg"></span></div>
+    <div class="linha" style="margin-top:12px"><button class="b-ciano" id="btEntrar">Entrar com senha (emergência)</button></div>
+    </div>
+    <div class="linha" style="margin-top:8px"><span class="msg" id="lgMsg"></span></div>
   </section>
 
   <section class="card esc" id="cardConfig">
@@ -123,9 +127,9 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  window.MOVIKI_VERSAO = '2026-09-28-guarda1';
+  window.MOVIKI_VERSAO = '2026-10-03-google';
   const API = '/api/guarda';
   const ALFA = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
   const firebaseConfig = {
@@ -162,12 +166,30 @@
     catch (e) { $('lgMsg').textContent = 'Não entrou: ' + (e.code || e.message); }
   };
   $('btSair').onclick = () => signOut(auth);
+  /* 03/10/2026: so Google; senha apenas com ?senha=1 (emergencia). */
+  const SENHA_EMERGENCIA = /[?&]senha=1(&|$)/.test(location.search);
+  if (SENHA_EMERGENCIA) mostra('lgSenhaBloco', true);
+  $('btGoogle').onclick = async () => {
+    $('lgMsg').textContent = 'Abrindo o Google…';
+    try {
+      const prov = new GoogleAuthProvider();
+      prov.setCustomParameters({ prompt: 'select_account' });
+      await signInWithPopup(auth, prov); $('lgMsg').textContent = '';
+    } catch (e) { $('lgMsg').textContent = (e.code === 'auth/popup-closed-by-user') ? '' : ('Não entrou: ' + (e.code || e.message)); }
+  };
 
   onAuthStateChanged(auth, async u => {
     ['cardConfig', 'cardFila', 'cardVazou', 'cardConta'].forEach(id => mostra(id, false));
     mostra('btSair', !!u);
     $('quem').textContent = u ? (u.email || '') : '';
     if (!u) { mostra('cardLogin', true); return; }
+    let entrada = '';
+    try { entrada = (await u.getIdTokenResult()).signInProvider || ''; } catch (e) { entrada = ''; }
+    if (entrada !== 'google.com' && !SENHA_EMERGENCIA) {
+      await signOut(auth);
+      $('lgMsg').textContent = 'A Guarda agora entra só com o Google.';
+      return;
+    }
     mostra('cardLogin', false);
     try {
       await carregar();

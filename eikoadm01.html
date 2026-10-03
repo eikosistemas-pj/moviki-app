@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://firebasestorage.googleapis.com https://raw.githubusercontent.com; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://www.google.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://raw.githubusercontent.com; frame-src https://www.google.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://firebasestorage.googleapis.com https://raw.githubusercontent.com; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://raw.githubusercontent.com; frame-src https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="robots" content="noindex,nofollow">
@@ -630,11 +630,18 @@ table.mvTab td b{font-weight:700}
   <div class="caixa">
     <h1>Painel do Dono</h1>
     <p class="sub">Acesso exclusivo do dono do Moviki.</p>
-    <label for="email">E-mail</label>
-    <input id="email" type="email" placeholder="voce@email.com" autocomplete="username">
-    <label for="senha">Senha</label>
-    <input id="senha" type="password" placeholder="sua senha" autocomplete="current-password">
-    <button class="btn" id="btnEntrar">Entrar</button>
+    <!-- 03/10/2026 (seguranca): o painel do dono entra so com o Google, que traz a
+         verificacao em 2 etapas da conta Google. E-mail e senha ficam escondidos e
+         so aparecem com ?senha=1 (emergencia); o robo e as regras recusam essa sessao. -->
+    <button class="btn" id="btnGoogle">Entrar com o Google</button>
+    <p class="sub" style="margin-top:10px;font-size:12px">Use a conta Google do dono. A verificação em 2 etapas dela protege este painel.</p>
+    <div id="loginSenha" class="hide">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" placeholder="voce@email.com" autocomplete="username">
+      <label for="senha">Senha</label>
+      <input id="senha" type="password" placeholder="sua senha" autocomplete="current-password">
+      <button class="btn sec" id="btnEntrar">Entrar com senha (emergência)</button>
+    </div>
     <div class="aviso" id="avisoLogin"></div>
   </div>
 </div>
@@ -1732,6 +1739,7 @@ table.mvTab td b{font-weight:700}
               <div><span class="icK">E-mail</span><span class="icV" id="cfEmail">—</span></div>
               <div><span class="icK">Identificador (uid)</span><span class="icV"><code id="cfUid">—</code></span></div>
               <div><span class="icK">Admin no banco</span><span class="icV" id="cfAdmin">—</span></div>
+              <div><span class="icK">Entrou com</span><span class="icV" id="cfEntrada">—</span></div>
             </div>
             <div class="cdSub" style="margin-top:6px">O <b>Admin no banco</b> é o que vale para as regras do Firestore: sem um documento seu em <code>admins</code>, a Newsletter e as Comissões não abrem, mesmo com o e-mail certo.</div>
           </div>
@@ -1882,13 +1890,13 @@ table.mvTab td b{font-weight:700}
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
-  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, deleteField, onSnapshot, serverTimestamp, query, orderBy, limit, documentId, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getStorage, ref as stRef, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-01-mapa';
+  window.MOVIKI_VERSAO = '2026-10-03-google';   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2066,6 +2074,27 @@ table.mvTab td b{font-weight:700}
     b.disabled = false; b.textContent = t;
   });
   el('senha').addEventListener('keydown', ev=>{ if(ev.key === 'Enter') el('btnEntrar').click(); });
+  /* 03/10/2026: entrada pelo Google. A conta do dono e Gmail com verificacao em
+     2 etapas; o Firebase liga o Google na MESMA conta (mesmo uid) no 1o acesso. */
+  const SENHA_EMERGENCIA = /[?&]senha=1(&|$)/.test(location.search);
+  if (SENHA_EMERGENCIA) show('loginSenha');
+  el('btnGoogle').addEventListener('click', async ()=>{
+    const b = el('btnGoogle'), av = el('avisoLogin');
+    av.textContent = ''; b.disabled = true;
+    const t = b.textContent; b.textContent = 'Abrindo o Google…';
+    try{
+      const prov = new GoogleAuthProvider();
+      prov.setCustomParameters({ prompt: 'select_account' });
+      await signInWithPopup(auth, prov);
+    }catch(e){
+      const c = (e && e.code) || '';
+      av.textContent = c === 'auth/popup-blocked' ? 'O navegador bloqueou a janela do Google. Permita pop-ups deste site e tente de novo.'
+        : c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request' ? ''
+        : c === 'auth/account-exists-with-different-credential' ? 'Esta conta Google não é a do dono. Entre com a conta Google do dono do Moviki.'
+        : 'Não consegui entrar com o Google (' + c + ').';
+    }
+    b.disabled = false; b.textContent = t;
+  });
   ['sair2','sair3','sairLado','sairApoio'].forEach(id=>{ const n = el(id); if(n) n.addEventListener('click', ()=>signOut(auth)); });
   el('btnRecarregar').addEventListener('click', ()=>{ carregarTudo(true); });
 
@@ -2084,6 +2113,17 @@ table.mvTab td b{font-weight:700}
     const naLista = user.emailVerified === true && ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email);
     if(!naLista && !EH_ADMIN_BANCO){ txt('restritoEmail', user.email||''); telas('restrito'); return; }
 
+    /* 03/10/2026 (seguranca): sessao do dono so vale se entrou pelo Google. O robo
+       e as regras do banco recusam a sessao por senha; a tela avisa antes, em vez
+       de abrir um painel vazio de erros. */
+    let ENTRADA = '';
+    try{ ENTRADA = (await user.getIdTokenResult()).signInProvider || ''; }catch(e){ ENTRADA = ''; }
+    if(ENTRADA !== 'google.com' && !SENHA_EMERGENCIA){
+      await signOut(auth);
+      txt('avisoLogin', 'O painel do dono agora entra só com o Google. Toque em "Entrar com o Google" e use a conta ' + (user.email||'do dono') + '.');
+      return;
+    }
+
     USER = user;
     txt('rcEmail', user.email||'');
     txt('cfEmail', user.email||'');
@@ -2092,6 +2132,9 @@ table.mvTab td b{font-weight:700}
     txt('rcVersao', window.MOVIKI_VERSAO);
     const ini = (user.email||'D').trim().charAt(0).toUpperCase();
     txt('avatarTopo', ini); txt('avatarLado', ini);
+    el('cfEntrada').innerHTML = ENTRADA === 'google.com'
+      ? '<span class="pill ok">Google (2 etapas da conta Google)</span>'
+      : '<span class="pill warn">Senha (emergência) — o robô e o banco recusam</span>';
     el('cfAdmin').innerHTML = EH_ADMIN_BANCO
       ? '<span class="pill ok">Sim, achei em admins</span>'
       : '<span class="pill warn">Não achei em admins</span>';

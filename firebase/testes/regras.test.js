@@ -63,7 +63,9 @@ async function semear({ liveNoAr = false } = {}) {
 const anon      = () => env.unauthenticatedContext().firestore();
 const dono      = () => env.authenticatedContext(DONO).firestore();
 const estranho  = () => env.authenticatedContext(ESTRANHO).firestore();
-const admin     = () => env.authenticatedContext(ADM).firestore();
+const admin     = () => env.authenticatedContext(ADM, { firebase: { sign_in_provider: 'google.com' } }).firestore();
+// v32 (03/10/2026): o mesmo admin, mas com a sessao aberta por e-mail e senha.
+const adminSenha = () => env.authenticatedContext(ADM, { firebase: { sign_in_provider: 'password' } }).firestore();
 
 /* ================= o documento do negocio ================= */
 describe('negocios/{uid} — o cadastro do lojista', () => {
@@ -178,6 +180,7 @@ describe('avaliacoes — a nota de quem comprou', () => {
   });
 
   test('v31: o dono do Moviki APAGA avaliacao (moderacao)', async () => {
+    await assertFails(deleteDoc(doc(adminSenha(), 'negocios', DONO, 'avaliacoes', 'av1')));   // v32: senha do dono nao apaga
     await assertSucceeds(deleteDoc(doc(admin(), 'negocios', DONO, 'avaliacoes', 'av1')));
   });
 });
@@ -476,6 +479,9 @@ describe('v30 — leitura de assinaturas/indicacoes, resumo e nome do parceiro',
   });
   test('LISTAR assinaturas: admin sim', async () => {
     await assertSucceeds(getDocs(collection(admin(), 'assinaturas')));
+  });
+  test('v32: LISTAR assinaturas com a senha do dono (sem Google): nao', async () => {
+    await assertFails(getDocs(collection(adminSenha(), 'assinaturas')));
   });
   test('indicacao: anonimo nao le', async () => {
     await assertFails(getDoc(doc(anon(), 'indicacoes', DONO)));
