@@ -1,0 +1,8 @@
+# 03/10/2026: o que nao e pagina nao sobe para a Vercel.
+# Antes, app.moviki.com.br/firebase/firestore.rules e /CLAUDE.md abriam para
+# qualquer um: o repositorio era privado, mas o site servia tudo.
+firebase
+CLAUDE.md
+README.md
+.claude
+.github

@@ -1752,6 +1752,16 @@ table.mvTab td b{font-weight:700}
             </div>
             <div class="cdSub" style="margin-top:6px">O <b>Admin no banco</b> é o que vale para as regras do Firestore: sem um documento seu em <code>admins</code>, a Newsletter e as Comissões não abrem, mesmo com o e-mail certo.</div>
           </div>
+          <!-- 03/10/2026: regras do Firebase no ar x repositorio (robo /api/regras) -->
+          <div class="cd" id="cdRegras">
+            <div class="cdTopo"><div><div class="cdTit">Regras do Firebase no ar</div><div class="cdSub">O robô lê as regras publicadas no Console e compara com o repositório, de hora em hora. Se mudar, avisa no Telegram e por e-mail.</div></div><button type="button" class="btnMini" id="rgConferir">Conferir agora</button></div>
+            <div class="icInfo">
+              <div><span class="icK">Firestore</span><span class="icV" id="rgFs">—</span></div>
+              <div><span class="icK">Storage</span><span class="icV" id="rgSt">—</span></div>
+              <div><span class="icK">Conferido</span><span class="icV" id="rgEm">—</span></div>
+            </div>
+            <div class="cdSub" id="rgSub" style="margin-top:6px"></div>
+          </div>
           <div class="cd">
             <div class="cdTopo"><div class="cdTit">Aprovação automática de parceiros</div></div>
             <div class="cfgLinha">
@@ -1905,7 +1915,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-03-recursos';   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-03-regras';   /* 03/10: cartao Regras do Firebase no ar (Configuracoes) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2156,6 +2166,7 @@ table.mvTab td b{font-weight:700}
     // "não lidas" só apareceria depois de entrar na seção — que é justamente o
     // que ele existe pra evitar.
     ouvirConversas();
+    setTimeout(()=>{ try{ regrasConferir(false); }catch(e){} }, 2500);
     try{ livesOuvir(); }catch(e){}
     // 28/09/2026: le o relatorio das redes em segundo plano so para acender o
     // numero vermelho do menu quando o robo social tiver alerta grave.
@@ -3618,9 +3629,45 @@ table.mvTab td b{font-weight:700}
     }catch(e){ /* sem leitura, sem alarme falso */ }
   }
 
+  /* 03/10/2026: regras publicadas no Console x repositorio. Quem le e o robo
+     (Admin SDK); o painel so mostra. Sem resposta, sem alarme falso. */
+  let REGRAS_ALERTA = '';
+  const rgData = t => { try{ return t ? new Date(t).toLocaleString('pt-BR', {timeZone:'America/Sao_Paulo', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'}) : ''; }catch(e){ return ''; } };
+  function rgPinta(id, x){
+    const n = el(id); if(!n || !x) return;
+    let h;
+    if(x.erro) h = '<span class="pill warn">' + (x.erro === 'sem_permissao' ? 'o robô não tem permissão de ler as regras' : 'não consegui ler agora') + '</span>';
+    else if(x.ok) h = '<span class="pill ok">' + esc(x.versaoNoAr || '?') + ' — igual ao repositório</span>';
+    else h = '<span class="pill warn">no ar: ' + esc(x.versaoNoAr || '?') + ' · esperado: ' + esc(x.versaoEsperada || '?') + '</span>';
+    if(x.publicadaEm) h += '<br><span style="font-size:12px;color:var(--mv-txt-3)">publicada em ' + esc(rgData(x.publicadaEm)) + '</span>';
+    n.innerHTML = h;
+  }
+  async function regrasConferir(manual){
+    const b = el('rgConferir'), t0 = b ? b.textContent : '';
+    if(manual && b){ b.disabled = true; b.textContent = 'Conferindo…'; }
+    try{
+      if(!USER) return;
+      const tk = await USER.getIdToken();
+      const r = await fetch('https://moviki-robo.vercel.app/api/regras', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({idToken:tk})});
+      const j = await r.json().catch(()=>({}));
+      if(!r.ok || !j.ok){ txt('rgSub', 'Não consegui conferir agora (' + (j.mensagem || j.erro || ('HTTP ' + r.status)) + ').'); return; }
+      rgPinta('rgFs', j.firestore); rgPinta('rgSt', j.storage);
+      txt('rgEm', rgData(j.conferidoEm));
+      const semPerm = (j.firestore && j.firestore.erro === 'sem_permissao') || (j.storage && j.storage.erro === 'sem_permissao');
+      txt('rgSub', j.tudoOk ? 'Console e repositório iguais.'
+        : semPerm ? 'Falta dar à conta do robô o papel "Leitor de regras do Firebase" (Google Cloud > IAM).'
+        : 'O que está publicado no Console não é o que está no repositório: publicar o firebase/*.rules do moviki-app.');
+      REGRAS_ALERTA = j.tudoOk ? '' : 'Regras do Firebase: Console diferente do repositório — ver Configurações';
+      pintarPendencias();
+    }catch(e){ txt('rgSub', 'Não consegui conferir agora.'); }
+    finally{ if(manual && b){ b.disabled = false; b.textContent = t0; } }
+  }
+  if(el('rgConferir')) el('rgConferir').addEventListener('click', ()=>regrasConferir(true));
+
   function pintarPendencias(){
     const itens = [];
     if(VIK_ALERTA) itens.push({n:1, t:VIK_ALERTA, ir:'visao'});
+    if(REGRAS_ALERTA) itens.push({n:1, t:REGRAS_ALERTA, ir:'config'});
     const pp = PARC.filter(p=>p.status === 'pendente').length;
     const ps = SAQ.filter(s=>s.status === 'solicitado' || s.status === 'falhou').length;  /* 23/09: Pix que falhou tambem precisa de voce */
     const pe = EXC.length;
