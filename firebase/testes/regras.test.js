@@ -201,8 +201,8 @@ describe('livepresenca e resumo', () => {
     await assertSucceeds(getDoc(doc(anon(), 'negocios', DONO, 'resumo', 'avaliacoes')));
   });
 
-  test('o dono REESCREVE o proprio resumo', async () => {
-    await assertSucceeds(setDoc(doc(dono(), 'negocios', DONO, 'resumo', 'avaliacoes'), { n: 3, soma: 14 }));
+  test('v32: o dono NAO reescreve o proprio resumo (forjava a nota)', async () => {
+    await assertFails(setDoc(doc(dono(), 'negocios', DONO, 'resumo', 'avaliacoes'), { n: 3, soma: 14 }));
   });
 });
 
@@ -619,5 +619,68 @@ describe('v31 — resposta de avaliacao, apelidos, bloqueios da live e pecas de 
   test('criador: capa de fora e recusada', async () => {
     await assertFails(setDoc(doc(cria(), 'criador_pecas', 'p4'),
       peca(BUCKET + 'criadores%2F' + PARC + '%2F1-a.mp4?alt=media', 'https://exemplo.com/capa.jpg')));
+  });
+});
+
+/* ========== v32 (03/10/2026): auditoria contra a v31 do Console ========== */
+describe('v32 — metricas, resumo, anexo, apelidos e lives', () => {
+  const DIA = 'metricas/' + DONO + '/dias/2026-10-03';
+  const emDias = (d) => new Date(Date.now() + d * 86400000);
+  before(async () => {
+    await env.clearFirestore();
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      await setDoc(doc(db, 'admins', ADM), { desde: 'sempre' });
+      await setDoc(doc(db, DIA), { views: 40, b5: 12, expiraEm: emDias(396) });
+      await setDoc(doc(db, 'parceiro_slugs', 'ana'), { uid: 'parceiro-ana' });
+      await setDoc(doc(db, 'slugs', 'truck-do-dono'), { uid: DONO });
+      await setDoc(doc(db, 'conversas', DONO), { uid: DONO, ultimoDe: 'lojista', ultimaMsg: 'oi', docsLiberado: true });
+    });
+  });
+  test('metrica: visitante soma +1', async () => {
+    await assertSucceeds(updateDoc(doc(anon(), DIA), { views: increment(1) }));
+  });
+  test('metrica: visitante NAO zera o dia de um concorrente', async () => {
+    await assertFails(updateDoc(doc(anon(), DIA), { views: 0, b5: 0 }));
+  });
+  test('metrica: expiraEm no passado e recusado (o TTL apagaria o dia)', async () => {
+    await assertFails(setDoc(doc(anon(), 'metricas/' + DONO + '/dias/2026-10-04'), { views: 1, expiraEm: emDias(-1) }));
+  });
+  test('metrica: expiraEm de 13 meses passa', async () => {
+    await assertSucceeds(setDoc(doc(anon(), 'metricas/' + DONO + '/dias/2026-10-05'), { views: 1, expiraEm: emDias(396) }));
+  });
+  test('resumo: o admin conserta', async () => {
+    await assertSucceeds(setDoc(doc(admin(), 'negocios', DONO, 'resumo', 'avaliacoes'), { n: 2, soma: 9 }));
+  });
+  test('anexo de outro balde e recusado', async () => {
+    await assertFails(setDoc(doc(dono(), 'conversas', DONO, 'mensagens', 'x1'), {
+      de: 'lojista', criadoEm: serverTimestamp(), arquivoNome: 'a.pdf', arquivoTam: 1,
+      arquivoUrl: 'https://firebasestorage.googleapis.com/v0/b/outro-projeto.appspot.com/o/a.pdf?alt=media',
+    }));
+  });
+  test('mensagem com data forjada e recusada', async () => {
+    await assertFails(setDoc(doc(dono(), 'conversas', DONO, 'mensagens', 'x2'), { de: 'lojista', texto: 'oi', criadoEm: new Date(2020, 0, 1) }));
+  });
+  test('mensagem com hora do servidor passa', async () => {
+    await assertSucceeds(setDoc(doc(dono(), 'conversas', DONO, 'mensagens', 'x3'), { de: 'lojista', texto: 'oi', criadoEm: serverTimestamp() }));
+  });
+  test('parceiro_slugs: ler UM continua publico', async () => {
+    await assertSucceeds(getDoc(doc(anon(), 'parceiro_slugs', 'ana')));
+  });
+  test('parceiro_slugs: LISTAR todos so admin', async () => {
+    await assertFails(getDocs(collection(anon(), 'parceiro_slugs')));
+    await assertSucceeds(getDocs(collection(admin(), 'parceiro_slugs')));
+  });
+  test('slugs: dono nao aponta o endereco para outro negocio', async () => {
+    await assertFails(setDoc(doc(dono(), 'slugs', 'truck-do-dono'), { uid: ESTRANHO }));
+    await assertSucceeds(setDoc(doc(dono(), 'slugs', 'truck-do-dono'), { uid: DONO }));
+  });
+  test('newsletter: data forjada e recusada', async () => {
+    await assertFails(setDoc(doc(anon(), 'newsletter', 'n1'), { email: 'a@b.com', origem: 'landing', consentimento: true, criadoEm: new Date(2020, 0, 1) }));
+    await assertSucceeds(setDoc(doc(anon(), 'newsletter', 'n2'), { email: 'a@b.com', origem: 'landing', consentimento: true, criadoEm: serverTimestamp() }));
+  });
+  test('lives: id de outro lojista e recusado', async () => {
+    const live = { lojistaUid: DONO, ativa: true, inicioMs: Date.now() };
+    await assertFails(setDoc(doc(dono(), 'lives', ESTRANHO + '_123'), live));
   });
 });
