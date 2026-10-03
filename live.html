@@ -633,7 +633,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer, increment }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-10-01-conforto';   /* 01/10 (P65): conforto visual v2 (sem brilho, escala de letra); estudio segue escuro */ /* antes: 2026-09-30-estoque2 */   /* anterior: 2026-09-30-estoque (30/09 madrugada: texto da aba Oferta, alerta amarelo no aviso de pagamento, Recebi/Depois nao fecham a folha, "1 peca reservada"). Antes: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
+  window.MOVIKI_VERSAO='2026-10-03-carrinho';   /* 03/10 (P70): pedido do carrinho da live aparece com todos os itens */   /* 01/10 (P65): conforto visual v2 (sem brilho, escala de letra); estudio segue escuro */ /* antes: 2026-09-30-estoque2 */   /* anterior: 2026-09-30-estoque (30/09 madrugada: texto da aba Oferta, alerta amarelo no aviso de pagamento, Recebi/Depois nao fecham a folha, "1 peca reservada"). Antes: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -1559,12 +1559,13 @@ svg{display:block}
          Pedidos do painel (separando, pronto, saiu). Tudo isso continua
          sendo venda paga. */
       const PAGOS_=['pago','separando','pronto','saiu','entregue'];
+      /* 03/10/2026 (P70): pedido do carrinho tem varios itens; a linha mostra o primeiro e "e mais N". */
       const pagos=l.filter(x=>PAGOS_.indexOf(x.status)>=0);
       el('pxQtd').textContent=pagos.length; el('pxTotal').textContent=brl(pagos.reduce((t,x)=>t+Number(x.total||0),0));
       const conferindo=l.filter(x=>x.status==='conferindo');
       const abertos=l.filter(x=>x.status==='pago').length+conferindo.length, nb=el('nPix'); if(nb){nb.textContent=abertos;nb.classList.toggle('escondido',!abertos);}
       pintarAvisoPedido(conferindo);
-      if(pedVistos){pagos.forEach(x=>{if(!pedVistos.has(x.id+x.status)&&x.status==='pago'){toast('Pedido pago: '+((x.itens&&x.itens[0]&&x.itens[0].nome)||'')+' — '+brl(x.total));}});}
+      if(pedVistos){pagos.forEach(x=>{if(!pedVistos.has(x.id+x.status)&&x.status==='pago'){toast('Pedido pago: '+resumoItens(x)+' — '+brl(x.total));}});}
       pedVistos=new Set(l.map(x=>x.id+x.status));
       const box=el('pxPedidos'); box.innerHTML='';
       if(!l.length){box.innerHTML='<div class="pPreco" style="margin-top:8px">Nenhum pedido hoje.</div>';return;}
@@ -1573,9 +1574,9 @@ svg{display:block}
         const d=document.createElement('div'); d.className='ped';
         const w=(function(x){x=String(x||'').replace(/\D/g,'').replace(/^0+/,'');return (x.length>=12&&x.slice(0,2)==='55')?x.slice(2):x;})(c.whatsapp);
         const nro=x.numero?String(x.numero).padStart(4,'0'):x.id.slice(-6).toUpperCase();
-        const msg='Oi, '+String(c.nome||'').split(' ')[0]+'! Aqui é '+(neg.nome||'a loja')+'. Recebi seu pedido nº '+nro+' ('+(it.qtd>1?it.qtd+'x ':'')+(it.nome||'')+'). '+(en.tipo==='entrega'?(en.aCombinar===false?'Já vamos preparar a entrega.':'Vamos combinar a entrega?'):'Pode retirar aqui comigo.');
+        const msg='Oi, '+String(c.nome||'').split(' ')[0]+'! Aqui é '+(neg.nome||'a loja')+'. Recebi seu pedido nº '+nro+' ('+resumoItens(x,true)+'). '+(en.tipo==='entrega'?(en.aCombinar===false?'Já vamos preparar a entrega.':'Vamos combinar a entrega?'):'Pode retirar aqui comigo.');
         const rotSt={separando:'separando',pronto:'pronto',saiu:'saiu p/ entrega'}[x.status]||x.status;
-        d.innerHTML='<div class="l1"><strong>'+esc((it.qtd>1?it.qtd+'x ':'')+(it.nome||''))+'</strong><span>'+esc(brl(x.total))+'</span><span class="st '+esc(x.status)+'">'+esc(rotSt)+'</span></div>'+
+        d.innerHTML='<div class="l1"><strong>'+esc(resumoItens(x))+'</strong><span>'+esc(brl(x.total))+'</span><span class="st '+esc(x.status)+'">'+esc(rotSt)+'</span></div>'+
           '<div class="l2">'+esc(c.nome||'')+' · nº '+esc(nro)+' · '+(en.tipo==='entrega'?'Entrega'+(en.bairro?' ('+esc(en.bairro)+')':'')+': '+esc(en.detalhe||''):'Retirada no local')+'</div>'+
           (x.alertaEstoque==='sem_estoque'?'<div class="l2" style="color:#ffd36b">Confirmado depois do prazo, quando a última peça já tinha sido vendida. Confira se ainda tem o produto; se não tiver, desfaça a venda na Central de Pedidos e devolva o Pix.</div>':x.alertaEstoque?'<div class="l2" style="color:#ffd36b">Pago depois que a unidade da oferta foi reservada por outro comprador. Confira se ainda tem a peça; se não tiver, devolva o Pix.</div>':(x.pagouAtrasado?'<div class="l2" style="color:#ffd36b">Pagou depois do prazo do Pix. Confira o valor exato no extrato.</div>':''))+
           '<div class="l3">'+(w&&x.status!=='aguardando'?'<a class="btnMini on" target="_blank" rel="noopener" href="https://wa.me/55'+w+'?text='+encodeURIComponent(msg)+'">WhatsApp do cliente</a>':'')+
@@ -1598,6 +1599,14 @@ svg{display:block}
       });
     },()=>{});
   }
+  /* 03/10/2026 (P70): resumo dos itens do pedido. Curto na lista; completo
+     (todos os itens) na mensagem ao cliente e no aviso de pagamento. */
+  function resumoItens(x,todos){
+    const l=Array.isArray(x&&x.itens)?x.itens:[]; if(!l.length)return '';
+    const um=i=>(Number(i.qtd)>1?i.qtd+'x ':'')+String(i.nome||'');
+    if(todos||l.length===1)return l.map(um).join(', ');
+    return um(l[0])+' e mais '+(l.length-1);
+  }
   /* ---------- aviso de pagamento avisado, por cima da tela ---------- */
   let paAdiados={};
   function pintarAvisoPedido(lista){
@@ -1607,7 +1616,7 @@ svg{display:block}
     const it=(alvo.itens&&alvo.itens[0])||{}, c=alvo.comprador||{};
     el('paValor').textContent=brl(alvo.total);
     /* o valor EXATO e a prova: os centavos identificam este pedido no extrato */
-    el('paSub').textContent=(c.nome||'Cliente')+' · '+(it.qtd>1?it.qtd+'x ':'')+(it.nome||'')+' · nº '+(alvo.numero?String(alvo.numero).padStart(4,'0'):String(alvo.id).slice(-6).toUpperCase())+' — confira este valor exato no seu extrato.';
+    el('paSub').textContent=(c.nome||'Cliente')+' · '+resumoItens(alvo,true)+' · nº '+(alvo.numero?String(alvo.numero).padStart(4,'0'):String(alvo.id).slice(-6).toUpperCase())+' — confira este valor exato no seu extrato.';
     /* 30/09/2026: o alerta sai do texto cinza e ganha linha propria em
        amarelo, com a borda do aviso na mesma cor: e o caso em que o lojista
        pode ter de devolver o Pix. */
