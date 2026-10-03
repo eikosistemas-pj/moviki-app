@@ -5,6 +5,7 @@ rules_version = '2';
 //  22/09/2026: + criadores/{uid}/ (pecas dos influenciadores)
 //  30/09/2026: + material/ (videos do Material de apoio, leitura publica - P46)
 //  03/10/2026: ehAdmin() so com sessao aberta pelo Google (igual a v32 do Firestore)
+//  03/10/2026: documentos/ aceita so imagem JPG, PNG, WebP, GIF e HEIC (antes image/* aceitava SVG com script)
 //  Balde: moviki-app.firebasestorage.app
 //
 //  Até hoje o projeto NÃO gravava no Storage pelo navegador: as imagens
@@ -116,7 +117,7 @@ service firebase.storage {
     function tipoOk(t) {
       return t != null && (
         t == 'application/pdf'
-        || t.matches('image/.*')
+        || t.matches('image/(jpeg|png|webp|gif|heic|heif)')
         || t == 'text/plain'
         || t == 'text/csv'
         || t == 'application/msword'

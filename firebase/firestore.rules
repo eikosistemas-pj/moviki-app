@@ -9,6 +9,18 @@ service cloud.firestore {
     //    A conta Google do dono tem verificacao em 2 etapas: e o segundo fator.
     //    Quem entra com a senha do dono nao tem mais poder de dono no banco.
     //    O robo (lib/admin.js) cobra o mesmo nas acoes de dinheiro.
+    //  + AUDITORIA DE 03/10 (conferida contra a v31 exportada do Console):
+    //    a. metricas: contador so sobe (+0 ou +1); antes dava para ZERAR o dia
+    //       de um concorrente. expiraEm entre 330 e 430 dias a frente (antes,
+    //       data no passado fazia o TTL apagar o dia).
+    //    b. resumo/avaliacoes: o lojista nao reescreve mais a propria nota
+    //       (gravava 5,0 com 2.000 avaliacoes). So o visitante (+1 junto com a
+    //       avaliacao) e o admin.
+    //    c. anexo de mensagem: so do balde moviki-app, sem apostrofo.
+    //    d. criadoEm = hora do servidor em mensagens, newsletter e indicacoes.
+    //    e. parceiro_slugs: ler 1 continua publico; LISTAR so admin.
+    //    f. slugs: update so com {uid} do proprio dono.
+    //    g. lives: id tem que comecar pelo uid de quem cria.
     //  O resto do arquivo e a v31, letra por letra.
     //  ORDEM: publicar DEPOIS que o dono entrar uma vez pelo Google no
     //  eikoadm01.html 2026-10-03-google e ver "Entrou com: Google".
@@ -669,15 +681,10 @@ service cloud.firestore {
         // tem que nao existir antes e existir depois, e a soma sobe exatamente
         // a nota dela. Antes dava para derrubar a nota de um concorrente com
         // +1 de nota 1 repetido, sem avaliacao nenhuma para o dono apagar.
-        allow create: if ( request.auth != null
-                           && request.auth.uid == uid
-                           && request.resource.data.keys().hasOnly(['n','soma'])
-                           && request.resource.data.n is int
-                           && request.resource.data.n >= 0
-                           && request.resource.data.n <= 100000
-                           && request.resource.data.soma is int
-                           && request.resource.data.soma >= request.resource.data.n
-                           && request.resource.data.soma <= request.resource.data.n * 5 )
+        // v32 (03/10/2026): o LOJISTA saiu daqui. Ele gravava {n:2000, soma:10000}
+        // e a pagina publica mostrava 5,0 com 2.000 avaliacoes. O resumo so sobe
+        // junto com uma avaliacao real; consertar resumo torto e do admin.
+        allow create: if isAdmin()
                       || ( request.resource.data.keys().hasOnly(['n','soma','ultimaAv'])
                            && request.resource.data.n == 1
                            && request.resource.data.ultimaAv is string
@@ -685,7 +692,7 @@ service cloud.firestore {
                            && !exists(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
                            && existsAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
                            && request.resource.data.soma == getAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv)).data.nota );
-        allow update: if ( request.auth != null && request.auth.uid == uid )
+        allow update: if isAdmin()
                       || ( request.resource.data.keys().hasOnly(['n','soma','ultimaAv'])
                            && request.resource.data.n == resource.data.n + 1
                            && request.resource.data.ultimaAv is string
@@ -693,9 +700,7 @@ service cloud.firestore {
                            && !exists(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
                            && existsAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
                            && request.resource.data.soma == resource.data.soma + getAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv)).data.nota );
-        allow delete: if request.auth != null && request.auth.uid == uid;
-        // v26: o admin alcancava por meio do curinga; agora esta escrito.
-        allow write: if donoOuAdmin(uid);
+        allow delete: if isAdmin();
       }
 
       // ---- 11/09/2026 (v23): MODO LIVE ----
@@ -811,6 +816,7 @@ service cloud.firestore {
       allow create: if request.auth != null
                     && request.resource.data.lojistaUid == request.auth.uid
                     && id.size() <= 160
+                    && id.matches('^' + request.auth.uid + '_.+$')
                     && liveCampos(request.resource.data)
                     && !('encerradaPor' in request.resource.data);
       allow update: if request.auth != null && (
@@ -931,6 +937,7 @@ service cloud.firestore {
       allow create: if request.auth != null
                     && request.auth.uid == uid
                     && request.resource.data.keys().hasOnly(['ref','criadoEm'])
+                    && request.resource.data.criadoEm == request.time
                     && request.resource.data.ref is string
                     && request.resource.data.ref.size() >= 3
                     && request.resource.data.ref.size() <= 40;
@@ -1141,7 +1148,10 @@ service cloud.firestore {
 
     // Reserva de apelido do parceiro (link /p/<slug>). Namespace separado do slug de lojista.
     match /parceiro_slugs/{slug} {
-      allow read: if true;
+      // v32: ler UM apelido continua publico (o cadastro confere se esta livre);
+      // LISTAR todos (apelido + uid de cada parceiro) so o admin.
+      allow get: if true;
+      allow list: if isAdmin();
       allow create: if request.auth != null
                     && request.resource.data.keys().hasOnly(['uid'])
                     && request.resource.data.uid == request.auth.uid
@@ -1381,7 +1391,7 @@ service cloud.firestore {
                     && request.resource.data.origem.size() >= 1
                     && request.resource.data.origem.size() <= 40
                     && request.resource.data.consentimento == true
-                    && ('criadoEm' in request.resource.data)
+                    && request.resource.data.criadoEm == request.time
                     && ( !('consentimentoTexto' in request.resource.data)
                          || ( request.resource.data.consentimentoTexto is string
                               && request.resource.data.consentimentoTexto.size() <= 400 ) )
@@ -1405,7 +1415,13 @@ service cloud.firestore {
                     && request.resource.data.keys().hasOnly(['uid'])
                     && request.resource.data.uid == request.auth.uid
                     && slug.size() >= 3 && slug.size() <= 40;
-      allow update, delete: if request.auth != null
+      // v32: o dono do endereco so regrava {uid: ele mesmo}; antes gravava
+      // qualquer campo (ou o uid de outro negocio) por cima.
+      allow update: if request.auth != null
+                    && resource.data.uid == request.auth.uid
+                    && request.resource.data.keys().hasOnly(['uid'])
+                    && request.resource.data.uid == request.auth.uid;
+      allow delete: if request.auth != null
                     && resource.data.uid == request.auth.uid;
     }
 
@@ -1445,7 +1461,7 @@ service cloud.firestore {
       allow create: if metricaCampos()
                     && request.resource.data.keys().size() <= 3
                     && ( !('expiraEm' in request.resource.data)
-                         || request.resource.data.expiraEm is timestamp )
+                         || metricaExpiraOk() )
                     && metricaSobeUm();
 
       // 26/08/2026 (v11): o limite de campos alterados passa de 2 para 3 SO no
@@ -1460,7 +1476,8 @@ service cloud.firestore {
                     && ( !('expiraEm' in resource.data)
                          || request.resource.data.expiraEm == resource.data.expiraEm )
                     && ( !('expiraEm' in request.resource.data)
-                         || request.resource.data.expiraEm is timestamp )
+                         || ('expiraEm' in resource.data)
+                         || metricaExpiraOk() )
                     && metricaSobeUm();
 
       allow delete: if request.auth != null && request.auth.uid == uid;
@@ -1520,12 +1537,13 @@ service cloud.firestore {
       return d.keys().hasOnly(['de','texto','criadoEm','arquivoUrl','arquivoNome','arquivoTipo','arquivoTam'])
         && d.de is string
         && d.de in ['lojista','admin']
-        && ('criadoEm' in d)
+        && d.criadoEm == request.time
         && (!('texto' in d)        || (d.texto is string && d.texto.size() <= 2000))
         // v28: so endereco do nosso Storage (getDownloadURL). Antes aceitava
         // qualquer texto, que ia parar num botao do painel do dono.
         && (!('arquivoUrl' in d)   || (d.arquivoUrl is string && d.arquivoUrl.size() <= 800
-                                       && d.arquivoUrl.matches('^https://firebasestorage[.]googleapis[.]com/v0/b/[A-Za-z0-9._-]+/o/[^"<> ]+$')))
+                                       && d.arquivoUrl.matches('^https://firebasestorage[.]googleapis[.]com/v0/b/moviki-app[.]firebasestorage[.]app/o/[^"<> ]+$')
+                                       && !d.arquivoUrl.matches(".*'.*")))
         && (!('arquivoNome' in d)  || (d.arquivoNome is string && d.arquivoNome.size() <= 160))
         && (!('arquivoTipo' in d)  || (d.arquivoTipo is string && d.arquivoTipo.size() <= 100))
         && (!('arquivoTam' in d)   || (d.arquivoTam is int && d.arquivoTam >= 0 && d.arquivoTam <= 10485760))
@@ -1544,54 +1562,63 @@ service cloud.firestore {
       return request.resource.data.keys().hasOnly(['views','whats','rota','cardapio','b0','b1','b2','b3','b4','b5','b6','b7','b8','b9','b10','b11','expiraEm']);
     }
 
+    // v32 (03/10/2026): a pagina publica grava expiraEm = data do dia + 13
+    // meses (~396 dias). Fora da faixa, recusa: data no passado faria o TTL
+    // apagar o dia na primeira varredura.
+    function metricaExpiraOk() {
+      return request.resource.data.expiraEm is timestamp
+        && request.resource.data.expiraEm > request.time + duration.value(330, 'd')
+        && request.resource.data.expiraEm < request.time + duration.value(430, 'd');
+    }
+
     function metricaSobeUm() {
       return (request.resource.data.get('views', 0) is int
-        && request.resource.data.get('views', 0) >= 0
+        && request.resource.data.get('views', 0) >= (resource == null ? 0 : resource.data.get('views', 0))
         && request.resource.data.get('views', 0) <= (resource == null ? 0 : resource.data.get('views', 0)) + 1)
         && (request.resource.data.get('whats', 0) is int
-        && request.resource.data.get('whats', 0) >= 0
+        && request.resource.data.get('whats', 0) >= (resource == null ? 0 : resource.data.get('whats', 0))
         && request.resource.data.get('whats', 0) <= (resource == null ? 0 : resource.data.get('whats', 0)) + 1)
         && (request.resource.data.get('rota', 0) is int
-        && request.resource.data.get('rota', 0) >= 0
+        && request.resource.data.get('rota', 0) >= (resource == null ? 0 : resource.data.get('rota', 0))
         && request.resource.data.get('rota', 0) <= (resource == null ? 0 : resource.data.get('rota', 0)) + 1)
         && (request.resource.data.get('cardapio', 0) is int
-        && request.resource.data.get('cardapio', 0) >= 0
+        && request.resource.data.get('cardapio', 0) >= (resource == null ? 0 : resource.data.get('cardapio', 0))
         && request.resource.data.get('cardapio', 0) <= (resource == null ? 0 : resource.data.get('cardapio', 0)) + 1)
         && (request.resource.data.get('b0', 0) is int
-        && request.resource.data.get('b0', 0) >= 0
+        && request.resource.data.get('b0', 0) >= (resource == null ? 0 : resource.data.get('b0', 0))
         && request.resource.data.get('b0', 0) <= (resource == null ? 0 : resource.data.get('b0', 0)) + 1)
         && (request.resource.data.get('b1', 0) is int
-        && request.resource.data.get('b1', 0) >= 0
+        && request.resource.data.get('b1', 0) >= (resource == null ? 0 : resource.data.get('b1', 0))
         && request.resource.data.get('b1', 0) <= (resource == null ? 0 : resource.data.get('b1', 0)) + 1)
         && (request.resource.data.get('b2', 0) is int
-        && request.resource.data.get('b2', 0) >= 0
+        && request.resource.data.get('b2', 0) >= (resource == null ? 0 : resource.data.get('b2', 0))
         && request.resource.data.get('b2', 0) <= (resource == null ? 0 : resource.data.get('b2', 0)) + 1)
         && (request.resource.data.get('b3', 0) is int
-        && request.resource.data.get('b3', 0) >= 0
+        && request.resource.data.get('b3', 0) >= (resource == null ? 0 : resource.data.get('b3', 0))
         && request.resource.data.get('b3', 0) <= (resource == null ? 0 : resource.data.get('b3', 0)) + 1)
         && (request.resource.data.get('b4', 0) is int
-        && request.resource.data.get('b4', 0) >= 0
+        && request.resource.data.get('b4', 0) >= (resource == null ? 0 : resource.data.get('b4', 0))
         && request.resource.data.get('b4', 0) <= (resource == null ? 0 : resource.data.get('b4', 0)) + 1)
         && (request.resource.data.get('b5', 0) is int
-        && request.resource.data.get('b5', 0) >= 0
+        && request.resource.data.get('b5', 0) >= (resource == null ? 0 : resource.data.get('b5', 0))
         && request.resource.data.get('b5', 0) <= (resource == null ? 0 : resource.data.get('b5', 0)) + 1)
         && (request.resource.data.get('b6', 0) is int
-        && request.resource.data.get('b6', 0) >= 0
+        && request.resource.data.get('b6', 0) >= (resource == null ? 0 : resource.data.get('b6', 0))
         && request.resource.data.get('b6', 0) <= (resource == null ? 0 : resource.data.get('b6', 0)) + 1)
         && (request.resource.data.get('b7', 0) is int
-        && request.resource.data.get('b7', 0) >= 0
+        && request.resource.data.get('b7', 0) >= (resource == null ? 0 : resource.data.get('b7', 0))
         && request.resource.data.get('b7', 0) <= (resource == null ? 0 : resource.data.get('b7', 0)) + 1)
         && (request.resource.data.get('b8', 0) is int
-        && request.resource.data.get('b8', 0) >= 0
+        && request.resource.data.get('b8', 0) >= (resource == null ? 0 : resource.data.get('b8', 0))
         && request.resource.data.get('b8', 0) <= (resource == null ? 0 : resource.data.get('b8', 0)) + 1)
         && (request.resource.data.get('b9', 0) is int
-        && request.resource.data.get('b9', 0) >= 0
+        && request.resource.data.get('b9', 0) >= (resource == null ? 0 : resource.data.get('b9', 0))
         && request.resource.data.get('b9', 0) <= (resource == null ? 0 : resource.data.get('b9', 0)) + 1)
         && (request.resource.data.get('b10', 0) is int
-        && request.resource.data.get('b10', 0) >= 0
+        && request.resource.data.get('b10', 0) >= (resource == null ? 0 : resource.data.get('b10', 0))
         && request.resource.data.get('b10', 0) <= (resource == null ? 0 : resource.data.get('b10', 0)) + 1)
         && (request.resource.data.get('b11', 0) is int
-        && request.resource.data.get('b11', 0) >= 0
+        && request.resource.data.get('b11', 0) >= (resource == null ? 0 : resource.data.get('b11', 0))
         && request.resource.data.get('b11', 0) <= (resource == null ? 0 : resource.data.get('b11', 0)) + 1);
     }
 
