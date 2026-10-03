@@ -1261,6 +1261,15 @@ table.mvTab td b{font-weight:700}
             <div class="tabRola"><table class="lvTab"><thead><tr><th>Negócio</th><th>Plano</th><th>Entrega</th><th>Pedidos</th><th>Pagos</th><th>Valor pago</th><th>Parados</th><th>Recusas 7d</th></tr></thead><tbody id="pdLojistas"><tr><td colspan="8" class="vazio">Toque em Atualizar.</td></tr></tbody></table></div>
             <div id="pdAviso" class="aviso"></div>
           </div>
+          <!-- 03/10/2026 (P70): RECURSOS NOVOS POR LOJISTA. Tudo que e novo nasce
+               desligado; o dono liga aqui, lojista por lojista (acao adm_recursos
+               no robo, autoridade em recursos/{uid}). O robo confere em cada compra. -->
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo"><div><div class="cdTit">Recursos novos por lojista</div><div class="cdSub">Tudo o que é novo nasce desligado. Ligue aqui, um lojista por vez, quando decidir abrir. O robô confere a chave em cada compra, então desligar vale na hora.</div></div></div>
+            <input class="campo" id="rcBusca" maxlength="60" placeholder="Buscar negócio pelo nome" style="width:100%;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:10px;font:inherit;margin-bottom:8px">
+            <div class="tabRola"><table class="lvTab"><thead><tr><th>Negócio</th><th>Plano</th><th>Carrinho na live</th></tr></thead><tbody id="rcLista"><tr><td colspan="3" class="vazio">Toque em Atualizar.</td></tr></tbody></table></div>
+            <div id="rcAviso" class="aviso"></div>
+          </div>
           <div class="cd hide" id="pdDetCd">
             <div class="cdTopo"><div><div class="cdTit" id="pdDetTit">Pedidos</div><div class="cdSub">Só o primeiro nome do cliente: para suporte basta o número do pedido. Os dados completos ficam com o lojista.</div></div><button type="button" class="pdAcao" id="pdDetFechar">Fechar</button></div>
             <div class="tabRola"><table class="lvTab"><thead><tr><th>Nº</th><th>Data</th><th>Origem</th><th>Situação</th><th>Valor</th><th>Entrega</th><th>Cliente</th><th>Confirmado por</th></tr></thead><tbody id="pdDet"></tbody></table></div>
@@ -1896,7 +1905,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-03-google';   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-03-recursos';   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -6094,9 +6103,10 @@ table.mvTab td b{font-weight:700}
     if(!NEG.length){ try{ await carregarNegocios(); }catch(_){} }
     pdCarregado = true; pdCarregando = false;
     if(b){ b.disabled = false; b.textContent = 'Atualizar'; }
-    pdPintar();
+    pdPintar(); rcPintar();
   }
-  function pdAbrir(){ if(!pdCarregado) pdCarregar(); else pdPintar(); }
+  function pdAbrir(){ if(!pdCarregado) pdCarregar(); else { pdPintar(); rcPintar(); } }
+  document.addEventListener('input', ev=>{ if(ev.target && ev.target.id==='rcBusca' && pdCarregado) rcPintar(); });
 
   function pdPintar(){
     const pagos = PD_PED.filter(p=>PD_PAGOS.indexOf(p.status)>=0);
@@ -6165,6 +6175,39 @@ table.mvTab td b{font-weight:700}
     try{ el('pdDetCd').scrollIntoView({behavior:'smooth',block:'start'}); }catch(_){}
   }
 
+  /* ---- RECURSOS NOVOS POR LOJISTA (03/10/2026, P70) ---- */
+  const RC_NOMES = {carrinho:'Carrinho na live'};
+  function rcPintar(){
+    const q = String((el('rcBusca')||{}).value||'').trim().toLowerCase();
+    const pub = {}; PD_PUB.forEach(c=>{ pub[c.uid]=c; });
+    const lista = NEG.filter(n=>PLANO_DE[n.uid]==='enterprise' || pub[n.uid])
+      .filter(n=>!q || String(n.nome||'').toLowerCase().indexOf(q)>=0)
+      .sort((a,b)=>String(a.nome||'').localeCompare(String(b.nome||''),'pt-BR')).slice(0,200);
+    el('rcLista').innerHTML = lista.length ? lista.map(n=>{
+      const r = (pub[n.uid] && pub[n.uid].recursos) || {};
+      const cel = Object.keys(RC_NOMES).map(k=>{
+        const on = r[k]===true;
+        return '<td>'+(on?'<b style="color:var(--mv-ok)">Ligado</b> ':'<span style="color:var(--mv-txt-3)">Desligado</span> ')+
+          '<button type="button" class="pdAcao '+(on?'perigo':'ok')+'" data-rc="'+esc(n.uid)+'" data-k="'+k+'" data-v="'+(on?'0':'1')+'">'+(on?'Desligar':'Ligar')+'</button></td>';
+      }).join('');
+      return '<tr><td><b>'+esc(n.nome||n.uid)+'</b></td><td>'+esc(pdPlano(n.uid))+'</td>'+cel+'</tr>';
+    }).join('') : '<tr><td colspan="3" class="vazio">Nenhum lojista Enterprise ou com recebimento configurado.</td></tr>';
+  }
+  async function rcMudar(uid, k, ligar){
+    if(!confirm((ligar?'Ligar ':'Desligar ')+(RC_NOMES[k]||k)+' para '+pdNome(uid)+'?')) return;
+    const av = el('rcAviso'); av.style.color=''; av.textContent = 'Enviando…';
+    try{
+      const idToken = await auth.currentUser.getIdToken();
+      const dados = {uid}; dados[k] = ligar;
+      const r = await fetch(PD_API, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({acao:'adm_recursos', idToken, dados})});
+      const j = await r.json().catch(()=>({}));
+      if(!j.ok){ av.textContent = 'Não deu certo: ' + (j.mensagem||j.erro||r.status); return; }
+      const c = PD_PUB.find(x=>x.uid===uid); if(c) c.recursos = j.recursos; else PD_PUB.push({uid, recursos:j.recursos});
+      av.style.color = 'var(--mv-ok)'; av.textContent = (RC_NOMES[k]||k)+(ligar?' ligado':' desligado')+' para '+pdNome(uid)+'.';
+      rcPintar();
+    }catch(e){ av.textContent = 'Falha de conexão.'; }
+  }
+
   async function pdSuspender(uid, suspender){
     let motivo = '';
     if(suspender){
@@ -6189,6 +6232,7 @@ table.mvTab td b{font-weight:700}
     const t = ev.target; if(!t || !t.closest) return;
     const v = t.closest('[data-pdver]'); if(v){ pdVer(v.getAttribute('data-pdver')); return; }
     const s = t.closest('[data-pdsusp]'); if(s){ pdSuspender(s.getAttribute('data-pdsusp'), s.getAttribute('data-v')==='1'); return; }
+    const rc = t.closest('[data-rc]'); if(rc){ rcMudar(rc.getAttribute('data-rc'), rc.getAttribute('data-k'), rc.getAttribute('data-v')==='1'); return; }
     if(t.id === 'pdAtualizar'){ pdCarregar(); return; }
     if(t.id === 'pdDetFechar'){ hide('pdDetCd'); return; }
   });
