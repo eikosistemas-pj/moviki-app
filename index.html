@@ -3590,6 +3590,13 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         .pqFDev select{width:100%;margin-bottom:8px}
         .pqFDev .pqDevChk{display:flex;align-items:center;gap:8px;margin:6px 0 10px}
         .pqFDev .pqDevChk input{width:auto !important}
+        /* 03/10 (P70 etapa 3): rastreio do envio na ficha */
+        .pqFRas label{display:block;font-size:13px;color:#c6d8ee;margin:6px 0 4px}
+:where(html[data-tema="claro"]) .pqFRas label:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#142030}
+        .pqFRas select,.pqFRas input{width:100%;margin-bottom:8px}
+        .pqFRas .pqRasCod{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;letter-spacing:.5px}
+        .pqFRas .pqRasLink{word-break:break-all;font-size:12.5px;color:#7d92a8}
+        .pqFRas .pqFBtns{margin-top:8px}
         .pqFBtns .pqFDesf{grid-column:1/-1;background:transparent !important;border:1px dashed rgba(255,107,107,.5) !important;color:#ff9d9d !important}
 :where(html[data-tema="claro"]) .pqFBtns .pqFDesf:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){border:1px dashed rgba(255,107,107,0.5)!important;color:#cb0b0b!important}
         .pedEstRow{display:grid;grid-template-columns:1fr auto 96px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
@@ -4482,7 +4489,7 @@ window.mvAbaInicial=function(){
      do fundador; Pro/Premium pagante vai ao WhatsApp (troca pela equipe);
      Enterprise nao ve; some depois de 27/11 ou com o lote fechado; "x" esconde
      por 3 dias. */
-  window.MOVIKI_VERSAO='2026-10-03-envio';   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-03-rastreio';   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -7496,6 +7503,11 @@ window.mvAbaInicial=function(){
     estoque_qtd: 'Use só números inteiros, de 0 a 99999.',
     estoque_reservado: 'Esse produto tem Pix aberto agora. Espere o cliente pagar ou o Pix vencer para tirar o limite.',
     estoque_muitos: 'Limite de 400 produtos com estoque.',
+    /* 03/10 (P70 etapa 3): rastreio */
+    so_envio: 'Código de rastreio é só para pedido de envio para outra cidade.',
+    transportadora: 'Escolha a transportadora.',
+    transportadora_nome: 'Escreva o nome da transportadora.',
+    codigo_rastreio: 'Confira o código de rastreio. Nos Correios ele tem 13 caracteres, como AB123456789BR.',
   };
   function finMsg(j, http) {
     if (j && FIN_ERROS[j.erro]) return FIN_ERROS[j.erro];
@@ -8479,11 +8491,13 @@ window.mvAbaInicial=function(){
     if (col === 'pronto') return pedEhEntrega(p) ? 'saiu' : 'pronto';
     return col;
   }
+  function pedEhEnvio(p) { return !!(p && p.entrega && p.entrega.envio === true); }
+  function pedRotSt(p, st) { return (st === 'saiu' && pedEhEnvio(p)) ? 'enviado' : (PED_ROT[st] || st); }
   function pqRotBotao(p) {
     const col = pqColDe(p);
     if (col === 'novos') return p.modo === 'pix' ? 'Recebi o Pix' : 'Conferir no Asaas';
     if (col === 'pago') return 'Separar';
-    if (col === 'separando') return pedEhEntrega(p) ? 'Saiu p/ entrega' : 'Pronto p/ retirar';
+    if (col === 'separando') return pedEhEnvio(p) ? 'Enviado' : (pedEhEntrega(p) ? 'Saiu p/ entrega' : 'Pronto p/ retirar');
     if (col === 'pronto') return 'Entregue';
     return '';
   }
@@ -8706,9 +8720,9 @@ window.mvAbaInicial=function(){
     const ms = hist ? finMs(p.criadoEm) : (col === 'novos' ? finMs(p.criadoEm) : pqMsEtapa(p));
     const min = ms ? (Date.now() - ms) / 60000 : 0;
     const tarde = !hist && (col === 'novos' || col === 'pago' || col === 'separando') && min >= 20;
-    let tags = ent ? (e.envio ? '<span class="pqTag ent">📦 Envio' + (e.uf ? ' · ' + finEsc(e.uf) : '') + '</span>' : '<span class="pqTag ent">🛵 ' + (e.bairro ? finEsc(e.bairro) : 'Entrega') + '</span>') : '<span class="pqTag">🏪 Retirada</span>';
+    let tags = ent ? (e.envio ? '<span class="pqTag ent">📦 Envio' + (e.uf ? ' · ' + finEsc(e.uf) : '') + '</span>' + ((e.rastreio && e.rastreio.codigo) ? '<span class="pqTag">🔎 rastreio</span>' : (st === 'saiu' ? '<span class="pqTag alerta">sem rastreio</span>' : '')) : '<span class="pqTag ent">🛵 ' + (e.bairro ? finEsc(e.bairro) : 'Entrega') + '</span>') : '<span class="pqTag">🏪 Retirada</span>';
     if (hist) tags += '<span class="pqTag">' + (p.origem === 'cardapio' ? 'Cardápio' : 'Live') + '</span>';
-    if (hist) tags += '<span class="pqTag' + (['recusado', 'cancelado', 'expirado', 'estornado', 'devolvido'].indexOf(st) >= 0 ? ' ruim' : '') + '">' + (PED_ROT[st] || finEsc(st)) + '</span>';
+    if (hist) tags += '<span class="pqTag' + (['recusado', 'cancelado', 'expirado', 'estornado', 'devolvido'].indexOf(st) >= 0 ? ' ruim' : '') + '">' + finEsc(pedRotSt(p, st)) + '</span>';
     tags += pqAlertaTag(p);
     if (!hist && st === 'conferindo') tags += '<span class="pqTag alerta">cliente diz que pagou</span>';
     if (!hist && st === 'conferindo' && p.pagouAtrasado) tags += '<span class="pqTag ruim">pagou depois do prazo</span>';
@@ -8877,7 +8891,7 @@ window.mvAbaInicial=function(){
     const p = pedAchar(id); if (!p) return;
     let s = el('pqSnack');
     if (!s) { s = document.createElement('div'); s.id = 'pqSnack'; s.className = 'pqSnack'; s.setAttribute('role', 'status'); document.body.appendChild(s); }
-    const rot = { pago: 'Pago', separando: 'Separando', pronto: 'Pronto p/ retirar', saiu: 'Saiu p/ entrega', entregue: 'Entregue' }[st] || st;
+    const rot = (st === 'saiu' && pedEhEnvio(p)) ? 'Enviado' : ({ pago: 'Pago', separando: 'Separando', pronto: 'Pronto p/ retirar', saiu: 'Saiu p/ entrega', entregue: 'Entregue' }[st] || st);
     const volta = ['separando', 'pronto', 'saiu', 'entregue'].indexOf(antes) >= 0;
     s.innerHTML = '<span>nº ' + pedNumero(p) + ' → <b>' + finEsc(rot) + '</b></span>'
       + (pedWpp(p) ? '<button type="button" class="av" onclick="pedAvisar(\'' + id + '\',\'' + st + '\');pqSnackFora()">Avisar cliente</button>' : '')
@@ -8891,6 +8905,83 @@ window.mvAbaInicial=function(){
   window.pedDesfazer = function (id, para) {
     if (!confirm('Voltar este pedido para "' + (PED_ROT[para] || para) + '"?')) return;
     pqAcao(id, para);
+  };
+
+  /* ---------- rastreio do envio (03/10/2026, P70 etapa 3) ----------
+     Quem valida e grava e o robo (loja_rastreio). O link de acompanhamento
+     (www.moviki.com.br/pedido/...) nasce no primeiro codigo e so mostra loja,
+     numero, etapa, cidade/UF, prazo e o codigo: nada da pessoa. */
+  const PQ_TRANSP = [['correios', 'Correios'], ['jadlog', 'Jadlog'], ['loggi', 'Loggi'], ['jt', 'J&T Express'], ['outra', 'Outra transportadora']];
+  let pqRasEdit = '', pqRasMsg = '';
+  function pedLinkAcomp(p) { return /^[0-9a-f]{24}$/.test(String(p.acompanhar || '')) ? 'https://www.moviki.com.br/pedido/' + p.__id + '-' + p.acompanhar : ''; }
+  function pqRastreioHtml(p) {
+    const id = p.__id, r = (p.entrega && p.entrega.rastreio) || null, link = pedLinkAcomp(p);
+    const editando = !r || pqRasEdit === id;
+    let h = '<div class="pqFSec pqFRas"><h4>Código de rastreio</h4>';
+    if (r && r.codigo && !editando) {
+      h += '<div><b>' + finEsc(r.nome || '') + '</b> · <span class="pqRasCod">' + finEsc(r.codigo) + '</span></div>';
+      if (link) h += '<div class="pqRasLink">Acompanhamento do cliente: ' + finEsc(link) + '</div>';
+      h += '<div class="pqFBtns">'
+        + (pedWpp(p) ? '<button type="button" class="pqPri pix" onclick="pedAvisar(\'' + id + '\',\'enviado\')">Avisar cliente no WhatsApp</button>' : '')
+        + (link ? '<button type="button" onclick="pedCopiarAcomp(\'' + id + '\')">Copiar link</button>' : '')
+        + '<button type="button" onclick="pedRasEditar(\'' + id + '\',true)">Trocar código</button></div>';
+    } else {
+      const ehAgora = ['pago', 'separando'].indexOf(String(p.status)) >= 0;
+      h += '<div style="color:#7d92a8;font-size:12.5px;line-height:1.5;margin-bottom:6px">Postou o pacote? Informe o código. ' + (ehAgora ? 'O pedido passa para <b>Enviado</b> e ' : '') + 'o cliente ganha um link para acompanhar.</div>'
+        + '<label for="pqRasTransp">Transportadora</label><select id="pqRasTransp" onchange="pedRasTranspMudou()">'
+        + PQ_TRANSP.map(function (t) { return '<option value="' + t[0] + '">' + finEsc(t[1]) + '</option>'; }).join('') + '</select>'
+        + '<div id="pqRasNomeBox" style="display:none"><label for="pqRasNome">Nome da transportadora</label><input id="pqRasNome" maxlength="30" autocomplete="off"></div>'
+        + '<label for="pqRasCod">Código de rastreio</label><input id="pqRasCod" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="AB123456789BR">'
+        + '<div id="pqRasAviso" class="aviso' + (pqRasMsg ? ' erro' : '') + '">' + finEsc(pqRasMsg) + '</div>'
+        + '<div class="pqFBtns"><button type="button" class="pqPri" id="pqRasBtn" onclick="pedRasSalvar(\'' + id + '\')">' + (ehAgora ? 'Salvar e marcar Enviado' : 'Salvar código') + '</button>'
+        + (r ? '<button type="button" onclick="pedRasEditar(\'' + id + '\',false)">Cancelar</button>' : '') + '</div>';
+    }
+    return h + '</div>';
+  }
+  /* a escuta repinta a ficha a cada pedido que chega: guarda o que ja foi digitado */
+  function pqRasGuardar() {
+    if (!el('pqRasCod')) return null;
+    return { t: el('pqRasTransp').value, n: el('pqRasNome').value, c: el('pqRasCod').value, f: document.activeElement && document.activeElement.id };
+  }
+  function pqRasDevolver(g, p) {
+    if (!el('pqRasCod')) return;
+    const r = (p.entrega && p.entrega.rastreio) || null;
+    if (g) { el('pqRasTransp').value = g.t; el('pqRasNome').value = g.n; el('pqRasCod').value = g.c; }
+    else if (r) { el('pqRasTransp').value = r.transp || 'correios'; el('pqRasNome').value = r.transp === 'outra' ? (r.nome || '') : ''; el('pqRasCod').value = r.codigo || ''; }
+    window.pedRasTranspMudou();
+    if (g && g.f && el(g.f)) el(g.f).focus();
+  }
+  window.pedRasTranspMudou = function () {
+    const t = el('pqRasTransp'); if (!t) return;
+    const outra = t.value === 'outra';
+    if (el('pqRasNomeBox')) el('pqRasNomeBox').style.display = outra ? '' : 'none';
+    if (el('pqRasCod')) el('pqRasCod').placeholder = t.value === 'correios' ? 'AB123456789BR' : 'código da transportadora';
+  };
+  window.pedRasEditar = function (id, liga) { if (pqFichaId !== id) return; pqRasEdit = liga ? id : ''; pqRasMsg = ''; pqPintarFicha(); };
+  window.pedRasSalvar = async function (id) {
+    const p = pedAchar(id); if (!p || pqOcup[id]) return;
+    const dados = { transp: el('pqRasTransp').value, codigo: String(el('pqRasCod').value || '').trim(), nome: String((el('pqRasNome') && el('pqRasNome').value) || '').trim() };
+    pqRasMsg = ''; finAviso('pqRasAviso', '');
+    if (!dados.codigo) { pqRasMsg = 'Escreva o código de rastreio.'; finAviso('pqRasAviso', pqRasMsg); return; }
+    const antes = String(p.status || '');
+    pqOcup[id] = 1;
+    const b = el('pqRasBtn'); if (b) { b.disabled = true; b.textContent = 'Salvando…'; }
+    try {
+      const r = await finPost('loja_rastreio', dados, { pedidoId: id });
+      if (!(r.j && r.j.ok)) { pqRasMsg = finMsg(r.j, r.http); return; }
+      /* a escuta confirma em seguida; a ficha ja mostra agora */
+      p.entrega = Object.assign({}, p.entrega || {}, { rastreio: r.j.rastreio });
+      if (r.j.acompanhar) p.acompanhar = String(r.j.acompanhar).split('-').pop();
+      if (r.j.status) p.status = r.j.status;
+      pqRasEdit = '';
+      if (p.status !== antes) pqSnack(id, p.status, antes); else toast('Código salvo.');
+    } catch (_) { pqRasMsg = 'Falha de conexão. Tente de novo.'; }
+    finally { delete pqOcup[id]; if (b) b.disabled = false; window.pedPintar(); }
+  };
+  window.pedCopiarAcomp = function (id) {
+    const p = pedAchar(id); const link = p ? pedLinkAcomp(p) : ''; if (!link) return;
+    const ok = function () { toast('Link copiado.'); };
+    try { navigator.clipboard.writeText(link).then(ok, function () { prompt('Copie o link:', link); }); } catch (_) { prompt('Copie o link:', link); }
   };
 
   /* ---------- ficha do pedido ---------- */
@@ -8908,7 +8999,8 @@ window.mvAbaInicial=function(){
   let pqFichaModo = '';
   window.pedFicha = function (id) {
     if (!pqIdOk(id) || !pedAchar(id)) return;
-    pqFichaId = id; pqFichaModo = '';
+    pqFichaId = id; pqFichaModo = ''; pqRasEdit = ''; pqRasMsg = '';
+    if (el('pqFichaBox')) el('pqFichaBox').innerHTML = '';
     pqOverlay().classList.remove('escondido');
     pqPintarFicha();
   };
@@ -8919,10 +9011,11 @@ window.mvAbaInicial=function(){
   function pqPintarFicha() {
     const p = pedAchar(pqFichaId), box = el('pqFichaBox');
     if (!p || !box) { window.pedFecharFicha(); return; }
+    const rasG = pqRasGuardar();
     const id = p.__id, st = String(p.status || 'aguardando'), col = pqColDe(p);
     const pago = PED_PAGOS.indexOf(st) >= 0, ent = pedEhEntrega(p), e = p.entrega || {};
     const wpp = pedWpp(p);
-    let h = '<div class="pqFCab"><b>Pedido nº ' + pedNumero(p) + '</b><span class="finSt ' + finEsc(st) + '">' + (PED_ROT[st] || finEsc(st)) + '</span><button type="button" class="pqFX" aria-label="Fechar" onclick="pedFecharFicha()">×</button></div>';
+    let h = '<div class="pqFCab"><b>Pedido nº ' + pedNumero(p) + '</b><span class="finSt ' + finEsc(st) + '">' + finEsc(pedRotSt(p, st)) + '</span><button type="button" class="pqFX" aria-label="Fechar" onclick="pedFecharFicha()">×</button></div>';
     h += '<div class="pqFTot">' + finReal(p.total) + (Number(p.frete) > 0 ? ' <small>(' + finReal(p.subtotal) + ' + entrega ' + finReal(p.frete) + ')</small>' : '') + '</div>';
     h += '<div class="pqFSec"><h4>Itens</h4>' + (Array.isArray(p.itens) ? p.itens : []).map(function (i) {
       const q = Number(i.qtd) || 1;
@@ -8933,13 +9026,14 @@ window.mvAbaInicial=function(){
       const taxa = Number(p.frete || e.taxa || 0);
       h += '<div class="pqFSec"><h4>' + (e.envio ? ('Envio para ' + finEsc((e.cidade || '') + (e.uf ? '/' + e.uf : '')) + ' · frete ' + (taxa > 0 ? finReal(taxa) : 'grátis') + (e.prazo ? ' · ' + finEsc(e.prazo) : '')) : ('Entrega' + (e.bairro ? ' · ' + finEsc(e.bairro) : '') + (e.aCombinar === false ? ' · taxa ' + (taxa > 0 ? finReal(taxa) : 'grátis') : ' · a combinar'))) + '</h4>'
         + '<div class="pedEndereco">' + (p.dadosApagadosEm ? 'Endereço apagado pelo prazo de privacidade' : finEsc(e.detalhe || 'Endereço não informado')) + '</div></div>';
-      if (e.detalhe && !p.dadosApagadosEm) rota = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(String(e.detalhe).replace(/ - Ref\.:.*$/, ''));
+      if (e.detalhe && !p.dadosApagadosEm && !e.envio) rota = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(String(e.detalhe).replace(/ - Ref\.:.*$/, ''));
+      if (e.envio && pago) h += pqRastreioHtml(p);
     } else {
       const ret = (finEstado && finEstado.entregaCfg && finEstado.entregaCfg.retirada) ? ' · ' + finEsc(finEstado.entregaCfg.retirada) : '';
       h += '<div class="pqFSec"><h4>Retirada no local</h4>O cliente vem buscar' + ret + '.</div>';
     }
     h += '<div class="pqFSec"><h4>Cliente</h4><b>' + finEsc((p.comprador && p.comprador.nome) || 'Cliente') + '</b>' + (wpp ? ' · ' + pedFone(wpp) : '') + ((p.comprador && p.comprador.cpfFinal) ? ' · CPF final ' + finEsc(p.comprador.cpfFinal) : '')
-      + (pago && p.codigo ? '<br>Código do cliente: <span class="pedCodigo">' + finEsc(p.codigo) + '</span> <span style="color:#7d92a8;font-size:12px">peça na ' + (ent ? 'entrega' : 'retirada') + '</span>' : '')
+      + (pago && p.codigo && !e.envio ? '<br>Código do cliente: <span class="pedCodigo">' + finEsc(p.codigo) + '</span> <span style="color:#7d92a8;font-size:12px">peça na ' + (ent ? 'entrega' : 'retirada') + '</span>' : '')
       + '<br><span style="color:#7d92a8;font-size:12.5px">' + pedData(p) + ' · veio ' + (p.origem === 'cardapio' ? 'do cardápio' : 'da live') + '</span>'
       + (p.dadosApagadosEm ? '<br><span style="color:#7d92a8;font-size:12px">Contato e endereço apagados pelo prazo de privacidade (LGPD).</span>' : '') + '</div>';
     /* 30/09/2026 (P53): avisos que mudam o que o lojista faz com o pedido. */
@@ -8984,6 +9078,7 @@ window.mvAbaInicial=function(){
     if (st === 'estornado' && p.alerta === 'estornado') b += '<button type="button" onclick="pedEstornoVisto(\'' + id + '\')">Entendi, não vou entregar</button>';
     h += '<div class="pqFBtns">' + b + '</div>';
     box.innerHTML = h;
+    pqRasDevolver(rasG, p);
   }
   window.pedDevolverAbrir = function (id, liga) { if (pqFichaId !== id) return; pqFichaModo = liga ? 'devolver' : ''; pqPintarFicha(); };
   window.pedDevolverOk = function (id) {
@@ -9023,14 +9118,22 @@ window.mvAbaInicial=function(){
     const neg = pedNegNome();
     const num = 'nº ' + pedNumero(p);
     const ret = (finEstado && finEstado.entregaCfg && finEstado.entregaCfg.retirada) ? ' em ' + finEstado.entregaCfg.retirada : '';
+    /* 03/10 (P70 etapa 3): envio fala de postagem e rastreio, nunca de "entregador". */
+    const ras = (p.entrega && p.entrega.rastreio) || null, link = pedLinkAcomp(p);
+    const enviado = 'seu pedido ' + num + ' da ' + neg + ' foi enviado.' + (ras && ras.nome ? ' Transportadora: ' + ras.nome + '.' : '')
+      + (ras && ras.codigo ? ' Código de rastreio: ' + ras.codigo + '.' : '')
+      + (link ? ' Acompanhe aqui: ' + link : '');
+    let stMsg = String(stForcado || p.status);
+    if (stMsg === 'saiu' && pedEhEnvio(p)) stMsg = 'enviado';
     const txt = {
+      enviado: enviado,
       pago: 'recebemos o pagamento do seu pedido ' + num + ' na ' + neg + '. Já vamos separar!',
       separando: 'seu pedido ' + num + ' na ' + neg + ' está sendo separado.',
       pronto: 'seu pedido ' + num + ' está pronto para retirar' + ret + '. Na retirada, mostre o seu código do pedido.',
       saiu: 'seu pedido ' + num + ' saiu para entrega. Tenha em mãos o seu código do pedido para mostrar a quem entregar.',
       entregue: 'seu pedido ' + num + ' foi entregue. Obrigado pela compra na ' + neg + '!',
       sempeca: 'o seu Pix do pedido ' + num + ' na ' + neg + ' caiu, mas a peça da oferta acabou antes de eu confirmar. Vou devolver o seu Pix pelo banco. Desculpe o transtorno!'
-    }[String(stForcado || p.status)] || ('sobre o seu pedido ' + num + ' na ' + neg + ':');
+    }[stMsg] || ('sobre o seu pedido ' + num + ' na ' + neg + ':');
     window.open('https://wa.me/55' + wpp + '?text=' + encodeURIComponent('Olá' + (nome ? ', ' + nome : '') + '! ' + txt), '_blank', 'noopener');
   };
 
