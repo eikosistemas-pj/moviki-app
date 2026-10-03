@@ -4,6 +4,7 @@ rules_version = '2';
 //  MOVIKI — REGRAS DO CLOUD STORAGE — 27/08/2026
 //  22/09/2026: + criadores/{uid}/ (pecas dos influenciadores)
 //  30/09/2026: + material/ (videos do Material de apoio, leitura publica - P46)
+//  03/10/2026: ehAdmin() so com sessao aberta pelo Google (igual a v32 do Firestore)
 //  Balde: moviki-app.firebasestorage.app
 //
 //  Até hoje o projeto NÃO gravava no Storage pelo navegador: as imagens
@@ -97,6 +98,7 @@ service firebase.storage {
 
     function ehAdmin() {
       return request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
         && firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid));
     }
 
