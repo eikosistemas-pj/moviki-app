@@ -1267,8 +1267,24 @@ table.mvTab td b{font-weight:700}
           <div class="cd" style="margin-top:14px">
             <div class="cdTopo"><div><div class="cdTit">Recursos novos por lojista</div><div class="cdSub">Tudo o que é novo nasce desligado. Ligue aqui, um lojista por vez, quando decidir abrir. O robô confere a chave em cada compra, então desligar vale na hora.</div></div></div>
             <input class="campo" id="rcBusca" maxlength="60" placeholder="Buscar negócio pelo nome" style="width:100%;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:10px;font:inherit;margin-bottom:8px">
-            <div class="tabRola"><table class="lvTab"><thead><tr><th>Negócio</th><th>Plano</th><th>Carrinho na live</th><th>Envio para outras cidades</th><th>Lista VIP (aviso de live)</th></tr></thead><tbody id="rcLista"><tr><td colspan="5" class="vazio">Toque em Atualizar.</td></tr></tbody></table></div>
+            <div class="tabRola"><table class="lvTab"><thead><tr><th>Negócio</th><th>Plano</th><th>Carrinho na live</th><th>Envio para outras cidades</th><th>Lista VIP (aviso de live)</th><th>Quem entrega na cidade</th><th>Frete automático (Melhor Envio)</th></tr></thead><tbody id="rcLista"><tr><td colspan="7" class="vazio">Toque em Atualizar.</td></tr></tbody></table></div>
             <div id="rcAviso" class="aviso"></div>
+          </div>
+          <!-- 04/10/2026 (P70 etapa 5): PARCEIROS DE ENTREGA. Cadastro publico em
+               www.moviki.com.br/entregadores cai aqui como pendente (e avisa no
+               Telegram). Aprovado aparece para o lojista com a chave logistica
+               ligada. Recusar APAGA o cadastro. Acoes adm_logistica e
+               adm_logistica_mudar no robo (conferirAdmin). -->
+          <div class="cd" style="margin-top:14px">
+            <div class="cdTopo"><div><div class="cdTit">Parceiros de entrega</div><div class="cdSub">Entregador, transportadora e ponto de coleta que se cadastraram em moviki.com.br/entregadores. Só o aprovado aparece para os lojistas com a chave "Quem entrega na cidade" ligada. O Moviki só apresenta: o frete é combinado e pago entre eles.</div></div>
+              <button type="button" class="pdAcao" id="lgAtualizar">Atualizar</button></div>
+            <div style="margin-bottom:8px">
+              <button type="button" class="pdAcao ok" data-lgaba="pendente">Pendentes</button>
+              <button type="button" class="pdAcao" data-lgaba="aprovado">Aprovados</button>
+              <button type="button" class="pdAcao" data-lgaba="suspenso">Suspensos</button>
+            </div>
+            <div class="tabRola"><table class="lvTab"><thead><tr><th>Parceiro</th><th>Onde</th><th>Serviços</th><th>Contato</th><th>Desde</th></tr></thead><tbody id="lgLista"><tr><td colspan="5" class="vazio">Toque em Atualizar.</td></tr></tbody></table></div>
+            <div id="lgAviso" class="aviso"></div>
           </div>
           <div class="cd hide" id="pdDetCd">
             <div class="cdTopo"><div><div class="cdTit" id="pdDetTit">Pedidos</div><div class="cdSub">Só o primeiro nome do cliente: para suporte basta o número do pedido. Os dados completos ficam com o lojista.</div></div><button type="button" class="pdAcao" id="pdDetFechar">Fechar</button></div>
@@ -1915,7 +1931,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-03-vip';   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-04-freteauto';   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -6152,7 +6168,8 @@ table.mvTab td b{font-weight:700}
     if(b){ b.disabled = false; b.textContent = 'Atualizar'; }
     pdPintar(); rcPintar();
   }
-  function pdAbrir(){ if(!pdCarregado) pdCarregar(); else { pdPintar(); rcPintar(); } }
+  let lgAberto = false;
+  function pdAbrir(){ if(!pdCarregado) pdCarregar(); else { pdPintar(); rcPintar(); } if(!lgAberto){ lgAberto = true; lgCarregar('pendente'); } }
   document.addEventListener('input', ev=>{ if(ev.target && ev.target.id==='rcBusca' && pdCarregado) rcPintar(); });
 
   function pdPintar(){
@@ -6223,7 +6240,7 @@ table.mvTab td b{font-weight:700}
   }
 
   /* ---- RECURSOS NOVOS POR LOJISTA (03/10/2026, P70) ---- */
-  const RC_NOMES = {carrinho:'Carrinho na live', freteBrasil:'Envio para outras cidades', listaVip:'Lista VIP (aviso de live)'};
+  const RC_NOMES = {carrinho:'Carrinho na live', freteBrasil:'Envio para outras cidades', listaVip:'Lista VIP (aviso de live)', logistica:'Quem entrega na cidade', freteAuto:'Frete automático (Melhor Envio)'};
   function rcPintar(){
     const q = String((el('rcBusca')||{}).value||'').trim().toLowerCase();
     const pub = {}; PD_PUB.forEach(c=>{ pub[c.uid]=c; });
@@ -6238,7 +6255,7 @@ table.mvTab td b{font-weight:700}
           '<button type="button" class="pdAcao '+(on?'perigo':'ok')+'" data-rc="'+esc(n.uid)+'" data-k="'+k+'" data-v="'+(on?'0':'1')+'">'+(on?'Desligar':'Ligar')+'</button></td>';
       }).join('');
       return '<tr><td><b>'+esc(n.nome||n.uid)+'</b></td><td>'+esc(pdPlano(n.uid))+'</td>'+cel+'</tr>';
-    }).join('') : '<tr><td colspan="5" class="vazio">Nenhum lojista Premium, Enterprise ou com recebimento configurado.</td></tr>';
+    }).join('') : '<tr><td colspan="7" class="vazio">Nenhum lojista Premium, Enterprise ou com recebimento configurado.</td></tr>';
   }
   async function rcMudar(uid, k, ligar){
     if(!confirm((ligar?'Ligar ':'Desligar ')+(RC_NOMES[k]||k)+' para '+pdNome(uid)+'?')) return;
@@ -6282,7 +6299,69 @@ table.mvTab td b{font-weight:700}
     const rc = t.closest('[data-rc]'); if(rc){ rcMudar(rc.getAttribute('data-rc'), rc.getAttribute('data-k'), rc.getAttribute('data-v')==='1'); return; }
     if(t.id === 'pdAtualizar'){ pdCarregar(); return; }
     if(t.id === 'pdDetFechar'){ hide('pdDetCd'); return; }
+    const la = t.closest('[data-lgaba]'); if(la){ lgCarregar(la.getAttribute('data-lgaba')); return; }
+    const lm = t.closest('[data-lgmudar]'); if(lm){ lgMudar(lm.getAttribute('data-lgmudar'), lm.getAttribute('data-st')); return; }
+    if(t.id === 'lgAtualizar'){ lgCarregar(LG_ABA); return; }
   });
+
+  /* ---- PARCEIROS DE ENTREGA (04/10/2026, P70 etapa 5) ----
+     Le e muda pelo robo (logistica/ nao tem regra: so Admin SDK). */
+  const LG_TIPOS = {entregador:'Entregador', transportadora:'Transportadora', coleta:'Ponto de coleta'};
+  const LG_SERV = {bairro:'bairro', cidade:'cidade', regiao:'cidades vizinhas', estados:'outros estados', coleta:'busca na loja', postagem:'leva ao correio'};
+  const LG_VEIC = {bicicleta:'bicicleta', moto:'moto', carro:'carro', van:'van', caminhao:'caminhão'};
+  let LG_ABA = 'pendente', LG_ITENS = [];
+  async function lgPost(acao, dados){
+    const idToken = await auth.currentUser.getIdToken();
+    const r = await fetch(PD_API, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({acao, idToken, dados})});
+    const j = await r.json().catch(()=>({}));
+    return {r, j};
+  }
+  async function lgCarregar(aba){
+    LG_ABA = aba || 'pendente';
+    document.querySelectorAll('[data-lgaba]').forEach(b=>b.classList.toggle('ok', b.getAttribute('data-lgaba')===LG_ABA));
+    const av = el('lgAviso'); av.style.color=''; av.textContent = '';
+    el('lgLista').innerHTML = '<tr><td colspan="5" class="vazio">Carregando…</td></tr>';
+    try{
+      const {r, j} = await lgPost('adm_logistica', {status: LG_ABA});
+      if(!j.ok){ el('lgLista').innerHTML = '<tr><td colspan="5" class="vazio">Não deu certo: '+esc(j.mensagem||j.erro||r.status)+'</td></tr>'; return; }
+      LG_ITENS = j.itens || [];
+      lgPintar();
+    }catch(e){ el('lgLista').innerHTML = '<tr><td colspan="5" class="vazio">Falha de conexão.</td></tr>'; }
+  }
+  function lgFone(w){ const d = String(w||'').replace(/\D/g,''); return d.length===11 ? '('+d.slice(0,2)+') '+d.slice(2,7)+'-'+d.slice(7) : d.length===10 ? '('+d.slice(0,2)+') '+d.slice(2,6)+'-'+d.slice(6) : d; }
+  function lgPintar(){
+    el('lgLista').innerHTML = LG_ITENS.length ? LG_ITENS.map(x=>{
+      const bot = (LG_ABA!=='aprovado' ? '<button type="button" class="pdAcao ok" data-lgmudar="'+esc(x.id)+'" data-st="aprovado">Aprovar</button>' : '')
+        + (LG_ABA!=='suspenso' && LG_ABA!=='pendente' ? '<button type="button" class="pdAcao perigo" data-lgmudar="'+esc(x.id)+'" data-st="suspenso">Suspender</button>' : '')
+        + '<button type="button" class="pdAcao perigo" data-lgmudar="'+esc(x.id)+'" data-st="recusado">'+(LG_ABA==='pendente'?'Recusar':'Apagar')+'</button>';
+      const serv = (x.servicos||[]).map(k=>LG_SERV[k]||k).join(', ') + ((x.veiculos||[]).length ? '<br><small>'+esc((x.veiculos||[]).map(k=>LG_VEIC[k]||k).join(', '))+'</small>' : '');
+      const desde = x.criadoEm ? new Date(x.criadoEm).toLocaleDateString('pt-BR') : '';
+      return '<tr><td><b>'+esc(x.nome)+'</b><br><small>'+esc(LG_TIPOS[x.tipo]||x.tipo)+' · '+esc(x.responsavel)+'</small><br>'+bot
+        + (x.motivo ? '<br><small style="color:#ff9b9b">Suspenso: '+esc(x.motivo)+'</small>' : '')+'</td>'
+        + '<td>'+esc(x.cidade+'/'+x.uf)+(x.atende ? '<br><small>'+esc(x.atende)+'</small>' : '')+'</td>'
+        + '<td>'+serv+'</td>'
+        + '<td><a href="https://wa.me/55'+esc(String(x.whatsapp||'').replace(/\D/g,''))+'" target="_blank" rel="noopener noreferrer">'+esc(lgFone(x.whatsapp))+'</a>'+(x.email ? '<br><small>'+esc(x.email)+'</small>' : '')+'</td>'
+        + '<td>'+desde+'</td></tr>';
+    }).join('') : '<tr><td colspan="5" class="vazio">'+({pendente:'Nenhum cadastro esperando aprovação.', aprovado:'Nenhum parceiro aprovado ainda.', suspenso:'Nenhum parceiro suspenso.'}[LG_ABA])+'</td></tr>';
+  }
+  async function lgMudar(id, st){
+    const x = LG_ITENS.find(y=>y.id===id); if(!x) return;
+    let motivo = '';
+    if(st==='suspenso'){
+      motivo = prompt('Motivo da suspensão (fica registrado aqui):', 'Reclamação de lojista.');
+      if(motivo === null) return;
+      if(String(motivo).trim().length < 3){ alert('Escreva um motivo.'); return; }
+    } else if(st==='recusado'){
+      if(!confirm('Apagar o cadastro de '+x.nome+'? Os dados somem de vez; se quiser, ele se cadastra de novo.')) return;
+    } else if(!confirm('Aprovar '+x.nome+'? Ele passa a aparecer para os lojistas de '+x.uf+' com a chave ligada.')) return;
+    const av = el('lgAviso'); av.style.color=''; av.textContent = 'Enviando…';
+    try{
+      const {r, j} = await lgPost('adm_logistica_mudar', {id, status: st, motivo});
+      if(!j.ok){ av.textContent = 'Não deu certo: ' + (j.mensagem||j.erro||r.status); return; }
+      av.style.color = 'var(--mv-ok)'; av.textContent = x.nome + ({aprovado:' aprovado.', suspenso:' suspenso.', apagado:' apagado.'}[j.status]||'.');
+      LG_ITENS = LG_ITENS.filter(y=>y.id!==id); lgPintar();
+    }catch(e){ av.textContent = 'Falha de conexão.'; }
+  }
 
   /* =====================================================================
      REDES SOCIAIS — relatorio do robo social (28/09/2026)

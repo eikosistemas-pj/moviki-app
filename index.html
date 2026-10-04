@@ -3613,6 +3613,25 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         .pedVipRow button.w{background:#1f9d5c;border-color:#1f9d5c;color:#fff}
         .pedVipLink{word-break:break-all;font-size:13px;color:#7d92a8}
         .pedVipSala{font-size:16px;font-weight:700;margin:6px 0 0}
+        /* 04/10 (P70 etapa 5): Quem entrega na sua cidade */
+        /* 04/10 (P70 etapa 6): frete automatico */
+        .pedAutoCx{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+        .pedAutoSimL{display:grid;grid-template-columns:1fr 80px;gap:8px}
+        .pedAutoSit{font-size:13px;border:1px solid var(--mv-linha);border-radius:10px;padding:8px 10px;margin:8px 0 4px}
+        .pedAutoSit.ok{border-color:#1f9d5c;color:#1f9d5c}
+        .pedAutoOp{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid var(--mv-linha);padding:7px 0;font-size:13.5px}
+        .pedAutoOp small{display:block;color:#7d92a8;font-size:12px}
+        .pedLogBusca{display:grid;grid-template-columns:1fr 96px;gap:8px;margin-top:8px}
+        .pedLogBusca select{width:100%}
+        .pedLogCard{border:1px solid var(--mv-linha);border-radius:12px;padding:12px;margin-top:10px}
+        .pedLogCard .t{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap}
+        .pedLogCard .nm{font-weight:700;font-size:15px}
+        .pedLogCard .tp{font-size:12px;color:#7d92a8}
+        .pedLogCard .lc{font-size:12px;border-radius:999px;padding:2px 8px;border:1px solid var(--mv-linha);color:#7d92a8;white-space:nowrap}
+        .pedLogCard .lc.mc{border-color:#1f9d5c;color:#1f9d5c}
+        .pedLogCard .tags{font-size:13px;margin-top:6px}
+        .pedLogCard .at{font-size:13px;color:#7d92a8;margin-top:4px}
+        .pedLogCard button{margin-top:10px;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid #1f9d5c;background:#1f9d5c;color:#fff;font-family:inherit}
         .pedVipOrig{font-size:12.5px;color:#7d92a8;margin:-4px 0 10px}
         .pqFBtns .pqFDesf{grid-column:1/-1;background:transparent !important;border:1px dashed rgba(255,107,107,.5) !important;color:#ff9d9d !important}
 :where(html[data-tema="claro"]) .pqFBtns .pqFDesf:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){border:1px dashed rgba(255,107,107,0.5)!important;color:#cb0b0b!important}
@@ -3849,6 +3868,42 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
             <div class="finLinha"><div class="campo"><label for="pedEnvS">Sul (R$)</label><input id="pedEnvS" type="text" inputmode="decimal" maxlength="7" placeholder="vazio = não envia"></div><div class="campo"><label for="pedEnvCO">Centro-Oeste (R$)</label><input id="pedEnvCO" type="text" inputmode="decimal" maxlength="7" placeholder="vazio = não envia"></div></div>
             <div class="finLinha"><div class="campo"><label for="pedEnvN">Norte (R$)</label><input id="pedEnvN" type="text" inputmode="decimal" maxlength="7" placeholder="vazio = não envia"></div><div class="campo"><label for="pedEnvGratis">Frete grátis acima de (R$)</label><input id="pedEnvGratis" type="text" inputmode="decimal" maxlength="7" placeholder="vazio = nunca"></div></div>
             <div class="campo"><label for="pedEnvPrazo">Prazo de envio</label><input id="pedEnvPrazo" type="text" maxlength="40" placeholder="Ex.: 5 a 10 dias úteis"></div>
+            <!-- 04/10/2026 (P70 etapa 6): FRETE AUTOMATICO PELO MELHOR ENVIO DO LOJISTA.
+                 So aparece com a chave freteAuto ligada pelo dono. Salva a parte (loja_frete_auto). -->
+            <div id="pedAutoBox" class="escondido" style="margin-top:16px;border-top:1px dashed var(--mv-linha);padding-top:14px">
+              <div class="secTitulo"><label>Frete automático (Melhor Envio)</label></div>
+              <div class="finNota" style="margin-top:0">Com a <b>sua conta do Melhor Envio</b>, o cliente vê na hora o preço dos Correios e das transportadoras para o CEP dele e escolhe a forma de envio. O frete entra no seu Pix junto com os produtos, e a etiqueta você compra no seu Melhor Envio, como já faz. O Moviki só consulta o preço. Se o Melhor Envio sair do ar, vale a tabela acima.</div>
+              <div class="pedAutoSit" id="pedAutoSit"></div>
+              <label class="acabLbl" style="display:flex;gap:8px;align-items:center;margin:8px 0 10px"><input type="checkbox" id="pedAutoLigado"> Calcular o frete automaticamente</label>
+              <div class="campo"><label for="pedAutoToken">Token do Melhor Envio</label><input id="pedAutoToken" type="password" autocomplete="off" spellcheck="false" placeholder="Cole aqui o token"></div>
+              <div class="finNota" style="margin-top:0">No Melhor Envio: <b>Integrações › Permissões de acesso › Gerar novo token</b>. Marque só <b>cotação de fretes</b> (shipping-calculate). O token fica guardado cifrado: depois de salvo, ninguém vê, nem você. Para trocar, cole um novo.</div>
+              <div class="finLinha">
+                <div class="campo"><label for="pedAutoCep">CEP de onde o pacote sai</label><input id="pedAutoCep" type="text" inputmode="numeric" maxlength="9" placeholder="00000-000"></div>
+                <div class="campo"><label for="pedAutoPeso">Peso médio por peça (kg)</label><input id="pedAutoPeso" type="text" inputmode="decimal" maxlength="6" placeholder="Ex.: 0,3"></div>
+              </div>
+              <div class="pedVipL" style="font-weight:700;margin-top:6px">Caixa que você mais usa</div>
+              <div class="pedAutoCx">
+                <div class="campo"><label for="pedAutoAlt">Altura (cm)</label><input id="pedAutoAlt" type="text" inputmode="numeric" maxlength="3" placeholder="4"></div>
+                <div class="campo"><label for="pedAutoLarg">Largura (cm)</label><input id="pedAutoLarg" type="text" inputmode="numeric" maxlength="3" placeholder="12"></div>
+                <div class="campo"><label for="pedAutoComp">Comprimento (cm)</label><input id="pedAutoComp" type="text" inputmode="numeric" maxlength="3" placeholder="17"></div>
+              </div>
+              <div class="finNota" style="margin-top:0">Vale caixa ou envelope. O peso do pacote soma as peças do pedido: produto com peso no cardápio (campo <b>peso (kg)</b> ao lado de “pode ir pelo correio”) usa o dele; sem peso, vale o peso médio por peça.</div>
+              <div class="finLinha">
+                <div class="campo"><label for="pedAutoAcr">Acréscimo por pedido (R$)</label><input id="pedAutoAcr" type="text" inputmode="decimal" maxlength="6" placeholder="Ex.: 2 (embalagem)"></div>
+                <div class="campo"><label for="pedAutoDias">Dias até postar</label><input id="pedAutoDias" type="text" inputmode="numeric" maxlength="2" placeholder="Ex.: 1"></div>
+              </div>
+              <label class="acabLbl" style="display:flex;gap:8px;align-items:center;margin:4px 0 10px"><input type="checkbox" id="pedAutoSeguro"><span style="white-space:normal">Declarar o valor (seguro; o frete fica mais caro)</span></label>
+              <button type="button" class="btn" id="pedAutoBtn" onclick="pedAutoSalvar()">Salvar frete automático</button>
+              <div id="pedAvisoAuto" class="aviso"></div>
+              <h4 class="pedVipH">Simular o que o cliente vê</h4>
+              <div class="pedAutoSimL">
+                <div class="campo"><label for="pedAutoSimCep">CEP do cliente</label><input id="pedAutoSimCep" type="text" inputmode="numeric" maxlength="9" placeholder="01310-100"></div>
+                <div class="campo"><label for="pedAutoSimQtd">Peças</label><input id="pedAutoSimQtd" type="text" inputmode="numeric" maxlength="3" value="1"></div>
+              </div>
+              <button type="button" class="pqBtnSec" id="pedAutoSimBtn" onclick="pedAutoSimular()">Simular frete</button>
+              <div id="pedAutoSim"></div>
+              <button type="button" class="pqBtnSec escondido" id="pedAutoSair" style="margin-top:12px" onclick="pedAutoDesconectar()">Desconectar o Melhor Envio</button>
+            </div>
           </div>
           <div style="height:12px"></div>
           <button type="button" class="btn" id="pedBtnEntrega" onclick="pedSalvarEntrega()">Salvar entrega</button>
@@ -3905,6 +3960,28 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
           <button type="button" class="pqBtnSec" style="margin-top:8px" onclick="pedVipQr()">Imprimir QR para o balcão</button>
           <div class="finNota">O link é fixo: ponha no status, na bio e nos reels. O QR vai no balcão, na sacola e na vitrine. Quem abre já vê o pedido de aviso, e o painel mostra de onde cada pessoa veio. <b>Não importe contatos</b> de compradores de outras plataformas: cada pessoa entra sozinha, pelo botão, com a autorização dela.</div>
           <button type="button" class="pqBtnSec" style="margin-top:12px" onclick="pedVipAbrir(true)">Atualizar</button>
+        </div>
+      </div>
+
+      <!-- QUEM ENTREGA NA SUA CIDADE (04/10/2026, P70 etapa 5). Escondida ate o dono ligar a chave logistica. -->
+      <div class="mvAcc escondido" id="acc-ped-log">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-ped-log-body" onclick="mvAccToggle('acc-ped-log');pedLogAbrir()">
+          <span class="mvAccIco"><img src="icones/vendas.png" alt="" loading="lazy" onerror="mvI(this,'🛵')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Quem entrega na sua cidade</span><span class="mvAccSub">Entregadores, transportadoras e pontos de coleta.</span></span>
+          <span class="mvAccSelo" id="selo-acc-ped-log"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-ped-log-body">
+          <div class="finNota" style="margin-top:0">Parceiros de entrega cadastrados e conferidos pela equipe do Moviki. Toque em <b>Chamar no WhatsApp</b> e combine direto: preço, prazo e forma de pagamento são entre vocês.</div>
+          <div class="pedLogBusca">
+            <div class="campo"><label for="pedLogCidade">Cidade</label><input id="pedLogCidade" type="text" maxlength="60" placeholder="Ex.: Curitiba"></div>
+            <div class="campo"><label for="pedLogUf">Estado</label><select id="pedLogUf"><option value="">UF</option></select></div>
+          </div>
+          <button type="button" class="btn" id="pedLogBtn" onclick="pedLogBuscar()">Buscar</button>
+          <div id="pedAvisoLog" class="aviso"></div>
+          <div id="pedLogLista"></div>
+          <div class="finNota"><b>O Moviki só apresenta.</b> Não contrata, não recebe nem repassa o frete e não garante a entrega. A combinação e o pagamento são direto entre você e o parceiro, e o pacote é responsabilidade de quem leva. Combine por escrito no WhatsApp e use o contato só para a entrega.</div>
+          <div class="finNota">Conhece um entregador bom? Mande para ele o link <b>moviki.com.br/entregadores</b>.</div>
         </div>
       </div>
 
@@ -4186,7 +4263,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
      no Basico para sempre depois de confirmar o e-mail. */
   function semTesteRegistrado(){const d=dadosAssinatura;return !d||!(d.vence_em||d.origem||d.ativo===true||d.testeAte);}
   /* 01/10/2026: + rotas do site que vem ANTES do curinga /:slug no vercel.json do moviki (a pagina do lojista com esse apelido nunca abriria). */
-  const RESERVADOS=['index','mapa','404','assets','www','painel','login','moviki','aovivo','live','regras-da-live','criadores','live-shop','guia','fundador','api','termos','privacidade','enterprise','premium','parceiros','comerciantes','regulamento','descadastro'];
+  const RESERVADOS=['index','mapa','404','assets','www','painel','login','moviki','aovivo','live','regras-da-live','criadores','live-shop','guia','fundador','api','termos','privacidade','enterprise','premium','parceiros','comerciantes','regulamento','descadastro','entregadores'];
   // Rastreio do Programa de Parceiros: captura ?ref da URL (limpo) e guarda no navegador.
   /* ORDEM DE PRIORIDADE — 04/09/2026: URL > cookie do dominio pai > localStorage.
      O cookie mv_ref (.moviki.com.br) e a peca que faltava: o localStorage deste
@@ -4538,7 +4615,7 @@ window.mvAbaInicial=function(){
      do fundador; Pro/Premium pagante vai ao WhatsApp (troca pela equipe);
      Enterprise nao ve; some depois de 27/11 ou com o lote fechado; "x" esconde
      por 3 dias. */
-  window.MOVIKI_VERSAO='2026-10-03-vip';   /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-04-freteauto';   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5900,9 +5977,13 @@ window.mvAbaInicial=function(){
      de envio ligado pelo dono E fora dos ramos de comida (alimentacao, bebidas,
      hortifruti): pastel e bolo nunca veem a opcao. Escondida, a marca que veio
      do banco e mantida (r._envia). */
-  function novaProdRow(catBloco,nome='',preco='',acabando=false,fotos=[],descricao='',sku='',envia=false){
+  /* 04/10/2026 (P70 etapa 6): com o frete automatico liberado, o produto que
+     vai pelo correio pode ter o PESO dele (kg). Sem peso, vale o peso medio do
+     lojista. Escondido, o peso que veio do banco e mantido (r._peso). */
+  function novaProdRow(catBloco,nome='',preco='',acabando=false,fotos=[],descricao='',sku='',envia=false,pesoEnvio=''){
     const r=document.createElement('div');r.className='prodRow mvItem';
     r._envia=envia===true;
+    r._peso=String(pesoEnvio||'').replace(/[^0-9.,]/g,'').slice(0,6);
     r._fotos=Array.isArray(fotos)?fotos.filter(Boolean).slice(0,3):[];
     r._sku=(typeof sku==='string'?sku:'').replace(/[^a-z0-9]/gi,'').slice(0,40);
     r.innerHTML='<div class="mvItemHead" onclick="mvItemToggle(this.parentNode,null,event)">'
@@ -5913,10 +5994,13 @@ window.mvAbaInicial=function(){
       +'<span class="mvItemSeta" aria-hidden="true">&#9662;</span>'
       +'</div>'
       +'<div class="mvItemBody">'
-      +'<input class="p-nome" type="text" placeholder="Nome do produto ou serviço"><div class="prodLinha2"><input class="p-preco" type="text" placeholder="R$ 0,00"><label class="acabLbl"><input type="checkbox" class="p-acab"> acabando</label><label class="acabLbl envLbl"'+(window.MV_ENVIO_PROD?'':' style="display:none"')+'><input type="checkbox" class="p-env"> pode ir pelo correio</label></div><textarea class="p-desc" rows="2" maxlength="280" placeholder="Descrição (opcional) — conte o que tem, ingredientes ou detalhes que ajudem o cliente a escolher"></textarea><div class="prodGaleria"></div>'
+      +'<input class="p-nome" type="text" placeholder="Nome do produto ou serviço"><div class="prodLinha2"><input class="p-preco" type="text" placeholder="R$ 0,00"><label class="acabLbl"><input type="checkbox" class="p-acab"> acabando</label><label class="acabLbl envLbl"'+(window.MV_ENVIO_PROD?'':' style="display:none"')+'><input type="checkbox" class="p-env"> pode ir pelo correio</label><input class="p-peso" type="text" inputmode="decimal" maxlength="6" placeholder="peso (kg)" title="Peso do produto embalado, em kg. Vazio = peso médio" style="width:92px;display:none"></div><textarea class="p-desc" rows="2" maxlength="280" placeholder="Descrição (opcional) — conte o que tem, ingredientes ou detalhes que ajudem o cliente a escolher"></textarea><div class="prodGaleria"></div>'
       +'</div>';
     r.querySelector('.p-nome').value=nome;r.querySelector('.p-preco').value=preco;r.querySelector('.p-acab').checked=!!acabando;r.querySelector('.p-desc').value=descricao||'';
-    r.querySelector('.p-env').checked=r._envia;r.querySelector('.p-env').addEventListener('change',function(){r._envia=this.checked;resumoProd(r);});
+    r.querySelector('.p-env').checked=r._envia;r.querySelector('.p-env').addEventListener('change',function(){r._envia=this.checked;pesoVis();resumoProd(r);});
+    const pIn=r.querySelector('.p-peso');pIn.value=r._peso.replace('.',',');
+    function pesoVis(){pIn.style.display=(window.MV_FRETE_AUTO&&r._envia)?'':'none';}
+    pesoVis();pIn.addEventListener('input',function(){r._peso=String(this.value||'').replace(/[^0-9.,]/g,'').slice(0,6);});
     r.querySelector('.rmv').onclick=(e)=>{if(e)e.stopPropagation();const c=r.closest('.catBloco');r.remove();if(c)resumoCat(c);};
     const atualiza=()=>{resumoProd(r);const c=r.closest('.catBloco');if(c)resumoCat(c);};
     r.querySelector('.p-nome').addEventListener('input',atualiza);
@@ -6604,7 +6688,7 @@ window.mvAbaInicial=function(){
     b.querySelector('.addProd').onclick=()=>novaProdRow(b);
     el('listaCategorias').appendChild(b);
     renderCapaCat(b);
-    (produtos&&produtos.length?produtos:[{}]).forEach(p=>novaProdRow(b,p.nome||'',p.preco||'',p.acabando,p.fotos||[],p.descricao||'',p.sku||'',p.envia===true));
+    (produtos&&produtos.length?produtos:[{}]).forEach(p=>novaProdRow(b,p.nome||'',p.preco||'',p.acabando,p.fotos||[],p.descricao||'',p.sku||'',p.envia===true,p.pesoEnvio||''));
     resumoCat(b);
     /* Categoria nova nasce aberta; categoria vinda do banco nasce fechada.
        novaProdRow abriu o produto vazio da categoria nova — fechar a categoria
@@ -6662,6 +6746,7 @@ window.mvAbaInicial=function(){
         if(!r._sku||usados.has(r._sku)) r._sku=mvNovoSku(usados); else usados.add(r._sku);
         it.sku=r._sku;
         if(r._envia===true)it.envia=true;
+        if(r._envia===true&&r._peso){const pk=Number(String(r._peso).replace(',','.'));if(pk>=0.01&&pk<=30)it.pesoEnvio=String(Math.round(pk*1000)/1000);}
         produtos.push(it);});
       const catObj={categoria:nome,produtos};if(b._capa)catObj.capa=b._capa;cats.push(catObj);
     });
@@ -7013,7 +7098,7 @@ window.mvAbaInicial=function(){
         setStatus(d.status||'fechado');
         if(d.slug) mostrarLink(d.slug);
         /* 03/10 (P70 etapa 2): opcao "pode ir pelo correio" no produto */
-        try{const cp=await getDoc(doc(db,'checkout_publico',uid));const rec=cp.exists()?((cp.data()||{}).recursos||{}):{};const mac=String(d.segmentoMacro||buscarMacroQuiz(d.segmento)||'');window.MV_ENVIO_PROD=rec.freteBrasil===true&&['alimentacao','bebidas','hortifruti'].indexOf(mac)<0;}catch(_e){window.MV_ENVIO_PROD=false;}
+        try{const cp=await getDoc(doc(db,'checkout_publico',uid));const rec=cp.exists()?((cp.data()||{}).recursos||{}):{};const mac=String(d.segmentoMacro||buscarMacroQuiz(d.segmento)||'');window.MV_ENVIO_PROD=rec.freteBrasil===true&&['alimentacao','bebidas','hortifruti'].indexOf(mac)<0;window.MV_FRETE_AUTO=window.MV_ENVIO_PROD&&rec.freteAuto===true;}catch(_e){window.MV_FRETE_AUTO=false;window.MV_ENVIO_PROD=false;}
         el('listaCategorias').innerHTML='';(d.cardapio||[]).forEach(c=>adicionarCategoria(c.categoria||'',c.produtos||[],c.capa||''));vazioCat();
         el('listaPromos').innerHTML='';(d.promocoes||[]).forEach(p=>adicionarPromo(p.titulo||'',p.detalhe||'',p.capa||''));vazioPromo();
         el('listaEventos').innerHTML='';(d.eventos||[]).forEach(e2=>adicionarEvento(e2.titulo||'',e2.quando||'',e2.detalhe||'',e2.capa||''));vazioEvento();
@@ -7576,6 +7661,7 @@ window.mvAbaInicial=function(){
       finPintar();
       finEscutarVendas();
       try { window.pedVipVer(); } catch (_) {}
+      try { window.pedLogVer(); } catch (_) {}
     } catch (e) {
       if (topo) topo.textContent = 'Não consegui carregar agora. Verifique sua conexão.';
     }
@@ -9081,6 +9167,73 @@ window.mvAbaInicial=function(){
     finally { b.disabled = false; if (b.textContent === 'Avisando…') b.textContent = t0; }
   };
 
+  /* ---------- Quem entrega na sua cidade (04/10/2026, P70 etapa 5) ----------
+     O robo (loja_logistica) so devolve parceiro APROVADO pelo dono, do estado
+     pesquisado (mais quem atende outros estados), com a chave logistica ligada.
+     O Moviki so apresenta: o painel nao grava nada, so abre o WhatsApp. */
+  const PED_LOG_UFS = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
+  let pedLogDados = null, pedLogPreenchido = false;
+  window.pedLogVer = function () {
+    const on = !!(finEstado && finEstado.recursos && finEstado.recursos.logistica === true);
+    const a = el('acc-ped-log'); if (a) a.classList.toggle('escondido', !on);
+  };
+  function pedLogPreencher() {
+    if (pedLogPreenchido) return; pedLogPreenchido = true;
+    const sel = el('pedLogUf');
+    if (sel && sel.options.length < 2) PED_LOG_UFS.forEach(function (u) { const o = document.createElement('option'); o.value = u; o.textContent = u; sel.appendChild(o); });
+    let salvo = {};
+    try { salvo = JSON.parse(localStorage.getItem('mv_log_busca') || '{}') || {}; } catch (_) {}
+    const c = (finEstado && finEstado.entregaCfg) || {};
+    const ev = c.envio || {};
+    if (el('pedLogCidade')) el('pedLogCidade').value = salvo.cidade || c.cidade || '';
+    if (sel) sel.value = PED_LOG_UFS.indexOf(salvo.uf) >= 0 ? salvo.uf : (PED_LOG_UFS.indexOf(ev.ufOrigem) >= 0 ? ev.ufOrigem : '');
+  }
+  window.pedLogAbrir = function () {
+    pedLogPreencher();
+    if (!pedLogDados && el('pedLogUf') && el('pedLogUf').value) window.pedLogBuscar();
+  };
+  window.pedLogBuscar = async function () {
+    const b = el('pedLogBtn'); if (!b || b.disabled) return;
+    finAviso('pedAvisoLog', '');
+    const cidade = String(el('pedLogCidade').value || '').trim().slice(0, 60);
+    const uf = el('pedLogUf').value;
+    if (!uf) { finAviso('pedAvisoLog', 'Escolha o estado.'); return; }
+    try { localStorage.setItem('mv_log_busca', JSON.stringify({ cidade: cidade, uf: uf })); } catch (_) {}
+    b.disabled = true; const t0 = b.textContent; b.textContent = 'Buscando…';
+    el('pedLogLista').innerHTML = '';
+    try {
+      const r = await finPost('loja_logistica', { cidade: cidade, uf: uf });
+      if (!(r.j && r.j.ok)) { finAviso('pedAvisoLog', finMsg(r.j, r.http)); return; }
+      pedLogDados = r.j;
+      pedLogPintar(cidade);
+      try { if (window.mvEv) mvEv('logistica_busca', { uf: uf, achados: Number(r.j.total || 0) }); } catch (_) {}
+    } catch (_) { finAviso('pedAvisoLog', 'Falha de conexão. Tente de novo.'); }
+    finally { b.disabled = false; b.textContent = t0; }
+  };
+  function pedLogPintar(cidade) {
+    const d = pedLogDados || {};
+    const box = el('pedLogLista'); if (!box) return;
+    if (!d.ligado) { box.innerHTML = '<div class="finNota">Este recurso ainda não foi liberado para a sua conta.</div>'; return; }
+    const it = d.itens || [];
+    const s = el('selo-acc-ped-log'); if (s) s.textContent = it.length ? String(it.length) : '';
+    if (!it.length) { box.innerHTML = '<div class="finNota">Ainda não há parceiro de entrega aprovado em ' + finEsc(cidade ? cidade + '/' : '') + finEsc(d.uf || '') + '. Indique o link <b>moviki.com.br/entregadores</b> para quem faz entrega para você.</div>'; return; }
+    box.innerHTML = it.map(function (x) {
+      const local = x.mesmaCidade ? '<span class="lc mc">Sua cidade</span>' : '<span class="lc">' + finEsc(x.cidade + '/' + x.uf) + '</span>';
+      const tags = (x.servicos || []).concat(x.veiculos || []);
+      return '<div class="pedLogCard"><div class="t"><div><div class="nm">' + finEsc(x.nome) + '</div><div class="tp">' + finEsc(x.tipoNome || '') + (x.responsavel ? ' · ' + finEsc(x.responsavel) : '') + '</div></div>' + local + '</div>'
+        + (tags.length ? '<div class="tags">' + tags.map(finEsc).join(' · ') + '</div>' : '')
+        + (x.atende ? '<div class="at">' + finEsc(x.atende) + '</div>' : '')
+        + '<button type="button" onclick="pedLogWpp(\'' + finEsc(x.id) + '\')">Chamar no WhatsApp</button></div>';
+    }).join('') + (d.total > it.length ? '<div class="finNota">Mostrando ' + it.length + ' de ' + d.total + '. Escreva a cidade para ver primeiro quem está mais perto.</div>' : '');
+  }
+  window.pedLogWpp = function (id) {
+    const x = ((pedLogDados && pedLogDados.itens) || []).find(function (y) { return y.id === id; }); if (!x) return;
+    const loja = String((el('nome') && el('nome').value) || '').trim().slice(0, 60);
+    const msg = 'Olá' + (x.responsavel ? ', ' + x.responsavel : '') + '! Sou lojista no Moviki' + (loja ? ' (' + loja + ')' : '') + ' e vi o ' + x.nome + ' na lista de entregadores. Você faz entrega para mim? Queria combinar valor e prazo.';
+    window.open('https://wa.me/55' + String(x.whatsapp).replace(/\D/g, '') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+    try { if (window.mvEv) mvEv('logistica_chamar', { tipo: x.tipo || '' }); } catch (_) {}
+  };
+
   /* ---------- rastreio do envio (03/10/2026, P70 etapa 3) ----------
      Quem valida e grava e o robo (loja_rastreio). O link de acompanhamento
      (www.moviki.com.br/pedido/...) nasce no primeiro codigo e so mostra loja,
@@ -9198,7 +9351,7 @@ window.mvAbaInicial=function(){
     let rota = '';
     if (ent) {
       const taxa = Number(p.frete || e.taxa || 0);
-      h += '<div class="pqFSec"><h4>' + (e.envio ? ('Envio para ' + finEsc((e.cidade || '') + (e.uf ? '/' + e.uf : '')) + ' · frete ' + (taxa > 0 ? finReal(taxa) : 'grátis') + (e.prazo ? ' · ' + finEsc(e.prazo) : '')) : ('Entrega' + (e.bairro ? ' · ' + finEsc(e.bairro) : '') + (e.aCombinar === false ? ' · taxa ' + (taxa > 0 ? finReal(taxa) : 'grátis') : ' · a combinar'))) + '</h4>'
+      h += '<div class="pqFSec"><h4>' + (e.envio ? ('Envio para ' + finEsc((e.cidade || '') + (e.uf ? '/' + e.uf : '')) + ' · frete ' + (taxa > 0 ? finReal(taxa) : 'grátis') + ((e.freteAuto && e.freteAuto.nome) ? ' · ' + finEsc(e.freteAuto.nome) : '') + (e.prazo ? ' · ' + finEsc(e.prazo) : '')) : ('Entrega' + (e.bairro ? ' · ' + finEsc(e.bairro) : '') + (e.aCombinar === false ? ' · taxa ' + (taxa > 0 ? finReal(taxa) : 'grátis') : ' · a combinar'))) + '</h4>'
         + '<div class="pedEndereco">' + (p.dadosApagadosEm ? 'Endereço apagado pelo prazo de privacidade' : finEsc(e.detalhe || 'Endereço não informado')) + '</div></div>';
       if (e.detalhe && !p.dadosApagadosEm && !e.envio) rota = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(String(e.detalhe).replace(/ - Ref\.:.*$/, ''));
       if (e.envio && pago) h += pqRastreioHtml(p);
@@ -9348,7 +9501,7 @@ window.mvAbaInicial=function(){
     if (pqAlertaEst(p)) h += '<div class="sep"></div><div class="c tit">CONFIRA A PEÇA ANTES DE SEPARAR</div><div class="c pq">Pago quando a peça já era de outro comprador</div>';
     h += '<div class="sep"></div>';
     if (ent) {
-      h += '<div class="tit">' + (e.envio ? 'ENVIO · ' + finEsc((e.cidade || '') + (e.uf ? '/' + e.uf : '')) : 'ENTREGA' + (e.bairro ? ' · ' + finEsc(e.bairro) : '')) + '</div>';
+      h += '<div class="tit">' + (e.envio ? 'ENVIO · ' + finEsc((e.cidade || '') + (e.uf ? '/' + e.uf : '')) + ((e.freteAuto && e.freteAuto.nome) ? ' · ' + finEsc(e.freteAuto.nome) : '') : 'ENTREGA' + (e.bairro ? ' · ' + finEsc(e.bairro) : '')) + '</div>';
       if (e.rua) {
         h += '<div>' + finEsc(e.rua + ', ' + e.numero) + (e.complemento ? ' - ' + finEsc(e.complemento) : '') + '</div>';
         h += '<div>' + finEsc(e.bairro || '') + (e.cidade ? ' - ' + finEsc(e.cidade) + (e.uf ? '/' + finEsc(e.uf) : '') : '') + '</div>';
@@ -9589,6 +9742,7 @@ window.mvAbaInicial=function(){
     pedEntregaCarregada = true;
     pedPintarEntrega();
     try { window.pedVipVer(); } catch (_) {}
+    try { window.pedLogVer(); } catch (_) {}
   }
   function pedPintarEntrega() {
     const e = finEstado || {}, c = e.entregaCfg || {};
@@ -9626,8 +9780,95 @@ window.mvAbaInicial=function(){
       el('pedEnvPrazo').value = ev.prazo || '';
       if (s && ev.ativo === true && !susp) s.textContent += ' · envia';
     }
+    pedPintarAuto(e, envOn);
     window.pedEntModoMudou();
   }
+  /* ---------- Frete automatico pelo Melhor Envio (04/10/2026, P70 etapa 6) ----------
+     O token vai para o robo (loja_frete_auto), que confere com uma cotacao de
+     teste e guarda cifrado. O painel nunca recebe o token de volta. */
+  function pedPintarAuto(e, envOn) {
+    const fa = e.freteAuto || {}, bx = el('pedAutoBox');
+    const on = !!(envOn && e.recursos && e.recursos.freteAuto === true);
+    if (bx) bx.classList.toggle('escondido', !on);
+    if (!on) return;
+    const c = fa.cfg || {}, cx = c.caixa || {};
+    const br = function (v) { return (v || v === 0) ? String(v).replace('.', ',') : ''; };
+    el('pedAutoLigado').checked = c.ligado === true;
+    el('pedAutoCep').value = c.cepOrigem ? c.cepOrigem.slice(0, 5) + '-' + c.cepOrigem.slice(5) : '';
+    el('pedAutoPeso').value = br(c.pesoItem);
+    el('pedAutoAlt').value = br(cx.alt); el('pedAutoLarg').value = br(cx.larg); el('pedAutoComp').value = br(cx.comp);
+    el('pedAutoAcr').value = c.acrescimo ? br(Number(c.acrescimo).toFixed(2)) : '';
+    el('pedAutoDias').value = c.prazoExtra ? String(c.prazoExtra) : '';
+    el('pedAutoSeguro').checked = c.seguro === true;
+    el('pedAutoToken').value = '';
+    const sit = el('pedAutoSit');
+    if (fa.conectado) {
+      sit.className = 'pedAutoSit' + (fa.ativo ? ' ok' : '');
+      sit.textContent = (fa.ativo ? 'Ligado: o cliente já vê o frete calculado. ' : 'Conectado, mas desligado. ') + 'Token terminando em …' + (fa.final || '') + (fa.em ? ' · salvo em ' + new Date(fa.em).toLocaleDateString('pt-BR') : '') + '.';
+      el('pedAutoToken').placeholder = 'Já conectado. Cole um novo só para trocar';
+    } else {
+      sit.className = 'pedAutoSit';
+      sit.textContent = 'Melhor Envio não conectado. Enquanto isso, vale a tabela acima.';
+      el('pedAutoToken').placeholder = 'Cole aqui o token';
+    }
+    el('pedAutoSair').classList.toggle('escondido', !fa.conectado);
+  }
+  const PED_AUTO_ERROS = {
+    auto_off: 'O frete automático não está liberado para a sua conta.',
+    cep_origem: 'Confira o CEP de onde o pacote sai (8 números).',
+    peso: 'Confira o peso por peça: de 0,01 a 30 kg.',
+    caixa: 'Confira a caixa: altura de 1 a 100 cm, largura de 8 a 100 e comprimento de 13 a 100.',
+    acrescimo: 'O acréscimo vai de R$ 0 a R$ 50.',
+    prazo_extra: 'Dias até postar: de 0 a 15.',
+    sem_token: 'Cole o token do Melhor Envio para ligar.',
+    token_formato: 'Esse não parece um token do Melhor Envio. Copie o token inteiro.',
+    token: 'O Melhor Envio recusou esse token. Gere um novo com a permissão de cotação de fretes.',
+    melhorenvio_fora: 'O Melhor Envio não respondeu agora. Tente de novo em alguns minutos.',
+    sem_opcao: 'Nenhuma transportadora atende esse CEP com esse pacote.',
+    cep: 'Confira o CEP do cliente (8 números).'
+  };
+  function pedAutoOps(ops) {
+    return (ops || []).map(function (x) {
+      return '<div class="pedAutoOp"><span>' + finEsc((x.empresa ? x.empresa + ' ' : '') + x.nome) + (x.prazo ? '<small>até ' + x.prazo + ' dias úteis</small>' : '') + '</span><b>' + (x.preco > 0 ? 'R$ ' + Number(x.preco).toFixed(2).replace('.', ',') : 'grátis') + '</b></div>';
+    }).join('');
+  }
+  window.pedAutoSalvar = async function (desconectar) {
+    const b = el('pedAutoBtn'); if (!b || b.disabled) return;
+    finAviso('pedAvisoAuto', '');
+    const vv = function (id) { return String((el(id) && el(id).value) || '').trim().replace(/^R\$\s*/i, ''); };
+    const dados = desconectar === true ? { desconectar: true } : {
+      ligado: !!el('pedAutoLigado').checked, token: vv('pedAutoToken'), cepOrigem: vv('pedAutoCep'), pesoItem: vv('pedAutoPeso'),
+      alt: vv('pedAutoAlt'), larg: vv('pedAutoLarg'), comp: vv('pedAutoComp'), acrescimo: vv('pedAutoAcr'), prazoExtra: vv('pedAutoDias'), seguro: !!el('pedAutoSeguro').checked
+    };
+    b.disabled = true; const t = b.textContent; b.textContent = dados.token ? 'Conferindo o token…' : 'Salvando…';
+    try {
+      const r = await finPost('loja_frete_auto', dados);
+      if (r.j && r.j.ok) {
+        const teste = r.j.teste;
+        finEstado = Object.assign({}, finEstado || {}, r.j); delete finEstado.teste;
+        pedPintarEntrega();
+        finAviso('pedAvisoAuto', desconectar === true ? 'Melhor Envio desconectado. O token foi apagado.' : ((teste ? 'Token conferido ✓ ' : '') + 'Frete automático salvo.' + (finEstado.freteAuto && finEstado.freteAuto.ativo ? ' Sua página já mostra as opções de envio.' : '')), true);
+        if (teste && teste.length) el('pedAutoSim').innerHTML = '<div class="finNota">Exemplo para São Paulo (SP), 1 peça:</div>' + pedAutoOps(teste);
+        try { if (window.mvEv) mvEv('frete_auto_configurado', { ligado: !!dados.ligado }); } catch (_) {}
+      } else finAviso('pedAvisoAuto', PED_AUTO_ERROS[r.j && r.j.erro] || finMsg(r.j, r.http));
+    } catch (_) { finAviso('pedAvisoAuto', 'Falha de conexão. Tente de novo.'); }
+    b.disabled = false; b.textContent = t;
+  };
+  window.pedAutoDesconectar = function () {
+    if (!confirm('Desconectar o Melhor Envio? O token é apagado e o envio volta a usar a sua tabela.')) return;
+    window.pedAutoSalvar(true);
+  };
+  window.pedAutoSimular = async function () {
+    const b = el('pedAutoSimBtn'); if (!b || b.disabled) return;
+    const box = el('pedAutoSim');
+    b.disabled = true; box.innerHTML = '<div class="finNota">Calculando…</div>';
+    try {
+      const r = await finPost('loja_frete_auto_testar', { cep: String(el('pedAutoSimCep').value || '').replace(/\D/g, ''), qtd: String(el('pedAutoSimQtd').value || '1') });
+      if (r.j && r.j.ok) box.innerHTML = '<div class="finNota">Pacote de ' + String(r.j.peso).replace('.', ',') + ' kg. Antes do frete grátis, se você usa:</div>' + pedAutoOps(r.j.opcoes);
+      else box.innerHTML = '<div class="finNota">' + finEsc(PED_AUTO_ERROS[r.j && r.j.erro] || finMsg(r.j, r.http)) + '</div>';
+    } catch (_) { box.innerHTML = '<div class="finNota">Falha de conexão. Tente de novo.</div>'; }
+    b.disabled = false;
+  };
   const PED_ERROS = {
     entrega: 'Escolha como o cliente recebe.',
     bairros_muitos: 'São no máximo 80 bairros.',
@@ -9637,7 +9878,7 @@ window.mvAbaInicial=function(){
     minimo_entrega: 'Confira o pedido mínimo para entrega.',
     taxa_envio: 'Confira o frete de envio. Use só números, até R$ 500.',
     uf_origem: 'Escolha o seu estado (de onde o pacote sai).',
-    envio_vazio: 'Para ligar o envio, preencha o frete de pelo menos uma região ou do seu estado.',
+    envio_vazio: 'Para ligar o envio, preencha o frete de pelo menos uma região ou do seu estado (ou ligue o frete automático do Melhor Envio).',
     gratis_acima: 'Confira o valor do frete grátis.'
   };
   window.pedSalvarEntrega = async function () {
