@@ -3597,6 +3597,23 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         .pqFRas .pqRasCod{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;letter-spacing:.5px}
         .pqFRas .pqRasLink{word-break:break-all;font-size:12.5px;color:#7d92a8}
         .pqFRas .pqFBtns{margin-top:8px}
+        /* 03/10 (P70 etapa 4): Lista VIP */
+        .pedVipResumo{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 12px}
+        .pedVipResumo .cx{border:1px solid var(--mv-linha);border-radius:12px;padding:10px;text-align:center}
+        .pedVipResumo .cx b{display:block;font-size:22px}
+        .pedVipResumo .cx span{font-size:12px;color:#7d92a8}
+        .pedVipL{display:block;font-size:13px;margin:4px 0 4px}
+        #pedVipChamada{width:100%;margin-bottom:8px}
+        .pedVipH{margin:18px 0 6px;font-size:14px}
+        .pedVipRow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--mv-linha);flex-wrap:wrap}
+        .pedVipRow .nm{flex:1;min-width:140px;font-size:14px}
+        .pedVipRow .nm small{display:block;color:#7d92a8;font-size:12px}
+        .pedVipRow button{border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;border:1px solid #2f4a63;background:#16202c;color:#cfe0f0;font-family:inherit}
+:where(html[data-tema="claro"]) .pedVipRow button:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){background:#ffffff;color:#142030}
+        .pedVipRow button.w{background:#1f9d5c;border-color:#1f9d5c;color:#fff}
+        .pedVipLink{word-break:break-all;font-size:13px;color:#7d92a8}
+        .pedVipSala{font-size:16px;font-weight:700;margin:6px 0 0}
+        .pedVipOrig{font-size:12.5px;color:#7d92a8;margin:-4px 0 10px}
         .pqFBtns .pqFDesf{grid-column:1/-1;background:transparent !important;border:1px dashed rgba(255,107,107,.5) !important;color:#ff9d9d !important}
 :where(html[data-tema="claro"]) .pqFBtns .pqFDesf:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){border:1px dashed rgba(255,107,107,0.5)!important;color:#cb0b0b!important}
         .pedEstRow{display:grid;grid-template-columns:1fr auto 96px;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
@@ -3856,6 +3873,38 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
           <button type="button" class="pqBtnSec" style="margin-top:8px" onclick="pedEstAbrir(true)">Atualizar números</button>
           <div id="pedAvisoEst" class="aviso"></div>
           <div class="finNota">Vendeu no balcão? Baixe o número aqui. Recebeu mercadoria? Suba. O Moviki soma a diferença, então uma venda que entrou enquanto você digitava não se perde.</div>
+        </div>
+      </div>
+
+      <!-- LISTA VIP (03/10/2026, P70 etapa 4). Escondida ate o dono ligar a chave listaVip. -->
+      <div class="mvAcc escondido" id="acc-ped-vip">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-ped-vip-body" onclick="mvAccToggle('acc-ped-vip');pedVipAbrir()">
+          <span class="mvAccIco"><img src="icones/live.png" alt="" loading="lazy" onerror="mvI(this,'🔔')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Lista VIP</span><span class="mvAccSub">Quem pediu aviso da sua próxima live.</span></span>
+          <span class="mvAccSelo" id="selo-acc-ped-vip"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-ped-vip-body">
+          <div class="finNota" style="margin-top:0">Na sua página e na sua live aparece o botão <b>Me avise da próxima live</b>. Quem toca escolhe como quer ser avisado: <b>notificação no celular</b>, <b>e-mail</b> ou <b>o seu WhatsApp</b>. É a sua clientela, com permissão dela. Com a live no ar, toque em <b>Avisar agora</b>: o Moviki manda a notificação e o e-mail; quem escolheu WhatsApp você avisa pelo seu, aqui embaixo.</div>
+          <div class="pedVipSala" id="pedVipSala"></div>
+          <div id="pedVipResumo" class="pedVipResumo"></div>
+          <div class="pedVipOrig" id="pedVipOrig"></div>
+          <label class="pedVipL" for="pedVipChamada">Chamada do aviso (opcional)</label>
+          <input type="text" id="pedVipChamada" maxlength="80" placeholder="Ex.: Lançamento de perfumes, só hoje">
+          <button type="button" class="btn" id="pedVipBtn" onclick="pedVipAvisar()">Avisar agora</button>
+          <div id="pedAvisoVip" class="aviso"></div>
+          <div class="pedVipOrig" id="pedVipUlt" style="margin:6px 0 0"></div>
+          <div class="finNota">O aviso só sai com a live no ar, 1 vez a cada 2 horas e até 3 por dia. Fale só da live: a lista não é para propaganda solta.</div>
+          <h4 class="pedVipH">Lista do WhatsApp</h4>
+          <div id="pedVipWpp"></div>
+          <button type="button" class="pqBtnSec" id="pedVipCopiar" style="margin-top:8px" onclick="pedVipCopiar()">Copiar nomes e números</button>
+          <div class="finNota">Para mandar para todos de uma vez, crie uma <b>lista de transmissão</b> no WhatsApp com esses números. Cada mensagem pronta já leva o link para a pessoa sair da lista. Quem pedir para sair, toque em <b>Remover</b>.</div>
+          <h4 class="pedVipH">Encha a sua sala</h4>
+          <div class="pedVipLink" id="pedVipLink"></div>
+          <button type="button" class="pqBtnSec" style="margin-top:8px" onclick="pedVipCopiarLink()">Copiar link</button>
+          <button type="button" class="pqBtnSec" style="margin-top:8px" onclick="pedVipQr()">Imprimir QR para o balcão</button>
+          <div class="finNota">O link é fixo: ponha no status, na bio e nos reels. O QR vai no balcão, na sacola e na vitrine. Quem abre já vê o pedido de aviso, e o painel mostra de onde cada pessoa veio. <b>Não importe contatos</b> de compradores de outras plataformas: cada pessoa entra sozinha, pelo botão, com a autorização dela.</div>
+          <button type="button" class="pqBtnSec" style="margin-top:12px" onclick="pedVipAbrir(true)">Atualizar</button>
         </div>
       </div>
 
@@ -4489,7 +4538,7 @@ window.mvAbaInicial=function(){
      do fundador; Pro/Premium pagante vai ao WhatsApp (troca pela equipe);
      Enterprise nao ve; some depois de 27/11 ou com o lote fechado; "x" esconde
      por 3 dias. */
-  window.MOVIKI_VERSAO='2026-10-03-rastreio';   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-03-vip';   /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -7526,6 +7575,7 @@ window.mvAbaInicial=function(){
       finEstado = r.j;
       finPintar();
       finEscutarVendas();
+      try { window.pedVipVer(); } catch (_) {}
     } catch (e) {
       if (topo) topo.textContent = 'Não consegui carregar agora. Verifique sua conexão.';
     }
@@ -8907,6 +8957,130 @@ window.mvAbaInicial=function(){
     pqAcao(id, para);
   };
 
+  /* ---------- Lista VIP (03/10/2026, P70 etapa 4) ----------
+     Quem le e grava e o robo (loja_vip, loja_vip_remover, loja_vip_avisar).
+     O painel nunca recebe o e-mail nem o endereco de notificacao de ninguem:
+     so contagens, e nome + WhatsApp de quem escolheu o WhatsApp da loja. */
+  let pedVipDados = null;
+  const PED_VIP_ERROS = {
+    sem_live: 'O aviso só sai com a live no ar. Entre ao vivo pelo estúdio e toque de novo.',
+    vip_limite_dia: 'Já foram 3 avisos hoje. Amanhã libera de novo.',
+    termo: 'A chamada tem uma palavra que não é permitida na live. Troque o texto.',
+    vip_off: 'A Lista VIP não está liberada para a sua conta.',
+    sem_link: 'Sua página ainda não tem endereço. Salve o cadastro do negócio primeiro.'
+  };
+  window.pedVipVer = function () {
+    const on = !!(finEstado && finEstado.recursos && finEstado.recursos.listaVip === true);
+    const a = el('acc-ped-vip'); if (a) a.classList.toggle('escondido', !on);
+  };
+  window.pedVipAbrir = async function (forcar) {
+    const box = el('pedVipResumo'); if (!box) return;
+    if (pedVipDados && !forcar) { pedVipPintar(); return; }
+    box.innerHTML = '<div class="finNota">Carregando…</div>';
+    try {
+      const r = await finPost('loja_vip');
+      if (!(r.j && r.j.ok)) { box.innerHTML = '<div class="finNota">' + finEsc(finMsg(r.j, r.http)) + '</div>'; return; }
+      pedVipDados = r.j;
+      pedVipPintar();
+    } catch (_) { box.innerHTML = '<div class="finNota">Falha de conexão. Tente de novo.</div>'; }
+  };
+  function pedVipPintar() {
+    const d = pedVipDados; if (!d) return;
+    if (!d.ligado) { el('pedVipResumo').innerHTML = '<div class="finNota">A Lista VIP ainda não foi liberada para a sua conta.</div>'; return; }
+    const c = d.contagem || {};
+    const np = Number(d.pessoas || 0);
+    el('pedVipSala').textContent = 'Sua sala tem ' + np + (np === 1 ? ' pessoa' : ' pessoas') + ' na lista';
+    const o = d.porOrigem || {};
+    const partes = [['qr', 'pelo QR do balcão'], ['link', 'pelo seu link'], ['live', 'na live'], ['pagina', 'na sua página']].filter(function (k) { return o[k[0]]; }).map(function (k) { return o[k[0]] + ' ' + k[1]; });
+    el('pedVipOrig').textContent = partes.length ? 'Vieram: ' + partes.join(' · ') : '';
+    el('pedVipResumo').innerHTML = '<div class="cx"><b>' + (c.push || 0) + '</b><span>no celular</span></div>'
+      + '<div class="cx"><b>' + (c.email || 0) + '</b><span>por e-mail' + (c.emailPendente ? ' (+' + c.emailPendente + ' confirmando)' : '') + '</span></div>'
+      + '<div class="cx"><b>' + (c.whatsapp || 0) + '</b><span>no WhatsApp</span></div>';
+    const s = el('selo-acc-ped-vip'); if (s) s.textContent = np ? (np + (np === 1 ? ' pessoa' : ' pessoas')) : '';
+    const w = d.whatsapp || [];
+    el('pedVipWpp').innerHTML = w.length ? w.map(function (x) {
+      return '<div class="pedVipRow"><span class="nm">' + finEsc(x.nome || 'Cliente') + '<small>' + pedFone(x.whatsapp) + '</small></span>'
+        + '<button type="button" class="w" onclick="pedVipWppAbrir(\'' + finEsc(x.id) + '\')">Avisar</button>'
+        + '<button type="button" onclick="pedVipRemover(\'' + finEsc(x.id) + '\')">Remover</button></div>';
+    }).join('') : '<div class="finNota" style="margin-top:0">Ninguém escolheu o WhatsApp ainda.</div>';
+    el('pedVipCopiar').classList.toggle('escondido', !w.length);
+    el('pedVipLink').textContent = d.link || 'Salve o endereço da sua página para ter o link.';
+    const u = d.ultimoAviso;
+    const btn = el('pedVipBtn');
+    if (btn) btn.textContent = 'Avisar agora';
+    const ul = el('pedVipUlt');
+    if (ul) ul.textContent = (u && u.em) ? ('Último aviso: ' + new Date(u.em).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + ' · ' + u.push + ' no celular, ' + u.email + ' por e-mail. Hoje: ' + (d.avisosHoje || 0) + ' de ' + (d.avisosPorDia || 3) + '.') : '';
+  }
+  function pedVipMsg(x) {
+    const d = pedVipDados || {};
+    return 'Olá' + (x.nome ? ', ' + x.nome : '') + '! ' + (d.loja || 'Nossa loja') + ' está ao vivo agora no Moviki: ' + (d.live || '') + '\n\nVocê recebe este aviso porque pediu. Para não receber mais: ' + x.sair;
+  }
+  window.pedVipWppAbrir = function (id) {
+    const x = ((pedVipDados && pedVipDados.whatsapp) || []).find(function (y) { return y.id === id; }); if (!x) return;
+    window.open('https://wa.me/55' + String(x.whatsapp).replace(/\D/g, '') + '?text=' + encodeURIComponent(pedVipMsg(x)), '_blank', 'noopener');
+  };
+  window.pedVipRemover = async function (id) {
+    const x = ((pedVipDados && pedVipDados.whatsapp) || []).find(function (y) { return y.id === id; }); if (!x) return;
+    if (!confirm('Tirar ' + (x.nome || 'esta pessoa') + ' da Lista VIP? O número é apagado.')) return;
+    try {
+      const r = await finPost('loja_vip_remover', null, { id: id });
+      if (!(r.j && r.j.ok)) { alert(finMsg(r.j, r.http)); return; }
+      pedVipDados.whatsapp = pedVipDados.whatsapp.filter(function (y) { return y.id !== id; });
+      pedVipDados.contagem.whatsapp = Math.max(0, (pedVipDados.contagem.whatsapp || 1) - 1);
+      pedVipDados.total = Math.max(0, (pedVipDados.total || 1) - 1);
+      pedVipPintar(); toast('Removido da lista.');
+    } catch (_) { alert('Falha de conexão. Tente de novo.'); }
+  };
+  function pedVipCopiarTxt(t, ok) {
+    try { navigator.clipboard.writeText(t).then(function () { toast(ok); }, function () { prompt('Copie:', t); }); } catch (_) { prompt('Copie:', t); }
+  }
+  window.pedVipCopiar = function () {
+    const w = (pedVipDados && pedVipDados.whatsapp) || []; if (!w.length) return;
+    pedVipCopiarTxt(w.map(function (x) { return (x.nome || 'Cliente') + ' - +55 ' + pedFone(x.whatsapp); }).join('\n'), 'Lista copiada.');
+  };
+  window.pedVipCopiarLink = function () { if (pedVipDados && pedVipDados.link) pedVipCopiarTxt(pedVipDados.link, 'Link copiado.'); };
+  /* QR para imprimir (P71): aponta para o link com origem 'qr'. */
+  window.pedVipQr = function () {
+    const d = pedVipDados || {};
+    if (!d.qr) { alert('Salve o endereço da sua página para gerar o QR.'); return; }
+    let img = '';
+    try { const q = window.mvQR && window.mvQR(d.qr); if (q) { const cv = document.createElement('canvas'); window.mvQRDesenhar(cv, q, 720, '#ffffff', '#000000'); img = cv.toDataURL('image/png'); } } catch (_) {}
+    if (!img) { alert('Não consegui gerar o QR agora. Atualize a página e tente de novo.'); return; }
+    const curto = String(d.link || d.qr).replace(/^https:\/\/(www\.)?/, '').replace(/\?.*$/, '');
+    const css = '@page{size:A4;margin:14mm}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#000;background:#fff;text-align:center}'
+      + '.f{border:3px solid #000;border-radius:18px;padding:12mm 10mm;max-width:170mm;margin:0 auto}'
+      + 'h1{font-size:30pt;margin:0 0 4mm;line-height:1.15}.lj{font-size:20pt;font-weight:700;margin:0 0 8mm}'
+      + 'img{width:110mm;height:110mm;image-rendering:pixelated}.t{font-size:15pt;margin:6mm 0 2mm}.u{font-size:12pt;color:#333}.m{font-size:10pt;color:#555;margin-top:8mm}';
+    const corpo = '<div class="f"><h1>Entre na lista da nossa live</h1><div class="lj">' + finEsc(d.loja || '') + '</div>'
+      + '<img src="' + img + '" alt="QR"><div class="t">Aponte a câmera do celular e toque no link.<br>Você recebe um aviso quando a gente entrar ao vivo.</div>'
+      + '<div class="u">' + finEsc(curto) + '</div><div class="m">Transmissão pelo Moviki · você sai da lista quando quiser</div></div>';
+    const w = window.open('', '_blank');
+    if (!w) { alert('O navegador bloqueou a janela de impressão. Libere as janelas deste site e tente de novo.'); return; }
+    w.document.open();
+    w.document.write('<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lista da live</title><style>' + css + '</style></head><body>' + corpo + '</body></html>');
+    w.document.close();
+    setTimeout(function () { try { w.focus(); w.print(); } catch (_) {} }, 350);
+    try { if (window.mvEv) mvEv('lista_vip_qr', {}); } catch (_) {}
+  };
+  window.pedVipAvisar = async function () {
+    const b = el('pedVipBtn'); if (!b || b.disabled) return;
+    finAviso('pedAvisoVip', '');
+    if (!confirm('Avisar agora quem está na sua Lista VIP?\n\nVai uma notificação e um e-mail dizendo que você está ao vivo. Dá para avisar 1 vez a cada 2 horas, até 3 por dia.')) return;
+    b.disabled = true; const t0 = b.textContent; b.textContent = 'Avisando…';
+    try {
+      const r = await finPost('loja_vip_avisar', { chamada: String(el('pedVipChamada').value || '').trim().slice(0, 80) });
+      if (!(r.j && r.j.ok)) {
+        let m = PED_VIP_ERROS[r.j && r.j.erro];
+        if (r.j && r.j.erro === 'vip_intervalo') m = 'Você já avisou há pouco. O próximo aviso libera às ' + new Date(Number(r.j.proximoEm) || Date.now()).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + '.';
+        finAviso('pedAvisoVip', m || finMsg(r.j, r.http)); return;
+      }
+      const j = r.j;
+      finAviso('pedAvisoVip', 'Aviso enviado: ' + j.push.enviados + ' no celular e ' + j.email.enviados + ' por e-mail.' + (j.email.semCota ? ' ' + j.email.semCota + ' e-mail(s) ficaram de fora pelo limite do dia.' : '') + (j.whatsapp ? ' Agora avise a lista do WhatsApp abaixo.' : ''), true);
+      pedVipDados = null; await window.pedVipAbrir(true);
+    } catch (_) { finAviso('pedAvisoVip', 'Falha de conexão. Tente de novo.'); }
+    finally { b.disabled = false; if (b.textContent === 'Avisando…') b.textContent = t0; }
+  };
+
   /* ---------- rastreio do envio (03/10/2026, P70 etapa 3) ----------
      Quem valida e grava e o robo (loja_rastreio). O link de acompanhamento
      (www.moviki.com.br/pedido/...) nasce no primeiro codigo e so mostra loja,
@@ -9414,6 +9588,7 @@ window.mvAbaInicial=function(){
     if (!finEstado) return;
     pedEntregaCarregada = true;
     pedPintarEntrega();
+    try { window.pedVipVer(); } catch (_) {}
   }
   function pedPintarEntrega() {
     const e = finEstado || {}, c = e.entregaCfg || {};

@@ -408,6 +408,8 @@ svg{display:block}
             <button type="button" class="btnSec" id="btnAvisar" style="flex:1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Avisar clientes</button>
             <button type="button" class="btnSec" id="btnEncerrar" style="flex:1;border-color:rgba(255,107,107,.6);color:var(--mv-erro)">Encerrar live</button>
           </div>
+          <!-- 03/10/2026 (P70 etapa 4): Lista VIP. So aparece com a chave ligada pelo dono. -->
+          <button type="button" class="btnSec escondido" id="btnVipAvisar" style="width:100%;margin-top:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="btnVipTxt">Avisar a Lista VIP</span></button>
           <p class="sub" style="font-size:12px;color:var(--mv-txt-3);margin:8px 0 0">Limite desta live: <b id="limiteTxt"></b>. Mantenha esta tela aberta — sair dela encerra a transmissão.</p>
         </div>
         <div id="boxResumo" class="card escondido" style="margin-top:12px"></div>
@@ -633,7 +635,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer, increment }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-10-03-envio';   /* 03/10 (P70 etapa 2): pedido de envio para outra cidade aparece como Envio (cidade/UF) */ /* antes: 2026-10-03-carrinho */   /* 03/10 (P70): pedido do carrinho da live aparece com todos os itens */   /* 01/10 (P65): conforto visual v2 (sem brilho, escala de letra); estudio segue escuro */ /* antes: 2026-09-30-estoque2 */   /* anterior: 2026-09-30-estoque (30/09 madrugada: texto da aba Oferta, alerta amarelo no aviso de pagamento, Recebi/Depois nao fecham a folha, "1 peca reservada"). Antes: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
+  window.MOVIKI_VERSAO='2026-10-03-vip';   /* 03/10 (P70 etapa 4): botao Avisar a Lista VIP durante a live (so com a chave ligada pelo dono). */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): pedido de envio para outra cidade aparece como Envio (cidade/UF) */ /* antes: 2026-10-03-carrinho */   /* 03/10 (P70): pedido do carrinho da live aparece com todos os itens */   /* 01/10 (P65): conforto visual v2 (sem brilho, escala de letra); estudio segue escuro */ /* antes: 2026-09-30-estoque2 */   /* anterior: 2026-09-30-estoque (30/09 madrugada: texto da aba Oferta, alerta amarelo no aviso de pagamento, Recebi/Depois nao fecham a folha, "1 peca reservada"). Antes: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -1134,6 +1136,7 @@ svg{display:block}
         : 'Teste grátis: esta é a sua última live do período de teste. Assinando um plano, a quantidade deixa de ter limite.');
     }
     el('boxAntes').classList.add('escondido'); el('boxDurante').classList.remove('escondido'); el('boxResumo').classList.add('escondido');
+    setTimeout(vipEstudio,2500);
     el('pillVivo').classList.remove('escondido'); el('pillOlho').classList.remove('escondido');
     try{wake=await navigator.wakeLock.request('screen');}catch(_){}
     tickT=setInterval(tick,1000); pulsoT=setInterval(pulso,45000); contaT=setInterval(contar,30000); setTimeout(contar,8000);
@@ -1385,6 +1388,34 @@ svg{display:block}
     const t=(neg.nome||'Estamos')+' ao vivo agora no Moviki! '+(el('titulo').value.trim()?el('titulo').value.trim()+' ':'')+'Entre: '+linkLive();
     try{if(navigator.share){await navigator.share({text:t});return;}}catch(_){return;}
     window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank','noopener');
+  };
+
+  /* ================= Lista VIP (03/10/2026, P70 etapa 4) =================
+     Quem pediu aviso na pagina ou na live recebe notificacao e e-mail pelo
+     Moviki. So com a live no ar, 1 aviso a cada 2 h e 3 por dia (o robo
+     confere). A lista do WhatsApp fica no painel: quem avisa e o lojista. */
+  const ERR_VIP={sem_live:'O aviso só sai com a live no ar. Espere a transmissão começar.',vip_intervalo:'Você já avisou a lista há pouco. O próximo aviso libera em 2 horas.',vip_limite_dia:'Já foram 3 avisos hoje. Amanhã libera de novo.',termo:'O título da live tem uma palavra proibida. Troque o título.',vip_off:'A Lista VIP não está liberada para a sua conta.',nao_pago:'A Lista VIP é dos planos Premium e Enterprise.',sessao:'Sua sessão venceu. Volte ao painel e entre de novo.',rede:'Sem internet. Confira o sinal.'};
+  let vipInfo=null;
+  async function vipEstudio(){
+    const b=el('btnVipAvisar'); if(!b)return;
+    const r=await chamarRobo('loja_vip');
+    if(!(r&&r.ok&&r.ligado)){b.classList.add('escondido');return;}
+    vipInfo=r;
+    const n=(r.contagem.push||0)+(r.contagem.email||0);
+    el('btnVipTxt').textContent='Avisar a Lista VIP ('+n+(n===1?' pessoa':' pessoas')+')';
+    b.classList.remove('escondido');
+  }
+  el('btnVipAvisar').onclick=async()=>{
+    const b=el('btnVipAvisar'); if(b.disabled)return;
+    const n=vipInfo?((vipInfo.contagem.push||0)+(vipInfo.contagem.email||0)):0;
+    if(!confirm('Avisar agora quem está na sua Lista VIP?\n\nVai uma notificação e um e-mail dizendo que você está ao vivo'+(n?' ('+n+(n===1?' pessoa)':' pessoas)'):'')+'. Dá para avisar 1 vez a cada 2 horas, até 3 por dia.'))return;
+    b.disabled=true; const t0=el('btnVipTxt').textContent; el('btnVipTxt').textContent='Avisando…';
+    const r=await chamarRobo('loja_vip_avisar',{dados:{chamada:(el('titulo')&&el('titulo').value||'').trim().slice(0,80)}});
+    b.disabled=false; el('btnVipTxt').textContent=t0;
+    if(!(r&&r.ok)){toast(ERR_VIP[r&&r.erro]||'Não deu para avisar agora. Tente de novo.');return;}
+    const w=Number(r.whatsapp||0);
+    toast('Aviso enviado: '+(r.push?r.push.enviados:0)+' no celular e '+(r.email?r.email.enviados:0)+' por e-mail.'+(w?' A lista do WhatsApp ('+w+') está no painel, em Pedidos > Lista VIP.':''));
+    ev('vip_aviso',{push:r.push?r.push.enviados:0,email:r.email?r.email.enviados:0});
   };
 
   /* ================= Enterprise: oferta ================= */
