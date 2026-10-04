@@ -1267,7 +1267,7 @@ table.mvTab td b{font-weight:700}
           <div class="cd" style="margin-top:14px">
             <div class="cdTopo"><div><div class="cdTit">Recursos novos por lojista</div><div class="cdSub">Tudo o que é novo nasce desligado. Ligue aqui, um lojista por vez, quando decidir abrir. O robô confere a chave em cada compra, então desligar vale na hora.</div></div></div>
             <input class="campo" id="rcBusca" maxlength="60" placeholder="Buscar negócio pelo nome" style="width:100%;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);padding:10px;font:inherit;margin-bottom:8px">
-            <div class="tabRola"><table class="lvTab"><thead><tr><th>Negócio</th><th>Plano</th><th>Carrinho na live</th><th>Envio para outras cidades</th></tr></thead><tbody id="rcLista"><tr><td colspan="4" class="vazio">Toque em Atualizar.</td></tr></tbody></table></div>
+            <div class="tabRola"><table class="lvTab"><thead><tr><th>Negócio</th><th>Plano</th><th>Carrinho na live</th><th>Envio para outras cidades</th><th>Lista VIP (aviso de live)</th></tr></thead><tbody id="rcLista"><tr><td colspan="5" class="vazio">Toque em Atualizar.</td></tr></tbody></table></div>
             <div id="rcAviso" class="aviso"></div>
           </div>
           <div class="cd hide" id="pdDetCd">
@@ -1915,7 +1915,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-03-envio';   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-03-vip';   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -6223,11 +6223,11 @@ table.mvTab td b{font-weight:700}
   }
 
   /* ---- RECURSOS NOVOS POR LOJISTA (03/10/2026, P70) ---- */
-  const RC_NOMES = {carrinho:'Carrinho na live', freteBrasil:'Envio para outras cidades'};
+  const RC_NOMES = {carrinho:'Carrinho na live', freteBrasil:'Envio para outras cidades', listaVip:'Lista VIP (aviso de live)'};
   function rcPintar(){
     const q = String((el('rcBusca')||{}).value||'').trim().toLowerCase();
     const pub = {}; PD_PUB.forEach(c=>{ pub[c.uid]=c; });
-    const lista = NEG.filter(n=>PLANO_DE[n.uid]==='enterprise' || pub[n.uid])
+    const lista = NEG.filter(n=>PLANO_DE[n.uid]==='enterprise' || PLANO_DE[n.uid]==='premium' || pub[n.uid])
       .filter(n=>!q || String(n.nome||'').toLowerCase().indexOf(q)>=0)
       .sort((a,b)=>String(a.nome||'').localeCompare(String(b.nome||''),'pt-BR')).slice(0,200);
     el('rcLista').innerHTML = lista.length ? lista.map(n=>{
@@ -6238,7 +6238,7 @@ table.mvTab td b{font-weight:700}
           '<button type="button" class="pdAcao '+(on?'perigo':'ok')+'" data-rc="'+esc(n.uid)+'" data-k="'+k+'" data-v="'+(on?'0':'1')+'">'+(on?'Desligar':'Ligar')+'</button></td>';
       }).join('');
       return '<tr><td><b>'+esc(n.nome||n.uid)+'</b></td><td>'+esc(pdPlano(n.uid))+'</td>'+cel+'</tr>';
-    }).join('') : '<tr><td colspan="4" class="vazio">Nenhum lojista Enterprise ou com recebimento configurado.</td></tr>';
+    }).join('') : '<tr><td colspan="5" class="vazio">Nenhum lojista Premium, Enterprise ou com recebimento configurado.</td></tr>';
   }
   async function rcMudar(uid, k, ligar){
     if(!confirm((ligar?'Ligar ':'Desligar ')+(RC_NOMES[k]||k)+' para '+pdNome(uid)+'?')) return;
