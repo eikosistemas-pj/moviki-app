@@ -4615,7 +4615,7 @@ window.mvAbaInicial=function(){
      do fundador; Pro/Premium pagante vai ao WhatsApp (troca pela equipe);
      Enterprise nao ve; some depois de 27/11 ou com o lote fechado; "x" esconde
      por 3 dias. */
-  window.MOVIKI_VERSAO='2026-10-05-aulasped';   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-05-aulasped2';   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -10912,8 +10912,17 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      no fim do bloco #pedEnvBox, que so aparece com a chave freteBrasil. FORA
      do cartao roxo (PEDAULAS) enquanto freteBrasil/freteAuto forem chave por
      lojista: senao vira "aula nova" para quem nem ve a tela. */
-  { n:'Envio para outras cidades', sel:'#pedEnvBox', v:[
+  { n:'Envio para outras cidades', sel:'#pedEnvBox', so:'#pedEnvBox', v:[
     { k:'mod-pedidos-envio', t:'Enviar para outras cidades: frete e rastreio', d:'1:49', id:'FvdijWk2QkQ' } ]},
+  /* LISTA VIP e QUEM ENTREGA NA SUA CIDADE - 05/10/2026 (tarde). Aulas novas
+     (aprovadas pelo Paulo em 05/10), embutidas no fim da propria sanfona.
+     FORA do cartao roxo enquanto listaVip e logistica forem chave por lojista.
+     `so` = o cartao do recurso: escondido (recurso desligado), a aula tambem
+     sai da aba Tutoriais, para ninguem ver aula de tela que nao tem. */
+  { n:'Lista VIP', sel:'#acc-ped-vip-body', so:'#acc-ped-vip', v:[
+    { k:'mod-pedidos-vip', t:'Lista VIP: encha a sua sala antes da live', d:'1:10', id:'xXfUAufXwNI' } ]},
+  { n:'Quem entrega na sua cidade', sel:'#acc-ped-log-body', so:'#acc-ped-log', v:[
+    { k:'mod-pedidos-logistica', t:'Quem entrega na sua cidade: entregadores e transportadoras', d:'1:06', id:'RpyCDiolMRw' } ]},
   /* FINANCEIRO - 16/09/2026, regravada em 27/09 (a lista de vendas mudou para
      a Central de Pedidos). Cobre os dois modos de receber e ligar a venda com
      o aceite do termo. Continua embutida no fim da propria aba. */
@@ -11127,6 +11136,9 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     var grade=document.createElement('div'); grade.className='mvTutGrade';
     var n=0;
     MOD().forEach(function(m){
+      /* 05/10/2026: aula de recurso liberado conta por conta so aparece para
+         quem tem o recurso (o cartao `so` nao esta escondido). */
+      if(m.so){ try{ var dono=document.querySelector(m.so); if(!dono || dono.classList.contains('escondido')) return; }catch(_){ return; } }
       prontos(m).forEach(function(v){ grade.appendChild(cartao(v,m.n)); n++; });
     });
     if(!n){ corpo.innerHTML='<p class="mvTutVazio">Os tutoriais em vídeo estão sendo gravados. Em breve eles aparecem aqui, e também no fim de cada tela do painel.</p>'; return; }
