@@ -4615,7 +4615,7 @@ window.mvAbaInicial=function(){
      do fundador; Pro/Premium pagante vai ao WhatsApp (troca pela equipe);
      Enterprise nao ve; some depois de 27/11 ou com o lote fechado; "x" esconde
      por 3 dias. */
-  window.MOVIKI_VERSAO='2026-10-04-freteauto';   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-05-aulasped';   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -10902,6 +10902,18 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     { k:'mod-pedidos-comanda', t:'Imprimir a comanda do pedido',                                d:'1:08', id:'1KRjmefJFbk' },
     { k:'mod-pedidos-lote',    t:'Enterprise: imprimir a coluna inteira e a lista de separação', d:'1:11', id:'myU8_lgHhnw' },
     { k:'mod-pedidos-dados',   t:'Os dados do seu cliente: cuidado e prazo',                    d:'1:13', id:'1zMvqXPedD8' } ]},
+  /* ESTOQUE - 05/10/2026. Aula nova (aprovada pelo Paulo em 04/10), embutida
+     no fim da sanfona Estoque e contada no cartao roxo da Central (vira "Tem
+     uma aula nova" calma para quem ja tinha as oito). */
+  { n:'Estoque', sel:'#acc-ped-estoque-body', v:[
+    { k:'mod-pedidos-estoque', t:'Estoque: quantas peças ainda dá para vender', d:'1:01', id:'FcDeU8jKm2A' } ]},
+  /* ENVIO PARA OUTRAS CIDADES - 05/10/2026. Aula nova (aprovada em 04/10):
+     envio por regiao, frete automatico pelo Melhor Envio e rastreio. Embutida
+     no fim do bloco #pedEnvBox, que so aparece com a chave freteBrasil. FORA
+     do cartao roxo (PEDAULAS) enquanto freteBrasil/freteAuto forem chave por
+     lojista: senao vira "aula nova" para quem nem ve a tela. */
+  { n:'Envio para outras cidades', sel:'#pedEnvBox', v:[
+    { k:'mod-pedidos-envio', t:'Enviar para outras cidades: frete e rastreio', d:'1:49', id:'FvdijWk2QkQ' } ]},
   /* FINANCEIRO - 16/09/2026, regravada em 27/09 (a lista de vendas mudou para
      a Central de Pedidos). Cobre os dois modos de receber e ligar a venda com
      o aceite do termo. Continua embutida no fim da propria aba. */
@@ -11609,11 +11621,13 @@ window.MOVIKI_TUTORIAIS = { modulos: [
 
      Aparece so para quem tem a Central (Premium e Enterprise), em dois
      lugares: no Inicio, abaixo das outras faixas roxas, e no alto da aba
-     Pedidos. Conta as seis da Central + a do Financeiro + a do Meu dinheiro (30/09).
+     Pedidos. Conta as seis da Central + a do Financeiro + a do Meu dinheiro (30/09)
+     + a do Estoque (05/10). A do Envio fica fora enquanto for chave por lojista.
      O botao abre a proxima aula que falta, na janela de tutoriais; a aula
      conta aos 90% percorridos, pelo mesmo relogio de todas as outras. */
   var PEDAULAS=['mod-pedidos-central','mod-pedidos-etapas','mod-pedidos-entrega',
-                'mod-pedidos-comanda','mod-pedidos-lote','mod-pedidos-dados','mod-financeiro','mod-meu-dinheiro'];
+                'mod-pedidos-comanda','mod-pedidos-lote','mod-pedidos-dados','mod-financeiro','mod-meu-dinheiro',
+                'mod-pedidos-estoque'];
   var PED_LOCAIS=[];
   function pedAulas(){ var r=[]; PEDAULAS.forEach(function(k){ var v=achar(k); if(v) r.push(v); }); return r; }
   function pedFeitas(){
