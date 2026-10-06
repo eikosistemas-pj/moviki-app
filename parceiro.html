@@ -1719,7 +1719,7 @@ body{background-image:none}
      cartao do evento (os videos de Natal da Onda 3 tem arvore e pisca-pisca e
      so entram em 20/11). Com ?evento=<id> na previa, tudo aparece, para
      conferir antes. */
-  window.MOVIKI_VERSAO = '2026-10-01-conforto2';   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
+  window.MOVIKI_VERSAO = '2026-10-06-pixcarimbo';   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -3236,6 +3236,7 @@ body{background-image:none}
     const b = el('btnSalvar'); b.disabled = true; b.textContent = 'Salvando…';
     try{
       const dadosNovos = (MEU.status === 'aprovado') ? { pix } : { nome, pix };  /* 23/09: aprovado nao troca o nome sozinho */
+      if (pix !== (MEU.pix || '')) dadosNovos.pixAtualizadoEm = serverTimestamp();  /* 06/10 (regras v33): trocar o Pix carimba a hora; o dono ve o alerta no saque */
       await updateDoc(doc(db,'parceiros',MEU.uid), dadosNovos);
       if(MEU.status !== 'aprovado') MEU.nome = nome; MEU.pix = pix; render();
       show('dadosView'); hide('dadosEdit');
