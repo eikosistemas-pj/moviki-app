@@ -3,6 +3,27 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================================
+    //  v34 — 06/10/2026 — AVALIACAO SO PELO ROBO (plano de seguranca 2.2)
+    //    Decisao do Paulo: a avaliacao continua SEM login do cliente, mas
+    //    passa a entrar pelo moviki-robo (api/avaliacao.js), que confere o
+    //    App Check e aplica limite por aparelho (1 por negocio/30 dias), por
+    //    IP (5/h) e por negocio (60/h). Antes, qualquer navegador gravava
+    //    direto e nao havia limite por pessoa: concorrente afogava uma loja
+    //    em notas 1 e o lojista nao podia apagar.
+    //    a. negocios/{uid}/avaliacoes: create e delete so pelo Admin SDK
+    //       (navegador: false). Apagar pelo robo RECALCULA o resumo — era a
+    //       pendencia 'admin apagou e o resumo nao desconta'. O dono do
+    //       negocio continua so RESPONDENDO (update igual a v31).
+    //    b. negocios/{uid}/resumo/avaliacoes: so o robo/admin escreve.
+    //    c. denuncias_avaliacao/{negocioUid_avId}: lojista denuncia pelo
+    //       robo; le as do PROPRIO negocio (consulta por negocioUid); admin
+    //       le tudo; ninguem escreve pelo navegador.
+    //  O resto do arquivo e a v33, letra por letra.
+    //  ORDEM: publicar DEPOIS do moviki-robo (api/avaliacao.js) E do
+    //  moviki/404.html 2026-10-06-avalrobo no ar. Invertido, avaliacao
+    //  nenhuma entra ate a pagina nova subir.
+    // ==========================================================
+
     //  v33 — 06/10/2026 — PIX DO PARCEIRO COM CARIMBO + APELIDO DE MARCA
     //  (plano de acao de seguranca, itens 1.3 e 2.1)
     //    a. parceiros/{uid} update: quando o campo `pix` MUDA, a escrita tem
@@ -642,22 +663,27 @@ service cloud.firestore {
       // documento e quebra o layout da pagina publica.
       match /avaliacoes/{avId} {
         allow read: if true;
-        allow create: if request.resource.data.nota is int
-                      && request.resource.data.nota >= 1
-                      && request.resource.data.nota <= 5
-                      && request.resource.data.nome is string
-                      && request.resource.data.nome.size() >= 2
-                      && request.resource.data.nome.size() <= 60
-                      && ( !('comentario' in request.resource.data)
-                           || ( request.resource.data.comentario is string
-                                && request.resource.data.comentario.size() <= 300 ) )
-                      && request.resource.data.keys().hasOnly(['nota','nome','comentario','criadoEm'])
+        // v34 (06/10/2026): avaliacao nasce SO pelo robo (api/avaliacao.js),
+        // com App Check e limite por aparelho/IP/negocio. A validacao de
+        // formato abaixo continua no robo; aqui o navegador e negado.
+        allow create: if false;
+        // (regra antiga, v28-v30, mantida como registro do formato aceito)
+        // allow create: if request.resource.data.nota is int
+        //               && request.resource.data.nota >= 1
+        //               && request.resource.data.nota <= 5
+        //               && request.resource.data.nome is string
+        //               && request.resource.data.nome.size() >= 2
+        //               && request.resource.data.nome.size() <= 60
+        //               && ( !('comentario' in request.resource.data)
+        //                    || ( request.resource.data.comentario is string
+        //                         && request.resource.data.comentario.size() <= 300 ) )
+        //               && request.resource.data.keys().hasOnly(['nota','nome','comentario','criadoEm'])
                       // v30: data da avaliacao e a do servidor (nao se forja data antiga/futura)
-                      && request.resource.data.criadoEm == request.time
+        //               && request.resource.data.criadoEm == request.time
                       // v28 (23/09/2026): id no formato do addDoc (20 letras/numeros).
                       // O id era livre, e um id com apostrofo virava codigo nos
                       // botoes Responder/Editar do painel do lojista.
-                      && avId.matches('^[A-Za-z0-9]{20}$');
+        //               && avId.matches('^[A-Za-z0-9]{20}$');
         // v26: moderar (editar/apagar avaliacao) era o curinga que permitia.
         // v31 (25/09/2026): o dono so RESPONDE. Antes ele podia trocar a nota,
         // o nome e o comentario do cliente (ou apagar a avaliacao ruim) e a
@@ -668,7 +694,9 @@ service cloud.firestore {
                            && request.resource.data.resposta is string
                            && request.resource.data.resposta.size() <= 500
                            && request.resource.data.respostaEm == request.time );
-        allow delete: if isAdmin();
+        // v34: apagar so pelo robo (recalcula o resumo). Admin apaga pelo painel
+        // do dono, que chama api/avaliacao.js adm_apagar.
+        allow delete: if false;
       }
 
       // ---- 26/08/2026: RESUMO DE AVALIAÇÕES ----
@@ -691,6 +719,11 @@ service cloud.firestore {
       // O `update` NAO mudou: continua +1 por vez, entre 1 e 5.
       match /resumo/avaliacoes {
         allow read: if true;
+        // v34 (06/10/2026): o resumo sobe junto com a avaliacao DENTRO do robo
+        // (Admin SDK, transacao). Visitante nao escreve mais aqui.
+        allow create, update: if isAdmin();
+        allow delete: if isAdmin();
+        // (regras antigas v19-v32 do visitante, mantidas como registro)
         // v30 (23/09/2026): o visitante so soma +1 no resumo JUNTO com uma
         // avaliacao nova, na mesma escrita (ultimaAv = id dela). A avaliacao
         // tem que nao existir antes e existir depois, e a soma sobe exatamente
@@ -699,23 +732,22 @@ service cloud.firestore {
         // v32 (03/10/2026): o LOJISTA saiu daqui. Ele gravava {n:2000, soma:10000}
         // e a pagina publica mostrava 5,0 com 2.000 avaliacoes. O resumo so sobe
         // junto com uma avaliacao real; consertar resumo torto e do admin.
-        allow create: if isAdmin()
-                      || ( request.resource.data.keys().hasOnly(['n','soma','ultimaAv'])
-                           && request.resource.data.n == 1
-                           && request.resource.data.ultimaAv is string
-                           && request.resource.data.ultimaAv.size() <= 64
-                           && !exists(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
-                           && existsAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
-                           && request.resource.data.soma == getAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv)).data.nota );
-        allow update: if isAdmin()
-                      || ( request.resource.data.keys().hasOnly(['n','soma','ultimaAv'])
-                           && request.resource.data.n == resource.data.n + 1
-                           && request.resource.data.ultimaAv is string
-                           && request.resource.data.ultimaAv.size() <= 64
-                           && !exists(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
-                           && existsAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
-                           && request.resource.data.soma == resource.data.soma + getAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv)).data.nota );
-        allow delete: if isAdmin();
+        // allow create: if isAdmin()
+        //               || ( request.resource.data.keys().hasOnly(['n','soma','ultimaAv'])
+        //                    && request.resource.data.n == 1
+        //                    && request.resource.data.ultimaAv is string
+        //                    && request.resource.data.ultimaAv.size() <= 64
+        //                    && !exists(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
+        //                    && existsAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
+        //                    && request.resource.data.soma == getAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv)).data.nota );
+        // allow update: if isAdmin()
+        //               || ( request.resource.data.keys().hasOnly(['n','soma','ultimaAv'])
+        //                    && request.resource.data.n == resource.data.n + 1
+        //                    && request.resource.data.ultimaAv is string
+        //                    && request.resource.data.ultimaAv.size() <= 64
+        //                    && !exists(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
+        //                    && existsAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv))
+        //                    && request.resource.data.soma == resource.data.soma + getAfter(/databases/$(database)/documents/negocios/$(uid)/avaliacoes/$(request.resource.data.ultimaAv)).data.nota );
       }
 
       // ---- 11/09/2026 (v23): MODO LIVE ----
@@ -1424,6 +1456,15 @@ service cloud.firestore {
                          && request.resource.data.ativo == false );
 
       allow delete: if isAdmin();
+    }
+
+    // v34 (06/10/2026): denuncia de avaliacao feita pelo lojista (api/avaliacao.js).
+    // id = {negocioUid}_{avId}. O lojista le as do proprio negocio (consulta
+    // com where negocioUid == uid); o admin le tudo; escrita so pelo robo.
+    match /denuncias_avaliacao/{id} {
+      allow read: if isAdmin()
+                  || ( request.auth != null && resource.data.negocioUid == request.auth.uid );
+      allow write: if false;
     }
 
     match /slugs/{slug} {
