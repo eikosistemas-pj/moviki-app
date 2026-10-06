@@ -32,14 +32,25 @@ REPOS_CODIGO = [
     "moviki-assistente-social",
 ]
 
+# 06/10/2026 (plano de seguranca 1.2): o mapa mestre COMPLETO so existe nos
+# repositorios privados e no vault. Os publicos levam um CLAUDE.md curto,
+# identico entre si, sem conta, endpoint, colecao ou risco aceito.
+REPOS_PRIVADOS = ["moviki-robo", "moviki-app", "moviki-ai"]
+REPOS_PUBLICOS = ["moviki", "moviki-assistente-social"]
+
 # O vault entra so na conferencia do mapa: nao e repositorio de codigo.
-REPOS_MAPA = REPOS_CODIGO + ["moviki-vault"]
+REPOS_MAPA = REPOS_PRIVADOS + ["moviki-vault"]
 
 ARQUIVOS = [
-    ("CLAUDE.md", REPOS_MAPA, "mapa mestre"),
+    ("CLAUDE.md", REPOS_MAPA, "mapa mestre (privados + vault)"),
+    ("CLAUDE.md", REPOS_PUBLICOS, "CLAUDE.md publico (versao curta)"),
     (".claude/skills/gabinete/SKILL.md", REPOS_CODIGO, "cadeira Gabinete"),
     (".claude/skills/guarda/SKILL.md", REPOS_CODIGO, "cadeira Guarda"),
 ]
+
+# Se qualquer um destes aparecer no CLAUDE.md de repositorio PUBLICO, o mapa
+# completo vazou para la: acusa como problema, mesmo com as copias iguais.
+VAZAMENTO_PUBLICO = [b"@gmail.com", b"chave mestra", b"Riscos aceitos", b"FIREBASE_SERVICE_ACCOUNT", b"checkout_contas"]
 
 
 class ErroGitHub(Exception):
@@ -82,6 +93,10 @@ def conferir():
                 ausentes.append(repo)
             else:
                 achados[repo] = (digest, len(bruto))
+                if repos is REPOS_PUBLICOS:
+                    vazou = [m.decode() for m in VAZAMENTO_PUBLICO if m in bruto]
+                    if vazou:
+                        problemas.append(f"{rotulo}: {repo} tem conteudo do mapa completo ({', '.join(vazou)}) — repositorio publico")
 
         linhas.append(f"### {rotulo} — `{caminho}`")
         linhas.append("")
