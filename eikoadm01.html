@@ -1931,7 +1931,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-04-freteauto';   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-06-pixalerta';   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2982,6 +2982,7 @@ table.mvTab td b{font-weight:700}
         '',
         'Valor: ' + brl(d.valor),
         'Chave: ' + d.chave + '  (' + d.tipoChave + ')',
+        (d.alertaPix ? '⚠ ' + d.alertaPix : ''),
         'Titular: ' + (d.titular || '(o banco não informou)'),
         (d.documento ? 'Documento: ' + d.documento : ''),
         (d.banco ? 'Banco: ' + d.banco : ''),
@@ -3069,6 +3070,7 @@ table.mvTab td b{font-weight:700}
       'Parceiro: ' + nomeParceiro(uid),
       'Valor: ' + brl(d.valor),
       'Chave: ' + d.chave + '  (' + d.tipoChave + ')',
+      (d.alertaPix ? '⚠ ' + d.alertaPix : ''),
       'Titular: ' + (d.titular || '(o banco não informou)'),
       (d.documento ? 'Documento: ' + d.documento : ''),
       (d.banco ? 'Banco: ' + d.banco : ''),
