@@ -1778,6 +1778,16 @@ table.mvTab td b{font-weight:700}
             </div>
             <div class="cdSub" id="rgSub" style="margin-top:6px"></div>
           </div>
+          <!-- 06/10/2026 (plano de seguranca 2.2): avaliacoes denunciadas pelos lojistas (robo /api/avaliacao) -->
+          <div class="cd" id="cdDenuncias">
+            <div class="cdTopo"><div><div class="cdTit">Avaliações denunciadas</div><div class="cdSub">O lojista marca a avaliação que acha falsa ou ofensiva. Você decide: apagar (a nota média é recalculada) ou manter. A avaliação só nasce pelo robô, com limite por aparelho e por rede.</div></div><button type="button" class="btnMini" id="dnAtualizar">Atualizar</button></div>
+            <div id="dnLista" class="cdSub">Carregando…</div>
+            <div class="cfgLinha" style="margin-top:10px">
+              <div class="cfgTxt"><b>Recalcular a nota de um negócio</b><span>Soma de novo todas as avaliações que existem. Use se a média de um negócio parecer torta.</span></div>
+              <div style="display:flex;gap:8px;align-items:center"><input type="text" id="dnRecalcUid" placeholder="uid do negócio" style="width:220px"><button type="button" class="btnMini" id="dnRecalc">Recalcular</button></div>
+            </div>
+            <div class="cdSub" id="dnMsg" style="margin-top:6px"></div>
+          </div>
           <div class="cd">
             <div class="cdTopo"><div class="cdTit">Aprovação automática de parceiros</div></div>
             <div class="cfgLinha">
@@ -1931,7 +1941,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-06-pixalerta';   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-06-denuncias';   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -3682,10 +3692,72 @@ table.mvTab td b{font-weight:700}
   }
   if(el('rgConferir')) el('rgConferir').addEventListener('click', ()=>regrasConferir(true));
 
+  /* ==========================================================
+     AVALIACOES DENUNCIADAS — 06/10/2026 (plano de seguranca 2.2)
+     Tudo pelo robo (api/avaliacao.js, so com sessao do Google): lista,
+     apagar (recalcula o resumo do negocio) e manter.
+     ========================================================== */
+  let DENUNCIAS = [];
+  let DENUNCIAS_ALERTA = '';
+  async function dnRobo(corpo){
+    const tk = await USER.getIdToken();
+    const r = await fetch('https://moviki-robo.vercel.app/api/avaliacao', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(Object.assign({idToken:tk}, corpo))});
+    const j = await r.json().catch(()=>({}));
+    if(!r.ok || !j.ok) throw new Error(j.mensagem || j.erro || ('HTTP ' + r.status));
+    return j;
+  }
+  function dnData(ms){ if(!ms) return '—'; const d=new Date(ms); return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
+  const DN_MOTIVO = {falsa:'Avaliação falsa', concorrente:'Concorrente', ofensiva:'Ofensiva', spam:'Spam / propaganda', outro:'Outro'};
+  function dnPintar(){
+    const cx = el('dnLista'); if(!cx) return;
+    if(!DENUNCIAS.length){ cx.innerHTML = 'Nenhuma denúncia aberta.'; return; }
+    cx.innerHTML = DENUNCIAS.map(d=>{
+      const est = '★'.repeat(Math.max(0,Math.min(5,Number(d.nota)||0))) + '☆'.repeat(5-Math.max(0,Math.min(5,Number(d.nota)||0)));
+      return '<div class="cfgLinha" style="align-items:flex-start;gap:12px">'
+        + '<div class="cfgTxt" style="flex:1">'
+        + '<b>' + esc(d.slug || d.negocioUid) + ' · ' + est + '</b>'
+        + '<span>' + esc(d.nome || 'Cliente') + ': ' + esc(d.comentario || '(sem comentário)') + '</span>'
+        + '<span style="margin-top:4px;display:block">Motivo: <b>' + esc(DN_MOTIVO[d.motivo] || d.motivo) + '</b>' + (d.detalhe ? ' — ' + esc(d.detalhe) : '') + ' · ' + dnData(d.em) + '</span>'
+        + '</div>'
+        + '<div style="display:flex;gap:6px;flex-direction:column">'
+        + '<button type="button" class="btnMini perigo" onclick="dnDecidir(\'' + esc(d.negocioUid) + '\',\'' + esc(d.avId) + '\',\'adm_apagar\')">Apagar avaliação</button>'
+        + '<button type="button" class="btnMini" onclick="dnDecidir(\'' + esc(d.negocioUid) + '\',\'' + esc(d.avId) + '\',\'adm_manter\')">Manter</button>'
+        + '</div></div>';
+    }).join('');
+  }
+  async function dnCarregar(){
+    try{
+      if(!USER) return;
+      const j = await dnRobo({acao:'adm_lista'});
+      DENUNCIAS = (j.itens || []).filter(d => /^[A-Za-z0-9]{20,36}$/.test(String(d.negocioUid||'')) && /^[A-Za-z0-9]{20}$/.test(String(d.avId||'')));
+      DENUNCIAS_ALERTA = DENUNCIAS.length ? (DENUNCIAS.length === 1 ? '1 avaliação denunciada esperando você' : DENUNCIAS.length + ' avaliações denunciadas esperando você') : '';
+      dnPintar(); pintarPendencias();
+    }catch(e){ const cx = el('dnLista'); if(cx) cx.textContent = 'Não consegui carregar agora (' + (e && e.message || 'erro') + ').'; }
+  }
+  window.dnDecidir = async function(negocioUid, avId, acao){
+    if(acao === 'adm_apagar' && !confirm('Apagar esta avaliação? A nota média do negócio será recalculada. Não tem volta.')) return;
+    txt('dnMsg', 'Enviando…');
+    try{
+      const j = await dnRobo({acao:acao, negocioUid:negocioUid, avId:avId});
+      txt('dnMsg', acao === 'adm_apagar' ? ('Avaliação apagada. Resumo agora: ' + (j.resumo ? j.resumo.n + ' avaliações, soma ' + j.resumo.soma : 'recalculado') + '.') : 'Denúncia marcada como analisada; a avaliação fica.');
+      await dnCarregar();
+    }catch(e){ txt('dnMsg', 'Não deu: ' + (e && e.message || 'erro')); }
+  };
+  if(el('dnAtualizar')) el('dnAtualizar').addEventListener('click', dnCarregar);
+  if(el('dnRecalc')) el('dnRecalc').addEventListener('click', async ()=>{
+    const uid = (el('dnRecalcUid').value || '').trim();
+    if(!/^[A-Za-z0-9]{20,36}$/.test(uid)){ txt('dnMsg', 'Cole o uid do negócio (20 a 36 letras e números).'); return; }
+    txt('dnMsg', 'Recalculando…');
+    try{ const j = await dnRobo({acao:'adm_recalcular', negocioUid:uid}); txt('dnMsg', 'Resumo recalculado: ' + j.resumo.n + ' avaliações, soma ' + j.resumo.soma + '.'); }
+    catch(e){ txt('dnMsg', 'Não deu: ' + (e && e.message || 'erro')); }
+  });
+  setTimeout(()=>{ try{ dnCarregar(); }catch(e){} }, 3200);
+
   function pintarPendencias(){
     const itens = [];
     if(VIK_ALERTA) itens.push({n:1, t:VIK_ALERTA, ir:'visao'});
     if(REGRAS_ALERTA) itens.push({n:1, t:REGRAS_ALERTA, ir:'config'});
+    if(DENUNCIAS_ALERTA) itens.push({n:DENUNCIAS.length, t:DENUNCIAS_ALERTA, ir:'config'});
     const pp = PARC.filter(p=>p.status === 'pendente').length;
     const ps = SAQ.filter(s=>s.status === 'solicitado' || s.status === 'falhou').length;  /* 23/09: Pix que falhou tambem precisa de voce */
     const pe = EXC.length;
