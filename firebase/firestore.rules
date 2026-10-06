@@ -3,6 +3,21 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================================
+    //  v33 — 06/10/2026 — PIX DO PARCEIRO COM CARIMBO + APELIDO DE MARCA
+    //  (plano de acao de seguranca, itens 1.3 e 2.1)
+    //    a. parceiros/{uid} update: quando o campo `pix` MUDA, a escrita tem
+    //       que trazer pixAtualizadoEm == hora do servidor. O pagar-saque le
+    //       esse carimbo e avisa o dono quando a chave mudou nas ultimas 48 h.
+    //    b. slugs e parceiro_slugs: apelido reservado ou que contenha 'moviki'
+    //       e NEGADO (golpista criava moviki.com.br/pix). Funcao apelidoLivre().
+    //  O resto do arquivo e a v32, letra por letra.
+    //  ORDEM: quem grava o Pix do parceiro e o parceiro.html (navegador), nao o
+    //  robo. Publicar esta regra e subir o parceiro.html 2026-10-06-pixcarimbo
+    //  na mesma hora: regra primeiro, html logo em seguida. Na janela entre os
+    //  dois, so a TROCA de Pix do parceiro falha ("Nao foi possivel salvar");
+    //  nada mais e afetado. O robo (pixtrava) e independente desta regra.
+    // ==========================================================
+
     //  v32 — 03/10/2026 — DONO SO COM O GOOGLE
     //    isAdmin() passa a exigir, alem do documento em admins/{uid}, que a
     //    sessao tenha sido aberta pelo Google (sign_in_provider 'google.com').
@@ -1103,7 +1118,7 @@ service cloud.firestore {
       // que é material de apoio, não valor.
       allow update: if request.auth != null && (
                       ( request.auth.uid == uid
-                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nome','pix','aulasVistas','aulasEm','aceiteConduta'])
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nome','pix','pixAtualizadoEm','aulasVistas','aulasEm','aceiteConduta'])
                         // v30: o nome aparece no cracha publico — depois de aprovado so a equipe troca.
                         && ( !request.resource.data.diff(resource.data).affectedKeys().hasAny(['nome'])
                              || ( resource.data.get('status', '') != 'aprovado'
@@ -1113,7 +1128,10 @@ service cloud.firestore {
                         && ( !request.resource.data.diff(resource.data).affectedKeys().hasAny(['pix'])
                              || ( request.resource.data.pix is string
                                   && request.resource.data.pix.size() >= 3
-                                  && request.resource.data.pix.size() <= 140 ) )
+                                  && request.resource.data.pix.size() <= 140
+                                  && request.resource.data.pixAtualizadoEm == request.time ) )   // v33
+                        && ( !request.resource.data.diff(resource.data).affectedKeys().hasAny(['pixAtualizadoEm'])
+                             || request.resource.data.diff(resource.data).affectedKeys().hasAny(['pix']) )
                         && ( !('aulasVistas' in request.resource.data)
                              || ( request.resource.data.aulasVistas is list
                                   && request.resource.data.aulasVistas.size() <= 40 ) )
@@ -1155,7 +1173,8 @@ service cloud.firestore {
       allow create: if request.auth != null
                     && request.resource.data.keys().hasOnly(['uid'])
                     && request.resource.data.uid == request.auth.uid
-                    && slug.size() >= 3 && slug.size() <= 40;
+                    && slug.size() >= 3 && slug.size() <= 40
+                    && apelidoLivre(slug);   // v33
       allow update, delete: if isAdmin();
     }
 
@@ -1414,7 +1433,8 @@ service cloud.firestore {
                     && !exists(/databases/$(database)/documents/ponto_slugs/$(slug))
                     && request.resource.data.keys().hasOnly(['uid'])
                     && request.resource.data.uid == request.auth.uid
-                    && slug.size() >= 3 && slug.size() <= 40;
+                    && slug.size() >= 3 && slug.size() <= 40
+                    && apelidoLivre(slug);   // v33
       // v32: o dono do endereco so regrava {uid: ele mesmo}; antes gravava
       // qualquer campo (ou o uid de outro negocio) por cima.
       allow update: if request.auth != null
@@ -1620,6 +1640,12 @@ service cloud.firestore {
         && (request.resource.data.get('b11', 0) is int
         && request.resource.data.get('b11', 0) >= (resource == null ? 0 : resource.data.get('b11', 0))
         && request.resource.data.get('b11', 0) <= (resource == null ? 0 : resource.data.get('b11', 0)) + 1);
+    }
+
+    // v33: apelido que um golpista usaria para se passar pelo Moviki.
+    function apelidoLivre(slug) {
+      return !(slug in ['suporte','oficial','pix','pagamento','pagamentos','admin','ajuda','seguranca','sac','login','atendimento','contato','moviki-oficial'])
+        && !slug.matches('.*moviki.*');
     }
 
     function isAdmin() {
