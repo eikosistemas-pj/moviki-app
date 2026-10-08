@@ -1,4 +1,5 @@
 /* ==========================================================================
+   versao 2026-10-07-lojas (P75 fase 1: macro "Loja de bairro / Shopping" com 9 ramos + Padaria e Acougue em Alimentacao; o trafego pago de lojas nao achava o proprio ramo)
    MOVIKI — Registro de Segmentação do Quiz de Onboarding
    Caminho no repo: moviki-app/quiz/quiz-segmentos.js   (pasta NOVA, isolada)
 
@@ -174,6 +175,158 @@
 window.MOVIKI_SEGMENTOS = [
 
   {
+    id: 'lojas',
+    label: 'Loja de bairro / Shopping',
+    emoji: '🏬',
+    icone: 'quiz/icones/lojas.png', // 07/10/2026 (P75): sem PNG ainda, cai no emoji
+    /* 07/10/2026 (P75, fase 1): macro novo. O trafego pago chega de anuncios
+       de lojas (farmacia, pet shop, bebe...) e o quiz so tinha ramos de
+       negocio itinerante: quem vendia farmacia nao achava o proprio ramo.
+       Vem PRIMEIRO de proposito. Moda, cosmeticos, suplementos, otica e
+       celular continuam nos macros de sempre. */
+    subtipos: [
+      {
+        id: 'farmacia',
+        label: 'Farmácia / Drogaria',
+        emoji: '💊',
+        icone: 'quiz/icones/farmacia.png', // 07/10/2026 (P75): sem PNG ainda, cai no emoji
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🧴 Dermocosméticos', produtos: [
+            { nome: 'Protetor Solar FPS 50', preco: '49,90', acabando: false },
+            { nome: 'Hidratante Corporal 400ml', preco: '29,90', acabando: false }
+          ] },
+          { categoria: '🪥 Higiene', produtos: [
+            { nome: 'Kit Escova + Creme Dental', preco: '15,90', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'lojapet',
+        label: 'Pet Shop (loja)',
+        emoji: '🐾',
+        icone: 'quiz/icones/lojapet.png', // 07/10/2026 (P75): sem PNG ainda, cai no emoji
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🐶 Acessórios', produtos: [
+            { nome: 'Coleira Ajustável', preco: '24,90', acabando: false, descricao: 'Tamanhos P, M e G.' },
+            { nome: 'Caminha Pet Média', preco: '89,90', acabando: false }
+          ] },
+          { categoria: '🦴 Petiscos', produtos: [
+            { nome: 'Petisco Natural 100g', preco: '14,90', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'bebe',
+        label: 'Bebê e Infantil',
+        emoji: '🍼',
+        icone: 'quiz/icones/bebe.png', // 07/10/2026 (P75): sem PNG ainda, cai no emoji
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '👶 Enxoval', produtos: [
+            { nome: 'Kit Body 3 Peças', preco: '59,90', acabando: false, descricao: 'Tamanhos RN a G.' },
+            { nome: 'Manta de Algodão', preco: '39,90', acabando: false }
+          ] },
+          { categoria: '🧸 Acessórios', produtos: [
+            { nome: 'Mordedor de Silicone', preco: '19,90', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'brinquedos',
+        label: 'Brinquedos',
+        emoji: '🧸',
+        icone: 'quiz/icones/brinquedos.png', // 07/10/2026 (P75): sem PNG ainda, cai no emoji
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🎲 Brinquedos', produtos: [
+            { nome: 'Jogo de Tabuleiro Família', preco: '79,90', acabando: false, descricao: 'A partir de 6 anos.' },
+            { nome: 'Carrinho de Fricção', preco: '29,90', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'esportes',
+        label: 'Esporte e Fitness',
+        emoji: '🏋️',
+        icone: 'quiz/icones/esportes.png', // 07/10/2026 (P75): sem PNG ainda, cai no emoji
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '👟 Esporte', produtos: [
+            { nome: 'Garrafa Térmica 1L', preco: '49,90', acabando: false },
+            { nome: 'Faixa Elástica Kit 3', preco: '39,90', acabando: false, descricao: 'Intensidades leve, média e forte.' }
+          ] }
+        ]
+      },
+      {
+        id: 'casa',
+        label: 'Casa, Cama, Mesa e Banho',
+        emoji: '🛏️',
+        icone: 'quiz/icones/casa.png', // 07/10/2026 (P75): sem PNG ainda, cai no emoji
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🛏️ Cama e Banho', produtos: [
+            { nome: 'Jogo de Lençol Casal', preco: '119,90', acabando: false, descricao: 'Algodão, várias cores.' },
+            { nome: 'Toalha de Banho', preco: '34,90', acabando: false }
+          ] },
+          { categoria: '🍽️ Utilidades', produtos: [
+            { nome: 'Kit Potes Herméticos', preco: '49,90', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'eletronicos',
+        label: 'Eletrônicos e Games',
+        emoji: '🎮',
+        icone: 'quiz/icones/eletronicos.png', // 07/10/2026 (P75): sem PNG ainda, cai no emoji
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🎮 Games e Eletrônicos', produtos: [
+            { nome: 'Controle sem Fio', preco: '149,90', acabando: false, descricao: 'Compatível com PC e celular.' },
+            { nome: 'Caixa de Som Bluetooth', preco: '99,90', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'autopecas',
+        label: 'Autopeças e Acessórios',
+        emoji: '🚗',
+        icone: 'quiz/icones/autopecas.png', // 07/10/2026 (P75): sem PNG ainda, cai no emoji
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🚗 Acessórios', produtos: [
+            { nome: 'Tapete Automotivo Universal', preco: '89,90', acabando: false },
+            { nome: 'Suporte de Celular Veicular', preco: '39,90', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'presentes',
+        label: 'Presentes e Artigos de Festa',
+        emoji: '🎁',
+        icone: 'quiz/icones/presentes.png', // 07/10/2026 (P75): sem PNG ainda, cai no emoji
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🎁 Presentes', produtos: [
+            { nome: 'Caneca Personalizada', preco: '34,90', acabando: false, descricao: 'Personalização em até 2 dias.' },
+            { nome: 'Kit Festa Decoração', preco: '59,90', acabando: false }
+          ] }
+        ]
+      }
+    ]
+  },
+
+  {
     id: 'alimentacao',
     label: 'Alimentação',
     emoji: '🍔',
@@ -281,6 +434,41 @@ window.MOVIKI_SEGMENTOS = [
           ] },
           { categoria: '🍬 Doces', produtos: [
             { nome: 'Algodão Doce', preco: '10,00', acabando: false }
+          ] }
+        ]
+      }
+      ,
+      {
+        id: 'padaria',
+        label: 'Padaria / Confeitaria / Doces',
+        emoji: '🥐',
+        icone: 'quiz/icones/padaria.png', // 07/10/2026 (P75): sem PNG ainda, cai no emoji
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🥐 Padaria', produtos: [
+            { nome: 'Pão de Queijo (6 un.)', preco: '12,00', acabando: false },
+            { nome: 'Bolo de Pote', preco: '14,00', acabando: false, descricao: 'Sabores do dia.' }
+          ] },
+          { categoria: '🍫 Doces', produtos: [
+            { nome: 'Caixa de Brigadeiros (12 un.)', preco: '30,00', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'acougue',
+        label: 'Açougue / Empório',
+        emoji: '🥩',
+        icone: 'quiz/icones/acougue.png', // 07/10/2026 (P75): sem PNG ainda, cai no emoji
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🥩 Carnes', produtos: [
+            { nome: 'Picanha (kg)', preco: '89,90', acabando: false, descricao: 'Peça ou fatiada.' },
+            { nome: 'Linguiça Artesanal (kg)', preco: '34,90', acabando: false }
+          ] },
+          { categoria: '🧀 Empório', produtos: [
+            { nome: 'Queijo Coalho (500g)', preco: '29,90', acabando: false }
           ] }
         ]
       }

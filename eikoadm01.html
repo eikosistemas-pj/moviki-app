@@ -788,6 +788,52 @@ table.mvTab td b{font-weight:700}
             <div class="cdSub" style="margin-top:11px">A <b>receita estimada</b> conta todo mundo em plano pago, inclusive quem ainda está nos 30 dias grátis e não paga nada. <b>A pagar em comissões</b> é o que os parceiros já têm direito a sacar.</div>
           </div>
 
+          <!-- 07/10/2026 (P75 fase 1, B5): funil semanal do lojista (robo /api/funil-dono, so dono com Google) -->
+          <div class="cd" id="cdFunil">
+            <style>
+              .fnNorte{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+              .fnNorte.ok{border-color:rgba(37,227,155,.45);background:rgba(37,227,155,.07)}
+              .fnNorte.al{border-color:rgba(255,176,32,.45);background:rgba(255,176,32,.07)}
+              .fnNorte small{display:block;font-size:11.5px;color:var(--mv-txt-3);line-height:1.45}
+              .fnNorte b.fnPct{font-size:28px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+              .fnBarra{height:8px;border-radius:99px;background:var(--mv-surf-2);overflow:hidden;margin-top:6px;position:relative;min-width:160px}
+              .fnBarra i{display:block;height:100%;background:var(--mv-ciano);border-radius:99px}
+              .fnBarra u{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--mv-ok)}
+              .fnFun{display:grid;gap:7px;margin-bottom:14px}
+              .fnEt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:baseline;font-size:13px}
+              .fnEt span{color:var(--mv-txt-2)}
+              .fnEt b{font-weight:800;text-align:right}
+              .fnEt b small{font-size:11.5px;color:var(--mv-txt-3);font-weight:600;margin-left:6px}
+              .fnEt .fnBarra{grid-column:1/-1;margin-top:0;min-width:0;height:7px}
+              .fnEt.dest span,.fnEt.dest b{color:var(--mv-ciano)}
+              .fnTab{width:100%;border-collapse:collapse;font-size:12.5px;min-width:540px}
+              .fnTab th,.fnTab td{padding:7px 8px;border-bottom:1px solid var(--mv-linha);white-space:nowrap;text-align:right}
+              .fnTab th{white-space:normal;vertical-align:bottom;font-size:11.5px;line-height:1.25}
+              .fnDica{font-size:11.5px;color:var(--mv-txt-3);margin:0 0 4px}
+              @media(min-width:700px){.fnDica{display:none}}
+              .fnTab th:first-child,.fnTab td:first-child{text-align:left;position:sticky;left:0;background:var(--mv-surf)}
+              .fnTab th{color:var(--mv-txt-3);font-weight:600}
+              .fnTab tr.fnTot td{font-weight:800;border-top:2px solid var(--mv-linha-forte)}
+              .fnTab tr.fnDest td{color:var(--mv-ciano)}
+              .fnTab small{display:block;font-size:10.5px;color:var(--mv-txt-3);font-weight:600}
+              .fnLista{display:grid;gap:8px;margin-top:8px}
+              .fnIt{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px;font-size:12.5px;line-height:1.45}
+              .fnIt b{color:var(--mv-txt)}
+              .fnIt .fnSub{color:var(--mv-txt-3);font-size:11.5px;overflow-wrap:anywhere}
+              .fnPassos{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+              .fnPassos .pill{font-size:11px;padding:2px 8px}
+            </style>
+            <div class="cdTopo"><div><div class="cdTit">Funil do lojista</div><div class="cdSub">Do cadastro ao pagamento, semana a semana (segunda a domingo, hora de Brasília), só lojistas de verdade: suas contas de teste e as contas de admin ficam de fora. Contado pelo robô na hora em que você abre.</div></div><button type="button" class="btnMini" id="fnAtualizar">Atualizar</button></div>
+            <div id="fnNorte"></div>
+            <div class="fnFun" id="fnFun"></div>
+            <div class="cdTit" style="font-size:14.5px;margin-bottom:4px">Semana a semana</div>
+            <div class="fnDica">Arraste a tabela para o lado para ver todas as etapas.</div>
+            <div class="tabRola"><table class="fnTab"><thead id="fnCab"></thead><tbody id="fnCorpo"><tr><td colspan="8" class="vazio" style="text-align:left">Carregando…</td></tr></tbody></table></div>
+            <div class="cdSub" id="fnNota" style="margin-top:8px"></div>
+            <div class="cdTopo" style="margin:14px 0 0"><div><div class="cdTit" style="font-size:14.5px">Últimos 20 cadastros</div><div class="cdSub">Para ver quem travou onde. E-mail mascarado de propósito.</div></div></div>
+            <div class="fnLista" id="fnLista"></div>
+          </div>
+
           <div class="cd">
             <div class="cdTopo"><div class="cdTit">Quem está no mapa agora</div><div class="mapaTopoDir"><button type="button" class="mapaBtn" id="mapaVerTodos">Ver todos</button><span class="cdChip" id="mapaCont">—</span></div></div>
             <div class="mapaWrap"><div class="mapaCaixa" id="admMapa"></div><div class="mapaVazio" id="mapaVazio" hidden><span>Ninguém aberto no mapa agora.</span></div></div>
@@ -1941,7 +1987,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-06-denuncias';   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-07-funil';   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -3752,6 +3798,29 @@ table.mvTab td b{font-weight:700}
     catch(e){ txt('dnMsg', 'Não deu: ' + (e && e.message || 'erro')); }
   });
   setTimeout(()=>{ try{ dnCarregar(); }catch(e){} }, 3200);
+
+  /* ==========================================================
+     FUNIL DO LOJISTA — 07/10/2026 (P75 fase 1, peca B5)
+     Tudo pelo robo (api/funil-dono.js, so dono com sessao do Google). Aqui so
+     busca; quem pinta e o window.fnPintar (script comum no fim do arquivo),
+     separado de proposito para poder ser conferido sem Firebase.
+     ========================================================== */
+  async function fnCarregar(manual){
+    const b = el('fnAtualizar'); const t0 = b ? b.textContent : '';
+    if(manual && b){ b.disabled = true; b.textContent = 'Contando…'; }
+    try{
+      if(!USER) return;
+      const tk = await USER.getIdToken();
+      const r = await fetch('https://moviki-robo.vercel.app/api/funil-dono', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({idToken:tk})});
+      const j = await r.json().catch(()=>({}));
+      if(!r.ok || !j.ok) throw new Error(j.mensagem || j.erro || ('HTTP ' + r.status));
+      if(window.fnPintar) window.fnPintar(j);
+    }catch(e){
+      const c = el('fnCorpo'); if(c) c.innerHTML = '<tr><td colspan="8" class="vazio" style="text-align:left">Não consegui contar agora (' + esc(e && e.message || 'erro') + ').</td></tr>';
+    }finally{ if(manual && b){ b.disabled = false; b.textContent = t0; } }
+  }
+  if(el('fnAtualizar')) el('fnAtualizar').addEventListener('click', ()=>fnCarregar(true));
+  setTimeout(()=>{ try{ fnCarregar(false); }catch(e){} }, 3600);
 
   function pintarPendencias(){
     const itens = [];
@@ -7075,6 +7144,99 @@ table.mvTab td b{font-weight:700}
       navigator.clipboard.writeText(t).then(function () { bc.textContent = 'Copiado!'; setTimeout(function () { bc.textContent = 'Copiar a lista do que falta'; }, 2000); }, function () { prompt('Copie:', t); });
     } else prompt('Copie:', t);
   });
+})();
+</script>
+
+<!-- ===================================================================
+     07/10/2026 (P75 fase 1, B5): pintura do cartao "Funil do lojista".
+     Script comum (fora do module) de proposito: so recebe o JSON do robo
+     /api/funil-dono e desenha. Nao le banco, nao chama ninguem.
+     =================================================================== -->
+<script>
+(function(){
+  'use strict';
+  function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function pct(n, d){ return d > 0 ? Math.round(n * 100 / d) + '%' : '—'; }
+  function dataBR(ms){
+    if(!ms) return '—';
+    var d = new Date(ms);
+    try{ return d.toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit'}) + ' ' + d.toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit'}); }
+    catch(e){ return d.toLocaleString('pt-BR'); }
+  }
+  var ETAPAS = [
+    ['cadastros','Cadastros'],
+    ['teste','No teste'],
+    ['ensaio','Ensaio'],
+    ['live','1ª live'],
+    ['live48','Live 48 h'],
+    ['venda','Vendeu na live'],
+    ['pagante','Pagantes']
+  ];
+  var ETAPA_LONGA = {cadastros:'Cadastros (6 semanas)', teste:'Entraram no teste (e-mail confirmado)', ensaio:'Fizeram ensaio', live:'Fizeram a 1ª live', live48:'1ª live em até 48 h', venda:'Venderam na live', pagante:'Viraram pagantes'};
+  function pill(cls, t){ return '<span class="pill ' + cls + '">' + esc(t) + '</span>'; }
+
+  window.fnPintar = function(j){
+    if(!j || !j.total) return;
+    var T = j.total, N = j.norte || {};
+    var meta = Math.round((N.meta || 0.3) * 100);
+    /* a taxa "justa" so conta quem ja teve as 48 h inteiras */
+    var base = N.maduros || 0, alvo = N.live48Maduros || 0;
+    var taxa = base > 0 ? Math.round(alvo * 100 / base) : null;
+    var cls = taxa == null ? '' : (taxa >= meta ? 'ok' : 'al');
+    var largura = taxa == null ? 0 : Math.min(100, taxa);
+    el('fnNorte').innerHTML = '<div class="fnNorte ' + cls + '">'
+      + '<div><small>Métrica-norte: 1ª live em até 48 h do cadastro (6 semanas)</small>'
+      + '<b class="fnPct">' + (taxa == null ? '—' : taxa + '%') + '</b><small>' + alvo + ' de ' + base + ' cadastros com as 48 h já completas</small></div>'
+      + '<div style="flex:1;min-width:170px;max-width:320px"><small>Meta da fase 1 do P75: ' + meta + '% ou mais</small>'
+      + '<div class="fnBarra"><i style="width:' + largura + '%"></i><u style="left:' + meta + '%"></u></div>'
+      + '<small style="margin-top:4px">' + (taxa == null ? 'Ainda sem cadastro com 48 h completas.' : (taxa >= meta ? 'Na meta.' : 'Abaixo da meta: faltam ' + Math.max(0, Math.ceil(base * meta / 100) - alvo) + ' lojista(s) com live em 48 h.')) + '</small></div>'
+      + '</div>';
+
+    /* funil do total das 6 semanas, em barras: e o que se le no celular */
+    el('fnFun').innerHTML = ETAPAS.map(function(e){
+      var v = T[e[0]] || 0, w = T.cadastros > 0 ? Math.round(v * 100 / T.cadastros) : 0;
+      return '<div class="fnEt' + (e[0] === 'live48' ? ' dest' : '') + '"><span>' + esc(ETAPA_LONGA[e[0]]) + '</span><b>' + v + '<small>' + (e[0] === 'cadastros' ? ((T.anuncio || 0) + ' de anúncio') : pct(v, T.cadastros)) + '</small></b>'
+        + '<div class="fnBarra"><i style="width:' + w + '%' + (e[0] === 'live48' ? '' : ';background:var(--mv-azul)') + '"></i></div></div>';
+    }).join('');
+
+    var sem = (j.semanas || []).slice().reverse(); /* mais recente primeiro */
+    var cab = '<tr><th>Semana</th>' + ETAPAS.map(function(e){ return '<th>' + esc(e[1]) + '</th>'; }).join('') + '</tr>';
+    el('fnCab').innerHTML = cab;
+    function linha(rot, x, cl){
+      return '<tr' + (cl ? ' class="' + cl + '"' : '') + '><td>' + esc(rot) + '</td>' + ETAPAS.map(function(e){
+        var v = x[e[0]] || 0;
+        if(e[0] === 'cadastros') return '<td>' + v + '<small>' + (x.anuncio || 0) + ' anúnc.</small></td>';
+        return '<td>' + v + '<small>' + pct(v, x.cadastros) + '</small></td>';
+      }).join('') + '</tr>';
+    }
+    /* rotulo curto (so a segunda-feira) para caber no celular; o periodo inteiro fica no title */
+    el('fnCorpo').innerHTML = sem.map(function(s, i){ return linha(String(s.rotulo).slice(0,5) + (i === 0 ? ' (atual)' : ''), s, '').replace('<td>', '<td title="' + esc(s.rotulo) + '">'); }).join('')
+      + linha('Total', T, 'fnTot');
+
+    var notas = [];
+    notas.push('Semana = começa na segunda indicada. “Live 48 h” = 1ª live em até 48 h do cadastro. Percentual de cada etapa = sobre os cadastros da semana. “Entraram no teste” = e-mail confirmado' + (j.authOk === false ? ' (o login não respondeu: contado por quem tem registro em assinaturas)' : '') + '. Pagante = plano pago ativo, em dia e fora do teste grátis.');
+    if(j.liveSemData) notas.push(j.liveSemData + ' lojista(s) fizeram live antes do marco de data existir: contam em “1ª live”, nunca em “48 h”.');
+    if(j.contasTesteFora) notas.push(j.contasTesteFora + ' conta(s) de teste/admin fora da conta.');
+    if(j.cortado) notas.push('Atenção: bateu o teto de leitura; os cadastros mais antigos da janela ficaram de fora.');
+    el('fnNota').textContent = notas.join(' ');
+
+    var rec = j.recentes || [];
+    if(!rec.length){ el('fnLista').innerHTML = '<div class="vazio">Nenhum cadastro nos últimos ' + (j.janelaDias || 60) + ' dias.</div>'; return; }
+    el('fnLista').innerHTML = rec.map(function(r){
+      var p = [];
+      p.push(r.anuncio ? pill('info','Anúncio') : pill('off','Orgânico'));
+      p.push(r.emailConfirmado === true ? pill('ok','E-mail confirmado') : r.emailConfirmado === false ? pill('warn','E-mail não confirmado') : pill('off','E-mail ?'));
+      p.push(r.ensaios > 0 ? pill('ok', r.ensaios === 1 ? '1 ensaio' : r.ensaios + ' ensaios') : pill('off','Sem ensaio'));
+      if(r.live) p.push(pill(r.live48 ? 'ok' : 'warn', r.horasAteLive != null ? ('1ª live em ' + r.horasAteLive + ' h') : '1ª live (sem data)'));
+      else p.push(pill('perigo','Sem live'));
+      if(r.venda) p.push(pill('ok','Vendeu na live'));
+      p.push(r.pagante ? pill('ok','Pagante · ' + r.plano) : (r.plano === 'teste' ? pill('info','No teste grátis') : pill('off','Não pagante')));
+      return '<div class="fnIt"><b>' + esc(r.nome || '(sem nome ainda)') + '</b>' + (r.slug ? ' <span class="fnSub">/' + esc(r.slug) + '</span>' : '')
+        + '<div class="fnSub">Cadastro ' + esc(dataBR(r.cadastroEm)) + (r.email ? ' · ' + esc(r.email) : '') + '</div>'
+        + '<div class="fnPassos">' + p.join('') + '</div></div>';
+    }).join('');
+  };
 })();
 </script>
 
