@@ -57,6 +57,9 @@ svg{display:block}
 .pill.vivo i{width:7px;height:7px;border-radius:50%;background:#fff;animation:pisca 1.2s infinite}
 @keyframes pisca{50%{opacity:.25}}
 .pill svg{width:14px;height:14px}
+.pill.ensaio{background:var(--mv-alerta);color:#1a1200}
+.pill.ensaio i{width:7px;height:7px;border-radius:50%;background:#1a1200;animation:pisca 1.2s infinite}
+#btnEnsaio[disabled]{opacity:.55}
 .camBase{position:absolute;left:10px;right:10px;bottom:10px;display:flex;gap:8px;justify-content:center;z-index:2}
 .camBtn{width:46px;height:46px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center}
 .camBtn svg{width:21px;height:21px}
@@ -371,6 +374,8 @@ svg{display:block}
         </div>
         <div class="camTopo">
           <span class="pill vivo escondido" id="pillVivo"><i></i>AO VIVO <span id="tempo">00:00</span></span>
+          <!-- 07/10/2026 (P75 B7): selo do ENSAIO. Ninguem assiste: o servidor nao publica a sessao. -->
+          <span class="pill ensaio escondido" id="pillEnsaio"><i></i>ENSAIO — ninguém está vendo · <span id="ensaioResta">10:00</span></span>
           <span class="pill escondido" id="pillOlho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg><span id="nOlho">0</span></span>
         </div>
         <div class="camAviso escondido" id="camAviso"></div>
@@ -381,6 +386,11 @@ svg{display:block}
       </div>
       <div style="max-width:420px;margin:12px auto 0">
         <div id="boxAntes">
+          <!-- 07/10/2026 (P75 B7): convite depois do ensaio -->
+          <div id="boxConvite" class="msgOk escondido" style="margin:0 0 12px">
+            <b style="display:block;font-size:14px;margin-bottom:4px">Pronto para a live de verdade?</b>
+            <span id="conviteTxt">O ensaio não contou nas suas lives. Quando quiser, é só entrar ao vivo.</span>
+          </div>
           <label class="rot" for="titulo">Título da live (aparece para quem entra)</label>
           <input class="campo" id="titulo" maxlength="60" placeholder="Ex.: Pastel de queijo saindo agora!">
           <!-- AS AULAS, ANTES DA PRIMEIRA LIVE.
@@ -393,6 +403,10 @@ svg{display:block}
             <button type="button" class="btnSec" data-lvaulas-abrir="1" style="width:100%;margin-top:8px">Ver as aulas</button>
           </div>
           <button type="button" class="btnGrad btnVivo" id="btnIniciar" style="margin-top:10px" disabled><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg>Entrar ao vivo</button>
+          <!-- 07/10/2026 (P75 B7): LIVE DE ENSAIO. So aparece quando o servidor diz que pode
+               (teste gratis com live por fazer, ou quem ainda nao fez nenhuma live). -->
+          <button type="button" class="btnSec escondido" id="btnEnsaio" style="width:100%;margin-top:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span id="btnEnsaioTxt">Fazer um ensaio (não conta nas suas lives)</span></button>
+          <p id="ensaioSub" class="sub escondido" style="font-size:12.5px;color:var(--mv-txt-3);margin:6px 0 0"></p>
           <div id="erroIniciar" class="msgErro escondido"></div>
           <p id="saldoVideo" class="sub escondido" style="font-size:12.5px;color:var(--mv-txt-3);margin:8px 0 0"></p>
           <button type="button" class="btnMini" data-lvaulas-abrir="1" id="btnAulasLivre" style="width:100%;margin-top:8px">Aulas da live</button>
@@ -411,6 +425,13 @@ svg{display:block}
           <!-- 03/10/2026 (P70 etapa 4): Lista VIP. So aparece com a chave ligada pelo dono. -->
           <button type="button" class="btnSec escondido" id="btnVipAvisar" style="width:100%;margin-top:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="btnVipTxt">Avisar a Lista VIP</span></button>
           <p class="sub" style="font-size:12px;color:var(--mv-txt-3);margin:8px 0 0">Limite desta live: <b id="limiteTxt"></b>. Mantenha esta tela aberta — sair dela encerra a transmissão.</p>
+        </div>
+        <!-- 07/10/2026 (P75 B7): durante o ensaio -->
+        <div id="boxEnsaio" class="escondido">
+          <div class="msgOk" style="margin-top:0;border-color:rgba(255,176,32,.5);background:rgba(255,176,32,.1);color:#ffe7b8">
+            <b>Ensaio: ninguém está vendo.</b> Não aparece no Moviki, ninguém é avisado e não conta nas suas lives. Teste o enquadramento, a luz, o som e a internet. Termina sozinho em <b id="ensaioMaxTxt">10 minutos</b>.
+          </div>
+          <button type="button" class="btnSec" id="btnEnsaioFim" style="width:100%;margin-top:8px;border-color:rgba(255,107,107,.6);color:var(--mv-erro)">Encerrar ensaio</button>
         </div>
         <div id="boxResumo" class="card escondido" style="margin-top:12px"></div>
       </div>
@@ -635,7 +656,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer, increment }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-10-03-vip';   /* 03/10 (P70 etapa 4): botao Avisar a Lista VIP durante a live (so com a chave ligada pelo dono). */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): pedido de envio para outra cidade aparece como Envio (cidade/UF) */ /* antes: 2026-10-03-carrinho */   /* 03/10 (P70): pedido do carrinho da live aparece com todos os itens */   /* 01/10 (P65): conforto visual v2 (sem brilho, escala de letra); estudio segue escuro */ /* antes: 2026-09-30-estoque2 */   /* anterior: 2026-09-30-estoque (30/09 madrugada: texto da aba Oferta, alerta amarelo no aviso de pagamento, Recebi/Depois nao fecham a folha, "1 peca reservada"). Antes: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
+  window.MOVIKI_VERSAO='2026-10-07-ensaio';   /* 07/10 (P75 fase 1, B7): botao "Fazer um ensaio" (transmissao de teste sem publico, ate 10 min, 5 por dia, nao conta nas lives do teste gratis), selo ENSAIO com o tempo restante e convite para a live de verdade. */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): botao Avisar a Lista VIP durante a live (so com a chave ligada pelo dono). */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): pedido de envio para outra cidade aparece como Envio (cidade/UF) */ /* antes: 2026-10-03-carrinho */   /* 03/10 (P70): pedido do carrinho da live aparece com todos os itens */   /* 01/10 (P65): conforto visual v2 (sem brilho, escala de letra); estudio segue escuro */ /* antes: 2026-09-30-estoque2 */   /* anterior: 2026-09-30-estoque (30/09 madrugada: texto da aba Oferta, alerta amarelo no aviso de pagamento, Recebi/Depois nao fecham a folha, "1 peca reservada"). Antes: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -676,6 +697,8 @@ svg{display:block}
     [el('nFila'),el('dkFila')].forEach(nf=>{if(!nf)return;nf.textContent=abertos;nf.classList.toggle('escondido',!abertos||!ent());});}
   let stream=null,modoCam='user',pc=null,noAr=false,inicioMs=0,tickT=null,pulsoT=null,contaT=null,chatDes=null,wake=null;
   let pico=0,assistindo=0,msgs=[],encerrando=false;
+  /* 07/10 (P75 B7): estado do ENSAIO. Declarado aqui em cima de proposito: as aulas, a chave-mestra e o pagehide leem ensaioNoAr. */
+  let ensaioNoAr=false,ensaioPc=null,ensaioFimMs=0,ensaioTickT=null,ensaioPulsoT=null,ensaioInfo=null,ensaioIniciando=false;
   const refLive=()=>doc(db,'negocios',uid,'estado','live');
   /* ---- FILTRO DE CONTEUDO DA LIVE — 11/09/2026 ----
      Mesma lista, byte a byte, em 4 lugares: estudio (moviki-app/live.html),
@@ -926,7 +949,7 @@ svg{display:block}
           setDoc(refAulas(),{vistas,em:em||''},{merge:true}).catch(()=>{});
         },
         /* com a live NO AR o audio da aula sairia dentro da transmissao */
-        noAr:()=>noAr
+        noAr:()=>noAr||ensaioNoAr
       });
       aulasProntas=true;
       MvLiveAulas.embutir();
@@ -1051,7 +1074,8 @@ svg{display:block}
     try{
       const nv=await navigator.mediaDevices.getUserMedia({video:{facingMode:modoCam,width:{ideal:720},height:{ideal:1280},frameRate:{ideal:30,max:30}}});
       const trilha=nv.getVideoTracks()[0], velha=stream.getVideoTracks()[0];
-      if(pc){const s=pc.getSenders().find(x=>x.track&&x.track.kind==='video');if(s)await s.replaceTrack(trilha);}
+      const pcAt=pc||ensaioPc; /* 07/10: vale tambem no ensaio */
+      if(pcAt){const s=pcAt.getSenders().find(x=>x.track&&x.track.kind==='video');if(s)await s.replaceTrack(trilha);}
       stream.removeTrack(velha);velha.stop();stream.addTrack(trilha);
       el('prev').srcObject=stream; el('prev').classList.toggle('espelho',modoCam==='user');
     }catch(e){modoCam=modoCam==='user'?'environment':'user';toast('Não deu para trocar a câmera.');}
@@ -1131,11 +1155,14 @@ svg{display:block}
     /* Cota do teste gratis: alem de trava, e gatilho de assinatura. O lojista
        precisa saber ANTES de gastar a ultima. */
     if(r.cota&&r.restam!=null){
+      /* 07/10: ensaio nao entra nesta conta (o servidor nao conta). E sai a
+         promessa "a quantidade deixa de ter limite": desde 19/09 o plano pago
+         tem limite de minutos de video (mesma correcao do api/live.js). */
       aviso(r.restam>0
-        ? ('Teste grátis: esta é a sua live '+(r.cota-r.restam)+' de '+r.cota+'. Assinando um plano, a quantidade deixa de ter limite.')
-        : 'Teste grátis: esta é a sua última live do período de teste. Assinando um plano, a quantidade deixa de ter limite.');
+        ? ('Teste grátis: esta é a sua live '+(r.cota-r.restam)+' de '+r.cota+' (ensaios não contam). No Premium e no Enterprise, as lives seguem os minutos de vídeo do plano.')
+        : 'Teste grátis: esta é a sua última live do período de teste. No Premium e no Enterprise, as lives seguem os minutos de vídeo do plano.');
     }
-    el('boxAntes').classList.add('escondido'); el('boxDurante').classList.remove('escondido'); el('boxResumo').classList.add('escondido');
+    el('boxAntes').classList.add('escondido'); el('boxDurante').classList.remove('escondido'); el('boxResumo').classList.add('escondido'); el('boxConvite').classList.add('escondido'); el('btnEnsaio').classList.add('escondido'); el('ensaioSub').classList.add('escondido');
     setTimeout(vipEstudio,2500);
     el('pillVivo').classList.remove('escondido'); el('pillOlho').classList.remove('escondido');
     try{wake=await navigator.wakeLock.request('screen');}catch(_){}
@@ -1232,6 +1259,7 @@ svg{display:block}
   async function carregarSaldo(){
     const r=await chamarRobo('live_saldo',{});
     const p=el('saldoVideo'); if(!p)return;
+    pintarEnsaio(r);
     if(!r||!r.ok||!r.nivel){p.classList.add('escondido');return;}
     saldoInfo=r;
     const max=Number(r.maxEspectadores||0);
@@ -1298,6 +1326,7 @@ svg{display:block}
     if(off===mestraOff)return; mestraOff=off;
     const b=el('btnIniciar');
     if(off){
+      if(ensaioNoAr)encerrarEnsaio('');
       if(noAr){encerrar().then(()=>{b.disabled=true;el('erroIniciar').classList.remove('escondido');}).catch(()=>{});}
       b.disabled=true;
       el('erroIniciar').textContent='As transmissões ao vivo estão temporariamente desligadas para manutenção. Volte daqui a pouco.';
@@ -1306,11 +1335,15 @@ svg{display:block}
       b.disabled=false; el('erroIniciar').classList.add('escondido');
     }
   }
-  window.addEventListener('beforeunload',e=>{if(noAr){e.preventDefault();e.returnValue='';}});
+  window.addEventListener('beforeunload',e=>{if(noAr||ensaioNoAr){e.preventDefault();e.returnValue='';}});
   /* Aba fechada sem "Encerrar": avisa o servidor com sendBeacon, que sobrevive
      ao fechamento da pagina. Se nem isso sair, a live cai sozinha em 3 minutos
      sem pulso — a tela publica ja media isso, e agora quem mede e o servidor. */
   window.addEventListener('pagehide',()=>{
+    if(ensaioNoAr){
+      try{user.getIdToken().then(tk=>{try{navigator.sendBeacon(ROBO,JSON.stringify({idToken:tk,acao:'live_ensaio_fechar'}));}catch(_){}}).catch(()=>{});}catch(_){}
+      return;
+    }
     if(!noAr)return;
     try{
       user.getIdToken().then(tk=>{
@@ -1318,6 +1351,118 @@ svg{display:block}
       }).catch(()=>{});
     }catch(_){}
   });
+
+  /* ================= LIVE DE ENSAIO (07/10/2026, P75 fase 1, B7) =================
+     Ninguem faz a primeira live "valendo" sem testar, e no teste gratis cada
+     teste comia 1 das 2 lives. O ensaio e uma transmissao de verdade (camera
+     -> Cloudflare) sem publico. TUDO que importa e decidido no servidor
+     (api/live.js + robo): quem pode, 5 por dia, 10 minutos, nao conta na cota,
+     nao entra na vitrine nem na pagina publica, nao avisa a Lista VIP. Esta
+     tela so mostra o botao quando o servidor diz que pode (live_saldo), e
+     mesmo assim quem decide de novo e o servidor na hora de abrir.
+     O ensaio NAO grava estado/live, nao cria documento em lives/ e nao liga o
+     chat: nada dele aparece para ninguem. */
+  /* (estado do ensaio declarado la em cima, junto do estado da live) */
+  const fmtSeg=s=>{s=Math.max(0,Math.ceil(s));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');};
+  function pintarEnsaio(r){
+    const b=el('btnEnsaio'), sub=el('ensaioSub');
+    const e=r&&r.ok&&r.nivel?r.ensaio:null;
+    ensaioInfo=e||null;
+    if(!e||noAr||ensaioNoAr||(!e.pode&&e.motivo!=='ensaio_dia')){b.classList.add('escondido');sub.classList.add('escondido');return;}
+    const trial=r.periodo==='trial'&&r.livesCota;
+    const maxMin=Number(e.maxMin)||10, maxDia=Number(e.maxDia)||5;
+    if(e.pode){
+      b.disabled=mestraAtiva();   /* chave-mestra do dono: o servidor recusa de qualquer jeito */
+      el('btnEnsaioTxt').textContent=trial?('Fazer um ensaio (não conta nas suas '+r.livesCota+' lives)'):'Fazer um ensaio (ninguém vê)';
+      sub.textContent='Até '+maxMin+' minutos só para você testar câmera, som e internet. Ninguém vê, não aparece no Moviki e ninguém é avisado.'+
+        (trial?(' Lives do teste grátis usadas: '+(Number(r.livesUsadas)||0)+' de '+r.livesCota+'.'):'')+
+        ' Restam '+(Number(e.restamHoje)||0)+' de '+maxDia+' ensaios hoje.';
+    }else{
+      b.disabled=true;
+      el('btnEnsaioTxt').textContent='Ensaios de hoje já usados';
+      sub.textContent='São até '+maxDia+' ensaios por dia. Amanhã libera de novo.';
+    }
+    b.classList.remove('escondido'); sub.classList.remove('escondido');
+  }
+  const ERR_ENSAIO={ensaio_dia:'Você já fez os ensaios de hoje. Amanhã libera de novo.',
+    ensaio_indisponivel:'O ensaio é para quem ainda vai fazer a primeira live.',
+    live_no_ar:'Sua live está no ar. Encerre a live antes de ensaiar.',
+    plano:'A live faz parte do Premium e do Enterprise.',config:'A live ainda está sendo ligada do nosso lado. Tente mais tarde.',
+    cloudflare:'O serviço de vídeo não respondeu. Tente de novo em 1 minuto.',token:'Sua sessão venceu. Volte ao painel e entre de novo.',
+    rede:'Sem internet. Confira o sinal.',firestore:'Falha do nosso lado. Tente de novo em instantes.',
+    desligada:'As transmissões ao vivo estão temporariamente desligadas para manutenção. Volte daqui a pouco.',
+    beta:'A live ainda está em preparação e será liberada em breve.',
+    sessao:'Não consegui abrir o ensaio agora. Tente de novo em instantes.'};
+  el('btnEnsaio').onclick=async()=>{
+    if(ensaioIniciando||ensaioNoAr||noAr)return;
+    const b=el('btnEnsaio'); el('erroIniciar').classList.add('escondido');
+    /* O aceite das Regras da Live vale para o ensaio tambem: o servidor confere. */
+    if(!aceiteOk){abrirAceite();return;}
+    const titulo=el('titulo').value.trim().slice(0,60);
+    if(barrar(titulo,'titulo'))return;
+    for(const n of sacola.concat(fixado?[fixado]:[])){if(barrar(n,'inicio'))return;}
+    ensaioIniciando=true; b.disabled=true; el('btnEnsaioTxt').textContent='Preparando o ensaio…';
+    const volta=()=>{ensaioIniciando=false;b.disabled=false;carregarSaldo();};
+    if(!stream&&!(await ligarCamera())){volta();return;}
+    const r=await chamarApi('iniciar',{ensaio:true,titulo,produtos:sacola.concat(fixado?[fixado]:[])});
+    if(!r.ok){
+      if(r.erro==='aceite'){aceiteOk=false;volta();abrirAceite();return;}
+      let t=ERR_ENSAIO[r.erro]||'';
+      if(!t&&r.erro==='bloqueado')t='Sua conta está sem permissão para fazer live, por descumprir as Regras da Live. Fale com o suporte do Moviki pela caixa de mensagens.';
+      if(!t&&r.erro==='conteudo')t='"'+(r.texto||'')+'" não pode ir para a live ('+(r.termo||'')+'). Tire da sacolinha ou do título e tente de novo.';
+      if(!t&&r.erro==='teto_video')t=r.mensagem||'Seu plano atingiu o limite de minutos de vídeo deste ciclo.';
+      if(!t&&r.erro==='freio')t='Você tentou começar várias vezes seguidas. '+(r.esperaSeg?('Tente de novo em '+(r.esperaSeg>90?(Math.ceil(r.esperaSeg/60)+' minutos'):(r.esperaSeg+' segundos'))+'.'):'Espere um pouco e tente de novo.');
+      el('erroIniciar').textContent=t||'Não deu para começar o ensaio agora.'; el('erroIniciar').classList.remove('escondido');
+      ev('live_ensaio_recusado',{erro:r.erro||''}); volta(); return;
+    }
+    try{ensaioPc=await conectar(r.whip);}catch(e){
+      el('erroIniciar').textContent='A conexão de vídeo falhou. Troque de Wi-Fi para 4G (ou o contrário) e tente de novo.';el('erroIniciar').classList.remove('escondido');
+      chamarRobo('live_ensaio_fechar',{}); volta(); return;}
+    ensaioIniciando=false; ensaioNoAr=true;
+    const maxMin=Number(r.limiteMin)||10;
+    ensaioFimMs=Date.now()+maxMin*60000;
+    el('ensaioMaxTxt').textContent=maxMin+' minutos';
+    ensaioPc.onconnectionstatechange=()=>{
+      if(!ensaioNoAr)return;
+      const st=ensaioPc&&ensaioPc.connectionState;
+      if(st==='failed'||st==='disconnected')aviso('Sinal fraco no ensaio. Na live de verdade, isso trava o vídeo: confira a internet.');
+      else if(st==='connected')aviso('');
+    };
+    el('boxAntes').classList.add('escondido'); el('boxConvite').classList.add('escondido'); el('boxResumo').classList.add('escondido');
+    el('boxEnsaio').classList.remove('escondido'); el('pillEnsaio').classList.remove('escondido');
+    try{wake=await navigator.wakeLock.request('screen');}catch(_){}
+    tickEnsaio(); ensaioTickT=setInterval(tickEnsaio,1000); ensaioPulsoT=setInterval(pulsoEnsaio,45000);
+    ev('live_ensaio_iniciar',{nivel:nivel.nivel});
+  };
+  function tickEnsaio(){
+    if(!ensaioNoAr)return;
+    const resta=(ensaioFimMs-Date.now())/1000;
+    el('ensaioResta').textContent=fmtSeg(resta);
+    if(resta<=0)encerrarEnsaio('tempo');
+  }
+  /* O relogio da tela e so conforto: quem corta e o servidor, no pulso. */
+  async function pulsoEnsaio(){
+    if(!ensaioNoAr)return;
+    const r=await chamarRobo('live_ensaio_pulso',{});
+    if(!r||!r.ok)return;
+    if(r.encerrar||r.noAr===false){encerrarEnsaio(r.encerrar?'tempo':'');return;}
+    if(typeof r.restamSeg==='number')ensaioFimMs=Date.now()+r.restamSeg*1000;
+  }
+  async function encerrarEnsaio(porque){
+    if(!ensaioNoAr)return; ensaioNoAr=false;
+    clearInterval(ensaioTickT); clearInterval(ensaioPulsoT);
+    try{ensaioPc&&ensaioPc.close();}catch(_){} ensaioPc=null;
+    try{wake&&wake.release();}catch(_){}
+    aviso(''); el('pillEnsaio').classList.add('escondido'); el('boxEnsaio').classList.add('escondido');
+    el('boxAntes').classList.remove('escondido');
+    await chamarRobo('live_ensaio_fechar',{});
+    el('conviteTxt').textContent=(porque==='tempo'?'O ensaio chegou ao fim do tempo. ':'Ensaio encerrado. ')+
+      'Ninguém viu e ele não contou nas suas lives. Quando quiser, toque em Entrar ao vivo.';
+    el('boxConvite').classList.remove('escondido');
+    ev('live_ensaio_fim',{porque:porque||'botao',min:Math.round((Date.now()-(ensaioFimMs-((ensaioInfo&&ensaioInfo.maxMin)||10)*60000))/60000)});
+    carregarSaldo();
+  }
+  el('btnEnsaioFim').onclick=()=>encerrarEnsaio('');
 
   function mostrarResumo(){
     const min=Math.max(1,Math.round((Date.now()-inicioMs)/60000));

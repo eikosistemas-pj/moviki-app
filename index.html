@@ -2570,6 +2570,29 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
             <button type="button" class="mvMapaBtn shVerPagina" onclick="verMinhaPagina()"><img class="icoM" src="icones/pagina.png" alt="" loading="lazy" onerror="mvI(this,'🌐')">Ver minha página</button>
           </div>
         </div>
+        <!-- 2026-10-07-cadastro1 (P75, fase 1): PRIMEIRA LIVE EM 3 PASSOS. Aparece para
+             quem tem a live liberada (teste gratis, Premium ou Enterprise) e ainda nao
+             fez nenhuma live real; some sozinho depois da primeira live. Enquanto
+             aparece, os "primeiros passos" antigos (nome, link, mapa) ficam escondidos:
+             nome e link ja vem do cadastro. -->
+        <div id="mvPrimLive" class="onb escondido" style="border-color:rgba(255,45,85,.55)">
+          <div class="onbTop">
+            <div class="onbTit">🔴 Sua primeira live em 3 passos</div>
+            <button type="button" class="onbOcultar" onclick="plOcultar()">ocultar</button>
+          </div>
+          <div class="onbSub">Leva uns 10 minutos. O ensaio não conta nas suas lives e ninguém vê.</div>
+          <div class="onbBarra"><i id="plProgresso"></i></div>
+          <button type="button" class="onbPasso" id="plP1" onclick="plPasso(1)">
+            <span class="mark">1</span><span class="txt">Confira os produtos de exemplo do seu cardápio (troque foto e preço)</span><span class="seta">›</span>
+          </button>
+          <button type="button" class="onbPasso" id="plP2" onclick="plPasso(2)">
+            <span class="mark">2</span><span class="txt">Faça um ensaio: ninguém vê e não gasta suas lives</span><span class="seta">›</span>
+          </button>
+          <button type="button" class="onbPasso" id="plP3" onclick="plPasso(3)">
+            <span class="mark">3</span><span class="txt">Avise 3 clientes no WhatsApp e entre ao vivo</span><span class="seta">›</span>
+          </button>
+          <div class="onbFinal" id="plConvite" style="display:none;margin:2px 0 10px;font-size:13px;color:#9fc7e6"></div>
+        </div>
         <div id="onboarding" class="onb escondido">
         <div class="onbTop">
           <div class="onbTit">👋 Bem-vindo ao Moviki!</div>
@@ -4139,10 +4162,12 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
     <!-- A3 — CADASTRO DO COMERCIANTE -->
     <div id="qzA3" class="qzTela" style="display:none">
       <h1 class="qzTitulo">Vamos colocar seu negócio no ar</h1>
+      <!-- 2026-10-07-cadastro1 (P75): o ramo escolhido (ou trazido do anuncio) aparece aqui, com "trocar". -->
+      <p class="qzRamoLinha" id="qzRamoLinha" style="display:none;margin:-6px 0 14px;font-size:13.5px;color:#8fa6c4"></p>
       <div class="qzCampo"><label for="qzNome">Nome do negócio</label><input id="qzNome" type="text" maxlength="80" placeholder="Ex.: Caldeirão Nordestino"></div>
       <div class="qzCampo"><label for="qzWhats">WhatsApp (com DDD)</label><input id="qzWhats" type="tel" inputmode="numeric" placeholder="Ex.: 81 99999-9999"></div>
       <div class="qzCampo">
-        <label for="qzSlug">Apelido do seu link</label>
+        <label for="qzSlug">Apelido do seu link <span style="font-weight:400;color:#8fa6c4">(sai do nome, dá para mudar)</span></label>
         <div class="qzLinkCampo"><span class="qzPref">moviki.com.br/</span><input id="qzSlug" type="text" maxlength="40" placeholder="seunegocio" autocomplete="off"></div>
         <div class="qzSlugPrev">Seu link: moviki.com.br/<span id="qzSlugTxt">seunegocio</span></div>
         <div id="qzSlugMsg" class="qzSlugMsg"></div>
@@ -4514,6 +4539,7 @@ window.mvAbaInicial=function(){
       var l=Array.isArray(d.liveBeta)?d.liveBeta:[];
       var pode=(!l.length||l.indexOf(uid)>=0)&&d.liveDesligada!==true;
       document.querySelectorAll('.mvBtnLive').forEach(function(b){b.classList.toggle('escondido',!pode);});
+      window._mvLivePode=pode; try{ if(window.mvAtualizarPrimeiraLive) window.mvAtualizarPrimeiraLive(); }catch(_){}
       /* O card das aulas da live so pode aparecer para quem ve o botao, e e
          ESTE snapshot que decide. Ele chega DEPOIS do MvLiveAulas.iniciar(),
          entao pintar so la deixava o card invisivel para sempre - foi o que
@@ -4530,6 +4556,7 @@ window.mvAbaInicial=function(){
       const ok=d&&d.ativo===true&&(!d.vence_em||d.vence_em.toMillis()>Date.now());
       planoPainel=ok?(d.plano||'basico'):'basico';}
     catch(e){planoPainel='basico';dadosAssinatura=null;}
+    try{ if(window.mvAtualizarPrimeiraLive) window.mvAtualizarPrimeiraLive(); }catch(_){}
   }
   function aplicarPlanoNasAbas(){
     const libera=planoPainel==='pro'||planoPainel==='premium'||planoPainel==='enterprise';if(window.ptAtualizarDrawer)ptAtualizarDrawer();
@@ -4615,7 +4642,7 @@ window.mvAbaInicial=function(){
      do fundador; Pro/Premium pagante vai ao WhatsApp (troca pela equipe);
      Enterprise nao ve; some depois de 27/11 ou com o lote fechado; "x" esconde
      por 3 dias. */
-  window.MOVIKI_VERSAO='2026-10-06-denuncia';   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-07-cadastro1';   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5286,13 +5313,13 @@ window.mvAbaInicial=function(){
     let urg='',titulo='',txt='';
     if(dias<=0){
       urg='fim';titulo='⛔ Seu teste grátis acabou';
-      txt='Reative agora pra voltar com seu cardápio, promoções e eventos no ar — e no Premium sua logo aparece no mapa.';
+      txt='Para voltar a fazer live e vender pelo cardápio, o plano é o Premium. Seu link e o pino no mapa continuam no ar no Básico.';
     }else if(dias<=2){
       urg='urgente';titulo='⏳ Seu teste grátis acaba em '+dias+(dias===1?' dia':' dias');
-      txt='Assine pra não perder seu cardápio, promoções e eventos. No Premium, sua logo ainda aparece no mapa.';
+      txt='Para continuar fazendo live, o plano é o Premium. O Pró mantém cardápio, promoções e eventos, mas não tem live.';
     }else{
       titulo='⏳ Seu teste grátis acaba em '+dias+' dias';
-      txt='Continue com o Moviki e mantenha tudo no ar. No Premium, sua logo aparece no mapa e você ganha destaque.';
+      txt='Para continuar fazendo live depois do teste, o plano é o Premium. O Pró não tem live.';
     }
     b.className='bannerTrial'+(urg?(' '+urg):'');
     b.innerHTML='<div class="btTexto"><div class="btTitulo">'+titulo+'</div><div class="btSub">'+txt+'</div></div><button type="button" class="btBtn" onclick="abrirPlano()">Assinar agora</button>';
@@ -5345,7 +5372,7 @@ window.mvAbaInicial=function(){
        assinar. Antes o texto dizia o contrario e o robo recusava o pagamento. */
     if(dadosAssinatura&&dadosAssinatura.periodo==='trial'&&dadosAssinatura.ativo===true&&dadosAssinatura.vence_em){
       const fimT=new Date(dadosAssinatura.vence_em.toMillis()).toLocaleDateString('pt-BR');
-      s.innerHTML='🎁 Você está no <b>teste grátis do Pró</b> até <b>'+fimT+'</b>. Escolha seu plano abaixo para continuar sem interrupção — a primeira cobrança só vence no fim do teste, e você não perde nenhum dia.';
+      s.innerHTML='🎁 Você está no <b>teste grátis</b> até <b>'+fimT+'</b>, com as ferramentas do Pró e 2 lives liberadas. Para continuar fazendo live depois, o plano é o <b>Premium</b>. Assinando agora, a primeira cobrança só vence no fim do teste e você não perde nenhum dia.';
       return;
     }
     if(planoPainel==='pro'||planoPainel==='premium'||planoPainel==='enterprise'){
@@ -7038,8 +7065,62 @@ window.mvAbaInicial=function(){
     const fin=el('onbFinal');
     if(fin)fin.innerHTML = feitos===3 ? '✅ Tudo pronto! Toque em <b>Salvar tudo</b> aqui embaixo e deixe como <b>Aberto</b> quando estiver funcionando.' : '';
     if(feitos===3){onbDone=true;try{if(usuarioAtual&&usuarioAtual.uid)localStorage.setItem('moviki_onb_'+usuarioAtual.uid,'1');}catch(_){}}
-    const esconder = onbOculto || onbSalvo || onbDone;
+    const esconder = onbOculto || onbSalvo || onbDone || window._mvPlVisivel===true;
     box.classList.toggle('escondido', esconder);
+    try{ atualizarPrimeiraLive(); }catch(_){}
+  };
+
+  /* ---- PRIMEIRA LIVE EM 3 PASSOS (2026-10-07-cadastro1, P75 fase 1) ----
+     Quem pode: live liberada (window._mvLivePode, do snapshot de liveTermos) e
+     assinatura ativa no teste gratis, Premium ou Enterprise. Acabou quando
+     live_sessoes/{uid} existe (publico, so o robo grava; o ENSAIO nao grava
+     ali, entao ensaio nao esconde o cartao). Passos 1 e 2 ficam marcados neste
+     aparelho quando tocados — nao existe dado no servidor para isso. */
+  let _plUid='', _plJaFez=null;
+  function _plChave(k){ return 'mv_pl_'+k+'_'+(_plUid||''); }
+  function _plLer(k){ try{ return localStorage.getItem(_plChave(k))==='1'; }catch(_){ return false; } }
+  function _plGravar(k){ try{ localStorage.setItem(_plChave(k),'1'); }catch(_){} }
+  function plElegivel(){
+    if(window._mvLivePode!==true) return false;
+    const d=dadosAssinatura;
+    if(!d||d.ativo!==true) return false;
+    if(d.vence_em&&d.vence_em.toMillis&&d.vence_em.toMillis()<Date.now()) return false;
+    return d.periodo==='trial'||planoPainel==='premium'||planoPainel==='enterprise';
+  }
+  async function atualizarPrimeiraLive(){
+    const box=el('mvPrimLive'); if(!box) return;
+    const uid=usuarioAtual&&usuarioAtual.uid;
+    if(!uid){ box.classList.add('escondido'); window._mvPlVisivel=false; return; }
+    if(_plUid!==uid){ _plUid=uid; _plJaFez=null; }
+    if(_plJaFez===null){
+      _plJaFez='lendo';
+      try{ const ss=await getDoc(doc(db,'live_sessoes',uid)); _plJaFez=ss.exists(); }
+      catch(_){ _plJaFez=true; }          // sem resposta: nao insiste
+    }
+    const mostrar = _plJaFez===false && plElegivel() && !_plLer('oculto');
+    const mudou = (window._mvPlVisivel===true)!==mostrar;
+    window._mvPlVisivel=mostrar;
+    box.classList.toggle('escondido',!mostrar);
+    if(mudou){ const ob=el('onboarding'); if(ob&&mostrar) ob.classList.add('escondido'); }
+    if(!mostrar) return;
+    const p1=_plLer('p1'), p2=_plLer('p2');
+    _marcaPasso('plP1','1',p1); _marcaPasso('plP2','2',p2); _marcaPasso('plP3','3',false);
+    const br=el('plProgresso'); if(br) br.style.width=(((p1?1:0)+(p2?1:0))/3*100)+'%';
+  }
+  window.mvAtualizarPrimeiraLive=function(){ try{ atualizarPrimeiraLive(); }catch(_){} };
+  window.plOcultar=function(){ _plGravar('oculto'); window._mvPlVisivel=false; const b=el('mvPrimLive'); if(b) b.classList.add('escondido'); try{ if(window.mvEv) mvEv('cta_click',{cta:'primlive_ocultar',pagina:'painel'}); }catch(_){} try{ atualizarOnboarding(false); }catch(_){} };
+  window.plPasso=function(n){
+    try{ if(window.mvEv) mvEv('cta_click',{cta:'primlive_passo'+n,pagina:'painel'}); }catch(_){}
+    if(n===1){ _plGravar('p1'); atualizarPrimeiraLive(); abrirTab('cardapio'); return; }
+    if(n===2){ _plGravar('p2'); location.href='live.html'; return; }
+    const link=slugSalvo?('https://www.moviki.com.br/live/'+slugSalvo):'';
+    const msg='Oi! Hoje vou fazer uma live mostrando as novidades da loja. É só tocar no link na hora: '+(link||'(o link aparece no estúdio da live)');
+    const cv=el('plConvite');
+    const seguir=function(txt){ if(cv){ cv.textContent=txt; cv.style.display='block'; } setTimeout(function(){ location.href='live.html'; },2200); };
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(msg).then(function(){ seguir('Convite copiado. Cole no WhatsApp dos seus clientes. Abrindo o estúdio da live...'); })
+        .catch(function(){ window.prompt('Copie e mande aos seus clientes:',msg); seguir('Abrindo o estúdio da live...'); });
+    }else{ window.prompt('Copie e mande aos seus clientes:',msg); seguir('Abrindo o estúdio da live...'); }
   };
 
   /* ---------------------------------------------------------------------------
@@ -10226,6 +10307,7 @@ window.mvAbaInicial=function(){
     if(window.mqzFecharEmailB)window.mqzFecharEmailB();
     var ms=$('qzSlugMsg'); if(ms){ms.textContent='';ms.className='qzSlugMsg';}
     igZerar(); // limpa o @ e o cartao do Instagram junto com o resto
+    slugManual=false; slugBase=''; slugTentativa=0; var rl=$('qzRamoLinha'); if(rl) rl.style.display='none';
     mostrarTela('qzTela1',false);
   }
 
@@ -10265,7 +10347,7 @@ window.mvAbaInicial=function(){
       // pula a tela de Nível 2 direto, não faz sentido pedir pro lojista "escolher"
       // entre uma única opção. Evita 1 toque desnecessário.
       escolhaSubtipo=subs[0].id;
-      setTimeout(function(){ mostrarTela('qzA3'); },160);
+      setTimeout(function(){ pintarRamoA3(); mostrarTela('qzA3'); },160);
       return;
     }
     setTimeout(function(){ renderNivel2(); mostrarTela('qzA2b'); },160);
@@ -10275,8 +10357,24 @@ window.mvAbaInicial=function(){
     var s=escolhaMacro.subtipos[indice]; if(!s)return;
     escolhaSubtipo=s.id;
     if(btn)btn.classList.add('qzSel');
-    setTimeout(function(){ mostrarTela('qzA3'); },160);
+    setTimeout(function(){ pintarRamoA3(); mostrarTela('qzA3'); },160);
   };
+
+  /* 2026-10-07-cadastro1 (P75, fase 1): linha "Ramo: X · trocar" no cadastro.
+     So textContent: nada vindo da URL vira HTML. */
+  function pintarRamoA3(){
+    var l=$('qzRamoLinha'); if(!l) return;
+    var sub=null;
+    (escolhaMacro&&escolhaMacro.subtipos||[]).forEach(function(s){ if(s.id===escolhaSubtipo) sub=s; });
+    if(!sub){ l.style.display='none'; return; }
+    l.textContent='';
+    l.appendChild(document.createTextNode('Ramo: '+(sub.emoji?sub.emoji+' ':'')+sub.label+' · '));
+    var bt=document.createElement('button'); bt.type='button'; bt.className='qzLink'; bt.textContent='trocar';
+    bt.style.cssText='padding:0;font-size:13.5px';
+    bt.onclick=function(){ try{ if(window.mvEv) mvEv('quiz_trocar_ramo',{de:escolhaSubtipo}); }catch(_){} window.mqzIrA2(); };
+    l.appendChild(bt); l.style.display='block';
+  }
+  window.mqzPintarRamo=pintarRamoA3;
 
   window.mqzVoltar=function(){ mostrarTela(pilha.pop()||'qzTela1',false); };
   window.mqzIrA2=function(){ renderNivel1(); mostrarTela('qzA2'); };
@@ -10305,12 +10403,35 @@ window.mvAbaInicial=function(){
     window.mqzSlugLivre(valor).then(function(r){
       if(!r||r.slug!==_slugUltimo) return;             // j\u00e1 digitou outra coisa, resposta velha
       if(r.estado==='livre') msgSlug('Apelido dispon\u00edvel!','ok');
-      else if(r.estado==='ocupado') msgSlug('Esse apelido j\u00e1 est\u00e1 em uso. Escolha outro.','erro');
+      else if(r.estado==='ocupado'){ if(window.mqzSlugOcupadoAuto && window.mqzSlugOcupadoAuto()) return; msgSlug('Esse apelido j\u00e1 est\u00e1 em uso. Escolha outro.','erro'); }
       else if(r.estado==='reservado') msgSlug('Esse apelido \u00e9 reservado. Escolha outro.','erro');
       else msgSlug('','');
     }).catch(function(){ msgSlug('',''); });
   }
+  /* 2026-10-07-cadastro1 (P75): o apelido nasce do nome do negocio enquanto a
+     pessoa digita, ate ela mexer no campo do apelido. Ocupado no modo
+     automatico: tenta nome2, nome3... sozinho (ate 8). Menos uma coisa para
+     inventar na tela que mais perde gente. */
+  var slugManual=false, slugTentativa=0, slugBase='';
+  function slugAuto(nome){
+    var c=$('qzSlug'); if(!c||slugManual) return;
+    slugBase=slugPreview(nome).slice(0,36); slugTentativa=0;
+    c.value=slugBase;
+    var t=$('qzSlugTxt'); if(t)t.textContent=slugBase||'seunegocio';
+    clearTimeout(_slugTimer);
+    _slugTimer=setTimeout(function(){ checarSlugQuiz(c.value); },450);
+  }
+  window.mqzSlugOcupadoAuto=function(){
+    var c=$('qzSlug'); if(!c||slugManual||!slugBase||slugTentativa>=8) return false;
+    slugTentativa++;
+    c.value=slugBase+(slugTentativa+1);
+    var t=$('qzSlugTxt'); if(t)t.textContent=c.value;
+    checarSlugQuiz(c.value);
+    return true;
+  };
   document.addEventListener('input',function(e){
+    if(e.target&&e.target.id==='qzNome'){ slugAuto(e.target.value); return; }
+    if(e.target&&e.target.id==='qzSlug'){ slugManual=true; }
     if(e.target&&e.target.id==='qzSlug'){
       var t=$('qzSlugTxt'); if(t)t.textContent=slugPreview(e.target.value)||'seunegocio';
       var v=e.target.value;
@@ -10567,10 +10688,56 @@ window.mvAbaInicial=function(){
       var v=(q.get('criar')||q.get('novo')||q.get('cadastro')||'').toLowerCase();
       return v==='1'||v==='true'||v==='sim'; }catch(_){ return false; }
   }
+  /* 2026-10-07-cadastro1 (P75, fase 1): RAMO QUE VEM DO ANUNCIO.
+     A pagina /aovivo de cada ramo manda ?ramo=<ramo> no botao (mvmetrica.js),
+     e o anuncio da Meta traz utm_content (shopping-moda, cosmeticos...).
+     Com o ramo reconhecido, quem chega com ?criar=1 cai DIRETO no cadastro,
+     com o ramo ja escolhido e "trocar" ao lado — 1 tela em vez de 3.
+     Casamento por PALAVRA, o mais especifico primeiro (mesma regra da
+     /aovivo): "tapete" nao casa com "pet". Ramo desconhecido = quiz normal. */
+  var RAMO_QUIZ={'moda-masculina':'roupas','moda-fitness':'roupas','moda-infantil':'roupas','moda-praia':'roupas',
+    'cama-mesa-banho':'casa','acessorios-celular':'acessorioscelular',
+    farmacia:'farmacia',drogaria:'farmacia',pet:'lojapet',petshop:'lojapet',bebe:'bebe',infantil:'bebe',brinquedos:'brinquedos',
+    esportes:'esportes',esporte:'esportes',utilidades:'casa',casa:'casa',eletroportateis:'eletronicos',eletronicos:'eletronicos',games:'eletronicos',
+    autopecas:'autopecas',presentes:'presentes',festa:'presentes',padaria:'padaria',confeitaria:'padaria',chocolateria:'padaria',
+    acougue:'acougue',emporio:'acougue',acai:'sorvete',cabelo:'barbeariasalao',salao:'barbeariasalao',floricultura:'floricultura',otica:'otica',
+    naturais:'naturaisvitaminas',suplementos:'suplementosesportivos',cosmeticos:'perfumariacosmeticos',perfumaria:'perfumariacosmeticos',
+    beleza:'perfumariacosmeticos',semijoias:'acessorios',bijuteria:'acessorios',calcados:'calcados',moda:'roupas',boutique:'roupas',
+    brecho:'roupas',lingerie:'roupas',roupas:'roupas'};
+  function ramoDaUrl(){
+    try{
+      var q=new URLSearchParams(location.search);
+      var r=(q.get('ramo')||q.get('utm_content')||'').toLowerCase().slice(0,80);
+      if(!r) return '';
+      try{ r=r.normalize('NFD').replace(/[\u0300-\u036f]/g,''); }catch(_){}
+      if(RAMO_QUIZ.hasOwnProperty(r)) return RAMO_QUIZ[r];
+      var chaves=Object.keys(RAMO_QUIZ).sort(function(a,b){return b.length-a.length;});
+      for(var i=0;i<chaves.length;i++){
+        var k=chaves[i].replace(/-/g,'[^a-z0-9]');
+        if(new RegExp('(^|[^a-z0-9])'+k+'([^a-z0-9]|$)').test(r)) return RAMO_QUIZ[chaves[i]];
+      }
+    }catch(_){}
+    return '';
+  }
+  function irDiretoAoCadastro(){
+    var id=ramoDaUrl(); if(!id) return false;
+    var seg=window.MOVIKI_SEGMENTOS||[], achou=null, sub=null;
+    seg.forEach(function(m){ (m.subtipos||[]).forEach(function(s){ if(!achou&&s.id===id){ achou=m; sub=s; } }); });
+    if(!achou) return false;
+    escolhaMacro=achou; escolhaSubtipo=sub.id;
+    renderNivel1();
+    pintarRamoA3();
+    mostrarTela('qzA3');
+    pilha=['qzTela1','qzA2'];         // Voltar leva a escolha do ramo, ja montada
+    try{ if(window.mvEv) mvEv('quiz_pulo_ramo',{ramo:sub.id}); }catch(_){}
+    return true;
+  }
   window.mqzMostrar=function(){ var m=$('quizModal'); if(m)m.classList.remove('qzEscondido');
     if(!mqzPuloFeito && passoAtual==='qzTela1' && mqzQuerCriar()){
       mqzPuloFeito=true;
-      try{ window.mqzIrA2(); if(window.mvEv) mvEv('quiz_pulo_escolha',{origem:'criar'}); }catch(_){}
+      try{
+        if(!irDiretoAoCadastro()){ window.mqzIrA2(); if(window.mvEv) mvEv('quiz_pulo_escolha',{origem:'criar'}); }
+      }catch(_){}
     }
   };
   window.mqzEsconder=function(){ var m=$('quizModal'); if(m)m.classList.add('qzEscondido'); };
