@@ -830,6 +830,10 @@ table.mvTab td b{font-weight:700}
             <div class="fnDica">Arraste a tabela para o lado para ver todas as etapas.</div>
             <div class="tabRola"><table class="fnTab"><thead id="fnCab"></thead><tbody id="fnCorpo"><tr><td colspan="8" class="vazio" style="text-align:left">Carregando…</td></tr></tbody></table></div>
             <div class="cdSub" id="fnNota" style="margin-top:8px"></div>
+            <!-- 09/10/2026: de onde vem cada cadastro (robo lib/origem.js) -->
+            <div class="cdTit" style="font-size:14.5px;margin:14px 0 4px">De onde vem o lojista</div>
+            <div class="cdSub" style="margin-bottom:6px">Mesmas 6 semanas, por canal do cadastro. Use para decidir onde pôr a verba: o canal que leva até a 1ª live e o pagamento, não o que só traz cadastro.</div>
+            <div class="tabRola"><table class="fnTab" style="min-width:420px"><thead><tr><th>Canal</th><th>Cadastros</th><th>No teste</th><th>1ª live</th><th>Live 48 h</th><th>Pagantes</th></tr></thead><tbody id="fnOrigem"><tr><td colspan="6" class="vazio" style="text-align:left">Carregando…</td></tr></tbody></table></div>
             <div class="cdTopo" style="margin:14px 0 0"><div><div class="cdTit" style="font-size:14.5px">Últimos 20 cadastros</div><div class="cdSub">Para ver quem travou onde. E-mail mascarado de propósito.</div></div></div>
             <div class="fnLista" id="fnLista"></div>
           </div>
@@ -1987,7 +1991,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-08-confirma1';   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-09-origem';   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -7221,11 +7225,20 @@ table.mvTab td b{font-weight:700}
     if(j.cortado) notas.push('Atenção: bateu o teto de leitura; os cadastros mais antigos da janela ficaram de fora.');
     el('fnNota').textContent = notas.join(' ');
 
+    /* 09/10/2026: por canal do cadastro */
+    var po = j.porOrigem || [];
+    if(el('fnOrigem')) el('fnOrigem').innerHTML = po.length ? po.map(function(o){
+      function c(v){ return '<td>' + (v || 0) + '<small>' + pct(v || 0, o.cadastros) + '</small></td>'; }
+      return '<tr><td>' + esc(o.rotulo || o.canal) + '</td><td>' + (o.cadastros || 0) + '</td>' + c(o.teste) + c(o.live) + c(o.live48) + c(o.pagante) + '</tr>';
+    }).join('') : '<tr><td colspan="6" class="vazio" style="text-align:left">Sem cadastros nas 6 semanas.</td></tr>';
+
     var rec = j.recentes || [];
     if(!rec.length){ el('fnLista').innerHTML = '<div class="vazio">Nenhum cadastro nos últimos ' + (j.janelaDias || 60) + ' dias.</div>'; return; }
     el('fnLista').innerHTML = rec.map(function(r){
       var p = [];
-      p.push(r.anuncio ? pill('info','Anúncio') : pill('off','Orgânico'));
+      /* 09/10: origem do cadastro (canal + campanha); cadastro antigo mostra o que havia */
+      var og = r.origem || {};
+      p.push(og.canal && og.canal !== 'sem_registro' ? pill(/anuncio/.test(og.canal) ? 'info' : 'ok', og.rotulo + (og.campaign ? ' · ' + og.campaign : '')) : (r.anuncio ? pill('info','Anúncio') : pill('off','Orgânico')));
       p.push(r.emailConfirmado === true ? pill('ok','E-mail confirmado') : r.emailConfirmado === false ? pill('warn','E-mail não confirmado' + (r.lembretesConfirma > 0 ? ' · ' + r.lembretesConfirma + ' lembrete' + (r.lembretesConfirma > 1 ? 's' : '') : '')) : pill('off','E-mail ?'));
       p.push(r.ensaios > 0 ? pill('ok', r.ensaios === 1 ? '1 ensaio' : r.ensaios + ' ensaios') : pill('off','Sem ensaio'));
       if(r.live) p.push(pill(r.live48 ? 'ok' : 'warn', r.horasAteLive != null ? ('1ª live em ' + r.horasAteLive + ' h') : '1ª live (sem data)'));

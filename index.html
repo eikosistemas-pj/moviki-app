@@ -43,10 +43,75 @@
    nenhuma — que e a mesma coisa que nao existir para quem esta otimizando.
    Vive no window de proposito: as chamadas de cadastro estao espalhadas por
    escopos diferentes deste arquivo. */
+/* 09/10/2026 — ORIGEM DO CADASTRO: alem do clique de anuncio, vao as UTMs da
+   chegada (guardadas pelo mvmetrica.js) e o dominio da pagina anterior,
+   guardado na PRIMEIRA carga da sessao (depois de um login com Google o
+   referrer vira accounts.google.com e a pista se perderia). So o dominio,
+   nunca o endereco inteiro. O robo transforma isso numa etiqueta de canal
+   (moviki-robo/lib/origem.js) para o funil do dono. */
+(function(){
+  try{
+    if(!sessionStorage.getItem('mv_ref')){
+      var h = '';
+      /* veio do botao "Abrir no navegador": a pagina anterior viaja na URL */
+      try{ var mr = new URLSearchParams(location.search).get('mvref'); if(mr && /^[a-z0-9.-]{3,80}$/i.test(mr)) h = mr; }catch(_){}
+      try{ if(!h) h = document.referrer ? new URL(document.referrer).hostname : ''; }catch(_){}
+      if(h && !/(^|\.)app\.moviki\.com\.br$/.test(h) && !/accounts\.google\./.test(h)) sessionStorage.setItem('mv_ref', h.slice(0,80));
+      else sessionStorage.setItem('mv_ref', '-');
+    }
+  }catch(_){}
+})();
+/* 09/10/2026 — sai do navegador do Instagram/Facebook para o do celular,
+   levando a atribuicao junto (sessionStorage nao atravessa de um navegador
+   para o outro). Sem rede, sem Firebase: so monta o endereco e tenta abrir. */
+window.mvAbrirNoNavegador = function(caixa){
+  var url;
+  try{
+    var u = new URL(location.href);
+    u.hash = '';
+    var f = (window.mvFb ? window.mvFb() : {}) || {};
+    if(f.fbc && !u.searchParams.get('mvfbc')) u.searchParams.set('mvfbc', f.fbc);
+    if(f.fbp && !u.searchParams.get('mvfbp')) u.searchParams.set('mvfbp', f.fbp);
+    if(f.utm && !u.searchParams.get('utm_source')){
+      String(f.utm).split('&').forEach(function(par){ var kv = par.split('='); if(kv[0] && /^utm_[a-z]+$/.test(kv[0]) && kv[1]) u.searchParams.set(kv[0], decodeURIComponent(kv[1])); });
+    }
+    var r = ''; try{ r = sessionStorage.getItem('mv_ref') || ''; }catch(_){}
+    if(r && r !== '-' && !u.searchParams.get('mvref')) u.searchParams.set('mvref', r);
+    if(!u.searchParams.get('criar')) u.searchParams.set('criar', '1');
+    url = u.toString();
+  }catch(_){ url = location.href; }
+  var ua = navigator.userAgent || '';
+  try{
+    if(/Android/i.test(ua)){
+      /* sem browser_fallback_url de proposito: se o Instagram recusar o intent, a
+         pagina recarregaria DENTRO dele e o passo a passo abaixo nunca apareceria */
+      location.href = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;end';
+    }else if(/iPhone|iPad|iPod/i.test(ua)){
+      location.href = 'x-safari-' + url;
+    }
+  }catch(_){}
+  /* Se depois de 1,5 s a pagina continua aqui, o aplicativo nao deixou sair:
+     mostra o caminho manual (menu ... > Abrir no navegador) e o Copiar link. */
+  setTimeout(function(){
+    try{
+      if(document.hidden || !caixa || caixa.querySelector('.abrirForaManual')) return;
+      var m = document.createElement('div'); m.className = 'abrirForaManual';
+      m.textContent = 'Se não abriu: toque nos 3 pontinhos (⋯) no canto da tela e escolha "Abrir no navegador" — ou copie o link e cole no Chrome/Safari.';
+      var c = document.createElement('button'); c.type = 'button'; c.className = 'btnCopiarFora'; c.textContent = 'Copiar link';
+      c.addEventListener('click', function(){
+        var ok = function(){ c.textContent = 'Link copiado ✓'; };
+        try{ navigator.clipboard.writeText(url).then(ok, function(){ window.prompt('Copie o link:', url); }); }
+        catch(_){ window.prompt('Copie o link:', url); }
+      });
+      m.appendChild(c); caixa.appendChild(m);
+    }catch(_){}
+  }, 1500);
+};
 window.mvAtrib = function(){
   try{
     var f = (window.mvFb ? window.mvFb() : {}) || {};
-    return { fbc: f.fbc || '', fbp: f.fbp || '', origemUrl: location.href };
+    var ref = ''; try{ ref = sessionStorage.getItem('mv_ref') || ''; }catch(_){}
+    return { fbc: f.fbc || '', fbp: f.fbp || '', utm: f.utm || '', ref: ref === '-' ? '' : ref, origemUrl: location.href };
   }catch(_){ return {}; }
 };
 </script>
@@ -233,6 +298,11 @@ window.mvAtrib = function(){
   .btnGoogle:hover{filter:brightness(.96);}
   .btnGoogle:disabled{opacity:.6;cursor:default;}
   .avisoWebview{font-size:13px;line-height:1.45;color:#ffe08a;background:rgba(255,193,64,.12);border:1px solid rgba(255,193,64,.45);border-radius:10px;padding:10px 12px;margin:0 0 12px}
+  /* 09/10/2026: botao "Abrir no navegador e entrar com Google" dentro do aviso */
+  .avisoWebview .btnAbrirFora{display:block;width:100%;margin:10px 0 6px;padding:12px 14px;border:0;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;background:#fff;color:#1f1f1f;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .avisoWebview .avisoWebviewOu{font-size:12px;opacity:.85}
+  .avisoWebview .abrirForaManual{margin-top:8px;font-size:12.5px}
+  .avisoWebview .btnCopiarFora{margin-top:6px;padding:7px 12px;border-radius:8px;border:1px solid rgba(255,193,64,.6);background:transparent;color:inherit;font-weight:600;cursor:pointer}
 :where(html[data-tema="claro"]) .avisoWebview:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#916d08;background:rgba(255,193,64,0.12);border:1px solid rgba(255,193,64,0.45)}
   .qzLgpd{font-size:12px;line-height:1.45;opacity:.85;margin:12px 0 0;text-align:center}.qzLgpd a{color:inherit;text-decoration:underline}
   .btnGoogleIcon{flex:0 0 auto;}
@@ -4427,10 +4497,21 @@ window.mvAbaInicial=function(){
   /* 25/09/2026 (A2): o Google recusa login dentro do navegador do Instagram, do Facebook
      e do TikTok (erro 403 disallowed_useragent) - e e por eles que chega o anuncio da Meta.
      Nesses navegadores o botao do Google some e aparece o caminho que funciona. */
+  /* 09/10/2026: o aviso virou BOTAO. Quem chega pelo direct do Instagram cai
+     aqui, e o caminho do e-mail e onde param 4 de cada 10 (confirmacao). Com
+     o Google o e-mail ja vem confirmado e o teste libera na hora. O botao tenta
+     abrir esta mesma pagina no navegador do celular (Android: Chrome; iPhone:
+     Safari) levando junto ramo, UTMs e o clique do anuncio; se o aplicativo
+     nao deixar sair, mostra o passo a passo e o "Copiar link". */
   if(UA_WEBVIEW_SEM_POPUP){try{
     ['btnGoogle','qzA3BtnGoogle','qzB3BtnGoogle'].forEach(function(id){var b=el(id);if(!b||!b.parentNode)return;b.style.display='none';
       var n=document.createElement('div');n.className='avisoWebview';
-      n.textContent='Você está no navegador do aplicativo (Instagram ou Facebook). Aqui, crie a conta com e-mail e senha. Para entrar com o Google, abra esta página no Chrome ou no Safari (menu ⋯ > Abrir no navegador).';
+      var t=document.createElement('div');
+      t.textContent='Você está no navegador do Instagram/Facebook, onde o Google não deixa entrar. Para criar a conta com o Google em 1 toque (sem precisar confirmar e-mail), abra no navegador do celular:';
+      var bt=document.createElement('button');bt.type='button';bt.className='btnAbrirFora';bt.textContent='Abrir no navegador e entrar com Google';
+      bt.addEventListener('click',function(){window.mvAbrirNoNavegador(n);});
+      var ou=document.createElement('div');ou.className='avisoWebviewOu';ou.textContent='Ou crie a conta aqui mesmo com e-mail e senha.';
+      n.appendChild(t);n.appendChild(bt);n.appendChild(ou);
       b.parentNode.insertBefore(n,b);});
     document.querySelectorAll('.qzVoltarAuth').forEach(function(x){x.style.display='none';});
   }catch(_){}}
@@ -4660,7 +4741,7 @@ window.mvAbaInicial=function(){
      do fundador; Pro/Premium pagante vai ao WhatsApp (troca pela equipe);
      Enterprise nao ve; some depois de 27/11 ou com o lote fechado; "x" esconde
      por 3 dias. */
-  window.MOVIKI_VERSAO='2026-10-08-confirma1';   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-09-origem';   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
