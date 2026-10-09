@@ -4485,7 +4485,7 @@ window.mvAbaInicial=function(){
     const b=el('bvBtn');if(b)b.disabled=true;
     try{
       await sendEmailVerification(auth.currentUser);
-      el('bvTexto').innerHTML='📨 Reenviei o link para <b>'+auth.currentUser.email+'</b>. Abra seu e-mail e clique nele para confirmar. (Veja o spam também.)';
+      el('bvTexto').innerHTML='📨 Reenviei o link para <b>'+escV(auth.currentUser.email)+'</b>. Abra seu e-mail e toque nele para confirmar (veja o spam também). Quando confirmar, este painel percebe sozinho.';
     }catch(e){ el('bvTexto').textContent='Não consegui reenviar agora. Tente de novo em instantes.'; }
     if(b)setTimeout(function(){b.disabled=false;},5000);
   };
@@ -4517,6 +4517,24 @@ window.mvAbaInicial=function(){
       }
     }catch(e){ if(j)j.disabled=false; }
   };
+  /* 08/10/2026 (P75): o painel percebe a confirmacao sozinho. Quem confirma no
+     app de e-mail do celular e volta para o painel nao precisa achar o botao
+     "Já confirmei": ao voltar para a aba (e a cada 30 s, no maximo 20 vezes,
+     com a aba visivel) o painel recarrega o login e, confirmado, faz o mesmo
+     que o botao (libera o teste grátis na hora). */
+  function escV(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  let _vaUlt=0, _vaVoltas=0, _vaTimer=null;
+  async function mvVerifAuto(inicio){
+    const bv=el('bannerVerif');
+    if(!bv||bv.classList.contains('escondido')||bv.classList.contains('ok')){ if(_vaTimer){clearInterval(_vaTimer);_vaTimer=null;} return; }
+    if(inicio&&!_vaTimer){ _vaVoltas=0; _vaTimer=setInterval(function(){ if(document.visibilityState==='visible'){ _vaVoltas++; if(_vaVoltas>20){clearInterval(_vaTimer);_vaTimer=null;return;} mvVerifAuto(false); } },30000); }
+    const agora=Date.now(); if(agora-_vaUlt<8000) return; _vaUlt=agora;
+    const u=auth.currentUser; if(!u||u.emailVerified===true&&!inicio) return;
+    try{ await u.reload(); }catch(_){ return; }
+    if(auth.currentUser&&auth.currentUser.emailVerified){ if(_vaTimer){clearInterval(_vaTimer);_vaTimer=null;} try{ await window.jaConfirmei(); }catch(_){} }
+  }
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'){ try{ mvVerifAuto(false); }catch(_){} } });
+  window.addEventListener('focus',function(){ try{ mvVerifAuto(false); }catch(_){} });
   window.esqueciSenha=async function(){
     const email=el('email').value.trim();limparAviso();
     if(!email){erroAcesso('Digite seu e-mail no campo acima e clique aqui de novo — eu envio o link de recuperação pra ele.');return;}
@@ -4642,7 +4660,7 @@ window.mvAbaInicial=function(){
      do fundador; Pro/Premium pagante vai ao WhatsApp (troca pela equipe);
      Enterprise nao ve; some depois de 27/11 ou com o lote fechado; "x" esconde
      por 3 dias. */
-  window.MOVIKI_VERSAO='2026-10-07-cadastro1';   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-08-confirma1';   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -7559,9 +7577,10 @@ window.mvAbaInicial=function(){
       var _bv=el('bannerVerif');
       if(user.emailVerified){_bv.classList.add('escondido');}
       else{
-        el('bvTexto').innerHTML='⚠️ <b>Falta confirmar seu e-mail.</b> Enviamos um link para <b>'+user.email+'</b>. Abra seu e-mail e clique no link para ativar sua conta. Não achou? Veja a caixa de spam.';
+        el('bvTexto').innerHTML='⚠️ <b>Falta 1 passo para liberar seus 30 dias grátis</b> — com 2 lives pelo celular e o ensaio, que ninguém vê. Enviamos um link para <b>'+escV(user.email)+'</b>: abra seu e-mail e toque nele. Não achou? Veja o spam ou toque em "enviar de novo". Quando confirmar, este painel percebe sozinho.';
         el('bvAcoes').style.display='flex';
         _bv.classList.remove('ok');_bv.classList.remove('escondido');
+        try{ mvVerifAuto(true); }catch(_){}
       }
       coords=null;slugSalvo='';onbOculto=false;onbSalvo=false;onbDone=false;try{if(user&&localStorage.getItem('moviki_onb_'+user.uid))onbDone=true;}catch(_){}el('linkPronto').classList.add('escondido');
       el('listaCategorias').innerHTML='';el('listaPromos').innerHTML='';el('listaEventos').innerHTML='';galSet([]);
