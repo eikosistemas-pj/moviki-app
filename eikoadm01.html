@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://firebasestorage.googleapis.com https://raw.githubusercontent.com; media-src 'self' https://firebasestorage.googleapis.com; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://raw.githubusercontent.com; frame-src https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.gstatic.com https://www.google.com https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://firebasestorage.googleapis.com https://raw.githubusercontent.com; media-src 'self' https://firebasestorage.googleapis.com https://github.com https://release-assets.githubusercontent.com https://objects.githubusercontent.com; connect-src 'self' https://www.gstatic.com https://*.googleapis.com https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com https://www.moviki.com.br https://moviki.com.br https://moviki-robo.vercel.app https://moviki-ai.vercel.app https://raw.githubusercontent.com; frame-src https://www.google.com https://apis.google.com https://moviki-app.firebaseapp.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>if(self!==top){try{top.location=self.location}catch(e){document.documentElement.style.display='none'}}</script>
 <meta name="robots" content="noindex,nofollow">
@@ -1587,11 +1587,11 @@ table.mvTab td b{font-weight:700}
             <details class="tkPasso">
               <summary>Como postar no TikTok (passo a passo)</summary>
               <ol>
-                <li>Toque em <b>Baixar vídeo</b>. No Android vai para Downloads; no iPhone, para Arquivos &gt; Downloads.</li>
+                <li>Toque em <b>Baixar vídeo</b>. No Android vai para Downloads; no iPhone, para Arquivos &gt; Downloads. O vídeo já termina pedindo <b>“Mande LIVE no direct”</b> — quem manda cai no funil do ManyChat.</li>
                 <li>Toque em <b>Copiar legenda</b>.</li>
                 <li>Abra o TikTok, toque em <b>+</b> e depois em <b>Carregar</b>. Escolha o vídeo.</li>
                 <li>Toque em <b>Sons</b> e escolha um som em alta da <b>Biblioteca Comercial</b> (conta de empresa não pode usar música de artista). Como o vídeo já tem narração, em <b>Volume</b> deixe o som adicionado baixinho (uns 15%).</li>
-                <li>Toque em <b>Avançar</b>, cole a legenda e toque em <b>Publicar</b>.</li>
+                <li>Toque em <b>Avançar</b>, cole a legenda (a 1ª linha já pede o LIVE no direct) e toque em <b>Publicar</b>. No TikTok, comentário não dispara nada no Brasil: a chamada é sempre pelo direct.</li>
                 <li>Volte aqui e toque em <b>Já postei</b>.</li>
               </ol>
             </details>
@@ -1991,7 +1991,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-09-origem';   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-09-tiktok';   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -6741,6 +6741,10 @@ table.mvTab td b{font-weight:700}
   const tkVidOk = u => tkDom(u) && /\.mp4$/.test(tkCaminho(u));
   const tkImgOk = u => tkDom(u) && /\.(jpe?g|png|webp)$/.test(tkCaminho(u));
   const tkMesmaOrigem = u => { try{ return new URL(u).origin === location.origin; }catch(e){ return false; } };
+  /* 09/10/2026: video do kit com a cartela "Mande LIVE no direct" no fim,
+     montado pelo robo social e guardado no Release tiktok-kit do repositorio
+     dele. O GitHub entrega como anexo: o link baixa direto, sem fetch. */
+  const tkGit = u => /^https:\/\/github\.com\/eikosistemas-pj\/moviki-assistente-social\/releases\/download\/tiktok-kit\/tiktok-[a-z0-9-]+\.mp4$/.test(u||'');
   const tkChave = k => 'mv_tiktok_postado:' + k.dia + ':' + k.id;
   function tkPostado(k){ try{ return localStorage.getItem(tkChave(k)) === '1'; }catch(e){ return false; } }
   function tkMarcar(k, v){ try{ if(v) localStorage.setItem(tkChave(k), '1'); else localStorage.removeItem(tkChave(k)); }catch(e){} }
@@ -6762,16 +6766,22 @@ table.mvTab td b{font-weight:700}
     } else {
       if(TK_SEL >= dias.length) TK_SEL = 0;
       const k = dias[TK_SEL], feito = tkPostado(k);
-      const vid = tkVidOk(k.video) ? k.video : '', capa = tkImgOk(k.capa) ? k.capa : '';
+      const comCartela = tkGit(k.video_cartela);
+      const vid = comCartela ? k.video_cartela : (tkVidOk(k.video) ? k.video : ''), capa = tkImgOk(k.capa) ? k.capa : '';
       const nome = 'moviki-tiktok-' + k.dia + '.mp4';
       cx.innerHTML = '<div class="tkHoje">' +
         '<div class="tkVid">' + (vid ? '<video controls playsinline preload="metadata"' + (capa ? ' poster="' + esc(capa) + '"' : '') + ' src="' + esc(vid) + '"></video>' : '<div class="vazio">Vídeo fora do endereço esperado.</div>') + '</div>' +
         '<div class="tkLado">' +
           '<div class="rsMeta">' + esc(tkDiaTxt(k.dia, k.hoje)) + ' · ' + esc(k.ramo || 'geral') + (k.duracao ? ' · ' + Math.round(k.duracao) + ' s' : '') + '</div>' +
+          '<div class="rsMeta" style="color:' + (comCartela ? 'var(--mv-ok)' : '#ffb020') + '">' + (comCartela
+            ? 'Termina com a chamada “Mande LIVE no direct” (voz da Malu).'
+            : 'Ainda sem a chamada no fim: o robô monta na próxima rodada (~08h e ~22h). Se postar este, a legenda já pede o LIVE no direct.') + '</div>' +
           '<div class="tkTit">' + esc(k.titulo) + '</div>' +
           '<textarea class="tkLeg" id="tkLeg" readonly>' + esc(k.legenda) + '</textarea>' +
           '<div class="tkBts">' +
-            (vid ? (tkMesmaOrigem(vid)
+            (vid ? (comCartela
+                ? '<a class="btnMini pri" href="' + esc(vid) + '" target="_blank" rel="noopener">Baixar vídeo</a>'
+                : tkMesmaOrigem(vid)
                 ? '<a class="btnMini pri" href="' + esc(vid) + '" download="' + esc(nome) + '">Baixar vídeo</a>'
                 : '<button type="button" class="btnMini pri" id="tkBaixar" data-url="' + esc(vid) + '" data-nome="' + esc(nome) + '">Baixar vídeo</button>')
               : '<span></span>') +
