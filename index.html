@@ -2285,6 +2285,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         <div class="cfTema" role="group" aria-label="Aparência do painel"><span class="cfTemaRot">Aparência</span><div class="cfTemaSeg"><button type="button" data-cf-tema="escuro" aria-pressed="true">🌙 Escuro</button><button type="button" data-cf-tema="claro" aria-pressed="false">☀️ Claro</button></div></div>
         <button type="button" class="drawerPed" onclick="fecharMenu();irSecao('pedidos')"><img class="diImg" src="icones/vendas.png" alt="" onerror="this.replaceWith(document.createTextNode('🛍️'))"> Central de Pedidos<span class="pedBad escondido" data-pedbad>0</span></button>
         <button type="button" onclick="fecharMenu();irSecao('dinheiro')"><img class="diImg" src="icones/meudinheiro.png" alt="" onerror="this.replaceWith(document.createTextNode('💰'))"> Meu dinheiro</button>
+        <button type="button" id="drawerTutoriais" style="display:none" onclick="fecharMenu();abrirTutoriais()"><img class="diImg" src="icones/tutoriais.png" alt="" onerror="this.replaceWith(document.createTextNode('🎬'))"> Tutoriais em vídeo</button>
         <div class="drawerSec">Minha conta</div>
         <button type="button" onclick="fecharMenu();irSecao('perfil')"><img class="diImg" src="icones/perfil.png" alt="" onerror="this.replaceWith(document.createTextNode('👤'))"> Perfil do negócio</button>
         <button type="button" onclick="fecharMenu();abrirPlano()"><img class="diImg" src="icones/plano.png" alt="" onerror="this.replaceWith(document.createTextNode('💳'))"> Meu Plano</button>
@@ -2305,7 +2306,6 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         </div>
 
         <div class="drawerSec">Ajuda</div>
-        <button type="button" id="drawerTutoriais" style="display:none" onclick="fecharMenu();abrirTutoriais()"><svg class="diImg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" style="color:var(--ciano,#00D4FF)"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg> Tutoriais em vídeo</button>
         <a href="https://wa.me/554120186848?text=Ol%C3%A1!%20Preciso%20de%20ajuda%20com%20o%20Moviki." target="_blank" rel="noopener">💬 Falar com o suporte</a>
         <a href="https://moviki.com.br" target="_blank" rel="noopener"><img class="diImg" src="icones/sobre.png" alt="" onerror="this.replaceWith(document.createTextNode('ℹ️'))"> Sobre o Moviki</a>
         <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener"><img class="diImg" src="icones/termos.png" alt="" onerror="this.replaceWith(document.createTextNode('📄'))"> Termos de uso</a>
@@ -2590,6 +2590,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
         <button type="button" class="mvNavIt" data-sec="whatsapp" onclick="mvIr('whatsapp')"><img class="mvNavIco" src="icones/whatsapp.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>WhatsApp</span></button>
         <button type="button" class="mvNavIt" data-sec="avaliacoes" onclick="mvIr('avaliacoes')"><img class="mvNavIco" src="icones/avaliacoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Avaliações</span></button>
         <button type="button" class="mvNavIt" data-sec="financeiro" onclick="mvIr('financeiro')"><img class="mvNavIco" src="icones/financeiro.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Financeiro</span></button>
+        <button type="button" class="mvNavIt" id="navTutoriais" style="display:none" onclick="abrirTutoriais()"><img class="mvNavIco" src="icones/tutoriais.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Tutoriais</span></button>
         <button type="button" class="mvNavIt" onclick="abrirPlano()"><img class="mvNavIco" src="icones/plano.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meu Plano</span></button>
           <button type="button" class="mvNavIt mvNavEnt" id="mvNavPontos" style="display:none" onclick="abrirPontos()"><img class="mvNavIco" src="icones/multipontos.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Meus pontos</span></button>
         </nav>
@@ -4743,7 +4744,7 @@ window.mvAbaInicial=function(){
      do fundador; Pro/Premium pagante vai ao WhatsApp (troca pela equipe);
      Enterprise nao ve; some depois de 27/11 ou com o lote fechado; "x" esconde
      por 3 dias. */
-  window.MOVIKI_VERSAO='2026-10-09-tiktok';   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-10-teatro';   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -7742,6 +7743,36 @@ window.mvAbaInicial=function(){
         window.dispatchEvent(new Event('mv-pedaulas-pronto'));
       }catch(_){}
 
+      /* ---- 10/10/2026: TODAS as videoaulas do painel (cartao do Inicio) ----
+         Mesmo desenho dos blocos acima: o bloco de tutoriais nao fala com o
+         Firebase, quem le e grava e aqui. negocios/{uid}/estado/tutoriais cai
+         na regra estado/{documento} (dono ou admin) - sem regra nova. So guarda
+         quais aulas ja passaram de 90%. Nao tranca nada. */
+      try{
+        const _tgRef = doc(db,'negocios',user.uid,'estado','tutoriais');
+        let _tgV = [], _tgEss = '';
+        try{
+          const _tgS = await getDoc(_tgRef);
+          if(_tgS.exists()){
+            const _d = _tgS.data();
+            if(Array.isArray(_d.vistas)) _tgV = _d.vistas.slice(0,200);
+            if(typeof _d.essEm === 'string') _tgEss = _d.essEm;
+          }
+        }catch(_){}
+        window.__mvTutGeral = {
+          vistas: _tgV,
+          essEm: _tgEss,
+          salvar: async function(lista, extra){
+            try{
+              const d = { vistas: lista.slice(0,200), em: new Date().toISOString() };
+              if(extra && typeof extra.essEm === 'string') d.essEm = extra.essEm;
+              await setDoc(_tgRef, d, { merge:true });
+            }catch(_){}
+          }
+        };
+        window.dispatchEvent(new Event('mv-tutgeral-pronto'));
+      }catch(_){}
+
       /* ---- 15/09/2026: as aulas do MODO LIVE ----
          Mesmo desenho do bloco acima: o liveaulas.js nao fala com o Firebase,
          quem le e grava e aqui. Guarda em negocios/{uid}/estado/liveaulas, que
@@ -9452,7 +9483,7 @@ window.mvAbaInicial=function(){
     if (!d.ligado) { box.innerHTML = '<div class="finNota">Este recurso ainda não foi liberado para a sua conta.</div>'; return; }
     const it = d.itens || [];
     const s = el('selo-acc-ped-log'); if (s) s.textContent = it.length ? String(it.length) : '';
-    if (!it.length) { box.innerHTML = '<div class="finNota">Ainda não há parceiro de entrega aprovado em ' + finEsc(cidade ? cidade + '/' : '') + finEsc(d.uf || '') + '. Indique o link <b>moviki.com.br/entregadores</b> para quem faz entrega para você.</div>'; return; }
+    if (!it.length) { box.innerHTML = '<div class="finNota">Ainda não há parceiro de entrega aprovado em ' + finEsc(cidade ? cidade + '/' : '') + finEsc(d.uf || '') + '. Quem se cadastrar e for aprovado pela equipe do Moviki aparece aqui.</div>'; return; }
     box.innerHTML = it.map(function (x) {
       const local = x.mesmaCidade ? '<span class="lc mc">Sua cidade</span>' : '<span class="lc">' + finEsc(x.cidade + '/' + x.uf) + '</span>';
       const tags = (x.servicos || []).concat(x.veiculos || []);
@@ -11166,6 +11197,88 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#00D4FF)}
 :where(html[data-tema="claro"]) .mvCadeadoTit:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#ae6009}
 .mvCadeadoSub{font-size:14px;color:#c9d6e6;max-width:440px;line-height:1.5}
 :where(html[data-tema="claro"]) .mvCadeadoSub:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#142030}
+
+/* ==========================================================================
+   2026-10-10-teatro — VIDEOAULAS COM LAYOUT DE YOUTUBE (pedido do Paulo, 10/10)
+   Mesma janela nos dois paineis: barra com a marca no alto, a aula tocando
+   num quadro grande a esquerda e a lista das aulas a direita, cada uma com a
+   CAPA do video (miniatura do YouTube), duracao, visto e barra do quanto ja
+   foi assistido. No celular a lista desce para baixo do video, como no app.
+   So muda a aparencia: medicao, trava e progresso continuam os mesmos.
+   ========================================================================== */
+.mvAu{padding:0;align-items:flex-start}
+.mvAuCx{max-width:1380px;min-height:100%;border-radius:0;border:0;padding:0 0 22px;margin:0 auto}
+@media(min-width:900px){.mvAu{padding:18px}.mvAuCx{min-height:0;border-radius:18px;border:1px solid var(--card-borda,#1c3457)}}
+.mvAuMarca{display:flex;align-items:center;gap:12px;min-height:58px;padding:10px 64px 10px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+:where(html[data-tema="claro"]) .mvAuMarca:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){border-bottom:1px solid rgba(20,40,70,0.1)}
+.mvAuMarca img{height:30px;width:auto;display:block}
+.mvAuMarca span{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8d9db2;padding-left:12px;border-left:1px solid rgba(255,255,255,.16);line-height:1.3}
+:where(html[data-tema="claro"]) .mvAuMarca span:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#3d4a5c;border-left:1px solid rgba(20,40,70,0.16)}
+.mvAuX{top:12px;right:14px;z-index:3}
+.mvAuTopo{margin:16px 60px 0 18px}
+.mvAuProg{margin:10px 18px 16px}
+.mvAuGrade{padding:0 18px;gap:20px}
+@media(min-width:900px){.mvAuGrade{grid-template-columns:minmax(0,1fr) 400px;align-items:start}}
+@media(min-width:1240px){.mvAuGrade{grid-template-columns:minmax(0,1fr) 430px}}
+.mvAuGrade .mvTutVideo{border-radius:14px;margin:0}
+.mvAuPalcoTit{font-size:19px;font-weight:700;margin:12px 2px 0;line-height:1.3}
+.mvAuPe,.mvAuFim{margin-left:18px;margin-right:18px}
+.mvAuLista{display:flex;flex-direction:column;gap:4px}
+@media(min-width:900px){.mvAuLista{max-height:calc(100vh - 200px);overflow:auto;padding-right:6px}}
+.mvAuIt{display:flex;align-items:flex-start;gap:10px;padding:6px;border-radius:12px;border:1px solid transparent;background:transparent}
+:where(html[data-tema="claro"]) .mvAuIt:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){border:1px solid transparent;background:transparent}
+.mvAuIt:hover{background:rgba(255,255,255,.05);border-color:transparent}
+:where(html[data-tema="claro"]) .mvAuIt:hover:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){background:rgba(20,40,70,0.05);border-color:transparent}
+.mvAuIt.tocando{background:rgba(255,255,255,.08);border-color:var(--ciano,#00D4FF)}
+:where(html[data-tema="claro"]) .mvAuIt.tocando:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){background:rgba(20,40,70,0.06)}
+.mvAuIt .mvAuNum{display:none}
+.mvAuMini{position:relative;flex:none;width:168px;aspect-ratio:16/9;border-radius:9px;overflow:hidden;background:#0b1728}
+@media(max-width:480px){.mvAuMini{width:142px}}
+.mvAuMini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.mvAuMiniDur{position:absolute;right:5px;bottom:6px;padding:1px 5px;border-radius:4px;background:rgba(0,0,0,.82);color:#fff;font-size:11.5px;font-weight:600;line-height:1.5}
+.mvAuMiniOk{position:absolute;left:5px;top:5px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#22c55e;color:#04210f;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.mvAuMiniOk svg{width:13px;height:13px}
+.mvAuMiniBar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.28)}
+.mvAuMiniBar i{display:block;height:100%;background:#ff0033}
+.mvAuMiniTocando{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.58);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.mvAuIt .mvAuTxt{padding-top:1px}
+.mvAuIt .mvAuNome{font-size:14px;font-weight:600;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mvAuIt .mvAuMin{margin-top:4px}
+.mvAuSecao{margin:14px 6px 4px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1)}
+:where(html[data-tema="claro"]) .mvAuSecao:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){border-top:1px solid rgba(20,40,70,0.1)}
+.mvAuSecao b{display:block;font-size:13px;font-weight:700}
+.mvAuSecao span{display:block;font-size:12px;line-height:1.5;opacity:.75;margin-top:2px}
+.mvAuLive{display:flex;align-items:center;gap:10px;width:100%;margin:6px 0 2px;padding:11px 12px;border-radius:12px;border:1px dashed rgba(255,45,85,.55);background:rgba(255,45,85,.08);color:inherit;font:inherit;font-size:14px;font-weight:600;text-align:left;cursor:pointer}
+.mvAuLive:hover{background:rgba(255,45,85,.14)}
+.mvAuLive small{display:block;font-size:12px;font-weight:400;opacity:.75;margin-top:2px}
+:where(html[data-tema="claro"]) .mvAuMarca img{background:#0d1726;border-radius:9px;padding:4px 9px;height:36px}
+
+/* 10/10/2026: cartao "Videoaulas do painel" no Inicio (roxo = cor das aulas) */
+#grade>#mvTutProg{order:3;margin-top:14px}
+.cfTut{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 10px;padding:13px 14px 17px;position:relative;
+  border-radius:14px;border:1px solid var(--cf-aula-borda,rgba(185,140,245,.4));background:var(--mv-surf,#0d1726);color:inherit;font:inherit;text-align:left;cursor:pointer}
+.cfTut:hover{border-color:var(--cf-aula,#b98cf5)}
+.cfTut .cfTutIc{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--cf-aula-bg,rgba(168,85,247,.14));color:var(--cf-aula,#b98cf5)}
+.cfTut .cfTutIc svg{width:18px;height:18px}
+.cfTut .cfTutTx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.cfTut .cfTutTx b{font-size:14.5px;font-weight:700}
+.cfTut .cfTutTx span{font-size:12.5px;color:var(--mv-txt-3,#8d9db2)}
+.cfTut .cfTutBt{flex:none;font-size:13px;font-weight:600;color:var(--cf-aula,#b98cf5);border:1px solid var(--cf-aula-borda,rgba(185,140,245,.4));border-radius:9px;padding:7px 12px;white-space:nowrap}
+.cfTut .cfTutBar{position:absolute;left:14px;right:14px;bottom:7px;height:5px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden}
+:where(html[data-tema="claro"]) .cfTut .cfTutBar:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){background:rgba(20,40,70,0.08)}
+.cfTut .cfTutBar i{display:block;height:100%;border-radius:9px;background:var(--cf-aula,#b98cf5);transition:width .4s}
+.cfTut.ok .cfTutBar i{background:#22c55e}
+.cfTut.falta .cfTutBar i{background:#ff3b4e}
+.cfTut.falta .cfTutTx span{color:#ff8a95}
+:where(html[data-tema="claro"]) .cfTut.falta .cfTutTx span:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#c4162a}
+/* 10/10/2026: os tres niveis das aulas na lista da janela */
+.mvAuSecao b i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:0}
+.mvNve b i{background:#ff3b4e}.mvNvr b i{background:#f5b400}.mvNvc b i{background:#3b9dff}
+.mvNve b{color:#ff8a95}.mvNvr b{color:#ffd166}.mvNvc b{color:#8cc4ff}
+:where(html[data-tema="claro"]) .mvNve b:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#c4162a}
+:where(html[data-tema="claro"]) .mvNvr b:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#8a6400}
+:where(html[data-tema="claro"]) .mvNvc b:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#1565c0}
+.mvAuLista>.mvAuSecao:first-child{border-top:0;margin-top:2px;padding-top:2px}
 </style>
 <script>
 /* ===================== TUTORIAIS EM VIDEO - LOJISTA =======================
@@ -11267,7 +11380,20 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     { k:'mod-desempenho', t:'Ler os seus números e agir em cima deles',            d:'0:48', id:'5fZYT7zgdPE' } ]},
   { n:'Seu dia a dia', sel:'', v:[
     { k:'mod-diaadia',    t:'Abrir, fechar, recado do dia e ver a sua página',     d:'1:01', id:'WBOExFqU2YY' } ]}
-]};
+],
+/* ===================== NIVEIS DAS AULAS - 10/10/2026 =====================
+   Pedido do Paulo: o lojista precisa ver quais aulas sao as mais importantes.
+   Tres grupos na janela das aulas, nesta ordem:
+     essenciais   (vermelho) - o cartao do Inicio conta estas primeiro
+     recomendadas (amarelo)
+     o resto      (azul)     - "Complementares", nao precisa listar
+   PARA MUDAR UMA AULA DE GRUPO: mover a chave (k) de uma lista para outra.
+   Aula que entra em `essenciais` depois de a pessoa ter visto todas vira o
+   aviso "1 aula essencial nova" no cartao. NADA TRAVA o painel do lojista. */
+niveis: {
+  essenciais:   ['mod-boasvindas','mod-inicio','mod-perfil','mod-cardapio','mod-financeiro','mod-pedidos-central'],
+  recomendadas: ['mod-local','mod-whatsapp','mod-pedidos-etapas','mod-pedidos-entrega','mod-pedidos-estoque','mod-meu-dinheiro','mod-plano','mod-diaadia']
+}};
 </script>
 <script>
 /* Tutoriais em video - 2026-09-01-tutmodulo.
@@ -11285,6 +11411,43 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   function quantos(){ var n=0; MOD().forEach(function(m){ n+=prontos(m).length; }); return n; }
   var PLAY='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.4v13.2L19 12z"/></svg>';
   function capa(id,q){ return 'https://i.ytimg.com/vi/'+encodeURIComponent(id)+'/'+q+'.jpg'; }
+
+  /* 10/10/2026 (teatro): cada aula da lista com a CAPA do video, como no
+     YouTube. Duracao no canto, visto verde, barra vermelha do quanto ja foi
+     assistido e "Tocando" na que esta no palco. mqdefault (320x180) existe
+     para todo video publicado; maxres nem sempre. */
+  function miniAula(v, o){
+    o = o || {};
+    var b=document.createElement('button');
+    b.type='button';
+    b.className='mvAuIt'+(o.ok?' feita':'')+(o.tocando?' tocando':'');
+    b.setAttribute('data-auit',v.k);
+    var mi=document.createElement('span'); mi.className='mvAuMini';
+    var im=document.createElement('img');
+    im.loading='lazy'; im.decoding='async'; im.alt='';
+    im.src=capa(v.id,'mqdefault');
+    mi.appendChild(im);
+    if(v.d){ var du=document.createElement('span'); du.className='mvAuMiniDur'; du.textContent=v.d; mi.appendChild(du); }
+    if(o.ok){ var ck=document.createElement('span'); ck.className='mvAuMiniOk'; ck.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>'; mi.appendChild(ck); }
+    var pc = o.ok ? 100 : Math.max(0, Math.min(99, o.pc||0));
+    if(pc>=3){ var br=document.createElement('span'); br.className='mvAuMiniBar'; br.innerHTML='<i style="width:'+pc+'%"></i>'; mi.appendChild(br); }
+    if(o.tocando){ var tc=document.createElement('span'); tc.className='mvAuMiniTocando'; tc.textContent='Tocando'; mi.appendChild(tc); }
+    var tx=document.createElement('span'); tx.className='mvAuTxt';
+    var nome=document.createElement('span'); nome.className='mvAuNome'; nome.textContent=v.t;
+    var min=document.createElement('span'); min.className='mvAuMin'; min.textContent=o.meta||'';
+    tx.appendChild(nome); tx.appendChild(min);
+    b.appendChild(mi); b.appendChild(tx);
+    return b;
+  }
+  /* a barra com a marca no alto da janela, igual ao YouTube */
+  function marcaTeatro(){
+    var m=document.createElement('div'); m.className='mvAuMarca';
+    var lg=document.createElement('img'); lg.src='logo.png'; lg.alt='Moviki'; lg.decoding='async';
+    lg.onerror=function(){ lg.remove(); };
+    var r=document.createElement('span'); r.textContent='Videoaulas';
+    m.appendChild(lg); m.appendChild(r);
+    return m;
+  }
 
   /* a capa em alta so existe se o video tem miniatura propria. Sem ela o
      YouTube NAO da erro - devolve uma imagem cinza de 120px. Por isso o
@@ -11541,7 +11704,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
 
   function iniciar(){
     entradas(); embutir(); amarrar(); try{ trava(); }catch(e){}
-    setTimeout(function(){ entradas(); embutir(); amarrar(); try{ trava(); }catch(e){} },1400);
+    setTimeout(function(){ entradas(); embutir(); amarrar(); try{ trava(); }catch(e){} try{ pintarCartaoTut(); }catch(e){} },1400);
     window.addEventListener('mv-parceiro-pronto',function(){ try{ trava(); }catch(e){} });
     setTimeout(amarrar,3500);
   }
@@ -11656,8 +11819,70 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      trilhas: as boas-vindas ('bv') e as aulas da Central de Pedidos ('ped').
      Antes, o cartao da Central abria a aula sozinha, sem a lista do lado. */
   var TRILHA='bv';
-  function tAulas(){ return TRILHA==='ped' ? pedAulas() : bvAulas(); }
-  function tFeitas(){ return TRILHA==='ped' ? pedFeitas() : bvFeitas(); }
+  /* 10/10/2026: terceira trilha, 'tut' = TODAS as aulas do painel, na ordem
+     do catalogo. E o que a aba Tutoriais abre agora (antes era uma grade). */
+  function tAulas(){ return TRILHA==='ped' ? pedAulas() : (TRILHA==='tut' ? tutAulas() : bvAulas()); }
+  function tFeitas(){ return TRILHA==='ped' ? pedFeitas() : (TRILHA==='tut' ? tutFeitas() : bvFeitas()); }
+  /* aula de recurso liberado conta por conta (`so`) so entra para quem tem o recurso */
+  function tutTodas(){
+    var r=[];
+    MOD().forEach(function(m){
+      if(m.so){ try{ var dono=document.querySelector(m.so); if(!dono || dono.classList.contains('escondido')) return; }catch(_){ return; } }
+      prontos(m).forEach(function(v){ r.push(v); });
+    });
+    return r;
+  }
+  /* 'e' essencial, 'r' recomendada, 'c' complementar */
+  function nivelDe(k){
+    var N=(window.MOVIKI_TUTORIAIS && window.MOVIKI_TUTORIAIS.niveis) || {};
+    if((N.essenciais||[]).indexOf(k)>-1) return 'e';
+    if((N.recomendadas||[]).indexOf(k)>-1) return 'r';
+    return 'c';
+  }
+  /* a fila da janela: essenciais, depois recomendadas, depois o resto. A
+     proxima aula que falta (e o "Continuar" do cartao) sai daqui. */
+  function tutAulas(){
+    var t=tutTodas(), r=[];
+    ['e','r','c'].forEach(function(n){ t.forEach(function(v){ if(nivelDe(v.k)===n) r.push(v); }); });
+    return r;
+  }
+  var NIVEL={ e:{ n:'Essenciais', s:'Comece por estas. São as que mais fazem diferença no seu dia a dia.' },
+              r:{ n:'Recomendadas', s:'Vale ver logo depois das essenciais.' },
+              c:{ n:'Complementares', s:'Para quando você precisar de cada tela.' } };
+  function secaoNivel(n, feitas, total){
+    var cab=document.createElement('div'); cab.className='mvAuSecao mvNv'+n;
+    var b=document.createElement('b');
+    b.innerHTML='<i></i>'; b.appendChild(document.createTextNode(NIVEL[n].n+' ('+feitas+' de '+total+')'));
+    var sp=document.createElement('span'); sp.textContent=NIVEL[n].s;
+    cab.appendChild(b); cab.appendChild(sp);
+    return cab;
+  }
+  function modDe(k){
+    var n='';
+    MOD().forEach(function(m){ prontos(m).forEach(function(v){ if(v.k===k) n=m.n||''; }); });
+    return n;
+  }
+  /* visto = qualquer registro: boas-vindas, Central de Pedidos, o geral
+     (estado/tutoriais) e o que passou de 90% nesta sessao */
+  var TUTLOC=[];
+  function tutFeitas(){
+    var r=[];
+    function add(a){ (a||[]).forEach(function(k){ if(r.indexOf(k)<0) r.push(k); }); }
+    var P=window.__mvLojistaTut; add(P && P.vistas); add(LOCAIS);
+    var PA=window.__mvPedAulas; add(PA && PA.vistas);
+    try{ add(pedFeitas()); }catch(_){}
+    var G=window.__mvTutGeral; add(G && G.vistas); add(TUTLOC);
+    var ks=tutAulas().map(function(v){ return v.k; });
+    return r.filter(function(k){ return ks.indexOf(k)>-1; });
+  }
+  function tutMarcar(k){
+    if(TUTLOC.indexOf(k)<0) TUTLOC.push(k);
+    var G=window.__mvTutGeral;
+    if(G){
+      var l=(G.vistas||[]).slice();
+      if(l.indexOf(k)<0){ l.push(k); G.vistas=l; try{ G.salvar(l); }catch(_){} }
+    }
+  }
   function tProxima(){
     var f=tFeitas(), t=tAulas();
     for(var i=0;i<t.length;i++){ if(f.indexOf(t[i].k)===-1) return t[i]; }
@@ -11685,6 +11910,9 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   }
   /* chamada pelo player quando o YouTube confirma 90% */
   function marcar(k){
+    try{ tutMarcar(k); }catch(e){}
+    try{ if(TRILHA==='tut') pintarAulas(); }catch(e){}
+    try{ pintarCartaoTut(); }catch(e){}
     try{ pedMarcar(k); }catch(e){}
     try{ if(PEDAULAS.indexOf(k)>-1) pintarAulas(); }catch(e){}
     if(BOASVINDAS.indexOf(k)>-1){
@@ -11729,6 +11957,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     x.addEventListener('click',fecharAulas);
     var topo=document.createElement('div'); topo.className='mvAuTopo';
     auH=document.createElement('b'); auH.className='mvAuH'; auH.textContent='Bem-vindo ao Moviki!';
+    var marca=marcaTeatro();
     var sub=document.createElement('span'); sub.className='mvAuSub';
     auSubTxt=sub;
     topo.appendChild(auH); topo.appendChild(sub);
@@ -11773,7 +12002,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     depois.type='button'; depois.className='mvAuDepois'; depois.textContent='Ver depois';
     depois.addEventListener('click',fecharAulas);
     pe.appendChild(auFim); pe.appendChild(depois);
-    cxa.appendChild(x); cxa.appendChild(topo); cxa.appendChild(prog);
+    cxa.appendChild(x); cxa.appendChild(marca); cxa.appendChild(topo); cxa.appendChild(prog);
     cxa.appendChild(grade); cxa.appendChild(pe);
     au.appendChild(cxa); document.body.appendChild(au);
   }
@@ -11857,42 +12086,56 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   }
   function pintarAulas(){
     if(!au) return;
-    var t=tAulas(), f=tFeitas(), ped=(TRILHA==='ped');
+    var t=tAulas(), f=tFeitas(), ped=(TRILHA==='ped'), tut=(TRILHA==='tut');
     if(auH){
       var n=(window.__mvLojistaTut && window.__mvLojistaTut.nome) || '';
-      auH.textContent = ped ? 'Aulas da Central de Pedidos'
-                            : (n ? ('Bem-vindo ao Moviki, ' + n + '!') : 'Bem-vindo ao Moviki!');
+      auH.textContent = tut ? 'Videoaulas do painel' : (ped ? 'Aulas da Central de Pedidos'
+                            : (n ? ('Bem-vindo ao Moviki, ' + n + '!') : 'Bem-vindo ao Moviki!'));
     }
-    if(auSubTxt) auSubTxt.textContent = ped
+    if(auSubTxt) auSubTxt.textContent = tut
+      ? 'Todas as aulas do painel num lugar só. Escolha uma aula na lista: ela fica marcada em verde quando você passa de 90%. Nada trava o seu painel.'
+      : ped
       ? 'Do Pix à entrega, a comanda, a sua entrega, os dados do cliente, como o dinheiro chega e quanto você vendeu. '+
         'Assista em sequência: quando uma aula termina, a próxima já entra.'
       : 'Um recado rápido de boas-vindas e três aulas curtas pra você se situar: '+
         'o que tem em cada canto do painel, como ler os seus números, e o que fazer todo dia. '+
         'Menos de cinco minutos no total.';
-    if(auFim) auFim.textContent = ped ? 'Pronto! Você viu todas as aulas da Central de Pedidos.'
+    if(auFim) auFim.textContent = tut ? 'Pronto! Você assistiu todas as videoaulas do painel.'
+                                : ped ? 'Pronto! Você viu todas as aulas da Central de Pedidos.'
                                       : 'Pronto! Agora você conhece o painel. Bom trabalho.';
     if(auCont) auCont.textContent = f.length + ' de ' + t.length;
     if(auBar) auBar.style.width = t.length ? Math.round(f.length/t.length*100)+'%' : '0%';
     if(auFim) auFim.hidden = !(t.length && f.length>=t.length);
     if(!auLista) return;
     auLista.innerHTML='';
+    var nvAtual=null;
     t.forEach(function(v,i){
       var ok=f.indexOf(v.k)>-1;
-      var bt=document.createElement('button');
-      bt.type='button';
-      bt.className='mvAuIt'+(ok?' feita':'')+(auTocando===v.k?' tocando':'');
-      bt.setAttribute('data-auit',v.k);
-      var nu=document.createElement('span');
-      nu.className='mvAuNum'+(ok?' ok':'');
-      nu.innerHTML = ok ? VISTO : String(i+1);
-      var tx=document.createElement('span'); tx.className='mvAuTxt';
-      var nome=document.createElement('span'); nome.className='mvAuNome'; nome.textContent=v.t;
-      var min=document.createElement('span'); min.className='mvAuMin';
-      min.textContent=(ok?'Assistida':(ped?'Aula '+(i+1):(i===0?'Comece por aqui':'Aula '+i)))+(v.d?' · '+v.d:'');
-      tx.appendChild(nome); tx.appendChild(min);
-      bt.appendChild(nu); bt.appendChild(tx);
-      auLista.appendChild(bt);
+      if(tut){
+        var nv=nivelDe(v.k);
+        if(nv!==nvAtual){
+          nvAtual=nv;
+          var doNv=t.filter(function(x){ return nivelDe(x.k)===nv; });
+          var vistoNv=doNv.filter(function(x){ return f.indexOf(x.k)>-1; }).length;
+          auLista.appendChild(secaoNivel(nv, vistoNv, doNv.length));
+        }
+      }
+      var pc=ok ? 100 : pctDoPalco(v.k);
+      var meta = tut ? ((modDe(v.k)||'Videoaula') + (ok ? ' · Assistida' : (pc>=5 ? ' · Assistido '+pc+'%' : '')))
+                     : (ok ? 'Assistida' : (ped ? 'Aula '+(i+1) : (i===0 ? 'Comece por aqui' : 'Aula '+i)));
+      auLista.appendChild(miniAula(v,{ ok:ok, pc:pc, tocando:auTocando===v.k, meta:meta }));
     });
+    /* as aulas da live moram no estudio (outra janela, outra trava) */
+    if(tut && window.MvLiveAulas && typeof window.MvLiveAulas.abrir==='function'){
+      var nL=0;
+      try{ (window.MOVIKI_LIVEAULAS.modulos||[]).forEach(function(m){ (m.v||[]).forEach(function(v){ if(v.id) nL++; }); }); }catch(_){}
+      if(nL){
+        var lv=document.createElement('button'); lv.type='button'; lv.className='mvAuLive';
+        lv.innerHTML='<span>🔴</span><span>Aulas da live ('+nL+')<small>Ficam na biblioteca do estúdio da live.</small></span>';
+        lv.addEventListener('click',function(){ try{ fecharAulas(); window.MvLiveAulas.abrir(); }catch(_){} });
+        auLista.appendChild(lv);
+      }
+    }
   }
   function abrirAulas(k){
     if(!bvPronto()) return;
@@ -11912,10 +12155,65 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     pintarAulas();
   }
   window.mvAbrirAulasPed=function(k){ try{ abrirTrilhaPed(k); }catch(e){} };
+  /* 10/10/2026: a aba Tutoriais, na mesma janela, com TODAS as aulas */
+  function abrirTrilhaTut(k){
+    if(!tutAulas().length) return;
+    TRILHA='tut';
+    montarAulas(); pararTodos();
+    au.hidden=false; document.body.style.overflow='hidden';
+    porNoPalco(k ? achar(k) : tProxima(), !!k);
+    pintarAulas();
+  }
+  /* cartao "Videoaulas do painel" no Inicio: quantas existem, quantas foram
+     vistas e a barra. Insiste, nunca tranca (a regra da casa para o lojista). */
+  var ICO_TUT='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="15" rx="3"/><path d="M10.5 9.2l4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg>';
+  function pintarCartaoTut(){
+    try{
+      var g=document.getElementById('grade'); if(!g) return;
+      var t=tutAulas(), c=document.getElementById('mvTutProg');
+      if(!t.length || !window.__mvLojistaTut){ if(c) c.remove(); return; }
+      var f=tutFeitas(), n=f.length, T=t.length, ok=n>=T;
+      var es=t.filter(function(v){ return nivelDe(v.k)==='e'; });
+      var esV=es.filter(function(v){ return f.indexOf(v.k)>-1; }).length;
+      var esOk=esV>=es.length;
+      var G=window.__mvTutGeral;
+      /* fechou as essenciais uma vez: guarda a data. Aula essencial publicada
+         depois disso vira "aula essencial nova", nunca "voce nao viu nada". */
+      if(es.length && esOk && G && !G.essEm){ G.essEm=new Date().toISOString(); try{ G.salvar((G.vistas||[]).slice(), { essEm:G.essEm }); }catch(_){} }
+      var esNova = !esOk && G && !!G.essEm;
+      var pc = (es.length && !esOk) ? Math.round(esV/es.length*100) : Math.round(n/T*100);
+      if(!c){
+        c=document.createElement('button'); c.type='button'; c.id='mvTutProg'; c.className='cfTut';
+        c.innerHTML='<span class="cfTutIc">'+ICO_TUT+'</span><span class="cfTutTx"><b>Videoaulas do painel</b><span></span></span><span class="cfTutBt"></span><span class="cfTutBar"><i></i></span>';
+        c.addEventListener('click',function(){ try{ abrirTrilhaTut(); }catch(_){} });
+        var mapa=g.querySelector(':scope > .mvMapaCard');
+        if(mapa && mapa.nextSibling) g.insertBefore(c, mapa.nextSibling); else g.appendChild(c);
+      }
+      var sub, faltaEs=es.length-esV;
+      if(ok) sub='Você assistiu as '+T+' aulas. Está em dia com o painel.';
+      else if(esNova) sub=(faltaEs===1?'1 aula essencial nova':faltaEs+' aulas essenciais novas')+' · Todas: '+n+' de '+T;
+      else if(es.length && !esOk) sub='Essenciais: '+esV+' de '+es.length+' · Todas: '+n+' de '+T;
+      else sub='Essenciais em dia · Todas: '+n+' de '+T+' aulas';
+      var bt = ok ? 'Rever' : (n ? 'Continuar' : 'Começar');
+      var html=sub+'|'+bt+'|'+pc;
+      if(c.__h===html) return; c.__h=html;
+      c.classList.toggle('ok', ok);
+      c.classList.toggle('falta', es.length>0 && !esOk);
+      c.querySelector('.cfTutTx span').textContent=sub;
+      c.querySelector('.cfTutBt').textContent=bt;
+      c.querySelector('.cfTutBar i').style.width=pc+'%';
+    }catch(e){}
+  }
+  window.mvTutCartao=pintarCartaoTut;
+  ['mv-lojista-pronto','mv-pedaulas-pronto','mv-tutgeral-pronto'].forEach(function(ev){
+    window.addEventListener(ev,function(){ setTimeout(pintarCartaoTut,60); });
+  });
+  document.addEventListener('click',function(){ setTimeout(pintarCartaoTut,420); },false);
   function fecharAulas(){
     if(!au || au.hidden) return;
     limparPalco(); au.hidden=true; document.body.style.overflow='';
     pintarAulas(); TRILHA='bv'; faixa();
+    try{ pintarCartaoTut(); }catch(e){}
   }
   window.abrirBoasVindas=function(){ try{ abrirAulas(); }catch(e){} };
 
@@ -12093,7 +12391,10 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     }catch(e){}
   });
 
+  /* 10/10/2026: Tutoriais abre o teatro (palco + lista com capas), nao a
+     grade. A grade antiga (lista/tocar) fica so como reserva. */
   window.abrirTutoriais=function(k){
+    try{ abrirTrilhaTut(k); return; }catch(e){}
     try{ if(k){ tocar(k); return; } lista(); cx.classList.remove('escondido'); }catch(e){}
   };
   window.mvTutEmbutir=embutir;
