@@ -479,11 +479,11 @@ svg{display:block}
       <div class="painelAba" data-aba="pix" data-ent="1">
         <div class="card">
           <h3>Receber no Pix, dentro da live</h3>
-          <p class="sub">O cliente paga pelo Pix sem sair da live, e o dinheiro cai numa conta de pagamento <b>em seu nome</b> no Asaas — nunca na conta do Moviki. Taxa do Moviki: <b>0%</b> no lançamento.</p>
-          <div class="avisoTarifa">
-            <b>O que você recebe, na prática</b>
-            <p>O Asaas desconta <b>R$ 1,99 por Pix recebido</b> — é tarifa dele, não do Moviki, e vale por pedido, não por real vendido. Num pedido de R$ 20 você fica com R$ 18,01; num de R$ 50, com R$ 48,01. Por isso o <b>pedido mínimo é R$ 20</b>: quanto maior a sacolinha, menor o peso da tarifa.</p>
-          </div>
+          <!-- 10/10/2026 (AC-PIX-1): o topo vale para TODOS os modos. A tarifa e o
+               minimo da subconta antiga (Asaas da conta-mae) moraram aqui ate hoje
+               e apareciam para quem usa Pix direto, que nao tem tarifa. Foram para
+               dentro de #pxComConta, que so abre para quem tem subconta. -->
+          <p class="sub">O cliente paga pelo Pix sem sair da live, e o dinheiro vai direto para a <b>sua conta</b> — nunca para a do Moviki. O Moviki não cobra comissão sobre a sua venda.</p>
           <div id="pxCarregando" class="pPreco">Carregando…</div>
           <!-- 16/09/2026: o formulario de abrir conta de recebimento SAIU daqui.
                Conta nova nao se abre mais pelo estudio (a subconta consome o teto
@@ -502,6 +502,10 @@ svg{display:block}
             <p class="sub" style="margin-top:8px">Receber <b>dentro da transmissão</b> continua sendo do plano Enterprise.</p>
           </div>
           <div id="pxComConta" class="escondido">
+            <div class="avisoTarifa">
+              <b>O que você recebe, na prática</b>
+              <p>Na sua conta de recebimento do Asaas, ele desconta <b>R$ 1,99 por Pix recebido</b> — é tarifa dele, não do Moviki, e vale por pedido, não por real vendido. Por isso o <b>pedido mínimo é R$ 20</b>.</p>
+            </div>
             <div id="pxResumo" class="pPreco"></div>
             <div class="pxEtapas" id="pxEtapas"></div>
             <div id="pxDocs"></div>
@@ -656,7 +660,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer, increment }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-10-07-ensaio';   /* 07/10 (P75 fase 1, B7): botao "Fazer um ensaio" (transmissao de teste sem publico, ate 10 min, 5 por dia, nao conta nas lives do teste gratis), selo ENSAIO com o tempo restante e convite para a live de verdade. */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): botao Avisar a Lista VIP durante a live (so com a chave ligada pelo dono). */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): pedido de envio para outra cidade aparece como Envio (cidade/UF) */ /* antes: 2026-10-03-carrinho */   /* 03/10 (P70): pedido do carrinho da live aparece com todos os itens */   /* 01/10 (P65): conforto visual v2 (sem brilho, escala de letra); estudio segue escuro */ /* antes: 2026-09-30-estoque2 */   /* anterior: 2026-09-30-estoque (30/09 madrugada: texto da aba Oferta, alerta amarelo no aviso de pagamento, Recebi/Depois nao fecham a folha, "1 peca reservada"). Antes: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
+  window.MOVIKI_VERSAO='2026-10-10-pixtexto';   /* 10/10: aba Receber no Pix deixou de mostrar para todos a tarifa e o minimo da subconta antiga (R$ 1,99 e R$ 20). Quem usa Pix direto nao tem tarifa; o texto da subconta so aparece para quem tem subconta. Achado AC-PIX-1 na regravacao da aula mod-live-pix. */ /* antes: 2026-10-07-ensaio */   /* 07/10 (P75 fase 1, B7): botao "Fazer um ensaio" (transmissao de teste sem publico, ate 10 min, 5 por dia, nao conta nas lives do teste gratis), selo ENSAIO com o tempo restante e convite para a live de verdade. */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): botao Avisar a Lista VIP durante a live (so com a chave ligada pelo dono). */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): pedido de envio para outra cidade aparece como Envio (cidade/UF) */ /* antes: 2026-10-03-carrinho */   /* 03/10 (P70): pedido do carrinho da live aparece com todos os itens */   /* 01/10 (P65): conforto visual v2 (sem brilho, escala de letra); estudio segue escuro */ /* antes: 2026-09-30-estoque2 */   /* anterior: 2026-09-30-estoque (30/09 madrugada: texto da aba Oferta, alerta amarelo no aviso de pagamento, Recebi/Depois nao fecham a folha, "1 peca reservada"). Antes: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
