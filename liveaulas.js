@@ -1,4 +1,5 @@
-/*! MOVIKI liveaulas.js | versao 2026-10-10-ensaio | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-10-10-pixaula | repo: moviki-app
+ * 10/10/2026 (noite): mod-live-pix REGRAVADA de novo (23jGUqKMaps, 1:30), com a Central de Pedidos, o Ja paguei e o aviso Recebi. `em` continua 2026-09-15. Antes: 2026-10-10-ensaio.
  * 10/10/2026: aula OPCIONAL do ensaio (mod-live-ensaio, jOIy5NrirQA, 0:44) na biblioteca, grupo "Antes e depois da live", fora da trava. Antes: 2026-09-30-aula09.
  *
  * O MODULO DE AULAS DO MODO LIVE — catalogo e motor, num arquivo so.
@@ -112,9 +113,15 @@
          voltar a catalogo nenhum.
          `em` continua 2026-09-15 DE PROPOSITO: regravacao nao e aula nova, e
          nao pode virar alerta de "aula nova" para quem ja concluiu. */
+      /* REGRAVADA de novo em 10/10/2026 (23jGUqKMaps, 1:30): a de 16/09
+         (xxulNw7JRhQ) mandava procurar o pedido na aba Vendas, que desde 27/09
+         e so um resumo; os pedidos ficam na Central de Pedidos. A nova mostra o
+         Financeiro, a compra por cima da live, o "Ja paguei", o aviso "Recebi"
+         e a Central. Nem 'xxulNw7JRhQ' nem 'hhTBM163vK0' voltam a catalogo
+         nenhum. `em` continua 2026-09-15: regravacao nao e aula nova. */
       { n: 'Receber no Pix', g: 'vender', sel: '.painelAba[data-aba="pix"]', v: [
         { k: 'mod-live-pix', t: 'Como você recebe o dinheiro',
-          d: '1:14', id: 'xxulNw7JRhQ', plano: 'Enterprise', em: '2026-09-15' } ]},
+          d: '1:30', id: '23jGUqKMaps', plano: 'Enterprise', em: '2026-09-15' } ]},
 
       /* PEDIDOS MORAM NO PAINEL, na Central de Pedidos. 27/09/2026: a aula foi
          REGRAVADA para o quadro de colunas e aponta para a aula 2 da Central
