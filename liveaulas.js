@@ -1,4 +1,5 @@
-/*! MOVIKI liveaulas.js | versao 2026-09-30-aula09 | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-10-10-ensaio | repo: moviki-app
+ * 10/10/2026: aula OPCIONAL do ensaio (mod-live-ensaio, jOIy5NrirQA, 0:44) na biblioteca, grupo "Antes e depois da live", fora da trava. Antes: 2026-09-30-aula09.
  *
  * O MODULO DE AULAS DO MODO LIVE — catalogo e motor, num arquivo so.
  *
@@ -79,6 +80,18 @@
           d: '1:04', id: '3WceM12RkWE', em: '2026-09-15' },
         { k: 'mod-live-primeira', t: 'Sua primeira live: título, câmera e entrar ao vivo',
           d: '1:16', id: 'sngj1eUC7kU', em: '2026-09-15' } ]},
+
+      /* 10/10/2026: ENSAIO (P75 B7, live.html 2026-10-07-ensaio). Aula OPCIONAL:
+         nao entra na `trava` (as tres de cima continuam sendo as obrigatorias).
+         Grupo 'antes' e nao 'comece': o 'comece' se apresenta como "Obrigatorias".
+         `sel` vazio: mora so na biblioteca. O botao "Fazer um ensaio" so aparece
+         para quem ainda nao fez a primeira live; embutir a aula no estudio
+         mostraria para todo mundo uma coisa que a maioria nao pode usar.
+         `em` 2026-09-15 DE PROPOSITO: quem ja concluiu as aulas ja fez live e nao
+         tem mais o ensaio; um alerta de "aula nova" para essa pessoa seria ruido. */
+      { n: 'Ensaio', g: 'antes', sel: '', v: [
+        { k: 'mod-live-ensaio', t: 'Ensaio: teste a sua live sem ninguém ver',
+          d: '0:44', id: 'jOIy5NrirQA', em: '2026-09-15' } ]},
 
       { n: 'Produtos', g: 'durante', sel: '.painelAba[data-aba="produtos"]', v: [
         { k: 'mod-live-sacolinha', t: 'Sacolinha e produto em destaque',
