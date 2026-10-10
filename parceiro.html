@@ -1719,7 +1719,8 @@ body{background-image:none}
      cartao do evento (os videos de Natal da Onda 3 tem arvore e pisca-pisca e
      so entram em 20/11). Com ?evento=<id> na previa, tudo aparece, para
      conferir antes. */
-  window.MOVIKI_VERSAO = '2026-10-06-pixcarimbo';   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
+  window.MOVIKI_VERSAO = '2026-10-10-teatro';   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
+  /* 2026-10-10-teatro: videoaulas com layout de YouTube (marca no alto, palco grande, lista com as capas a direita), selo das aulas com barra e contagem das opcionais, e a aula OPCIONAL do Material de apoio (mod-parc-material, OZ9vgwH2W_U) no fim da secao. Trava e selo continuam contando so as obrigatorias. Lista em tres niveis: Essenciais (vermelho, as obrigatorias que liberam o link), Recomendadas (amarelo) e Complementares (azul), campo `nivel` do modulo opcional. Antes: 2026-10-06-pixcarimbo. */
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjr0QED8JfHvIb1UtsM0CWHDXmJzDQhWw",
@@ -4265,6 +4266,76 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#2EE59D)}
 :where(html[data-tema="claro"]) .cvSomaVal:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:var(--cf-ok-txt)}
 .cvSomaPe{font-size:12px;color:var(--mv-txt-3);line-height:1.45;margin-top:3px}
 .cvBarrasNota{font-size:12px;color:var(--mv-txt-3);line-height:1.5;margin:11px 0 0}
+
+/* ==========================================================================
+   2026-10-10-teatro — VIDEOAULAS COM LAYOUT DE YOUTUBE (pedido do Paulo, 10/10)
+   Mesma janela nos dois paineis: barra com a marca no alto, a aula tocando
+   num quadro grande a esquerda e a lista das aulas a direita, cada uma com a
+   CAPA do video (miniatura do YouTube), duracao, visto e barra do quanto ja
+   foi assistido. No celular a lista desce para baixo do video, como no app.
+   So muda a aparencia: medicao, trava e progresso continuam os mesmos.
+   ========================================================================== */
+.mvAu{padding:0;align-items:flex-start}
+.mvAuCx{max-width:1380px;min-height:100%;border-radius:0;border:0;padding:0 0 22px;margin:0 auto}
+@media(min-width:900px){.mvAu{padding:18px}.mvAuCx{min-height:0;border-radius:18px;border:1px solid var(--card-borda,#1c3457)}}
+.mvAuMarca{display:flex;align-items:center;gap:12px;min-height:58px;padding:10px 64px 10px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+:where(html[data-tema="claro"]) .mvAuMarca:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){border-bottom:1px solid rgba(20,40,70,0.1)}
+.mvAuMarca img{height:30px;width:auto;display:block}
+.mvAuMarca span{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#8d9db2;padding-left:12px;border-left:1px solid rgba(255,255,255,.16);line-height:1.3}
+:where(html[data-tema="claro"]) .mvAuMarca span:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#3d4a5c;border-left:1px solid rgba(20,40,70,0.16)}
+.mvAuX{top:12px;right:14px;z-index:3}
+.mvAuTopo{margin:16px 60px 0 18px}
+.mvAuProg{margin:10px 18px 16px}
+.mvAuGrade{padding:0 18px;gap:20px}
+@media(min-width:900px){.mvAuGrade{grid-template-columns:minmax(0,1fr) 400px;align-items:start}}
+@media(min-width:1240px){.mvAuGrade{grid-template-columns:minmax(0,1fr) 430px}}
+.mvAuGrade .mvTutVideo{border-radius:14px;margin:0}
+.mvAuPalcoTit{font-size:19px;font-weight:700;margin:12px 2px 0;line-height:1.3}
+.mvAuPe,.mvAuFim{margin-left:18px;margin-right:18px}
+.mvAuLista{display:flex;flex-direction:column;gap:4px}
+@media(min-width:900px){.mvAuLista{max-height:calc(100vh - 200px);overflow:auto;padding-right:6px}}
+.mvAuIt{display:flex;align-items:flex-start;gap:10px;padding:6px;border-radius:12px;border:1px solid transparent;background:transparent}
+:where(html[data-tema="claro"]) .mvAuIt:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){border:1px solid transparent;background:transparent}
+.mvAuIt:hover{background:rgba(255,255,255,.05);border-color:transparent}
+:where(html[data-tema="claro"]) .mvAuIt:hover:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){background:rgba(20,40,70,0.05);border-color:transparent}
+.mvAuIt.tocando{background:rgba(255,255,255,.08);border-color:var(--ciano,#00D4FF)}
+:where(html[data-tema="claro"]) .mvAuIt.tocando:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){background:rgba(20,40,70,0.06)}
+.mvAuIt .mvAuNum{display:none}
+.mvAuMini{position:relative;flex:none;width:168px;aspect-ratio:16/9;border-radius:9px;overflow:hidden;background:#0b1728}
+@media(max-width:480px){.mvAuMini{width:142px}}
+.mvAuMini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.mvAuMiniDur{position:absolute;right:5px;bottom:6px;padding:1px 5px;border-radius:4px;background:rgba(0,0,0,.82);color:#fff;font-size:11.5px;font-weight:600;line-height:1.5}
+.mvAuMiniOk{position:absolute;left:5px;top:5px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#22c55e;color:#04210f;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+.mvAuMiniOk svg{width:13px;height:13px}
+.mvAuMiniBar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.28)}
+.mvAuMiniBar i{display:block;height:100%;background:#ff0033}
+.mvAuMiniTocando{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.58);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.mvAuIt .mvAuTxt{padding-top:1px}
+.mvAuIt .mvAuNome{font-size:14px;font-weight:600;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mvAuIt .mvAuMin{margin-top:4px}
+.mvAuSecao{margin:14px 6px 4px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1)}
+:where(html[data-tema="claro"]) .mvAuSecao:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){border-top:1px solid rgba(20,40,70,0.1)}
+.mvAuSecao b{display:block;font-size:13px;font-weight:700}
+.mvAuSecao span{display:block;font-size:12px;line-height:1.5;opacity:.75;margin-top:2px}
+.mvAuLive{display:flex;align-items:center;gap:10px;width:100%;margin:6px 0 2px;padding:11px 12px;border-radius:12px;border:1px dashed rgba(255,45,85,.55);background:rgba(255,45,85,.08);color:inherit;font:inherit;font-size:14px;font-weight:600;text-align:left;cursor:pointer}
+.mvAuLive:hover{background:rgba(255,45,85,.14)}
+.mvAuLive small{display:block;font-size:12px;font-weight:400;opacity:.75;margin-top:2px}
+:where(html[data-tema="claro"]) .mvAuMarca img{background:#0d1726;border-radius:9px;padding:4px 9px;height:36px}
+
+/* 10/10/2026: selo das aulas com barra (quantas existem x quantas foram vistas) */
+.certBar{display:block;height:6px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden;margin:8px 0 2px}
+:where(html[data-tema="claro"]) .certBar:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){background:rgba(20,40,70,0.08)}
+.certBar i{display:block;height:100%;border-radius:99px;background:#a855f7;transition:width .4s}
+.certSelo.ok .certBar i{background:#22c55e}
+.certOpc{display:block;font-size:12px;opacity:.75;margin-top:4px}
+/* 10/10/2026: os tres niveis das aulas na lista da janela */
+.mvAuSecao b i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:0}
+.mvNve b i{background:#ff3b4e}.mvNvr b i{background:#f5b400}.mvNvc b i{background:#3b9dff}
+.mvNve b{color:#ff8a95}.mvNvr b{color:#ffd166}.mvNvc b{color:#8cc4ff}
+:where(html[data-tema="claro"]) .mvNve b:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#c4162a}
+:where(html[data-tema="claro"]) .mvNvr b:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#8a6400}
+:where(html[data-tema="claro"]) .mvNvc b:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#1565c0}
+.mvAuLista>.mvAuSecao:first-child{border-top:0;margin-top:2px;padding-top:2px}
 </style>
 <script>
 /* ===================== TUTORIAIS EM VIDEO - PARCEIRO ======================
@@ -4333,7 +4404,13 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      Este arquivo NAO carrega liveaulas.js de proposito: aquele script traz o
      motor do estudio junto, e ele nao tem o que fazer no painel do parceiro.
      ===================================================================== */
-  { n:'Conhecer o Moviki do lojista por dentro', opcional:true,
+  /* MATERIAL DE APOIO - 10/10/2026. Aula OPCIONAL (aprovada e no YouTube em
+     05/10): embutida no fim da secao Material de apoio e listada nas opcionais.
+     Nao entra na trava do link nem no selo (13 obrigatorias continuam 13). */
+  { n:'Material de apoio', opcional:true, nivel:'r', sel:'section[data-sec="material"]',
+    nota:'Onde achar, postar e baixar as artes e os textos prontos. Não conta para o seu selo.', v:[
+    { k:'mod-parc-material', t:'Material de apoio: artes e textos prontos para divulgar', d:'1:21', id:'OZ9vgwH2W_U' } ]},
+  { n:'Conhecer o Moviki do lojista por dentro', opcional:true, nivel:'c',
     nota:'São as aulas que o lojista vê: a live e a Central de Pedidos. Não trancam nada: assista se quiser mostrar o Moviki por dentro na hora da visita.', v:[
     { k:'mod-live-abertura',   t:'Live no Moviki: o que é e como funciona',          d:'1:20', id:'1TqgHffAyYU' },
     { k:'mod-live-regras',     t:'O que pode e o que não pode na live',              d:'1:04', id:'3WceM12RkWE' },
@@ -4392,6 +4469,43 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   function quantos(){ var n=0; obrigatorios().forEach(function(m){ n+=prontos(m).length; }); return n; }
   var PLAY='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.4v13.2L19 12z"/></svg>';
   function capa(id,q){ return 'https://i.ytimg.com/vi/'+encodeURIComponent(id)+'/'+q+'.jpg'; }
+
+  /* 10/10/2026 (teatro): cada aula da lista com a CAPA do video, como no
+     YouTube. Duracao no canto, visto verde, barra vermelha do quanto ja foi
+     assistido e "Tocando" na que esta no palco. mqdefault (320x180) existe
+     para todo video publicado; maxres nem sempre. */
+  function miniAula(v, o){
+    o = o || {};
+    var b=document.createElement('button');
+    b.type='button';
+    b.className='mvAuIt'+(o.ok?' feita':'')+(o.tocando?' tocando':'');
+    b.setAttribute('data-auit',v.k);
+    var mi=document.createElement('span'); mi.className='mvAuMini';
+    var im=document.createElement('img');
+    im.loading='lazy'; im.decoding='async'; im.alt='';
+    im.src=capa(v.id,'mqdefault');
+    mi.appendChild(im);
+    if(v.d){ var du=document.createElement('span'); du.className='mvAuMiniDur'; du.textContent=v.d; mi.appendChild(du); }
+    if(o.ok){ var ck=document.createElement('span'); ck.className='mvAuMiniOk'; ck.innerHTML=VISTO; mi.appendChild(ck); }
+    var pc = o.ok ? 100 : Math.max(0, Math.min(99, o.pc||0));
+    if(pc>=3){ var br=document.createElement('span'); br.className='mvAuMiniBar'; br.innerHTML='<i style="width:'+pc+'%"></i>'; mi.appendChild(br); }
+    if(o.tocando){ var tc=document.createElement('span'); tc.className='mvAuMiniTocando'; tc.textContent='Tocando'; mi.appendChild(tc); }
+    var tx=document.createElement('span'); tx.className='mvAuTxt';
+    var nome=document.createElement('span'); nome.className='mvAuNome'; nome.textContent=v.t;
+    var min=document.createElement('span'); min.className='mvAuMin'; min.textContent=o.meta||'';
+    tx.appendChild(nome); tx.appendChild(min);
+    b.appendChild(mi); b.appendChild(tx);
+    return b;
+  }
+  /* a barra com a marca no alto da janela, igual ao YouTube */
+  function marcaTeatro(){
+    var m=document.createElement('div'); m.className='mvAuMarca';
+    var lg=document.createElement('img'); lg.src='logo.png'; lg.alt='Moviki'; lg.decoding='async';
+    lg.onerror=function(){ lg.remove(); };
+    var r=document.createElement('span'); r.textContent='Videoaulas';
+    m.appendChild(lg); m.appendChild(r);
+    return m;
+  }
 
   /* a capa em alta so existe se o video tem miniatura propria. Sem ela o
      YouTube NAO da erro - devolve uma imagem cinza de 120px. Por isso o
@@ -4613,7 +4727,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     grade.appendChild(esq); grade.appendChild(auLista);
     auFim=document.createElement('div'); auFim.className='mvAuFim'; auFim.hidden=true;
     auFim.textContent='Pronto! Você viu todas as aulas. A sua aba Divulgação está liberada.';
-    cx.appendChild(x); cx.appendChild(topo); cx.appendChild(prog);
+    cx.appendChild(x); cx.appendChild(marcaTeatro()); cx.appendChild(topo); cx.appendChild(prog);
     cx.appendChild(grade); cx.appendChild(auFim);
     au.appendChild(cx); document.body.appendChild(au);
   }
@@ -4701,6 +4815,13 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       return Math.min(99, Math.round(t.n / dur * 100));
     }catch(_){ return 0; }
   }
+  function secaoNivelP(n, titulo, sub){
+    var cab=document.createElement('div'); cab.className='mvAuSecao mvNv'+n;
+    var b=document.createElement('b'); b.innerHTML='<i></i>'; b.appendChild(document.createTextNode(titulo));
+    var sp=document.createElement('span'); sp.textContent=sub;
+    cab.appendChild(b); cab.appendChild(sp);
+    return cab;
+  }
   function pintarAulas(){
     if(!au) return;
     var t=todas(), f=feitas();
@@ -4717,61 +4838,33 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       auLista.innerHTML='<p class="mvAuVazio">As aulas estão sendo gravadas. Em breve elas aparecem aqui.</p>';
       return;
     }
+    /* 10/10/2026: tres niveis na lista. Essenciais = as obrigatorias (liberam
+       o link). Modulo opcional diz o seu com nivel:'r' (Recomendadas) ou
+       nivel:'c' (Complementares); sem campo vira Complementares. */
+    auLista.appendChild(secaoNivelP('e', 'Essenciais · contam para o seu selo ('+fo.length+' de '+t.length+')', 'As obrigatórias: liberam a Divulgação na primeira vez e mantêm o seu selo em dia.'));
     t.forEach(function(v,i){
       var ok=f.indexOf(v.k)>-1;
-      var b=document.createElement('button');
-      b.type='button';
-      b.className='mvAuIt'+(ok?' feita':'')+(auTocando===v.k?' tocando':'');
-      b.setAttribute('data-auit',v.k);
-      var n=document.createElement('span');
-      n.className='mvAuNum'+(ok?' ok':'');
-      n.innerHTML = ok ? VISTO : String(i+1);
-      var tx=document.createElement('span'); tx.className='mvAuTxt';
-      var nome=document.createElement('span'); nome.className='mvAuNome'; nome.textContent=v.t;
-      var min=document.createElement('span'); min.className='mvAuMin';
       /* 16/09/2026: quem parou no meio precisa VER onde parou, na lista, sem
-         abrir a aula. Trava sem medidor visivel vira "esta quebrado". */
-      var pc = ok ? 0 : pctAula(v);
-      min.textContent = (ok ? 'Assistida' : (pc >= 5 ? 'Assistido ' + pc + '%' : 'Aula ' + (i+1)))
-                      + (v.d ? ' · ' + v.d : '');
-      tx.appendChild(nome); tx.appendChild(min);
-      b.appendChild(n); b.appendChild(tx);
-      auLista.appendChild(b);
+         abrir a aula. Trava sem medidor visivel vira "esta quebrado".
+         10/10/2026: agora tambem na barrinha vermelha da capa. */
+      var pc = ok ? 100 : pctAula(v);
+      var meta = ok ? ('Aula '+(i+1)+' · Assistida') : ('Aula '+(i+1)+(pc >= 5 ? ' · Assistido ' + pc + '%' : ''));
+      auLista.appendChild(miniAula(v,{ ok:ok, pc:pc, tocando:auTocando===v.k, meta:meta }));
     });
-    /* ---------- as opcionais, depois, com recado proprio ----------
-       Estilo inline de proposito: o bloco de aulas tem folha propria e este
-       pedaco nao vale uma classe nova em arquivo disputado. */
-    var ex=extras();
-    if(ex.length){
-      var cab=document.createElement('div');
-      cab.style.cssText='margin:14px 0 6px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12)';
-      var ct=document.createElement('b');
-      ct.style.cssText='display:block;font-size:13px;font-weight:700';
+    /* ---------- as opcionais, depois, cada modulo com o seu cabecalho ----------
+       Nao contam para o selo nem para a trava do link. */
+    opcionais().forEach(function(m){
+      var ex=prontos(m); if(!ex.length) return;
       var fe=ex.filter(function(v){ return f.indexOf(v.k)>-1; }).length;
-      ct.textContent='Opcional · O Moviki do lojista por dentro ('+fe+' de '+ex.length+')';
-      var cs=document.createElement('span');
-      cs.style.cssText='display:block;font-size:11.5px;line-height:1.5;opacity:.75;margin-top:2px';
-      cs.textContent='São as aulas que o lojista vê: a live e a Central de Pedidos. Não trancam nada e não contam para o seu selo.';
-      cab.appendChild(ct); cab.appendChild(cs);
-      auLista.appendChild(cab);
+      var nv = m.nivel==='r' ? 'r' : 'c';
+      auLista.appendChild(secaoNivelP(nv, (nv==='r'?'Recomendadas':'Complementares')+' · '+(m.n||'Aulas extras')+' ('+fe+' de '+ex.length+')',
+        m.nota||'Não trancam nada e não contam para o seu selo.'));
       ex.forEach(function(v){
         var ok=f.indexOf(v.k)>-1;
-        var b=document.createElement('button');
-        b.type='button';
-        b.className='mvAuIt'+(ok?' feita':'')+(auTocando===v.k?' tocando':'');
-        b.setAttribute('data-auit',v.k);
-        var n=document.createElement('span');
-        n.className='mvAuNum'+(ok?' ok':'');
-        n.innerHTML = ok ? VISTO : '+';
-        var tx=document.createElement('span'); tx.className='mvAuTxt';
-        var nome=document.createElement('span'); nome.className='mvAuNome'; nome.textContent=v.t;
-        var min=document.createElement('span'); min.className='mvAuMin';
-        min.textContent = (ok ? 'Assistida' : 'Opcional') + (v.d ? ' · ' + v.d : '');
-        tx.appendChild(nome); tx.appendChild(min);
-        b.appendChild(n); b.appendChild(tx);
-        auLista.appendChild(b);
+        var pc = ok ? 100 : pctAula(v);
+        auLista.appendChild(miniAula(v,{ ok:ok, pc:pc, tocando:auTocando===v.k, meta: (nv==='r'?'Recomendada':'Complementar')+(ok ? ' · Assistida' : '') }));
       });
-    }
+    });
   }
   window.mvAuPintar=pintarAulas;
 
@@ -5158,9 +5251,15 @@ window.MOVIKI_TUTORIAIS = { modulos: [
       botao='<button type="button" class="certBtn" data-tutabrir="1">Continuar as aulas</button>';
     }
 
+    /* 10/10/2026: a barra das obrigatorias e a contagem das opcionais */
+    var pcSel = t ? Math.round(n/t*100) : 0;
+    var opcK = chavesOpcionais(), opcV = (P.vistas||[]).filter(function(k){ return opcK.indexOf(k)>-1; }).length;
+    var barra = '<span class="certBar"><i style="width:'+pcSel+'%"></i></span>' +
+                (opcK.length ? '<span class="certOpc">Opcionais: '+opcV+' de '+opcK.length+' assistidas</span>' : '');
+    if(n>=t && !botao) botao='<button type="button" class="certBtn" data-tutabrir="1">Ver as aulas</button>';
     var html='<span class="certCarimbo">'+icone+'</span>'+
              '<span class="certTxt"><span class="certTit">'+tit+'</span>'+
-             '<span class="certSub">'+sub+'</span>'+botao+'</span>';
+             '<span class="certSub">'+sub+'</span>'+barra+botao+'</span>';
 
     /* So mexe no DOM quando muda de verdade: o painel repinta a cada clique e
        redesenhar a toa faria o bloco piscar debaixo do dedo do parceiro. */
