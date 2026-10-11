@@ -684,3 +684,34 @@ describe('v32 — metricas, resumo, anexo, apelidos e lives', () => {
     await assertFails(setDoc(doc(dono(), 'lives', ESTRANHO + '_123'), live));
   });
 });
+
+/* ========== v35 (11/10/2026) — pais do negocio, so o robo grava ========== */
+describe('v35 — pais do negocio (Mexico)', () => {
+  const MXDONO = 'lojista-mexico-3';
+  const mxdono = () => env.authenticatedContext(MXDONO).firestore();
+  before(async () => {
+    await semear();
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'negocios', MXDONO), { nome: 'Boutique Jacaranda', pais: 'MX' });
+    });
+  });
+
+  test('lojista do Mexico SALVA o painel com merge (pais se mantem)', async () => {
+    await assertSucceeds(setDoc(doc(mxdono(), 'negocios', MXDONO), { nome: 'Boutique Jacaranda 2', recado: 'hola' }, { merge: true }));
+  });
+  test('lojista do Mexico NAO troca o pais', async () => {
+    await assertFails(setDoc(doc(mxdono(), 'negocios', MXDONO), { pais: 'BR' }, { merge: true }));
+  });
+  test('lojista do Mexico NAO apaga o pais', async () => {
+    await assertFails(setDoc(doc(mxdono(), 'negocios', MXDONO), { nome: 'Sem pais' }));
+  });
+  test('lojista do Brasil NAO se declara do Mexico', async () => {
+    await assertFails(setDoc(doc(dono(), 'negocios', DONO), { pais: 'MX' }, { merge: true }));
+  });
+  test('negocio novo NAO nasce com pais pelo navegador', async () => {
+    await assertFails(setDoc(doc(env.authenticatedContext('lojista-novo-4').firestore(), 'negocios', 'lojista-novo-4'), { nome: 'Novo', pais: 'MX' }));
+  });
+  test('lojista do Brasil segue salvando sem pais', async () => {
+    await assertSucceeds(setDoc(doc(dono(), 'negocios', DONO), { nome: 'Food Truck', recado: 'oi' }, { merge: true }));
+  });
+});

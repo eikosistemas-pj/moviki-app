@@ -3,6 +3,15 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================================
+    //  v35 — 11/10/2026 — PAIS DO NEGOCIO (P76 M5, Mexico)
+    //    `negocios/{uid}.pais` entra no hasOnly do negocioValido, mas so
+    //    para MANTER o valor que o robo gravou: o navegador nao cria, nao
+    //    muda e nao apaga o pais. Sem isso, gravar pais:'MX' pelo robo
+    //    travaria todo save do painel da lojista do Mexico (o painel salva
+    //    com merge). Nada muda para quem nao tem o campo.
+    // ==========================================================
+
+    // ==========================================================
     //  v34 — 06/10/2026 — AVALIACAO SO PELO ROBO (plano de seguranca 2.2)
     //    Decisao do Paulo: a avaliacao continua SEM login do cliente, mas
     //    passa a entrar pelo moviki-robo (api/avaliacao.js), que confere o
@@ -1739,8 +1748,18 @@ service cloud.firestore {
     }
 
     function negocioValido(d) {
-      return d.keys().hasOnly(['nome','status','recado','cardapio','promocoes','eventos','fotos','videos','atualizadoEm','lat','lng','slug','whatsapp','markerLogo','cor','whiteLabel','segmento','segmentoMacro','autorizaDivulgacao','horario','endereco','entrega','precoMedio','capa'])
+      return d.keys().hasOnly(['nome','status','recado','cardapio','promocoes','eventos','fotos','videos','atualizadoEm','lat','lng','slug','whatsapp','markerLogo','cor','whiteLabel','segmento','segmentoMacro','autorizaDivulgacao','horario','endereco','entrega','precoMedio','capa','pais'])
         && d.nome is string && d.nome.size() >= 1 && d.nome.size() <= 80
+        // --- v35 (11/10/2026, P76 M5): PAIS DO NEGOCIO ---
+        // `pais` ('MX') e gravado SO pelo robo (Admin SDK) e decide o modo de
+        // venda (CLABE no Mexico). O painel salva com merge, entao o documento
+        // depois do save carrega o `pais` que ja existia: sem ele na lista, o
+        // hasOnly derrubaria TODO save da lojista do Mexico. Entra na lista,
+        // mas o navegador nao cria nem muda: so pode manter o valor que o robo
+        // gravou (nem apagar regravando o documento sem ele). Brasil, sem o
+        // campo, segue igual.
+        && ((resource == null && !('pais' in d))
+            || (resource != null && resource.data.get('pais', null) == d.get('pais', null)))
         && (!('status' in d) || (d.status is string && d.status in ['aberto','fechado']))
         && (!('recado' in d) || (d.recado is string && d.recado.size() <= 280))
         && (!('slug' in d) || (d.slug is string && d.slug.size() <= 40))
