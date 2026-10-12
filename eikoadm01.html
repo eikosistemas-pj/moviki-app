@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="vendor/leaflet-1.9.4/leaflet.css">
 <script src="vendor/leaflet-1.9.4/leaflet.js"></script><!-- 23/09/2026 (seguranca): Leaflet servido daqui, nao mais do unpkg. E a pagina com mais poder do sistema; nao pode depender de um servidor de terceiros nao ter sido adulterado. -->
 <script src="mvqr.js"></script>
+<script src="ramos.js"></script>
 <link rel="stylesheet" href="movikiui.css">
 <style>
 /* ==========================================================================
@@ -557,6 +558,26 @@ table.mvTab td b{font-weight:700}
 .crEscPill.ok{color:#25e39b;background:rgba(37,227,155,.13);border:1px solid rgba(37,227,155,.4)}
 .crEscPill.no{color:#ffb020;background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.4)}
 .crAtalho span small{display:block;font-size:12.5px;color:var(--mv-txt-3);margin-top:2px}
+/* ---- RAMO DO CRACHA (12/10/2026) ----
+   Feito para a rua: botoes grandes, os ultimos ramos usados a um toque e
+   o ramo escolhido escrito em cima do QR, para nao mostrar o funil errado. */
+.crRamo{margin-top:12px;text-align:left;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:12px}
+.crRamoTopo{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.crRamoTopo b{font-size:14px}
+.crRamoTopo small{display:block;font-size:12px;color:var(--mv-txt-3);font-weight:400;margin-top:1px}
+.crRamoChips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.crRamoChip{min-height:40px;padding:8px 13px;border-radius:999px;border:1px solid var(--mv-linha);background:transparent;
+  color:inherit;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.crRamoChip:hover{border-color:var(--mv-ciano)}
+.crRamoChip.on{background:rgba(0,212,255,.16);border-color:var(--mv-ciano);color:var(--mv-ciano)}
+.crRamoChip i{font-style:normal;font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:999px;color:#25e39b;background:rgba(37,227,155,.13)}
+.crRamoGrupo{font-size:12px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--mv-txt-3);margin-top:14px}
+.crRamoBusca{width:100%;margin-top:10px}
+.crRamoLista{max-height:52vh;overflow:auto;padding-bottom:4px}
+.crDRamo{display:inline-block;margin-top:10px;padding:7px 15px;border-radius:999px;font-size:14px;font-weight:800;
+  color:#0b1220;background:#00D4FF}
+.crDRamo.geral{color:var(--mv-txt-3);background:transparent;border:1px dashed var(--mv-linha);font-weight:600}
+.crDRegra{font-size:12.5px;color:#ffb020;margin-top:8px}
 /* ---- LIVES e moderacao (11/09/2026) ---- */
 .lvK{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 @media(min-width:760px){.lvK{grid-template-columns:repeat(4,minmax(0,1fr))}}
@@ -1692,10 +1713,25 @@ table.mvTab td b{font-weight:700}
 
             <!-- com apelido: o crachá -->
             <div id="crDonoCard" class="hide">
+              <!-- 2026-10-12-ramoqr: RAMO DO LOJISTA. Escolhido antes de mostrar o QR;
+                   o QR passa a levar o ramo e a /v/ abre o funil daquele ramo. -->
+              <div class="crRamo hide" id="crRamo">
+                <div class="crRamoTopo">
+                  <div><b>Ramo do lojista</b><small>O QR abre o cadastro e a live de exemplo deste ramo.</small></div>
+                  <button type="button" class="btnMini" id="btnCrRamoTodos">Todos os ramos</button>
+                </div>
+                <div class="crRamoChips" id="crRamoRec"></div>
+                <div id="crRamoPainel" class="hide">
+                  <input type="search" class="crRamoBusca" id="crRamoBusca" placeholder="Digite o ramo: farmácia, pet, açaí…" autocomplete="off" aria-label="Buscar ramo">
+                  <div class="crRamoLista" id="crRamoLista"></div>
+                </div>
+              </div>
               <div class="crD">
                 <div class="crDNome" id="crDonoNome">—</div>
                 <div class="crDArroba" id="crDonoAt"></div>
                 <div class="crDSelo">Equipe Moviki</div>
+                <div><span class="crDRamo geral" id="crDonoRamo">Qualquer ramo</span></div>
+                <div class="crDRegra hide" id="crDonoRegra"></div>
                 <canvas class="crDQR" id="crDonoQR" width="280" height="280" role="img" aria-label="Código da minha página de verificação"></canvas>
                 <div class="crDUrl" id="crDonoUrl">moviki.com.br/v/</div>
                 <div class="crDAcoes">
@@ -1991,7 +2027,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-09-tiktok';   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-12-ramoqr';   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -6859,6 +6895,96 @@ table.mvTab td b{font-weight:700}
   var URL_BASE = 'https://moviki.com.br/v/';
   var dados = null;
 
+  /* ---- RAMO DO CRACHA (2026-10-12-ramoqr) ----
+     O ramo vem do catalogo unico (ramos.js). Sem o catalogo, o seletor some
+     e o cracha continua igual ao de antes: um QR sem ramo nunca quebra.
+     O ramo escolhido vale para a ABA (sessionStorage): recarregar a pagina
+     mantem; abrir o painel no dia seguinte volta para "Qualquer ramo" — para
+     nao chegar na padaria com o QR da farmacia de ontem. Os ultimos ramos
+     usados ficam guardados (localStorage) para trocar com um toque. */
+  var R = window.MOVIKI_RAMOS || null;
+  var CH_RAMO = 'mv_cracha_ramo', CH_REC = 'mv_cracha_ramos_rec';
+  var ramo = null;
+  try{ ramo = R ? R.achar(sessionStorage.getItem(CH_RAMO) || '') : null; }catch(e){ ramo = null; }
+
+  function enderecoQR(slug){
+    return URL_BASE + slug + (ramo ? ('?ramo=' + encodeURIComponent(ramo.k)) : '');
+  }
+  function recentes(){
+    var v = [];
+    try{ v = JSON.parse(localStorage.getItem(CH_REC) || '[]'); }catch(e){ v = []; }
+    return (Array.isArray(v) ? v : []).map(function(k){ return R ? R.achar(k) : null; })
+      .filter(function(e, i, a){ return e && a.indexOf(e) === i; }).slice(0, 5);
+  }
+  function chip(e, on){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'crRamoChip' + (on ? ' on' : '');
+    b.setAttribute('data-ramo', e ? e.k : '');
+    b.appendChild(document.createTextNode(e ? e.n : 'Qualquer ramo'));
+    if(e && e.d === 1){ var t = document.createElement('i'); t.textContent = 'live'; b.appendChild(t); }
+    return b;
+  }
+  function pintarRamo(){
+    var caixa = el('crRamo');
+    if(!R){ if(caixa) caixa.classList.add('hide'); return; }
+    if(caixa) caixa.classList.remove('hide');
+    var rec = el('crRamoRec');
+    if(rec){
+      rec.textContent = '';
+      rec.appendChild(chip(null, !ramo));
+      var lst = recentes();
+      if(ramo && lst.indexOf(ramo) < 0) lst.unshift(ramo);
+      lst.slice(0, 5).forEach(function(e){ rec.appendChild(chip(e, e === ramo)); });
+    }
+    var tag = el('crDonoRamo');
+    if(tag){ tag.textContent = ramo ? ('Para: ' + ramo.n) : 'Qualquer ramo'; tag.classList.toggle('geral', !ramo); }
+    var rg = el('crDonoRegra');
+    if(rg){ rg.textContent = (ramo && ramo.r) ? ramo.r : ''; rg.classList.toggle('hide', !(ramo && ramo.r)); }
+  }
+  function listaRamos(){
+    var box = el('crRamoLista'); if(!box || !R) return;
+    var q = R.limpar((el('crRamoBusca') || {}).value || '');
+    box.textContent = '';
+    var achou = 0;
+    R.grupos.forEach(function(g){
+      var itens = R.lista.filter(function(e){
+        if(e.g !== g.id) return false;
+        if(!q) return true;
+        var alvo = R.limpar(e.n) + ' ' + e.k + ' ' + (e.a || []).join(' ');
+        return q.split('-').every(function(p){ return !p || alvo.indexOf(p) >= 0; });
+      });
+      if(!itens.length) return;
+      achou += itens.length;
+      var h = document.createElement('div'); h.className = 'crRamoGrupo'; h.textContent = g.n; box.appendChild(h);
+      var w = document.createElement('div'); w.className = 'crRamoChips';
+      itens.forEach(function(e){ w.appendChild(chip(e, e === ramo)); });
+      box.appendChild(w);
+    });
+    if(!achou){
+      var v = document.createElement('div'); v.className = 'vazio';
+      v.textContent = 'Nenhum ramo com esse nome. Use "Qualquer ramo" — o lojista escolhe o ramo no cadastro.';
+      box.appendChild(v);
+    }
+  }
+  function escolherRamo(k){
+    ramo = (k && R) ? R.achar(k) : null;
+    try{ if(ramo) sessionStorage.setItem(CH_RAMO, ramo.k); else sessionStorage.removeItem(CH_RAMO); }catch(e){}
+    if(ramo){
+      try{
+        var v = JSON.parse(localStorage.getItem(CH_REC) || '[]'); if(!Array.isArray(v)) v = [];
+        v = [ramo.k].concat(v.filter(function(x){ return x !== ramo.k; })).slice(0, 5);
+        localStorage.setItem(CH_REC, JSON.stringify(v));
+      }catch(e){}
+    }
+    var pn = el('crRamoPainel'); if(pn) pn.classList.add('hide');
+    var bt = el('btnCrRamoTodos'); if(bt) bt.textContent = 'Todos os ramos';
+    if(dados) mostrar(dados); else pintarRamo();
+    aviso(ramo ? ('QR pronto para: ' + ramo.n + '.') : 'QR sem ramo: o lojista escolhe no cadastro.');
+    /* na rua: escolheu, o QR ja aparece na tela, sem rolar */
+    try{ var qv = el('crDonoRamo'); if(qv && dados) qv.scrollIntoView({ behavior:'smooth', block:'start' }); }catch(e){}
+  }
+
   function el(id){ return document.getElementById(id); }
   function mostrarBloco(id){ var n = el(id); if(n) n.classList.remove('hide'); }
   function esconder(id){ var n = el(id); if(n) n.classList.add('hide'); }
@@ -6872,10 +6998,11 @@ table.mvTab td b{font-weight:700}
   function mostrar(d){
     dados = d;
     esconder('crDonoCarregando'); esconder('crDonoSem'); mostrarBloco('crDonoCard');
-    var url = URL_BASE + d.slug;
+    var url = enderecoQR(d.slug);
+    pintarRamo();
     if(el('crDonoNome')) el('crDonoNome').textContent = d.nome || 'Equipe Moviki';
     if(el('crDonoAt'))   el('crDonoAt').textContent = d.arroba ? ('@' + String(d.arroba).replace(/^@+/,'')) : '';
-    if(el('crDonoUrl'))  el('crDonoUrl').textContent = 'moviki.com.br/v/' + d.slug;
+    if(el('crDonoUrl'))  el('crDonoUrl').textContent = url.replace(/^https:\/\//, '');
     var a = el('btnCrDonoAbrir'); if(a) a.href = url;
     try{
       var q = window.mvQR ? window.mvQR(url) : null;
@@ -6932,7 +7059,7 @@ table.mvTab td b{font-weight:700}
     x.fillStyle = '#25e39b'; x.fillText(txt, L/2, ly + 37);
 
     try{
-      var q = window.mvQR ? window.mvQR(URL_BASE + d.slug) : null;
+      var q = window.mvQR ? window.mvQR(enderecoQR(d.slug)) : null;
       if(q && window.mvQRDesenhar){
         var qc = document.createElement('canvas');
         window.mvQRDesenhar(qc, q, 440, '#ffffff', '#0b1220');
@@ -6951,6 +7078,12 @@ table.mvTab td b{font-weight:700}
     x.fillStyle = '#9fb2c6';
     x.font = '400 26px Poppins, system-ui, sans-serif';
     x.fillText('moviki.com.br/v/' + d.slug, L/2, 1174);
+    if(ramo){
+      x.fillStyle = '#00D4FF';
+      x.font = '700 30px Poppins, system-ui, sans-serif';
+      var rt = 'Para: ' + ramo.n;
+      x.fillText(rt.length > 40 ? rt.slice(0, 39) + '…' : rt, L/2, 512);
+    }
     x.font = '400 21px Poppins, system-ui, sans-serif';
     x.fillStyle = '#7d90a5';
     x.fillText('Coloque o seu negócio no mapa, em tempo real.', L/2, 1232);
@@ -6959,7 +7092,7 @@ table.mvTab td b{font-weight:700}
   }
 
   function salvar(cv, slug){
-    var nome = 'cracha-moviki-' + slug + '.png';
+    var nome = 'cracha-moviki-' + slug + (ramo ? ('-' + ramo.k) : '') + '.png';
     function pelaUrl(url, revogar){
       var a = document.createElement('a');
       a.href = url; a.download = nome;
@@ -6979,7 +7112,7 @@ table.mvTab td b{font-weight:700}
     if((b = el('btnCrDonoPNG'))) b.onclick = baixar;
     if((b = el('btnCrDonoCopiar'))) b.onclick = function(){
       if(!dados) return;
-      var url = URL_BASE + dados.slug;
+      var url = enderecoQR(dados.slug);
       if(navigator.clipboard && navigator.clipboard.writeText){
         navigator.clipboard.writeText(url).then(function(){ aviso('Link copiado.'); },
                                                 function(){ aviso('Não deu para copiar.'); });
@@ -6996,7 +7129,7 @@ table.mvTab td b{font-weight:700}
     if((b = el('btnCrDonoMudar'))) b.onclick = function(){
       var s = '';
       try{ s = localStorage.getItem('mv_cracha_slug') || ''; }catch(e){}
-      if(!s){ var u = el('crDonoUrl'); s = ((u && u.textContent) || '').split('/v/')[1] || ''; }
+      if(!s){ var u = el('crDonoUrl'); s = (((u && u.textContent) || '').split('/v/')[1] || '').split('?')[0]; }
       s = s.trim();
       if(!s){ aviso('Escolha primeiro o crachá.'); return; }
       if(window.mvAbrirTrocaApelido) window.mvAbrirTrocaApelido(s);
@@ -7007,6 +7140,23 @@ table.mvTab td b{font-weight:700}
       semCadastro();
       var c = el('crDonoApelido'); if(c){ c.value = ''; c.focus(); }
     };
+
+    if(R){
+      var cx = el('crRamo');
+      if(cx) cx.addEventListener('click', function(ev){
+        var t = ev.target && ev.target.closest ? ev.target.closest('[data-ramo]') : null;
+        if(t) escolherRamo(t.getAttribute('data-ramo'));
+      });
+      if((b = el('btnCrRamoTodos'))) b.onclick = function(){
+        var pn = el('crRamoPainel'); if(!pn) return;
+        var abrir = pn.classList.contains('hide');
+        pn.classList.toggle('hide', !abrir);
+        var bt = el('btnCrRamoTodos'); if(bt) bt.textContent = abrir ? 'Fechar lista' : 'Todos os ramos';
+        if(abrir){ var bu = el('crRamoBusca'); if(bu) bu.value = ''; listaRamos(); }
+      };
+      if((b = el('crRamoBusca'))) b.addEventListener('input', listaRamos);
+      pintarRamo();
+    }
   }
 
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ligar);
