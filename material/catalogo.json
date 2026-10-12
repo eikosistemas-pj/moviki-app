@@ -1,6 +1,6 @@
 {
-  "versao": "2026-10-01-onda23",
-  "atualizado": "2026-10-01",
+  "versao": "2026-10-12-sertanejos",
+  "atualizado": "2026-10-12",
   "eventos": [
     {
       "id": "fundador",
@@ -85,6 +85,22 @@
     }
   ],
   "itens": [
+    {
+      "id": "video-comercio-sertanejos",
+      "tipo": "video",
+      "titulo": "Produtos do sertão: venda ao vivo pelo celular",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:40",
+      "peso": "18,0 MB",
+      "arquivo": "https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/material%2Fvideo-comercio-sertanejos.mp4?alt=media",
+      "capa": "material/capas/video-comercio-sertanejos.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi O supermercado agora vende queijo coalho embalado, e o cliente faz a compra toda num lugar só. Enquanto isso, os seus clientes de sempre estão em casa, com o celular na mão.\n\nCom o Moviki, você abre uma live da sua casa de produtos do sertão direto do celular. Mostra o queijo coalho de perto, responde no chat se é bom pra assar e se chegou carne de sol, e lança a oferta. E quem prefere buscar toca em \"Como chegar\" e vai direto até a sua loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "alimentacao"
+    },
     {
       "id": "fundador-panfleto",
       "tipo": "panfleto",
