@@ -5,6 +5,10 @@
       "destination": "https://moviki-ai.vercel.app/api/guarda"
     },
     {
+      "source": "/api/robos",
+      "destination": "https://moviki-robo.vercel.app/api/robos"
+    },
+    {
       "source": "/criador",
       "destination": "/parceiro.html"
     },
