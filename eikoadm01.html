@@ -703,6 +703,7 @@ table.mvTab td b{font-weight:700}
         <div class="mvSideLogo"><img src="logo.png" alt="Moviki" onerror="this.outerHTML='<span style=&quot;font-weight:800;font-size:21px&quot;>movi<span style=&quot;color:#00D4FF&quot;>ki</span></span>'"></div>
         <nav class="mvNav" id="mvNav">
           <button type="button" class="mvNavIt ativo" data-nav="visao"><img class="mvNavIco" src="icones/inicio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Visão geral</span></button>
+          <button type="button" class="mvNavIt" data-nav="robos"><img class="mvNavIco" src="icones/lampada.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Robôs</span><span class="bad hide" id="badRob">0</span></button>
           <button type="button" class="mvNavIt" data-nav="negocios"><img class="mvNavIco" src="icones/usuarios.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Negócios</span></button>
           <button type="button" class="mvNavIt" data-nav="parceiros"><img class="mvNavIco" src="icones/parceiros.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Parceiros</span><span class="bad hide" id="badParc">0</span></button>
           <button type="button" class="mvNavIt" data-nav="criadores"><img class="mvNavIco" src="icones/live.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Criadores</span><span class="bad hide" id="badCri">0</span></button>
@@ -870,6 +871,87 @@ table.mvTab td b{font-weight:700}
           <div class="cd">
             <div class="cdTopo"><div class="cdTit">Como este painel funciona</div></div>
             <p class="cdSub">Todo número aqui é contado no momento em que a tela abre. Não há série histórica guardada do painel: o que existe de histórico é o contador por negócio da seção <b>Métricas</b>, que grava um documento por dia. Quando um bloco não conseguir ler alguma coleção, ele diz isso na cara em vez de mostrar zero.</p>
+          </div>
+        </section>
+
+        <!-- ============ SEÇÃO: ROBÔS (13/10/2026) ============
+             Todos os robôs (tarefas agendadas do Claude) num lugar só. Tudo pelo
+             robô do servidor (api/robos.js, só dono com sessão do Google). O "Vi",
+             o "Feito" e o "Ignorar" marcados aqui chegam aos robôs na próxima
+             rodada e ao Claude quando você perguntar numa conversa. -->
+        <section data-sec="robos" class="hide">
+          <style>
+            .rbK{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+            @media(min-width:760px){.rbK{grid-template-columns:repeat(5,minmax(0,1fr))}}
+            .rbK div{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px}
+            .rbK small{display:block;font-size:11.5px;color:var(--mv-txt-3)}
+            .rbK b{font-size:21px;font-weight:800}
+            .rbK .cr b{color:var(--mv-erro)} .rbK .at b{color:var(--mv-alerta)} .rbK .ok b{color:var(--mv-ok)}
+            .rbAbas{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 12px}
+            .rbAba{border:1px solid var(--mv-linha-forte);background:transparent;color:var(--mv-txt-2);border-radius:999px;padding:7px 13px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}
+            .rbAba.on{border-color:var(--mv-ciano);color:var(--mv-ciano);background:rgba(0,212,255,.08)}
+            .rbGrid{display:grid;gap:10px}
+            @media(min-width:900px){.rbGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+            .rbCard{border:1px solid var(--mv-linha);border-radius:12px;padding:12px 13px;background:var(--mv-campo);font-size:13px;line-height:1.5}
+            .rbCard.critico{border-color:rgba(255,107,107,.5);background:rgba(255,107,107,.06)}
+            .rbCard.atencao,.rbCard.atrasado{border-color:rgba(255,176,32,.45);background:rgba(255,176,32,.06)}
+            .rbCard.nao_ligado{opacity:.62}
+            .rbTopo{display:flex;align-items:flex-start;gap:9px}
+            .rbPt{width:10px;height:10px;border-radius:50%;flex:0 0 auto;margin-top:5px;background:var(--mv-txt-3)}
+            .rbPt.ok{background:var(--mv-ok)} .rbPt.atencao,.rbPt.atrasado{background:var(--mv-alerta)} .rbPt.critico{background:var(--mv-erro)}
+            .rbNome{font-weight:800;font-size:14px}
+            .rbMeta{font-size:11.5px;color:var(--mv-txt-3)}
+            .rbMan{margin-top:6px;color:var(--mv-txt)}
+            .rbChips{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+            .rbChip{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--mv-surf-2);color:var(--mv-txt-2)}
+            .rbChip.novo{background:rgba(0,212,255,.14);color:var(--mv-ciano)}
+            .rbChip.cr{background:rgba(255,107,107,.14);color:var(--mv-erro)}
+            .rbChip.at{background:rgba(255,176,32,.14);color:var(--mv-alerta)}
+            .rbChip.ok{background:rgba(37,227,155,.13);color:var(--mv-ok)}
+            .rbRes{white-space:pre-wrap;font-size:12.5px;color:var(--mv-txt-2);background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:10px;padding:9px 11px;margin-top:8px;max-height:320px;overflow:auto}
+            .rbAcoes{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+            .rbBt{display:inline-block;border-radius:9px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--mv-linha-forte);background:transparent;color:var(--mv-txt-2);font-family:inherit;text-decoration:none}
+            .rbBt.ok{border-color:rgba(37,227,155,.55);color:#7ff0c4}
+            .rbBt.vi{border-color:rgba(0,212,255,.5);color:var(--mv-ciano)}
+            .rbBt:disabled{opacity:.5;cursor:not-allowed}
+            .rbTar{border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:var(--mv-campo);font-size:13px;line-height:1.5}
+            .rbTar.critico{border-color:rgba(255,107,107,.5)} .rbTar.atencao{border-color:rgba(255,176,32,.45)}
+            .rbTar.feita,.rbTar.resolvida,.rbTar.descartada{opacity:.7}
+            .rbTarTit{font-weight:700;color:var(--mv-txt)}
+            .rbTarDet{white-space:pre-wrap;color:var(--mv-txt-2);font-size:12.5px;margin-top:4px}
+            .rbNota{width:100%;box-sizing:border-box;margin-top:7px;background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:9px;color:var(--mv-txt);font-family:inherit;font-size:12.5px;padding:7px 9px}
+            .rbReab{font-size:12px;color:var(--mv-alerta);margin-top:4px;font-weight:700}
+            .rbHist{width:100%;border-collapse:collapse;font-size:12.5px;min-width:560px}
+            .rbHist th,.rbHist td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--mv-linha);vertical-align:top}
+            .rbHist th{font-size:11.5px;color:var(--mv-txt-3);font-weight:700}
+          </style>
+
+          <div class="cd">
+            <div class="cdTopo">
+              <div>
+                <div class="cdTit">Robôs trabalhando</div>
+                <div class="cdSub">Cada robô manda o relatório aqui no fim da rodada. O que você marca (<b>Vi</b>, <b>Feito</b>, <b>Ignorar</b>) chega ao robô na próxima rodada e ao Claude quando você perguntar numa conversa.</div>
+              </div>
+              <button type="button" class="btnMini" id="rbAtualizar">Atualizar</button>
+            </div>
+            <div class="rbK" id="rbKpi">
+              <div><small>Robôs ligados</small><b id="rbKLig">–</b></div>
+              <div class="cr"><small>Críticos</small><b id="rbKCr">–</b></div>
+              <div class="at"><small>Atenção ou atrasados</small><b id="rbKAt">–</b></div>
+              <div><small>Relatórios novos</small><b id="rbKNovo">–</b></div>
+              <div class="ok"><small>Tarefas esperando você</small><b id="rbKTar">–</b></div>
+            </div>
+            <p class="cdSub" id="rbMsg" style="margin-top:10px"></p>
+          </div>
+
+          <div class="cd">
+            <div class="rbAbas" id="rbAbas">
+              <button type="button" class="rbAba on" data-rbaba="tarefas">Precisa de você</button>
+              <button type="button" class="rbAba" data-rbaba="robos">Todos os robôs</button>
+              <button type="button" class="rbAba" data-rbaba="feitas">Resolvidas (7 dias)</button>
+              <button type="button" class="rbAba" data-rbaba="hist">Histórico</button>
+            </div>
+            <div id="rbCorpo"><p class="vazio">Carregando…</p></div>
           </div>
         </section>
 
@@ -1983,6 +2065,7 @@ table.mvTab td b{font-weight:700}
   <div class="menuLista">
     <div class="menuSec">Painel</div>
     <button type="button" data-ir="visao"><img src="icones/inicio.png" alt="" onerror="this.style.display='none'">Visão geral</button>
+    <button type="button" data-ir="robos"><img src="icones/lampada.png" alt="" onerror="this.style.display='none'">Robôs<span class="bad hide" id="badRobM">0</span></button>
     <button type="button" data-ir="negocios"><img src="icones/usuarios.png" alt="" onerror="this.style.display='none'">Negócios</button>
     <button type="button" data-ir="parceiros"><img src="icones/parceiros.png" alt="" onerror="this.style.display='none'">Parceiros<span class="bad hide" id="badParcM">0</span></button>
     <button type="button" data-ir="criadores"><img src="icones/live.png" alt="" onerror="this.style.display='none'">Criadores<span class="bad hide" id="badCriM">0</span></button>
@@ -2027,7 +2110,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-12-ramoqr';   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-13-robos';   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2122,6 +2205,7 @@ table.mvTab td b{font-weight:700}
     if(nome === 'criadores') crAbrir();
     if(nome === 'pedidos') pdAbrir();
     if(nome === 'redes') rsAbrir();
+    if(nome === 'robos') rbAbrir();   /* 13/10: aba Robos */
   }
   window.mvIrSec = irSec;
 
@@ -3785,6 +3869,7 @@ table.mvTab td b{font-weight:700}
      ========================================================== */
   let DENUNCIAS = [];
   let DENUNCIAS_ALERTA = '';
+  let RB_ALERTA = '', RB_PEND = 0;   /* 13/10: tarefas novas dos robos (aba Robos) */
   async function dnRobo(corpo){
     const tk = await USER.getIdToken();
     const r = await fetch('https://moviki-robo.vercel.app/api/avaliacao', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(Object.assign({idToken:tk}, corpo))});
@@ -3862,11 +3947,198 @@ table.mvTab td b{font-weight:700}
   if(el('fnAtualizar')) el('fnAtualizar').addEventListener('click', ()=>fnCarregar(true));
   setTimeout(()=>{ try{ fnCarregar(false); }catch(e){} }, 3600);
 
+  /* ==========================================================
+     ROBÔS — 13/10/2026
+     Todos os robôs (tarefas agendadas do Claude) num lugar só. Busca e marca
+     pelo robô do servidor (api/robos.js, só dono com sessão do Google). Os
+     robôs mandam o relatório pelo app.moviki.com.br/api/robos (segredo
+     ROBOS_SECRET); daqui o painel só lê e marca Vi / Feito / Ignorar.
+     ========================================================== */
+  const RB_URL = 'https://moviki-robo.vercel.app/api/robos';
+  let RB = null, RB_ABA = 'tarefas', RB_ABERTO = {}, RB_TIMER = null;
+  const RB_SIT = { critico:'Crítico', atencao:'Atenção', atrasado:'Atrasado', ok:'OK', sem_relatorio:'Ainda sem relatório aqui', nao_ligado:'Ainda não ligado' };
+  const RB_ORD = { critico:0, atrasado:1, atencao:2, ok:3, sem_relatorio:4, nao_ligado:5 };
+  const RB_ST = { aberta:'Nova', vista:'Vista', feita:'Feita (o robô confere)', resolvida:'Resolvida pelo robô', descartada:'Ignorada' };
+
+  function rbQuando(ms){
+    if(!ms) return '—';
+    const d = new Date(ms), dif = Date.now() - ms;
+    const dd = String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+    let rel;
+    if(dif < 3600000) rel = 'há ' + Math.max(1, Math.round(dif/60000)) + ' min';
+    else if(dif < 86400000) rel = 'há ' + Math.round(dif/3600000) + ' h';
+    else rel = 'há ' + Math.round(dif/86400000) + (Math.round(dif/86400000) === 1 ? ' dia' : ' dias');
+    return dd + ' (' + rel + ')';
+  }
+  function rbNomeDe(id){ const r = RB && RB.robos.find(x=>x.id === id); return r ? r.nome : id; }
+  function rbGravChip(g){
+    return g === 'critico' ? '<span class="rbChip cr">Crítico</span>' : g === 'atencao' ? '<span class="rbChip at">Atenção</span>' : '<span class="rbChip ok">OK</span>';
+  }
+
+  async function rbChamar(corpo){
+    if(!USER) throw new Error('sem sessão');
+    const tk = await USER.getIdToken();
+    const r = await fetch(RB_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(Object.assign({idToken:tk}, corpo))});
+    const j = await r.json().catch(()=>({}));
+    if(!r.ok || !j.ok) throw new Error(j.mensagem || j.erro || ('HTTP ' + r.status));
+    return j;
+  }
+
+  async function rbCarregar(manual){
+    const b = el('rbAtualizar'); const t0 = b ? b.textContent : '';
+    if(manual && b){ b.disabled = true; b.textContent = 'Buscando…'; }
+    try{
+      if(!USER && !manual) return;
+      RB = await rbChamar({acao:'painel'});
+      txt('rbMsg', 'Atualizado ' + rbQuando(RB.agora).replace(/ \(.*\)$/, '') + '.');
+      rbPintar();
+    }catch(e){
+      txt('rbMsg', 'Não consegui buscar os robôs agora (' + (e && e.message || 'erro') + ').');
+      if(!RB){ const c = el('rbCorpo'); if(c) c.innerHTML = '<p class="vazio">Sem dados dos robôs.</p>'; }
+    }finally{ if(manual && b){ b.disabled = false; b.textContent = t0; } }
+  }
+
+  function rbTarefaHtml(t, mostrarRobo){
+    const st = t.status;
+    const bts = [];
+    if(st === 'aberta') bts.push('<button type="button" class="rbBt vi" data-rbmarca="vista" data-rbt="'+esc(t.id)+'">Vi</button>');
+    if(st === 'aberta' || st === 'vista') bts.push('<button type="button" class="rbBt ok" data-rbmarca="feita" data-rbt="'+esc(t.id)+'">Feito</button>');
+    if(st === 'aberta' || st === 'vista' || st === 'feita') bts.push('<button type="button" class="rbBt" data-rbmarca="descartada" data-rbt="'+esc(t.id)+'">Ignorar</button>');
+    if(st === 'vista' || st === 'feita' || st === 'descartada' || st === 'resolvida') bts.push('<button type="button" class="rbBt" data-rbmarca="aberta" data-rbt="'+esc(t.id)+'">Reabrir</button>');
+    const quando = st === 'aberta' ? 'apareceu ' + rbQuando(t.criadaEm) : st === 'vista' ? 'vista ' + rbQuando(t.vistaEm) : st === 'feita' ? 'feita ' + rbQuando(t.feitaEm) : st === 'resolvida' ? 'resolvida ' + rbQuando(t.resolvidaEm) : 'ignorada ' + rbQuando(t.descartadaEm);
+    return '<div class="rbTar '+esc(t.gravidade)+' '+esc(st)+'">'
+      + '<div class="rbChips" style="margin:0 0 5px">' + rbGravChip(t.gravidade) + '<span class="rbChip'+(st === 'aberta' ? ' novo' : '')+'">'+esc(RB_ST[st] || st)+'</span>'
+      + (mostrarRobo ? '<span class="rbChip">'+esc(rbNomeDe(t.robo))+'</span>' : '') + (t.vezes > 1 ? '<span class="rbChip">visto pelo robô '+t.vezes+'x</span>' : '') + '</div>'
+      + '<div class="rbTarTit">'+esc(t.titulo)+'</div>'
+      + (t.detalhe ? '<div class="rbTarDet">'+esc(t.detalhe)+'</div>' : '')
+      + (t.reaberta ? '<div class="rbReab">Você marcou Feito, mas o robô ainda vê este problema.</div>' : '')
+      + (t.notaDono ? '<div class="rbMeta" style="margin-top:4px">Sua nota: '+esc(t.notaDono)+'</div>' : '')
+      + '<div class="rbMeta" style="margin-top:4px">'+esc(quando)+'</div>'
+      + (bts.length ? ((st === 'aberta' || st === 'vista') ? '<input type="text" class="rbNota" maxlength="500" placeholder="Nota para o robô (opcional): o que você fez ou por que ignorar" data-rbnota="'+esc(t.id)+'">' : '') + '<div class="rbAcoes">' + bts.join('') + '</div>' : '')
+      + '</div>';
+  }
+
+  function rbRoboHtml(r){
+    const aberto = !!RB_ABERTO[r.id];
+    const tars = RB.tarefas.filter(t=>t.robo === r.id && (t.status === 'aberta' || t.status === 'vista' || t.status === 'feita'));
+    const chips = [];
+    if(r.relatorioNovo) chips.push('<span class="rbChip novo">Relatório novo</span>');
+    if(r.tarefas.abertas) chips.push('<span class="rbChip cr">'+r.tarefas.abertas+(r.tarefas.abertas === 1 ? ' nova' : ' novas')+'</span>');
+    if(r.tarefas.vistas) chips.push('<span class="rbChip at">'+r.tarefas.vistas+(r.tarefas.vistas === 1 ? ' vista' : ' vistas')+'</span>');
+    if(r.tarefas.feitas) chips.push('<span class="rbChip">'+r.tarefas.feitas+' feita(s), o robô confere</span>');
+    chips.push('<span class="rbChip">'+esc(r.area)+'</span>');
+    let corpo = '';
+    if(aberto){
+      corpo += '<div class="rbMeta" style="margin-top:6px">'+esc(r.faz || '')+'</div>';
+      if(r.resumo) corpo += '<div class="rbRes">'+esc(r.resumo)+'</div>';
+      corpo += '<div class="rbAcoes">'
+        + (r.relatorioNovo ? '<button type="button" class="rbBt vi" data-rbver="'+esc(r.id)+'">Vi o relatório</button>' : '')
+        + (r.link ? '<a class="rbBt" href="'+esc(r.link)+'" target="_blank" rel="noopener">Abrir o relatório completo</a>' : '')
+        + '<button type="button" class="rbBt" data-rbabre="'+esc(r.id)+'">Fechar</button></div>';
+      if(tars.length) corpo += '<div style="margin-top:10px">' + tars.map(t=>rbTarefaHtml(t, false)).join('') + '</div>';
+    }
+    return '<div class="rbCard '+esc(r.situacao)+'">'
+      + '<div class="rbTopo"><span class="rbPt '+esc(r.situacao)+'"></span><div style="flex:1;min-width:0">'
+      + '<div class="rbNome">'+esc(r.nome)+(r.foraDoCatalogo ? ' <span class="rbChip">outro</span>' : '')+'</div>'
+      + '<div class="rbMeta">'+esc(RB_SIT[r.situacao] || r.situacao)+' · '+esc(r.quando || '')+' · última rodada: '+esc(rbQuando(r.ultimaEm))+'</div>'
+      + (r.manchete ? '<div class="rbMan">'+esc(r.manchete)+'</div>' : (r.situacao === 'nao_ligado' ? '<div class="rbMan rbMeta">'+esc(r.faz || '')+'</div>' : ''))
+      + '<div class="rbChips">'+chips.join('')+'</div>'
+      + (!aberto && r.situacao !== 'nao_ligado' ? '<div class="rbAcoes"><button type="button" class="rbBt" data-rbabre="'+esc(r.id)+'">Ver relatório e tarefas</button>'
+          + (r.relatorioNovo ? '<button type="button" class="rbBt vi" data-rbver="'+esc(r.id)+'">Vi o relatório</button>' : '') + '</div>' : '')
+      + corpo
+      + '</div></div></div>';
+  }
+
+  function rbPintar(){
+    if(!RB) return;
+    const s = RB.resumo;
+    txt('rbKLig', s.ligados + ' de ' + s.robos);
+    txt('rbKCr', s.criticos);
+    txt('rbKAt', s.atencao + s.atrasados);
+    txt('rbKNovo', s.relatoriosNovos);
+    const esperando = RB.tarefas.filter(t=>t.status === 'aberta').length;
+    txt('rbKTar', esperando);
+    RB_PEND = esperando;
+    RB_ALERTA = esperando ? (esperando === 1 ? '1 tarefa nova dos robôs' : esperando + ' tarefas novas dos robôs') : '';
+    const nBad = esperando + s.criticos;
+    badge('badRob', nBad); badge('badRobM', nBad);
+    try{ pintarPendencias(); }catch(e){}
+
+    document.querySelectorAll('#rbAbas .rbAba').forEach(b=>b.classList.toggle('on', b.getAttribute('data-rbaba') === RB_ABA));
+    const c = el('rbCorpo'); if(!c) return;
+    if(RB_ABA === 'tarefas'){
+      const l = RB.tarefas.filter(t=>t.status === 'aberta' || t.status === 'vista' || (t.status === 'feita' && t.reaberta));
+      const avisos = RB.robos.filter(r=>r.situacao === 'atrasado').map(r=>'<div class="rbTar atencao"><div class="rbChips" style="margin:0 0 5px"><span class="rbChip at">Atrasado</span></div><div class="rbTarTit">'+esc(r.nome)+' não mandou relatório no prazo</div><div class="rbMeta">Esperado: '+esc(r.quando)+' · última rodada: '+esc(rbQuando(r.ultimaEm))+'. Peça ao Claude para conferir a tarefa agendada.</div></div>');
+      c.innerHTML = (avisos.join('') + l.map(t=>rbTarefaHtml(t, true)).join('')) || '<p class="vazio">Nada esperando você. Os robôs estão em dia.</p>';
+    } else if(RB_ABA === 'robos'){
+      const l = RB.robos.slice().sort((a,b)=>(RB_ORD[a.situacao] - RB_ORD[b.situacao]) || ((b.ultimaEm||0) - (a.ultimaEm||0)));
+      c.innerHTML = '<div class="rbGrid">' + l.map(rbRoboHtml).join('') + '</div>';
+    } else if(RB_ABA === 'feitas'){
+      const l = RB.tarefas.filter(t=>t.status === 'feita' || t.status === 'resolvida' || t.status === 'descartada');
+      c.innerHTML = l.map(t=>rbTarefaHtml(t, true)).join('') || '<p class="vazio">Nada resolvido nos últimos 7 dias.</p>';
+    } else {
+      c.innerHTML = RB.execucoes.length ? '<div class="tabRola"><table class="rbHist"><thead><tr><th>Quando</th><th>Robô</th><th>Situação</th><th>Manchete</th><th>Tarefas</th></tr></thead><tbody>'
+        + RB.execucoes.map(x=>'<tr><td>'+esc(rbQuando(x.em))+'</td><td>'+esc(rbNomeDe(x.robo))+'</td><td>'+rbGravChip(x.gravidade)+'</td><td>'+esc(x.manchete)+'</td><td>'
+          + (x.novas ? x.novas+' nova(s) ' : '') + (x.reabertas ? x.reabertas+' voltou(aram) ' : '') + (x.resolvidas ? x.resolvidas+' resolvida(s) ' : '') + (x.abertas ? '· '+x.abertas+' em aberto' : '') + '</td></tr>').join('')
+        + '</tbody></table></div>' : '<p class="vazio">Nenhuma rodada registrada ainda.</p>';
+    }
+  }
+
+  async function rbMarcar(id, status, botao){
+    const notaEl = document.querySelector('[data-rbnota="'+CSS.escape(id)+'"]');
+    const nota = notaEl ? notaEl.value.trim() : '';
+    if(botao){ botao.disabled = true; }
+    try{
+      const corpo = {acao:'marcar', tarefa:id, status:status};
+      if(nota) corpo.nota = nota;
+      const j = await rbChamar(corpo);
+      const i = RB.tarefas.findIndex(t=>t.id === id);
+      if(i >= 0) RB.tarefas[i] = j.tarefa;
+      const r = RB.robos.find(x=>x.id === j.tarefa.robo);
+      if(r){
+        const tt = RB.tarefas.filter(t=>t.robo === r.id);
+        r.tarefas = { abertas: tt.filter(t=>t.status === 'aberta').length, vistas: tt.filter(t=>t.status === 'vista').length, feitas: tt.filter(t=>t.status === 'feita').length };
+      }
+      rbPintar();
+    }catch(e){
+      if(botao){ botao.disabled = false; }
+      txt('rbMsg', 'Não consegui marcar (' + (e && e.message || 'erro') + '). Toque em Atualizar e tente de novo.');
+    }
+  }
+
+  async function rbVerRobo(id, botao){
+    if(botao) botao.disabled = true;
+    try{ await rbChamar({acao:'verRobo', robo:id}); await rbCarregar(false); }
+    catch(e){ if(botao) botao.disabled = false; txt('rbMsg', 'Não consegui marcar (' + (e && e.message || 'erro') + ').'); }
+  }
+
+  function rbAbrir(){
+    rbCarregar(false);
+    if(RB_TIMER) clearInterval(RB_TIMER);
+    RB_TIMER = setInterval(()=>{
+      const sec = document.querySelector('section[data-sec="robos"]');
+      if(sec && !sec.classList.contains('hide') && !document.hidden) rbCarregar(false);
+      else { clearInterval(RB_TIMER); RB_TIMER = null; }
+    }, 300000);
+  }
+
+  document.addEventListener('click', ev=>{
+    const a = ev.target.closest && ev.target.closest('[data-rbaba],[data-rbmarca],[data-rbabre],[data-rbver]');
+    if(!a) return;
+    if(a.hasAttribute('data-rbaba')){ RB_ABA = a.getAttribute('data-rbaba'); rbPintar(); return; }
+    if(a.hasAttribute('data-rbmarca')){ rbMarcar(a.getAttribute('data-rbt'), a.getAttribute('data-rbmarca'), a); return; }
+    if(a.hasAttribute('data-rbabre')){ const id = a.getAttribute('data-rbabre'); RB_ABERTO[id] = !RB_ABERTO[id]; rbPintar(); return; }
+    if(a.hasAttribute('data-rbver')){ rbVerRobo(a.getAttribute('data-rbver'), a); return; }
+  });
+  if(el('rbAtualizar')) el('rbAtualizar').addEventListener('click', ()=>rbCarregar(true));
+  setTimeout(()=>{ try{ rbCarregar(false); }catch(e){} }, 4200);
+
   function pintarPendencias(){
     const itens = [];
     if(VIK_ALERTA) itens.push({n:1, t:VIK_ALERTA, ir:'visao'});
     if(REGRAS_ALERTA) itens.push({n:1, t:REGRAS_ALERTA, ir:'config'});
     if(DENUNCIAS_ALERTA) itens.push({n:DENUNCIAS.length, t:DENUNCIAS_ALERTA, ir:'config'});
+    if(RB_ALERTA) itens.push({n:RB_PEND, t:RB_ALERTA, ir:'robos'});   /* 13/10: robos */
     const pp = PARC.filter(p=>p.status === 'pendente').length;
     const ps = SAQ.filter(s=>s.status === 'solicitado' || s.status === 'falhou').length;  /* 23/09: Pix que falhou tambem precisa de voce */
     const pe = EXC.length;
