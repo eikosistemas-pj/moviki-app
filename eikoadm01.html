@@ -942,6 +942,17 @@ table.mvTab td b{font-weight:700}
               <div class="ok"><small>Tarefas esperando você</small><b id="rbKTar">–</b></div>
             </div>
             <p class="cdSub" id="rbMsg" style="margin-top:10px"></p>
+            <!-- 13/10/2026: ordem para um robo (texto ou voz). Entregue pelo Maestro em ate 1 hora. -->
+            <div style="margin-top:12px;border-top:1px solid var(--mv-linha);padding-top:12px">
+              <div class="cdTit" style="font-size:14.5px">Dar uma ordem a um robô</div>
+              <div class="cdSub">Escreva ou fale. O robô cumpre dentro das regras dele (pagar, apagar ou mexer em senha continuam proibidos) e responde aqui, em até 1 hora.</div>
+              <select id="rbOrdRobo" class="rbNota" style="margin-top:8px"><option value="">Escolha o robô…</option></select>
+              <textarea class="rbNota" id="rbOrdGeral" rows="3" maxlength="1500" style="resize:vertical" placeholder="Ex.: me diga quanto o Meta gastou ontem e se teve lead."></textarea>
+              <div class="rbAcoes">
+                <button type="button" class="rbBt" data-rbmic="rbOrdGeral"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v5"/></svg> Falar</button>
+                <button type="button" class="rbBt ok" data-rbordenviar="rbOrdGeral">Mandar a ordem</button>
+              </div>
+            </div>
           </div>
 
           <div class="cd">
@@ -949,6 +960,7 @@ table.mvTab td b{font-weight:700}
               <button type="button" class="rbAba on" data-rbaba="tarefas">Precisa de você</button>
               <button type="button" class="rbAba" data-rbaba="robos">Todos os robôs</button>
               <button type="button" class="rbAba" data-rbaba="feitas">Resolvidas (7 dias)</button>
+              <button type="button" class="rbAba" data-rbaba="ordens">Ordens</button>
               <button type="button" class="rbAba" data-rbaba="hist">Histórico</button>
             </div>
             <div id="rbCorpo"><p class="vazio">Carregando…</p></div>
@@ -2117,7 +2129,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-13-custos';   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-13-ordens';   /* 13/10 (noite): aba Robos ganha ORDENS — caixa de comando com microfone (ditado do navegador) em cada robo e no topo; o Maestro entrega em ate 1 hora e a resposta volta aqui */ /* antes: 2026-10-13-custos */   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -4043,6 +4055,11 @@ table.mvTab td b{font-weight:700}
         + (r.link ? '<a class="rbBt" href="'+esc(r.link)+'" target="_blank" rel="noopener">Abrir o relatório completo</a>' : '')
         + '<button type="button" class="rbBt" data-rbabre="'+esc(r.id)+'">Fechar</button></div>';
       if(tars.length) corpo += '<div style="margin-top:10px">' + tars.map(t=>rbTarefaHtml(t, false)).join('') + '</div>';
+      if(r.comandavel){   /* 13/10: ordens */
+        const ords = (RB.ordens||[]).filter(o=>o.robo === r.id).slice(0,5);
+        corpo += '<div style="margin-top:10px"><div class="rbNome" style="font-size:13px">Dar uma ordem a este robô</div>' + rbCaixaOrdem('rbOrd_' + r.id, r.id) + '</div>'
+          + (ords.length ? '<div style="margin-top:8px">' + ords.map(o=>rbOrdemHtml(o, false)).join('') + '</div>' : '');
+      }
     }
     return '<div class="rbCard '+esc(r.situacao)+'">'
       + '<div class="rbTopo"><span class="rbPt '+esc(r.situacao)+'"></span><div style="flex:1;min-width:0">'
@@ -4074,7 +4091,13 @@ table.mvTab td b{font-weight:700}
 
     document.querySelectorAll('#rbAbas .rbAba').forEach(b=>b.classList.toggle('on', b.getAttribute('data-rbaba') === RB_ABA));
     const c = el('rbCorpo'); if(!c) return;
-    if(RB_ABA === 'tarefas'){
+    rbPintarSeletor();
+    const rascunhos = {}; c.querySelectorAll('[data-rbordta]').forEach(t=>{ if(t.value) rascunhos[t.id] = t.value; });   /* nao perder o que esta sendo escrito */
+    if(RB_REC){ try{ RB_REC.stop(); }catch(e){} }
+    if(RB_ABA === 'ordens'){
+      const l = RB.ordens || [];
+      c.innerHTML = l.length ? l.map(o=>rbOrdemHtml(o, true)).join('') : '<p class="vazio">Nenhuma ordem nos últimos 30 dias. Use a caixa "Dar uma ordem a um robô" aqui em cima.</p>';
+    } else if(RB_ABA === 'tarefas'){
       const l = RB.tarefas.filter(t=>t.status === 'aberta' || t.status === 'vista' || (t.status === 'feita' && t.reaberta));
       const avisos = RB.robos.filter(r=>r.situacao === 'atrasado').map(r=>'<div class="rbTar atencao"><div class="rbChips" style="margin:0 0 5px"><span class="rbChip at">Atrasado</span></div><div class="rbTarTit">'+esc(r.nome)+' não mandou relatório no prazo</div><div class="rbMeta">Esperado: '+esc(r.quando)+' · última rodada: '+esc(rbQuando(r.ultimaEm))+'. Peça ao Claude para conferir a tarefa agendada.</div></div>');
       c.innerHTML = (avisos.join('') + l.map(t=>rbTarefaHtml(t, true)).join('')) || '<p class="vazio">Nada esperando você. Os robôs estão em dia.</p>';
@@ -4090,6 +4113,7 @@ table.mvTab td b{font-weight:700}
           + (x.novas ? x.novas+' nova(s) ' : '') + (x.reabertas ? x.reabertas+' voltou(aram) ' : '') + (x.resolvidas ? x.resolvidas+' resolvida(s) ' : '') + (x.abertas ? '· '+x.abertas+' em aberto' : '') + '</td></tr>').join('')
         + '</tbody></table></div>' : '<p class="vazio">Nenhuma rodada registrada ainda.</p>';
     }
+    Object.keys(rascunhos).forEach(id=>{ const t = el(id); if(t) t.value = rascunhos[id]; });
   }
 
   async function rbMarcar(id, status, botao){
@@ -4137,6 +4161,89 @@ table.mvTab td b{font-weight:700}
     if(a.hasAttribute('data-rbmarca')){ rbMarcar(a.getAttribute('data-rbt'), a.getAttribute('data-rbmarca'), a); return; }
     if(a.hasAttribute('data-rbabre')){ const id = a.getAttribute('data-rbabre'); RB_ABERTO[id] = !RB_ABERTO[id]; rbPintar(); return; }
     if(a.hasAttribute('data-rbver')){ rbVerRobo(a.getAttribute('data-rbver'), a); return; }
+  });
+  /* ---------- ORDENS AOS ROBÔS (13/10/2026) ----------
+     Você escreve ou fala a ordem; o robô Maestro entrega ao robô certo em até
+     1 hora; o robô cumpre dentro das travas dele e responde aqui. O microfone
+     usa o ditado do próprio navegador (Chrome/Edge); nada de áudio sai daqui
+     para o robô, só o texto que você conferiu. */
+  const RB_SR = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  let RB_REC = null, RB_REC_BTN = null;
+  const RB_ORD_ST = { pendente:'Esperando o Maestro', enviada:'Com o robô', cumprida:'Cumprida', parcial:'Cumprida em parte', recusada:'Recusada pelo robô', cancelada:'Cancelada' };
+  const RB_MIC_SVG = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><path d="M12 17v5"/></svg>';
+
+  function rbOrdemHtml(o, mostrarRobo){
+    const st = o.status;
+    const cls = st === 'cumprida' ? 'ok' : st === 'recusada' ? 'cr' : (st === 'pendente' || st === 'enviada') ? 'at' : '';
+    return '<div class="rbTar" style="margin-bottom:8px">'
+      + '<div class="rbChips" style="margin:0 0 5px"><span class="rbChip '+cls+'">'+esc(RB_ORD_ST[st] || st)+'</span>'
+      + (mostrarRobo ? '<span class="rbChip">'+esc(rbNomeDe(o.robo))+'</span>' : '') + '</div>'
+      + '<div class="rbTarTit">'+esc(o.texto)+'</div>'
+      + '<div class="rbMeta" style="margin-top:3px">dada '+esc(rbQuando(o.criadaEm))+(o.enviadaEm ? ' · entregue '+esc(rbQuando(o.enviadaEm)) : '')+(o.respondidaEm ? ' · respondida '+esc(rbQuando(o.respondidaEm)) : '')+'</div>'
+      + (o.resposta ? '<div class="rbRes">'+esc(o.resposta)+'</div>' : '')
+      + (st === 'pendente' ? '<div class="rbAcoes"><button type="button" class="rbBt" data-rbordcancel="'+esc(o.id)+'">Cancelar</button></div>' : '')
+      + '</div>';
+  }
+  function rbCaixaOrdem(id, robo){
+    return '<div style="margin-top:10px">'
+      + '<textarea class="rbNota" id="'+esc(id)+'" data-rbordta="1" rows="3" maxlength="1500" style="resize:vertical" placeholder="Escreva ou toque em Falar. Ex.: me diga quanto o Meta gastou ontem; confira de novo a página do ramo pet; refaça o relatório de hoje."></textarea>'
+      + '<div class="rbAcoes">'
+      + '<button type="button" class="rbBt" data-rbmic="'+esc(id)+'">'+RB_MIC_SVG+' Falar</button>'
+      + '<button type="button" class="rbBt ok" data-rbordenviar="'+esc(id)+'"'+(robo ? ' data-rbordrobo="'+esc(robo)+'"' : '')+'>Mandar a ordem</button>'
+      + '</div></div>';
+  }
+  function rbMic(btn, taId){
+    if(!RB_SR){ txt('rbMsg', 'Este navegador não tem ditado. No celular, use o microfone do próprio teclado dentro da caixa.'); return; }
+    if(RB_REC){ try{ RB_REC.stop(); }catch(e){} return; }
+    const ta = el(taId); if(!ta) return;
+    const rec = new RB_SR();
+    rec.lang = 'pt-BR'; rec.continuous = true; rec.interimResults = true;
+    const base = ta.value.trim() ? ta.value.trim() + ' ' : '';
+    rec.onresult = e => { let t = ''; for(let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript; ta.value = base + t.trim(); };
+    rec.onerror = e => { txt('rbMsg', e.error === 'not-allowed' ? 'O navegador bloqueou o microfone. Libere no cadeado da barra de endereço.' : 'Microfone: ' + e.error); };
+    rec.onend = () => { RB_REC = null; if(RB_REC_BTN){ RB_REC_BTN.innerHTML = RB_MIC_SVG + ' Falar'; RB_REC_BTN.style.color = ''; } RB_REC_BTN = null; };
+    try{ rec.start(); }catch(e){ txt('rbMsg', 'Não consegui abrir o microfone.'); return; }
+    RB_REC = rec; RB_REC_BTN = btn; btn.innerHTML = '■ Parar'; btn.style.color = 'var(--mv-erro)';
+  }
+  async function rbMandarOrdem(btn){
+    const taId = btn.getAttribute('data-rbordenviar');
+    const ta = el(taId); if(!ta) return;
+    const robo = btn.getAttribute('data-rbordrobo') || (el('rbOrdRobo') ? el('rbOrdRobo').value : '');
+    const texto = ta.value.trim();
+    if(!robo){ txt('rbMsg', 'Escolha o robô.'); return; }
+    if(texto.length < 3){ txt('rbMsg', 'Escreva ou fale a ordem primeiro.'); return; }
+    if(RB_REC){ try{ RB_REC.stop(); }catch(e){} }
+    btn.disabled = true;
+    try{
+      const j = await rbChamar({acao:'ordem', robo:robo, texto:texto});
+      ta.value = '';
+      if(RB){ RB.ordens = [j.ordem].concat(RB.ordens || []); RB.resumo.ordensAbertas = (RB.resumo.ordensAbertas||0) + 1; }
+      txt('rbMsg', 'Ordem enviada para ' + rbNomeDe(robo) + '. O Maestro entrega em até 1 hora; a resposta aparece aqui e na aba Ordens.');
+      rbPintar();
+    }catch(e){ txt('rbMsg', 'Não consegui mandar a ordem (' + (e && e.message || 'erro') + ').'); }
+    finally{ btn.disabled = false; }
+  }
+  async function rbCancelarOrdem(id, btn){
+    btn.disabled = true;
+    try{
+      const j = await rbChamar({acao:'ordemCancelar', ordem:id});
+      const i = (RB.ordens||[]).findIndex(o=>o.id === id); if(i >= 0) RB.ordens[i] = j.ordem;
+      rbPintar();
+    }catch(e){ btn.disabled = false; txt('rbMsg', 'Não deu para cancelar (' + (e && e.message || 'erro') + ').'); }
+  }
+  function rbPintarSeletor(){
+    const sel = el('rbOrdRobo'); if(!sel || !RB) return;
+    const atual = sel.value;
+    const l = RB.robos.filter(r=>r.comandavel).sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+    sel.innerHTML = '<option value="">Escolha o robô…</option>' + l.map(r=>'<option value="'+esc(r.id)+'">'+esc(r.nome)+'</option>').join('');
+    if(atual) sel.value = atual;
+  }
+  document.addEventListener('click', ev=>{
+    const a = ev.target.closest && ev.target.closest('[data-rbmic],[data-rbordenviar],[data-rbordcancel]');
+    if(!a) return;
+    if(a.hasAttribute('data-rbmic')){ rbMic(a, a.getAttribute('data-rbmic')); return; }
+    if(a.hasAttribute('data-rbordenviar')){ rbMandarOrdem(a); return; }
+    if(a.hasAttribute('data-rbordcancel')){ rbCancelarOrdem(a.getAttribute('data-rbordcancel'), a); return; }
   });
   if(el('rbAtualizar')) el('rbAtualizar').addEventListener('click', ()=>rbCarregar(true));
   setTimeout(()=>{ try{ rbCarregar(false); }catch(e){} }, 4200);
