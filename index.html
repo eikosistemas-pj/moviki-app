@@ -4364,6 +4364,27 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
      pendente (ativo:false) gravada pelo criar-assinatura fazia o lojista ficar
      no Basico para sempre depois de confirmar o e-mail. */
   function semTesteRegistrado(){const d=dadosAssinatura;return !d||!(d.vence_em||d.origem||d.ativo===true||d.testeAte);}
+  /* 14/10/2026 (2026-10-14-provisorio): sem e-mail confirmado o robo da um teste
+     PROVISORIO de 7 dias (provisorio:true) — sem live aberta ao publico e sem
+     assinar; o ensaio vale. Confirmou, o painel pede de novo e o robo transforma
+     em 30 dias contados do inicio. */
+  function ehProvisorio(){const d=dadosAssinatura;return !!(d&&d.provisorio===true);}
+  function precisaPedirTeste(){return semTesteRegistrado()||(ehProvisorio()&&!!(auth.currentUser&&auth.currentUser.emailVerified));}
+  function pintarAvisoVerif(){
+    const u=auth.currentUser; if(!u||u.emailVerified) return;
+    const bv=el('bannerVerif'); if(!bv||bv.classList.contains('ok')) return;
+    const d=dadosAssinatura; const para=' Enviamos o link para <b>'+escV(u.email)+'</b>: abra seu e-mail e toque nele. Não achou? Veja o spam ou toque em "enviar de novo". Quando confirmar, este painel percebe sozinho.';
+    let t;
+    if(ehProvisorio()&&d.vence_em&&d.vence_em.toMillis){
+      const dias=Math.ceil((d.vence_em.toMillis()-Date.now())/86400000);
+      t=dias>0
+        ? '🎁 <b>Seu teste grátis já começou</b> — sem confirmar o e-mail, ele vale só '+(dias===1?'até amanhã':'mais '+dias+' dias')+'. <b>Confirme para ficar com os 30 dias</b>, abrir a live para os seus clientes e poder assinar. O ensaio, que ninguém vê, já está liberado.'+para
+        : '⏳ <b>Seu teste sem confirmação acabou.</b> Confirme o e-mail para voltar ao teste grátis (30 dias contados de quando você criou a conta).'+para;
+    }else{
+      t='⚠️ <b>Falta 1 passo para liberar seus 30 dias grátis</b> — com 2 lives pelo celular e o ensaio, que ninguém vê.'+para;
+    }
+    el('bvTexto').innerHTML=t;
+  }
   /* 01/10/2026: + rotas do site que vem ANTES do curinga /:slug no vercel.json do moviki (a pagina do lojista com esse apelido nunca abriria). */
   const RESERVADOS=['index','mapa','404','assets','www','painel','login','moviki','aovivo','live','regras-da-live','criadores','live-shop','guia','fundador','api','termos','privacidade','enterprise','premium','parceiros','comerciantes','regulamento','descadastro','entregadores'];
   // Rastreio do Programa de Parceiros: captura ?ref da URL (limpo) e guarda no navegador.
@@ -4593,7 +4614,7 @@ window.mvAbaInicial=function(){
            e repinta o plano na hora. */
         try{
           await auth.currentUser.getIdToken(true);
-          if(semTesteRegistrado()){ await garantirTrial(); }
+          if(precisaPedirTeste()){ await garantirTrial(); }
           await carregarPlanoPainel(auth.currentUser.uid);
           aplicarPlanoNasAbas();
           mostrarBannerTrial();
@@ -4756,7 +4777,7 @@ window.mvAbaInicial=function(){
      'Criar minha conta gratis', apelido curto completado sozinho, gravacao do negocio com nova tentativa e
      eventos de cada passo e erro no GA4 (cad_chegou, cad_google_clique, cad_email_enviar, cad_erro,
      cad_abrir_navegador, email_confirmado). Antes: '2026-10-12-ramoqr'. */
-  window.MOVIKI_VERSAO='2026-10-14-cadastro2';   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-14-provisorio';   /* 14/10: teste gratis PROVISORIO de 7 dias antes de confirmar o e-mail (robo ativar-trial 2026-10-14-provisorio). Aviso do topo diz que o teste ja comecou, quantos dias faltam e o que a confirmacao libera (30 dias, live aberta, assinar); confirmou, o painel pede de novo ao robo e vira 30 dias contados do inicio. Faixa de fim de teste some no provisorio; Meu plano explica. */ /* antes: 2026-10-14-cadastro2 */   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5422,6 +5443,7 @@ window.mvAbaInicial=function(){
     const d=dadosAssinatura;
     // Só aparece pra quem está em teste (trial). Quem paga (periodo mensal/anual) nunca vê.
     if(!d||d.periodo!=='trial'||!d.vence_em){b.className='bannerTrial escondido';return;}
+    if(d.provisorio===true){b.className='bannerTrial escondido';return;} // 14/10: quem fala e o aviso de confirmar o e-mail
     const dias=Math.ceil((d.vence_em.toMillis()-Date.now())/86400000);
     if(dias>7){b.className='bannerTrial escondido';return;} // cedo demais, não incomoda
     let urg='',titulo='',txt='';
@@ -5484,6 +5506,11 @@ window.mvAbaInicial=function(){
     const s=el('mpStatus');if(!s)return;
     /* 23/09/2026: quem esta no teste gratis nao "renova sozinho" - ele precisa
        assinar. Antes o texto dizia o contrario e o robo recusava o pagamento. */
+    if(ehProvisorio()&&dadosAssinatura.vence_em){
+      const fimP=new Date(dadosAssinatura.vence_em.toMillis()).toLocaleDateString('pt-BR');
+      s.innerHTML='🎁 Você está no <b>teste grátis</b>, por enquanto até <b>'+fimP+'</b>. <b>Confirme seu e-mail</b> para ficar com os 30 dias, abrir a live para os seus clientes e poder assinar — o link está no seu e-mail (veja também o spam).';
+      return;
+    }
     if(dadosAssinatura&&dadosAssinatura.periodo==='trial'&&dadosAssinatura.ativo===true&&dadosAssinatura.vence_em){
       const fimT=new Date(dadosAssinatura.vence_em.toMillis()).toLocaleDateString('pt-BR');
       s.innerHTML='🎁 Você está no <b>teste grátis</b> até <b>'+fimT+'</b>, com as ferramentas do Pró e 2 lives liberadas. Para continuar fazendo live depois, o plano é o <b>Premium</b>. Assinando agora, a primeira cobrança só vence no fim do teste e você não perde nenhum dia.';
@@ -7694,7 +7721,7 @@ window.mvAbaInicial=function(){
       var _bv=el('bannerVerif');
       if(user.emailVerified){_bv.classList.add('escondido');}
       else{
-        el('bvTexto').innerHTML='⚠️ <b>Falta 1 passo para liberar seus 30 dias grátis</b> — com 2 lives pelo celular e o ensaio, que ninguém vê. Enviamos um link para <b>'+escV(user.email)+'</b>: abra seu e-mail e toque nele. Não achou? Veja o spam ou toque em "enviar de novo". Quando confirmar, este painel percebe sozinho.';
+        pintarAvisoVerif();
         el('bvAcoes').style.display='flex';
         _bv.classList.remove('ok');_bv.classList.remove('escondido');
         try{ mvVerifAuto(true); }catch(_){}
@@ -7707,7 +7734,8 @@ window.mvAbaInicial=function(){
       msgIniciar(user);
       atualizarOnboarding(true);
       await carregarPlanoPainel(user.uid);
-      if(semTesteRegistrado()){ const _t=await garantirTrial(); if(_t){ await carregarPlanoPainel(user.uid); } }
+      if(precisaPedirTeste()){ const _t=await garantirTrial(); if(_t){ await carregarPlanoPainel(user.uid); } }
+      pintarAvisoVerif();
       aplicarPlanoNasAbas();
       mostrarBannerTrial();
       mostrarBannerFundador();
