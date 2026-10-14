@@ -24,7 +24,7 @@
 <meta name="twitter:title" content="Seja um Parceiro Moviki">
 <meta name="twitter:description" content="Cadastre-se no Programa de Parceiros Moviki: indique comerciantes e receba 15% de cada mensalidade paga, enquanto o negócio continuar cliente. Grátis pra participar.">
 <meta name="twitter:image" content="https://www.moviki.com.br/og-parceiros.jpg">
-<script>window.MOVIKI_VERSAO='2026-10-01-criadores';</script>
+<script>window.MOVIKI_VERSAO='2026-10-13-arroba'; /* 13/10 (P80): @ reservado (TikTok, Instagram, Moviki, marca) avisado antes de enviar. Antes: 2026-10-01-criadores */</script>
 <script src="/mvmetrica.js"></script>
 <script>
 /* 16/09/2026 — ATRIBUICAO DO LEAD (mvAtrib).
@@ -254,6 +254,7 @@ window.mvAtrib = function(){
     v = v.split(/[/?#\s]/)[0].replace(/^@+/, '').toLowerCase();
     return v.replace(/[^a-z0-9._-]/g, '').slice(0, 30);
   };
+  let IG_RESERVADO = '';   // 13/10 (P80): o robo recusa o cadastro com @ reservado; aqui so avisa antes
   if (ORIGEM_CRI) {
     let igT = null, igUlt = '';
     el('arroba').addEventListener('input', () => {
@@ -266,6 +267,8 @@ window.mvAtrib = function(){
           const r = await fetch('https://moviki-robo.vercel.app/api/novo-parceiro?instagram=' + encodeURIComponent(a));
           const j = await r.json();
           if (a !== limpaArroba(el('arroba').value)) return;
+          IG_RESERVADO = (j && j.motivo === 'reservado') ? a : '';
+          if (IG_RESERVADO) { el('igCard').classList.remove('on'); el('aviso').textContent = 'Este @ não pode ser usado: é nome de plataforma ou de marca. Informe o SEU @.'; return; }
           if (j && j.achou) {
             const f = String(j.foto || '');
             if (/^data:image\//.test(f)) { el('igFoto').src = f; el('igFoto').style.display = ''; } else el('igFoto').style.display = 'none';
@@ -328,6 +331,7 @@ window.mvAtrib = function(){
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return erro('Digite um e-mail válido.');
     const arroba = ORIGEM_CRI ? limpaArroba(el('arroba').value) : '';
     if(ORIGEM_CRI && arroba.length < 2) return erro('Informe o seu @ no Instagram, TikTok ou YouTube.');
+    if(ORIGEM_CRI && IG_RESERVADO && IG_RESERVADO === arroba) return erro('Este @ não pode ser usado: é nome de plataforma ou de marca. Informe o SEU @.');
     if(senha.length<6) return erro('A senha precisa de pelo menos 6 caracteres.');
     if(pix.length<3) return erro('Informe sua chave Pix pra receber as comissões.');
     if(slug.length<3) return erro('Escolha um apelido pro seu link (mín. 3 caracteres).');

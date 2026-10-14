@@ -338,6 +338,14 @@ input::placeholder{color:#6b7f96}
 .fotoSub{font-size:13px;color:var(--mv-txt-3);margin-top:3px;line-height:1.45}
 .fotoBtns{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px}
 .fotoBtns .btn{width:auto;margin:0;padding:9px 15px;font-size:14px}
+/* 13/10/2026 (P80): prova de posse do @ pelo codigo na bio */
+.igPosse{padding:14px;margin-bottom:14px;border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);background:var(--mv-campo)}
+.igPosse .igTopo{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.igPosse .igSit{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;border:1px solid var(--mv-linha-forte);color:var(--mv-txt-3)}
+.igPosse .igSit.ok{border-color:var(--mv-ok);color:var(--mv-ok)}
+.igPosse .igPassos{margin:10px 0 0;padding-left:20px;font-size:13px;line-height:1.55;color:var(--mv-txt-2,inherit)}
+.igPosse .igCodigo{display:inline-flex;gap:8px;align-items:center;margin-top:10px;padding:8px 12px;border-radius:10px;border:1px dashed var(--mv-linha-forte);font:700 18px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:1px}
+.igPosse .fotoBtns .btn{width:auto}
 .certSelo{margin-top:13px;padding-top:13px;border-top:1px solid var(--mv-linha);display:flex;gap:11px;align-items:flex-start}
 .certCarimbo{flex:0 0 auto;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid;position:relative}
 .certCarimbo svg{width:20px;height:20px}
@@ -1503,6 +1511,33 @@ body{background-image:none}
             <input type="file" id="arqFoto" accept="image/jpeg,image/png,image/webp,image/*" style="display:none">
             <div class="aviso" id="avisoFoto"></div>
 
+            <!-- 13/10/2026 (P80): PROVA DE QUE O @ E DELE.
+                 Sem a prova, o @ nao aparece na pagina de verificacao /v/ e o
+                 cracha nao usa a foto do Instagram. So aparece para quem tem @
+                 no cadastro. -->
+            <div class="igPosse hide" id="igPosse">
+              <div class="igTopo">
+                <div class="fotoTit">Seu @ no Instagram: <span id="igArroba">—</span></div>
+                <span class="igSit" id="igSit">Não confirmado</span>
+              </div>
+              <div class="fotoSub" id="igTexto">Confirme que o @ é seu. Depois de confirmado, ele aparece no seu crachá e na página que o comerciante abre pelo QR Code.</div>
+              <div id="igFluxo">
+                <ol class="igPassos">
+                  <li>Toque em <b>Gerar meu código</b>.</li>
+                  <li>Cole o código na <b>bio</b> do seu Instagram e salve.</li>
+                  <li>Volte aqui e toque em <b>Já coloquei, conferir</b>. Depois você pode tirar o código da bio.</li>
+                </ol>
+                <div id="igCodigoCaixa" class="hide"><span class="igCodigo" id="igCodigo">MVK-0000</span></div>
+                <div class="fotoBtns">
+                  <button type="button" class="btn sec" id="btnIgCodigo">Gerar meu código</button>
+                  <button type="button" class="btn sec hide" id="btnIgCopiar">Copiar código</button>
+                  <button type="button" class="btn hide" id="btnIgConferir">Já coloquei, conferir</button>
+                </div>
+                <div class="fotoSub" style="margin-top:10px">A conta precisa ser <b>profissional</b> (Comercial ou Criador de conteúdo), que é gratuito no Instagram. Seu @ é do TikTok ou do YouTube? Fale com a gente pela Caixa de mensagens: a confirmação é feita pela equipe.</div>
+              </div>
+              <div class="aviso" id="avisoIg"></div>
+            </div>
+
             <div id="dadosView">
               <div class="lRow" style="grid-template-columns:minmax(0,1fr) auto"><span class="lSub" style="display:block">Nome</span><span class="lVal" id="vNome">—</span></div>
               <div class="lRow" style="grid-template-columns:minmax(0,1fr) auto"><span class="lSub" style="display:block">E-mail</span><span class="lVal" id="vEmail" style="white-space:normal;word-break:break-all">—</span></div>
@@ -1719,7 +1754,7 @@ body{background-image:none}
      cartao do evento (os videos de Natal da Onda 3 tem arvore e pisca-pisca e
      so entram em 20/11). Com ?evento=<id> na previa, tudo aparece, para
      conferir antes. */
-  window.MOVIKI_VERSAO = '2026-10-10-pixaula';   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
+  window.MOVIKI_VERSAO = '2026-10-13-arroba';   /* 13/10 (P80): bloco "Seu @ no Instagram" em Meus dados (prova de posse pelo codigo na bio) e foto do Instagram no cracha so com o @ provado. Antes: 2026-10-10-pixaula. */   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
   /* 2026-10-10-teatro: videoaulas com layout de YouTube (marca no alto, palco grande, lista com as capas a direita), selo das aulas com barra e contagem das opcionais, e a aula OPCIONAL do Material de apoio (mod-parc-material, OZ9vgwH2W_U) no fim da secao. Trava e selo continuam contando so as obrigatorias. Lista em tres niveis: Essenciais (vermelho, as obrigatorias que liberam o link), Recomendadas (amarelo) e Complementares (azul), campo `nivel` do modulo opcional. Antes: 2026-10-06-pixcarimbo. */
 
   const firebaseConfig = {
@@ -2451,6 +2486,91 @@ body{background-image:none}
   }
   ligarFoto();
 
+  /* ---------- 13/10/2026 (P80): PROVA DE POSSE DO @ ----------
+     O robo gera um codigo MVK-0000, o parceiro cola na bio do Instagram e o
+     robo confere pela busca oficial da Meta. Tudo no servidor: o painel so
+     mostra. Quem grava "confirmado" e o robo (Admin SDK); a regra do
+     Firestore nao deixa o parceiro escrever esses campos. */
+  const ROBO_POSSE = 'https://moviki-robo.vercel.app/api/novo-parceiro?posse=1';
+  function igNorm(a){ return String(a||'').trim().toLowerCase().replace(/^@+/,''); }
+  function igConfirmadoAqui(){
+    return MEU.igConfirmado === true && !!MEU.arroba && igNorm(MEU.igConfirmadoArroba) === igNorm(MEU.arroba);
+  }
+  function avisoIg(msg, bom){
+    const a = el('avisoIg'); if(!a) return;
+    a.textContent = msg || '';
+    a.style.color = bom ? 'var(--mv-ok)' : 'var(--mv-erro)';
+  }
+  function pintarIgPosse(){
+    const box = el('igPosse'); if(!box) return;
+    if(!MEU.arroba){ box.classList.add('hide'); return; }
+    box.classList.remove('hide');
+    txt('igArroba', '@' + igNorm(MEU.arroba));
+    const ok = igConfirmadoAqui();
+    const sit = el('igSit');
+    if(sit){ sit.textContent = ok ? 'Confirmado' : 'Não confirmado'; sit.classList.toggle('ok', ok); }
+    el('igFluxo').classList.toggle('hide', ok);
+    txt('igTexto', ok
+      ? 'Pronto: o @ é seu. Ele aparece no seu crachá e na página que o comerciante abre pelo QR Code. Já pode tirar o código da bio.'
+      : 'Confirme que o @ é seu. Depois de confirmado, ele aparece no seu crachá e na página que o comerciante abre pelo QR Code.' +
+        (MEU.status === 'pendente' ? ' Confirmar também agiliza a aprovação do seu cadastro.' : ''));
+  }
+  async function igChamar(acao){
+    const user = auth.currentUser; if(!user) throw new Error('sessao');
+    const tk = await user.getIdToken();
+    const r = await fetch(ROBO_POSSE, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ idToken: tk, acao }) });
+    if(r.status === 429) return { ok:false, motivo:'freio' };
+    return (await r.json().catch(() => null)) || { ok:false, motivo:'falha' };
+  }
+  const IG_MOTIVO = {
+    sem_codigo: 'Gere o código primeiro (ele vale por 48 horas).',
+    codigo_nao_achado: 'Ainda não achamos o código na sua bio. Confira se salvou a bio e tente de novo em 1 minuto.',
+    nao_profissional: 'Seu Instagram está como conta pessoal. Mude para conta profissional (é gratuito) e tente de novo.',
+    meta_fora: 'O Instagram não respondeu agora. Tente de novo em alguns minutos.',
+    reservado: 'Este @ não pode ser usado. Fale com a gente pela Caixa de mensagens.',
+    sem_arroba: 'Seu cadastro não tem @. Fale com a gente pela Caixa de mensagens.',
+    freio: 'Muitas tentativas seguidas. Espere alguns minutos e tente de novo.',
+    sessao: 'Sua sessão expirou. Entre de novo.',
+  };
+  function igMostrarCodigo(c){
+    txt('igCodigo', c);
+    el('igCodigoCaixa').classList.remove('hide');
+    el('btnIgCopiar').classList.remove('hide');
+    el('btnIgConferir').classList.remove('hide');
+    el('btnIgCodigo').textContent = 'Ver meu código';
+  }
+  (function ligarIgPosse(){
+    const bCod = el('btnIgCodigo'), bCop = el('btnIgCopiar'), bConf = el('btnIgConferir');
+    if(!bCod) return;
+    bCod.onclick = async () => {
+      bCod.disabled = true; avisoIg('');
+      try{
+        const j = await igChamar('codigo');
+        if(j.ok && j.confirmado){ MEU.igConfirmado = true; MEU.igConfirmadoArroba = j.arroba; render.__foto = 0; render(); }
+        else if(j.ok && j.codigo){ igMostrarCodigo(j.codigo); }
+        else avisoIg(IG_MOTIVO[j.motivo] || 'Não deu certo agora. Tente de novo.');
+      }catch(_){ avisoIg('Não deu certo agora. Tente de novo.'); }
+      bCod.disabled = false;
+    };
+    bCop.onclick = async () => {
+      const c = (el('igCodigo').textContent || '').trim();
+      try{ await navigator.clipboard.writeText(c); avisoIg('Código copiado. Cole na bio do Instagram.', true); }
+      catch(_){ avisoIg('Copie o código: ' + c, true); }
+    };
+    bConf.onclick = async () => {
+      bConf.disabled = true; const t = bConf.textContent; bConf.textContent = 'Conferindo…'; avisoIg('');
+      try{
+        const j = await igChamar('conferir');
+        if(j.ok && j.confirmado){
+          MEU.igConfirmado = true; MEU.igConfirmadoArroba = j.arroba;
+          render.__foto = 0; render();
+          avisoIg('Confirmado! O @ é seu. Já pode tirar o código da bio.', true);
+        } else avisoIg(IG_MOTIVO[j.motivo] || 'Não deu certo agora. Tente de novo.');
+      }catch(_){ avisoIg('Não deu certo agora. Tente de novo.'); }
+      bConf.disabled = false; bConf.textContent = t;
+    };
+  })();
+
   /* ---------- cabeçalho / estado do cadastro ---------- */
   function render(){
     const nome   = MEU.nome || 'parceiro';
@@ -2478,7 +2598,7 @@ body{background-image:none}
 
     if(temPropria){
       pintarFoto(MEU.foto);
-    } else if(MEU.arroba && !render.__foto){
+    } else if(MEU.arroba && igConfirmadoAqui() && !render.__foto){   /* 13/10 (P80): foto do Instagram so com o @ provado */
       /* Foto do parceiro no cracha — vem da MESMA busca do @ que o quiz usa
          (api/novo-parceiro?instagram=). Nao custa chamada nova a Meta: aquele
          endpoint guarda cache de 7 dias, e este @ foi consultado no cadastro.
@@ -2517,6 +2637,7 @@ body{background-image:none}
     txt('meuLinkFund', 'moviki.com.br/f/' + slug);
 
     document.querySelectorAll('.soAprovado').forEach(n=>n.classList.toggle('hide', status !== 'aprovado'));
+    pintarIgPosse();
     pintarCardStatus();
     atualizarPonto();
   }
