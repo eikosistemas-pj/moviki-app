@@ -1017,6 +1017,7 @@ window.mvAtrib = function(){
   .qzLinkCampo input{border:none;background:transparent;box-shadow:none!important;padding-left:2px;}
   .qzSlugPrev{font-size:11.5px;color:#7f95b3;margin:6px 2px 0;}
   .qzErro{min-height:18px;font-size:13px;color:#ff9a9a;margin:2px 2px 12px;text-align:center;}
+  #qzA3Erro:empty{min-height:0;margin:0 0 4px;} #qzSlugMsg:empty{min-height:0;margin:0;} /* 2026-10-14-cadastro2 */
   .qzCheck{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:#cfe0f5;line-height:1.4;margin:2px 2px 14px;cursor:pointer;}
   .qzCheck input{margin-top:2px;flex:0 0 auto;width:16px;height:16px;accent-color:var(--ciano);}
   .qzCheck a{color:var(--ciano);}
@@ -4236,25 +4237,30 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
       <!-- 2026-10-07-cadastro1 (P75): o ramo escolhido (ou trazido do anuncio) aparece aqui, com "trocar". -->
       <p class="qzRamoLinha" id="qzRamoLinha" style="display:none;margin:-6px 0 14px;font-size:13.5px;color:#8fa6c4"></p>
       <div class="qzCampo"><label for="qzNome">Nome do negócio</label><input id="qzNome" type="text" maxlength="80" placeholder="Ex.: Caldeirão Nordestino"></div>
-      <div class="qzCampo"><label for="qzWhats">WhatsApp (com DDD)</label><input id="qzWhats" type="tel" inputmode="numeric" placeholder="Ex.: 81 99999-9999"></div>
+      <div class="qzCampo"><label for="qzWhats">WhatsApp com DDD <span style="font-weight:400;color:#8fa6c4">(opcional)</span></label><input id="qzWhats" type="tel" inputmode="numeric" placeholder="Ex.: 81 99999-9999"></div>
+      <!-- 2026-10-14-cadastro2: o apelido sai do nome sozinho; o campo so abre em "mudar".
+           Menos um campo na tela que mais perde gente (126 cliques -> 5 cadastros em 14 dias). -->
       <div class="qzCampo">
-        <label for="qzSlug">Apelido do seu link <span style="font-weight:400;color:#8fa6c4">(sai do nome, dá para mudar)</span></label>
-        <div class="qzLinkCampo"><span class="qzPref">moviki.com.br/</span><input id="qzSlug" type="text" maxlength="40" placeholder="seunegocio" autocomplete="off"></div>
-        <div class="qzSlugPrev">Seu link: moviki.com.br/<span id="qzSlugTxt">seunegocio</span></div>
+        <div class="qzSlugPrev">Seu link: moviki.com.br/<span id="qzSlugTxt">seunegocio</span> · <a href="#" id="qzSlugMudar" onclick="mqzMudarSlug();return false" style="color:#4fd1c5">mudar</a></div>
+        <div id="qzSlugEdit" style="display:none;margin-top:8px">
+          <label for="qzSlug">Apelido do seu link</label>
+          <div class="qzLinkCampo"><span class="qzPref">moviki.com.br/</span><input id="qzSlug" type="text" maxlength="40" placeholder="seunegocio" autocomplete="off"></div>
+        </div>
         <div id="qzSlugMsg" class="qzSlugMsg"></div>
       </div>
       <div id="qzA3Erro" class="qzErro"></div>
-      <!-- Escolha do jeito de criar a conta. Um caminho por vez: o formulario de e-mail/senha
-           so aparece se a pessoa pedir, pra ninguem achar que precisa preencher os dois. -->
+      <!-- 2026-10-14-cadastro2: Google em cima e e-mail/senha ja aberto embaixo (antes era
+           preciso tocar em "Continuar com e-mail e senha" para ver o formulario - um toque a
+           mais e, no navegador do Instagram, o unico caminho ficava escondido). -->
       <div id="qzA3Escolha">
         <button type="button" id="qzA3BtnGoogle" class="qzBtnGoogle" onclick="mqzGoogleComerciante()"><svg class="btnGoogleIcon" viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.9-2.26 5.36-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Continuar com Google</button>
-        <button type="button" id="qzA3BtnEmail" class="qzBtnEmail" onclick="mqzAbrirEmailA()"><svg class="qzBtnEmailIc" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>Continuar com e-mail e senha</button>
+        <div class="qzOuLinha" style="text-align:center;color:#8fa6c4;font-size:13px;margin:14px 0 6px">ou crie com e-mail e senha</div>
+        <button type="button" id="qzA3BtnEmail" class="qzBtnEmail" style="display:none" onclick="mqzAbrirEmailA()"><svg class="qzBtnEmailIc" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>Continuar com e-mail e senha</button>
       </div>
-      <div id="qzA3Email" style="display:none">
+      <div id="qzA3Email">
         <div class="qzCampo"><label for="qzEmailA">E-mail</label><input id="qzEmailA" type="email" placeholder="voce@email.com" autocomplete="email"></div>
         <div class="qzCampo qzCampoSenha"><label for="qzSenhaA">Senha</label><input id="qzSenhaA" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password"><button type="button" class="verSenha" onclick="mqzVerSenha('qzSenhaA',this)">mostrar</button></div>
-        <button type="button" id="qzA3Btn" class="qzBtnPrim" onclick="mqzSubmeterComerciante()">Finalizar Setup 🚀</button>
-        <button type="button" class="qzVoltarAuth" onclick="mqzFecharEmailA()">‹ Prefiro entrar com o Google</button>
+        <button type="button" id="qzA3Btn" class="qzBtnPrim" onclick="mqzSubmeterComerciante()">Criar minha conta grátis</button>
       </div>
       <p class="qzLgpd">Ao criar a conta você aceita os <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener">Termos de uso</a> e a <a href="https://moviki.com.br/privacidade.html" target="_blank" rel="noopener">Política de privacidade</a>. O WhatsApp informado aparece na página pública do seu negócio.</p>
     </div>
@@ -4512,7 +4518,7 @@ window.mvAbaInicial=function(){
       var t=document.createElement('div');
       t.textContent='Você está no navegador de um aplicativo (Instagram, Facebook ou TikTok), onde o Google não deixa entrar. Para criar a conta com o Google em 1 toque (sem precisar confirmar e-mail), abra no navegador do celular:';
       var bt=document.createElement('button');bt.type='button';bt.className='btnAbrirFora';bt.textContent='Abrir no navegador e entrar com Google';
-      bt.addEventListener('click',function(){window.mvAbrirNoNavegador(n);});
+      bt.addEventListener('click',function(){ try{ if(window.mvEv) mvEv('cad_abrir_navegador',{}); }catch(_){} window.mvAbrirNoNavegador(n);});
       var ou=document.createElement('div');ou.className='avisoWebviewOu';ou.textContent='Ou crie a conta aqui mesmo com e-mail e senha.';
       n.appendChild(t);n.appendChild(bt);n.appendChild(ou);
       b.parentNode.insertBefore(n,b);});
@@ -4580,6 +4586,7 @@ window.mvAbaInicial=function(){
       if(auth.currentUser.emailVerified){
         const bv=el('bannerVerif');bv.classList.add('ok');
         el('bvTexto').innerHTML='✅ <b>E-mail confirmado!</b> Liberando seus 30 dias grátis...';
+        try{ if(window.mvEv) mvEv('email_confirmado',{}); }catch(_){}
         el('bvAcoes').style.display='none';
         /* 23/09/2026: antes so escondia o aviso - o teste gratis so entrava na
            proxima entrada (ate 1h depois). Agora pede token novo, chama o robo
@@ -4744,7 +4751,12 @@ window.mvAbaInicial=function(){
      do fundador; Pro/Premium pagante vai ao WhatsApp (troca pela equipe);
      Enterprise nao ve; some depois de 27/11 ou com o lote fechado; "x" esconde
      por 3 dias. */
-  window.MOVIKI_VERSAO='2026-10-12-ramoqr';   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  /* 14/10/2026 '2026-10-14-cadastro2': cadastro do lojista com Google e e-mail/senha abertos juntos (sem o toque
+     'Continuar com e-mail'), apelido escondido atras de 'mudar', WhatsApp marcado como opcional, botao
+     'Criar minha conta gratis', apelido curto completado sozinho, gravacao do negocio com nova tentativa e
+     eventos de cada passo e erro no GA4 (cad_chegou, cad_google_clique, cad_email_enviar, cad_erro,
+     cad_abrir_navegador, email_confirmado). Antes: '2026-10-12-ramoqr'. */
+  window.MOVIKI_VERSAO='2026-10-14-cadastro2';   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -7408,17 +7420,38 @@ window.mvAbaInicial=function(){
       try{await registrarIndicacao(user.uid);}catch(_){}
       garantirTrial();
       try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({idToken:tk,uid:user.uid},(window.mvAtrib?window.mvAtrib():{})))}).catch(function(){});}).catch(function(){}); }catch(_){}
-      await setDoc(doc(db,'slugs',slug),{uid:user.uid});
-      const dadosNegocio={
-        nome:nome,status:'fechado',promocoes:[],eventos:[],fotos:[],
-        markerLogo:'',cor:'#00f2fe',whiteLabel:false,
-        segmento:String(d.template||'').slice(0,40),
-        segmentoMacro:String(buscarMacroQuiz(d.template)||'').slice(0,40),
-        autorizaDivulgacao:false,
-        cardapio:tpl,slug:slug,atualizadoEm:serverTimestamp()
+      /* 2026-10-14-cadastro2: a conta ja existe neste ponto e o painel ja abriu por cima do
+         cadastro (onAuthStateChanged). Antes, se gravar o apelido ou o negocio falhasse, o erro
+         ia para a tela do cadastro, que ja estava escondida: painel vazio e, na nova tentativa,
+         "esse e-mail ja tem conta". Agora tenta de novo com outro apelido e, se ainda falhar,
+         avisa por cima do painel. */
+      let slugFinal=slug;
+      const montarNegocio=function(s){
+        const dn={
+          nome:nome,status:'fechado',promocoes:[],eventos:[],fotos:[],
+          markerLogo:'',cor:'#00f2fe',whiteLabel:false,
+          segmento:String(d.template||'').slice(0,40),
+          segmentoMacro:String(buscarMacroQuiz(d.template)||'').slice(0,40),
+          autorizaDivulgacao:false,
+          cardapio:tpl,slug:s,atualizadoEm:serverTimestamp()
+        };
+        if(whatsapp) dn.whatsapp=whatsapp;
+        return dn;
       };
-      if(whatsapp) dadosNegocio.whatsapp=whatsapp;
-      await setDoc(doc(db,'negocios',user.uid),dadosNegocio,{merge:true});
+      try{
+        await setDoc(doc(db,'slugs',slugFinal),{uid:user.uid});
+        await setDoc(doc(db,'negocios',user.uid),montarNegocio(slugFinal),{merge:true});
+      }catch(eGrava){
+        try{
+          slugFinal=(slug.slice(0,34)+String(Math.floor(100+Math.random()*900)));
+          await setDoc(doc(db,'slugs',slugFinal),{uid:user.uid});
+          await setDoc(doc(db,'negocios',user.uid),montarNegocio(slugFinal),{merge:true});
+        }catch(eGrava2){
+          try{ if(window.mqzCadEv) window.mqzCadEv('cad_erro',{via:'email',motivo:'gravar_negocio'}); }catch(_){}
+          alert('Sua conta foi criada, mas não consegui salvar os dados do negócio agora. Abra a aba Perfil, confira o nome e toque em Salvar.');
+          return {ok:true};
+        }
+      }
       await carregarDados(user.uid);
       atualizarOnboarding(false);
       return {ok:true};
@@ -10581,8 +10614,34 @@ window.mvAbaInicial=function(){
     if(esc) esc.style.display=mostrarForm?'none':'block';
     if(frm) frm.style.display=mostrarForm?'block':'none';
   }
-  window.mqzAbrirEmailA=function(){ trocarAuth('qzA3Escolha','qzA3Email',true); var c=$('qzEmailA'); if(c)c.focus(); };
-  window.mqzFecharEmailA=function(){ trocarAuth('qzA3Escolha','qzA3Email',false); var e=$('qzA3Erro'); if(e)e.textContent=''; };
+  /* 2026-10-14-cadastro2: no cadastro do lojista o Google e o e-mail/senha ficam os dois
+     abertos (o Google em cima). Estas duas funcoes continuam existindo porque outras telas
+     chamam, mas nao escondem mais o formulario. */
+  window.mqzAbrirEmailA=function(){ var c=$('qzEmailA'); if(c)c.focus(); };
+  window.mqzFecharEmailA=function(){ var e=$('qzA3Erro'); if(e)e.textContent=''; };
+  window.mqzMudarSlug=function(){ var b=$('qzSlugEdit'); if(b)b.style.display='block'; var c=$('qzSlug'); if(c)c.focus(); try{ if(window.mvEv) mvEv('cad_mudar_apelido',{}); }catch(_){} };
+  // Medicao do cadastro (2026-10-14-cadastro2): cada passo e cada erro viram evento no GA4,
+  // para enxergar onde a tela perde gente. Nunca leva e-mail, nome ou telefone.
+  function cadEv(nome,p){ try{ if(window.mvEv) mvEv(nome,p||{}); }catch(_){} }
+  window.mqzCadEv=cadEv;
+  function cadErro(via,msg){
+    var m=String(msg||'').toLowerCase(), motivo='outro';
+    if(m.indexOf('nome')>=0) motivo='nome';
+    else if(m.indexOf('apelido')>=0) motivo='apelido';
+    else if(m.indexOf('senha')>=0) motivo='senha';
+    else if(m.indexOf('já')>=0&&m.indexOf('e-mail')>=0||m.indexOf('em uso')>=0||m.indexOf('cadastrad')>=0) motivo='email_ja_existe';
+    else if(m.indexOf('e-mail')>=0) motivo='email';
+    else if(m.indexOf('conectar')>=0||m.indexOf('recarregue')>=0) motivo='conexao';
+    else if(m.indexOf('popup')>=0||m.indexOf('janela')>=0||m.indexOf('cancel')>=0) motivo='google_cancelado';
+    cadEv('cad_erro',{via:via,motivo:motivo});
+    if(motivo==='apelido'){ var b=$('qzSlugEdit'); if(b)b.style.display='block'; }
+  }
+  function slugGarantido(nome,slug){
+    var s=String(slug||'').trim();
+    if(!s) s=slugPreview(nome||'')||'';
+    if(s.length<3) s=(s+'loja').slice(0,40);
+    return s;
+  }
   window.mqzAbrirEmailB=function(){ trocarAuth('qzB3Escolha','qzB3Email',true); var c=$('qzEmailB'); if(c)c.focus(); };
   window.mqzFecharEmailB=function(){ trocarAuth('qzB3Escolha','qzB3Email',false); var e=$('qzB3Erro'); if(e)e.textContent=''; };
 
@@ -10605,17 +10664,18 @@ window.mvAbaInicial=function(){
       slug:($('qzSlug')&&$('qzSlug').value)||'',
       template:escolhaSubtipo
     };
-    if(!dados.nome.trim()){if(erro)erro.textContent='D\u00ea um nome ao seu neg\u00f3cio.';return;}
-    if(!dados.slug.trim()){if(erro)erro.textContent='Escolha o apelido do seu link.';return;}
-    if(!window.mqzCriarComercianteGoogle){if(erro)erro.textContent='N\u00e3o consegui conectar agora. Recarregue a p\u00e1gina.';return;}
+    cadEv('cad_google_clique',{});
+    if(!dados.nome.trim()){if(erro)erro.textContent='D\u00ea um nome ao seu neg\u00f3cio.';cadErro('google','nome');return;}
+    dados.slug=slugGarantido(dados.nome,dados.slug);
+    if(!window.mqzCriarComercianteGoogle){if(erro)erro.textContent='N\u00e3o consegui conectar agora. Recarregue a p\u00e1gina.';cadErro('google','conectar');return;}
     var t=btn.innerHTML; btn.disabled=true; btn.innerHTML='Aguarde...';
     window.mqzCriarComercianteGoogle(dados).then(function(r){
       if(r&&r.ok){
         window.mqzEsconder();
         if(r.slugTrocado) alert('O apelido que voc\u00ea escolheu acabou de ser usado por outra pessoa. Seu link ficou: moviki.com.br/'+r.slug+' \u2014 d\u00e1 pra trocar em Perfil quando quiser.');
       }
-      else{ if(erro)erro.textContent=(r&&r.erro)||''; btn.disabled=false; btn.innerHTML=t; }
-    }).catch(function(){ if(erro)erro.textContent='N\u00e3o consegui concluir agora. Tente de novo.'; btn.disabled=false; btn.innerHTML=t; });
+      else{ if(erro)erro.textContent=(r&&r.erro)||''; cadErro('google',r&&r.erro); btn.disabled=false; btn.innerHTML=t; }
+    }).catch(function(){ if(erro)erro.textContent='N\u00e3o consegui concluir agora. Tente de novo.'; cadErro('google','conectar'); btn.disabled=false; btn.innerHTML=t; });
   };
 
   // Cadastro do parceiro com Google \u2014 mesma ideia do comerciante. Se a conta Google j\u00e1 existia
@@ -10770,15 +10830,17 @@ window.mvAbaInicial=function(){
       slug:($('qzSlug')&&$('qzSlug').value)||'',
       template:escolhaSubtipo
     };
-    if(!dados.nome.trim()){if(erro)erro.textContent='Dê um nome ao seu negócio.';return;}
-    if(!dados.email.trim()){if(erro)erro.textContent='Digite seu e-mail.';return;}
-    if(dados.senha.length<6){if(erro)erro.textContent='A senha precisa ter pelo menos 6 caracteres.';return;}
-    if(!window.mqzCriarComerciante){if(erro)erro.textContent='Não consegui conectar agora. Recarregue a página.';return;}
+    cadEv('cad_email_enviar',{});
+    if(!dados.nome.trim()){if(erro)erro.textContent='Dê um nome ao seu negócio.';cadErro('email','nome');return;}
+    if(!dados.email.trim()){if(erro)erro.textContent='Digite seu e-mail.';cadErro('email','e-mail');return;}
+    if(dados.senha.length<6){if(erro)erro.textContent='A senha precisa ter pelo menos 6 caracteres.';cadErro('email','senha');return;}
+    dados.slug=slugGarantido(dados.nome,dados.slug);
+    if(!window.mqzCriarComerciante){if(erro)erro.textContent='Não consegui conectar agora. Recarregue a página.';cadErro('email','conectar');return;}
     var t=btn.textContent; btn.disabled=true; btn.textContent='Criando sua conta...';
     window.mqzCriarComerciante(dados).then(function(r){
       if(r&&r.ok){ window.mqzEsconder(); }
-      else{ if(erro)erro.textContent=(r&&r.erro)||'Não consegui concluir agora. Tente de novo.'; btn.disabled=false; btn.textContent=t; }
-    }).catch(function(){ if(erro)erro.textContent='Não consegui concluir agora. Tente de novo.'; btn.disabled=false; btn.textContent=t; });
+      else{ if(erro)erro.textContent=(r&&r.erro)||'Não consegui concluir agora. Tente de novo.'; cadErro('email',r&&r.erro); btn.disabled=false; btn.textContent=t; }
+    }).catch(function(){ if(erro)erro.textContent='Não consegui concluir agora. Tente de novo.'; cadErro('email','conectar'); btn.disabled=false; btn.textContent=t; });
   };
 
   window.mqzSubmeterParceiro=function(){
@@ -10871,7 +10933,10 @@ window.mvAbaInicial=function(){
     try{ if(window.mvEv) mvEv('quiz_pulo_ramo',{ramo:sub.id}); }catch(_){}
     return true;
   }
+  var _cadChegouMedido=false;
   window.mqzMostrar=function(){ var m=$('quizModal'); if(m)m.classList.remove('qzEscondido');
+    /* 2026-10-14-cadastro2: chegada ao cadastro (antes era ponto cego: so a 2a tela era medida). */
+    if(!_cadChegouMedido){ _cadChegouMedido=true; cadEv('cad_chegou',{criar:mqzQuerCriar()?1:0}); }
     if(!mqzPuloFeito && passoAtual==='qzTela1' && mqzQuerCriar()){
       mqzPuloFeito=true;
       try{
