@@ -4198,7 +4198,7 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
       <p class="qzLinhaApoio">Apareça no mapa em tempo real e venda ao vivo pelo celular.</p>
       <p class="qzSubtitulo">O que você quer fazer agora?</p>
       <div class="qzGrid">
-        <button type="button" class="qzCard qzCardGrande qzCardDestaque" onclick="mqzIrA2()"><img class="qIcon3d" src="icones/qz-live.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🔴'))"><span class="qTxtWrap"><span class="qTxt">Quero vender ao vivo e no cardápio</span><span class="qTxtSub">e aparecer no mapa em tempo real</span></span></button>
+        <button type="button" class="qzCard qzCardGrande qzCardDestaque" onclick="mqzIrCadastro()"><img class="qIcon3d" src="icones/qz-live.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🔴'))"><span class="qTxtWrap"><span class="qTxt">Quero vender ao vivo e no cardápio</span><span class="qTxtSub">e aparecer no mapa em tempo real</span></span></button>
         <button type="button" class="qzCard qzCardGrande" onclick="mqzIrApresent()"><img class="qIcon3d" src="icones/maos.png" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('🤝'))"><span class="qTxtWrap"><span class="qTxt">Quero indicar negócios e receber comissão</span><span class="qTxtSub">comissão a cada mensalidade paga, sem ter negócio próprio</span></span></button>
       </div>
       <p class="qzProva"><span><img class="qzProvaIc qzProvaIc--presente" src="icones/presente.png" alt="" onerror="this.replaceWith(document.createTextNode('🎁'))">30 dias grátis</span><span><img class="qzProvaIc qzProvaIc--cartao" src="icones/sem-cartao.png" alt="" onerror="this.replaceWith(document.createTextNode('💳'))">sem cartão de crédito</span></p>
@@ -4777,7 +4777,7 @@ window.mvAbaInicial=function(){
      'Criar minha conta gratis', apelido curto completado sozinho, gravacao do negocio com nova tentativa e
      eventos de cada passo e erro no GA4 (cad_chegou, cad_google_clique, cad_email_enviar, cad_erro,
      cad_abrir_navegador, email_confirmado). Antes: '2026-10-12-ramoqr'. */
-  window.MOVIKI_VERSAO='2026-10-14-provisorio';   /* 14/10: teste gratis PROVISORIO de 7 dias antes de confirmar o e-mail (robo ativar-trial 2026-10-14-provisorio). Aviso do topo diz que o teste ja comecou, quantos dias faltam e o que a confirmacao libera (30 dias, live aberta, assinar); confirmou, o painel pede de novo ao robo e vira 30 dias contados do inicio. Faixa de fim de teste some no provisorio; Meu plano explica. */ /* antes: 2026-10-14-cadastro2 */   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-15-ramodepois';   /* 14/10: teste gratis PROVISORIO de 7 dias antes de confirmar o e-mail (robo ativar-trial 2026-10-14-provisorio). Aviso do topo diz que o teste ja comecou, quantos dias faltam e o que a confirmacao libera (30 dias, live aberta, assinar); confirmou, o painel pede de novo ao robo e vira 30 dias contados do inicio. Faixa de fim de teste some no provisorio; Meu plano explica. */ /* antes: 2026-10-14-cadastro2 */   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -7372,6 +7372,8 @@ window.mvAbaInicial=function(){
         if(el('corInput'))el('corInput').value=(typeof d.cor==='string'&&/^#[0-9a-fA-F]{6}$/.test(d.cor))?d.cor:'#00D4FF';if(el('wlToggle'))el('wlToggle').checked=(d.whiteLabel===true);if(el('divulgaToggle'))el('divulgaToggle').checked=(d.autorizaDivulgacao===true);
         setStatus(d.status||'fechado');
         if(d.slug) mostrarLink(d.slug);
+        /* 2026-10-15-ramodepois (P82): conta sem ramo -> pede o ramo por cima do painel. */
+        try{ if(!d.segmento && window.mqzPedirRamo) setTimeout(function(){ window.mqzPedirRamo(); },900); }catch(_){}
         /* 03/10 (P70 etapa 2): opcao "pode ir pelo correio" no produto */
         try{const cp=await getDoc(doc(db,'checkout_publico',uid));const rec=cp.exists()?((cp.data()||{}).recursos||{}):{};const mac=String(d.segmentoMacro||buscarMacroQuiz(d.segmento)||'');window.MV_ENVIO_PROD=rec.freteBrasil===true&&['alimentacao','bebidas','hortifruti'].indexOf(mac)<0;window.MV_FRETE_AUTO=window.MV_ENVIO_PROD&&rec.freteAuto===true;}catch(_e){window.MV_FRETE_AUTO=false;window.MV_ENVIO_PROD=false;}
         el('listaCategorias').innerHTML='';(d.cardapio||[]).forEach(c=>adicionarCategoria(c.categoria||'',c.produtos||[],c.capa||''));vazioCat();
@@ -7413,6 +7415,25 @@ window.mvAbaInicial=function(){
     }
     return null;
   }
+  /* 2026-10-15-ramodepois (P82): grava o ramo escolhido DEPOIS do cadastro.
+     Cardapio de exemplo so entra se o cardapio ainda estiver vazio (nunca apaga o que o
+     lojista ja montou). Campos dentro do hasOnly de negocios (segmento, segmentoMacro,
+     cardapio, atualizadoEm): nenhuma regra nova. */
+  window.mqzSalvarRamo=async function(id){
+    const user=auth.currentUser; if(!user) return {ok:false};
+    const sub=buscarSubtipoQuiz(id); if(!sub) return {ok:false};
+    try{
+      const snap=await getDoc(doc(db,'negocios',user.uid));
+      if(!snap.exists()) return {ok:false};
+      const atual=snap.data()||{};
+      const upd={segmento:String(id).slice(0,40),segmentoMacro:String(buscarMacroQuiz(id)||'').slice(0,40),atualizadoEm:serverTimestamp()};
+      if(!(Array.isArray(atual.cardapio)&&atual.cardapio.length)) upd.cardapio=JSON.parse(JSON.stringify(sub.cardapioExemplo||[]));
+      await setDoc(doc(db,'negocios',user.uid),upd,{merge:true});
+      await carregarDados(user.uid);
+      try{ atualizarOnboarding(false); }catch(_){}
+      return {ok:true};
+    }catch(e){ return {ok:false}; }
+  };
   // Consulta ao vivo se o apelido está livre (o quiz chama enquanto a pessoa digita).
   // Devolve 'livre' | 'ocupado' | 'reservado' | 'curto' | 'erro'.
   window.mqzSlugLivre=async function(valor){
@@ -7435,9 +7456,11 @@ window.mvAbaInicial=function(){
       const slug=limpaSlug(d.slug||'');
       if(slug.length<3) return {ok:false,erro:'Escolha um apelido de link com pelo menos 3 letras/números.'};
       if(RESERVADOS.includes(slug)) return {ok:false,erro:'Esse apelido é reservado, escolha outro.'};
+      /* 2026-10-15-ramodepois (P82): o ramo virou OPCIONAL no cadastro. Sem ramo, a conta
+         nasce sem segmento e sem cardapio de exemplo; o painel pede o ramo logo na entrada
+         (mqzPedirRamo) e so entao grava segmento + cardapio de exemplo (mqzSalvarRamo). */
       const subtipo=buscarSubtipoQuiz(d.template);
-      if(!subtipo) return {ok:false,erro:'Escolha o tipo do seu negócio.'};
-      const tpl=JSON.parse(JSON.stringify(subtipo.cardapioExemplo||[]));
+      const tpl=JSON.parse(JSON.stringify((subtipo&&subtipo.cardapioExemplo)||[]));
       const chkSlug=await getDoc(doc(db,'slugs',slug));
       if(chkSlug.exists()) return {ok:false,erro:'O apelido "'+slug+'" já está em uso. Escolha outro.'};
       await createUserWithEmailAndPassword(auth,email,senha);
@@ -7457,8 +7480,8 @@ window.mvAbaInicial=function(){
         const dn={
           nome:nome,status:'fechado',promocoes:[],eventos:[],fotos:[],
           markerLogo:'',cor:'#00f2fe',whiteLabel:false,
-          segmento:String(d.template||'').slice(0,40),
-          segmentoMacro:String(buscarMacroQuiz(d.template)||'').slice(0,40),
+          segmento:subtipo?String(d.template||'').slice(0,40):'',
+          segmentoMacro:subtipo?String(buscarMacroQuiz(d.template)||'').slice(0,40):'',
           autorizaDivulgacao:false,
           cardapio:tpl,slug:s,atualizadoEm:serverTimestamp()
         };
@@ -7625,8 +7648,8 @@ window.mvAbaInicial=function(){
     const dadosNegocio={
       nome:nome,status:'fechado',promocoes:[],eventos:[],fotos:[],
       markerLogo:'',cor:'#00f2fe',whiteLabel:false,
-      segmento:String(d.template||'').slice(0,40),
-      segmentoMacro:String(buscarMacroQuiz(d.template)||'').slice(0,40),
+      segmento:subtipo?String(d.template||'').slice(0,40):'',
+      segmentoMacro:subtipo?String(buscarMacroQuiz(d.template)||'').slice(0,40):'',
       autorizaDivulgacao:false,
       cardapio:tpl,slug:slug,atualizadoEm:serverTimestamp()
     };
@@ -7676,7 +7699,6 @@ window.mvAbaInicial=function(){
     const slug=limpaSlug(d.slug||'');
     if(slug.length<3) return {ok:false,erro:'Escolha um apelido de link com pelo menos 3 letras/números.'};
     if(RESERVADOS.includes(slug)) return {ok:false,erro:'Esse apelido é reservado, escolha outro.'};
-    if(!buscarSubtipoQuiz(d.template)) return {ok:false,erro:'Escolha o tipo do seu negócio.'};
     try{
       const cred=await autenticarGoogleQuiz('comerciante',d);
       return await gravarComercianteGoogle(cred,d);
@@ -10475,6 +10497,9 @@ window.mvAbaInicial=function(){
   var $=function(id){return document.getElementById(id);};
   var esc=function(s){return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
   var passoAtual='qzTela1', pilha=[], escolhaMacro=null, escolhaSubtipo='', escolhaCanais=[];
+  /* 2026-10-15-ramodepois (P82): modoRamo = a mesma escolha de ramo (A2/A2b), mas DEPOIS
+     da conta criada, por cima do painel. Ao escolher o subtipo, grava e fecha. */
+  var modoRamo=false, _txtA2=null;
   // Progresso por tela: o ramo do comerciante tem 4 passos (Tela1 -> Nível 1 macro ->
   // Nível 2 subtipo -> Cadastro), desde que o quiz de segmentação (9 macros/27 subtipos,
   // quiz/quiz-segmentos.js) foi integrado aqui em 20/08/2026. O ramo do influenciador não mudou.
@@ -10489,7 +10514,7 @@ window.mvAbaInicial=function(){
     alvo.style.display='block';
     requestAnimationFrame(function(){alvo.classList.add('qzAtiva');});
     passoAtual=id;
-    var voltar=$('qzVoltar'); if(voltar) voltar.style.visibility=(id==='qzTela1')?'hidden':'visible';
+    var voltar=$('qzVoltar'); if(voltar) voltar.style.visibility=(id==='qzTela1'||(modoRamo&&id==='qzA2'))?'hidden':'visible';
     progresso(PROGRESSO[id]||100);
   }
   function resetarQuiz(){
@@ -10503,6 +10528,7 @@ window.mvAbaInicial=function(){
     var ms=$('qzSlugMsg'); if(ms){ms.textContent='';ms.className='qzSlugMsg';}
     igZerar(); // limpa o @ e o cartao do Instagram junto com o resto
     slugManual=false; slugBase=''; slugTentativa=0; var rl=$('qzRamoLinha'); if(rl) rl.style.display='none';
+    sairModoRamo();
     mostrarTela('qzTela1',false);
   }
 
@@ -10542,7 +10568,7 @@ window.mvAbaInicial=function(){
       // pula a tela de Nível 2 direto, não faz sentido pedir pro lojista "escolher"
       // entre uma única opção. Evita 1 toque desnecessário.
       escolhaSubtipo=subs[0].id;
-      setTimeout(function(){ pintarRamoA3(); mostrarTela('qzA3'); },160);
+      setTimeout(concluirEscolha,160);
       return;
     }
     setTimeout(function(){ renderNivel2(); mostrarTela('qzA2b'); },160);
@@ -10552,7 +10578,7 @@ window.mvAbaInicial=function(){
     var s=escolhaMacro.subtipos[indice]; if(!s)return;
     escolhaSubtipo=s.id;
     if(btn)btn.classList.add('qzSel');
-    setTimeout(function(){ pintarRamoA3(); mostrarTela('qzA3'); },160);
+    setTimeout(concluirEscolha,160);
   };
 
   /* 2026-10-07-cadastro1 (P75, fase 1): linha "Ramo: X · trocar" no cadastro.
@@ -10561,7 +10587,15 @@ window.mvAbaInicial=function(){
     var l=$('qzRamoLinha'); if(!l) return;
     var sub=null;
     (escolhaMacro&&escolhaMacro.subtipos||[]).forEach(function(s){ if(s.id===escolhaSubtipo) sub=s; });
-    if(!sub){ l.style.display='none'; return; }
+    if(!sub){
+      /* 2026-10-15-ramodepois (P82): sem ramo, avisa que ele escolhe depois e oferece escolher agora. */
+      l.textContent='';
+      l.appendChild(document.createTextNode('O tipo do seu negócio você escolhe logo depois · '));
+      var be=document.createElement('button'); be.type='button'; be.className='qzLink'; be.textContent='escolher agora';
+      be.style.cssText='padding:0;font-size:13.5px';
+      be.onclick=function(){ try{ if(window.mvEv) mvEv('quiz_ramo_antes',{}); }catch(_){} window.mqzIrA2(); };
+      l.appendChild(be); l.style.display='block'; return;
+    }
     l.textContent='';
     l.appendChild(document.createTextNode('Ramo: '+(sub.emoji?sub.emoji+' ':'')+sub.label+' · '));
     var bt=document.createElement('button'); bt.type='button'; bt.className='qzLink'; bt.textContent='trocar';
@@ -10570,6 +10604,54 @@ window.mvAbaInicial=function(){
     l.appendChild(bt); l.style.display='block';
   }
   window.mqzPintarRamo=pintarRamoA3;
+
+  /* 2026-10-15-ramodepois (P82): CADASTRO DIRETO. "Quero vender" e o ?criar=1 sem ramo
+     vao direto ao formulario (1 tela em vez de 3). O ramo vem depois, no painel. */
+  function irCadastroSemRamo(){
+    escolhaMacro=null; escolhaSubtipo='';
+    pintarRamoA3();
+    mostrarTela('qzA3');
+    pilha=['qzTela1'];
+  }
+  window.mqzIrCadastro=function(){
+    try{ if(window.mvEv) mvEv('quiz_cadastro_direto',{}); }catch(_){}
+    if(!irDiretoAoCadastro()) irCadastroSemRamo();
+  };
+  function concluirEscolha(){
+    if(modoRamo){ salvarRamoPos(); return; }
+    pintarRamoA3(); mostrarTela('qzA3');
+  }
+  function textosA2(pos){
+    var t=document.querySelector('#qzA2 .qzTitulo'), s=document.querySelector('#qzA2 .qzSub2');
+    if(!t||!s) return;
+    if(!_txtA2) _txtA2={t:t.textContent,s:s.textContent};
+    if(pos){ t.textContent='Último passo: que tipo de negócio é o seu?'; s.textContent='Assim a gente monta o seu cardápio de exemplo e a página do seu ramo.'; }
+    else{ t.textContent=_txtA2.t; s.textContent=_txtA2.s; }
+  }
+  function sairModoRamo(){ if(!modoRamo) return; modoRamo=false; textosA2(false); }
+  window.mqzPedirRamo=function(){
+    if(modoRamo) return;
+    var m=$('quizModal'); if(!m) return;
+    modoRamo=true; escolhaMacro=null; escolhaSubtipo=''; pilha=[];
+    document.querySelectorAll('#qzA2Grid .qzSel,#qzA2bGrid .qzSel').forEach(function(c){c.classList.remove('qzSel');});
+    textosA2(true);
+    renderNivel1();
+    m.classList.remove('qzEscondido');
+    mostrarTela('qzA2',false);
+    try{ if(window.mvEv) mvEv('ramo_pedido',{}); }catch(_){}
+  };
+  function salvarRamoPos(){
+    var id=escolhaSubtipo; if(!id||!window.mqzSalvarRamo) return;
+    var t=document.querySelector('#qzA2b .qzTitulo')||document.querySelector('#qzA2 .qzTitulo');
+    var antes=t?t.textContent:''; if(t) t.textContent='Montando o seu cardápio de exemplo…';
+    window.mqzSalvarRamo(id).then(function(r){
+      if(t) t.textContent=antes;
+      if(r&&r.ok){
+        try{ if(window.mvEv) mvEv('ramo_depois',{ramo:id}); }catch(_){}
+        sairModoRamo(); window.mqzEsconder();
+      }else{ alert('Não consegui salvar o tipo do seu negócio agora. Tente de novo.'); window.mqzIrA2(); }
+    }).catch(function(){ if(t) t.textContent=antes; alert('Não consegui salvar o tipo do seu negócio agora. Tente de novo.'); window.mqzIrA2(); });
+  }
 
   window.mqzVoltar=function(){ mostrarTela(pilha.pop()||'qzTela1',false); };
   window.mqzIrA2=function(){ renderNivel1(); mostrarTela('qzA2'); };
@@ -10968,7 +11050,7 @@ window.mvAbaInicial=function(){
     if(!mqzPuloFeito && passoAtual==='qzTela1' && mqzQuerCriar()){
       mqzPuloFeito=true;
       try{
-        if(!irDiretoAoCadastro()){ window.mqzIrA2(); if(window.mvEv) mvEv('quiz_pulo_escolha',{origem:'criar'}); }
+        if(!irDiretoAoCadastro()){ irCadastroSemRamo(); if(window.mvEv) mvEv('quiz_pulo_escolha',{origem:'criar'}); }
       }catch(_){}
     }
   };
