@@ -2129,7 +2129,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-13-arroba';   /* 13/10 (P80): situacao do @ de cada parceiro (provado / sem prova / precisa de olho), confirmacao ao aprovar @ sem prova e trava ao marcar criador sem prova */ /* antes: 2026-10-13-agenda */   /* 13/10 (noite 2): microfone e 'Mandar como ordem' em cada tarefa, ao lado da nota; robo novo criado no Claude aparece sozinho (o Maestro le a agenda toda hora) */ /* antes: 2026-10-13-ordens */   /* 13/10 (noite): aba Robos ganha ORDENS — caixa de comando com microfone (ditado do navegador) em cada robo e no topo; o Maestro entrega em ate 1 hora e a resposta volta aqui */ /* antes: 2026-10-13-custos */   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-16-lojaonline';   /* 16/10: Negocios marca '⚠ link no nome' (nome ou apelido com cara de link) e 'loja online' (campo lojaOnline, regra v35); Precisa de voce conta os negocios com link no nome; CSV ganha a coluna Loja online */ /* antes: 2026-10-13-arroba */   /* 13/10 (P80): situacao do @ de cada parceiro (provado / sem prova / precisa de olho), confirmacao ao aprovar @ sem prova e trava ao marcar criador sem prova */ /* antes: 2026-10-13-agenda */   /* 13/10 (noite 2): microfone e 'Mandar como ordem' em cada tarefa, ao lado da nota; robo novo criado no Claude aparece sozinho (o Maestro le a agenda toda hora) */ /* antes: 2026-10-13-ordens */   /* 13/10 (noite): aba Robos ganha ORDENS — caixa de comando com microfone (ditado do navegador) em cada robo e no topo; o Maestro entrega em ate 1 hora e a resposta volta aqui */ /* antes: 2026-10-13-custos */   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2506,6 +2506,14 @@ table.mvTab td b{font-weight:700}
       '<div class="sdLinha"><div><div class="sdV">'+(NEG.length ? Math.round((pagos/NEG.length)*100) : 0)+'%</div><div class="sdR">Dos cadastrados estão em plano pago</div></div></div>';
   }
 
+  /* 2026-10-16-lojaonline: negocio com cara de link no nome ou no apelido (caso de 16/10:
+     nome 'https://deola.ne/af-55bm', apelido 'httpsdeolaneaf-55bm'). Mesma conta da regra v35. */
+  function negLinkNoNome(n){
+    const t = String((n && n.nome) || '').toLowerCase().trim();
+    const nomeLink = !!t && (/(:\/\/|www\.)/.test(t) || /[a-z0-9-]\.[a-z]{2,24}\//.test(t)
+      || /[a-z0-9-]\.(com|net|org|me|io|app|shop|store|link|site|online|br|ly|bio|ne|co|info|biz|page)$/.test(t));
+    return nomeLink || /^(https?|www)/.test(String((n && n.slug) || ''));
+  }
   function pintarNegocios(){
     const busca = (el('buscaNeg').value||'').toLowerCase().trim();
     const fp = el('filtroPlano').value, fs = el('filtroStatus').value;
@@ -2531,7 +2539,7 @@ table.mvTab td b{font-weight:700}
         ? '<a href="https://moviki.com.br/'+encodeURIComponent(n.slug)+'" target="_blank" rel="noopener">/'+esc(n.slug)+'</a>'
         : '<span style="color:var(--mv-txt-3)">—</span>';
       return '<tr>'+
-        '<td><span class="celNome">'+esc(n.nome||'(sem nome)')+'</span></td>'+
+        '<td><span class="celNome">'+esc(n.nome||'(sem nome)')+'</span>'+(negLinkNoNome(n)?' <span class="pill off" title="Nome ou apelido com cara de link. Fale com o lojista: o link vai no campo Link da sua loja online, no Perfil." style="color:#ffb547;border-color:rgba(255,181,71,.5)">⚠ link no nome</span>':'')+(typeof n.lojaOnline==='string'&&/^https:\/\//.test(n.lojaOnline)?' <a href="'+esc(n.lojaOnline)+'" target="_blank" rel="nofollow noopener noreferrer" class="pill info" title="'+esc(n.lojaOnline)+'">loja online</a>':'')+'</td>'+
         '<td><span class="pill '+(pl==='basico'&&!EM_TESTE[n.uid]?'off':'info')+'">'+(EM_TESTE[n.uid]?'Teste grátis':PLANOS[pl].n)+'</span></td>'+
         '<td><span class="pill '+(aberto?'ok':'off')+'">'+(aberto?'Aberto':'Fechado')+'</span></td>'+
         '<td>'+link+'</td>'+
@@ -2546,11 +2554,11 @@ table.mvTab td b{font-weight:700}
   el('filtroStatus').addEventListener('change', pintarNegocios);
   el('btnCsvNeg').addEventListener('click', ()=>{
     baixarCSV('moviki-negocios',
-      ['Nome','Plano','Status','Apelido do link','Segmento','Segmento macro','WhatsApp','Endereço','Horário','Autoriza divulgação','Atualizado em'],
+      ['Nome','Plano','Status','Apelido do link','Segmento','Segmento macro','WhatsApp','Endereço','Horário','Autoriza divulgação','Atualizado em','Loja online'],
       NEG.map(n=>{
         const pl = PLANO_DE[n.uid] || 'basico';
         return [n.nome||'', PLANOS[pl].n, n.status||'', n.slug||'', n.segmento||'', n.segmentoMacro||'',
-                n.whatsapp||'', n.endereco||'', n.horario||'', n.autorizaDivulgacao===true?'sim':'não', dataBR(ms(n.atualizadoEm))];
+                n.whatsapp||'', n.endereco||'', n.horario||'', n.autorizaDivulgacao===true?'sim':'não', dataBR(ms(n.atualizadoEm)), n.lojaOnline||''];
       }));
   });
 
@@ -4304,6 +4312,8 @@ table.mvTab td b{font-weight:700}
     if(pp) itens.push({n:pp, t:(pp === 1 ? '1 parceiro esperando aprovação' : pp + ' parceiros esperando aprovação'), ir:'parceiros'});
     if(ps) itens.push({n:ps, t:(ps === 1 ? '1 saque pedido' : ps + ' saques pedidos'), ir:'comissoes'});
     if(pe) itens.push({n:pe, t:(pe === 1 ? '1 pedido de exclusão de conta' : pe + ' pedidos de exclusão de conta'), ir:'exclusoes'});
+    const pln = NEG.filter(negLinkNoNome).length;   /* 2026-10-16-lojaonline */
+    if(pln) itens.push({n:pln, t:(pln === 1 ? '1 negócio com link no nome' : pln + ' negócios com link no nome'), ir:'negocios'});
     const pcr = CR_PECAS.filter(x=>x.status === 'aguardando').length;
     if(pcr) itens.push({n:pcr, t:(pcr === 1 ? '1 peça de criador esperando aprovação' : pcr + ' peças de criador esperando aprovação'), ir:'criadores'});
 
