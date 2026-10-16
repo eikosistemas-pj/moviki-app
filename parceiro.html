@@ -1754,7 +1754,7 @@ body{background-image:none}
      cartao do evento (os videos de Natal da Onda 3 tem arvore e pisca-pisca e
      so entram em 20/11). Com ?evento=<id> na previa, tudo aparece, para
      conferir antes. */
-  window.MOVIKI_VERSAO = '2026-10-13-arroba';   /* 13/10 (P80): bloco "Seu @ no Instagram" em Meus dados (prova de posse pelo codigo na bio) e foto do Instagram no cracha so com o @ provado. Antes: 2026-10-10-pixaula. */   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
+  window.MOVIKI_VERSAO = '2026-10-16-linkramo';   /* 16/10: peca por ramo do Material de apoio leva /p/apelido?ramo=<k> (miniatura e live do ramo); ramos.js carregado com o catalogo. Antes: 2026-10-13-arroba. */   /* 13/10 (P80): bloco "Seu @ no Instagram" em Meus dados (prova de posse pelo codigo na bio) e foto do Instagram no cracha so com o @ provado. Antes: 2026-10-10-pixaula. */   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
   /* 2026-10-10-teatro: videoaulas com layout de YouTube (marca no alto, palco grande, lista com as capas a direita), selo das aulas com barra e contagem das opcionais, e a aula OPCIONAL do Material de apoio (mod-parc-material, OZ9vgwH2W_U) no fim da secao. Trava e selo continuam contando so as obrigatorias. Lista em tres niveis: Essenciais (vermelho, as obrigatorias que liberam o link), Recomendadas (amarelo) e Complementares (azul), campo `nivel` do modulo opcional. Antes: 2026-10-06-pixcarimbo. */
 
   const firebaseConfig = {
@@ -6342,12 +6342,34 @@ function mvQR(texto){
   }
 
   /* ------------------------------------------------------- placeholders */
-  function trocar(txt){
+  /* 2026-10-16-linkramo: peca de UM ramo leva o link /p/apelido?ramo=<k>.
+     Quem recebe cai na live de exemplo do ramo (/aovivo) e a previa do WhatsApp,
+     Facebook e Instagram mostra a miniatura do ramo (api/aovivo-og). Sem ramo, o
+     link e o de sempre. O ramo sai de: campo `ramo` da peca no catalogo (manda);
+     senao, chave ou apelido EXATO do ramos.js dentro do id da peca, o mais longo
+     (video-comercio-moda-masculina -> moda-masculina); senao, a categoria da peca
+     quando ela mesma e a chave de um ramo (farmacia, otica, pet, naturais, moda). So ramo com
+     pagina na /aovivo (d:1). ramos.js ainda nao carregado: link sem ramo. */
+  function ramoDaPeca(it){
+    var RM = window.MOVIKI_RAMOS;
+    if(!it || !RM || !Array.isArray(RM.lista)) return '';
+    var ok = {};
+    RM.lista.forEach(function(e){ if(e && e.d && e.k){ ok[e.k] = e.k; (e.a || []).forEach(function(a){ ok[a] = e.k; }); } });
+    var limpa = function(v){ return String(v || '').toLowerCase().replace(/[^a-z0-9-]+/g, '-'); };
+    if(it.ramo){ var r0 = ok[limpa(it.ramo)]; return r0 || ''; }
+    var id = '-' + limpa(it.id) + '-', melhor = '';
+    Object.keys(ok).forEach(function(n){ if(n.length > melhor.length && id.indexOf('-' + n + '-') >= 0) melhor = n; });
+    if(melhor) return ok[melhor];
+    var kc = limpa(it.categoria);
+    return (ok[kc] === kc) ? kc : '';
+  }
+  function trocar(txt, it){
     var d = dados() || {};
     var slug = d.slug || '';
     var nome = String(d.nome || '').trim().split(/\s+/)[0] || 'eu';
+    var rm = slug ? ramoDaPeca(it) : '';
     return String(txt || '')
-      .replace(/\{link\}/g, slug ? 'https://moviki.com.br/p/' + slug : 'moviki.com.br')
+      .replace(/\{link\}/g, slug ? 'https://moviki.com.br/p/' + slug + (rm ? '?ramo=' + rm : '') : 'moviki.com.br')
       .replace(/\{verificacao\}/g, slug ? 'https://moviki.com.br/v/' + slug : 'moviki.com.br')
       /* 2026-09-19-chamaparceiro: {link_parceiro} = /pp/apelido, o link de
          "parceiro chama parceiro" (vai para o seja-parceiro com utm
@@ -6362,6 +6384,10 @@ function mvQR(texto){
   function pedir(){
     if(CAT) return Promise.resolve(CAT);
     if(PEDINDO) return PEDINDO;
+    /* 2026-10-16-linkramo: catalogo unico de ramos, para o link da peca por ramo */
+    if(!window.MOVIKI_RAMOS && !document.getElementById('mvRamosJs')){
+      try{ var sr = document.createElement('script'); sr.id = 'mvRamosJs'; sr.src = 'ramos.js'; sr.async = true; document.head.appendChild(sr); }catch(_){}
+    }
     PEDINDO = fetch(CAT_URL, { cache:'no-cache' })
       .then(function(r){ if(!r.ok) throw new Error('http ' + r.status); return r.json(); })
       .then(function(j){
@@ -6570,7 +6596,7 @@ function mvQR(texto){
     itens.forEach(function(it){
       if(it.tipo === 'texto'){
         h += '<div class="matTexto"><div class="matCardTit">' + esc(it.titulo) + '</div>' +
-             '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto) : it.texto.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
+             '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto, it) : it.texto.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
              '<div class="matAcoes"><button type="button" class="pri" data-matcopiar="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Copiar texto</button>' +
              '<button type="button" class="wpp" data-matwpp="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Mandar no WhatsApp</button></div></div>';
         return;
@@ -6674,7 +6700,7 @@ function mvQR(texto){
     el('matOvDica').textContent = it.dica || '';
     el('matOvDica').hidden = !it.dica;
     el('matOvPorta').innerHTML = p.ok ? '' : portaHTML(p);
-    var leg = it.legenda ? (p.ok ? trocar(it.legenda) : it.legenda.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}/g,'(seu link aparece aqui)')) : '';
+    var leg = it.legenda ? (p.ok ? trocar(it.legenda, it) : it.legenda.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}/g,'(seu link aparece aqui)')) : '';
     el('matOvLeg').textContent = leg;
     el('matOvLegBox').hidden = !leg;
     el('matOvAcoes').hidden = !p.ok;
@@ -6869,7 +6895,7 @@ function mvQR(texto){
   function postar(b){
     var rede = b.getAttribute('data-matrede'), it = acharItem(b.getAttribute('data-matid'));
     if(!it || !REDES[rede] || !porta().ok) return;
-    var leg = it.legenda ? trocar(it.legenda) : '';
+    var leg = it.legenda ? trocar(it.legenda, it) : '';
     if(leg){ try{ copiar(leg).catch(function(){}); }catch(e){} }   /* dentro do toque */
 
     if(podeCompartilhar()){
@@ -6883,7 +6909,7 @@ function mvQR(texto){
 
     /* computador: a aba da rede abre AGORA (senao o bloqueador de janela
        barra), o arquivo desce em seguida */
-    var url = rede === 'wa' ? 'https://wa.me/?text=' + encodeURIComponent(leg || trocar('{link}')) : REDES[rede].url;
+    var url = rede === 'wa' ? 'https://wa.me/?text=' + encodeURIComponent(leg || trocar('{link}', it)) : REDES[rede].url;
     var jan = null; try{ jan = window.open(url, '_blank', 'noopener'); }catch(e){}
     b.disabled = true; rotulo(b, 'Baixando…');
     obter(it).then(function(o){
@@ -6929,7 +6955,7 @@ function mvQR(texto){
   function evPeca(it, lib){
     if(it.tipo === 'texto'){
       return '<div class="matTexto"><div class="matCardTit">' + esc(it.titulo) + '</div>' +
-        '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto) : it.texto.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
+        '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto, it) : it.texto.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
         '<div class="matAcoes"><button type="button" class="pri" data-matcopiar="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Copiar texto</button>' +
         '<button type="button" class="wpp" data-matwpp="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Mandar no WhatsApp</button></div></div>';
     }
@@ -7049,13 +7075,13 @@ function mvQR(texto){
     if((b = t.closest('[data-matcopiar]'))){
       var it = acharTexto(b.getAttribute('data-matcopiar')); if(!it || !porta().ok) return;
       var bb = b;
-      copiar(trocar(it.texto)).then(function(){ bb.textContent = 'Copiado ✓'; setTimeout(function(){ bb.textContent = 'Copiar texto'; }, 2200); ev('copiar', it.id); })
+      copiar(trocar(it.texto, it)).then(function(){ bb.textContent = 'Copiado ✓'; setTimeout(function(){ bb.textContent = 'Copiar texto'; }, 2200); ev('copiar', it.id); })
         .catch(function(){ bb.textContent = 'Não deu — segure o texto e copie'; });
       return;
     }
     if((b = t.closest('[data-matwpp]'))){
       var it2 = acharTexto(b.getAttribute('data-matwpp')); if(!it2 || !porta().ok) return;
-      window.open('https://wa.me/?text=' + encodeURIComponent(trocar(it2.texto)), '_blank', 'noopener');
+      window.open('https://wa.me/?text=' + encodeURIComponent(trocar(it2.texto, it2)), '_blank', 'noopener');
       ev('whatsapp', it2.id); return;
     }
     if((b = t.closest('[data-matconduta]'))){
@@ -7069,7 +7095,7 @@ function mvQR(texto){
     if(t.closest('#matBaixar')){ baixar(); return; }
     if(t.closest('#matCopiarLeg')){
       if(!ATUAL || !ATUAL.legenda || !porta().ok) return;
-      copiar(trocar(ATUAL.legenda)).then(function(){ msg('Legenda copiada. É só colar no post.'); ev('copiar_legenda', ATUAL && ATUAL.id); })
+      copiar(trocar(ATUAL.legenda, ATUAL)).then(function(){ msg('Legenda copiada. É só colar no post.'); ev('copiar_legenda', ATUAL && ATUAL.id); })
         .catch(function(){ msg('Não deu para copiar. Segure o texto e copie.'); });
       return;
     }
