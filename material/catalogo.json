@@ -1,5 +1,5 @@
 {
-  "versao": "2026-10-16-ugc",
+  "versao": "2026-10-16-ugc-mp",
   "atualizado": "2026-10-16",
   "eventos": [
     {
@@ -85,6 +85,22 @@
     }
   ],
   "itens": [
+    {
+      "id": "ugc-bastidores-moda-praia",
+      "tipo": "video",
+      "titulo": "Moda praia: os bastidores de uma live na loja",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:40",
+      "peso": "17,3 MB",
+      "arquivo": "https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/material%2Fugc-bastidores-moda-praia.mp4?alt=media",
+      "capa": "material/capas/ugc-bastidores-moda-praia.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Ela desistiu no checkout. Na live, ela vê o biquíni de perto e compra na hora.\n\nAssim é o bastidor: a lojista mostra o biquíni de perto, uma resposta no chat sobre o tamanho atende todo mundo que está assistindo e o pedido chega pago na Central de Pedidos, enquanto a equipe já separa a sacola.\n\nCom o Moviki, você abre a live da sua loja direto do celular e a cliente vê o caimento de verdade, não só a foto. Ela escolhe, compra ali mesmo e paga sem sair da transmissão.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "moda"
+    },
     {
       "id": "ugc-bastidores-perfumaria",
       "tipo": "video",
