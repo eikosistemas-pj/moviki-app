@@ -1,6 +1,6 @@
 {
-  "versao": "2026-10-15-ugc",
-  "atualizado": "2026-10-15",
+  "versao": "2026-10-16-ugc",
+  "atualizado": "2026-10-16",
   "eventos": [
     {
       "id": "fundador",
@@ -86,6 +86,38 @@
   ],
   "itens": [
     {
+      "id": "ugc-bastidores-perfumaria",
+      "tipo": "video",
+      "titulo": "Perfumaria: os bastidores de uma live na loja",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:40",
+      "peso": "17,4 MB",
+      "arquivo": "https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/material%2Fugc-bastidores-perfumaria.mp4?alt=media",
+      "capa": "material/capas/ugc-bastidores-perfumaria.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Foto não tem cheiro. Na live, o cliente pergunta e compra na hora.\n\nAssim é o bastidor: o vendedor descreve as notas e mostra o frasco de perto, uma resposta no chat atende todo mundo que está assistindo e o pedido chega pago na Central de Pedidos, já na fila do balcão.\n\nCom o Moviki, você abre a live da sua loja direto do celular e o cliente tira a dúvida sobre a fragrância na hora. Ele escolhe, compra ali mesmo e paga sem sair da transmissão.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "beleza"
+    },
+    {
+      "id": "ugc-bastidores-presentes",
+      "tipo": "video",
+      "titulo": "Presentes: os bastidores de uma live na loja",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:39",
+      "peso": "16,9 MB",
+      "arquivo": "https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/material%2Fugc-bastidores-presentes.mp4?alt=media",
+      "capa": "material/capas/ugc-bastidores-presentes.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Do escritório, ela comprou o presente sem abrir nenhum site.\n\nAssim é o bastidor: a loja mostra cada detalhe da cesta de perto, uma resposta no chat atende todo mundo que está assistindo e o pedido chega pago na Central de Pedidos, enquanto a equipe já embala para presente.\n\nCom o Moviki, você abre a live da sua loja direto do celular e a cliente escolhe o presente de onde estiver, até no meio do expediente. Ela compra ali mesmo e paga sem sair da transmissão.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
+      "categoria": "casa"
+    },
+    {
       "id": "ugc-bastidores-maquiagem",
       "tipo": "video",
       "titulo": "Maquiagem: os bastidores de uma live na loja",
@@ -96,7 +128,7 @@
       "capa": "material/capas/ugc-bastidores-maquiagem.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi A cliente sumiu do direct. Na live, ela compra na hora.\n\nAssim é o bastidor: a lojista mostra a cor real do batom, uma resposta no chat atende todo mundo que está assistindo e o pedido chega pago na Central de Pedidos, enquanto a equipe já embala.\n\nCom o Moviki, você abre a live da sua loja direto do celular e a cliente vê o tom de verdade, não a cor da foto. Ela escolhe, compra ali mesmo e paga sem sair da transmissão.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "beleza"
