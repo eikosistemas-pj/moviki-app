@@ -1376,7 +1376,7 @@ body{background-image:none}
             <input type="file" id="cpArq" class="cpCampo" accept="image/jpeg,image/png">
             <div id="cpPrev"></div>
             <label class="cpRot" for="cpTitulo">3. Título (obrigatório — vai ao ar se a sua legenda não puder ser usada)</label>
-            <input type="text" id="cpTitulo" class="cpCampo" maxlength="120" placeholder="Ex.: Pastel saindo na feira de Tambaú">
+            <input type="text" id="cpTitulo" class="cpCampo" maxlength="120" placeholder="Ex.: Pastel saindo na feira do bairro">
             <label class="cpRot" for="cpLegenda">4. Legenda sugerida (opcional) <span id="cpLegN" style="float:right;font-weight:400">0/2200</span></label>
             <textarea id="cpLegenda" class="cpCampo" maxlength="2200" placeholder="Escreva como você falaria com um comerciante. Sem prometer venda, ganho ou resultado."></textarea>
             <div id="cpLegAviso" class="cpMsg er"></div>
@@ -1754,7 +1754,8 @@ body{background-image:none}
      cartao do evento (os videos de Natal da Onda 3 tem arvore e pisca-pisca e
      so entram em 20/11). Com ?evento=<id> na previa, tudo aparece, para
      conferir antes. */
-  window.MOVIKI_VERSAO = '2026-10-16-linkramo';   /* 16/10: peca por ramo do Material de apoio leva /p/apelido?ramo=<k> (miniatura e live do ramo); ramos.js carregado com o catalogo. Antes: 2026-10-13-arroba. */   /* 13/10 (P80): bloco "Seu @ no Instagram" em Meus dados (prova de posse pelo codigo na bio) e foto do Instagram no cracha so com o @ provado. Antes: 2026-10-10-pixaula. */   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
+  window.MOVIKI_VERSAO = '2026-10-17-aulasparc';   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-16-linkramo. */
+  /* 16/10: peca por ramo do Material de apoio leva /p/apelido?ramo=<k> (miniatura e live do ramo); ramos.js carregado com o catalogo. Antes: 2026-10-13-arroba. */   /* 13/10 (P80): bloco "Seu @ no Instagram" em Meus dados (prova de posse pelo codigo na bio) e foto do Instagram no cracha so com o @ provado. Antes: 2026-10-10-pixaula. */   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
   /* 2026-10-10-teatro: videoaulas com layout de YouTube (marca no alto, palco grande, lista com as capas a direita), selo das aulas com barra e contagem das opcionais, e a aula OPCIONAL do Material de apoio (mod-parc-material, OZ9vgwH2W_U) no fim da secao. Trava e selo continuam contando so as obrigatorias. Lista em tres niveis: Essenciais (vermelho, as obrigatorias que liberam o link), Recomendadas (amarelo) e Complementares (azul), campo `nivel` do modulo opcional. Antes: 2026-10-06-pixcarimbo. */
 
   const firebaseConfig = {
@@ -3437,6 +3438,7 @@ body{background-image:none}
   function cpIniciar(user){
     CP_UID = user.uid;
     const ehCriador = MEU.criador === true;
+    window.MOVIKI_EH_CRIADOR = ehCriador;   /* 17/10: a aula da Area do criador so aparece na lista para criador */
     ['navCriador','menuCriador','cpCardHome'].forEach(id => { const n = el(id); if(n) n.classList.toggle('hide', !ehCriador); });
     if(!ehCriador){
       /* Entrou pelo link dos criadores, mas a conta ainda nao foi marcada. */
@@ -4473,12 +4475,12 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      importa - `todas()` percorre os modulos e ignora o `sel`, enquanto o
      `embutir()` pula todo modulo que nao tem um. */
   { n:'Comece por aqui', v:[
-    { k:'mod-parc-abertura',   t:'Bem-vindo ao Programa de Parceiros',           d:'2:54', id:'fQqR9ae5vnI' },
+    { k:'mod-parc-abertura',   t:'Bem-vindo ao Programa de Parceiros',           d:'1:08', id:'7mD0ToxFfmU' },
     /* CONDUTA - 04/09/2026. Mora aqui, e nao em Divulgacao, de proposito: e a
        aula que diz o que NAO pode ser falado, e isso precisa ser sabido antes
        de qualquer coisa sobre como divulgar. Ela tambem e o par da tela de
        aceite que fica na Divulgacao - a aula ensina, o aceite registra. */
-    { k:'mod-parc-conduta',    t:'Como falar do Moviki sem prometer o que não pode', d:'2:29', id:'T5QdBjl9Y1k' } ]},
+    { k:'mod-parc-conduta',    t:'Como falar do Moviki sem prometer o que não pode', d:'1:45', id:'L6FD19rNQBY' } ]},
   /* VENDA AO VIVO - 16/09/2026. Modulo SEM `sel`: nao existe secao de live no
      painel do parceiro. Ela CONTA para a trava de proposito - e a aula que diz
      o que nao pode ser prometido sobre a live, par exato da conduta. Enquanto
@@ -4486,7 +4488,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   { n:'Venda ao vivo', v:[
     { k:'mod-parc-live',       t:'A venda ao vivo: o que é e como falar dela',   d:'2:23', id:'H1vk5wAil78' } ]},
   { n:'Começar', sel:'section[data-sec="visao"]', v:[
-    { k:'mod-parc-comecar',    t:'Como funciona o Programa de Parceiros',        d:'0:28', id:'vWj5K8RdSdY' } ]},
+    { k:'mod-parc-comecar',    t:'Como funciona o Programa de Parceiros',        d:'0:48', id:'-oe3XFLbI1Y' } ]},
   /* NIVEIS - 11/09/2026. Aula propria, embutida no FIM do card "Seu nivel"
      (sel '#nvCard'), e nao no fim da secao: a aula explica o card e as
      barras da Divulgacao, e o card e onde a duvida nasce. Aula nova nao
@@ -4495,24 +4497,31 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   { n:'Seu nível', sel:'#nvCard', v:[
     { k:'mod-parc-niveis',     t:'Seu nível e as barras da comissão',           d:'2:34', id:'6E3z6cbOXJ4' } ]},
   { n:'Indicações', sel:'section[data-sec="indicacoes"]', v:[
-    { k:'mod-parc-indicacoes', t:'Acompanhar quem entrou pelo seu link',         d:'0:25', id:'sxt5FSp24kQ' } ]},
+    { k:'mod-parc-indicacoes', t:'Acompanhar quem entrou pelo seu link',         d:'0:37', id:'qLg0BJWvKoU' } ]},
   /* Divulgacao tem DUAS aulas: a do link (que e a embutida na secao, porque
      embutir() usa sempre o primeiro video do modulo) e a do cracha, publicada
      em 04/09/2026. As duas aparecem na tela de aulas e as duas contam para a
      trava e para o selo. */
   { n:'Divulgação', sel:'section[data-sec="divulgacao"]', v:[
-    { k:'mod-parc-divulgacao', t:'Seus dois links e os modelos de mensagem',     d:'0:24', id:'h0_nSO4-DWo' },
-    { k:'mod-parc-cracha',     t:'Seu crachá e a página de verificação',         d:'1:18', id:'mkQFsp6ggf0' } ]},
+    { k:'mod-parc-divulgacao', t:'Seus links e o compromisso de divulgação',     d:'0:56', id:'t224jWckVTo' },
+    { k:'mod-parc-cracha',     t:'Seu crachá e a página de verificação',         d:'0:44', id:'afZewGcrHag' } ]},
   { n:'Comissões', sel:'section[data-sec="comissoes"]', v:[
-    { k:'mod-parc-comissoes',  t:'Como a comissão é calculada e quando libera',  d:'0:29', id:'1zCmsg5Okp0' } ]},
+    { k:'mod-parc-comissoes',  t:'Como a comissão é calculada e quando libera',  d:'0:41', id:'aSNYsRFCaw8' } ]},
   { n:'Pagamentos', sel:'section[data-sec="pagamentos"]', v:[
-    { k:'mod-parc-pagamentos', t:'Pedir saque por Pix e acompanhar o pagamento', d:'0:28', id:'b9cdL3tcQ_Q' } ]},
+    { k:'mod-parc-pagamentos', t:'Pedir saque por Pix e acompanhar o pagamento', d:'0:40', id:'hsem41NvVCY' } ]},
   { n:'Desempenho', sel:'section[data-sec="desempenho"]', v:[
-    { k:'mod-parc-desempenho', t:'O seu histórico mês a mês',                    d:'0:24', id:'DRfmrf-kj3I' } ]},
+    { k:'mod-parc-desempenho', t:'O seu histórico mês a mês',                    d:'0:34', id:'hP9UVKUchUY' } ]},
   { n:'Meus dados', sel:'section[data-sec="dados"]', v:[
-    { k:'mod-parc-dados',      t:'Seus dados e a sua chave Pix',                 d:'0:23', id:'mmXpzkWlm0A' } ]},
+    { k:'mod-parc-dados',      t:'Seus dados, a chave Pix e o seu @',                 d:'0:56', id:'w5Lm3Fkf1dk' } ]},
   { n:'Falar com o Vik', sel:'section[data-sec="mensagens"]', v:[
-    { k:'mod-parc-vik',        t:'Tirar dúvida com o Vik',                       d:'0:23', id:'YP6CTBUNbuQ' } ]},
+    { k:'mod-parc-vik',        t:'Tirar dúvida com o Vik',                       d:'0:33', id:'8u0u68Eo3BU' } ]},
+  /* AREA DO CRIADOR - 17/10/2026. Aula OPCIONAL, embutida no fim da secao
+     Area do criador (que so aparece para quem a equipe marcou como criador).
+     Nao entra na trava do link nem no selo: quem nao e criador nunca ve a
+     secao, e aula de criador nao pode virar imposto sobre o parceiro comum. */
+  { n:'Área do criador', opcional:true, soCriador:true, nivel:'r', sel:'section[data-sec="criador"]',
+    nota:'Para quem a equipe liberou como criador de conteúdo. Não conta para o seu selo.', v:[
+    { k:'mod-parc-criador', t:'Área do criador: suas peças nas redes do Moviki', d:'1:04', id:'c7g-qkDsyRA' } ]},
   /* ===================== MODULO OPCIONAL - 16/09/2026 =====================
      As catorze aulas do Modo Live que o LOJISTA assiste. Entram aqui para o
      parceiro poder mostrar a ferramenta por dentro na hora da visita.
@@ -4564,6 +4573,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     { k:'mod-pedidos-comanda', t:'Imprimir a comanda do pedido',                                d:'1:08', id:'1KRjmefJFbk' },
     { k:'mod-pedidos-lote',    t:'Enterprise: imprimir a coluna inteira e a lista de separação', d:'1:11', id:'myU8_lgHhnw' },
     { k:'mod-pedidos-dados',   t:'Os dados do seu cliente: cuidado e prazo',                    d:'1:13', id:'1zMvqXPedD8' },
+    { k:'mod-pedidos-desfazer', t:'Desfazer uma venda e o Pix devolvido',                       d:'1:08', id:'yFqjQpXunlU' },
     { k:'mod-financeiro',      t:'Financeiro: como o lojista recebe o dinheiro das vendas',     d:'1:39', id:'AEPxpKOp1YM' } ]}
 ]};
 </script>
@@ -4581,7 +4591,9 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      Sem isso, toda aula nova publicada vira imposto sobre a ativacao do
      parceiro novo - que e exatamente quem precisa do link para agir. */
   function obrigatorios(){ return MOD().filter(function(m){ return !m.opcional; }); }
-  function opcionais(){ return MOD().filter(function(m){ return !!m.opcional; }); }
+  /* 17/10/2026: modulo com `soCriador:true` so entra para quem a equipe marcou
+     como criador (window.MOVIKI_EH_CRIADOR, gravado quando o cadastro carrega). */
+  function opcionais(){ return MOD().filter(function(m){ return !!m.opcional && (!m.soCriador || window.MOVIKI_EH_CRIADOR === true); }); }
   function achar(k){
     var r=null;
     MOD().forEach(function(m){ prontos(m).forEach(function(v){ if(v.k===k) r=v; }); });
