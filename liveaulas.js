@@ -1,4 +1,5 @@
-/*! MOVIKI liveaulas.js | versao 2026-10-10-pixaula | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-10-17-livemalu | repo: moviki-app
+ * 17/10/2026: DEZ aulas da live REGRAVADAS com o estudio de hoje (dock, folha, ensaio) e a live publica no padrao TikTok: abertura, regras, primeira, sacolinha, chat, agendar, cupom, fila, dados e cortes. So mudam id e duracao; `em` continua (regravacao nao e aula nova). Ids antigos (apagar do YouTube depois de ver as novas tocando): 1TqgHffAyYU 3WceM12RkWE sngj1eUC7kU 3Fsofzdj0u4 V6WZqQ0s-bY cWG2cWGMrII BQPflIBLNG0 hhooJvRXx2Q 07rQewrYNaI vzZOyzzfYHM. Antes: 2026-10-10-pixaula.
  * 10/10/2026 (noite): mod-live-pix REGRAVADA de novo (23jGUqKMaps, 1:30), com a Central de Pedidos, o Ja paguei e o aviso Recebi. `em` continua 2026-09-15. Antes: 2026-10-10-ensaio.
  * 10/10/2026: aula OPCIONAL do ensaio (mod-live-ensaio, jOIy5NrirQA, 0:44) na biblioteca, grupo "Antes e depois da live", fora da trava. Antes: 2026-09-30-aula09.
  *
@@ -76,11 +77,11 @@
     modulos: [
       { n: 'Comece por aqui', g: 'comece', sel: '', v: [
         { k: 'mod-live-abertura', t: 'Live no Moviki: o que é e como funciona',
-          d: '1:20', id: '1TqgHffAyYU', em: '2026-09-15' },
+          d: '1:13', id: 'OyausOc7_jU', em: '2026-09-15' },
         { k: 'mod-live-regras',   t: 'O que pode e o que não pode na live',
-          d: '1:04', id: '3WceM12RkWE', em: '2026-09-15' },
+          d: '1:05', id: 'qFZYznU40ho', em: '2026-09-15' },
         { k: 'mod-live-primeira', t: 'Sua primeira live: título, câmera e entrar ao vivo',
-          d: '1:16', id: 'sngj1eUC7kU', em: '2026-09-15' } ]},
+          d: '1:11', id: 'dlF725JOoRo', em: '2026-09-15' } ]},
 
       /* 10/10/2026: ENSAIO (P75 B7, live.html 2026-10-07-ensaio). Aula OPCIONAL:
          nao entra na `trava` (as tres de cima continuam sendo as obrigatorias).
@@ -96,15 +97,15 @@
 
       { n: 'Produtos', g: 'durante', sel: '.painelAba[data-aba="produtos"]', v: [
         { k: 'mod-live-sacolinha', t: 'Sacolinha e produto em destaque',
-          d: '0:55', id: '3Fsofzdj0u4', plano: 'Premium', em: '2026-09-15' } ]},
+          d: '1:04', id: 'xEYmT1EfTr4', plano: 'Premium', em: '2026-09-15' } ]},
 
       { n: 'Chat', g: 'durante', sel: '.painelAba[data-aba="chat"]', v: [
         { k: 'mod-live-chat', t: 'Chat da live: responder e apagar',
-          d: '0:33', id: 'V6WZqQ0s-bY', plano: 'Premium', em: '2026-09-15' } ]},
+          d: '0:38', id: 'JQhgGh4JdgU', plano: 'Premium', em: '2026-09-15' } ]},
 
       { n: 'Agendar', g: 'antes', sel: '.painelAba[data-aba="agendar"]', v: [
         { k: 'mod-live-agendar', t: 'Agendar a próxima live e divulgar o link',
-          d: '0:31', id: 'cWG2cWGMrII', plano: 'Premium', em: '2026-09-15' } ]},
+          d: '0:42', id: '3kV3hpkikSM', plano: 'Premium', em: '2026-09-15' } ]},
 
       /* REGRAVADA em 16/09/2026. A primeira leva ensinava a abrir subconta pelo
          proprio estudio — caminho adiado em 14/09 pela P31. A nova diz o que e
@@ -142,19 +143,19 @@
 
       { n: 'Cupom e brinde', g: 'durante', sel: '.painelAba[data-aba="cupom"]', v: [
         { k: 'mod-live-cupom', t: 'Cupom, brinde e "Estou aqui agora"',
-          d: '0:50', id: 'BQPflIBLNG0', plano: 'Enterprise', em: '2026-09-15' } ]},
+          d: '0:57', id: 'pimNiOJsm_4', plano: 'Enterprise', em: '2026-09-15' } ]},
 
       { n: 'Fila de pedidos', g: 'vender', sel: '.painelAba[data-aba="fila"]', v: [
         { k: 'mod-live-fila', t: 'Fila de pedidos',
-          d: '0:21', id: 'hhooJvRXx2Q', plano: 'Enterprise', em: '2026-09-15' } ]},
+          d: '0:30', id: 'DmVVBqoUGYM', plano: 'Enterprise', em: '2026-09-15' } ]},
 
       { n: 'Dados', g: 'antes', sel: '.painelAba[data-aba="dados"]', v: [
         { k: 'mod-live-dados', t: 'Dados ao vivo e o resumo da live',
-          d: '0:31', id: '07rQewrYNaI', plano: 'Enterprise', em: '2026-09-15' } ]},
+          d: '0:36', id: 'Zw-vwz9sGqM', plano: 'Enterprise', em: '2026-09-15' } ]},
 
       { n: 'Cortes', g: 'antes', sel: '.painelAba[data-aba="cortes"]', v: [
         { k: 'mod-live-cortes', t: 'Cortes para Reels e Status',
-          d: '0:24', id: 'vzZOyzzfYHM', plano: 'Enterprise', em: '2026-09-15' } ]},
+          d: '0:33', id: 'nDoEG-L9A50', plano: 'Enterprise', em: '2026-09-15' } ]},
 
       /* Esta aba ja tem a aula do painel (mod-cardapio, que ensina a MONTAR o
          cardapio). Esta ensina o cardapio a VENDER, que e outro assunto — as
