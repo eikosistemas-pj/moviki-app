@@ -260,6 +260,22 @@ input::placeholder{color:#6b7f96}
 .sdBolha svg{width:18px;height:18px}
 .btnSaque{width:100%;border:none;border-radius:var(--mv-r);background:var(--mv-azul);color:#fff;font-weight:700;font-size:14px;padding:13px;cursor:pointer;margin-top:4px}
 .btnSaque:disabled{opacity:.5;cursor:not-allowed}
+/* 17/10/2026: comissao retida pela mensalidade em atraso (lojista-parceiro) */
+.sdAtraso{border:1px solid rgba(255,176,32,.55);background:rgba(255,176,32,.10);border-radius:var(--mv-r);padding:14px;margin-bottom:9px}
+.sdAtraso.urg{border-color:rgba(255,107,107,.6);background:rgba(255,107,107,.10)}
+.sdAtTit{font-size:13px;font-weight:700;color:var(--mv-alerta);margin-bottom:6px}
+.sdAtraso.urg .sdAtTit,.sdAtraso.urg .sdAtNum{color:var(--mv-erro)}
+:where(html[data-tema="claro"]) .sdAtTit:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:var(--cf-alerta-txt)}
+:where(html[data-tema="claro"]) .sdAtraso.urg .sdAtTit:where(:not(.marca *,.mvTopo *,.mvSideLogo *)),
+:where(html[data-tema="claro"]) .sdAtraso.urg .sdAtNum:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:var(--cf-erro-txt)}
+.sdAtConta{display:flex;align-items:baseline;gap:8px;margin:12px 0 8px;flex-wrap:wrap}
+.sdAtNum{font-size:30px;font-weight:800;letter-spacing:-.5px;color:var(--mv-alerta);line-height:1}
+:where(html[data-tema="claro"]) .sdAtNum:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:var(--cf-alerta-txt)}
+.sdAtRot{font-size:13px;color:var(--mv-txt-2)}
+.sdAtBarra{height:8px;border-radius:6px;background:var(--mv-surf-2);border:1px solid var(--mv-linha);overflow:hidden;margin-bottom:8px}
+.sdAtBarra i{display:block;height:100%;width:100%;background:var(--mv-alerta);border-radius:6px;transition:width .3s ease}
+.sdAtraso.urg .sdAtBarra i{background:var(--mv-erro)}
+.sdAtBtn{display:block;text-align:center;margin-top:12px;border-radius:var(--mv-r);background:var(--mv-azul);color:#fff;font-weight:700;font-size:14px;padding:11px;text-decoration:none}
 
 /* ---------- gráfico ---------- */
 .gLeg{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
@@ -593,6 +609,7 @@ html.mvSigDin #listaMeses .lSub,
 html.mvSigDin #rcBarraI,
 html.mvSigDin #rcBarraNota,
 html.mvSigDin #saqueNota,
+html.mvSigDin #sdAtNota,
 html.mvSigDin .gVal,
 html.mvSigDin .gTipV,
 html.mvSigPes .kPes .kV,
@@ -978,6 +995,15 @@ body{background-image:none}
                 <div class="sdR">Aguardando liberação</div>
               </div>
               <span class="sdBolha cinza"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.4"/></svg></span>
+            </div>
+            <div class="sdAtraso" id="sdAtraso" hidden role="status">
+              <div class="sdAtTit">⏳ Retido pela mensalidade em atraso</div>
+              <div class="sdV" id="sdAtValor">R$ 0,00</div>
+              <div class="sdR" id="sdAtNota">Comissões das suas indicações que ficam presas até você pagar.</div>
+              <div class="sdAtConta"><span class="sdAtNum" id="sdAtDias">30 dias</span><span class="sdAtRot" id="sdAtRot">para essas comissões serem perdidas</span></div>
+              <div class="sdAtBarra"><i id="sdAtBarra"></i></div>
+              <div class="sdR" id="sdAtPrazo"></div>
+              <a class="sdAtBtn" href="/">Pagar a mensalidade do meu negócio</a>
             </div>
             <button type="button" class="btnSaque" id="btnSaque" disabled>Solicitar saque</button>
             <p class="cdSub" id="saqueNota">Saque mínimo de R$ 20,00. O Pix cai na sua chave cadastrada em até 1 dia útil (24h).</p>
@@ -1754,7 +1780,7 @@ body{background-image:none}
      cartao do evento (os videos de Natal da Onda 3 tem arvore e pisca-pisca e
      so entram em 20/11). Com ?evento=<id> na previa, tudo aparece, para
      conferir antes. */
-  window.MOVIKI_VERSAO = '2026-10-17-aulasparc';   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-16-linkramo. */
+  window.MOVIKI_VERSAO = '2026-10-17-aulasparc';   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-17-retido (card Saldo com a comissao retida pelo atraso e contagem regressiva, regulamento 1.5 item 2.4), que veio de 2026-10-16-linkramo. */
   /* 16/10: peca por ramo do Material de apoio leva /p/apelido?ramo=<k> (miniatura e live do ramo); ramos.js carregado com o catalogo. Antes: 2026-10-13-arroba. */   /* 13/10 (P80): bloco "Seu @ no Instagram" em Meus dados (prova de posse pelo codigo na bio) e foto do Instagram no cracha so com o @ provado. Antes: 2026-10-10-pixaula. */   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
   /* 2026-10-10-teatro: videoaulas com layout de YouTube (marca no alto, palco grande, lista com as capas a direita), selo das aulas com barra e contagem das opcionais, e a aula OPCIONAL do Material de apoio (mod-parc-material, OZ9vgwH2W_U) no fim da secao. Trava e selo continuam contando so as obrigatorias. Lista em tres niveis: Essenciais (vermelho, as obrigatorias que liberam o link), Recomendadas (amarelo) e Complementares (azul), campo `nivel` do modulo opcional. Antes: 2026-10-06-pixcarimbo. */
 
@@ -2696,6 +2722,40 @@ body{background-image:none}
      negocio no Moviki se o PROPRIO plano estiver pago e em dia — teste gratis
      e Basico nao geram. O painel dizia "Tudo certo! Divulgue seu link" e o
      parceiro so descobria quando as comissoes nao apareciam. Regulamento 2.4. */
+  /* 17/10/2026 — CARENCIA DE 30 DIAS (regulamento 1.5, item 2.4).
+     Mensalidade de plano pago vencida: o robo grava assinaturas/{uid}.atrasoDesde
+     e retem as comissoes por 30 dias (comissoes_retidas, que o painel nao le).
+     O resumo vem em parceiros/{uid}.retidoAtraso = { valor, qtd, prazoMs }.
+     Aqui so se MOSTRA: quem decide liberar ou perder e o robo. */
+  const ATRASO_PRAZO_DIAS = 30;
+  let atrasoTimer = null;
+  function pintarAtraso(prazoMs){
+    const box = el('sdAtraso');
+    if(!box) return;
+    const r = MEU.retidoAtraso || {};
+    const valor = Number(r.valor) || 0, qtd = Number(r.qtd) || 0;
+    const restaMs = prazoMs - Date.now();
+    if(restaMs <= 0){ box.hidden = true; return; }
+    const dias = Math.ceil(restaMs / 86400000);
+    box.hidden = false;
+    box.classList.toggle('urg', dias <= 7);
+    txt('sdAtValor', brl(valor));
+    txt('sdAtNota', qtd
+      ? (qtd + (qtd === 1 ? ' comissão das suas indicações presa' : ' comissões das suas indicações presas') + ' até você pagar a mensalidade.')
+      : 'Nada retido até agora. O que entrar durante o atraso fica preso até você pagar.');
+    if(dias <= 1){
+      const horas = Math.max(1, Math.ceil(restaMs / 3600000));
+      txt('sdAtDias', 'Último dia');
+      txt('sdAtRot', 'faltam ' + horas + (horas === 1 ? ' hora' : ' horas') + ' para essas comissões serem perdidas');
+    } else {
+      txt('sdAtDias', dias + ' dias');
+      txt('sdAtRot', 'para essas comissões serem perdidas');
+    }
+    const barra = el('sdAtBarra');
+    if(barra) barra.style.width = Math.max(3, Math.min(100, Math.round(dias / ATRASO_PRAZO_DIAS * 100))) + '%';
+    txt('sdAtPrazo', 'Pague até ' + new Date(prazoMs).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', timeZone:'America/Sao_Paulo' }) + ' e tudo o que ficou retido é liberado aqui. Depois disso, é perdido.');
+  }
+
   async function avisoLojistaSemPlano(uid){
     try{
       const a = await getDoc(doc(db,'assinaturas',uid));
@@ -2703,15 +2763,25 @@ body{background-image:none}
       const vence = d && d.vence_em && typeof d.vence_em.toMillis === 'function' ? d.vence_em.toMillis() : 0;
       const pagante = !!(d && d.ativo === true && (!vence || vence > Date.now()) && d.periodo !== 'trial');
       if(pagante) return;
+      const desde = d && d.periodo !== 'trial' && d.atrasoDesde && typeof d.atrasoDesde.toMillis === 'function' ? d.atrasoDesde.toMillis() : 0;
+      const prazoMs = desde ? desde + ATRASO_PRAZO_DIAS * 86400000 : 0;
+      const emCarencia = prazoMs > Date.now();
+      if(emCarencia && MEU.status === 'aprovado'){
+        pintarAtraso(prazoMs);
+        if(atrasoTimer) clearInterval(atrasoTimer);
+        atrasoTimer = setInterval(function(){ pintarAtraso(prazoMs); }, 60000);
+      }
       if(el('avisoLojistaPlano')) return;
       const box = document.createElement('div');
       box.id = 'avisoLojistaPlano';
       box.setAttribute('role','alert');
       box.style.cssText = 'margin:0 0 14px;padding:12px 14px;border-radius:12px;border:1px solid #f5b942;background:rgba(245,185,66,.12);color:inherit;font-size:14px;line-height:1.45';
       const t = document.createElement('div');
-      t.textContent = '⚠️ Você também tem um negócio no Moviki. Pelo regulamento (cláusula 2.4), você só recebe comissão enquanto o plano do SEU negócio estiver pago e em dia (Pró, Premium ou Enterprise). No teste grátis e no Básico, suas indicações continuam registradas, mas os pagamentos delas nesse período não geram comissão — nem depois.';
+      t.textContent = emCarencia
+        ? '⚠️ A mensalidade do seu negócio no Moviki está em atraso. Pelo regulamento (cláusula 2.4), as comissões das suas indicações ficam retidas por até 30 dias a partir do vencimento: pagando dentro do prazo, elas são liberadas; depois dele, as comissões do período em atraso são perdidas. A contagem está no card de saldo.'
+        : '⚠️ Você também tem um negócio no Moviki. Pelo regulamento (cláusula 2.4), você só recebe comissão enquanto o plano do SEU negócio estiver pago e em dia (Pró, Premium ou Enterprise). No teste grátis e no Básico, suas indicações continuam registradas, mas os pagamentos delas nesse período não geram comissão — nem depois.';
       const lk = document.createElement('a');
-      lk.href = '/'; lk.textContent = 'Ir para o painel do meu negócio e ver os planos';
+      lk.href = '/'; lk.textContent = emCarencia ? 'Ir para o painel do meu negócio e pagar a mensalidade' : 'Ir para o painel do meu negócio e ver os planos';
       lk.style.cssText = 'display:inline-block;margin-top:8px;font-weight:700;text-decoration:underline;color:inherit';
       box.appendChild(t); box.appendChild(lk);
       const alvo = document.querySelector('section[data-sec="visao"]');
