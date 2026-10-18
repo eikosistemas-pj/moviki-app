@@ -1,4 +1,5 @@
-/*! MOVIKI liveaulas.js | versao 2026-10-17-livecapas | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-10-18-balcao | repo: moviki-app
+ * 18/10/2026: aula NOVA "Monte o seu balcao de live: celular, segunda tela e ajudante" (mod-live-balcao, WM7kWjl2iSM, 1:44) no grupo "Antes e depois da live", antes do ensaio. Opcional, fora da trava; `em` novo (aviso calmo de aula nova). No celular em pe, linha "Gire o celular para ver a aula em tela cheia" embaixo do palco (as aulas sao 16:9). Antes: 2026-10-17-livecapas.
  * 17/10/2026 (noite): a lista lateral da janela "Aulas da live" ganhou a CAPA de cada aula (mqdefault do YouTube, duracao no canto, visto verde, "Tocando" na que esta no palco), igual a janela de videoaulas do painel; palco maior com a lista de 400 px ao lado. Aula da Lista VIP (mod-pedidos-vip, 6Wa8z0vIJPM) entrou no grupo "Antes e depois da live" (em 2026-10-17: vira aviso de aula nova, nao trava ninguem). Antes: 2026-10-17-livemalu.
  * 17/10/2026: DEZ aulas da live REGRAVADAS com o estudio de hoje (dock, folha, ensaio) e a live publica no padrao TikTok: abertura, regras, primeira, sacolinha, chat, agendar, cupom, fila, dados e cortes. So mudam id e duracao; `em` continua (regravacao nao e aula nova). Ids antigos (apagar do YouTube depois de ver as novas tocando): 1TqgHffAyYU 3WceM12RkWE sngj1eUC7kU 3Fsofzdj0u4 V6WZqQ0s-bY cWG2cWGMrII BQPflIBLNG0 hhooJvRXx2Q 07rQewrYNaI vzZOyzzfYHM. Antes: 2026-10-10-pixaula.
  * 10/10/2026 (noite): mod-live-pix REGRAVADA de novo (23jGUqKMaps, 1:30), com a Central de Pedidos, o Ja paguei e o aviso Recebi. `em` continua 2026-09-15. Antes: 2026-10-10-ensaio.
@@ -92,6 +93,15 @@
          mostraria para todo mundo uma coisa que a maioria nao pode usar.
          `em` 2026-09-15 DE PROPOSITO: quem ja concluiu as aulas ja fez live e nao
          tem mais o ensaio; um alerta de "aula nova" para essa pessoa seria ruido. */
+      /* 18/10/2026: BALCAO DE LIVE. Ideia do Paulo: o lojista acha que faz tudo
+         pelo celular (e faz), mas a live rende mais com uma segunda tela com a
+         Central de Pedidos e um ajudante. O ponto que quase ninguem sabe: trocar
+         de aplicativo no celular que transmite pode parar a camera. Opcional,
+         fora da trava; `em` novo. O estudio tem um atalho para ela nas dicas. */
+      { n: 'Balcão de live', g: 'antes', sel: '', v: [
+        { k: 'mod-live-balcao', t: 'Monte o seu balcão de live: celular, segunda tela e ajudante',
+          d: '1:44', id: 'WM7kWjl2iSM', em: '2026-10-18' } ]},
+
       { n: 'Ensaio', g: 'antes', sel: '', v: [
         { k: 'mod-live-ensaio', t: 'Ensaio: teste a sua live sem ninguém ver',
           d: '0:44', id: 'jOIy5NrirQA', em: '2026-09-15' } ]},
@@ -496,7 +506,7 @@
     { g: 'comece',  n: 'Comece por aqui',        s: 'Obrigatórias para entrar ao vivo' },
     { g: 'durante', n: 'Durante a live',         s: 'O que você usa com a câmera ligada' },
     { g: 'vender',  n: 'Vender e receber',       s: 'Pix, pedidos e o cardápio' },
-    { g: 'antes',   n: 'Antes e depois da live', s: 'Ensaio, agendar, Lista VIP, números e cortes' },
+    { g: 'antes',   n: 'Antes e depois da live', s: 'Balcão, ensaio, agendar, Lista VIP, números e cortes' },
     { g: '',        n: 'Outras aulas',           s: '' }
   ];
   /* aulas publicadas, na ordem em que aparecem na lista: grupo a grupo */
@@ -578,7 +588,9 @@
     pProx.addEventListener('click', function () {
       var k = pProx.getAttribute('data-k'); if (k) escolher(k, true);
     });
-    esq.appendChild(palco); esq.appendChild(pTit); esq.appendChild(pSub); esq.appendChild(pProx);
+    var gire = document.createElement('span'); gire.className = 'lvAulasGire';
+    gire.textContent = 'Gire o celular para ver a aula em tela cheia';
+    esq.appendChild(palco); esq.appendChild(gire); esq.appendChild(pTit); esq.appendChild(pSub); esq.appendChild(pProx);
     lst = document.createElement('div'); lst.className = 'lvAulasLista';
     grade.appendChild(esq); grade.appendChild(lst);
     corpo.appendChild(grade);
@@ -823,6 +835,9 @@
     '.lvAulasEsq{min-width:0;display:flex;flex-direction:column;gap:4px;overflow:auto}',
     '.lvAulasPalco{margin-top:0;margin-bottom:6px}',
     '.lvAulasPTit{font-size:15px;line-height:1.3}',
+    '.lvAulasGire{display:none;font-size:12px;color:var(--mv-txt-3,#8fa6c4);margin:-2px 0 4px}',
+    '.lvAulasGire::before{content:"\\21BB";display:inline-block;margin-right:6px;color:#00D4FF;font-weight:700}',
+    '@media (max-width:760px) and (orientation:portrait){.lvAulasGire{display:block}}',
     '.lvAulasPSub{font-size:12px;color:var(--mv-txt-3,#8fa6c4)}',
     '.lvAulasProx{align-self:flex-start;margin-top:10px;padding:9px 14px;border-radius:10px;',
       'cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:#06131f;',
