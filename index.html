@@ -355,6 +355,16 @@ window.mvAtrib = function(){
   .onbPasso.feito .txt{text-decoration:line-through;color:#8fa6c4;}
 :where(html[data-tema="claro"]) .onbPasso.feito .txt:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#142030}
   .onbPasso.feito .seta{display:none;}
+  /* 2026-10-17-seguir: passo do Instagram dentro do cartao Loja completa */
+  .lcIgPasso{cursor:default;align-items:flex-start;}
+  .lcIgCorpo{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:7px;}
+  .lcIgLinha{display:flex;gap:8px;}
+  .lcIgLinha input{flex:1 1 auto;min-width:0;background:var(--mv-surf);border:1px solid var(--card-borda);border-radius:9px;padding:9px 11px;color:var(--claro);font:inherit;font-size:14px;}
+  .lcIgLinha button{flex:0 0 auto;border:1px solid var(--ciano);background:rgba(0,212,255,.12);color:var(--ciano);border-radius:9px;padding:9px 14px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;}
+  .lcIgLinha button:disabled{opacity:.6;cursor:wait;}
+  .lcIgMsg{font-size:12.5px;line-height:1.45;color:#9fb3d0;}
+  .lcIgMsg:empty{display:none;}
+  .lcIgPasso.feito .lcIgCorpo .txt{text-decoration:none;}
   .onbFinal{font-size:13px;color:#8ff0b5;line-height:1.5;margin:2px 2px 6px;}
 :where(html[data-tema="claro"]) .onbFinal:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#128740}
   .onbFinal b{color:#c7ffe0;}
@@ -2667,6 +2677,36 @@ body.mvNaPedidos:not(.naHome) #editorTit{color:#ffd3a1;}
           </button>
           <div class="onbFinal" id="plConvite" style="display:none;margin:2px 0 10px;font-size:13px;color:#9fc7e6"></div>
         </div>
+        <!-- 2026-10-17-seguir: LOJA COMPLETA. Ramo + foto propria em 3 produtos + o @ do
+             Instagram da loja. Quando os tres estao feitos, o robo (lib/seguirLojista.js)
+             avisa o Paulo no Telegram para ele seguir o lojista a mao. O @ fica so no robo
+             (lojista_instagram/{uid}), nunca em negocios/{uid}. O cartao some quando a loja
+             fica completa ou quando o lojista oculta. -->
+        <div id="mvLojaComp" class="onb escondido">
+          <div class="onbTop">
+            <div class="onbTit">📸 Deixe sua loja completa</div>
+            <button type="button" class="onbOcultar" onclick="lcOcultar()">ocultar</button>
+          </div>
+          <div class="onbSub">Cliente confia mais em loja com foto de verdade. E conte pra gente o Instagram da sua loja: a equipe do Moviki quer acompanhar o seu negócio de perto.</div>
+          <div class="onbBarra"><i id="lcProgresso"></i></div>
+          <button type="button" class="onbPasso" id="lcP1" onclick="lcPasso(1)">
+            <span class="mark">1</span><span class="txt">Escolha o tipo do seu negócio</span><span class="seta">›</span>
+          </button>
+          <button type="button" class="onbPasso" id="lcP2" onclick="lcPasso(2)">
+            <span class="mark">2</span><span class="txt" id="lcP2txt">Coloque foto em 3 produtos do cardápio</span><span class="seta">›</span>
+          </button>
+          <div class="onbPasso lcIgPasso" id="lcP3">
+            <span class="mark">3</span>
+            <div class="lcIgCorpo">
+              <span class="txt">Instagram da sua loja</span>
+              <div class="lcIgLinha">
+                <input id="lcArroba" type="text" maxlength="60" placeholder="@sualoja" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter'){event.preventDefault();lcSalvarIg();}">
+                <button type="button" id="lcIgBtn" onclick="lcSalvarIg()">Salvar</button>
+              </div>
+              <div class="lcIgMsg" id="lcIgMsg"></div>
+            </div>
+          </div>
+        </div>
         <div id="onboarding" class="onb escondido">
         <div class="onbTop">
           <div class="onbTit">👋 Bem-vindo ao Moviki!</div>
@@ -4805,7 +4845,7 @@ window.mvAbaInicial=function(){
      'Criar minha conta gratis', apelido curto completado sozinho, gravacao do negocio com nova tentativa e
      eventos de cada passo e erro no GA4 (cad_chegou, cad_google_clique, cad_email_enviar, cad_erro,
      cad_abrir_navegador, email_confirmado). Antes: '2026-10-12-ramoqr'. */
-  window.MOVIKI_VERSAO='2026-10-17-basepropria';   /* 17/10 (noite, 4): P84 base propria multicanal na Lista VIP: link para a bio de cada rede (TikTok, Instagram, Kwai, Facebook, YouTube, Status) com a origem contada no Vieram, canal da loja (Canal do WhatsApp, grupo ou Telegram) que aparece para a pessoa logo depois da inscricao, e Entraram pela live (por dia). Robo: loja_vip_canal. */ /* antes: 2026-10-17-subirplano */   /* 17/10 (noite, 3): aula NOVA mod-subir-plano ('O que você ganha subindo de plano', 1:18) e os ganchos dela: cartao no alto do Meu plano, cadeado/recurso travado abre a aula antes dos planos (1 vez a cada 3 dias, so quem nao viu), botao 'O que muda? 1 min' na faixa do teste, cartao no Inicio (teste depois da 1a live ou da 1a semana, Basico, Pro), abre sozinha 1 vez nos 2 ultimos dias do teste e 1 vez quando o teste acaba, aviso na janela Excluir conta, link ?aula=<chave>. Fim da aula leva ao Meu plano. Antes: 2026-10-17-aulasleva2. */   /* 17/10 (noite, 2): aula NOVA mod-pedidos-desfazer ('Desfazer uma venda e o Pix devolvido', 1:08) na Central de Pedidos, no cartao roxo (agora 10 aulas) e nas recomendadas. */ /* antes: 2026-10-17-aulasleva1 */   /* 17/10 (noite): aulas Avaliacoes (ver, responder e denunciar) e Falar com o Vik regravadas com a voz da Malu (mesmas chaves); aula NOVA mod-indique na janela Indique e receba; cartao 'Sua primeira live em 3 passos' ganhou o atalho 'Ver a aula do ensaio' no passo 2; niveis das aulas revistos (essenciais: + Localizacao e Dia a dia; recomendadas: + Desempenho, Avaliacoes e Vik). */ /* antes: 2026-10-17-aulasmalu */   /* 17/10: 13 videoaulas do lojista regravadas com a voz da Malu e a tela de hoje (inicio, perfil, local, cardapio, promocoes, eventos, fotos, info, whatsapp, plano, pontos, desempenho, diaadia): so troca id e duracao no catalogo de aulas, mesmas chaves (ninguem perde o progresso); mod-fotos virou 'Fotos e videos: a vitrine da sua pagina'. */ /* antes: 2026-10-16-boasvindas */   /* 16/10: aula de boas-vindas regravada (chave nova mod-boasvindas2: abre para todo lojista que ainda nao viu a nova, inclusive quem ja tinha terminado as boas-vindas; voz Malu, paisagens e trilha) com DUAS versoes: horizontal no computador e vertical no celular em pe (campo idV no catalogo de aulas; palco 9:16 com a classe mvVert). Mesma chave: quem ja tinha visto continua em dia. PRIMEIRA ENTRADA: conta nova sem ramo ve primeiro o video de boas-vindas; quando acaba (ou e fechado) abre a escolha do ramo; salvo o ramo, segue para a proxima aula do comeco (mvBoasVindasPrimeiro / mvAposRamo). */ /* antes: 2026-10-15-ramodepois */   /* 14/10: teste gratis PROVISORIO de 7 dias antes de confirmar o e-mail (robo ativar-trial 2026-10-14-provisorio). Aviso do topo diz que o teste ja comecou, quantos dias faltam e o que a confirmacao libera (30 dias, live aberta, assinar); confirmou, o painel pede de novo ao robo e vira 30 dias contados do inicio. Faixa de fim de teste some no provisorio; Meu plano explica. */ /* antes: 2026-10-14-cadastro2 */   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-17-seguir';   /* 17/10 (noite, 5): cartao 'Deixe sua loja completa' no Inicio (tipo do negocio, foto em 3 produtos, Instagram da loja). O @ vai para o robo (acao loja_instagram, colecao lojista_instagram, fora de negocios/{uid}); loja completa entra na fila Lojistas para seguir do painel do dono. Antes: 2026-10-17-basepropria. */   /* 17/10 (noite, 4): P84 base propria multicanal na Lista VIP: link para a bio de cada rede (TikTok, Instagram, Kwai, Facebook, YouTube, Status) com a origem contada no Vieram, canal da loja (Canal do WhatsApp, grupo ou Telegram) que aparece para a pessoa logo depois da inscricao, e Entraram pela live (por dia). Robo: loja_vip_canal. */ /* antes: 2026-10-17-subirplano */   /* 17/10 (noite, 3): aula NOVA mod-subir-plano ('O que você ganha subindo de plano', 1:18) e os ganchos dela: cartao no alto do Meu plano, cadeado/recurso travado abre a aula antes dos planos (1 vez a cada 3 dias, so quem nao viu), botao 'O que muda? 1 min' na faixa do teste, cartao no Inicio (teste depois da 1a live ou da 1a semana, Basico, Pro), abre sozinha 1 vez nos 2 ultimos dias do teste e 1 vez quando o teste acaba, aviso na janela Excluir conta, link ?aula=<chave>. Fim da aula leva ao Meu plano. Antes: 2026-10-17-aulasleva2. */   /* 17/10 (noite, 2): aula NOVA mod-pedidos-desfazer ('Desfazer uma venda e o Pix devolvido', 1:08) na Central de Pedidos, no cartao roxo (agora 10 aulas) e nas recomendadas. */ /* antes: 2026-10-17-aulasleva1 */   /* 17/10 (noite): aulas Avaliacoes (ver, responder e denunciar) e Falar com o Vik regravadas com a voz da Malu (mesmas chaves); aula NOVA mod-indique na janela Indique e receba; cartao 'Sua primeira live em 3 passos' ganhou o atalho 'Ver a aula do ensaio' no passo 2; niveis das aulas revistos (essenciais: + Localizacao e Dia a dia; recomendadas: + Desempenho, Avaliacoes e Vik). */ /* antes: 2026-10-17-aulasmalu */   /* 17/10: 13 videoaulas do lojista regravadas com a voz da Malu e a tela de hoje (inicio, perfil, local, cardapio, promocoes, eventos, fotos, info, whatsapp, plano, pontos, desempenho, diaadia): so troca id e duracao no catalogo de aulas, mesmas chaves (ninguem perde o progresso); mod-fotos virou 'Fotos e videos: a vitrine da sua pagina'. */ /* antes: 2026-10-16-boasvindas */   /* 16/10: aula de boas-vindas regravada (chave nova mod-boasvindas2: abre para todo lojista que ainda nao viu a nova, inclusive quem ja tinha terminado as boas-vindas; voz Malu, paisagens e trilha) com DUAS versoes: horizontal no computador e vertical no celular em pe (campo idV no catalogo de aulas; palco 9:16 com a classe mvVert). Mesma chave: quem ja tinha visto continua em dia. PRIMEIRA ENTRADA: conta nova sem ramo ve primeiro o video de boas-vindas; quando acaba (ou e fechado) abre a escolha do ramo; salvo o ramo, segue para a proxima aula do comeco (mvBoasVindasPrimeiro / mvAposRamo). */ /* antes: 2026-10-15-ramodepois */   /* 14/10: teste gratis PROVISORIO de 7 dias antes de confirmar o e-mail (robo ativar-trial 2026-10-14-provisorio). Aviso do topo diz que o teste ja comecou, quantos dias faltam e o que a confirmacao libera (30 dias, live aberta, assinar); confirmou, o painel pede de novo ao robo e vira 30 dias contados do inicio. Faixa de fim de teste some no provisorio; Meu plano explica. */ /* antes: 2026-10-14-cadastro2 */   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -7207,6 +7247,7 @@ window.mvAbaInicial=function(){
       okP('✅ Tudo salvo!');
       if(slug) mostrarLink(slug);
       onbSalvo=true;atualizarOnboarding(false);
+      try{ atualizarLojaCompleta(true); }catch(_){}
     }catch(e){erroP('Não consegui salvar: '+(e.code||e.message));}
     btn.disabled=false;btn.textContent=t;
   };
@@ -7238,6 +7279,7 @@ window.mvAbaInicial=function(){
     const esconder = onbOculto || onbSalvo || onbDone || window._mvPlVisivel===true;
     box.classList.toggle('escondido', esconder);
     try{ atualizarPrimeiraLive(); }catch(_){}
+    try{ atualizarLojaCompleta(); }catch(_){}
   };
 
   /* ---- PRIMEIRA LIVE EM 3 PASSOS (2026-10-07-cadastro1, P75 fase 1) ----
@@ -7291,6 +7333,87 @@ window.mvAbaInicial=function(){
       navigator.clipboard.writeText(msg).then(function(){ seguir('Convite copiado. Cole no WhatsApp dos seus clientes. Abrindo o estúdio da live...'); })
         .catch(function(){ window.prompt('Copie e mande aos seus clientes:',msg); seguir('Abrindo o estúdio da live...'); });
     }else{ window.prompt('Copie e mande aos seus clientes:',msg); seguir('Abrindo o estúdio da live...'); }
+  };
+
+  /* ---- LOJA COMPLETA + INSTAGRAM DA LOJA (2026-10-17-seguir) ----
+     Fonte da verdade: o robo (acao loja_instagram do /api/financeiro). Ele diz
+     o @ salvo, quantos produtos tem foto propria e o que falta. Quando a loja
+     fica completa, o robo poe na fila "Lojistas para seguir" do painel do dono
+     e avisa o Paulo no Telegram — isso nao aparece para o lojista.
+     Pergunta ao robo no maximo 1 vez a cada 20 s (o atualizarOnboarding roda
+     varias vezes por tela). Completa ou oculto: grava no aparelho e nao
+     pergunta mais. */
+  let _lcUid='', _lcEstado=null, _lcEm=0, _lcLendo=false;
+  function _lcChave(k){ return 'mv_lc_'+k+'_'+(_lcUid||''); }
+  function _lcLer(k){ try{ return localStorage.getItem(_lcChave(k))==='1'; }catch(_){ return false; } }
+  function _lcGravar(k){ try{ localStorage.setItem(_lcChave(k),'1'); }catch(_){} }
+  function _lcMsg(t,cor){ const m=el('lcIgMsg'); if(!m) return; m.textContent=t||''; m.style.color=cor||''; }
+  async function _lcPedir(corpo){
+    const tk=await usuarioAtual.getIdToken();
+    const r=await fetch(ROBO+'/api/financeiro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({acao:'loja_instagram',idToken:tk},corpo))});
+    let j={}; try{ j=await r.json(); }catch(_){}
+    return { ok:r.ok&&j.ok===true, status:r.status, j:j };
+  }
+  function _lcPintar(){
+    const box=el('mvLojaComp'); if(!box) return;
+    const e=_lcEstado;
+    if(!e){ box.classList.add('escondido'); return; }
+    if(e.completa){ _lcGravar('ok'); box.classList.add('escondido'); return; }
+    box.classList.remove('escondido');
+    const fotos=Math.min(Number(e.fotos)||0,3), min=Number(e.minFotos)||3;
+    _marcaPasso('lcP1','1',e.ramo===true);
+    _marcaPasso('lcP2','2',fotos>=min);
+    _marcaPasso('lcP3','3',e.instagram===true);
+    const t2=el('lcP2txt'); if(t2) t2.textContent='Coloque foto em '+min+' produtos do cardápio ('+fotos+' de '+min+')';
+    const feitos=(e.ramo?1:0)+(fotos>=min?1:0)+(e.instagram?1:0);
+    const br=el('lcProgresso'); if(br) br.style.width=(feitos/3*100)+'%';
+    const inp=el('lcArroba');
+    if(inp && e.arroba && document.activeElement!==inp && !inp.value) inp.value='@'+e.arroba;
+    if(e.instagram && !el('lcIgMsg').textContent) _lcMsg('Instagram salvo. Para trocar, é só digitar outro e salvar.');
+  }
+  async function atualizarLojaCompleta(forcar){
+    const box=el('mvLojaComp'); if(!box) return;
+    const uid=usuarioAtual&&usuarioAtual.uid;
+    if(!uid){ box.classList.add('escondido'); return; }
+    if(_lcUid!==uid){ _lcUid=uid; _lcEstado=null; _lcEm=0; const i=el('lcArroba'); if(i) i.value=''; _lcMsg(''); }
+    if(_lcLer('ok')||_lcLer('oculto')){ box.classList.add('escondido'); return; }
+    if(_lcLendo) return;
+    if(!forcar && _lcEstado && Date.now()-_lcEm<20000){ _lcPintar(); return; }
+    _lcLendo=true;
+    try{ const r=await _lcPedir({ler:true}); if(r.ok){ _lcEstado=r.j; _lcEm=Date.now(); } }
+    catch(_){}
+    _lcLendo=false;
+    _lcPintar();
+  }
+  window.mvAtualizarLojaCompleta=function(){ try{ atualizarLojaCompleta(true); }catch(_){} };
+  window.lcOcultar=function(){ _lcGravar('oculto'); const b=el('mvLojaComp'); if(b) b.classList.add('escondido'); try{ if(window.mvEv) mvEv('cta_click',{cta:'lojacomp_ocultar',pagina:'painel'}); }catch(_){} };
+  window.lcPasso=function(n){
+    try{ if(window.mvEv) mvEv('cta_click',{cta:'lojacomp_passo'+n,pagina:'painel'}); }catch(_){}
+    if(n===1){ if(window.mqzPedirRamo) window.mqzPedirRamo(); return; }
+    if(n===2){ abrirTab('cardapio'); return; }
+  };
+  window.lcSalvarIg=async function(){
+    const inp=el('lcArroba'), btn=el('lcIgBtn'); if(!inp||!btn||!usuarioAtual) return;
+    const v=inp.value.trim();
+    if(!v){ _lcMsg('Digite o @ do Instagram da sua loja.','#ffb4b4'); inp.focus(); return; }
+    btn.disabled=true; const t=btn.textContent; btn.textContent='Salvando…'; _lcMsg('');
+    try{
+      const r=await _lcPedir({arroba:v});
+      if(r.ok){
+        const j=r.j;
+        _lcEstado=Object.assign({},_lcEstado||{},{arroba:j.arroba,instagram:true,completa:j.completa,falta:j.falta,fotos:j.fotos,minFotos:j.minFotos,ramo:(j.falta||[]).indexOf('ramo')<0});
+        _lcEm=Date.now();
+        inp.value='@'+j.arroba;
+        _lcMsg(j.achou===false
+          ? 'Salvo: @'+j.arroba+'. Não achamos como conta comercial do Instagram; se o @ estiver certo, tudo bem.'
+          : 'Salvo: @'+j.arroba+'. Obrigado!','#25e39b');
+        try{ if(window.mvEv) mvEv('lojacomp_instagram',{}); }catch(_){}
+        if(j.completa){ toast('✅ Sua loja está completa!'); }
+        _lcPintar();
+      }else if(r.status===429){ _lcMsg((r.j&&r.j.mensagem)||'Muitas tentativas. Tente de novo daqui a pouco.','#ffb4b4'); }
+      else{ _lcMsg((r.j&&r.j.mensagem)||'Não consegui salvar agora. Tente de novo.','#ffb4b4'); }
+    }catch(_){ _lcMsg('Falha de conexão. Tente de novo.','#ffb4b4'); }
+    btn.disabled=false; btn.textContent=t;
   };
 
   /* ---------------------------------------------------------------------------
