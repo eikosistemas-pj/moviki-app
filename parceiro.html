@@ -1780,7 +1780,7 @@ body{background-image:none}
      cartao do evento (os videos de Natal da Onda 3 tem arvore e pisca-pisca e
      so entram em 20/11). Com ?evento=<id> na previa, tudo aparece, para
      conferir antes. */
-  window.MOVIKI_VERSAO = '2026-10-17-aulasparc';   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-17-retido (card Saldo com a comissao retida pelo atraso e contagem regressiva, regulamento 1.5 item 2.4), que veio de 2026-10-16-linkramo. */
+  window.MOVIKI_VERSAO = '2026-10-17-bvparceiro';   /* 17/10: aula de boas-vindas do parceiro 'Bem-vindo a equipe Moviki' (mod-parc-boasvindas, voz Malu, 4:42) no lugar da abertura (mod-parc-abertura sai do catalogo); duas versoes, horizontal no computador e vertical no celular em pe (idV, palco 9:16); abre sozinha para quem ainda nao viu (mvBvParceiro, 1 vez por sessao). Antes: 2026-10-17-aulasparc. */   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-17-retido (card Saldo com a comissao retida pelo atraso e contagem regressiva, regulamento 1.5 item 2.4), que veio de 2026-10-16-linkramo. */
   /* 16/10: peca por ramo do Material de apoio leva /p/apelido?ramo=<k> (miniatura e live do ramo); ramos.js carregado com o catalogo. Antes: 2026-10-13-arroba. */   /* 13/10 (P80): bloco "Seu @ no Instagram" em Meus dados (prova de posse pelo codigo na bio) e foto do Instagram no cracha so com o @ provado. Antes: 2026-10-10-pixaula. */   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
   /* 2026-10-10-teatro: videoaulas com layout de YouTube (marca no alto, palco grande, lista com as capas a direita), selo das aulas com barra e contagem das opcionais, e a aula OPCIONAL do Material de apoio (mod-parc-material, OZ9vgwH2W_U) no fim da secao. Trava e selo continuam contando so as obrigatorias. Lista em tres niveis: Essenciais (vermelho, as obrigatorias que liberam o link), Recomendadas (amarelo) e Complementares (azul), campo `nivel` do modulo opcional. Antes: 2026-10-06-pixcarimbo. */
 
@@ -4172,6 +4172,8 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#2EE59D)}
 .mvTutDurC{font-size:13px;padding:3px 7px}
 
 .mvTutVideo{position:relative;width:100%;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000;margin:0 0 10px}
+/* 17/10/2026: aula vertical (celular em pe) - palco 9:16, sem passar da tela */
+.mvTutVideo.mvVert{padding-top:0;aspect-ratio:9/16;height:min(64vh,600px);width:auto;max-width:100%;margin-left:auto !important;margin-right:auto !important}
 :where(html[data-tema="claro"]) .mvTutVideo:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){background:#ffffff}
 .mvTutVideo iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 .mvTutVoltar{background:transparent;border:0;color:var(--ciano,#2EE59D);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:6px 0;margin:0 0 4px}
@@ -4545,7 +4547,14 @@ window.MOVIKI_TUTORIAIS = { modulos: [
      importa - `todas()` percorre os modulos e ignora o `sel`, enquanto o
      `embutir()` pula todo modulo que nao tem um. */
   { n:'Comece por aqui', v:[
-    { k:'mod-parc-abertura',   t:'Bem-vindo ao Programa de Parceiros',           d:'1:08', id:'7mD0ToxFfmU' },
+    /* 17/10/2026 - BOAS-VINDAS DO PARCEIRO (pedido do Paulo): video motivacional
+       "Bem-vindo a equipe Moviki" (voz Malu) no lugar da abertura antiga, com
+       CHAVE NOVA de proposito: abre sozinho para todo parceiro que ainda nao
+       viu (bloco mvBvParceiro, no fim deste script). Duas versoes: id =
+       horizontal (computador), idV = vertical (celular em pe). Aula nova nao
+       retranca ninguem: quem ja tem aulasEm continua com o link liberado e o
+       selo mostra "1 aula nova". Antes: { k:'mod-parc-abertura',   t:'Bem-vindo ao Programa de Parceiros',           d:'1:08', id:'7mD0ToxFfmU' }, */
+    { k:'mod-parc-boasvindas', t:'Bem-vindo à equipe Moviki',                   d:'4:42', id:'1DJDQ0pIQWA', idV:'XaFV2fy2qc0', dV:'4:42' },
     /* CONDUTA - 04/09/2026. Mora aqui, e nao em Divulgacao, de proposito: e a
        aula que diz o que NAO pode ser falado, e isso precisa ser sabido antes
        de qualquer coisa sobre como divulgar. Ela tambem e o par da tela de
@@ -4646,6 +4655,20 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     { k:'mod-pedidos-desfazer', t:'Desfazer uma venda e o Pix devolvido',                       d:'1:08', id:'yFqjQpXunlU' },
     { k:'mod-financeiro',      t:'Financeiro: como o lojista recebe o dinheiro das vendas',     d:'1:39', id:'AEPxpKOp1YM' } ]}
 ]};
+/* 17/10/2026 - aula com versao VERTICAL (idV). Celular em pe (ate 760 px de
+   largura, retrato) toca a vertical; computador e celular deitado, a
+   horizontal. Decide uma vez, no carregamento. Aula sem idV fica igual. */
+(function(){
+  try{
+    var vert = !!(window.matchMedia && window.matchMedia('(max-width: 760px) and (orientation: portrait)').matches);
+    if(!vert) return;
+    window.MOVIKI_TUTORIAIS.modulos.forEach(function(m){
+      (m.v||[]).forEach(function(v){
+        if(v && v.idV){ v.idH=v.id; v.id=v.idV; if(v.dV) v.d=v.dV; v.vert=true; }
+      });
+    });
+  }catch(e){}
+})();
 </script>
 <script>
 /* Tutoriais em video - 2026-09-01-tutmodulo.
@@ -4945,6 +4968,7 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     if(!v) return;
     limparPalco();
     pararTodos();                         /* nunca dois audios ao mesmo tempo */
+    try{ auPal.classList.toggle('mvVert', !!v.vert); }catch(_){}
     auTocando=v.k;
     if(tocarJa) auPal.appendChild(iframe(v));
     else{
@@ -5474,6 +5498,30 @@ window.MOVIKI_TUTORIAIS = { modulos: [
   }
   window.mvSeloCertificado=selo;
 
+  /* 17/10/2026 - BOAS-VINDAS ABRE SOZINHA (pedido do Paulo): todo parceiro
+     que ainda nao assistiu "Bem-vindo a equipe Moviki" recebe a aula aberta
+     ao entrar no painel. Uma vez por sessao (fechou, so volta no proximo
+     acesso). Espera a ponte do Firebase (__mvParceiroTut) e o painel visivel;
+     nao abre por cima da tela de aulas ja aberta. Nao tranca nada. */
+  (function mvBvParceiro(){
+    var K='mod-parc-boasvindas', tent=0;
+    function tenta(){
+      tent++;
+      var P=window.__mvParceiroTut, pn=document.getElementById('painel');
+      if(!P || !pn || pn.classList.contains('hide')){ if(tent<40) setTimeout(tenta,750); return; }
+      try{
+        if((P.vistas||[]).indexOf(K)>-1) return;
+        if(!achar(K)) return;
+        if(sessionStorage.getItem('mvBvParc')==='1') return;
+        if(au && !au.hidden) return;
+        sessionStorage.setItem('mvBvParc','1');
+      }catch(_){}
+      setTimeout(function(){
+        try{ if(au && !au.hidden) return; abrirAulas(K); if(window.mvEv) mvEv('boasvindas_parceiro',{}); }catch(_){}
+      },1800);
+    }
+    setTimeout(tenta,1200);
+  })();
   window.abrirTutoriais=function(k){ try{ abrirAulas(k); }catch(e){} };
   window.abrirAulas=window.abrirTutoriais;
   window.mvTutEmbutir=embutir;
