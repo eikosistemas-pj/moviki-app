@@ -9661,18 +9661,18 @@ window.mvAbaInicial=function(){
     try { if (window.mvEv) mvEv('lista_vip_link_rede', { rede: r }); } catch (_) {}
   };
   window.pedVipCanalSalvar = async function (tirar) {
-    const av = el('pedAvisoVipCanal'); const inp = el('pedVipCanal');
+    const inp = el('pedVipCanal');
     const url = tirar ? '' : String((inp && inp.value) || '').trim();
-    if (!tirar && !url) { if (av) av.textContent = 'Cole o link do seu canal ou grupo.'; return; }
+    if (!tirar && !url) { finAviso('pedAvisoVipCanal', 'Cole o link do seu canal ou grupo.'); return; }
     if (tirar && !confirm('Tirar o canal da loja? Quem entrar na lista deixa de ver o botão.')) return;
-    if (av) av.textContent = 'Salvando…';
+    finAviso('pedAvisoVipCanal', '');
     try {
       const r = await finPost('loja_vip_canal', { url: url });
-      if (!(r.j && r.j.ok)) { if (av) av.textContent = (r.j && r.j.erro === 'vip_canal') ? 'Esse link não é de Canal do WhatsApp, grupo do WhatsApp ou canal do Telegram. Copie o link de convite pelo próprio aplicativo.' : finMsg(r.j, r.http); return; }
+      if (!(r.j && r.j.ok)) { finAviso('pedAvisoVipCanal', (r.j && r.j.erro === 'vip_canal') ? 'Esse link não é de Canal do WhatsApp, grupo do WhatsApp ou canal do Telegram. Copie o link de convite pelo próprio aplicativo.' : finMsg(r.j, r.http)); return; }
       if (pedVipDados) pedVipDados.canal = r.j.canal || null;
-      if (av) av.textContent = r.j.canal ? 'Canal salvo. Ele aparece para quem entrar na sua lista.' : 'Canal tirado.';
+      finAviso('pedAvisoVipCanal', r.j.canal ? 'Canal salvo. Ele aparece para quem entrar na sua lista.' : 'Canal tirado.', true);
       pedVipPintar();
-    } catch (_) { if (av) av.textContent = 'Falha de conexão. Tente de novo.'; }
+    } catch (_) { finAviso('pedAvisoVipCanal', 'Falha de conexão. Tente de novo.'); }
   };
   window.pedVipCopiarLink = function () { if (pedVipDados && pedVipDados.link) pedVipCopiarTxt(pedVipDados.link, 'Link copiado.'); };
   /* QR para imprimir (P71): aponta para o link com origem 'qr'. */
