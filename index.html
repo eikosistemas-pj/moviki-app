@@ -4707,7 +4707,22 @@ window.mvAbaInicial=function(){
   }
   let _avisoPlanoTimer=null;
   function mostrarAvisoPlano(){const av=el('avisoPlano');if(!av)return;av.classList.remove('escondido');if(_avisoPlanoTimer)clearTimeout(_avisoPlanoTimer);_avisoPlanoTimer=setTimeout(()=>av.classList.add('escondido'),5000);}
-  window.abrirPlano=function(){try{ if(window.mvEv) mvEv('modal_plano_aberto',{origem:(window._mvOrigem||'menu')}); window._mvOrigem=''; }catch(_){}renderStatusPlano();renderCardEnterprise();el('modalPlano').classList.remove('escondido');};
+  window.abrirPlano=function(){try{ if(window.mvSubirInterceptar && window.mvSubirInterceptar()) return; }catch(_){}try{ if(window.mvEv) mvEv('modal_plano_aberto',{origem:(window._mvOrigem||'menu')}); window._mvOrigem=''; }catch(_){}renderStatusPlano();renderCardEnterprise();try{ if(window.mvSubirNoPlano) window.mvSubirNoPlano(); }catch(_){}el('modalPlano').classList.remove('escondido');};
+  /* 17/10/2026 (subirplano): o bloco classico SUBIR DE PLANO le o plano por aqui. So leitura. */
+  window.mvPlanoInfo=function(){
+    var d=dadosAssinatura||null, agora=Date.now();
+    var vence=(d&&d.vence_em&&d.vence_em.toMillis)?d.vence_em.toMillis():0;
+    var trial=!!(d&&d.periodo==='trial');
+    var ini=0; try{ ini=(usuarioAtual&&usuarioAtual.metadata&&Date.parse(usuarioAtual.metadata.creationTime))||0; }catch(_){}
+    return {
+      uid:(usuarioAtual&&usuarioAtual.uid)||'', plano:planoPainel,
+      trial: trial&&d.ativo===true&&(!vence||vence>agora),
+      trialVencido: trial&&!!vence&&vence<=agora,
+      provisorio: !!(d&&d.provisorio===true), venceMs:vence,
+      pagante: ehPagante(), enterprise: ehEnterprisePainel(),
+      jaFezLive: (typeof _plJaFez!=='undefined' && _plJaFez===true), criadoMs: ini
+    };
+  };
   function renderCardEnterprise(){
     var box=el('mpEntAcao'); if(!box)return;
     if(ehEnterprisePainel()){
@@ -4779,7 +4794,7 @@ window.mvAbaInicial=function(){
      'Criar minha conta gratis', apelido curto completado sozinho, gravacao do negocio com nova tentativa e
      eventos de cada passo e erro no GA4 (cad_chegou, cad_google_clique, cad_email_enviar, cad_erro,
      cad_abrir_navegador, email_confirmado). Antes: '2026-10-12-ramoqr'. */
-  window.MOVIKI_VERSAO='2026-10-17-aulasleva2';   /* 17/10 (noite, 2): aula NOVA mod-pedidos-desfazer ('Desfazer uma venda e o Pix devolvido', 1:08) na Central de Pedidos, no cartao roxo (agora 10 aulas) e nas recomendadas. */ /* antes: 2026-10-17-aulasleva1 */   /* 17/10 (noite): aulas Avaliacoes (ver, responder e denunciar) e Falar com o Vik regravadas com a voz da Malu (mesmas chaves); aula NOVA mod-indique na janela Indique e receba; cartao 'Sua primeira live em 3 passos' ganhou o atalho 'Ver a aula do ensaio' no passo 2; niveis das aulas revistos (essenciais: + Localizacao e Dia a dia; recomendadas: + Desempenho, Avaliacoes e Vik). */ /* antes: 2026-10-17-aulasmalu */   /* 17/10: 13 videoaulas do lojista regravadas com a voz da Malu e a tela de hoje (inicio, perfil, local, cardapio, promocoes, eventos, fotos, info, whatsapp, plano, pontos, desempenho, diaadia): so troca id e duracao no catalogo de aulas, mesmas chaves (ninguem perde o progresso); mod-fotos virou 'Fotos e videos: a vitrine da sua pagina'. */ /* antes: 2026-10-16-boasvindas */   /* 16/10: aula de boas-vindas regravada (chave nova mod-boasvindas2: abre para todo lojista que ainda nao viu a nova, inclusive quem ja tinha terminado as boas-vindas; voz Malu, paisagens e trilha) com DUAS versoes: horizontal no computador e vertical no celular em pe (campo idV no catalogo de aulas; palco 9:16 com a classe mvVert). Mesma chave: quem ja tinha visto continua em dia. PRIMEIRA ENTRADA: conta nova sem ramo ve primeiro o video de boas-vindas; quando acaba (ou e fechado) abre a escolha do ramo; salvo o ramo, segue para a proxima aula do comeco (mvBoasVindasPrimeiro / mvAposRamo). */ /* antes: 2026-10-15-ramodepois */   /* 14/10: teste gratis PROVISORIO de 7 dias antes de confirmar o e-mail (robo ativar-trial 2026-10-14-provisorio). Aviso do topo diz que o teste ja comecou, quantos dias faltam e o que a confirmacao libera (30 dias, live aberta, assinar); confirmou, o painel pede de novo ao robo e vira 30 dias contados do inicio. Faixa de fim de teste some no provisorio; Meu plano explica. */ /* antes: 2026-10-14-cadastro2 */   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-17-subirplano';   /* 17/10 (noite, 3): aula NOVA mod-subir-plano ('O que você ganha subindo de plano', 1:18) e os ganchos dela: cartao no alto do Meu plano, cadeado/recurso travado abre a aula antes dos planos (1 vez a cada 3 dias, so quem nao viu), botao 'O que muda? 1 min' na faixa do teste, cartao no Inicio (teste depois da 1a live ou da 1a semana, Basico, Pro), abre sozinha 1 vez nos 2 ultimos dias do teste e 1 vez quando o teste acaba, aviso na janela Excluir conta, link ?aula=<chave>. Fim da aula leva ao Meu plano. Antes: 2026-10-17-aulasleva2. */   /* 17/10 (noite, 2): aula NOVA mod-pedidos-desfazer ('Desfazer uma venda e o Pix devolvido', 1:08) na Central de Pedidos, no cartao roxo (agora 10 aulas) e nas recomendadas. */ /* antes: 2026-10-17-aulasleva1 */   /* 17/10 (noite): aulas Avaliacoes (ver, responder e denunciar) e Falar com o Vik regravadas com a voz da Malu (mesmas chaves); aula NOVA mod-indique na janela Indique e receba; cartao 'Sua primeira live em 3 passos' ganhou o atalho 'Ver a aula do ensaio' no passo 2; niveis das aulas revistos (essenciais: + Localizacao e Dia a dia; recomendadas: + Desempenho, Avaliacoes e Vik). */ /* antes: 2026-10-17-aulasmalu */   /* 17/10: 13 videoaulas do lojista regravadas com a voz da Malu e a tela de hoje (inicio, perfil, local, cardapio, promocoes, eventos, fotos, info, whatsapp, plano, pontos, desempenho, diaadia): so troca id e duracao no catalogo de aulas, mesmas chaves (ninguem perde o progresso); mod-fotos virou 'Fotos e videos: a vitrine da sua pagina'. */ /* antes: 2026-10-16-boasvindas */   /* 16/10: aula de boas-vindas regravada (chave nova mod-boasvindas2: abre para todo lojista que ainda nao viu a nova, inclusive quem ja tinha terminado as boas-vindas; voz Malu, paisagens e trilha) com DUAS versoes: horizontal no computador e vertical no celular em pe (campo idV no catalogo de aulas; palco 9:16 com a classe mvVert). Mesma chave: quem ja tinha visto continua em dia. PRIMEIRA ENTRADA: conta nova sem ramo ve primeiro o video de boas-vindas; quando acaba (ou e fechado) abre a escolha do ramo; salvo o ramo, segue para a proxima aula do comeco (mvBoasVindasPrimeiro / mvAposRamo). */ /* antes: 2026-10-15-ramodepois */   /* 14/10: teste gratis PROVISORIO de 7 dias antes de confirmar o e-mail (robo ativar-trial 2026-10-14-provisorio). Aviso do topo diz que o teste ja comecou, quantos dias faltam e o que a confirmacao libera (30 dias, live aberta, assinar); confirmou, o painel pede de novo ao robo e vira 30 dias contados do inicio. Faixa de fim de teste some no provisorio; Meu plano explica. */ /* antes: 2026-10-14-cadastro2 */   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -5441,6 +5456,7 @@ window.mvAbaInicial=function(){
   window.fecharExcluir=function(){ var m=el('modalExcluir'); if(m)m.classList.add('escondido'); };
   window.confirmarExclusao=async function(){ var b=el('excBtn'); if(b){b.disabled=true;b.textContent='Enviando...';} try{ if(!usuarioAtual)throw new Error('sem sessao'); var idToken=await usuarioAtual.getIdToken(); var r=await fetch(ROBO+'/api/excluir-conta',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:idToken})}); var j=await r.json().catch(function(){return {};}); if(r.ok&&j.ok){ el('excPasso1').style.display='none'; el('excPasso2').style.display='block'; }else{ if(b){b.disabled=false;b.textContent='Solicitar exclusão da conta';} alert('Não consegui registrar agora. Tente de novo em instantes ou fale com o suporte.'); } }catch(e){ if(b){b.disabled=false;b.textContent='Solicitar exclusão da conta';} alert('Não consegui registrar agora. Tente de novo em instantes ou fale com o suporte.'); } };
   function mostrarBannerTrial(){
+    setTimeout(function(){ try{ document.dispatchEvent(new Event('mvplano')); }catch(_){} },0);
     const b=el('bannerTrial');if(!b)return;
     const d=dadosAssinatura;
     // Só aparece pra quem está em teste (trial). Quem paga (periodo mensal/anual) nunca vê.
@@ -5460,7 +5476,7 @@ window.mvAbaInicial=function(){
       txt='Para continuar fazendo live depois do teste, o plano é o Premium. O Pró não tem live.';
     }
     b.className='bannerTrial'+(urg?(' '+urg):'');
-    b.innerHTML='<div class="btTexto"><div class="btTitulo">'+titulo+'</div><div class="btSub">'+txt+'</div></div><button type="button" class="btBtn" onclick="abrirPlano()">Assinar agora</button>';
+    b.innerHTML='<div class="btTexto"><div class="btTitulo">'+titulo+'</div><div class="btSub">'+txt+'</div></div><button type="button" class="btBtn mvSpBtnAula" onclick="mvSubirAbrir(\'faixa_teste\')">O que muda? 1 min</button><button type="button" class="btBtn" onclick="abrirPlano()">Assinar agora</button>';
   }
   /* 2026-10-01-faixafundador — FAIXA DO LOTE FUNDADOR no Inicio.
      Aparece para quem ainda nao e Enterprise, ate 27/11/2026 ou enquanto o
@@ -10433,7 +10449,7 @@ window.mvAbaInicial=function(){
   };
   window.irSecao=function(sec){
     var tab=document.querySelector('.tab[data-tab="'+sec+'"]');
-    if(tab&&tab.classList.contains('travada')){ if(window.abrirPlano)window.abrirPlano(); return; }
+    if(tab&&tab.classList.contains('travada')){ window._mvSpTrava=true; if(window.abrirPlano)window.abrirPlano(); window._mvSpTrava=false; return; }
     if(window.abrirTab){ window.abrirTab(sec); }        // wrapped below -> shows editor
     else { mostrarEditor(sec); }
     if(sec==='avaliacoes' && window.carregarAvaliacoesPainel){ setTimeout(window.carregarAvaliacoesPainel,60); }
@@ -11573,6 +11589,11 @@ window.MOVIKI_TUTORIAIS = { modulos: [
     /* O teste de 30 dias e automatico (garantirTrial roda sozinho), entao
        nao ha nada pro cliente fazer - saiu do titulo e do video. */
     { k:'mod-plano',      t:'Planos: o que cada um abre e como assinar',           d:'0:48', id:'WM96u_1j-hY' } ]},
+  /* 17/10/2026: aula NOVA de vantagens (pedido do Paulo: "deixar a sementinha"
+     para o lojista subir de plano). Aparece nos ganchos do bloco SUBIR DE
+     PLANO (cadeados, Meu plano, Inicio, faixa do teste, exclusao, ?aula=). */
+  { n:'Subir de plano', sel:'', v:[
+    { k:'mod-subir-plano', t:'O que você ganha subindo de plano',              d:'1:18', id:'d929rMJChxk' } ]},
   { n:'Meus pontos', sel:'#modalPontos .mpCaixa', v:[
     { k:'mod-pontos',     t:'Meus pontos: várias unidades num cadastro só',        d:'0:47', id:'_pv0xA1wLWE' } ]},
   { n:'Falar com o Vik', sel:'#modalMsg .mpCaixa', v:[
@@ -11599,7 +11620,7 @@ niveis: {
      (aparecer no mapa e abrir/fechar sao a promessa do Moviki); Desempenho,
      Avaliacoes e Vik entraram nas recomendadas. */
   essenciais:   ['mod-boasvindas2','mod-inicio','mod-perfil','mod-local','mod-cardapio','mod-diaadia','mod-financeiro','mod-pedidos-central'],
-  recomendadas: ['mod-whatsapp','mod-pedidos-etapas','mod-pedidos-entrega','mod-pedidos-estoque','mod-pedidos-desfazer','mod-meu-dinheiro','mod-plano','mod-desempenho','mod-avaliacoes','mod-vik']
+  recomendadas: ['mod-whatsapp','mod-pedidos-etapas','mod-pedidos-entrega','mod-pedidos-estoque','mod-pedidos-desfazer','mod-meu-dinheiro','mod-plano','mod-subir-plano','mod-desempenho','mod-avaliacoes','mod-vik']
 }};
 /* 16/10/2026 - aula com versao VERTICAL (idV). Celular em pe (ate 760 px de
    largura, retrato) toca a vertical; computador e celular deitado, a
@@ -12133,6 +12154,7 @@ niveis: {
   }
   /* chamada pelo player quando o YouTube confirma 90% */
   function marcar(k){
+    try{ document.dispatchEvent(new CustomEvent('mvaulavista',{detail:k})); }catch(_){}
     try{ tutMarcar(k); }catch(e){}
     try{ if(TRILHA==='tut') pintarAulas(); }catch(e){}
     try{ pintarCartaoTut(); }catch(e){}
@@ -12155,6 +12177,7 @@ niveis: {
      trocar de aula apaga o iframe - era isso que cortava o fim do video.
      acabou() so e chamada quando o YouTube avisa que o video terminou. */
   function acabou(k){
+    try{ document.dispatchEvent(new CustomEvent('mvaulafim',{detail:k})); }catch(_){}
     /* 16/10/2026: na primeira entrada, o fim do video de boas-vindas leva a escolha do ramo */
     if(k===BVNOVA && RAMO_DEPOIS){ setTimeout(function(){ fecharAulas(); },700); return; }
     if(!tAulas().some(function(v){ return v.k===k; })) return;
@@ -12250,6 +12273,9 @@ niveis: {
     }
     auPTit.textContent=v.t;
     auPSub.textContent = v.d ? ('Duração ' + v.d) : '';
+    /* 17/10/2026 (subirplano): a aula de vantagens ganha o botao do proximo passo */
+    try{ var _cta=document.getElementById('mvSpCta'); if(_cta) _cta.remove();
+      if(v.k==='mod-subir-plano' && window.mvSubirCta) auPSub.parentNode.insertBefore(window.mvSubirCta(), auPSub.nextSibling); }catch(_){}
     medidor(pctDoPalco(v.k), tFeitas().indexOf(v.k) > -1 ? 1 : 0);
     pintarAulas();
   }
@@ -12439,6 +12465,7 @@ niveis: {
     if(!au || au.hidden) return;
     limparPalco(); au.hidden=true; document.body.style.overflow='';
     pintarAulas(); TRILHA='bv'; faixa();
+    try{ document.dispatchEvent(new Event('mvaulasfechou')); }catch(_){}
     try{ pintarCartaoTut(); }catch(e){}
     /* 16/10/2026: fechou (ou acabou) o video da primeira entrada -> escolher o ramo */
     if(RAMO_DEPOIS){
@@ -12673,6 +12700,261 @@ niveis: {
     try{ if(k){ tocar(k); return; } lista(); cx.classList.remove('escondido'); }catch(e){}
   };
   window.mvTutEmbutir=embutir;
+  /* 17/10/2026 (subirplano): o bloco SUBIR DE PLANO fecha a janela e sabe se ela esta aberta */
+  window.mvFecharAulas=function(){ try{ fecharAulas(); }catch(_){} };
+  window.mvAulasAbertas=function(){ return !!(au && !au.hidden); };
+})();
+</script>
+<style id="mvSubirCss">
+/* 17/10/2026 (subirplano) - ganchos da aula "O que voce ganha subindo de plano" */
+#grade>#mvSubirCard{order:5}
+#mvSubirCard{display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:relative;background:linear-gradient(135deg,rgba(0,212,255,.10),rgba(0,102,255,.14));border:1px solid rgba(0,212,255,.38);border-radius:14px;padding:14px 44px 14px 14px;margin:0 0 14px}
+#mvSubirCard .spCapa{flex-shrink:0;width:132px;aspect-ratio:16/9;border-radius:9px;background:#08142a center/cover no-repeat;position:relative;cursor:pointer;border:0;padding:0}
+#mvSubirCard .spCapa::after{content:'';position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:rgba(0,0,0,.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 6.5v11l9-5.5z'/%3E%3C/svg%3E") center/18px no-repeat}
+#mvSubirCard .spTxt{flex:1;min-width:190px}
+#mvSubirCard .spTit{font-weight:700;font-size:15.5px;color:#eaf6ff;margin-bottom:3px}
+#mvSubirCard .spSub{font-size:13px;line-height:1.45;color:#b9cbe0}
+#mvSubirCard .spBtns{display:flex;gap:8px;flex-wrap:wrap}
+.spBtn{flex-shrink:0;background:linear-gradient(135deg,var(--ciano,#00D4FF),var(--azul,#0066FF));color:#001018;font-weight:700;border:none;border-radius:10px;padding:10px 16px;font-size:14px;cursor:pointer;font-family:inherit}
+.spBtn.spSec{background:transparent;color:#cfe0f5;border:1px solid rgba(207,224,245,.35)}
+#mvSubirCard .spX{position:absolute;top:6px;right:8px;background:none;border:0;color:#8fa6c4;font-size:20px;line-height:1;cursor:pointer;padding:4px 6px}
+#mvSpPlano{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:10px;border-radius:10px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.32);cursor:pointer;text-align:left;width:100%;font-family:inherit;color:inherit}
+#mvSpPlano .spCapa{flex-shrink:0;width:112px;aspect-ratio:16/9;border-radius:8px;background:#08142a center/cover no-repeat;position:relative}
+#mvSpPlano .spCapa::after{content:'';position:absolute;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;background:rgba(0,0,0,.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 6.5v11l9-5.5z'/%3E%3C/svg%3E") center/15px no-repeat}
+#mvSpPlano b{display:block;font-size:14px;color:#eaf6ff;margin-bottom:2px}
+#mvSpPlano span.spS{font-size:12.5px;color:#b9cbe0;line-height:1.4}
+#mvSpCta{margin:10px 2px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#mvSpCta small{font-size:12.5px;color:#b9cbe0}
+#mvSpExc{margin:0 0 12px;padding:11px 12px;border-radius:10px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.32);font-size:13px;line-height:1.45;color:#cfe0f5}
+#mvSpExc .spBtn{margin-top:8px;padding:8px 14px;font-size:13px}
+.bannerTrial .btBtn.mvSpBtnAula{background:transparent;color:#cfe0f5;border:1px solid rgba(207,224,245,.4)}
+:where(html[data-tema="claro"]) #mvSubirCard .spTit,:where(html[data-tema="claro"]) #mvSpPlano b{color:#142030}
+:where(html[data-tema="claro"]) #mvSubirCard .spSub,:where(html[data-tema="claro"]) #mvSpPlano span.spS,:where(html[data-tema="claro"]) #mvSpCta small,:where(html[data-tema="claro"]) #mvSpExc{color:#2a3a50}
+:where(html[data-tema="claro"]) .spBtn.spSec,:where(html[data-tema="claro"]) .bannerTrial .btBtn.mvSpBtnAula{color:#142030;border-color:rgba(20,32,48,.3)}
+@media (max-width:520px){#mvSubirCard .spCapa{width:100%}}
+</style>
+<script>
+/* =====================================================================
+   SUBIR DE PLANO - 17/10/2026 (pedido do Paulo: "faca o maior numero de
+   ganchos possiveis"). Uma aula so (mod-subir-plano, 1:18), mostrada nos
+   momentos em que o lojista mais quer o que o plano dele nao tem:
+     1. Meu plano: cartao no alto, antes dos precos (todo mundo que nao e
+        Enterprise).
+     2. Recurso travado (aba com cadeado, foto/video do Premium, "Ver
+        planos" dentro das telas): o toque abre a aula ANTES dos planos e,
+        no fim dela, os planos. So quem ainda nao viu, 1 vez a cada 3 dias.
+        Botao Meu plano (menu, Inicio, faixa do teste) e link ?plano= vao
+        direto aos planos; abrir pelo menu uma ABA com cadeado conta como cadeado.
+     3. Faixa do teste (ultimos 7 dias): botao "O que muda? 1 min".
+     4. Inicio: cartao com a capa da aula - teste depois da 1a live ou a
+        partir do 7o dia, Basico (teste acabou ou nunca teve) e Pro. "x"
+        esconde 7 dias. Premium e Enterprise nao veem.
+     5. Abre sozinha UMA vez nos 2 ultimos dias do teste e UMA vez quando o
+        teste acaba (ate 45 dias depois). So quem nao viu.
+     6. Excluir conta: aviso de que o Basico e gratis + a aula.
+     7. Link ?aula=<chave> abre qualquer aula (os e-mails do robo usam).
+   O fim da aula (ou o botao "Ver os planos agora") abre o Meu plano.
+   Nada aqui trava o painel nem grava no banco: a marca do que ja foi
+   mostrado fica no aparelho (localStorage), por conta.
+   Medicao GA4: aula_upgrade {gancho, acao: mostrou|abriu|fim|planos|ocultou}.
+   ===================================================================== */
+(function(){
+  'use strict';
+  var K='mod-subir-plano', VID='d929rMJChxk', DIA=86400000;
+  var depoisPlano=false, ganchoAtual='';
+  function info(){ try{ return window.mvPlanoInfo ? window.mvPlanoInfo() : null; }catch(_){ return null; } }
+  function ch(n){ var i=info(); return 'mv_sp_'+n+'_'+((i&&i.uid)||''); }
+  function ler(n){ try{ return localStorage.getItem(ch(n)); }catch(_){ return null; } }
+  function gravar(n,v){ try{ localStorage.setItem(ch(n),String(v)); }catch(_){} }
+  function ev(acao,g){ try{ if(window.mvEv) mvEv('aula_upgrade',{gancho:g||ganchoAtual||'',acao:acao}); }catch(_){} }
+  function visto(){
+    try{ var G=window.__mvTutGeral; if(G && (G.vistas||[]).indexOf(K)>-1) return true; }catch(_){}
+    return ler('visto')==='1';
+  }
+  function capa(){ return 'https://i.ytimg.com/vi/'+VID+'/mqdefault.jpg'; }
+  /* Quem ainda tem plano para subir. Enterprise pago nao ve nada daqui. */
+  function alvo(i){ return !!(i && i.uid && !i.enterprise); }
+  /* Quem recebe os ganchos ativos (cadeado, Inicio, abrir sozinha): nao paga Premium. */
+  function alvoForte(i){ return alvo(i) && !(i.pagante && i.plano==='premium'); }
+  function diasTeste(i){ return (i && i.venceMs) ? Math.ceil((i.venceMs-Date.now())/DIA) : 99; }
+
+  window.mvSubirAbrir=function(g,voltaPlano){
+    ganchoAtual=g||'direto'; depoisPlano=(voltaPlano!==false);
+    ev('abriu',ganchoAtual);
+    try{ var m=document.getElementById('modalPlano'); if(m) m.classList.add('escondido'); }catch(_){}
+    try{ if(window.abrirTutoriais) window.abrirTutoriais(K); }catch(_){}
+  };
+  function irPlanos(g){
+    depoisPlano=false;
+    ev('planos',g||ganchoAtual);
+    window._mvSpDireto=true; window._mvOrigem='aula_subir_'+(g||ganchoAtual||'fim');
+    try{ window.abrirPlano(); }catch(_){}
+    window._mvSpDireto=false;
+  }
+  window.mvSubirCta=function(){
+    var d=document.createElement('div'); d.id='mvSpCta';
+    var b=document.createElement('button'); b.type='button'; b.className='spBtn'; b.textContent='Ver os planos agora';
+    b.addEventListener('click',function(){ depoisPlano=true; if(window.mvFecharAulas) window.mvFecharAulas(); });
+    var s=document.createElement('small'); s.textContent='No teste grátis, a primeira cobrança só vence quando o teste acaba.';
+    var i=info(); d.appendChild(b); if(i && i.trial && !i.provisorio) d.appendChild(s);
+    return d;
+  };
+  document.addEventListener('mvaulavista',function(e){ if(e && e.detail===K){ gravar('visto','1'); pintarCard(); } });
+  document.addEventListener('mvaulafim',function(e){
+    if(!e || e.detail!==K) return;
+    gravar('visto','1'); ev('fim');
+    depoisPlano=true;
+    setTimeout(function(){ if(window.mvAulasAbertas && window.mvAulasAbertas() && window.mvFecharAulas) window.mvFecharAulas(); },600);
+  });
+  document.addEventListener('mvaulasfechou',function(){
+    if(!depoisPlano) return;
+    var i=info(); if(!alvo(i)){ depoisPlano=false; return; }
+    setTimeout(function(){ irPlanos(); },250);
+  });
+
+  /* GANCHO 2 - recurso travado: o toque abre a aula antes dos planos. */
+  var LIVRE='#drawer,.drawer,.mvNavIt,.gcard,.mvRcBtnLargo,.bannerTrial,.bannerFund,#mvSubirCard,#mvSpCta,#mvSpPlano,#modalPlano,.mvAuPe';
+  window.mvSubirInterceptar=function(){
+    var trava=window._mvSpTrava===true; window._mvSpTrava=false;   /* irSecao numa aba com cadeado (menu, Ferramentas, barra de baixo) */
+    if(window._mvSpDireto || window._mvOrigem) return false;
+    if(!trava){
+      var e=window.event; if(!e || e.type!=='click') return false;
+      var t=e.target; if(t && t.closest && t.closest(LIVRE)) return false;
+    }
+    var i=info(); if(!alvoForte(i) || i.provisorio) return false;
+    if(visto()) return false;
+    var u=+ler('trava')||0; if(Date.now()-u<3*DIA) return false;
+    gravar('trava',Date.now());
+    window.mvSubirAbrir('recurso_travado',true);
+    return true;
+  };
+
+  /* GANCHO 1 - Meu plano: cartao no alto, antes dos precos. */
+  window.mvSubirNoPlano=function(){
+    var st=document.getElementById('mpStatus'); if(!st) return;
+    var velho=document.getElementById('mvSpPlano'); if(velho) velho.remove();
+    var i=info(); if(!alvo(i)) return;
+    var b=document.createElement('button'); b.type='button'; b.id='mvSpPlano';
+    var c=document.createElement('span'); c.className='spCapa'; c.style.backgroundImage='url("'+capa()+'")';
+    var tx=document.createElement('span');
+    var t=document.createElement('b'); t.textContent=visto()?'Rever: o que você ganha subindo de plano':'Antes de escolher: o que cada plano faz pelo seu negócio';
+    var s=document.createElement('span'); s.className='spS'; s.textContent='Videoaula de 1 minuto: do Básico ao Enterprise, com as telas de verdade.';
+    tx.appendChild(t); tx.appendChild(s); b.appendChild(c); b.appendChild(tx);
+    b.addEventListener('click',function(){ window.mvSubirAbrir('meu_plano',true); });
+    st.parentNode.insertBefore(b, st.nextSibling);
+    if(!visto()) ev('mostrou','meu_plano');
+  };
+
+  /* GANCHO 4 - cartao no Inicio. */
+  function momento(i){
+    if(!alvoForte(i)) return null;
+    if(i.trial){
+      if(i.provisorio) return null;
+      var d=diasTeste(i);
+      if(d<=7) return null;                       /* a faixa do teste ja fala (e tem o botao) */
+      if(i.jaFezLive) return {g:'inicio_pos_live', t:'Gostou da sua live? Ela continua no Premium', s:'Veja em 1 minuto o que fica com você depois do teste em cada plano: live, venda pelo cardápio, Pix na live e mais.'};
+      var ini=i.criadoMs||0;
+      if(ini && Date.now()-ini>=7*DIA) return {g:'inicio_teste', t:'O seu teste grátis está rodando', s:'Veja em 1 minuto o que cada plano faz pelo seu negócio e escolha sem pressa: a primeira cobrança só vence no fim do teste.'};
+      return null;
+    }
+    if(i.pagante && i.plano==='pro') return {g:'inicio_pro', t:'Quer vender ao vivo? A live é do Premium', s:'Veja em 1 minuto o que muda quando você sobe de plano: live, fotos e vídeos na página, venda pelo cardápio com Pix.'};
+    if(i.plano==='basico') return {g:i.trialVencido?'inicio_pos_teste':'inicio_basico', t:i.trialVencido?'Seu teste acabou, o seu negócio continua no mapa':'Seu negócio está no Básico', s:'Veja em 1 minuto o que cada plano soma: cardápio, promoções, live, venda pelo cardápio com Pix e mais.'};
+    return null;
+  }
+  function pintarCard(){
+    try{
+      var v=document.getElementById('mvSubirCard'), i=info(), m=momento(i);
+      var oc=+ler('card')||0;
+      if(!m || Date.now()-oc<7*DIA){ if(v) v.remove(); return; }
+      var ancora=document.getElementById('bannerTrial'); if(!ancora) return;
+      if(!v){ v=document.createElement('div'); v.id='mvSubirCard'; ancora.parentNode.insertBefore(v, ancora.nextSibling); }
+      if(v.getAttribute('data-g')===m.g+(visto()?'1':'0')) return;
+      v.setAttribute('data-g', m.g+(visto()?'1':'0')); v.innerHTML='';
+      var c=document.createElement('button'); c.type='button'; c.className='spCapa'; c.setAttribute('aria-label','Assistir à aula'); c.style.backgroundImage='url("'+capa()+'")';
+      c.addEventListener('click',function(){ window.mvSubirAbrir(m.g,true); });
+      var tx=document.createElement('div'); tx.className='spTxt';
+      var t=document.createElement('div'); t.className='spTit'; t.textContent=m.t;
+      var s=document.createElement('div'); s.className='spSub'; s.textContent=m.s;
+      tx.appendChild(t); tx.appendChild(s);
+      var bs=document.createElement('div'); bs.className='spBtns';
+      var b1=document.createElement('button'); b1.type='button'; b1.className='spBtn'+(visto()?' spSec':''); b1.textContent=visto()?'Rever a aula':'Assistir (1 min)';
+      b1.addEventListener('click',function(){ window.mvSubirAbrir(m.g,true); });
+      var b2=document.createElement('button'); b2.type='button'; b2.className='spBtn'+(visto()?'':' spSec'); b2.textContent='Ver os planos';
+      b2.addEventListener('click',function(){ irPlanos(m.g); });
+      bs.appendChild(b1); bs.appendChild(b2);
+      var x=document.createElement('button'); x.type='button'; x.className='spX'; x.setAttribute('aria-label','Ocultar'); x.textContent='×';
+      x.addEventListener('click',function(){ gravar('card',Date.now()); ev('ocultou',m.g); v.remove(); });
+      v.appendChild(c); v.appendChild(tx); v.appendChild(bs); v.appendChild(x);
+      ev('mostrou',m.g);
+    }catch(_){}
+  }
+
+  /* GANCHO 5 - abre sozinha nos momentos fortes (uma vez cada). */
+  function abrirSozinha(){
+    var i=info(); if(!alvoForte(i) || visto()) return;
+    var qual=null, d=diasTeste(i);
+    if(i.trial && !i.provisorio && d>0 && d<=2) qual='auto_fim_teste';
+    else if(i.plano==='basico' && i.trialVencido && i.venceMs && Date.now()-i.venceMs<45*DIA) qual='auto_teste_acabou';
+    if(!qual || ler(qual)) return;
+    var u=+ler('auto')||0; if(Date.now()-u<3*DIA) return;
+    setTimeout(function(){
+      try{
+        if(window.mvAulasAbertas && window.mvAulasAbertas()) return;
+        if(document.querySelector('#quizModal:not(.qzEscondido)')) return;
+        var m=document.getElementById('modalPlano'); if(m && !m.classList.contains('escondido')) return;
+        if(new URLSearchParams(location.search).get('aula')) return;
+        gravar(qual,'1'); gravar('auto',Date.now());
+        window.mvSubirAbrir(qual,true);
+      }catch(_){}
+    },4500);
+  }
+
+  /* GANCHO 6 - Excluir conta. */
+  function ganchoExcluir(){
+    var orig=window.abrirExcluir; if(!orig || orig._sp) return;
+    var novo=function(){
+      orig.apply(this,arguments);
+      try{
+        var p1=document.getElementById('excPasso1'); if(!p1) return;
+        var v=document.getElementById('mvSpExc'); if(v) v.remove();
+        var i=info(); if(!alvo(i) || i.pagante) return;
+        var d=document.createElement('div'); d.id='mvSpExc';
+        var t=document.createElement('div'); t.textContent='Antes de sair: o Básico é grátis e mantém o seu negócio no mapa, sem cobrança. Se faltou alguma ferramenta, veja em 1 minuto o que cada plano faz.';
+        var b=document.createElement('button'); b.type='button'; b.className='spBtn'; b.textContent='Ver a aula (1 min)';
+        b.addEventListener('click',function(){ try{ window.fecharExcluir(); }catch(_){} window.mvSubirAbrir('excluir_conta',true); });
+        d.appendChild(t); d.appendChild(b);
+        var h=p1.querySelector('.mpHead'); if(h && h.nextSibling) p1.insertBefore(d,h.nextSibling); else p1.insertBefore(d,p1.firstChild);
+        ev('mostrou','excluir_conta');
+      }catch(_){}
+    };
+    novo._sp=true; window.abrirExcluir=novo;
+  }
+
+  /* GANCHO 7 - ?aula=<chave> (e-mails do robo, live.html). Espera o painel montar. */
+  function linkAula(){
+    var k=''; try{ k=new URLSearchParams(location.search).get('aula')||''; }catch(_){}
+    if(!/^mod-[a-z0-9-]{2,40}$/.test(k)) return;
+    var n=0, tm=setInterval(function(){
+      n++;
+      var i=info();
+      /* espera o progresso das aulas chegar: abrir a janela antes disso a monta pela metade */
+      if(i && i.uid && window.abrirTutoriais && window.MOVIKI_TUTORIAIS && ((window.__mvTutGeral && window.__mvLojistaTut) || n>24)){
+        clearInterval(tm);
+        setTimeout(function(){
+          if(k===K){ window.mvSubirAbrir('link',true); }
+          else{ try{ window.abrirTutoriais(k); }catch(_){} }
+        },900);
+        try{ var u=new URL(location.href); u.searchParams.delete('aula'); history.replaceState(null,'',u.pathname+(u.search||'')+u.hash); }catch(_){}
+      } else if(n>60) clearInterval(tm);
+    },500);
+  }
+
+  var _ok=false;
+  document.addEventListener('mvplano',function(){
+    pintarCard();
+    if(!_ok){ _ok=true; ganchoExcluir(); abrirSozinha(); }
+  });
+  linkAula();
 })();
 </script>
 
