@@ -1,6 +1,6 @@
 {
-  "versao": "2026-10-16-ugc-mp",
-  "atualizado": "2026-10-16",
+  "versao": "2026-10-18-balcao",
+  "atualizado": "2026-10-18",
   "eventos": [
     {
       "id": "fundador",
@@ -86,6 +86,35 @@
   ],
   "itens": [
     {
+      "id": "balcao-de-live-checklist",
+      "tipo": "feed",
+      "titulo": "Checklist do balcão de live",
+      "formato": "Feed 4:5",
+      "arquivo": "material/feed/balcao-de-live-checklist.jpg",
+      "capa": "material/capas/balcao-de-live-checklist.webp",
+      "w": 1080,
+      "h": 1350,
+      "peso": "259 KB",
+      "novo": true,
+      "legenda": "#publi Sabe o que pode derrubar a sua live bem na hora da venda? Sair do Moviki, no celular que está transmitindo, para responder o WhatsApp. A câmera pode parar.\n\nO balcão de live resolve isso: o celular fica no tripé só transmitindo, uma segunda tela mostra os pedidos e, se tiver alguém ajudando, essa pessoa confere o pagamento, imprime a comanda e separa. Dá para fazer tudo pelo celular, mas assim a live fica bem mais tranquila.\n\nNo painel tem a aula do balcão, com o passo a passo. Pagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "geral"
+    },
+    {
+      "id": "balcao-de-live-checklist-story",
+      "tipo": "story",
+      "titulo": "Checklist do balcão de live",
+      "formato": "Story 9:16",
+      "arquivo": "material/stories/balcao-de-live-checklist-story.jpg",
+      "capa": "material/capas/balcao-de-live-checklist-story.webp",
+      "w": 1080,
+      "h": 1920,
+      "peso": "318 KB",
+      "novo": true,
+      "legenda": "#publi Sabe o que pode derrubar a sua live bem na hora da venda? Sair do Moviki, no celular que está transmitindo, para responder o WhatsApp. A câmera pode parar.\n\nO balcão de live resolve isso: o celular fica no tripé só transmitindo, uma segunda tela mostra os pedidos e, se tiver alguém ajudando, essa pessoa confere o pagamento, imprime a comanda e separa. Dá para fazer tudo pelo celular, mas assim a live fica bem mais tranquila.\n\nNo painel tem a aula do balcão, com o passo a passo. Pagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "geral",
+      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
+    },
+    {
       "id": "ugc-bastidores-moda-praia",
       "tipo": "video",
       "titulo": "Moda praia: os bastidores de uma live na loja",
@@ -96,7 +125,7 @@
       "capa": "material/capas/ugc-bastidores-moda-praia.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Ela desistiu no checkout. Na live, ela vê o biquíni de perto e compra na hora.\n\nAssim é o bastidor: a lojista mostra o biquíni de perto, uma resposta no chat sobre o tamanho atende todo mundo que está assistindo e o pedido chega pago na Central de Pedidos, enquanto a equipe já separa a sacola.\n\nCom o Moviki, você abre a live da sua loja direto do celular e a cliente vê o caimento de verdade, não só a foto. Ela escolhe, compra ali mesmo e paga sem sair da transmissão.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "moda"
@@ -112,7 +141,7 @@
       "capa": "material/capas/ugc-bastidores-perfumaria.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Foto não tem cheiro. Na live, o cliente pergunta e compra na hora.\n\nAssim é o bastidor: o vendedor descreve as notas e mostra o frasco de perto, uma resposta no chat atende todo mundo que está assistindo e o pedido chega pago na Central de Pedidos, já na fila do balcão.\n\nCom o Moviki, você abre a live da sua loja direto do celular e o cliente tira a dúvida sobre a fragrância na hora. Ele escolhe, compra ali mesmo e paga sem sair da transmissão.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "beleza"
@@ -128,7 +157,7 @@
       "capa": "material/capas/ugc-bastidores-presentes.webp",
       "w": 1080,
       "h": 1920,
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Do escritório, ela comprou o presente sem abrir nenhum site.\n\nAssim é o bastidor: a loja mostra cada detalhe da cesta de perto, uma resposta no chat atende todo mundo que está assistindo e o pedido chega pago na Central de Pedidos, enquanto a equipe já embala para presente.\n\nCom o Moviki, você abre a live da sua loja direto do celular e a cliente escolhe o presente de onde estiver, até no meio do expediente. Ela compra ali mesmo e paga sem sair da transmissão.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "casa"
