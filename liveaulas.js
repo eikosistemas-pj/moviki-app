@@ -1,4 +1,5 @@
-/*! MOVIKI liveaulas.js | versao 2026-10-17-livemalu | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-10-17-livecapas | repo: moviki-app
+ * 17/10/2026 (noite): a lista lateral da janela "Aulas da live" ganhou a CAPA de cada aula (mqdefault do YouTube, duracao no canto, visto verde, "Tocando" na que esta no palco), igual a janela de videoaulas do painel; palco maior com a lista de 400 px ao lado. Aula da Lista VIP (mod-pedidos-vip, 6Wa8z0vIJPM) entrou no grupo "Antes e depois da live" (em 2026-10-17: vira aviso de aula nova, nao trava ninguem). Antes: 2026-10-17-livemalu.
  * 17/10/2026: DEZ aulas da live REGRAVADAS com o estudio de hoje (dock, folha, ensaio) e a live publica no padrao TikTok: abertura, regras, primeira, sacolinha, chat, agendar, cupom, fila, dados e cortes. So mudam id e duracao; `em` continua (regravacao nao e aula nova). Ids antigos (apagar do YouTube depois de ver as novas tocando): 1TqgHffAyYU 3WceM12RkWE sngj1eUC7kU 3Fsofzdj0u4 V6WZqQ0s-bY cWG2cWGMrII BQPflIBLNG0 hhooJvRXx2Q 07rQewrYNaI vzZOyzzfYHM. Antes: 2026-10-10-pixaula.
  * 10/10/2026 (noite): mod-live-pix REGRAVADA de novo (23jGUqKMaps, 1:30), com a Central de Pedidos, o Ja paguei e o aviso Recebi. `em` continua 2026-09-15. Antes: 2026-10-10-ensaio.
  * 10/10/2026: aula OPCIONAL do ensaio (mod-live-ensaio, jOIy5NrirQA, 0:44) na biblioteca, grupo "Antes e depois da live", fora da trava. Antes: 2026-09-30-aula09.
@@ -148,6 +149,15 @@
       { n: 'Fila de pedidos', g: 'vender', sel: '.painelAba[data-aba="fila"]', v: [
         { k: 'mod-live-fila', t: 'Fila de pedidos',
           d: '0:30', id: 'DmVVBqoUGYM', plano: 'Enterprise', em: '2026-09-15' } ]},
+
+      /* 17/10/2026: LISTA VIP (P84). Mesma chave e mesmo video da aula do
+         painel (Pedidos > Lista VIP). E aqui que o lojista pensa em encher a
+         sala antes da live. `sel` vazio: no estudio o botao "Avisar a Lista
+         VIP" ja leva ao painel. `em` novo: e assunto novo, vira aviso de aula
+         nova para quem ja concluiu (nunca cadeado). */
+      { n: 'Lista VIP', g: 'antes', sel: '', v: [
+        { k: 'mod-pedidos-vip', t: 'Lista VIP: traga quem te segue nas redes para a sua base',
+          d: '2:25', id: '6Wa8z0vIJPM', plano: 'Premium', em: '2026-10-17' } ]},
 
       { n: 'Dados', g: 'antes', sel: '.painelAba[data-aba="dados"]', v: [
         { k: 'mod-live-dados', t: 'Dados ao vivo e o resumo da live',
@@ -486,7 +496,7 @@
     { g: 'comece',  n: 'Comece por aqui',        s: 'Obrigatórias para entrar ao vivo' },
     { g: 'durante', n: 'Durante a live',         s: 'O que você usa com a câmera ligada' },
     { g: 'vender',  n: 'Vender e receber',       s: 'Pix, pedidos e o cardápio' },
-    { g: 'antes',   n: 'Antes e depois da live', s: 'Agendar, números e cortes' },
+    { g: 'antes',   n: 'Antes e depois da live', s: 'Ensaio, agendar, Lista VIP, números e cortes' },
     { g: '',        n: 'Outras aulas',           s: '' }
   ];
   /* aulas publicadas, na ordem em que aparecem na lista: grupo a grupo */
@@ -637,8 +647,18 @@
       bt.type = 'button';
       bt.className = 'lvAulasIt' + (ok ? ' feita' : '') + (palcoK === it.v.k ? ' noPalco' : '');
       bt.setAttribute('data-lvaula', it.v.k);
-      var nu = document.createElement('span'); nu.className = 'lvAulasNum' + (ok ? ' ok' : '');
-      nu.innerHTML = ok ? VISTO : String(n);
+      /* 17/10/2026: capa da aula, como no YouTube (mesmo desenho da janela
+         de videoaulas do painel). mqdefault existe para todo video publicado. */
+      var nu = document.createElement('span'); nu.className = 'lvAulasMini';
+      var im = document.createElement('img'); im.alt = ''; im.loading = 'lazy'; im.decoding = 'async';
+      im.src = 'https://i.ytimg.com/vi/' + encodeURIComponent(it.v.id) + '/mqdefault.jpg';
+      im.onerror = function () { this.remove(); };
+      nu.appendChild(im);
+      var nn = document.createElement('span'); nn.className = 'lvAulasMiniNum'; nn.textContent = String(n);
+      nu.appendChild(nn);
+      if (it.v.d) { var du = document.createElement('span'); du.className = 'lvAulasMiniDur'; du.textContent = it.v.d; nu.appendChild(du); }
+      if (ok) { var ck = document.createElement('span'); ck.className = 'lvAulasMiniOk'; ck.innerHTML = VISTO; nu.appendChild(ck); }
+      if (palcoK === it.v.k) { var tc = document.createElement('span'); tc.className = 'lvAulasMiniTocando'; tc.textContent = 'Tocando'; nu.appendChild(tc); }
       var tx = document.createElement('span'); tx.className = 'lvAulasItTxt';
       var nome = document.createElement('span'); nome.className = 'lvAulasItNome';
       nome.textContent = it.v.t;
@@ -770,7 +790,7 @@
     '.lvAulasModal{position:fixed;inset:0;z-index:70;background:rgba(2,8,18,.78);',
       'display:flex;align-items:center;justify-content:center;padding:24px}',
     '.lvAulasModal.escondido{display:none}',
-    '.lvAulasCaixa{position:relative;width:100%;max-width:1060px;max-height:calc(100vh - 48px);',
+    '.lvAulasCaixa{position:relative;width:100%;max-width:1240px;max-height:calc(100vh - 48px);',
       'display:flex;flex-direction:column;overflow:hidden;box-sizing:border-box;',
       'background:var(--mv-surf,#0b1627);border:1px solid rgba(0,212,255,.16);',
       'border-radius:20px;padding:20px 20px 18px;color:var(--mv-txt-1,#eaf2ff);',
@@ -798,7 +818,8 @@
     '.lvAulasTrava b,.lvAulasNovo b{font-size:14px}',
     '.lvAulasTrava span,.lvAulasNovo span{font-size:12px;color:var(--mv-txt-2,#c6d8ee)}',
     '.lvAulasPalcoGrade{flex:1;min-height:0;display:grid;',
-      'grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:18px}',
+      'grid-template-columns:minmax(0,1fr) 400px;gap:20px}',
+    '@media (max-width:1100px){.lvAulasPalcoGrade{grid-template-columns:minmax(0,1fr) 360px}}',
     '.lvAulasEsq{min-width:0;display:flex;flex-direction:column;gap:4px;overflow:auto}',
     '.lvAulasPalco{margin-top:0;margin-bottom:6px}',
     '.lvAulasPTit{font-size:15px;line-height:1.3}',
@@ -814,8 +835,8 @@
       'color:var(--mv-ciano,#00D4FF)}',
     '.lvAulasGrupoCont{font-size:11px;color:var(--mv-txt-3,#8fa6c4);white-space:nowrap}',
     '.lvAulasGrupoSub{font-size:11.5px;color:var(--mv-txt-3,#8fa6c4);margin:-4px 0 2px}',
-    '.lvAulasIt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;',
-      'font:inherit;color:inherit;padding:10px 12px;border-radius:12px;',
+    '.lvAulasIt{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;cursor:pointer;',
+      'font:inherit;color:inherit;padding:6px;border-radius:12px;',
       'background:rgba(255,255,255,.025);border:1px solid var(--mv-linha,#1c3457);',
       'transition:border-color .15s,background .15s}',
     '.lvAulasIt:hover{border-color:rgba(0,212,255,.45)}',
@@ -826,8 +847,22 @@
       'background:rgba(255,255,255,.07);color:var(--mv-txt-2,#c6d8ee)}',
     '.lvAulasNum.ok{background:rgba(37,227,155,.18);color:#25e39b}',
     '.lvAulasNum svg{width:15px;height:15px}',
-    '.lvAulasItTxt{display:flex;flex-direction:column;gap:2px;min-width:0}',
-    '.lvAulasItNome{font-size:13.5px;font-weight:600;line-height:1.3}',
+    '.lvAulasMini{position:relative;flex:none;width:168px;aspect-ratio:16/9;border-radius:9px;',
+      'overflow:hidden;background:#0b1728}',
+    '.lvAulasMini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}',
+    '.lvAulasMiniNum{position:absolute;left:5px;bottom:6px;min-width:20px;padding:1px 5px;border-radius:4px;',
+      'background:rgba(0,0,0,.82);color:#fff;font-size:11px;font-weight:700;line-height:1.5;text-align:center}',
+    '.lvAulasMiniDur{position:absolute;right:5px;bottom:6px;padding:1px 5px;border-radius:4px;',
+      'background:rgba(0,0,0,.82);color:#fff;font-size:11.5px;font-weight:600;line-height:1.5}',
+    '.lvAulasMiniOk{position:absolute;left:5px;top:5px;width:22px;height:22px;border-radius:50%;',
+      'display:flex;align-items:center;justify-content:center;background:#22c55e;color:#04210f;',
+      'box-shadow:0 1px 4px rgba(0,0,0,.4)}',
+    '.lvAulasMiniOk svg{width:13px;height:13px}',
+    '.lvAulasMiniTocando{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;',
+      'background:rgba(0,0,0,.58);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}',
+    '.lvAulasItTxt{display:flex;flex-direction:column;gap:2px;min-width:0;padding-top:1px}',
+    '.lvAulasItNome{font-size:13.5px;font-weight:600;line-height:1.32;display:-webkit-box;',
+      '-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}',
     '.lvAulasItMeta{font-size:11.5px;color:var(--mv-txt-3,#8fa6c4)}',
     '.lvAulasSelo{align-self:flex-start;margin-top:2px;font-size:10.5px;font-weight:700;',
       'padding:1px 7px;border-radius:999px;background:rgba(0,212,255,.16);color:#00D4FF}',
@@ -840,6 +875,7 @@
       '.lvAulasCorpo,.lvAulasPalcoGrade{flex:none}',
       '.lvAulasPalcoGrade{grid-template-columns:1fr;gap:16px}',
       '.lvAulasEsq,.lvAulasLista{overflow:visible}',
+      '.lvAulasMini{width:142px}',
       '.lvAulasCabeca h2{font-size:18px}',
     '}',
     'body.lvAulasAberto{overflow:hidden}'
