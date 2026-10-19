@@ -1,4 +1,4 @@
-/*! MOVIKI mvaulaplayer.js | versao 2026-09-28-motor2 | repo: moviki-app
+/*! MOVIKI mvaulaplayer.js | versao 2026-10-19-recarrega | repo: moviki-app
  *
  * O MOTOR UNICO DAS VIDEOAULAS — o player, a medicao dos 90% e o visto verde.
  *
@@ -44,6 +44,14 @@
  *  6. Player cujo iframe saiu da pagina e DESTRUIDO sozinho (17/09): quem
  *     apagar a tela com innerHTML='' e esquecer de matar() nao trava mais as
  *     aulas seguintes.
+ *  8. IFRAME QUE NAO CARREGA (19/10/2026, visto em campo pelo Paulo na aba
+ *     WhatsApp): o Chrome mostrou a carinha triste no lugar do video, o
+ *     YouTube nunca respondeu e a aula ficou VERDE pelo relogio da tela sem
+ *     o video ter tocado um segundo (diario: montou -> relogio-da-tela
+ *     sem-resposta -> concluiu relogio). Agora "sem resposta" primeiro
+ *     RECARREGA o player sozinho, uma vez. So se a recarga tambem ficar muda
+ *     o relogio assume - contando do zero, sem o tempo morto - e aparece o
+ *     botao "Recarregar" em cima do quadro.
  *  7. DIARIO: os ultimos 80 eventos ficam em localStorage 'mvAulaDiag'. No
  *     console: mvAulaDiag(). Quando alguem disser "nao ficou verde", o diario
  *     diz em qual passo parou — acabou o conserto por teoria.
@@ -57,13 +65,14 @@
   'use strict';
   if (window.MvAulaPlayer) return;
 
-  var VERSAO = '2026-09-28-motor2';
+  var VERSAO = '2026-10-19-recarrega';
   var META = 0.9;              /* fracao percorrida que fecha a aula */
   var TIQUE = 500;             /* ms entre leituras */
   var VIGIA_SEM_RESPOSTA = 4000; /* YouTube nao respondeu: conta pela tela */
   var VIGIA_SEM_TEMPO = 3000;    /* respondeu mas nao entrega o tempo */
   var VIGIA_PARADO = 6000;       /* diz "tocando" mas o tempo nao anda */
   var ESPERA_API = 2500;         /* API nao chegou: mostra o video assim mesmo */
+  var RECARGAS_SOZINHO = 1;      /* sem resposta: recarrega o player antes do relogio */
 
   /* ------------------------------------------------------------------
      DIARIO
@@ -179,6 +188,7 @@
     s.fim = true;
     try { clearInterval(s.iv); } catch (_) {}
     try { clearTimeout(s.toPlano); } catch (_) {}
+    tirarBotao(s);
     guardar(s.chave);
     try { if (s.p && typeof s.p.destroy === 'function') s.p.destroy(); } catch (_) {}
     s.p = null;
@@ -264,7 +274,11 @@
       /* os tres jeitos de o YouTube falhar, e o que o vigia faz */
       if (visivel) {
         if (!s.pronto && (agora - s.naTelaMs) > VIGIA_SEM_RESPOSTA) {
-          paraRelogio(s, 'sem-resposta', (agora - s.naTelaMs) / 1000);
+          /* 19/10/2026: quase sempre e o iframe que nao carregou. Recarrega
+             antes; o tempo morto nao conta para ninguem */
+          if ((s.recargas || 0) < RECARGAS_SOZINHO) { recarregar(s, 'sem-resposta'); return; }
+          paraRelogio(s, 'sem-resposta', 0);
+          botao(s);
         } else if (s.pronto && !temTempo && s.semTempo > VIGIA_SEM_TEMPO / 1000) {
           paraRelogio(s, 'sem-tempo', (agora - s.naTelaMs) / 1000);
         } else if (temTempo && s.estado === 1 && s.parado > VIGIA_PARADO / 1000) {
@@ -299,11 +313,12 @@
         if (s.fim) return;
         if (!s.pronto) diario('pronto', s.v.k, String(Date.now() - (s.anexadoMs || Date.now())) + 'ms');
         s.pronto = true;
+        tirarBotao(s);
         try { var d = e.target.getDuration(); if (d > 0) s.dur = d; } catch (_) {}
       },
       onStateChange: function (e) {
         if (s.fim) return;
-        if (!s.pronto) { s.pronto = true; diario('pronto', s.v.k, 'pelo-estado'); }
+        if (!s.pronto) { s.pronto = true; tirarBotao(s); diario('pronto', s.v.k, 'pelo-estado'); }
         s.estado = e.data;
         var E = (window.YT && window.YT.PlayerState) || { PLAYING: 1, ENDED: 0 };
         if (e.data === E.PLAYING) { s.ultimoMs = 0; s.acabou = false; s.parado = 0; return; }
@@ -374,6 +389,71 @@
     diario('plano-b', s.v.k);
   }
 
+  /* ------------------------------------------------------------------
+     RECARREGAR - 19/10/2026
+     Troca o player inteiro por um marcador novo, com o MESMO id, e pede ao
+     YouTube um player novo. O percurso ja guardado continua valendo.
+     ------------------------------------------------------------------ */
+  function marcador(id) {
+    var ph = document.createElement('div');
+    ph.id = id; ph.className = 'mvAulaMarcador';
+    ph.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:#000';
+    return ph;
+  }
+  function recarregar(s, porQue) {
+    if (s.fim) return;
+    var atual = elem(s);
+    var pai = (atual && atual.parentNode) || s.pai;
+    try { clearTimeout(s.toPlano); } catch (_) {}
+    try { if (s.p && typeof s.p.destroy === 'function') s.p.destroy(); } catch (_) {}
+    s.p = null;
+    tirarBotao(s);
+    var ph = marcador(s.id);
+    var resto = document.getElementById(s.id);       /* o que o destroy deixou */
+    if (resto && resto.parentNode) resto.parentNode.replaceChild(ph, resto);
+    else if (pai && noDoc(pai)) pai.appendChild(ph);
+    else { encerrar(s, 'sumiu-ao-recarregar'); return; }
+    s.el = ph; s.pai = ph.parentNode;
+    s.recargas = (s.recargas || 0) + 1;
+    s.modo = 'api'; s.pronto = false; s.estado = -1; s.dur = 0;
+    s.ultimo = -1; s.ultimoMs = 0; s.parado = 0; s.semTempo = 0; s.pos = 0;
+    s.naTelaMs = Date.now(); s.anexadoMs = 0;
+    diario('recarregou', s.v.k, porQue);
+    if (ytOk()) montar(s);
+    else {
+      carregarYT(function () { montar(s); });
+      s.toPlano = setTimeout(function () { planoB(s); }, ESPERA_API);
+    }
+  }
+  /* botao por cima do quadro, so quando o YouTube segue mudo depois da
+     recarga automatica. Some sozinho se o player responder. */
+  function botao(s) {
+    if (s.fim || s.bt) return;
+    var el = elem(s);
+    var pai = (el && el.parentNode) || s.pai;
+    if (!pai || !noDoc(pai)) return;
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'mvAulaRecarregar';
+    b.textContent = 'O v\u00eddeo n\u00e3o carregou? Recarregar';
+    var solto = false;
+    try { solto = getComputedStyle(pai).position === 'static'; } catch (_) {}
+    b.style.cssText = (solto
+      ? 'position:relative;display:block;margin:8px auto 0;'
+      : 'position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:3;') +
+      'background:rgba(4,18,31,.88);color:#fff;border:1px solid #00D4FF;border-radius:999px;' +
+      'padding:7px 14px;font:600 12px/1.2 inherit;cursor:pointer;white-space:nowrap;max-width:94%';
+    b.addEventListener('click', function (e) {
+      try { e.preventDefault(); e.stopPropagation(); } catch (_) {}
+      recarregar(s, 'botao');
+    });
+    pai.appendChild(b);
+    s.bt = b;
+  }
+  function tirarBotao(s) {
+    try { if (s.bt && s.bt.parentNode) s.bt.parentNode.removeChild(s.bt); } catch (_) {}
+    s.bt = null;
+  }
+
   /* Devolve o MARCADOR da aula. Quem chama so precisa coloca-lo na pagina;
      o YouTube troca o marcador pelo player.
      op: { prefixo, chave(k) -> chave do localStorage, marcar(k),
@@ -381,9 +461,7 @@
   function criar(v, op) {
     op = op || {};
     var id = (op.prefixo || 'mvAula') + (++seq) + '_' + Math.random().toString(36).slice(2, 6);
-    var ph = document.createElement('div');
-    ph.id = id; ph.className = 'mvAulaMarcador';
-    ph.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:#000';
+    var ph = marcador(id);
 
     var chave = (typeof op.chave === 'function') ? op.chave(v.k) : ('mvTrilha:anon:' + v.k);
     var s = {
@@ -400,6 +478,7 @@
       if (s.fim) return;
       if (noDoc(ph)) {
         /* o marcador so fica "absolute" se o pai for posicionado */
+        s.pai = ph.parentNode;
         try {
           if (getComputedStyle(ph.parentNode).position === 'static') ph.style.position = 'relative';
         } catch (_) {}
