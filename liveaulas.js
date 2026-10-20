@@ -1,4 +1,5 @@
-/*! MOVIKI liveaulas.js | versao 2026-10-18-balcao | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-10-20-aulasp85 | repo: moviki-app
+ * 20/10/2026 (P85): mod-live-cardapio REGRAVADA com a pagina publica de hoje (sacola, Pix e pedido na Central): 'Sua pagina vendendo sozinha' (lf4NVwllA0w, 1:26). Plano corrigido para Premium (o Pix no cardapio comeca no Premium; Enterprise e o Pix dentro da live). `em` continua 2026-09-15. Id antigo 2_ty4YrgZ0I sai do YouTube depois deste arquivo no ar. Antes: 2026-10-18-balcao.
  * 18/10/2026: aula NOVA "Monte o seu balcao de live: celular, segunda tela e ajudante" (mod-live-balcao, WM7kWjl2iSM, 1:44) no grupo "Antes e depois da live", antes do ensaio. Opcional, fora da trava; `em` novo (aviso calmo de aula nova). No celular em pe, linha "Gire o celular para ver a aula em tela cheia" embaixo do palco (as aulas sao 16:9). Antes: 2026-10-17-livecapas.
  * 17/10/2026 (noite): a lista lateral da janela "Aulas da live" ganhou a CAPA de cada aula (mqdefault do YouTube, duracao no canto, visto verde, "Tocando" na que esta no palco), igual a janela de videoaulas do painel; palco maior com a lista de 400 px ao lado. Aula da Lista VIP (mod-pedidos-vip, 6Wa8z0vIJPM) entrou no grupo "Antes e depois da live" (em 2026-10-17: vira aviso de aula nova, nao trava ninguem). Antes: 2026-10-17-livemalu.
  * 17/10/2026: DEZ aulas da live REGRAVADAS com o estudio de hoje (dock, folha, ensaio) e a live publica no padrao TikTok: abertura, regras, primeira, sacolinha, chat, agendar, cupom, fila, dados e cortes. So mudam id e duracao; `em` continua (regravacao nao e aula nova). Ids antigos (apagar do YouTube depois de ver as novas tocando): 1TqgHffAyYU 3WceM12RkWE sngj1eUC7kU 3Fsofzdj0u4 V6WZqQ0s-bY cWG2cWGMrII BQPflIBLNG0 hhooJvRXx2Q 07rQewrYNaI vzZOyzzfYHM. Antes: 2026-10-10-pixaula.
@@ -181,8 +182,8 @@
          cardapio). Esta ensina o cardapio a VENDER, que e outro assunto — as
          duas caixas convivem, com titulos que nao se confundem. */
       { n: 'Cardápio', g: 'vender', sel: '#tab-cardapio', rot: 'Vender pelo cardápio, sem live', v: [
-        { k: 'mod-live-cardapio', t: 'Seu cardápio vendendo sozinho',
-          d: '1:18', id: '2_ty4YrgZ0I', plano: 'Enterprise', em: '2026-09-15' } ]}
+        { k: 'mod-live-cardapio', t: 'Sua página vendendo sozinha',
+          d: '1:26', id: 'lf4NVwllA0w', plano: 'Premium', em: '2026-09-15' } ]}
     ]
   };
   window.MOVIKI_LIVEAULAS = CAT;
