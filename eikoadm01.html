@@ -652,6 +652,12 @@ table.mvTab td b{font-weight:700}
 .pfPrevImg .vazio{text-align:center}
 .pfDestino{font-size:12.5px;color:var(--mv-txt-3);text-align:center;margin-bottom:10px;word-break:break-all}
 .pfDestino b{color:var(--mv-txt)}
+.pfEmail{margin-top:12px;display:grid;gap:7px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:12px}
+.pfEmail label{font-size:12.5px;font-weight:600}
+.pfEmail input[type=text],.pfEmail textarea{width:100%;box-sizing:border-box;background:var(--mv-surf);color:var(--mv-txt);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:9px 10px;font-family:inherit;font-size:13.5px}
+.pfEmail .pfCopia{display:flex;align-items:center;justify-content:flex-start;gap:8px;font-weight:500;cursor:pointer}
+.pfEmail .pfCopia input{width:auto !important;flex:0 0 auto;margin:0;accent-color:#25e39b}
+.pfEmail .crDAcoes{margin-top:2px}
 #pfFolha{display:none}
 @media print{
   body.pfImp{margin:0 !important;padding:0 !important;background:#fff !important}
@@ -2009,8 +2015,21 @@ table.mvTab td b{font-weight:700}
               <div class="crDAcoes">
                 <button type="button" class="btnMini ok" id="pfImprimir">Imprimir em A5</button>
                 <button type="button" class="btnMini" id="pfBaixar">Baixar para a gráfica</button>
-                <button type="button" class="btnMini" id="pfEnviar">Enviar</button>
+                <button type="button" class="btnMini ok" id="pfEmailAbrir">Enviar PDF por e-mail</button>
+                <button type="button" class="btnMini" id="pfPdf">Baixar PDF</button>
+                <button type="button" class="btnMini" id="pfEnviar">Compartilhar</button>
                 <button type="button" class="btnMini" id="pfCopiar">Copiar texto</button>
+              </div>
+              <!-- 2026-10-20-pdf: PDF de impressao (300 dpi, A5 com 3 mm de sangria) por e-mail.
+                   Sai pelo robo (api/funil-dono, acao panfleto_email, so admin): mailto nao anexa arquivo. -->
+              <div class="pfEmail hide" id="pfEmail">
+                <label for="pfPara">E-mail da gráfica ou de quem vai imprimir</label>
+                <input type="text" id="pfPara" inputmode="email" autocomplete="email" maxlength="380" placeholder="grafica@exemplo.com.br (até 3, separados por vírgula)">
+                <label for="pfMsg">Recado junto (opcional)</label>
+                <textarea id="pfMsg" rows="2" maxlength="600" placeholder="Ex.: 500 unidades, couché 150 g, frente e verso. Retiro na sexta."></textarea>
+                <label class="pfCopia"><input type="checkbox" id="pfCopia" checked> Mandar uma cópia para o meu e-mail</label>
+                <div class="crDAcoes"><button type="button" class="btnMini ok" id="pfMandar">Enviar agora</button><button type="button" class="btnMini" id="pfEmailFechar">Cancelar</button></div>
+                <div class="cdSub">Sai de suporte@moviki.com.br com o PDF em anexo (alta definição, 300 dpi, tamanho A5; os panfletos novos já vêm com sangria). A resposta da gráfica vem para o seu e-mail.</div>
               </div>
               <div class="cdSub" id="pfDica">Na impressora de casa: papel A5 ou A4 cortado ao meio, sem margem se ela permitir. Na gráfica: mande o arquivo de "Baixar para a gráfica" e peça A5 com sangria, sem reduzir.</div>
               <div class="crDAviso" id="pfAviso"></div>
@@ -2204,7 +2223,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-20-panfletos';   /* 20/10: menu 'Panfletos com QR' — os panfletos do Material de apoio com o QR da Eiko Sistemas (/aovivo ou /fundador, utm_campaign=eiko, ramo opcional): imprimir em A5, baixar para a grafica, enviar e copiar texto. */ /* antes: 2026-10-19-lojaonline */   /* 19/10: entra o pacote 2026-10-16-lojaonline (Negocios marca '⚠ link no nome' e 'loja online', Precisa de voce conta os negocios com link no nome, CSV com a coluna Loja online) por cima da 2026-10-17-vippadrao. */ /* antes: 2026-10-17-vippadrao */ /* 17/10 (3): P84 Recursos mostra a Lista VIP ligada por padrao (so false desliga). */ /* antes: 2026-10-17-seguir2 */ /* 17/10 (2): funil e Lojistas para seguir carregam depois do login (antes: relogio fixo na abertura, dava 'sem sessao' para quem entrava depois de 4 s). Antes: 2026-10-17-seguir. */ /* 17/10: cartao 'Lojistas para seguir' na Visao geral (fila do robo api/funil-dono, acoes seguir_lista / seguir_feito: Abrir @ e Ja segui). Antes: 2026-10-13-arroba. */   /* 13/10 (P80): situacao do @ de cada parceiro (provado / sem prova / precisa de olho), confirmacao ao aprovar @ sem prova e trava ao marcar criador sem prova */ /* antes: 2026-10-13-agenda */   /* 13/10 (noite 2): microfone e 'Mandar como ordem' em cada tarefa, ao lado da nota; robo novo criado no Claude aparece sozinho (o Maestro le a agenda toda hora) */ /* antes: 2026-10-13-ordens */   /* 13/10 (noite): aba Robos ganha ORDENS — caixa de comando com microfone (ditado do navegador) em cada robo e no topo; o Maestro entrega em ate 1 hora e a resposta volta aqui */ /* antes: 2026-10-13-custos */   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-20-pdf';   /* 20/10 (2): Panfletos com QR ganha 'Enviar PDF por e-mail' (robo api/funil-dono, acao panfleto_email; PDF 300 dpi, A5 com sangria e TrimBox) e 'Baixar PDF'; o botao Enviar virou Compartilhar. */ /* antes: 2026-10-20-panfletos */   /* 20/10: menu 'Panfletos com QR' — os panfletos do Material de apoio com o QR da Eiko Sistemas (/aovivo ou /fundador, utm_campaign=eiko, ramo opcional): imprimir em A5, baixar para a grafica, enviar e copiar texto. */ /* antes: 2026-10-19-lojaonline */   /* 19/10: entra o pacote 2026-10-16-lojaonline (Negocios marca '⚠ link no nome' e 'loja online', Precisa de voce conta os negocios com link no nome, CSV com a coluna Loja online) por cima da 2026-10-17-vippadrao. */ /* antes: 2026-10-17-vippadrao */ /* 17/10 (3): P84 Recursos mostra a Lista VIP ligada por padrao (so false desliga). */ /* antes: 2026-10-17-seguir2 */ /* 17/10 (2): funil e Lojistas para seguir carregam depois do login (antes: relogio fixo na abertura, dava 'sem sessao' para quem entrava depois de 4 s). Antes: 2026-10-17-seguir. */ /* 17/10: cartao 'Lojistas para seguir' na Visao geral (fila do robo api/funil-dono, acoes seguir_lista / seguir_feito: Abrir @ e Ja segui). Antes: 2026-10-13-arroba. */   /* 13/10 (P80): situacao do @ de cada parceiro (provado / sem prova / precisa de olho), confirmacao ao aprovar @ sem prova e trava ao marcar criador sem prova */ /* antes: 2026-10-13-agenda */   /* 13/10 (noite 2): microfone e 'Mandar como ordem' em cada tarefa, ao lado da nota; robo novo criado no Claude aparece sozinho (o Maestro le a agenda toda hora) */ /* antes: 2026-10-13-ordens */   /* 13/10 (noite): aba Robos ganha ORDENS — caixa de comando com microfone (ditado do navegador) em cada robo e no topo; o Maestro entrega em ate 1 hora e a resposta volta aqui */ /* antes: 2026-10-13-custos */   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -4062,6 +4081,17 @@ table.mvTab td b{font-weight:700}
      busca; quem pinta e o window.fnPintar (script comum no fim do arquivo),
      separado de proposito para poder ser conferido sem Firebase.
      ========================================================== */
+  /* 20/10/2026 (2026-10-20-pdf): ponte para a aba Panfletos com QR (script comum):
+     manda o PDF do panfleto por e-mail pelo robo. O token fica aqui dentro. */
+  window.mvPanfEmail = async function(dados){
+    if(!USER) throw new Error('Entre de novo no painel.');
+    const tk = await USER.getIdToken();
+    const r = await fetch('https://moviki-robo.vercel.app/api/funil-dono', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(Object.assign({}, dados || {}, {idToken:tk, acao:'panfleto_email'}))});
+    const j = await r.json().catch(()=>({}));
+    if(!r.ok || !j.ok) throw new Error(j.mensagem || (r.status === 413 ? 'Arquivo grande demais para e-mail.' : 'Não deu para enviar (' + (j.erro || r.status) + ').'));
+    return j;
+  };
+
   async function fnCarregar(manual){
     const b = el('fnAtualizar'); const t0 = b ? b.textContent : '';
     if(manual && b){ b.disabled = true; b.textContent = 'Contando…'; }
@@ -8222,13 +8252,13 @@ table.mvTab td b{font-weight:700}
     el('pfDestino').innerHTML = 'O QR leva para <b>' + esc(dest.url.replace(/^https:\/\//, '')) + '</b>' +
       (dest.fund ? '' : (dest.ramo ? '' : ' · sem ramo'));
     el('pfPrevImg').innerHTML = '<div class="vazio">Montando o panfleto com o QR da Eiko…</div>';
-    ['pfImprimir','pfBaixar','pfEnviar'].forEach(function(b){ el(b).disabled = true; });
+    ['pfImprimir','pfBaixar','pfEnviar','pfPdf','pfEmailAbrir','pfMandar'].forEach(function(b){ if(el(b)) el(b).disabled = true; });
     compor(it, dest).then(function(r){
       if(vez !== montando) return;
-      ATUAL.blob = r.blob; ATUAL.url = r.url;
+      ATUAL.blob = r.blob; ATUAL.url = r.url; ATUAL.cv = r.cv; ATUAL.pdf = null;
       var im = new Image(); im.alt = 'Prévia do panfleto com o QR da Eiko Sistemas'; im.src = r.url;
       el('pfPrevImg').textContent = ''; el('pfPrevImg').appendChild(im);
-      ['pfImprimir','pfBaixar','pfEnviar'].forEach(function(b){ el(b).disabled = false; });
+      ['pfImprimir','pfBaixar','pfEnviar','pfPdf','pfEmailAbrir','pfMandar'].forEach(function(b){ if(el(b)) el(b).disabled = false; });
       try{ el('pfPrev').scrollIntoView({ behavior: 'smooth', block: 'start' }); }catch(e){}
     }).catch(function(){
       if(vez !== montando) return;
@@ -8283,6 +8313,113 @@ table.mvTab td b{font-weight:700}
     copiar(txt, 'Arquivo salvo e texto copiado: anexe no WhatsApp e cole o texto.');
   }
 
+  /* ---- PDF de impressao (2026-10-20-pdf) ----
+     Feito aqui mesmo, sem biblioteca (a CSP do painel nao carrega script de
+     fora): uma pagina com a imagem JPEG do panfleto a 300 dpi. Arquivo com
+     sangria (1819 x 2551 = A5 + 3 mm de cada lado) ganha TrimBox no A5, que e
+     o que a grafica usa para refilar. */
+  function jpegAte(cv, limite){
+    var qs = [0.95, 0.92, 0.88, 0.84];
+    return new Promise(function(ok, falha){
+      (function tenta(i){
+        cv.toBlob(function(b){
+          if(!b) return falha(new Error('jpeg'));
+          if(b.size <= limite || i === qs.length - 1) return ok(b);
+          tenta(i + 1);
+        }, 'image/jpeg', qs[i]);
+      })(0);
+    });
+  }
+  function montarPdf(jpg, w, h, titulo){
+    var enc = function(t){ var u = new Uint8Array(t.length); for(var i=0;i<t.length;i++) u[i] = t.charCodeAt(i) & 255; return u; };
+    var n2 = function(v){ return (Math.round(v * 100) / 100).toFixed(2); };
+    var W = w / 300 * 72, H = h / 300 * 72;
+    var b = (w >= 1810 && h >= 2540) ? (3 / 25.4 * 72) : 0;
+    var tit = String(titulo || 'Panfleto Moviki').replace(/[^\x20-\x7e]/g, function(c){ return ({'á':'a','à':'a','â':'a','ã':'a','é':'e','ê':'e','í':'i','ó':'o','ô':'o','õ':'o','ú':'u','ç':'c','Á':'A','É':'E','Í':'I','Ó':'O','Ú':'U','Ç':'C'})[c] || ''; }).replace(/[()\\]/g, '');
+    var conteudo = 'q\n' + n2(W) + ' 0 0 ' + n2(H) + ' 0 0 cm\n/Im0 Do\nQ\n';
+    var partes = [], pos = 0, offs = [];
+    function add(u){ partes.push(u); pos += u.length; }
+    function obj(num, txt){ offs[num] = pos; add(enc(num + ' 0 obj\n' + txt + '\nendobj\n')); }
+    add(enc('%PDF-1.4\n')); add(new Uint8Array([37, 226, 227, 207, 211, 10]));
+    obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+    obj(2, '<< /Type /Pages /Kids [3 0 R] /Count 1 >>');
+    obj(3, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + n2(W) + ' ' + n2(H) + '] /BleedBox [0 0 ' + n2(W) + ' ' + n2(H) + '] /TrimBox [' + n2(b) + ' ' + n2(b) + ' ' + n2(W - b) + ' ' + n2(H - b) + '] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>');
+    offs[4] = pos;
+    add(enc('4 0 obj\n<< /Type /XObject /Subtype /Image /Width ' + w + ' /Height ' + h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + jpg.length + ' >>\nstream\n'));
+    add(jpg); add(enc('\nendstream\nendobj\n'));
+    obj(5, '<< /Length ' + conteudo.length + ' >>\nstream\n' + conteudo + 'endstream');
+    obj(6, '<< /Title (' + tit + ') /Producer (Moviki - painel do dono) /Author (EIKO SISTEMAS) >>');
+    var xref = pos, x = 'xref\n0 7\n0000000000 65535 f \n';
+    for(var k=1;k<=6;k++) x += ('0000000000' + offs[k]).slice(-10) + ' 00000 n \n';
+    add(enc(x + 'trailer\n<< /Size 7 /Root 1 0 R /Info 6 0 R >>\nstartxref\n' + xref + '\n%%EOF\n'));
+    return new Blob(partes, { type: 'application/pdf' });
+  }
+  function gerarPdf(){
+    if(!ATUAL || !ATUAL.cv) return Promise.reject(new Error('sem panfleto'));
+    if(ATUAL.pdf) return Promise.resolve(ATUAL.pdf);
+    var cv = ATUAL.cv, it = ATUAL.it;
+    return jpegAte(cv, 2.85 * 1024 * 1024).then(function(b){ return b.arrayBuffer(); }).then(function(ab){
+      ATUAL.pdf = montarPdf(new Uint8Array(ab), cv.width, cv.height, it.titulo);
+      return ATUAL.pdf;
+    });
+  }
+  function nomePdf(){ return nomeArquivo(ATUAL.it, ATUAL.dest).replace(/\.jpg$/, '.pdf'); }
+  function baixarPdf(){
+    if(!ATUAL || !ATUAL.cv) return;
+    aviso('Gerando o PDF…');
+    gerarPdf().then(function(pdf){
+      var u = URL.createObjectURL(pdf);
+      var a = document.createElement('a'); a.href = u; a.download = nomePdf();
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ try{ URL.revokeObjectURL(u); }catch(e){} }, 60000);
+      aviso('PDF salvo (' + Math.round(pdf.size / 1024) + ' KB, 300 dpi).');
+    }).catch(function(){ aviso('Não deu para gerar o PDF.'); });
+  }
+  var CH_PARA = 'mv_panf_para';
+  function emailAbrir(){
+    var f = el('pfEmail'); if(!f) return;
+    f.classList.toggle('hide');
+    if(!f.classList.contains('hide')){
+      var p = el('pfPara');
+      try{ if(p && !p.value) p.value = localStorage.getItem(CH_PARA) || ''; }catch(e){}
+      try{ p.focus(); }catch(e){}
+    }
+  }
+  function paraBase64(blob){
+    return new Promise(function(ok, falha){
+      var fr = new FileReader();
+      fr.onload = function(){ ok(String(fr.result || '').replace(/^data:[^,]*,/, '')); };
+      fr.onerror = function(){ falha(new Error('leitura')); };
+      fr.readAsDataURL(blob);
+    });
+  }
+  function mandarEmail(){
+    if(!ATUAL || !ATUAL.cv) return;
+    var para = (el('pfPara').value || '').trim();
+    if(!para){ aviso('Informe o e-mail de quem vai receber.'); try{ el('pfPara').focus(); }catch(e){} return; }
+    if(typeof window.mvPanfEmail !== 'function'){ aviso('Entre de novo no painel para enviar.'); return; }
+    var bt = el('pfMandar'), t0 = bt.textContent;
+    bt.disabled = true; bt.textContent = 'Enviando…';
+    var it = ATUAL.it, dest = ATUAL.dest;
+    gerarPdf().then(function(pdf){ return paraBase64(pdf).then(function(b64){ return { pdf: pdf, b64: b64 }; }); })
+      .then(function(x){
+        return window.mvPanfEmail({
+          para: para, pdf: x.b64, arquivo: nomePdf(),
+          titulo: (it.titulo || 'Panfleto Moviki') + (dest.ramo ? ' · ' + dest.ramo.n : ''),
+          mensagem: (el('pfMsg').value || '').trim(),
+          copia: !!(el('pfCopia') && el('pfCopia').checked),
+          sangria: x.pdf && ATUAL.cv.width >= 1810
+        });
+      })
+      .then(function(j){
+        try{ localStorage.setItem(CH_PARA, para); }catch(e){}
+        aviso('PDF enviado para ' + (j.para || [para]).join(', ') + (j.copia ? '. Cópia no seu e-mail.' : '.'));
+        el('pfEmail').classList.add('hide');
+      })
+      .catch(function(e){ aviso((e && e.message) || 'Não deu para enviar.'); })
+      .then(function(){ bt.disabled = false; bt.textContent = t0; });
+  }
+
   function copiar(txt, msg){
     var t = txt != null ? txt : (ATUAL ? legenda(ATUAL.it, ATUAL.dest) : '');
     if(!t) return;
@@ -8305,11 +8442,12 @@ table.mvTab td b{font-weight:700}
     var b = ev.target && ev.target.closest ? ev.target.closest('[data-pf]') : null;
     if(b){ abrirPeca(b.getAttribute('data-pf')); return; }
   });
-  [['pfImprimir', imprimir], ['pfBaixar', baixar], ['pfEnviar', enviar], ['pfCopiar', function(){ copiar(); }]].forEach(function(p){
+  [['pfImprimir', imprimir], ['pfBaixar', baixar], ['pfEnviar', enviar], ['pfCopiar', function(){ copiar(); }],
+   ['pfPdf', baixarPdf], ['pfEmailAbrir', emailAbrir], ['pfMandar', mandarEmail], ['pfEmailFechar', function(){ el('pfEmail').classList.add('hide'); }]].forEach(function(p){
     var b = el(p[0]); if(b) b.addEventListener('click', p[1]);
   });
 
-  window.mvPanfDono = { abrir: abrir, _destino: destino, _compor: compor, _legenda: legenda };
+  window.mvPanfDono = { abrir: abrir, _destino: destino, _compor: compor, _legenda: legenda, _pdf: gerarPdf, _montarPdf: montarPdf };
 })();
 </script>
 
