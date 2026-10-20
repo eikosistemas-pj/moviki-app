@@ -1,5 +1,5 @@
 {
-  "versao": "2026-10-20-panfletos",
+  "versao": "2026-10-20-semmapa",
   "atualizado": "2026-10-20",
   "eventos": [
     {
@@ -1776,7 +1776,7 @@
       "h": 1080,
       "peso": "412 KB",
       "novo": false,
-      "legenda": "#publi Eletricista, encanador, montador, chaveiro, instalador.\n\nA pessoa com o problema em casa procura alguém perto, agora. Se você não está no mapa, ela liga para outro — e nem sabia que você existia.\n\nSem comissão sobre os seus serviços.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "legenda": "#publi Eletricista, encanador, montador, chaveiro, instalador: o cliente quer ver o serviço antes de chamar.\n\nNo Moviki você mostra o seu trabalho ao vivo pelo celular, tira a dúvida no chat e o pedido chega na hora, com a sua página e o seu link para mandar no WhatsApp. Sem comissão sobre os seus serviços.\n\n30 dias grátis, com a live liberada. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "servicos"
     },
     {
@@ -2143,21 +2143,6 @@
       "categoria": "moda"
     },
     {
-      "id": "story-bijuteria-mais-perto",
-      "tipo": "story",
-      "titulo": "Sua bijuteria mais perto dos seus clientes",
-      "formato": "Story 9:16",
-      "arquivo": "material/stories/story-bijuteria-mais-perto.jpg",
-      "capa": "material/capas/story-bijuteria-mais-perto.webp",
-      "w": 1080,
-      "h": 1920,
-      "peso": "626 KB",
-      "novo": false,
-      "legenda": "#publi Tem gente procurando um acessório bonito na sua cidade agora. Ela não sabe que a sua banca existe.\n\nNo mapa do Moviki, sabe: vê suas peças, seus horários, onde você está hoje — e fala com você no WhatsApp.\n\nPequenos negócios, grandes conquistas.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
-      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
-      "categoria": "moda"
-    },
-    {
       "id": "story-suco-ao-vivo",
       "tipo": "story",
       "titulo": "Seu suco ao vivo no mapa",
@@ -2185,20 +2170,6 @@
       "novo": false,
       "legenda": "#publi Confeitaria é negócio de desejo. E desejo entra pelos olhos, no momento exato.\n\nMostre a fatia ao vivo, fale do recheio, responda o preço — e receba a encomenda enquanto a pessoa ainda está com vontade.\n\nSem comissão sobre as suas vendas.\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "alimentacao"
-    },
-    {
-      "id": "feed-eletronicos-no-mapa",
-      "tipo": "feed",
-      "titulo": "Sua loja de eletrônicos no mapa, na hora",
-      "formato": "Feed 1:1",
-      "arquivo": "material/feed/feed-eletronicos-no-mapa.jpg",
-      "capa": "material/capas/feed-eletronicos-no-mapa.webp",
-      "w": 1080,
-      "h": 1080,
-      "peso": "362 KB",
-      "novo": false,
-      "legenda": "#publi Quem quebrou o fone hoje vai comprar outro hoje. A pergunta é: de quem?\n\nDe quem ele achar primeiro. No mapa do Moviki a sua loja aparece para quem está perto, com os produtos, as fotos e o WhatsApp à mão.\n\nApareça antes do concorrente aparecer.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
-      "categoria": "eletronicos"
     },
     {
       "id": "story-eletronicos-por-live",
@@ -2391,64 +2362,6 @@
       "categoria": "pet"
     },
     {
-      "id": "feed-petshop-mais-perto",
-      "tipo": "feed",
-      "titulo": "Seu pet shop mais perto de quem precisa",
-      "formato": "Feed 1:1",
-      "arquivo": "material/feed/feed-petshop-mais-perto.jpg",
-      "capa": "material/capas/feed-petshop-mais-perto.webp",
-      "w": 1080,
-      "h": 1080,
-      "peso": "407 KB",
-      "novo": false,
-      "legenda": "#publi Tem tutor procurando banho e tosa na sua rua agora. Ele não sabe que você existe.\n\nNo mapa do Moviki ele encontra: seus serviços, suas fotos, suas promoções e o WhatsApp para agendar sem sair do lugar.\n\nBanho, tosa, vacina, ração e muito mais — tudo à mostra.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
-      "categoria": "pet"
-    },
-    {
-      "id": "story-petshop-no-mapa",
-      "tipo": "story",
-      "titulo": "Seu pet shop no mapa",
-      "formato": "Story 9:16",
-      "arquivo": "material/stories/story-petshop-no-mapa.jpg",
-      "capa": "material/capas/story-petshop-no-mapa.webp",
-      "w": 1080,
-      "h": 1920,
-      "peso": "700 KB",
-      "novo": false,
-      "legenda": "#publi Quem cuida bem merece ser encontrado.\n\nSeu pet shop no mapa da cidade, os serviços à mostra e o agendamento caindo direto no WhatsApp. Sem intermediário e sem comissão.\n\nÉ o seu trabalho chegando em quem procura por ele.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
-      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
-      "categoria": "pet"
-    },
-    {
-      "id": "story-artesanato-no-mapa",
-      "tipo": "story",
-      "titulo": "Seu artesanato no mapa",
-      "formato": "Story 9:16",
-      "arquivo": "material/stories/story-artesanato-no-mapa.jpg",
-      "capa": "material/capas/story-artesanato-no-mapa.webp",
-      "w": 1080,
-      "h": 1920,
-      "peso": "880 KB",
-      "novo": false,
-      "legenda": "#publi Você põe semanas de trabalho em uma peça. E ela fica esperando alguém passar na feira.\n\nNo Moviki o seu ateliê aparece no mapa o mês inteiro: fotos, vídeos do processo, as feiras onde você vai estar. Quem valoriza feito à mão encontra você.\n\nSeu talento merece ser visto.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
-      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
-      "categoria": "artesanato"
-    },
-    {
-      "id": "feed-atelie-mais-pessoas",
-      "tipo": "feed",
-      "titulo": "Do seu ateliê para mais pessoas",
-      "formato": "Feed 1:1",
-      "arquivo": "material/feed/feed-atelie-mais-pessoas.jpg",
-      "capa": "material/capas/feed-atelie-mais-pessoas.webp",
-      "w": 1080,
-      "h": 1080,
-      "peso": "424 KB",
-      "novo": false,
-      "legenda": "#publi Seu trabalho não cabe só no fim de semana.\n\nPágina própria com fotos, vídeos do processo criativo, promoções e WhatsApp — no ar todo dia, para quem procura peça artesanal na sua região.\n\nA feira acaba domingo. O seu ateliê no mapa, não.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
-      "categoria": "artesanato"
-    },
-    {
       "id": "feed-artesanato-encanta",
       "tipo": "feed",
       "titulo": "Artesanato que encanta mais pessoas",
@@ -2475,20 +2388,6 @@
       "novo": false,
       "legenda": "#publi Cardápio escrito informa. Cardápio ao vivo dá vontade.\n\nMostre o prato saindo, fale do tempero, responda quem perguntou o preço. O pedido entra enquanto a pessoa ainda está com água na boca.\n\nDo seu celular, sem nada além do que você já tem.\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "alimentacao"
-    },
-    {
-      "id": "feed-todo-tipo-de-negocio",
-      "tipo": "feed",
-      "titulo": "Todo tipo de negócio no mesmo mapa",
-      "formato": "Feed 4:5",
-      "arquivo": "material/feed/feed-todo-tipo-de-negocio.jpg",
-      "capa": "material/capas/feed-todo-tipo-de-negocio.webp",
-      "w": 1080,
-      "h": 1350,
-      "peso": "502 KB",
-      "novo": false,
-      "legenda": "#publi Food truck, salão, quiosque, barraca, prestador de serviço, loja de rua.\n\nSe o seu cliente precisa te achar, o seu lugar é no mapa. Foto, vídeo, cardápio, promoção e WhatsApp — tudo em um link só, que você manda para quem quiser.\n\nFeito para quem se move e para quem tem ponto fixo.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
-      "categoria": "geral"
     },
     {
       "id": "feed-seja-encontrado",
@@ -2548,36 +2447,6 @@
       "categoria": "alimentacao"
     },
     {
-      "id": "story-servico-mais-perto",
-      "tipo": "story",
-      "titulo": "Seu serviço mais perto de quem procura",
-      "formato": "Story 9:16",
-      "arquivo": "material/stories/story-servico-mais-perto.jpg",
-      "capa": "material/capas/story-servico-mais-perto.webp",
-      "w": 1080,
-      "h": 1920,
-      "peso": "872 KB",
-      "novo": false,
-      "legenda": "#publi Barbearia, manicure, estética, eletricista, food truck.\n\nTodo tipo de serviço no mesmo mapa — encontrado por quem está na sua rua, agora, procurando o que você faz.\n\nVocê aparece, ele vê o seu trabalho, chama no WhatsApp. Simples assim.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
-      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
-      "categoria": "geral"
-    },
-    {
-      "id": "story-conecte-seu-servico",
-      "tipo": "story",
-      "titulo": "Conecte seu serviço com quem está perto",
-      "formato": "Story 9:16",
-      "arquivo": "material/stories/story-conecte-seu-servico.jpg",
-      "capa": "material/capas/story-conecte-seu-servico.webp",
-      "w": 1080,
-      "h": 1920,
-      "peso": "805 KB",
-      "novo": false,
-      "legenda": "#publi Mostre o que você faz. Atenda. Venda. Sem burocracia e sem intermediário.\n\nPágina própria com fotos, vídeos, preços e WhatsApp, e o seu nome no mapa para quem está por perto.\n\nSeu negócio merece ser fácil de achar.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
-      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
-      "categoria": "servicos"
-    },
-    {
       "id": "story-servico-ao-vivo",
       "tipo": "story",
       "titulo": "Mostre seu serviço ao vivo e seja encontrado",
@@ -2591,33 +2460,6 @@
       "legenda": "#publi O cliente não agenda com quem ele não conhece. Então deixe ele te conhecer antes.\n\nAo vivo, ele vê a sua mão trabalhando, o resultado saindo, o seu jeito de atender. Pergunta o horário e marca na hora — já confiando.\n\nBarbearia, manicure, estética, massagem e muito mais.\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
       "categoria": "beleza"
-    },
-    {
-      "id": "panfleto-principal",
-      "tipo": "panfleto",
-      "titulo": "Panfleto principal com o seu QR code",
-      "formato": "A5 · para imprimir",
-      "arquivo": "material/panfletos/panfleto-principal.jpg",
-      "capa": "material/capas/panfleto-principal.webp",
-      "w": 1748,
-      "h": 2480,
-      "peso": "2009 KB",
-      "novo": false,
-      "legenda": "#publi Te mando o panfleto do Moviki, o mapa dos negócios que se movem.\n\nSeu cliente vê onde você está hoje, o seu cardápio, as suas fotos — e agora também consegue comprar de você ao vivo, pelo vídeo, direto do celular.\n\nO que você vender é seu: sem comissão sobre as vendas. Aponte a câmera para o QR code ou entre pelo meu link: {link}",
-      "qr": {
-        "x": 1312,
-        "y": 1841,
-        "l": 288
-      },
-      "texto": {
-        "x": 1456,
-        "y": 2162,
-        "w": 420,
-        "cor": "#0b1220"
-      },
-      "destaque": true,
-      "dica": "Imprima em A5 (14,8 x 21 cm), papel couché 115 g ou mais. O QR code já é o seu.",
-      "categoria": "panfletos"
     },
     {
       "id": "video-live-parceiro",
@@ -2670,93 +2512,6 @@
       "categoria": "geral"
     },
     {
-      "id": "panfleto-a5-na-hora",
-      "tipo": "panfleto",
-      "titulo": "Panfleto A5 com o seu QR code",
-      "formato": "A5 · para imprimir",
-      "arquivo": "material/panfletos/panfleto-a5-no-mapa-na-hora.jpg",
-      "capa": "material/capas/panfleto-a5-no-mapa-na-hora.webp",
-      "w": 2110,
-      "h": 2982,
-      "peso": "1237 KB",
-      "legenda": "#publi Oi! Te mando o panfleto do Moviki, o mapa dos negócios em movimento. Seu cliente vê onde você está hoje, o seu cardápio e fala com você no WhatsApp.\n\nDá para começar grátis. É só apontar a câmera para o QR code ou entrar pelo meu link: {link}",
-      "novo": false,
-      "qr": {
-        "x": 1587,
-        "y": 2253,
-        "l": 388
-      },
-      "texto": {
-        "x": 1780,
-        "y": 2656,
-        "w": 372,
-        "cor": "#0b1220"
-      },
-      "destaque": true,
-      "dica": "Imprima em A5 (14,8 x 21 cm), papel couché 115 g ou mais. O QR code já é o seu.",
-      "categoria": "panfletos"
-    },
-    {
-      "id": "video-influencer-lojista",
-      "tipo": "video",
-      "titulo": "Seu cliente saiu pra te procurar. Ele te achou?",
-      "formato": "Reels/Story 9:16",
-      "duracao": "1:07",
-      "peso": "17 MB",
-      "arquivo": "https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/material%2Fvideo-influencer-parceiro.mp4?alt=media",
-      "capa": "material/capas/video-influencer-parceiro.webp",
-      "w": 1080,
-      "h": 1920,
-      "novo": false,
-      "legenda": "#publi Ninguém compra de quem não acha.\n\nNo Moviki o comerciante marca onde está hoje, monta a página com cardápio, fotos e promoções, e quem está por perto encontra. Vale para quem se move e para quem tem ponto fixo.\n\nTeste grátis por 30 dias, sem cartão. Comece pelo meu link: {link}",
-      "dica": "Vídeo apresentado, de 1 minuto. Bom para Reels e para mandar direto no WhatsApp do comerciante.",
-      "categoria": "geral"
-    },
-    {
-      "id": "video-cada-negocio",
-      "tipo": "video",
-      "titulo": "Cada negócio tem sua rotina",
-      "formato": "Reels/Story 9:16",
-      "duracao": "0:18",
-      "peso": "6,4 MB",
-      "arquivo": "https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/material%2Fvideo-cada-negocio-tem-sua-rotina.mp4?alt=media",
-      "capa": "material/capas/video-cada-negocio-tem-sua-rotina.webp",
-      "w": 1080,
-      "h": 1920,
-      "novo": false,
-      "legenda": "#publi Cada negócio tem sua rotina: food truck, feira, loja ou escritório. No Moviki o cliente vê onde você está, o cardápio, as promoções, os horários e fala com você no WhatsApp. Tudo num lugar só.\n\nComece grátis pelo meu link: {link}",
-      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
-      "categoria": "geral"
-    },
-    {
-      "id": "feed-na-hora-foodtruck",
-      "tipo": "feed",
-      "titulo": "Seu negócio no mapa. Na hora.",
-      "formato": "Feed 4:5",
-      "arquivo": "material/feed/feed-no-mapa-na-hora-foodtruck.jpg",
-      "capa": "material/capas/feed-no-mapa-na-hora-foodtruck.webp",
-      "w": 1080,
-      "h": 1350,
-      "peso": "349 KB",
-      "legenda": "#publi Seu cliente não te acha porque não sabe onde você está hoje.\n\nNo Moviki você atualiza a sua localização e aparece no mapa na hora, para quem está por perto. Página própria com cardápio, fotos e WhatsApp.\n\nComece grátis pelo meu link: {link}",
-      "novo": false,
-      "categoria": "geral"
-    },
-    {
-      "id": "feed-quem-se-move",
-      "tipo": "feed",
-      "titulo": "Para quem se move e para quem tem ponto fixo",
-      "formato": "Feed 4:5",
-      "arquivo": "material/feed/feed-quem-se-move-e-ponto-fixo.jpg",
-      "capa": "material/capas/feed-quem-se-move-e-ponto-fixo.webp",
-      "w": 1080,
-      "h": 1350,
-      "peso": "404 KB",
-      "legenda": "#publi Food truck, feira, barraca, entrega, loja ou escritório: o Moviki é para quem se move e para quem tem ponto fixo.\n\nSeu negócio ganha uma página própria com localização, cardápio, fotos, horários e WhatsApp.\n\nComece grátis pelo meu link: {link}",
-      "novo": false,
-      "categoria": "geral"
-    },
-    {
       "id": "feed-tudo-em-um-lugar",
       "tipo": "feed",
       "titulo": "Tudo sobre o seu negócio em um só lugar",
@@ -2785,63 +2540,6 @@
       "categoria": "geral"
     },
     {
-      "id": "feed-na-hora-cidade",
-      "tipo": "feed",
-      "titulo": "Seu negócio no mapa (versão cidade)",
-      "formato": "Feed 4:5",
-      "arquivo": "material/feed/feed-no-mapa-na-hora-cidade.jpg",
-      "capa": "material/capas/feed-no-mapa-na-hora-cidade.webp",
-      "w": 1080,
-      "h": 1350,
-      "peso": "344 KB",
-      "legenda": "#publi Seu cliente não te acha porque não sabe onde você está hoje.\n\nNo Moviki você atualiza a sua localização e aparece no mapa na hora, para quem está por perto. Página própria com cardápio, fotos e WhatsApp.\n\nComece grátis pelo meu link: {link}",
-      "novo": false,
-      "categoria": "geral"
-    },
-    {
-      "id": "feed-quem-se-move-2",
-      "tipo": "feed",
-      "titulo": "Para quem se move (versão 2)",
-      "formato": "Feed 4:5",
-      "arquivo": "material/feed/feed-quem-se-move-e-ponto-fixo-2.jpg",
-      "capa": "material/capas/feed-quem-se-move-e-ponto-fixo-2.webp",
-      "w": 1080,
-      "h": 1350,
-      "peso": "391 KB",
-      "legenda": "#publi Food truck, feira, barraca, entrega, loja ou escritório: o Moviki é para quem se move e para quem tem ponto fixo.\n\nSeu negócio ganha uma página própria com localização, cardápio, fotos, horários e WhatsApp.\n\nComece grátis pelo meu link: {link}",
-      "novo": false,
-      "categoria": "geral"
-    },
-    {
-      "id": "quadrado-na-hora",
-      "tipo": "feed",
-      "titulo": "Seu negócio no mapa (quadrado)",
-      "formato": "Feed 1:1",
-      "arquivo": "material/feed/quadrado-no-mapa-na-hora.jpg",
-      "capa": "material/capas/quadrado-no-mapa-na-hora.webp",
-      "w": 1080,
-      "h": 1080,
-      "peso": "302 KB",
-      "legenda": "#publi Seu cliente não te acha porque não sabe onde você está hoje.\n\nNo Moviki você atualiza a sua localização e aparece no mapa na hora, para quem está por perto. Página própria com cardápio, fotos e WhatsApp.\n\nComece grátis pelo meu link: {link}",
-      "novo": false,
-      "categoria": "geral"
-    },
-    {
-      "id": "story-na-hora",
-      "tipo": "story",
-      "titulo": "No mapa, na hora",
-      "formato": "Story 9:16",
-      "arquivo": "material/stories/story-no-mapa-na-hora.jpg",
-      "capa": "material/capas/story-no-mapa-na-hora.webp",
-      "w": 1080,
-      "h": 1920,
-      "peso": "397 KB",
-      "legenda": "#publi Seu cliente não te acha porque não sabe onde você está hoje.\n\nNo Moviki você atualiza a sua localização e aparece no mapa na hora, para quem está por perto. Página própria com cardápio, fotos e WhatsApp.\n\nComece grátis pelo meu link: {link}",
-      "novo": false,
-      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
-      "categoria": "geral"
-    },
-    {
       "id": "story-tudo-em-um-lugar",
       "tipo": "story",
       "titulo": "Tudo em um só lugar",
@@ -2852,21 +2550,6 @@
       "h": 1920,
       "peso": "376 KB",
       "legenda": "#publi Cardápio, promoções, fotos, vídeos, horários e WhatsApp. Tudo sobre o seu negócio num link só, para você mandar para o cliente e pôr na bio.\n\nComece grátis pelo meu link: {link}",
-      "novo": false,
-      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
-      "categoria": "geral"
-    },
-    {
-      "id": "story-quem-se-move",
-      "tipo": "story",
-      "titulo": "Quem se move e ponto fixo",
-      "formato": "Story 9:16",
-      "arquivo": "material/stories/story-quem-se-move-e-ponto-fixo.jpg",
-      "capa": "material/capas/story-quem-se-move-e-ponto-fixo.webp",
-      "w": 1080,
-      "h": 1920,
-      "peso": "434 KB",
-      "legenda": "#publi Food truck, feira, barraca, entrega, loja ou escritório: o Moviki é para quem se move e para quem tem ponto fixo.\n\nSeu negócio ganha uma página própria com localização, cardápio, fotos, horários e WhatsApp.\n\nComece grátis pelo meu link: {link}",
       "novo": false,
       "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
       "categoria": "geral"
@@ -2895,22 +2578,8 @@
       "titulo": "Texto curto para a bio do Instagram",
       "formato": "Bio",
       "novo": false,
-      "texto": "Parceiro Moviki (#publi) · ponha seu negócio no mapa 👇\n{link}",
+      "texto": "Parceiro Moviki (#publi) · sua loja vendendo ao vivo pelo celular 👇\n{link}",
       "categoria": "geral"
-    },
-    {
-      "id": "feed-fotografia-talento",
-      "tipo": "feed",
-      "titulo": "Mostre seu talento para mais clientes",
-      "formato": "Feed 1:1",
-      "arquivo": "material/feed/feed-fotografia-talento.jpg",
-      "capa": "material/capas/feed-fotografia-talento.webp",
-      "w": 1080,
-      "h": 1080,
-      "peso": "381 KB",
-      "novo": false,
-      "legenda": "#publi O casamento mais bonito que você fotografou este ano está dormindo na pasta do seu computador. Ninguém da sua cidade viu.\n\nQuem procura fotógrafo hoje procura no celular, na hora, e contrata quem aparece primeiro com trabalho à vista. No Moviki o seu portfólio, os seus serviços e o seu WhatsApp ficam no mapa — e quem está perto te encontra sem precisar de indicação.\n\nTalento também se move.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
-      "categoria": "eventos"
     },
     {
       "id": "story-fotografia-talento",
@@ -2924,21 +2593,6 @@
       "peso": "602 KB",
       "novo": false,
       "legenda": "#publi Fotógrafo bom perde cliente por um motivo bobo: a pessoa não sabia que ele existia.\n\nEnsaio, casamento, aniversário, foto de produto — no Moviki você mostra o que já fez, informa onde está atendendo agora e recebe o contato direto no WhatsApp, sem intermediário.\n\nBoas histórias em imagens. As suas, na tela de quem procura.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
-      "categoria": "eventos",
-      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
-    },
-    {
-      "id": "story-fotografia-talento-2",
-      "tipo": "story",
-      "titulo": "Registre histórias em qualquer lugar",
-      "formato": "Story 9:16",
-      "arquivo": "material/stories/story-fotografia-talento-2.jpg",
-      "capa": "material/capas/story-fotografia-talento-2.webp",
-      "w": 1080,
-      "h": 1920,
-      "peso": "609 KB",
-      "novo": false,
-      "legenda": "#publi Você não tem estúdio fixo — o seu estúdio é onde o cliente está. E é justamente por isso que ninguém consegue te achar.\n\nNo Moviki você marca no mapa onde está atendendo hoje, mostra fotos e vídeos do seu trabalho, publica promoções e fala com o cliente pelo WhatsApp. Feito para quem se move.\n\nMais clientes, mais histórias, mais conquistas.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "eventos",
       "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
     }
