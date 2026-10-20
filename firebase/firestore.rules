@@ -3,6 +3,42 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================================
+    //  v36 — 19/10/2026 — PAGINA PUBLICA NIVEL MERCADO (P85 Fase 2a)
+    //    Cinco campos NOVOS e OPCIONAIS em negocios/{uid}, todos escritos
+    //    pelo proprio lojista no painel e lidos pela pagina publica:
+    //      tema        'claro' | 'escuro' (fundo da pagina publica)
+    //      horarios    mapa dom..sab -> 'HH:MM-HH:MM' ou '' (fechado)
+    //      faq         lista de {p, r}, no maximo 8
+    //      redes       mapa instagram/tiktok/youtube/facebook -> @ ou nome
+    //      agendaLives lista de {em (ms), titulo}, no maximo 5
+    //    Nenhum e dado pessoal de terceiro: e a vitrine que o lojista escreve.
+    //    O resto do arquivo e a v35 (16/10, abaixo), letra por letra.
+    //  ORDEM: publicar ANTES do merge do painel (moviki-app index.html
+    //  2026-10-19-vitrine2). Invertido, TODO "Salvar tudo" e negado, porque
+    //  o painel novo grava os campos e o hasOnly antigo nao os conhece.
+    //  v35 — 16/10/2026 — LINK NAO E NOME + LOJA ONLINE
+    //    Em 16/10 uma revendedora cadastrou o negocio com o NOME igual ao
+    //    link de afiliada dela (https://deola.ne/af-55bm) e o apelido nasceu
+    //    'httpsdeolaneaf-55bm'. A pagina publica exibia um link encurtado
+    //    de terceiro como nome, dentro do dominio moviki.com.br.
+    //    a. negocios/{uid}: nome com cara de link (://, www., dominio.xx/
+    //       ou terminado em .com/.com.br/.net/...) e NEGADO. Excecao: o nome
+    //       que JA esta gravado continua passando sem mudar — senao o lojista
+    //       que ja tem nome-link nao salvaria mais nada no painel (cardapio,
+    //       status...). Regra de ouro: nunca travar a coleta.
+    //    b. negocioValido ganha `lojaOnline` (OPCIONAL): o link da loja
+    //       online / link de venda do lojista, so https://dominio.tld..., ate
+    //       300 caracteres, ou string vazia. Vira o botao 'Loja online' da
+    //       pagina publica (404.html 2026-10-16-lojaonline).
+    //    c. slugs: apelido que comeca com http, https ou www e NEGADO
+    //       (apelidoLivre). Apelido que ja existe nao e tocado.
+    //  O resto do arquivo e a v34, letra por letra.
+    //  ORDEM: publicar ANTES do moviki-app/index.html 2026-10-16-lojaonline.
+    //  Invertido, so quem preencher a Loja online leva 'nao consegui salvar'
+    //  ate a regra subir; nenhum outro save e afetado.
+    // ==========================================================
+
+    // ==========================================================
     //  v34 — 06/10/2026 — AVALIACAO SO PELO ROBO (plano de seguranca 2.2)
     //    Decisao do Paulo: a avaliacao continua SEM login do cliente, mas
     //    passa a entrar pelo moviki-robo (api/avaliacao.js), que confere o
@@ -652,7 +688,12 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null
                    && request.auth.uid == uid
-                   && negocioValido(request.resource.data);
+                   && negocioValido(request.resource.data)
+                   // v35: nome nao e link. O nome que ja esta gravado passa
+                   // sem mudar, para nao travar o painel de quem ja tem.
+                   && ( !temLink(request.resource.data.nome)
+                        || ( resource != null
+                             && resource.data.get('nome', '') == request.resource.data.nome ) );
 
       // BLINDAGEM DE AVALIAÇÕES: Impede injeção maliciosa em lote
       //
@@ -1686,7 +1727,19 @@ service cloud.firestore {
     // v33: apelido que um golpista usaria para se passar pelo Moviki.
     function apelidoLivre(slug) {
       return !(slug in ['suporte','oficial','pix','pagamento','pagamentos','admin','ajuda','seguranca','sac','login','atendimento','contato','moviki-oficial'])
-        && !slug.matches('.*moviki.*');
+        && !slug.matches('.*moviki.*')
+        // v35: apelido que nasce de link colado (httpsdeolaneaf-55bm, www...)
+        && !slug.matches('^(https?|www).*');
+    }
+
+    // v35 (16/10/2026): texto com cara de link — protocolo, www, dominio
+    // seguido de barra ou terminado num final de dominio comum. Usado no
+    // nome do negocio. 'J.R. Lanches' e 'Dr. Pet' continuam passando.
+    function temLink(s) {
+      let t = s.lower();
+      return t.matches('.*(://|www[.]).*')
+          || t.matches('.*[a-z0-9-][.][a-z]{2,24}/.*')
+          || t.matches('.*[a-z0-9-][.](com|net|org|me|io|app|shop|store|link|site|online|br|ly|bio|ne|co|info|biz|page)$');
     }
 
     function isAdmin() {
@@ -1739,7 +1792,7 @@ service cloud.firestore {
     }
 
     function negocioValido(d) {
-      return d.keys().hasOnly(['nome','status','recado','cardapio','promocoes','eventos','fotos','videos','atualizadoEm','lat','lng','slug','whatsapp','markerLogo','cor','whiteLabel','segmento','segmentoMacro','autorizaDivulgacao','horario','endereco','entrega','precoMedio','capa'])
+      return d.keys().hasOnly(['nome','status','recado','cardapio','promocoes','eventos','fotos','videos','atualizadoEm','lat','lng','slug','whatsapp','markerLogo','cor','whiteLabel','segmento','segmentoMacro','autorizaDivulgacao','horario','endereco','entrega','precoMedio','capa','lojaOnline','tema','horarios','faq','redes','agendaLives'])
         && d.nome is string && d.nome.size() >= 1 && d.nome.size() <= 80
         && (!('status' in d) || (d.status is string && d.status in ['aberto','fechado']))
         && (!('recado' in d) || (d.recado is string && d.recado.size() <= 280))
@@ -1800,7 +1853,48 @@ service cloud.firestore {
         //   NOVO no 404.html na hora de publicar — que e quem joga o link
         //   dentro de um href.
         //   SEM ESTE CAMPO NO hasOnly ACIMA, TODO save do painel novo e negado.
-        && (!('videos' in d) || (d.videos is list && d.videos.size() <= 6));
+        && (!('videos' in d) || (d.videos is list && d.videos.size() <= 6))
+        // --- 16/10/2026 (v35): LOJA ONLINE ---
+        // lojaOnline = link da loja online / link de venda do lojista (site,
+        //   loja de afiliado, catalogo). OPCIONAL e pode ser string vazia
+        //   (vazia = sem botao). So https, com dominio, sem espaco nem aspas.
+        //   A pagina publica mostra o dominio no botao e abre com
+        //   rel='nofollow ugc noopener noreferrer'.
+        //   SEM ESTE CAMPO NO hasOnly ACIMA, TODO save do painel novo e negado.
+        && (!('lojaOnline' in d) || (d.lojaOnline is string && d.lojaOnline.size() <= 300
+              && (d.lojaOnline == '' || d.lojaOnline.matches('^https://[A-Za-z0-9.-]+[.][A-Za-z]{2,}([/?#][^ "<>]*)?$'))))
+        // --- 19/10/2026 (v36): P85 Fase 2a ---
+        // OPCIONAIS: negocio antigo nao tem os campos; exigir presenca
+        // derrubaria o save de todos. Dentro de lista a regra nao le item
+        // (faq, agendaLives): o painel limita tamanho e a pagina publica
+        // escapa cada texto antes de mostrar.
+        && (!('tema' in d) || (d.tema is string && d.tema in ['claro','escuro']))
+        && (!('horarios' in d) || horariosValidos(d.horarios))
+        && (!('faq' in d) || (d.faq is list && d.faq.size() <= 8))
+        && (!('redes' in d) || redesValidas(d.redes))
+        && (!('agendaLives' in d) || (d.agendaLives is list && d.agendaLives.size() <= 5));
+    }
+    // 'HH:MM-HH:MM' ou vazio (fechado no dia)
+    function horaDiaValida(v) {
+      return v is string && (v == '' || v.matches('^[0-2][0-9]:[0-5][0-9]-[0-2][0-9]:[0-5][0-9]$'));
+    }
+    function horariosValidos(h) {
+      return h is map
+        && h.keys().hasOnly(['dom','seg','ter','qua','qui','sex','sab'])
+        && horaDiaValida(h.get('dom','')) && horaDiaValida(h.get('seg',''))
+        && horaDiaValida(h.get('ter','')) && horaDiaValida(h.get('qua',''))
+        && horaDiaValida(h.get('qui','')) && horaDiaValida(h.get('sex',''))
+        && horaDiaValida(h.get('sab',''));
+    }
+    // so o @ ou o nome da pagina: o endereco completo a pagina publica monta
+    function redeValida(v) {
+      return v is string && v.size() <= 60 && (v == '' || v.matches('^[A-Za-z0-9._-]+$'));
+    }
+    function redesValidas(r) {
+      return r is map
+        && r.keys().hasOnly(['instagram','tiktok','youtube','facebook'])
+        && redeValida(r.get('instagram','')) && redeValida(r.get('tiktok',''))
+        && redeValida(r.get('youtube','')) && redeValida(r.get('facebook',''));
     }
   }
 }

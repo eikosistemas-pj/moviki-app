@@ -88,6 +88,57 @@ describe('negocios/{uid} — o cadastro do lojista', () => {
   });
 });
 
+/* ===== v36 (19/10/2026, P85 Fase 2a): vitrine nivel mercado ===== */
+describe('negocios/{uid} — campos da vitrine v36', () => {
+  before(() => semear());
+  const base = { nome: 'Loja' };
+  const grava = (extra) => setDoc(doc(dono(), 'negocios', DONO), { ...base, ...extra });
+
+  test('o save completo do painel novo passa', async () => {
+    await assertSucceeds(grava({
+      tema: 'claro',
+      horarios: { dom: '', seg: '10:00-19:00', ter: '10:00-19:00', qua: '10:00-19:00', qui: '10:00-19:00', sex: '10:00-19:00', sab: '09:00-13:00' },
+      faq: [{ p: 'Trocam?', r: 'Sim, em 7 dias.' }],
+      redes: { instagram: 'loja.teste', tiktok: 'lojateste', youtube: '', facebook: 'lojateste' },
+      agendaLives: [{ em: Date.now() + 86400000, titulo: 'Coleção nova' }],
+    }));
+  });
+
+  test('negocio antigo sem os campos continua salvando', async () => {
+    await assertSucceeds(grava({}));
+  });
+
+  test('tema fora de claro/escuro e negado', async () => {
+    await assertFails(grava({ tema: 'neon' }));
+  });
+
+  test('horario em formato errado e negado', async () => {
+    await assertFails(grava({ horarios: { seg: '10h as 19h' } }));
+  });
+
+  test('dia inventado no horario e negado', async () => {
+    await assertFails(grava({ horarios: { feriado: '10:00-12:00' } }));
+  });
+
+  test('rede com endereco ou script no lugar do @ e negada', async () => {
+    await assertFails(grava({ redes: { instagram: 'javascript:alert(1)' } }));
+    await assertFails(grava({ redes: { instagram: 'https://instagram.com/x' } }));
+  });
+
+  test('rede que nao existe na lista e negada', async () => {
+    await assertFails(grava({ redes: { onlyfans: 'x' } }));
+  });
+
+  test('mais de 8 perguntas ou mais de 5 lives na agenda e negado', async () => {
+    await assertFails(grava({ faq: Array.from({ length: 9 }, () => ({ p: 'a', r: 'b' })) }));
+    await assertFails(grava({ agendaLives: Array.from({ length: 6 }, () => ({ em: 1, titulo: 'x' })) }));
+  });
+
+  test('estranho nao grava os campos novos em negocio alheio', async () => {
+    await assertFails(setDoc(doc(estranho(), 'negocios', DONO), { ...base, tema: 'escuro' }));
+  });
+});
+
 /* ========== estado/live — hoje SO o curinga sustenta ========== */
 describe('estado/live — o interruptor da transmissao', () => {
   before(() => semear());
@@ -682,5 +733,52 @@ describe('v32 — metricas, resumo, anexo, apelidos e lives', () => {
   test('lives: id de outro lojista e recusado', async () => {
     const live = { lojistaUid: DONO, ativa: true, inicioMs: Date.now() };
     await assertFails(setDoc(doc(dono(), 'lives', ESTRANHO + '_123'), live));
+  });
+});
+
+/* ===== v35 (16/10/2026): link nao e nome + loja online ===== */
+describe('v35 — link nao e nome, loja online e apelido de link', () => {
+  const NOVO = 'lojista-novo-3';
+  const novo = () => env.authenticatedContext(NOVO).firestore();
+  before(async () => {
+    await env.clearFirestore();
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const db = ctx.firestore();
+      await setDoc(doc(db, 'negocios', DONO), { nome: 'Food Truck do Teste' });
+      // o caso real de 16/10: o nome ja nasceu como link
+      await setDoc(doc(db, 'negocios', ESTRANHO), { nome: 'https://deola.ne/af-55bm', slug: 'httpsdeolaneaf-55bm' });
+    });
+  });
+  test('cadastro novo com o link no nome e recusado', async () => {
+    await assertFails(setDoc(doc(novo(), 'negocios', NOVO), { nome: 'https://deola.ne/af-55bm' }));
+    await assertFails(setDoc(doc(novo(), 'negocios', NOVO), { nome: 'deola.ne/af-55bm' }));
+    await assertFails(setDoc(doc(novo(), 'negocios', NOVO), { nome: 'www.minhaloja.com.br' }));
+    await assertFails(setDoc(doc(novo(), 'negocios', NOVO), { nome: 'minhaloja.com' }));
+  });
+  test('nome comum com ponto continua passando', async () => {
+    await assertSucceeds(setDoc(doc(novo(), 'negocios', NOVO), { nome: 'J.R. Lanches' }));
+    await assertSucceeds(setDoc(doc(novo(), 'negocios', NOVO), { nome: 'Dr. Pet - Banho e Tosa' }));
+  });
+  test('o dono nao troca o nome por um link', async () => {
+    await assertFails(setDoc(doc(dono(), 'negocios', DONO), { nome: 'https://exemplo.com/loja' }));
+  });
+  test('quem JA tem nome-link continua salvando o resto (nao trava o painel)', async () => {
+    const quem = env.authenticatedContext(ESTRANHO).firestore();
+    await assertSucceeds(setDoc(doc(quem, 'negocios', ESTRANHO), { status: 'aberto' }, { merge: true }));
+    await assertSucceeds(setDoc(doc(quem, 'negocios', ESTRANHO), { nome: 'Luana Perfumes' }, { merge: true }));
+  });
+  test('loja online: https com dominio passa; vazio passa', async () => {
+    await assertSucceeds(setDoc(doc(dono(), 'negocios', DONO), { nome: 'Food Truck do Teste', lojaOnline: 'https://deola.ne/af-55bm' }));
+    await assertSucceeds(setDoc(doc(dono(), 'negocios', DONO), { nome: 'Food Truck do Teste', lojaOnline: '' }));
+  });
+  test('loja online: http, javascript, sem dominio ou com aspas e recusado', async () => {
+    for (const ruim of ['http://exemplo.com', 'javascript:alert(1)', 'https://localhost', 'https://a.com/"><img', 'https://exemplo.com/a b']) {
+      await assertFails(setDoc(doc(dono(), 'negocios', DONO), { nome: 'Food Truck do Teste', lojaOnline: ruim }));
+    }
+  });
+  test('apelido que comeca com http ou www e recusado', async () => {
+    await assertFails(setDoc(doc(novo(), 'slugs', 'httpsdeolaneaf-55bm2'), { uid: NOVO }));
+    await assertFails(setDoc(doc(novo(), 'slugs', 'wwwminhaloja'), { uid: NOVO }));
+    await assertSucceeds(setDoc(doc(novo(), 'slugs', 'luana-perfumes'), { uid: NOVO }));
   });
 });
