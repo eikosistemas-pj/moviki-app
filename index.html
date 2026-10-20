@@ -330,6 +330,13 @@ window.mvAtrib = function(){
   .avisoWebview .btnAbrirFora{display:block;width:100%;margin:10px 0 6px;padding:12px 14px;border:0;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;background:#fff;color:#1f1f1f;box-shadow:0 1px 3px rgba(0,0,0,.25)}
   .avisoWebview .avisoWebviewOu{font-size:12px;opacity:.85}
   .avisoWebview .abrirForaManual{margin-top:8px;font-size:12.5px}
+  /* 2026-10-20-cadastro3 */
+  .avisoWebview.avisoWebviewMini{background:none;border:0;padding:0;margin:10px 0 0;text-align:center;color:#8fa6c4}
+  .avisoWebviewMini .btnAbrirForaLink{background:none;border:0;padding:6px 4px;color:#4fd1c5;font-size:13px;text-decoration:underline;cursor:pointer;font-family:inherit}
+  .avisoWebviewMini .abrirForaManual{text-align:left;color:#ffe08a}
+  body.mvCadAberto #mvAvisoMed{display:none!important}
+  .qzA3Prova{text-align:center;font-size:12.5px;color:#8fa6c4;margin:8px 0 0}
+  @media(max-width:420px){#qzA3 .qzTitulo{font-size:18px;margin:2px 4px 12px}#qzA3 .qzCampo{margin-bottom:10px}}
   .avisoWebview .btnCopiarFora{margin-top:6px;padding:7px 12px;border-radius:8px;border:1px solid rgba(255,193,64,.6);background:transparent;color:inherit;font-weight:600;cursor:pointer}
 :where(html[data-tema="claro"]) .avisoWebview:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#916d08;background:rgba(255,193,64,0.12);border:1px solid rgba(255,193,64,0.45)}
   .qzLgpd{font-size:12px;line-height:1.45;opacity:.85;margin:12px 0 0;text-align:center}.qzLgpd a{color:inherit;text-decoration:underline}
@@ -4472,6 +4479,7 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
         <div class="qzCampo"><label for="qzEmailA">E-mail</label><input id="qzEmailA" type="email" placeholder="voce@email.com" autocomplete="email"></div>
         <div class="qzCampo qzCampoSenha"><label for="qzSenhaA">Senha</label><input id="qzSenhaA" type="password" placeholder="mínimo 6 caracteres" autocomplete="new-password"><button type="button" class="verSenha" onclick="mqzVerSenha('qzSenhaA',this)">mostrar</button></div>
         <button type="button" id="qzA3Btn" class="qzBtnPrim" onclick="mqzSubmeterComerciante()">Criar minha conta grátis</button>
+        <p class="qzA3Prova">30 dias grátis · sem cartão · leva 30 segundos</p>
       </div>
       <p class="qzLgpd">Ao criar a conta você aceita os <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener">Termos de uso</a> e a <a href="https://moviki.com.br/privacidade.html" target="_blank" rel="noopener">Política de privacidade</a>. O WhatsApp informado aparece na página pública do seu negócio.</p>
     </div>
@@ -4670,7 +4678,7 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
      e pode virar evento-chave e conversao do Google Ads, um por campanha.
      cadastro_indicado continua (com tipo) para quem ja monta relatorio nele. */
   window.MOVIKI_METRICA_IND='2026-09-19-tipocadastro';
-  window.MOVIKI_CADASTRO='2026-10-20-contaexiste';   /* 20/10: e-mail ja cadastrado + senha certa entra (nao trava); cad_validacao separado de cad_erro. Nao muda a tela que o Vik descreve: MOVIKI_VERSAO segue igual. */
+  window.MOVIKI_CADASTRO='2026-10-20-cadastro3';   /* 20/10 (cadastro3): no navegador do Instagram/Facebook/TikTok o e-mail e a senha vem logo depois do nome e a saida para o Chrome vira link pequeno; aviso de medicao espera o cadastro fechar; '30 dias gratis · sem cartao' colado no botao; eventos cad_foco_<campo>, cad_saiu_<ultimo campo> e cad_erro_<motivo>. Antes: 2026-10-20-contaexiste — 20/10: e-mail ja cadastrado + senha certa entra (nao trava); cad_validacao separado de cad_erro. Nao muda a tela que o Vik descreve: MOVIKI_VERSAO segue igual. */
   try{
     const _mvSignupOrig=window.mvSignup;
     if(typeof _mvSignupOrig==='function' && !_mvSignupOrig._comRef){
@@ -4751,7 +4759,20 @@ window.mvAbaInicial=function(){
      Safari) levando junto ramo, UTMs e o clique do anuncio; se o aplicativo
      nao deixar sair, mostra o passo a passo e o "Copiar link". */
   if(UA_WEBVIEW_SEM_POPUP){try{
-    ['btnGoogle','qzA3BtnGoogle','qzB3BtnGoogle'].forEach(function(id){var b=el(id);if(!b||!b.parentNode)return;b.style.display='none';
+    /* 20/10/2026 '2026-10-20-cadastro3' (MOVIKI_CADASTRO): no cadastro do LOJISTA, dentro do Instagram/Facebook/TikTok,
+       o quadro amarelo ("o Google nao deixa entrar") ficava ENTRE o nome e o e-mail e empurrava o botao Criar para
+       2,5 telas abaixo. Medido em 09-20/10: quem saiu para o Chrome cadastrou 4 de 16 (25%); quem ficou no app,
+       7 de 18 (39%). Agora o e-mail e a senha vem logo depois do nome e a saida para o navegador vira um link
+       pequeno embaixo do botao Criar. Login e cadastro de parceiro continuam como estavam. */
+    (function(){ var g=el('qzA3BtnGoogle'), cx=el('qzA3Email'), bt=el('qzA3Btn'); if(!g||!cx||!bt) return;
+      g.style.display='none';
+      var ou=document.querySelector('#qzA3Escolha .qzOuLinha'); if(ou) ou.style.display='none';
+      var n=document.createElement('div'); n.className='avisoWebview avisoWebviewMini';
+      var a=document.createElement('button'); a.type='button'; a.className='btnAbrirForaLink'; a.textContent='Prefere entrar com o Google? Abrir no navegador do celular';
+      a.addEventListener('click',function(){ try{ if(window.mvEv) mvEv('cad_abrir_navegador',{}); }catch(_){} window.mvAbrirNoNavegador(n); });
+      n.appendChild(a); bt.parentNode.insertBefore(n, bt.nextSibling);
+    })();
+    ['btnGoogle','qzB3BtnGoogle'].forEach(function(id){var b=el(id);if(!b||!b.parentNode)return;b.style.display='none';
       var n=document.createElement('div');n.className='avisoWebview';
       var t=document.createElement('div');
       t.textContent='Você está no navegador de um aplicativo (Instagram, Facebook ou TikTok), onde o Google não deixa entrar. Para criar a conta com o Google em 1 toque (sem precisar confirmar e-mail), abra no navegador do celular:';
@@ -11531,7 +11552,7 @@ window.mvAbaInicial=function(){
     else if(m.indexOf('e-mail')>=0) motivo='email';
     else if(m.indexOf('conectar')>=0||m.indexOf('recarregue')>=0) motivo='conexao';
     else if(m.indexOf('popup')>=0||m.indexOf('janela')>=0||m.indexOf('cancel')>=0) motivo='google_cancelado';
-    cadEv('cad_erro',{via:via,motivo:motivo});
+    cadEv('cad_erro',{via:via,motivo:motivo}); cadEv('cad_erro_'+motivo,{via:via});
     if(motivo==='apelido'){ var b=$('qzSlugEdit'); if(b)b.style.display='block'; }
   }
   function slugGarantido(nome,slug){
@@ -11563,7 +11584,7 @@ window.mvAbaInicial=function(){
       lojaOnline:($('qzLoja')&&$('qzLoja').value)||'',
       template:escolhaSubtipo
     };
-    cadEv('cad_google_clique',{});
+    cadEv('cad_google_clique',{}); try{ window.mqzCadEnviou&&window.mqzCadEnviou(); }catch(_){}
     if(!dados.nome.trim()){if(erro)erro.textContent='D\u00ea um nome ao seu neg\u00f3cio.';cadAviso('google','nome');return;}
     if(window.mvTemLink&&window.mvTemLink(dados.nome)){if(erro)erro.textContent='No nome vai s\u00f3 o nome do neg\u00f3cio, sem link.';cadAviso('google','nome');return;}
     dados.slug=slugGarantido(dados.nome,dados.slug);
@@ -11731,7 +11752,7 @@ window.mvAbaInicial=function(){
       lojaOnline:($('qzLoja')&&$('qzLoja').value)||'',
       template:escolhaSubtipo
     };
-    cadEv('cad_email_enviar',{});
+    cadEv('cad_email_enviar',{}); try{ window.mqzCadEnviou&&window.mqzCadEnviou(); }catch(_){}
     if(!dados.nome.trim()){if(erro)erro.textContent='Dê um nome ao seu negócio.';cadAviso('email','nome');return;}
     if(window.mvTemLink&&window.mvTemLink(dados.nome)){if(erro)erro.textContent='No nome vai só o nome do negócio, sem link.';cadAviso('email','nome');return;}
     if(!dados.email.trim()){if(erro)erro.textContent='Digite seu e-mail.';cadAviso('email','email');return;}
@@ -11836,7 +11857,20 @@ window.mvAbaInicial=function(){
     return true;
   }
   var _cadChegouMedido=false;
-  window.mqzMostrar=function(){ var m=$('quizModal'); if(m)m.classList.remove('qzEscondido');
+  /* 2026-10-20-cadastro3: o aviso de medicao (LGPD) cobria 1/3 da tela do cadastro no celular, por cima dos campos.
+     Enquanto o cadastro esta aberto ele espera; fechou o cadastro, ele volta. A politica continua linkada no rodape
+     do formulario ("Ao criar a conta voce aceita..."). Na UE nada muda: sem "Aceitar", nada e medido. */
+  function cadAvisoMed(aberto){ try{ document.body.classList.toggle('mvCadAberto',!!aberto); }catch(_){} }
+  /* Medicao por CAMPO e saida sem enviar. Nome de evento, nao parametro: aparece no GA4 sem dimensao personalizada. */
+  var _cadFocos={}, _cadEnviou=false, _cadSaiuMedido=false, _cadUltimo='nada';
+  ['qzNome:nome','qzWhats:whats','qzEmailA:email','qzSenhaA:senha'].forEach(function(par){ var k=par.split(':'), x=$(k[0]); if(!x) return;
+    x.addEventListener('focus',function(){ _cadUltimo=k[1]; if(_cadFocos[k[1]]) return; _cadFocos[k[1]]=1; cadEv('cad_foco_'+k[1],{}); }); });
+  function cadSaiu(){ try{ var m=$('quizModal'); if(_cadEnviou||!m||m.classList.contains('qzEscondido')||!$('qzA3')||$('qzA3').style.display==='none') return;
+    if(_cadSaiuMedido) return; _cadSaiuMedido=true; cadEv('cad_saiu_'+_cadUltimo,{transport_type:'beacon'}); }catch(_){} }
+  window.addEventListener('pagehide',cadSaiu);
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden') cadSaiu(); });
+  window.mqzCadEnviou=function(){ _cadEnviou=true; };
+  window.mqzMostrar=function(){ var m=$('quizModal'); if(m)m.classList.remove('qzEscondido'); cadAvisoMed(true);
     /* 2026-10-14-cadastro2: chegada ao cadastro (antes era ponto cego: so a 2a tela era medida). */
     if(!_cadChegouMedido){ _cadChegouMedido=true; cadEv('cad_chegou',{criar:mqzQuerCriar()?1:0}); }
     if(!mqzPuloFeito && passoAtual==='qzTela1' && mqzQuerCriar()){
@@ -11846,7 +11880,7 @@ window.mvAbaInicial=function(){
       }catch(_){}
     }
   };
-  window.mqzEsconder=function(){ var m=$('quizModal'); if(m)m.classList.add('qzEscondido'); };
+  window.mqzEsconder=function(){ var m=$('quizModal'); if(m)m.classList.add('qzEscondido'); cadAvisoMed(false); };
   window.mqzEsconderLoader=function(){ var l=$('qzLoader'); if(l)l.classList.add('qzEscondido'); };
   window.mqzResetar=resetarQuiz;
 
