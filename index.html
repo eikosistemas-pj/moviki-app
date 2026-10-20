@@ -4180,6 +4180,30 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
         </div>
       </div>
 
+      <!-- AGENDA DE SERVICOS (20/10/2026, P85 Fase 2b, tela 9) -->
+      <div class="mvAcc" id="acc-ped-agenda">
+        <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-ped-agenda-body" onclick="mvAccToggle('acc-ped-agenda');pedAgAbrir()">
+          <span class="mvAccIco"><img src="icones/eventos.png" alt="" loading="lazy" onerror="mvI(this,'📅')"></span>
+          <span class="mvAccTxt"><span class="mvAccTit">Agenda de serviços</span><span class="mvAccSub">Corte, unha, estética: o cliente marca o horário pela sua página.</span></span>
+          <span class="mvAccSelo" id="selo-acc-ped-agenda"></span>
+          <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
+        </button>
+        <div class="mvAccBody" id="acc-ped-agenda-body">
+          <label style="display:flex;gap:10px;align-items:flex-start;margin:0 0 12px;font-size:14px;line-height:1.45;cursor:pointer"><input type="checkbox" id="pedAgAtivo" style="width:20px;height:20px;flex:none;margin-top:1px"><span><b>Receber agendamentos pela minha página</b><br><span style="opacity:.75;font-size:12.5px">Sua página ganha o botão <b>Agendar</b>. O cliente escolhe o serviço, o dia e um horário livre, e o horário fica preso para ele: ninguém marca em cima.</span></span></label>
+          <div class="finAlerta escondido" id="pedAgSemHora"><b>Falta o seu horário por dia.</b> A agenda só oferece horários dentro dele. Preencha em <a href="#" onclick="abrirTab('info');return false" style="color:#ffd98a;font-weight:700">Informações &gt; Horário por dia</a>.</div>
+          <div class="finNota" style="margin-top:0">Cada serviço: nome, quanto tempo leva, preço e <b>sinal</b> (o valor que o cliente paga no Pix para garantir o horário). Sinal em branco = sem sinal: o horário fica marcado na hora.</div>
+          <div id="pedAgLista"></div>
+          <button type="button" class="pqBtnSec" onclick="pedAgAdd()">+ Adicionar serviço</button>
+          <div class="finLinha" style="margin-top:12px">
+            <div class="campo"><label for="pedAgAnte">Marcar com antecedência de</label><select id="pedAgAnte"><option value="0">Pode ser em seguida</option><option value="30">30 minutos</option><option value="60">1 hora</option><option value="120">2 horas</option><option value="240">4 horas</option><option value="1440">1 dia</option></select></div>
+            <div class="campo"><label for="pedAgDias">Até quantos dias à frente</label><select id="pedAgDias"><option value="7">7 dias</option><option value="14">14 dias</option><option value="30">30 dias</option><option value="60">60 dias</option></select></div>
+          </div>
+          <button type="button" class="btn" id="pedBtnAg" onclick="pedSalvarAgenda()">Salvar agenda</button>
+          <div id="pedAvisoAg" class="aviso"></div>
+          <div class="finNota">O sinal cai <b>no seu Pix</b> (Recebimento com Pix direto). Se o cliente desmarcar até <b>2 horas antes</b>, você devolve o sinal pelo app do seu banco: o Moviki avisa por e-mail e no pedido. Desmarcar depois disso não é possível pela página. O restante do valor você recebe no atendimento.</div>
+        </div>
+      </div>
+
       <!-- ESTOQUE (30/09/2026, P53) -->
       <div class="mvAcc" id="acc-ped-estoque">
         <button type="button" class="mvAccHead" aria-expanded="false" aria-controls="acc-ped-estoque-body" onclick="mvAccToggle('acc-ped-estoque');pedEstAbrir()">
@@ -4984,7 +5008,7 @@ window.mvAbaInicial=function(){
      'Criar minha conta gratis', apelido curto completado sozinho, gravacao do negocio com nova tentativa e
      eventos de cada passo e erro no GA4 (cad_chegou, cad_google_clique, cad_email_enviar, cad_erro,
      cad_abrir_navegador, email_confirmado). Antes: '2026-10-12-ramoqr'. */
-  window.MOVIKI_VERSAO='2026-10-20-reserva';   /* 20/10 (P85 Fase 2b): Sua entrega ganhou "Aceitar reserva para pagar na loja" (2 h, 1 por WhatsApp); a Central mostra a reserva em Novos com "Pago na loja" e "Nao veio: cancelar"; vencida fica 2 h em Novos e depois "Ele veio e pagou" no Historico (robo checkout 2026-10-20-reserva). */ /* antes: 2026-10-19-capavideo */   /* 19/10 (P85 Fase 2b): Perfil > foto de capa ganhou "Video de capa (opcional)": MP4 de ate 15 s e 4 MB, conferido antes de subir (duracao e HEVC), direto para capavideo/{uid}/ no Storage; negocios.capaVideo (regra v37). CSP com media-src do Storage. */ /* antes: 2026-10-19-variacao */   /* 19/10 (P85 Fase 2b): cada produto do cardapio ganhou "Tamanho, cor ou sabor (opcional)" — ate 2 grupos (Tamanho/Numero/Volume/Peso e Cor/Sabor/Modelo/Estampa) com opcoes separadas por virgula; grava negocios.cardapio[].produtos[].variacoes (sem regra nova: o cardapio nao e lido item a item pela regra). */ /* antes: 2026-10-19-gratis */   /* 19/10 (P85 Fase 2b): Central de Pedidos > Sua entrega ganhou "Entrega grátis acima de (R$)" (robo lojaEntrega 2026-10-19-gratis zera a taxa do bairro no servidor; a pagina publica mostra "faltam R$ X"). */ /* antes: 2026-10-19-vitrine2 */   /* 19/10: P85 Fase 2a (horario por dia, proximas lives, perguntas frequentes, redes da loja e tema claro/escuro, regras v36) MAIS o pacote 2026-10-16-lojaonline, que ficou com a regra no ar e o painel sem merge: LINK NAO E NOME (link colado no nome vai para 'Link da sua loja online'; nome-link recusado no cadastro e no Perfil, o antigo continua salvando o resto; apelido com http/www/pix/suporte/moviki reservado ja na tela). */ /* 18/10: na janela de videoaulas, no celular em pe, a linha "Gire o celular para ver a aula em tela cheia" embaixo do video (some na aula vertical). Aulas da live: aula nova do balcao (liveaulas.js 2026-10-18-balcao). */ /* antes: 2026-10-17-vocab */   /* 17/10 (noite, 8): "Cardapio" so para comida e bebida; os demais ramos veem "Catalogo" com o icone 3D e o desenho da barra do ramo (vocab.js, troca so o que aparece; id interno cardapio igual). */ /* antes: 2026-10-17-aulavip */   /* 17/10 (noite, 7): aula da Lista VIP regravada com a voz da Malu e o que entrou no P84 (mod-pedidos-vip, 6Wa8z0vIJPM, 2:25; mesma chave, ninguem perde o progresso) e incluida nas aulas recomendadas. */ /* antes: 2026-10-17-vippadrao */   /* 17/10 (noite, 6): P84 Lista VIP ligada por padrao para Premium, Enterprise e teste gratis; no teste ela aparece abaixo da trava da Central de Pedidos. */ /* antes: 2026-10-17-seguir */ /* 17/10 (noite, 5): cartao 'Deixe sua loja completa' no Inicio (tipo do negocio, foto em 3 produtos, Instagram da loja). O @ vai para o robo (acao loja_instagram, colecao lojista_instagram, fora de negocios/{uid}); loja completa entra na fila Lojistas para seguir do painel do dono. Antes: 2026-10-17-basepropria. */   /* 17/10 (noite, 4): P84 base propria multicanal na Lista VIP: link para a bio de cada rede (TikTok, Instagram, Kwai, Facebook, YouTube, Status) com a origem contada no Vieram, canal da loja (Canal do WhatsApp, grupo ou Telegram) que aparece para a pessoa logo depois da inscricao, e Entraram pela live (por dia). Robo: loja_vip_canal. */ /* antes: 2026-10-17-subirplano */   /* 17/10 (noite, 3): aula NOVA mod-subir-plano ('O que você ganha subindo de plano', 1:18) e os ganchos dela: cartao no alto do Meu plano, cadeado/recurso travado abre a aula antes dos planos (1 vez a cada 3 dias, so quem nao viu), botao 'O que muda? 1 min' na faixa do teste, cartao no Inicio (teste depois da 1a live ou da 1a semana, Basico, Pro), abre sozinha 1 vez nos 2 ultimos dias do teste e 1 vez quando o teste acaba, aviso na janela Excluir conta, link ?aula=<chave>. Fim da aula leva ao Meu plano. Antes: 2026-10-17-aulasleva2. */   /* 17/10 (noite, 2): aula NOVA mod-pedidos-desfazer ('Desfazer uma venda e o Pix devolvido', 1:08) na Central de Pedidos, no cartao roxo (agora 10 aulas) e nas recomendadas. */ /* antes: 2026-10-17-aulasleva1 */   /* 17/10 (noite): aulas Avaliacoes (ver, responder e denunciar) e Falar com o Vik regravadas com a voz da Malu (mesmas chaves); aula NOVA mod-indique na janela Indique e receba; cartao 'Sua primeira live em 3 passos' ganhou o atalho 'Ver a aula do ensaio' no passo 2; niveis das aulas revistos (essenciais: + Localizacao e Dia a dia; recomendadas: + Desempenho, Avaliacoes e Vik). */ /* antes: 2026-10-17-aulasmalu */   /* 17/10: 13 videoaulas do lojista regravadas com a voz da Malu e a tela de hoje (inicio, perfil, local, cardapio, promocoes, eventos, fotos, info, whatsapp, plano, pontos, desempenho, diaadia): so troca id e duracao no catalogo de aulas, mesmas chaves (ninguem perde o progresso); mod-fotos virou 'Fotos e videos: a vitrine da sua pagina'. */ /* antes: 2026-10-16-boasvindas */   /* 16/10: aula de boas-vindas regravada (chave nova mod-boasvindas2: abre para todo lojista que ainda nao viu a nova, inclusive quem ja tinha terminado as boas-vindas; voz Malu, paisagens e trilha) com DUAS versoes: horizontal no computador e vertical no celular em pe (campo idV no catalogo de aulas; palco 9:16 com a classe mvVert). Mesma chave: quem ja tinha visto continua em dia. PRIMEIRA ENTRADA: conta nova sem ramo ve primeiro o video de boas-vindas; quando acaba (ou e fechado) abre a escolha do ramo; salvo o ramo, segue para a proxima aula do comeco (mvBoasVindasPrimeiro / mvAposRamo). */ /* antes: 2026-10-15-ramodepois */   /* 14/10: teste gratis PROVISORIO de 7 dias antes de confirmar o e-mail (robo ativar-trial 2026-10-14-provisorio). Aviso do topo diz que o teste ja comecou, quantos dias faltam e o que a confirmacao libera (30 dias, live aberta, assinar); confirmou, o painel pede de novo ao robo e vira 30 dias contados do inicio. Faixa de fim de teste some no provisorio; Meu plano explica. */ /* antes: 2026-10-14-cadastro2 */   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-20-agenda';   /* 20/10 (P85 Fase 2b, tela 9): Pedidos ganhou a sanfona Agenda de servicos (servico, duracao, preco e sinal; antecedencia; dias a frente; robo loja_agenda 2026-10-20-agenda). O horario livre sai do Horario por dia (Informacoes). Agendamento entra na Central: com sinal em Novos (Recebi o Pix), sem sinal direto em Pagos; botao Atendido; Cancelar horario; aviso de devolver o sinal quando o cliente desmarca. */ /* antes: 2026-10-20-reserva */   /* 20/10 (P85 Fase 2b): Sua entrega ganhou "Aceitar reserva para pagar na loja" (2 h, 1 por WhatsApp); a Central mostra a reserva em Novos com "Pago na loja" e "Nao veio: cancelar"; vencida fica 2 h em Novos e depois "Ele veio e pagou" no Historico (robo checkout 2026-10-20-reserva). */ /* antes: 2026-10-19-capavideo */   /* 19/10 (P85 Fase 2b): Perfil > foto de capa ganhou "Video de capa (opcional)": MP4 de ate 15 s e 4 MB, conferido antes de subir (duracao e HEVC), direto para capavideo/{uid}/ no Storage; negocios.capaVideo (regra v37). CSP com media-src do Storage. */ /* antes: 2026-10-19-variacao */   /* 19/10 (P85 Fase 2b): cada produto do cardapio ganhou "Tamanho, cor ou sabor (opcional)" — ate 2 grupos (Tamanho/Numero/Volume/Peso e Cor/Sabor/Modelo/Estampa) com opcoes separadas por virgula; grava negocios.cardapio[].produtos[].variacoes (sem regra nova: o cardapio nao e lido item a item pela regra). */ /* antes: 2026-10-19-gratis */   /* 19/10 (P85 Fase 2b): Central de Pedidos > Sua entrega ganhou "Entrega grátis acima de (R$)" (robo lojaEntrega 2026-10-19-gratis zera a taxa do bairro no servidor; a pagina publica mostra "faltam R$ X"). */ /* antes: 2026-10-19-vitrine2 */   /* 19/10: P85 Fase 2a (horario por dia, proximas lives, perguntas frequentes, redes da loja e tema claro/escuro, regras v36) MAIS o pacote 2026-10-16-lojaonline, que ficou com a regra no ar e o painel sem merge: LINK NAO E NOME (link colado no nome vai para 'Link da sua loja online'; nome-link recusado no cadastro e no Perfil, o antigo continua salvando o resto; apelido com http/www/pix/suporte/moviki reservado ja na tela). */ /* 18/10: na janela de videoaulas, no celular em pe, a linha "Gire o celular para ver a aula em tela cheia" embaixo do video (some na aula vertical). Aulas da live: aula nova do balcao (liveaulas.js 2026-10-18-balcao). */ /* antes: 2026-10-17-vocab */   /* 17/10 (noite, 8): "Cardapio" so para comida e bebida; os demais ramos veem "Catalogo" com o icone 3D e o desenho da barra do ramo (vocab.js, troca so o que aparece; id interno cardapio igual). */ /* antes: 2026-10-17-aulavip */   /* 17/10 (noite, 7): aula da Lista VIP regravada com a voz da Malu e o que entrou no P84 (mod-pedidos-vip, 6Wa8z0vIJPM, 2:25; mesma chave, ninguem perde o progresso) e incluida nas aulas recomendadas. */ /* antes: 2026-10-17-vippadrao */   /* 17/10 (noite, 6): P84 Lista VIP ligada por padrao para Premium, Enterprise e teste gratis; no teste ela aparece abaixo da trava da Central de Pedidos. */ /* antes: 2026-10-17-seguir */ /* 17/10 (noite, 5): cartao 'Deixe sua loja completa' no Inicio (tipo do negocio, foto em 3 produtos, Instagram da loja). O @ vai para o robo (acao loja_instagram, colecao lojista_instagram, fora de negocios/{uid}); loja completa entra na fila Lojistas para seguir do painel do dono. Antes: 2026-10-17-basepropria. */   /* 17/10 (noite, 4): P84 base propria multicanal na Lista VIP: link para a bio de cada rede (TikTok, Instagram, Kwai, Facebook, YouTube, Status) com a origem contada no Vieram, canal da loja (Canal do WhatsApp, grupo ou Telegram) que aparece para a pessoa logo depois da inscricao, e Entraram pela live (por dia). Robo: loja_vip_canal. */ /* antes: 2026-10-17-subirplano */   /* 17/10 (noite, 3): aula NOVA mod-subir-plano ('O que você ganha subindo de plano', 1:18) e os ganchos dela: cartao no alto do Meu plano, cadeado/recurso travado abre a aula antes dos planos (1 vez a cada 3 dias, so quem nao viu), botao 'O que muda? 1 min' na faixa do teste, cartao no Inicio (teste depois da 1a live ou da 1a semana, Basico, Pro), abre sozinha 1 vez nos 2 ultimos dias do teste e 1 vez quando o teste acaba, aviso na janela Excluir conta, link ?aula=<chave>. Fim da aula leva ao Meu plano. Antes: 2026-10-17-aulasleva2. */   /* 17/10 (noite, 2): aula NOVA mod-pedidos-desfazer ('Desfazer uma venda e o Pix devolvido', 1:08) na Central de Pedidos, no cartao roxo (agora 10 aulas) e nas recomendadas. */ /* antes: 2026-10-17-aulasleva1 */   /* 17/10 (noite): aulas Avaliacoes (ver, responder e denunciar) e Falar com o Vik regravadas com a voz da Malu (mesmas chaves); aula NOVA mod-indique na janela Indique e receba; cartao 'Sua primeira live em 3 passos' ganhou o atalho 'Ver a aula do ensaio' no passo 2; niveis das aulas revistos (essenciais: + Localizacao e Dia a dia; recomendadas: + Desempenho, Avaliacoes e Vik). */ /* antes: 2026-10-17-aulasmalu */   /* 17/10: 13 videoaulas do lojista regravadas com a voz da Malu e a tela de hoje (inicio, perfil, local, cardapio, promocoes, eventos, fotos, info, whatsapp, plano, pontos, desempenho, diaadia): so troca id e duracao no catalogo de aulas, mesmas chaves (ninguem perde o progresso); mod-fotos virou 'Fotos e videos: a vitrine da sua pagina'. */ /* antes: 2026-10-16-boasvindas */   /* 16/10: aula de boas-vindas regravada (chave nova mod-boasvindas2: abre para todo lojista que ainda nao viu a nova, inclusive quem ja tinha terminado as boas-vindas; voz Malu, paisagens e trilha) com DUAS versoes: horizontal no computador e vertical no celular em pe (campo idV no catalogo de aulas; palco 9:16 com a classe mvVert). Mesma chave: quem ja tinha visto continua em dia. PRIMEIRA ENTRADA: conta nova sem ramo ve primeiro o video de boas-vindas; quando acaba (ou e fechado) abre a escolha do ramo; salvo o ramo, segue para a proxima aula do comeco (mvBoasVindasPrimeiro / mvAposRamo). */ /* antes: 2026-10-15-ramodepois */   /* 14/10: teste gratis PROVISORIO de 7 dias antes de confirmar o e-mail (robo ativar-trial 2026-10-14-provisorio). Aviso do topo diz que o teste ja comecou, quantos dias faltam e o que a confirmacao libera (30 dias, live aberta, assinar); confirmou, o painel pede de novo ao robo e vira 30 dias contados do inicio. Faixa de fim de teste some no provisorio; Meu plano explica. */ /* antes: 2026-10-14-cadastro2 */   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -8837,15 +8861,17 @@ window.mvAbaInicial=function(){
 
   /* Conta so o que EXIGE ACAO do lojista: pedido que nasceu e comprador que
      avisou que pagou. Mudanca de status feita por ele mesmo nao vira aviso. */
+  const finSemSinal = {};
   function finConferirNovidade(lista) {
     const agora = {};
-    lista.forEach(function (p) { agora[p.__id] = String(p.status || ''); });
+    lista.forEach(function (p) { agora[p.__id] = String(p.status || ''); if (p.semSinal) finSemSinal[p.__id] = 1; });
     if (finVistos === null) { finVistos = agora; return; }   /* 1a carga e so ponto de partida */
     let tocar = false;
     for (const id in agora) {
       const antes = finVistos[id];
       const st = agora[id];
       if (antes === undefined && (st === 'aguardando' || st === 'conferindo' || st === 'reservado')) { finNovos++; tocar = true; }
+      else if (antes === undefined && st === 'pago' && finSemSinal[id]) { finNovos++; tocar = true; }   /* 2026-10-20-agenda: agendamento sem sinal nasce pago */
       else if (antes !== undefined && antes !== 'conferindo' && st === 'conferindo') { finNovos++; tocar = true; }
     }
     finVistos = agora;
@@ -9507,10 +9533,16 @@ window.mvAbaInicial=function(){
     return col;
   }
   function pedEhEnvio(p) { return !!(p && p.entrega && p.entrega.envio === true); }
-  function pedRotSt(p, st) { return (st === 'saiu' && pedEhEnvio(p)) ? 'enviado' : (PED_ROT[st] || st); }
+  function pedRotSt(p, st) {
+    /* 2026-10-20-agenda */
+    if (p && p.origem === 'agenda') { if (st === 'pago') return p.semSinal ? 'agendado' : 'sinal pago'; if (st === 'entregue') return 'atendido'; if (st === 'cancelado' && p.canceladoPor === 'cliente') return 'desmarcado'; }
+    return (st === 'saiu' && pedEhEnvio(p)) ? 'enviado' : (PED_ROT[st] || st);
+  }
+  function pqAgQuando(ag) { const d = String((ag && ag.dia) || ''); return d.slice(8, 10) + '/' + d.slice(5, 7) + ' ' + String((ag && ag.hora) || '').replace(':', 'h'); }
   function pqRotBotao(p) {
     const col = pqColDe(p);
     if (col === 'novos') return p.modo === 'reserva' ? 'Pago na loja' : (p.modo === 'pix' ? 'Recebi o Pix' : 'Conferir no Asaas');
+    if (col === 'pago' && p.origem === 'agenda') return 'Atendido';   /* 2026-10-20-agenda */
     if (col === 'pago') return 'Separar';
     if (col === 'separando') return pedEhEnvio(p) ? 'Enviado' : (pedEhEntrega(p) ? 'Saiu p/ entrega' : 'Pronto p/ retirar');
     if (col === 'pronto') return 'Entregue';
@@ -9736,7 +9768,7 @@ window.mvAbaInicial=function(){
     const ms = hist ? finMs(p.criadoEm) : (col === 'novos' ? finMs(p.criadoEm) : pqMsEtapa(p));
     const min = ms ? (Date.now() - ms) / 60000 : 0;
     const tarde = !hist && (col === 'novos' || col === 'pago' || col === 'separando') && min >= 20;
-    let tags = ent ? (e.envio ? '<span class="pqTag ent">📦 Envio' + (e.uf ? ' · ' + finEsc(e.uf) : '') + '</span>' + ((e.rastreio && e.rastreio.codigo) ? '<span class="pqTag">🔎 rastreio</span>' : (st === 'saiu' ? '<span class="pqTag alerta">sem rastreio</span>' : '')) : '<span class="pqTag ent">🛵 ' + (e.bairro ? finEsc(e.bairro) : 'Entrega') + '</span>') : '<span class="pqTag">🏪 Retirada</span>';
+    let tags = (p.origem === 'agenda' && p.agenda) ? '<span class="pqTag ent">📅 ' + finEsc(pqAgQuando(p.agenda)) + ' · ' + finEsc(p.agenda.servico || '') + '</span>' + (p.semSinal ? '<span class="pqTag">sem sinal</span>' : '') : ent ? (e.envio ? '<span class="pqTag ent">📦 Envio' + (e.uf ? ' · ' + finEsc(e.uf) : '') + '</span>' + ((e.rastreio && e.rastreio.codigo) ? '<span class="pqTag">🔎 rastreio</span>' : (st === 'saiu' ? '<span class="pqTag alerta">sem rastreio</span>' : '')) : '<span class="pqTag ent">🛵 ' + (e.bairro ? finEsc(e.bairro) : 'Entrega') + '</span>') : '<span class="pqTag">🏪 Retirada</span>';
     if (hist) tags += '<span class="pqTag">' + (p.origem === 'cardapio' ? 'Cardápio' : 'Live') + '</span>';
     if (hist) tags += '<span class="pqTag' + (['recusado', 'cancelado', 'expirado', 'estornado', 'devolvido'].indexOf(st) >= 0 ? ' ruim' : '') + '">' + finEsc(pedRotSt(p, st)) + '</span>';
     tags += pqAlertaTag(p);
@@ -9744,6 +9776,8 @@ window.mvAbaInicial=function(){
     if (!hist && st === 'conferindo' && p.pagouAtrasado) tags += '<span class="pqTag ruim">pagou depois do prazo</span>';
     if (!hist && st === 'aguardando') tags += '<span class="pqTag">cliente ainda pagando</span>';
     if (!hist && st === 'reservado') tags += '<span class="pqTag alerta">reservado até ' + pqHora(p.reservaAte) + ' · paga na loja</span>';
+    if (p.alerta === 'horario_ocupado' && PED_PAGOS.indexOf(st) >= 0) tags += '<span class="pqTag ruim">horário já era de outro</span>';   /* 2026-10-20-agenda */
+    if (p.sinalDevolver) tags += '<span class="pqTag ruim">desmarcou: devolva o sinal</span>';
     if (!hist && st === 'expirado' && p.modo === 'reserva') tags += '<span class="pqTag ruim">a reserva venceu</span>';
     else if (!hist && st === 'expirado') tags += '<span class="pqTag ruim">o Pix expirou</span>';
     let acoes = '';
@@ -9753,7 +9787,7 @@ window.mvAbaInicial=function(){
     }
     const arrasta = !hist && pqDestinos(p).length && window.innerWidth >= 1120 && window.matchMedia && window.matchMedia('(pointer:fine)').matches;
     return '<div class="pqCard' + (col === 'entregue' ? ' feito' : '') + (pqOcup[id] ? ' ocupado' : '') + '" id="pedc-' + id + '" data-id="' + id + '" style="--c:' + cor + '"' + (arrasta ? ' draggable="true"' : '') + ' onclick="pedFicha(\'' + id + '\')">'
-      + '<div class="pqL1"><b>nº ' + pedNumero(p) + '</b><span class="pqVal">' + finReal(p.total) + '</span></div>'
+      + '<div class="pqL1"><b>nº ' + pedNumero(p) + '</b><span class="pqVal">' + (p.semSinal ? 'sem sinal' : finReal(p.total)) + '</span></div>'
       + '<div class="pqL2"><span class="pqNome">' + nome + '</span><span class="pqTempo' + (tarde ? ' tarde' : '') + '">' + (hist ? pedData(p) : pqTempo(ms)) + '</span></div>'
       + '<div class="pqItens">' + (itens || 'Pedido') + '</div>'
       + '<div class="pqTags">' + tags + '</div>'
@@ -9854,7 +9888,7 @@ window.mvAbaInicial=function(){
   /* ---------- mover ---------- */
   window.pedAvancar = function (id) {
     const p = pedAchar(id); if (!p) return;
-    const k = PQ_PROX[pqColDe(p)];
+    const k = (p.origem === 'agenda' && pqColDe(p) === 'pago') ? 'entregue' : PQ_PROX[pqColDe(p)];   /* 2026-10-20-agenda: Atendido */
     if (k) window.pedMover(id, k);
   };
   window.pedMover = async function (id, col) {
@@ -10273,7 +10307,7 @@ window.mvAbaInicial=function(){
     const pago = PED_PAGOS.indexOf(st) >= 0, ent = pedEhEntrega(p), e = p.entrega || {};
     const wpp = pedWpp(p);
     let h = '<div class="pqFCab"><b>Pedido nº ' + pedNumero(p) + '</b><span class="finSt ' + finEsc(st) + '">' + finEsc(pedRotSt(p, st)) + '</span><button type="button" class="pqFX" aria-label="Fechar" onclick="pedFecharFicha()">×</button></div>';
-    h += '<div class="pqFTot">' + finReal(p.total) + (Number(p.frete) > 0 ? ' <small>(' + finReal(p.subtotal) + ' + entrega ' + finReal(p.frete) + ')</small>' : '') + '</div>';
+    h += '<div class="pqFTot">' + (p.semSinal ? 'Sem sinal' : finReal(p.total)) + (Number(p.frete) > 0 ? ' <small>(' + finReal(p.subtotal) + ' + entrega ' + finReal(p.frete) + ')</small>' : '') + '</div>';
     h += '<div class="pqFSec"><h4>Itens</h4>' + (Array.isArray(p.itens) ? p.itens : []).map(function (i) {
       const q = Number(i.qtd) || 1;
       return '<div class="pqFIt"><span><b>' + q + 'x</b> ' + finEsc(i.nome) + '</span><span>' + finReal(Number(i.preco || 0) * q) + '</span></div>';
@@ -10285,13 +10319,20 @@ window.mvAbaInicial=function(){
         + '<div class="pedEndereco">' + (p.dadosApagadosEm ? 'Endereço apagado pelo prazo de privacidade' : finEsc(e.detalhe || 'Endereço não informado')) + '</div></div>';
       if (e.detalhe && !p.dadosApagadosEm && !e.envio) rota = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(String(e.detalhe).replace(/ - Ref\.:.*$/, ''));
       if (e.envio && pago) h += pqRastreioHtml(p);
+    } else if (p.origem === 'agenda' && p.agenda) {
+      /* 2026-10-20-agenda */
+      const ag = p.agenda;
+      h += '<div class="pqFSec"><h4>📅 Agendamento · ' + finEsc(pqAgQuando(ag)) + '</h4>' + finEsc(ag.servico || '') + ' · ' + (Number(ag.dur) || 30) + ' min'
+        + (Number(ag.preco) > 0 ? '<br>Preço ' + finReal(ag.preco) + (p.semSinal ? ' · sem sinal: o cliente paga tudo no atendimento' : ' · sinal ' + finReal(ag.sinal) + ' · <b>falta receber ' + finReal(ag.restante) + '</b> no atendimento') : (p.semSinal ? '<br>Sem sinal' : '')) + '</div>';
+      if (p.sinalDevolver) h += '<div class="pqFSec pqFAlerta"><h4>O cliente desmarcou: devolva o sinal</h4>Ele desmarcou com mais de 2 horas de antecedência. Devolva ' + finReal(p.total) + ' pelo app do seu banco, se ainda não devolveu. O horário ficou livre de novo.</div>';
+      if (p.alerta === 'horario_ocupado' && pago) h += '<div class="pqFSec pqFAlerta"><h4>⚠ O sinal foi pago depois que o horário foi para outra pessoa</h4>Combine outro horário com o cliente pelo WhatsApp ou use <b>Desfazer venda</b> e devolva o sinal pelo seu banco.</div>';
     } else {
       const ret = (finEstado && finEstado.entregaCfg && finEstado.entregaCfg.retirada) ? ' · ' + finEsc(finEstado.entregaCfg.retirada) : '';
       h += '<div class="pqFSec"><h4>Retirada no local</h4>O cliente vem buscar' + ret + '.</div>';
     }
     h += '<div class="pqFSec"><h4>Cliente</h4><b>' + finEsc((p.comprador && p.comprador.nome) || 'Cliente') + '</b>' + (wpp ? ' · ' + pedFone(wpp) : '') + ((p.comprador && p.comprador.cpfFinal) ? ' · CPF final ' + finEsc(p.comprador.cpfFinal) : '')
       + (pago && p.codigo && !e.envio ? '<br>Código do cliente: <span class="pedCodigo">' + finEsc(p.codigo) + '</span> <span style="color:#7d92a8;font-size:12px">peça na ' + (ent ? 'entrega' : 'retirada') + '</span>' : '')
-      + '<br><span style="color:#7d92a8;font-size:12.5px">' + pedData(p) + ' · veio ' + (p.origem === 'cardapio' ? 'do cardápio' : 'da live') + '</span>'
+      + '<br><span style="color:#7d92a8;font-size:12.5px">' + pedData(p) + ' · veio ' + (p.origem === 'cardapio' ? 'do cardápio' : (p.origem === 'agenda' ? 'da agenda' : 'da live')) + '</span>'
       + (p.dadosApagadosEm ? '<br><span style="color:#7d92a8;font-size:12px">Contato e endereço apagados pelo prazo de privacidade (LGPD).</span>' : '') + '</div>';
     /* 30/09/2026 (P53): avisos que mudam o que o lojista faz com o pedido. */
     if (st === 'estornado') h += '<div class="pqFSec pqFAlerta"><h4>⚠ O banco devolveu este Pix ao cliente</h4>Não entregue este pedido. Se já entregou, fale com o cliente.' + (p.estornoDe && p.estornoDe !== 'entregue' ? ' Se você controla estoque, a peça voltou para ele.' : '') + '</div>';
@@ -10329,12 +10370,13 @@ window.mvAbaInicial=function(){
     if (wpp && pqSemPeca(p)) b += '<button type="button" onclick="pedAvisar(\'' + id + '\',\'sempeca\')">Avisar cliente</button>';
     else if (wpp && pago) b += '<button type="button" onclick="pedAvisar(\'' + id + '\')">Avisar cliente</button>';
     else if (wpp) b += '<a href="https://wa.me/55' + wpp + '" target="_blank" rel="noopener">WhatsApp</a>';
-    if (pago) b += '<button type="button" onclick="pedImprimirUm(\'' + id + '\')">Imprimir comanda</button>';
+    if (pago && p.origem !== 'agenda') b += '<button type="button" onclick="pedImprimirUm(\'' + id + '\')">Imprimir comanda</button>';
+    if (p.modo === 'agenda' && st === 'pago') b += '<button type="button" class="pqNao" onclick="pedAgCancelar(\'' + id + '\')">Cancelar horário</button>';   /* 2026-10-20-agenda */
     if (rota && pago) b += '<a href="' + rota + '" target="_blank" rel="noopener">Abrir rota</a>';
     if (p.comprovante) b += '<button type="button" onclick="finVerComprovante(\'' + id + '\')">Ver comprovante</button>';
     const volta = pqDestinos(p).filter(function (k) { return PQ_ORD[k] < PQ_ORD[col]; })[0];
     if (volta) b += '<button type="button" class="pqFVolta" onclick="pedMover(\'' + id + '\',\'' + volta + '\')">‹ Voltar para ' + (PQ_COLS.find(function (c) { return c.k === volta; }) || {}).t + '</button>';
-    if (pago) b += '<button type="button" class="pqFDesf" onclick="pedDevolverAbrir(\'' + id + '\',true)">Desfazer venda / devolver</button>';
+    if (pago && !p.semSinal) b += '<button type="button" class="pqFDesf" onclick="pedDevolverAbrir(\'' + id + '\',true)">Desfazer venda / devolver</button>';
     if (st === 'estornado' && p.alerta === 'estornado') b += '<button type="button" onclick="pedEstornoVisto(\'' + id + '\')">Entendi, não vou entregar</button>';
     h += '<div class="pqFBtns">' + b + '</div>';
     box.innerHTML = h;
@@ -10396,6 +10438,13 @@ window.mvAbaInicial=function(){
       + (link ? ' Acompanhe aqui: ' + link : '');
     let stMsg = String(stForcado || p.status);
     if (stMsg === 'saiu' && pedEhEnvio(p)) stMsg = 'enviado';
+    /* 2026-10-20-agenda */
+    if (p.origem === 'agenda' && p.agenda) {
+      const q = pqAgQuando(p.agenda).replace(' ', ' às '), sv = String(p.agenda.servico || '');
+      const tA = { pago: 'seu horário na ' + neg + ' está confirmado: ' + sv + ' em ' + q + '.' + (p.semSinal ? '' : ' Recebi o seu sinal.') + ' Até lá!', entregue: 'obrigado pela visita na ' + neg + '! Volte sempre.', cancelado: 'preciso desmarcar o seu horário de ' + sv + ' em ' + q + ' na ' + neg + '. Podemos marcar outro?' }[stMsg] || ('sobre o seu horário de ' + sv + ' em ' + q + ' na ' + neg + ':');
+      window.open('https://wa.me/55' + wpp + '?text=' + encodeURIComponent('Olá' + (nome ? ', ' + nome : '') + '! ' + tA), '_blank', 'noopener');
+      return;
+    }
     const txt = {
       enviado: enviado,
       pago: 'recebemos o pagamento do seu pedido ' + num + ' na ' + neg + '. Já vamos separar!',
@@ -10695,6 +10744,7 @@ window.mvAbaInicial=function(){
     if (el('pedEntModo')) el('pedEntModo').value = e.entrega || 'retirada';
     if (el('pedEntRet')) el('pedEntRet').value = c.retirada || '';
     if (el('pedEntReserva')) el('pedEntReserva').checked = c.reserva === true;   /* 2026-10-20-reserva */
+    try { pedPintarAgenda(); } catch (_) {}   /* 2026-10-20-agenda */
     if (el('pedEntCidade')) el('pedEntCidade').value = c.cidade || '';
     if (el('pedEntPrazo')) el('pedEntPrazo').value = c.prazo || '';
     if (el('pedEntMin')) el('pedEntMin').value = c.minimoEntrega ? String(Number(c.minimoEntrega).toFixed(2)).replace('.', ',') : '';
@@ -10816,8 +10866,99 @@ window.mvAbaInicial=function(){
     } catch (_) { box.innerHTML = '<div class="finNota">Falha de conexão. Tente de novo.</div>'; }
     b.disabled = false;
   };
+  /* ---------- AGENDA DE SERVICOS (2026-10-20-agenda, P85 Fase 2b) ---------- */
+  const AG_DURS = [[30, '30min'], [60, '1h'], [90, '1h30'], [120, '2h'], [150, '2h30'], [180, '3h'], [240, '4h']];
+  function pedAgLinha(s) {
+    s = s || {};
+    const d = document.createElement('div');
+    d.className = 'pedAgServ';
+    d.setAttribute('data-id', /^[a-z0-9]{4,12}$/.test(String(s.id || '')) ? s.id : '');
+    d.style.cssText = 'margin:0 0 10px;padding:10px;border:1px solid rgba(255,255,255,.12);border-radius:12px';
+    const lab = 'display:flex;flex-direction:column;gap:3px;font-size:11.5px;opacity:.95;min-width:0';
+    d.innerHTML = '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px"><input type="text" maxlength="50" placeholder="Serviço (ex.: Corte masculino)" class="paNome" style="flex:1;min-width:0"><button type="button" class="pqBtnSec" aria-label="Tirar serviço" style="flex:none;margin:0;width:auto;padding:8px 12px">×</button></div>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">'
+      + '<label style="' + lab + '">Duração<select class="paDur" style="padding-left:10px;padding-right:4px">' + AG_DURS.map(function (x) { return '<option value="' + x[0] + '">' + x[1] + '</option>'; }).join('') + '</select></label>'
+      + '<label style="' + lab + '">Preço (R$)<input type="text" inputmode="decimal" maxlength="8" placeholder="0,00" class="paPreco" style="padding-left:10px;padding-right:6px"></label>'
+      + '<label style="' + lab + '">Sinal (R$)<input type="text" inputmode="decimal" maxlength="8" placeholder="—" class="paSinal" style="padding-left:10px;padding-right:6px"></label></div>';
+    const real = function (v) { return Number(v) > 0 ? String(Number(v).toFixed(2)).replace('.', ',') : ''; };
+    d.querySelector('.paNome').value = s.nome || '';
+    d.querySelector('.paDur').value = String(s.dur || 30);
+    d.querySelector('.paPreco').value = real(s.preco);
+    d.querySelector('.paSinal').value = real(s.sinal);
+    d.querySelector('button').onclick = function () { d.remove(); };
+    return d;
+  }
+  window.pedAgAdd = function () {
+    const box = el('pedAgLista'); if (!box) return;
+    if (box.querySelectorAll('.pedAgServ').length >= 20) { toast('São no máximo 20 serviços.', true); return; }
+    const l = pedAgLinha({}); box.appendChild(l);
+    try { l.querySelector('.paNome').focus(); } catch (_) {}
+  };
+  let pedAgPintado = false;
+  function pedPintarAgenda(forca) {
+    const c = (finEstado && finEstado.agendaCfg) || {};
+    const s = el('selo-acc-ped-agenda');
+    if (s) s.textContent = c.ativo ? ((c.servicos || []).length + ' serviço' + ((c.servicos || []).length === 1 ? '' : 's')) : 'desligada';
+    if (pedAgPintado && !forca) return;
+    pedAgPintado = true;
+    if (el('pedAgAtivo')) el('pedAgAtivo').checked = c.ativo === true;
+    if (el('pedAgAnte')) el('pedAgAnte').value = String(c.antecedenciaMin == null ? 60 : c.antecedenciaMin);
+    if (el('pedAgDias')) el('pedAgDias').value = String([7, 14, 30, 60].indexOf(Number(c.diasFrente)) >= 0 ? c.diasFrente : 14);
+    const box = el('pedAgLista');
+    if (box) { box.innerHTML = ''; (Array.isArray(c.servicos) ? c.servicos : []).forEach(function (x) { box.appendChild(pedAgLinha(x)); }); if (!box.children.length) box.appendChild(pedAgLinha({})); }
+  }
+  window.pedAgAbrir = function () {
+    pedPintarAgenda();
+    let tem = true; try { tem = v2LerHoras().algum; } catch (_) {}
+    const a = el('pedAgSemHora'); if (a) a.classList.toggle('escondido', tem);
+  };
+  window.pedSalvarAgenda = async function () {
+    const b = el('pedBtnAg'); if (!b || b.disabled) return;
+    const servicos = [];
+    document.querySelectorAll('#pedAgLista .pedAgServ').forEach(function (l) {
+      const nome = String(l.querySelector('.paNome').value || '').trim();
+      const preco = String(l.querySelector('.paPreco').value || '').trim().replace(/^R\$\s*/i, '');
+      const sinal = String(l.querySelector('.paSinal').value || '').trim().replace(/^R\$\s*/i, '');
+      if (!nome && !preco && !sinal) return;
+      servicos.push({ id: l.getAttribute('data-id') || '', nome: nome, dur: Number(l.querySelector('.paDur').value) || 30, preco: preco, sinal: sinal });
+    });
+    const dados = { ativo: !!(el('pedAgAtivo') && el('pedAgAtivo').checked), servicos: servicos,
+      antecedenciaMin: Number((el('pedAgAnte') && el('pedAgAnte').value) || 60), diasFrente: Number((el('pedAgDias') && el('pedAgDias').value) || 14) };
+    let tem = true; try { tem = v2LerHoras().algum; } catch (_) {}
+    if (dados.ativo && !tem) { const a = el('pedAgSemHora'); if (a) a.classList.remove('escondido'); finAviso('pedAvisoAg', 'Preencha o Horário por dia em Informações: sem ele a agenda não mostra nenhum horário.'); return; }
+    b.disabled = true; const t = b.textContent; b.textContent = 'Salvando…';
+    try {
+      const r = await finPost('loja_agenda', dados);
+      if (r.j && r.j.ok) {
+        finEstado = Object.assign({}, finEstado || {}, { agendaCfg: r.j.agendaCfg });
+        pedPintarAgenda(true);
+        finAviso('pedAvisoAg', dados.ativo ? 'Agenda salva ✓ Sua página já mostra o botão Agendar.' : 'Agenda salva ✓ (desligada: a página não mostra o botão Agendar).', true);
+        try { toast('Agenda salva!'); } catch (_) {}
+        try { if (window.mvEv) mvEv('agenda_configurada', { servicos: servicos.length, ativo: dados.ativo ? 1 : 0 }); } catch (_) {}
+      } else {
+        let m = PED_ERROS[r.j && r.j.erro] || finMsg(r.j, r.http);
+        if (r.j && r.j.nome) m += ' (' + r.j.nome + ')';
+        finAviso('pedAvisoAg', m);
+      }
+    } catch (_) { finAviso('pedAvisoAg', 'Falha de conexão. Tente de novo.'); }
+    b.disabled = false; b.textContent = t;
+  };
+  window.pedAgCancelar = function (id) {
+    const p = pedAchar(id); if (!p) return;
+    if (!confirm('Cancelar o horário de ' + ((p.agenda && p.agenda.servico) || '') + ' em ' + pqAgQuando(p.agenda) + '?\n\nO horário fica livre na sua página. Depois, toque em "Avisar cliente" para combinar outro horário.')) return;
+    pqAcao(id, 'cancelado', { motivo: 'Horário cancelado pela loja' });
+  };
+
   const PED_ERROS = {
     entrega: 'Escolha como o cliente recebe.',
+    /* 2026-10-20-agenda */
+    servicos_muitos: 'São no máximo 20 serviços.',
+    servicos_vazio: 'Para ligar a agenda, cadastre pelo menos 1 serviço.',
+    servico_nome: 'Tem serviço sem nome. Escreva o nome ou tire a linha.',
+    servico_duracao: 'Escolha quanto tempo leva o serviço.',
+    servico_preco: 'Preço inválido no serviço.',
+    servico_sinal: 'O sinal não pode ser maior que o preço do serviço.',
+    sinal_so_pix: 'O sinal só funciona com o Pix direto. Ligue o Pix direto em Recebimento ou deixe o sinal em branco.',
     bairros_muitos: 'São no máximo 80 bairros.',
     bairro_nome: 'Tem bairro sem nome. Escreva o nome ou tire a linha.',
     taxa: 'Confira a taxa do bairro. Use só números, até R$ 200.',
