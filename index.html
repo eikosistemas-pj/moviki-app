@@ -4670,6 +4670,7 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
      e pode virar evento-chave e conversao do Google Ads, um por campanha.
      cadastro_indicado continua (com tipo) para quem ja monta relatorio nele. */
   window.MOVIKI_METRICA_IND='2026-09-19-tipocadastro';
+  window.MOVIKI_CADASTRO='2026-10-20-contaexiste';   /* 20/10: e-mail ja cadastrado + senha certa entra (nao trava); cad_validacao separado de cad_erro. Nao muda a tela que o Vik descreve: MOVIKI_VERSAO segue igual. */
   try{
     const _mvSignupOrig=window.mvSignup;
     if(typeof _mvSignupOrig==='function' && !_mvSignupOrig._comRef){
@@ -8009,12 +8010,38 @@ window.mvAbaInicial=function(){
          (mqzPedirRamo) e so entao grava segmento + cardapio de exemplo (mqzSalvarRamo). */
       const subtipo=buscarSubtipoQuiz(d.template);
       const tpl=JSON.parse(JSON.stringify((subtipo&&subtipo.cardapioExemplo)||[]));
+      /* 2026-10-20-contaexiste: o apelido nasce do nome; quem ja tem conta e digita o mesmo nome
+         bate no PROPRIO apelido. Antes de recusar, tenta entrar com o e-mail e a senha digitados. */
+      let contaExistia=false;
       const chkSlug=await getDoc(doc(db,'slugs',slug));
-      if(chkSlug.exists()) return {ok:false,erro:'O apelido "'+slug+'" já está em uso. Escolha outro.'};
-      await createUserWithEmailAndPassword(auth,email,senha);
-      try{ if(window.mvSignup) mvSignup('email'); }catch(_){}
+      if(chkSlug.exists()){
+        try{ await signInWithEmailAndPassword(auth,email,senha); contaExistia=true; }
+        catch(_){ return {ok:false,erro:'O apelido "'+slug+'" já está em uso. Escolha outro em "mudar" — ou, se essa loja é sua, toque em "Entrar".'}; }
+      }
+      /* 20/10/2026 '2026-10-20-contaexiste' (MOVIKI_CADASTRO): quem ja tem conta e volta pelo
+         anuncio caia em "Esse e-mail ja tem conta" e repetia o cadastro (1 iPhone tentou 10 vezes
+         em 16/10). Mesma licao do seja-parceiro (04/09): tela de cadastro que so sabe CRIAR exclui
+         quem ja esta dentro. Agora: e-mail ja cadastrado + senha certa = entra. Se o negocio ja
+         existe, abre o painel; se a conta nasceu sem negocio (gravacao falhou antes), termina o
+         cadastro agora. Sem sign_up/cadastro_lojista de novo: conversao contada uma vez so. */
+      if(!contaExistia){
+        try{ await createUserWithEmailAndPassword(auth,email,senha); }
+        catch(eCria){
+          if(!(eCria&&eCria.code==='auth/email-already-in-use')) throw eCria;
+          try{ await signInWithEmailAndPassword(auth,email,senha); }
+          catch(_){ return {ok:false,erro:'Esse e-mail já tem conta, mas a senha não confere. Toque em "Entrar" e use "Esqueci minha senha".'}; }
+          contaExistia=true;
+        }
+      }
+      if(contaExistia){
+        try{ if(window.mqzCadEv) window.mqzCadEv('cad_conta_existente',{via:'email'}); }catch(_){}
+        const negJa=await getDoc(doc(db,'negocios',auth.currentUser.uid));
+        if(negJa.exists()){ await carregarDados(auth.currentUser.uid); atualizarOnboarding(false); return {ok:true,jaExistia:true}; }
+        /* conta sem negocio: se o apelido e de outra pessoa, o bloco de gravacao abaixo ja troca por um livre */
+      }
+      if(!contaExistia){ try{ if(window.mvSignup) mvSignup('email'); }catch(_){} }
       const user=auth.currentUser;
-      try{await sendEmailVerification(user);}catch(_){}
+      if(!contaExistia){ try{await sendEmailVerification(user);}catch(_){} }
       try{await registrarIndicacao(user.uid);}catch(_){}
       garantirTrial();
       try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-cliente',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({idToken:tk,uid:user.uid},(window.mvAtrib?window.mvAtrib():{})))}).catch(function(){});}).catch(function(){}); }catch(_){}
@@ -11490,6 +11517,11 @@ window.mvAbaInicial=function(){
   // para enxergar onde a tela perde gente. Nunca leva e-mail, nome ou telefone.
   function cadEv(nome,p){ try{ if(window.mvEv) mvEv(nome,p||{}); }catch(_){} }
   window.mqzCadEv=cadEv;
+  /* 2026-10-20-contaexiste: campo vazio ou senha curta e AVISO da tela, nao falha do cadastro.
+     Antes saia como cad_erro e a leitura semanal de 19/10 viu "26 erros contra 20 cadastros"
+     (eram 11 pessoas, 1 delas com 10 toques). Agora: cad_validacao para o aviso de campo e
+     cad_erro so quando o login ou o servidor recusam. */
+  function cadAviso(via,motivo){ cadEv('cad_validacao',{via:via,motivo:motivo}); }
   function cadErro(via,msg){
     var m=String(msg||'').toLowerCase(), motivo='outro';
     if(m.indexOf('nome')>=0) motivo='nome';
@@ -11532,8 +11564,8 @@ window.mvAbaInicial=function(){
       template:escolhaSubtipo
     };
     cadEv('cad_google_clique',{});
-    if(!dados.nome.trim()){if(erro)erro.textContent='D\u00ea um nome ao seu neg\u00f3cio.';cadErro('google','nome');return;}
-    if(window.mvTemLink&&window.mvTemLink(dados.nome)){if(erro)erro.textContent='No nome vai s\u00f3 o nome do neg\u00f3cio, sem link.';cadErro('google','nome');return;}
+    if(!dados.nome.trim()){if(erro)erro.textContent='D\u00ea um nome ao seu neg\u00f3cio.';cadAviso('google','nome');return;}
+    if(window.mvTemLink&&window.mvTemLink(dados.nome)){if(erro)erro.textContent='No nome vai s\u00f3 o nome do neg\u00f3cio, sem link.';cadAviso('google','nome');return;}
     dados.slug=slugGarantido(dados.nome,dados.slug);
     if(!window.mqzCriarComercianteGoogle){if(erro)erro.textContent='N\u00e3o consegui conectar agora. Recarregue a p\u00e1gina.';cadErro('google','conectar');return;}
     var t=btn.innerHTML; btn.disabled=true; btn.innerHTML='Aguarde...';
@@ -11700,10 +11732,10 @@ window.mvAbaInicial=function(){
       template:escolhaSubtipo
     };
     cadEv('cad_email_enviar',{});
-    if(!dados.nome.trim()){if(erro)erro.textContent='Dê um nome ao seu negócio.';cadErro('email','nome');return;}
-    if(window.mvTemLink&&window.mvTemLink(dados.nome)){if(erro)erro.textContent='No nome vai só o nome do negócio, sem link.';cadErro('email','nome');return;}
-    if(!dados.email.trim()){if(erro)erro.textContent='Digite seu e-mail.';cadErro('email','e-mail');return;}
-    if(dados.senha.length<6){if(erro)erro.textContent='A senha precisa ter pelo menos 6 caracteres.';cadErro('email','senha');return;}
+    if(!dados.nome.trim()){if(erro)erro.textContent='Dê um nome ao seu negócio.';cadAviso('email','nome');return;}
+    if(window.mvTemLink&&window.mvTemLink(dados.nome)){if(erro)erro.textContent='No nome vai só o nome do negócio, sem link.';cadAviso('email','nome');return;}
+    if(!dados.email.trim()){if(erro)erro.textContent='Digite seu e-mail.';cadAviso('email','email');return;}
+    if(dados.senha.length<6){if(erro)erro.textContent='A senha precisa ter pelo menos 6 caracteres.';cadAviso('email','senha');return;}
     dados.slug=slugGarantido(dados.nome,dados.slug);
     if(!window.mqzCriarComerciante){if(erro)erro.textContent='Não consegui conectar agora. Recarregue a página.';cadErro('email','conectar');return;}
     var t=btn.textContent; btn.disabled=true; btn.textContent='Criando sua conta...';
