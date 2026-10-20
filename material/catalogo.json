@@ -1,6 +1,6 @@
 {
-  "versao": "2026-10-18-balcao",
-  "atualizado": "2026-10-18",
+  "versao": "2026-10-20-panfletos",
+  "atualizado": "2026-10-20",
   "eventos": [
     {
       "id": "fundador",
@@ -86,6 +86,113 @@
   ],
   "itens": [
     {
+      "id": "feed-universal-cliente-no-celular",
+      "tipo": "feed",
+      "titulo": "Seu cliente parou de vir? Ele está no celular",
+      "formato": "Feed 4:5",
+      "arquivo": "material/feed/feed-universal-cliente-no-celular.jpg",
+      "capa": "material/capas/feed-universal-cliente-no-celular.webp",
+      "w": 1080,
+      "h": 1350,
+      "peso": "402 KB",
+      "novo": true,
+      "legenda": "#publi Seu cliente parou de vir à loja? Ele não sumiu: está no celular, comprando de quem aparece ali.\n\nCom o Moviki, a sua loja vai até ele. Você faz a live pelo celular, mostra o produto com o preço fixo na tela, responde no chat e o pedido sai na hora. O Pix do seu catálogo cai direto na sua conta, sem comissão por venda, e cada pedido chega organizado, do pagamento à entrega. Serve para roupa, doce, comida, beleza, eletrônico ou serviço.\n\n30 dias grátis, com a live liberada. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "geral"
+    },
+    {
+      "id": "story-universal-cliente-no-celular",
+      "tipo": "story",
+      "titulo": "Seu cliente parou de vir? Ele está no celular",
+      "formato": "Story 9:16",
+      "arquivo": "material/stories/story-universal-cliente-no-celular.jpg",
+      "capa": "material/capas/story-universal-cliente-no-celular.webp",
+      "w": 1080,
+      "h": 1920,
+      "peso": "409 KB",
+      "novo": true,
+      "legenda": "#publi Seu cliente parou de vir à loja? Ele não sumiu: está no celular, comprando de quem aparece ali.\n\nCom o Moviki, a sua loja vai até ele. Você faz a live pelo celular, mostra o produto com o preço fixo na tela, responde no chat e o pedido sai na hora. O Pix do seu catálogo cai direto na sua conta, sem comissão por venda, e cada pedido chega organizado, do pagamento à entrega. Serve para roupa, doce, comida, beleza, eletrônico ou serviço.\n\n30 dias grátis, com a live liberada. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "geral",
+      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
+    },
+    {
+      "id": "panfleto-universal",
+      "tipo": "panfleto",
+      "titulo": "Panfleto universal (frente): Seu cliente parou de vir?",
+      "formato": "A5 · para imprimir",
+      "arquivo": "material/panfletos/panfleto-universal.jpg",
+      "capa": "material/capas/panfleto-universal.webp",
+      "w": 1819,
+      "h": 2551,
+      "peso": "978 KB",
+      "novo": true,
+      "legenda": "#publi Te mando o panfleto do Moviki. Seu cliente parou de vir? Ele está no celular, e a sua loja pode ir até ele: live pelo celular, pedido na hora e o Pix do seu catálogo direto na sua conta, sem comissão por venda. Serve para qualquer loja: roupa, doce, comida, beleza, eletrônico ou serviço.\n\n30 dias grátis, com a live liberada. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nAponte a câmera para o QR do panfleto ou comece pelo meu link: {link}",
+      "qr": {
+        "x": 1344,
+        "y": 1947,
+        "l": 301,
+        "fundo": "#ffffff"
+      },
+      "texto": {
+        "x": 1494,
+        "y": 2269,
+        "w": 284,
+        "cor": "#ffffff"
+      },
+      "destaque": true,
+      "dica": "Imprima frente e verso em A5 (14,8 x 21 cm), papel couché 150 g ou mais, com o verso \"Tudo que a sua loja precisa\". O arquivo já vem com 3 mm de sangria: peça à gráfica A5 com sangria e sem reduzir. O QR code já é o seu.",
+      "categoria": "panfletos"
+    },
+    {
+      "id": "panfleto-sua-loja-ao-vivo",
+      "tipo": "panfleto",
+      "titulo": "Panfleto (frente): Sua loja ao vivo, o Pix na sua conta",
+      "formato": "A5 · para imprimir",
+      "arquivo": "material/panfletos/panfleto-sua-loja-ao-vivo.jpg",
+      "capa": "material/capas/panfleto-sua-loja-ao-vivo.webp",
+      "w": 1819,
+      "h": 2551,
+      "peso": "906 KB",
+      "novo": true,
+      "legenda": "#publi Te mando o panfleto do Moviki. Sua loja ao vivo pelo celular: você mostra o produto, o cliente pergunta no chat e pede na hora. O Pix do seu catálogo cai direto na sua conta e cada pedido chega organizado, do pagamento à entrega. Sem comissão por venda.\n\n30 dias grátis, com a live liberada. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nAponte a câmera para o QR do panfleto ou comece pelo meu link: {link}",
+      "qr": {
+        "x": 1359,
+        "y": 2043,
+        "l": 298,
+        "fundo": "#ffffff"
+      },
+      "texto": {
+        "x": 1510,
+        "y": 2355,
+        "w": 244,
+        "cor": "#ffffff"
+      },
+      "destaque": true,
+      "dica": "Imprima frente e verso em A5 (14,8 x 21 cm), papel couché 150 g ou mais, com o verso \"Tudo que a sua loja precisa\". O arquivo já vem com 3 mm de sangria: peça à gráfica A5 com sangria e sem reduzir. O QR code já é o seu.",
+      "categoria": "panfletos"
+    },
+    {
+      "id": "panfleto-verso-tudo-que-faz",
+      "tipo": "panfleto",
+      "titulo": "Verso do panfleto: tudo que a sua loja precisa",
+      "formato": "A5 · para imprimir",
+      "arquivo": "material/panfletos/panfleto-verso-tudo-que-faz.jpg",
+      "capa": "material/capas/panfleto-verso-tudo-que-faz.webp",
+      "w": 1819,
+      "h": 2551,
+      "peso": "759 KB",
+      "novo": true,
+      "legenda": "#publi Este é o verso do panfleto do Moviki, com tudo que a sua loja ganha: live pelo celular sem aplicativo e sem mínimo de seguidores, a lista de clientes avisados da próxima live, o Pix do catálogo direto na sua conta, pedidos organizados até a entrega, retirada ou entrega com taxa por bairro e página própria com avaliações, fotos e vídeos. Pagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis, com a live liberada. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nAponte a câmera para o QR do panfleto ou comece pelo meu link: {link}",
+      "qr": {
+        "x": 1296,
+        "y": 2071,
+        "l": 277,
+        "fundo": "#ffffff"
+      },
+      "destaque": true,
+      "dica": "Verso dos panfletos \"Seu cliente parou de vir?\" e \"Sua loja ao vivo\". Imprima frente e verso em A5 (14,8 x 21 cm), papel couché 150 g ou mais. O arquivo já vem com 3 mm de sangria: peça à gráfica A5 com sangria e sem reduzir. O QR code já é o seu.",
+      "categoria": "panfletos"
+    },
+    {
       "id": "balcao-de-live-checklist",
       "tipo": "feed",
       "titulo": "Checklist do balcão de live",
@@ -95,7 +202,7 @@
       "w": 1080,
       "h": 1350,
       "peso": "259 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Sabe o que pode derrubar a sua live bem na hora da venda? Sair do Moviki, no celular que está transmitindo, para responder o WhatsApp. A câmera pode parar.\n\nO balcão de live resolve isso: o celular fica no tripé só transmitindo, uma segunda tela mostra os pedidos e, se tiver alguém ajudando, essa pessoa confere o pagamento, imprime a comanda e separa. Dá para fazer tudo pelo celular, mas assim a live fica bem mais tranquila.\n\nNo painel tem a aula do balcão, com o passo a passo. Pagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "geral"
     },
@@ -109,7 +216,7 @@
       "w": 1080,
       "h": 1920,
       "peso": "318 KB",
-      "novo": true,
+      "novo": false,
       "legenda": "#publi Sabe o que pode derrubar a sua live bem na hora da venda? Sair do Moviki, no celular que está transmitindo, para responder o WhatsApp. A câmera pode parar.\n\nO balcão de live resolve isso: o celular fica no tripé só transmitindo, uma segunda tela mostra os pedidos e, se tiver alguém ajudando, essa pessoa confere o pagamento, imprime a comanda e separa. Dá para fazer tudo pelo celular, mas assim a live fica bem mais tranquila.\n\nNo painel tem a aula do balcão, com o passo a passo. Pagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "geral",
       "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
