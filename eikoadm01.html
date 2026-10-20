@@ -634,6 +634,31 @@ table.mvTab td b{font-weight:700}
 .crVer.al{border-color:rgba(255,176,32,.5)}
 .crVer.er{border-color:rgba(255,107,107,.5)}
 @media(max-width:520px){.crPeca{grid-template-columns:1fr}.crMidia{width:100%}}
+/* ---- PANFLETOS COM O QR DA EIKO (2026-10-20-panfletos) ---- */
+.pfRamo{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:12px 0 14px}
+.pfRamo label{font-size:13px;font-weight:700}
+.pfRamo select{flex:1 1 220px;max-width:360px;background:var(--mv-campo);color:var(--mv-txt);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:9px 10px;font-family:inherit;font-size:13.5px}
+.pfRamo small{flex-basis:100%;font-size:12px;color:var(--mv-txt-3)}
+.pfGrade{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.pfIt{display:flex;flex-direction:column;gap:6px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:var(--mv-r);padding:8px;cursor:pointer;color:var(--mv-txt);font-family:inherit;text-align:left}
+.pfIt.on{border-color:var(--mv-ciano,#00D4FF);box-shadow:0 0 0 2px rgba(0,212,255,.25)}
+.pfIt img{width:100%;aspect-ratio:1748/2480;object-fit:cover;border-radius:8px;background:#0b1220}
+.pfIt b{font-size:12.5px;line-height:1.35;font-weight:600}
+.pfIt small{font-size:11px;color:var(--mv-txt-3)}
+.pfPrev{margin-top:16px;border-top:1px solid var(--mv-linha);padding-top:14px}
+.pfPrevTit{font-size:14px;font-weight:700;margin-bottom:10px}
+.pfPrevImg{display:flex;justify-content:center;margin-bottom:10px}
+.pfPrevImg img{width:100%;max-width:380px;border-radius:10px;border:1px solid var(--mv-linha);background:#0b1220}
+.pfPrevImg .vazio{text-align:center}
+.pfDestino{font-size:12.5px;color:var(--mv-txt-3);text-align:center;margin-bottom:10px;word-break:break-all}
+.pfDestino b{color:var(--mv-txt)}
+#pfFolha{display:none}
+@media print{
+  body.pfImp{margin:0 !important;padding:0 !important;background:#fff !important}
+  body.pfImp > *{display:none !important}
+  body.pfImp > #pfFolha{display:block !important;width:148mm;height:210mm;overflow:hidden;page-break-after:avoid}
+  #pfFolha img{display:block;width:148mm;height:210mm;object-fit:cover}
+}
 </style>
 <script src="/mvmotion.js" defer></script><!-- 23/09/2026: movimento e lazy loading (mvmotion.js, do outro chat). Painel sem mvmetrica.js precisa desta linha. -->
 </head>
@@ -720,6 +745,7 @@ table.mvTab td b{font-weight:700}
           <button type="button" class="mvNavIt" data-nav="convPar"><img class="mvNavIco" src="icones/convidar-parceiro.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Convidar parceiro</span></button>
           <button type="button" class="mvNavIt" data-nav="exclusoes"><img class="mvNavIco" src="icones/exclusoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Exclusões de conta</span><span class="bad hide" id="badExc">0</span></button>
           <button type="button" class="mvNavIt" data-nav="atalhos"><img class="mvNavIco" src="icones/foguete.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Atalhos do dono</span></button>
+          <button type="button" class="mvNavIt" data-nav="panfletos"><img class="mvNavIco" src="icones/material.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Panfletos com QR</span></button>
           <button type="button" class="mvNavIt" data-nav="config"><img class="mvNavIco" src="icones/escudo.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Configurações</span></button>
           <a class="mvNavIt" href="https://moviki.com.br" target="_blank" rel="noopener" style="text-decoration:none"><img class="mvNavIco" src="icones/ver-site.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Ver o site</span></a>
         </nav>
@@ -1963,6 +1989,35 @@ table.mvTab td b{font-weight:700}
         </section>
 
         <!-- ============ SEÇÃO: CONFIGURAÇÕES ============ -->
+        <!-- ============ SEÇÃO: PANFLETOS COM O QR DA EIKO (2026-10-20-panfletos) ============
+             Os panfletos do Material de apoio (material/catalogo.json, tipo "panfleto"),
+             com o QR da EMPRESA no quadrado branco: leva para a /aovivo (ou /fundador),
+             sem parceiro. utm_campaign=eiko separa no Funil do lojista. -->
+        <section data-sec="panfletos" class="hide">
+          <div class="cd" id="pfCard">
+            <div class="cdTopo"><div><div class="cdTit">Panfletos com o QR da Eiko Sistemas</div><div class="cdSub">Os mesmos panfletos do Material de apoio, com o QR da empresa. O lojista aponta a câmera, cai na página da live do Moviki e se cadastra sem parceiro. No Funil do lojista o cadastro aparece com a campanha <b>eiko</b>.</div></div></div>
+            <div class="pfRamo">
+              <label for="pfRamo">Ramo do lojista</label>
+              <select id="pfRamo"><option value="">Qualquer ramo</option></select>
+              <small>Opcional. O QR abre a live de exemplo do ramo escolhido e o cadastro já com o ramo marcado.</small>
+            </div>
+            <div class="pfGrade" id="pfGrade"><div class="vazio">Carregando os panfletos…</div></div>
+            <div class="pfPrev hide" id="pfPrev">
+              <div class="pfPrevTit" id="pfPrevTit"></div>
+              <div class="pfPrevImg" id="pfPrevImg"></div>
+              <div class="pfDestino" id="pfDestino"></div>
+              <div class="crDAcoes">
+                <button type="button" class="btnMini ok" id="pfImprimir">Imprimir em A5</button>
+                <button type="button" class="btnMini" id="pfBaixar">Baixar para a gráfica</button>
+                <button type="button" class="btnMini" id="pfEnviar">Enviar</button>
+                <button type="button" class="btnMini" id="pfCopiar">Copiar texto</button>
+              </div>
+              <div class="cdSub" id="pfDica">Na impressora de casa: papel A5 ou A4 cortado ao meio, sem margem se ela permitir. Na gráfica: mande o arquivo de "Baixar para a gráfica" e peça A5 com sangria, sem reduzir.</div>
+              <div class="crDAviso" id="pfAviso"></div>
+            </div>
+          </div>
+        </section>
+
         <section data-sec="config" class="hide">
           <div class="cd">
             <div class="cdTopo"><div class="cdTit">Sua conta</div></div>
@@ -2119,6 +2174,7 @@ table.mvTab td b{font-weight:700}
     <button type="button" data-ir="convPar"><img src="icones/convidar-parceiro.png" alt="" onerror="this.style.display='none'">Convidar parceiro</button>
     <button type="button" data-ir="atalhos"><img src="icones/foguete.png" alt="" onerror="this.style.display='none'">Atalhos do dono</button>
     <button type="button" data-ir="atalhos"><img src="icones/parceiros.png" alt="" onerror="this.style.display='none'">Meu crachá com QR</button>
+    <button type="button" data-ir="panfletos"><img src="icones/material.png" alt="" onerror="this.style.display='none'">Panfletos com o QR da Eiko</button>
     <div class="menuSec">Administração</div>
     <button type="button" data-ir="lives"><img src="icones/live.png" alt="" onerror="this.style.display='none'">Lives e moderação<span class="bad hide" id="badLiveM">0</span></button>
     <button type="button" data-ir="pedidos"><img src="icones/vendas.png" alt="" onerror="this.style.display='none'">Pedidos dos lojistas</button>
@@ -2148,7 +2204,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-19-lojaonline';   /* 19/10: entra o pacote 2026-10-16-lojaonline (Negocios marca '⚠ link no nome' e 'loja online', Precisa de voce conta os negocios com link no nome, CSV com a coluna Loja online) por cima da 2026-10-17-vippadrao. */ /* antes: 2026-10-17-vippadrao */ /* 17/10 (3): P84 Recursos mostra a Lista VIP ligada por padrao (so false desliga). */ /* antes: 2026-10-17-seguir2 */ /* 17/10 (2): funil e Lojistas para seguir carregam depois do login (antes: relogio fixo na abertura, dava 'sem sessao' para quem entrava depois de 4 s). Antes: 2026-10-17-seguir. */ /* 17/10: cartao 'Lojistas para seguir' na Visao geral (fila do robo api/funil-dono, acoes seguir_lista / seguir_feito: Abrir @ e Ja segui). Antes: 2026-10-13-arroba. */   /* 13/10 (P80): situacao do @ de cada parceiro (provado / sem prova / precisa de olho), confirmacao ao aprovar @ sem prova e trava ao marcar criador sem prova */ /* antes: 2026-10-13-agenda */   /* 13/10 (noite 2): microfone e 'Mandar como ordem' em cada tarefa, ao lado da nota; robo novo criado no Claude aparece sozinho (o Maestro le a agenda toda hora) */ /* antes: 2026-10-13-ordens */   /* 13/10 (noite): aba Robos ganha ORDENS — caixa de comando com microfone (ditado do navegador) em cada robo e no topo; o Maestro entrega em ate 1 hora e a resposta volta aqui */ /* antes: 2026-10-13-custos */   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-20-panfletos';   /* 20/10: menu 'Panfletos com QR' — os panfletos do Material de apoio com o QR da Eiko Sistemas (/aovivo ou /fundador, utm_campaign=eiko, ramo opcional): imprimir em A5, baixar para a grafica, enviar e copiar texto. */ /* antes: 2026-10-19-lojaonline */   /* 19/10: entra o pacote 2026-10-16-lojaonline (Negocios marca '⚠ link no nome' e 'loja online', Precisa de voce conta os negocios com link no nome, CSV com a coluna Loja online) por cima da 2026-10-17-vippadrao. */ /* antes: 2026-10-17-vippadrao */ /* 17/10 (3): P84 Recursos mostra a Lista VIP ligada por padrao (so false desliga). */ /* antes: 2026-10-17-seguir2 */ /* 17/10 (2): funil e Lojistas para seguir carregam depois do login (antes: relogio fixo na abertura, dava 'sem sessao' para quem entrava depois de 4 s). Antes: 2026-10-17-seguir. */ /* 17/10: cartao 'Lojistas para seguir' na Visao geral (fila do robo api/funil-dono, acoes seguir_lista / seguir_feito: Abrir @ e Ja segui). Antes: 2026-10-13-arroba. */   /* 13/10 (P80): situacao do @ de cada parceiro (provado / sem prova / precisa de olho), confirmacao ao aprovar @ sem prova e trava ao marcar criador sem prova */ /* antes: 2026-10-13-agenda */   /* 13/10 (noite 2): microfone e 'Mandar como ordem' em cada tarefa, ao lado da nota; robo novo criado no Claude aparece sozinho (o Maestro le a agenda toda hora) */ /* antes: 2026-10-13-ordens */   /* 13/10 (noite): aba Robos ganha ORDENS — caixa de comando com microfone (ditado do navegador) em cada robo e no topo; o Maestro entrega em ate 1 hora e a resposta volta aqui */ /* antes: 2026-10-13-custos */   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2244,6 +2300,7 @@ table.mvTab td b{font-weight:700}
     if(nome === 'pedidos') pdAbrir();
     if(nome === 'redes') rsAbrir();
     if(nome === 'robos') rbAbrir();   /* 13/10: aba Robos */
+    if(nome === 'panfletos' && window.mvPanfDono) window.mvPanfDono.abrir();   /* 20/10: panfletos com o QR da Eiko */
   }
   window.mvIrSec = irSec;
 
@@ -8022,6 +8079,237 @@ table.mvTab td b{font-weight:700}
         + '<div class="fnPassos">' + p.join('') + '</div></div>';
     }).join('');
   };
+})();
+</script>
+
+<script>
+/* =========================================================================
+   PANFLETOS COM O QR DA EIKO SISTEMAS (2026-10-20-panfletos)
+   Fora do bloco de modulo de proposito, como o cracha: usa o mvqr.js (script
+   classico) e, se falhar, so esta aba fica sem panfleto — o painel continua.
+   Fonte unica: material/catalogo.json, itens tipo "panfleto". Panfleto novo no
+   Material de apoio aparece aqui sozinho, com as mesmas medidas de QR.
+   Destino do QR: a empresa, sem parceiro -> moviki.com.br/aovivo
+   (ou /fundador para o panfleto do Lote Fundador), com utm_source=panfleto e
+   utm_campaign=eiko (sem utm_medium: QR menos denso). Panfleto vencido (valido_ate) nao aparece.
+   ========================================================================= */
+(function(){
+  var CAT_URL = 'material/catalogo.json';
+  var SITE = 'https://moviki.com.br';   /* sem www de proposito: QR menos denso; o dominio redireciona para o www mantendo os parametros, como no QR do parceiro */
+  var CH_RAMO = 'mv_panf_ramo';
+  var CAT = null, ATUAL = null, carregando = false, montando = 0;
+  var R = window.MOVIKI_RAMOS || null;
+
+  function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function aviso(t){ var a = el('pfAviso'); if(!a) return; a.textContent = t || ''; if(t) setTimeout(function(){ if(a.textContent === t) a.textContent = ''; }, 4500); }
+  function hoje(){ var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth()+1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function valido(it){
+    var h = hoje();
+    if(it.valido_ate && String(it.valido_ate) < h) return false;
+    if(it.a_partir_de && String(it.a_partir_de) > h) return false;
+    return !!(it.qr && it.arquivo);
+  }
+  function ramoAtual(){
+    var s = el('pfRamo'); var k = s ? s.value : '';
+    return (k && R) ? R.achar(k) : null;
+  }
+  function destino(it){
+    var fund = it && it.qrDestino === 'fundador';
+    var r = fund ? null : ramoAtual();
+    var url = SITE + (fund ? '/fundador' : '/aovivo') + '?' + (r ? 'ramo=' + encodeURIComponent(r.k) + '&' : '') + 'utm_source=panfleto&utm_campaign=eiko';
+    return { url: url, curto: 'moviki.com.br' + (fund ? '/fundador' : '/aovivo'), fund: fund, ramo: r };
+  }
+
+  function pintarRamos(){
+    var s = el('pfRamo'); if(!s || s.getAttribute('data-ok')) return;
+    s.setAttribute('data-ok', '1');
+    if(!R){ var box = s.closest ? s.closest('.pfRamo') : null; if(box) box.classList.add('hide'); return; }
+    (R.grupos || []).forEach(function(g){
+      var og = document.createElement('optgroup'); og.label = g.n;
+      (R.lista || []).filter(function(e){ return e.g === g.id; }).forEach(function(e){
+        var o = document.createElement('option'); o.value = e.k; o.textContent = e.n; og.appendChild(o);
+      });
+      if(og.children.length) s.appendChild(og);
+    });
+    var salvo = ''; try{ salvo = sessionStorage.getItem(CH_RAMO) || ''; }catch(e){}
+    if(salvo && R.achar(salvo)) s.value = R.achar(salvo).k;
+    s.addEventListener('change', function(){
+      try{ sessionStorage.setItem(CH_RAMO, s.value || ''); }catch(e){}
+      if(ATUAL) abrirPeca(ATUAL.it.id);
+    });
+  }
+
+  function grade(){
+    var g = el('pfGrade'); if(!g) return;
+    var itens = (CAT && CAT.itens || []).filter(function(it){ return it.tipo === 'panfleto' && valido(it); });
+    itens.sort(function(a, b){ return (b.novo ? 1 : 0) - (a.novo ? 1 : 0); });
+    if(!itens.length){ g.innerHTML = '<div class="vazio">Nenhum panfleto no Material de apoio agora.</div>'; return; }
+    g.innerHTML = itens.map(function(it){
+      return '<button type="button" class="pfIt" data-pf="' + esc(it.id) + '">' +
+        '<img src="' + esc(it.capa || it.arquivo) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' +
+        '<b>' + esc(it.titulo) + '</b>' +
+        '<small>' + esc(it.qrDestino === 'fundador' ? 'QR para /fundador' : 'QR para /aovivo') + (it.novo ? ' · NOVO' : '') + '</small></button>';
+    }).join('');
+  }
+
+  function carregarImg(src){
+    return new Promise(function(ok, falha){
+      var i = new Image(); i.decoding = 'async';
+      i.onload = function(){ ok(i); }; i.onerror = function(){ falha(new Error('img')); };
+      i.src = src;
+    });
+  }
+
+  /* Mesmo desenho do compor() do parceiro.html: QR no quadrado medido do
+     catalogo (it.qr) e, se a arte tiver faixa (it.texto), o endereco embaixo. */
+  function compor(it, dest){
+    if(typeof window.mvQR !== 'function') return Promise.reject(new Error('sem qr'));
+    var fontes = Promise.resolve();
+    try{ if(document.fonts && document.fonts.load) fontes = Promise.all([document.fonts.load('800 40px Poppins'), document.fonts.load('600 28px Poppins')]).catch(function(){}); }catch(e){}
+    return Promise.all([carregarImg(it.arquivo), fontes]).then(function(r){
+      var img = r[0];
+      var cv = document.createElement('canvas');
+      cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+      var x = cv.getContext('2d');
+      x.drawImage(img, 0, 0);
+      var q = window.mvQR(dest.url);
+      if(!q) throw new Error('qr');
+      var Q = it.qr, n = q.tam + 8, p = Math.floor(Q.l / n), off = Math.floor((Q.l - p*n)/2);
+      x.fillStyle = Q.fundo || '#ffffff'; x.fillRect(Q.x, Q.y, Q.l, Q.l);
+      x.fillStyle = Q.cor || '#0b1220';
+      for(var rr=0; rr<q.tam; rr++) for(var cc=0; cc<q.tam; cc++){
+        if(q.mods[rr*q.tam+cc]) x.fillRect(Q.x + off + (cc+4)*p, Q.y + off + (rr+4)*p, p, p);
+      }
+      if(it.texto && it.texto.w){
+        var T = it.texto, cx = T.x, w = T.w;
+        var pq = Math.round(w * 0.072), gd = Math.round(w * 0.11);
+        x.textAlign = 'center'; x.textBaseline = 'alphabetic';
+        x.fillStyle = /^#f{3}(f{3})?$/i.test(T.cor || '') ? '#9fb2c6' : '#5b6b7f';
+        x.font = '600 ' + pq + 'px Poppins, system-ui, sans-serif';
+        x.fillText('Comece grátis em', cx, T.y + pq);
+        x.fillStyle = T.cor || '#0b1220';
+        do{ x.font = '800 ' + gd + 'px Poppins, system-ui, sans-serif'; gd -= 1; }
+        while(gd > 12 && x.measureText(dest.curto).width > w);
+        x.fillText(dest.curto, cx, T.y + pq + Math.round(gd * 1.25));
+      }
+      return new Promise(function(ok, falha){
+        cv.toBlob(function(b){ if(!b) return falha(new Error('blob')); ok({ cv: cv, blob: b, url: cv.toDataURL('image/jpeg', 0.9) }); }, 'image/jpeg', 0.92);
+      });
+    });
+  }
+
+  function nomeArquivo(it, dest){
+    return 'panfleto-moviki-eiko-' + it.id + (dest.ramo ? '-' + dest.ramo.k : '') + '.jpg';
+  }
+  function legenda(it, dest){
+    var t = String(it.legenda || '').replace(/^#publi\b[\s:.\-–—]*/i, '');
+    t = t.replace(/(?:comece|entre)\s+pelo\s+meu\s+link\s*:?\s*\{link(?:_fundador)?\}\.?/gi, 'Comece em ' + dest.url);
+    t = t.replace(/pelo\s+meu\s+link\s*:?\s*\{link(?:_fundador)?\}\.?/gi, 'em ' + dest.url);
+    t = t.replace(/\{link(?:_fundador)?\}/g, dest.url);
+    return t.trim();
+  }
+
+  function abrirPeca(id){
+    var it = (CAT && CAT.itens || []).filter(function(i){ return i.id === id; })[0];
+    if(!it) return;
+    var dest = destino(it);
+    var vez = ++montando;
+    ATUAL = { it: it, dest: dest, blob: null, url: '' };
+    document.querySelectorAll('#pfGrade .pfIt').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-pf') === id); });
+    el('pfPrev').classList.remove('hide');
+    el('pfPrevTit').textContent = it.titulo || 'Panfleto';
+    el('pfDestino').innerHTML = 'O QR leva para <b>' + esc(dest.url.replace(/^https:\/\//, '')) + '</b>' +
+      (dest.fund ? '' : (dest.ramo ? '' : ' · sem ramo'));
+    el('pfPrevImg').innerHTML = '<div class="vazio">Montando o panfleto com o QR da Eiko…</div>';
+    ['pfImprimir','pfBaixar','pfEnviar'].forEach(function(b){ el(b).disabled = true; });
+    compor(it, dest).then(function(r){
+      if(vez !== montando) return;
+      ATUAL.blob = r.blob; ATUAL.url = r.url;
+      var im = new Image(); im.alt = 'Prévia do panfleto com o QR da Eiko Sistemas'; im.src = r.url;
+      el('pfPrevImg').textContent = ''; el('pfPrevImg').appendChild(im);
+      ['pfImprimir','pfBaixar','pfEnviar'].forEach(function(b){ el(b).disabled = false; });
+      try{ el('pfPrev').scrollIntoView({ behavior: 'smooth', block: 'start' }); }catch(e){}
+    }).catch(function(){
+      if(vez !== montando) return;
+      el('pfPrevImg').innerHTML = '<div class="vazio">Não deu para montar o panfleto agora. Recarregue a página e tente de novo.</div>';
+    });
+  }
+
+  function baixar(){
+    if(!ATUAL || !ATUAL.blob) return;
+    var u = URL.createObjectURL(ATUAL.blob);
+    var a = document.createElement('a'); a.href = u; a.download = nomeArquivo(ATUAL.it, ATUAL.dest);
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ try{ URL.revokeObjectURL(u); }catch(e){} }, 60000);
+    aviso('Panfleto salvo com o QR da Eiko.');
+  }
+
+  /* Impressao sem janela nova: uma folha A5 so com a imagem; o resto do painel
+     some so durante a impressao. O @page entra e sai junto, para nao mudar a
+     impressao de outras telas do painel. */
+  function imprimir(){
+    if(!ATUAL || !ATUAL.url) return;
+    var f = el('pfFolha');
+    if(!f){ f = document.createElement('div'); f.id = 'pfFolha'; document.body.appendChild(f); }
+    f.textContent = '';
+    var im = new Image(); im.alt = ''; im.src = ATUAL.url; f.appendChild(im);
+    var st = document.createElement('style'); st.id = 'pfPagina'; st.textContent = '@page{size:148mm 210mm;margin:0}';
+    document.head.appendChild(st);
+    document.body.classList.add('pfImp');
+    var feito = false;
+    function fim(){
+      if(feito) return; feito = true;
+      document.body.classList.remove('pfImp');
+      var s = el('pfPagina'); if(s) s.remove();
+      window.removeEventListener('afterprint', fim);
+    }
+    window.addEventListener('afterprint', fim);
+    var vai = function(){ try{ window.print(); }catch(e){} setTimeout(fim, 1500); };
+    if(im.decode) im.decode().then(vai, vai); else setTimeout(vai, 300);
+  }
+
+  function enviar(){
+    if(!ATUAL || !ATUAL.blob) return;
+    var txt = legenda(ATUAL.it, ATUAL.dest);
+    try{
+      var file = new File([ATUAL.blob], nomeArquivo(ATUAL.it, ATUAL.dest), { type: 'image/jpeg' });
+      if(navigator.canShare && navigator.share && navigator.canShare({ files: [file] })){
+        navigator.share({ files: [file], text: txt }).catch(function(){});
+        return;
+      }
+    }catch(e){}
+    baixar();
+    copiar(txt, 'Arquivo salvo e texto copiado: anexe no WhatsApp e cole o texto.');
+  }
+
+  function copiar(txt, msg){
+    var t = txt != null ? txt : (ATUAL ? legenda(ATUAL.it, ATUAL.dest) : '');
+    if(!t) return;
+    var ok = function(){ aviso(msg || 'Texto copiado.'); };
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function(){ aviso('Não deu para copiar.'); });
+    else aviso('Não deu para copiar.');
+  }
+
+  function abrir(){
+    pintarRamos();
+    if(CAT){ grade(); return; }
+    if(carregando) return; carregando = true;
+    fetch(CAT_URL + '?v=' + Date.now(), { cache: 'no-store' }).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(j){ CAT = j; grade(); })
+      .catch(function(){ var g = el('pfGrade'); if(g) g.innerHTML = '<div class="vazio">Não consegui ler o catálogo do Material de apoio agora.</div>'; })
+      .then(function(){ carregando = false; });
+  }
+
+  document.addEventListener('click', function(ev){
+    var b = ev.target && ev.target.closest ? ev.target.closest('[data-pf]') : null;
+    if(b){ abrirPeca(b.getAttribute('data-pf')); return; }
+  });
+  [['pfImprimir', imprimir], ['pfBaixar', baixar], ['pfEnviar', enviar], ['pfCopiar', function(){ copiar(); }]].forEach(function(p){
+    var b = el(p[0]); if(b) b.addEventListener('click', p[1]);
+  });
+
+  window.mvPanfDono = { abrir: abrir, _destino: destino, _compor: compor, _legenda: legenda };
 })();
 </script>
 
