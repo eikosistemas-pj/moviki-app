@@ -88,6 +88,57 @@ describe('negocios/{uid} — o cadastro do lojista', () => {
   });
 });
 
+/* ===== v35 (19/10/2026, P85 Fase 2a): vitrine nivel mercado ===== */
+describe('negocios/{uid} — campos da vitrine v35', () => {
+  before(() => semear());
+  const base = { nome: 'Loja' };
+  const grava = (extra) => setDoc(doc(dono(), 'negocios', DONO), { ...base, ...extra });
+
+  test('o save completo do painel novo passa', async () => {
+    await assertSucceeds(grava({
+      tema: 'claro',
+      horarios: { dom: '', seg: '10:00-19:00', ter: '10:00-19:00', qua: '10:00-19:00', qui: '10:00-19:00', sex: '10:00-19:00', sab: '09:00-13:00' },
+      faq: [{ p: 'Trocam?', r: 'Sim, em 7 dias.' }],
+      redes: { instagram: 'loja.teste', tiktok: 'lojateste', youtube: '', facebook: 'lojateste' },
+      agendaLives: [{ em: Date.now() + 86400000, titulo: 'Coleção nova' }],
+    }));
+  });
+
+  test('negocio antigo sem os campos continua salvando', async () => {
+    await assertSucceeds(grava({}));
+  });
+
+  test('tema fora de claro/escuro e negado', async () => {
+    await assertFails(grava({ tema: 'neon' }));
+  });
+
+  test('horario em formato errado e negado', async () => {
+    await assertFails(grava({ horarios: { seg: '10h as 19h' } }));
+  });
+
+  test('dia inventado no horario e negado', async () => {
+    await assertFails(grava({ horarios: { feriado: '10:00-12:00' } }));
+  });
+
+  test('rede com endereco ou script no lugar do @ e negada', async () => {
+    await assertFails(grava({ redes: { instagram: 'javascript:alert(1)' } }));
+    await assertFails(grava({ redes: { instagram: 'https://instagram.com/x' } }));
+  });
+
+  test('rede que nao existe na lista e negada', async () => {
+    await assertFails(grava({ redes: { onlyfans: 'x' } }));
+  });
+
+  test('mais de 8 perguntas ou mais de 5 lives na agenda e negado', async () => {
+    await assertFails(grava({ faq: Array.from({ length: 9 }, () => ({ p: 'a', r: 'b' })) }));
+    await assertFails(grava({ agendaLives: Array.from({ length: 6 }, () => ({ em: 1, titulo: 'x' })) }));
+  });
+
+  test('estranho nao grava os campos novos em negocio alheio', async () => {
+    await assertFails(setDoc(doc(estranho(), 'negocios', DONO), { ...base, tema: 'escuro' }));
+  });
+});
+
 /* ========== estado/live — hoje SO o curinga sustenta ========== */
 describe('estado/live — o interruptor da transmissao', () => {
   before(() => semear());
