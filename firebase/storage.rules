@@ -6,6 +6,8 @@ rules_version = '2';
 //  30/09/2026: + material/ (videos do Material de apoio, leitura publica - P46)
 //  03/10/2026: ehAdmin() so com sessao aberta pelo Google (igual a v32 do Firestore)
 //  03/10/2026: documentos/ aceita so imagem JPG, PNG, WebP, GIF e HEIC (antes image/* aceitava SVG com script)
+//  19/10/2026: + capavideo/{uid}/ (video de capa da pagina publica, P85): leitura publica,
+//              so o dono sobe (MP4, ate 4 MB, nome = numero.mp4) e apaga; nao sobrescreve
 //  Balde: moviki-app.firebasestorage.app
 //
 //  Até hoje o projeto NÃO gravava no Storage pelo navegador: as imagens
@@ -87,6 +89,18 @@ service firebase.storage {
     // produtos/, para o painel do parceiro, a pagina e o robo social
     // baixarem sem token. Escrita: so o dono pelo console ou o Cloud Shell
     // (fora destas regras). Nunca video de lojista aqui.
+    // Video de capa da pagina publica (19/10/2026, P85 Fase 2b). Publico como
+    // as fotos (a pagina toca para qualquer visitante). Pouco peso de proposito:
+    // cada visita baixa o video, e o Storage cobra por GB entregue.
+    match /capavideo/{uid}/{arquivo} {
+      allow read: if true;
+      allow create: if request.auth != null && request.auth.uid == uid
+                    && arquivo.matches('[0-9]{10,16}[.]mp4')
+                    && request.resource.size < 4 * 1024 * 1024 + 1
+                    && request.resource.contentType == 'video/mp4';
+      allow delete: if request.auth != null && request.auth.uid == uid;
+      allow update: if false;
+    }
     match /material/{arquivo=**} {
       allow read: if true;
       allow write: if false;
