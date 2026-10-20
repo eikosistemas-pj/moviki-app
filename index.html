@@ -38,6 +38,32 @@
 <script src="/vocab.js"></script>
 <script>/* 17/10/2026: "Cardapio" so para comida e bebida; os outros ramos veem "Catalogo" com o icone do ramo. Repete o ultimo ramo visto no aparelho para a palavra nao piscar. */try{window.mvVocab&&window.mvVocab.lembrar();}catch(_){}</script>
 <script>
+/* 2026-10-16-lojaonline — LINK NAO E NOME.
+   Em 16/10 uma revendedora cadastrou o negocio com o NOME igual ao link de
+   afiliada (https://deola.ne/af-55bm) e o apelido virou httpsdeolaneaf-55bm.
+   Ninguem errou de proposito: o cadastro nao tinha lugar para o link da loja.
+   mvTemLink  = o texto tem cara de link (mesma conta da regra v35, temLink).
+   mvLojaUrl  = normaliza o link da loja online para https://... ou devolve ''.
+   mvLojaDom  = so o dominio, para mostrar ao lado do botao.
+   Ficam no window porque o cadastro (script comum) e o painel (module) usam. */
+window.mvTemLink=function(s){
+  var t=String(s||'').toLowerCase().trim(); if(!t) return false;
+  return /(:\/\/|www\.)/.test(t)
+      || /[a-z0-9-]\.[a-z]{2,24}\//.test(t)
+      || /[a-z0-9-]\.(com|net|org|me|io|app|shop|store|link|site|online|br|ly|bio|ne|co|info|biz|page)$/.test(t);
+};
+window.mvLojaUrl=function(s){
+  var t=String(s||'').trim(); if(!t) return '';
+  t=t.replace(/^http:\/\//i,'https://');
+  if(!/^https:\/\//i.test(t)){ if(/^[a-z][a-z0-9+.-]*:/i.test(t)) return ''; t='https://'+t.replace(/^\/+/,''); }
+  t=t.replace(/^https:\/\//i,'https://');
+  if(t.length>300) return '';
+  if(!/^https:\/\/[A-Za-z0-9.-]+\.[A-Za-z]{2,}([\/?#][^ "<>]*)?$/.test(t)) return '';
+  return t;
+};
+window.mvLojaDom=function(u){ var m=/^https:\/\/([^\/?#]+)/i.exec(String(u||'')); return m?m[1].replace(/^www\./i,'').toLowerCase():''; };
+</script>
+<script>
 /* 16/09/2026 — ATRIBUICAO DO LEAD (mvAtrib).
    O mvmetrica.js ja guardava o fbc/fbp do clique de anuncio e expunha
    window.mvFb(), mas NENHUMA chamada de cadastro mandava esses campos para o
@@ -2867,6 +2893,8 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
         <div class="campo"><label for="nome">Nome do negócio</label><input id="nome" type="text" placeholder="Ex.: Caldeirão Nordestino" oninput="atualizarOnboarding(false)"></div>
         <div class="campo"><label for="apelido">Seu link no Moviki</label><div class="linkCampo"><span class="pref">moviki.com.br/</span><input id="apelido" type="text" placeholder="caldeirao" autocomplete="off" oninput="atualizarOnboarding(false)"></div></div>
         <div id="linkPronto" class="linkPronto escondido"><div class="rot">✅ Link pra divulgar (bio do Instagram, WhatsApp...):</div><div class="linkRow"><a id="linkPublico" href="#" target="_blank" rel="noopener"></a><button onclick="copiarLink()" id="btnCopiar">Copiar</button></div></div>
+        <!-- 2026-10-16-lojaonline: link da loja online / link de venda (site, loja de revenda, catalogo). -->
+        <div class="campo"><label for="lojaOnline">Link da sua loja online (opcional)</label><input id="lojaOnline" type="url" inputmode="url" maxlength="300" placeholder="Ex.: https://sualoja.com.br" autocomplete="off"><div style="font-size:12.5px;color:var(--mv-txt-3,#8fa6c4);margin-top:6px">Tem site, loja de revenda ou catálogo? Cole o link aqui: vira o botão <b>“Loja online”</b> na sua página.</div></div>
         <div class="campo"><label for="recado">Recado do dia (opcional)</label><textarea id="recado" rows="2" placeholder="Ex.: Hoje tem caldo de feijão!"></textarea></div>
         </div>
       </div>
@@ -4360,7 +4388,10 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
       <h1 class="qzTitulo">Vamos colocar seu negócio no ar</h1>
       <!-- 2026-10-07-cadastro1 (P75): o ramo escolhido (ou trazido do anuncio) aparece aqui, com "trocar". -->
       <p class="qzRamoLinha" id="qzRamoLinha" style="display:none;margin:-6px 0 14px;font-size:13.5px;color:#8fa6c4"></p>
-      <div class="qzCampo"><label for="qzNome">Nome do negócio</label><input id="qzNome" type="text" maxlength="80" placeholder="Ex.: Caldeirão Nordestino"></div>
+      <div class="qzCampo"><label for="qzNome">Nome do negócio</label><input id="qzNome" type="text" maxlength="80" placeholder="Ex.: Caldeirão Nordestino"><div id="qzNomeDica" class="qzSlugMsg" style="display:none"></div></div>
+      <!-- 2026-10-16-lojaonline: so aparece quando a pessoa cola um link no nome. O link vem
+           para ca sozinho e o nome fica livre para ela escrever. Nenhum campo novo para quem nao colou. -->
+      <div class="qzCampo" id="qzLojaBox" style="display:none"><label for="qzLoja">Link da sua loja online <span style="font-weight:400;color:#8fa6c4">(vira um botão na sua página)</span></label><input id="qzLoja" type="url" inputmode="url" maxlength="300" placeholder="https://..." autocomplete="off"></div>
       <div class="qzCampo"><label for="qzWhats">WhatsApp com DDD <span style="font-weight:400;color:#8fa6c4">(opcional)</span></label><input id="qzWhats" type="tel" inputmode="numeric" placeholder="Ex.: 81 99999-9999"></div>
       <!-- 2026-10-14-cadastro2: o apelido sai do nome sozinho; o campo so abre em "mudar".
            Menos um campo na tela que mais perde gente (126 cliques -> 5 cadastros em 14 dias). -->
@@ -4511,6 +4542,11 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
   }
   /* 01/10/2026: + rotas do site que vem ANTES do curinga /:slug no vercel.json do moviki (a pagina do lojista com esse apelido nunca abriria). */
   const RESERVADOS=['index','mapa','404','assets','www','painel','login','moviki','aovivo','live','regras-da-live','criadores','live-shop','guia','fundador','api','termos','privacidade','enterprise','premium','parceiros','comerciantes','regulamento','descadastro','entregadores'];
+  /* 2026-10-16-lojaonline: a mesma conta da regra (apelidoLivre, v33 + v35). Antes a tela dizia
+     "disponivel" para 'pix', 'suporte' ou 'xmoviki' e a regra negava depois, no meio do cadastro. */
+  const RESERVADOS_REGRA=['suporte','oficial','pix','pagamento','pagamentos','admin','ajuda','seguranca','sac','login','atendimento','contato','moviki-oficial'];
+  function slugBarrado(s){ return RESERVADOS.includes(s)||RESERVADOS_REGRA.includes(s)||s.indexOf('moviki')>=0||/^(https?|www)/.test(s); }
+  let nomeDoBanco='', lojaDoBanco=false;
   // Rastreio do Programa de Parceiros: captura ?ref da URL (limpo) e guarda no navegador.
   /* ORDEM DE PRIORIDADE — 04/09/2026: URL > cookie do dominio pai > localStorage.
      O cookie mv_ref (.moviki.com.br) e a peca que faltava: o localStorage deste
@@ -4916,7 +4952,7 @@ window.mvAbaInicial=function(){
      'Criar minha conta gratis', apelido curto completado sozinho, gravacao do negocio com nova tentativa e
      eventos de cada passo e erro no GA4 (cad_chegou, cad_google_clique, cad_email_enviar, cad_erro,
      cad_abrir_navegador, email_confirmado). Antes: '2026-10-12-ramoqr'. */
-  window.MOVIKI_VERSAO='2026-10-19-vitrine2';   /* 18/10: na janela de videoaulas, no celular em pe, a linha "Gire o celular para ver a aula em tela cheia" embaixo do video (some na aula vertical). Aulas da live: aula nova do balcao (liveaulas.js 2026-10-18-balcao). */ /* antes: 2026-10-17-vocab */   /* 17/10 (noite, 8): "Cardapio" so para comida e bebida; os demais ramos veem "Catalogo" com o icone 3D e o desenho da barra do ramo (vocab.js, troca so o que aparece; id interno cardapio igual). */ /* antes: 2026-10-17-aulavip */   /* 17/10 (noite, 7): aula da Lista VIP regravada com a voz da Malu e o que entrou no P84 (mod-pedidos-vip, 6Wa8z0vIJPM, 2:25; mesma chave, ninguem perde o progresso) e incluida nas aulas recomendadas. */ /* antes: 2026-10-17-vippadrao */   /* 17/10 (noite, 6): P84 Lista VIP ligada por padrao para Premium, Enterprise e teste gratis; no teste ela aparece abaixo da trava da Central de Pedidos. */ /* antes: 2026-10-17-seguir */ /* 17/10 (noite, 5): cartao 'Deixe sua loja completa' no Inicio (tipo do negocio, foto em 3 produtos, Instagram da loja). O @ vai para o robo (acao loja_instagram, colecao lojista_instagram, fora de negocios/{uid}); loja completa entra na fila Lojistas para seguir do painel do dono. Antes: 2026-10-17-basepropria. */   /* 17/10 (noite, 4): P84 base propria multicanal na Lista VIP: link para a bio de cada rede (TikTok, Instagram, Kwai, Facebook, YouTube, Status) com a origem contada no Vieram, canal da loja (Canal do WhatsApp, grupo ou Telegram) que aparece para a pessoa logo depois da inscricao, e Entraram pela live (por dia). Robo: loja_vip_canal. */ /* antes: 2026-10-17-subirplano */   /* 17/10 (noite, 3): aula NOVA mod-subir-plano ('O que você ganha subindo de plano', 1:18) e os ganchos dela: cartao no alto do Meu plano, cadeado/recurso travado abre a aula antes dos planos (1 vez a cada 3 dias, so quem nao viu), botao 'O que muda? 1 min' na faixa do teste, cartao no Inicio (teste depois da 1a live ou da 1a semana, Basico, Pro), abre sozinha 1 vez nos 2 ultimos dias do teste e 1 vez quando o teste acaba, aviso na janela Excluir conta, link ?aula=<chave>. Fim da aula leva ao Meu plano. Antes: 2026-10-17-aulasleva2. */   /* 17/10 (noite, 2): aula NOVA mod-pedidos-desfazer ('Desfazer uma venda e o Pix devolvido', 1:08) na Central de Pedidos, no cartao roxo (agora 10 aulas) e nas recomendadas. */ /* antes: 2026-10-17-aulasleva1 */   /* 17/10 (noite): aulas Avaliacoes (ver, responder e denunciar) e Falar com o Vik regravadas com a voz da Malu (mesmas chaves); aula NOVA mod-indique na janela Indique e receba; cartao 'Sua primeira live em 3 passos' ganhou o atalho 'Ver a aula do ensaio' no passo 2; niveis das aulas revistos (essenciais: + Localizacao e Dia a dia; recomendadas: + Desempenho, Avaliacoes e Vik). */ /* antes: 2026-10-17-aulasmalu */   /* 17/10: 13 videoaulas do lojista regravadas com a voz da Malu e a tela de hoje (inicio, perfil, local, cardapio, promocoes, eventos, fotos, info, whatsapp, plano, pontos, desempenho, diaadia): so troca id e duracao no catalogo de aulas, mesmas chaves (ninguem perde o progresso); mod-fotos virou 'Fotos e videos: a vitrine da sua pagina'. */ /* antes: 2026-10-16-boasvindas */   /* 16/10: aula de boas-vindas regravada (chave nova mod-boasvindas2: abre para todo lojista que ainda nao viu a nova, inclusive quem ja tinha terminado as boas-vindas; voz Malu, paisagens e trilha) com DUAS versoes: horizontal no computador e vertical no celular em pe (campo idV no catalogo de aulas; palco 9:16 com a classe mvVert). Mesma chave: quem ja tinha visto continua em dia. PRIMEIRA ENTRADA: conta nova sem ramo ve primeiro o video de boas-vindas; quando acaba (ou e fechado) abre a escolha do ramo; salvo o ramo, segue para a proxima aula do comeco (mvBoasVindasPrimeiro / mvAposRamo). */ /* antes: 2026-10-15-ramodepois */   /* 14/10: teste gratis PROVISORIO de 7 dias antes de confirmar o e-mail (robo ativar-trial 2026-10-14-provisorio). Aviso do topo diz que o teste ja comecou, quantos dias faltam e o que a confirmacao libera (30 dias, live aberta, assinar); confirmou, o painel pede de novo ao robo e vira 30 dias contados do inicio. Faixa de fim de teste some no provisorio; Meu plano explica. */ /* antes: 2026-10-14-cadastro2 */   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
+  window.MOVIKI_VERSAO='2026-10-19-vitrine2';   /* 19/10: P85 Fase 2a (horario por dia, proximas lives, perguntas frequentes, redes da loja e tema claro/escuro, regras v36) MAIS o pacote 2026-10-16-lojaonline, que ficou com a regra no ar e o painel sem merge: LINK NAO E NOME (link colado no nome vai para 'Link da sua loja online'; nome-link recusado no cadastro e no Perfil, o antigo continua salvando o resto; apelido com http/www/pix/suporte/moviki reservado ja na tela). */ /* 18/10: na janela de videoaulas, no celular em pe, a linha "Gire o celular para ver a aula em tela cheia" embaixo do video (some na aula vertical). Aulas da live: aula nova do balcao (liveaulas.js 2026-10-18-balcao). */ /* antes: 2026-10-17-vocab */   /* 17/10 (noite, 8): "Cardapio" so para comida e bebida; os demais ramos veem "Catalogo" com o icone 3D e o desenho da barra do ramo (vocab.js, troca so o que aparece; id interno cardapio igual). */ /* antes: 2026-10-17-aulavip */   /* 17/10 (noite, 7): aula da Lista VIP regravada com a voz da Malu e o que entrou no P84 (mod-pedidos-vip, 6Wa8z0vIJPM, 2:25; mesma chave, ninguem perde o progresso) e incluida nas aulas recomendadas. */ /* antes: 2026-10-17-vippadrao */   /* 17/10 (noite, 6): P84 Lista VIP ligada por padrao para Premium, Enterprise e teste gratis; no teste ela aparece abaixo da trava da Central de Pedidos. */ /* antes: 2026-10-17-seguir */ /* 17/10 (noite, 5): cartao 'Deixe sua loja completa' no Inicio (tipo do negocio, foto em 3 produtos, Instagram da loja). O @ vai para o robo (acao loja_instagram, colecao lojista_instagram, fora de negocios/{uid}); loja completa entra na fila Lojistas para seguir do painel do dono. Antes: 2026-10-17-basepropria. */   /* 17/10 (noite, 4): P84 base propria multicanal na Lista VIP: link para a bio de cada rede (TikTok, Instagram, Kwai, Facebook, YouTube, Status) com a origem contada no Vieram, canal da loja (Canal do WhatsApp, grupo ou Telegram) que aparece para a pessoa logo depois da inscricao, e Entraram pela live (por dia). Robo: loja_vip_canal. */ /* antes: 2026-10-17-subirplano */   /* 17/10 (noite, 3): aula NOVA mod-subir-plano ('O que você ganha subindo de plano', 1:18) e os ganchos dela: cartao no alto do Meu plano, cadeado/recurso travado abre a aula antes dos planos (1 vez a cada 3 dias, so quem nao viu), botao 'O que muda? 1 min' na faixa do teste, cartao no Inicio (teste depois da 1a live ou da 1a semana, Basico, Pro), abre sozinha 1 vez nos 2 ultimos dias do teste e 1 vez quando o teste acaba, aviso na janela Excluir conta, link ?aula=<chave>. Fim da aula leva ao Meu plano. Antes: 2026-10-17-aulasleva2. */   /* 17/10 (noite, 2): aula NOVA mod-pedidos-desfazer ('Desfazer uma venda e o Pix devolvido', 1:08) na Central de Pedidos, no cartao roxo (agora 10 aulas) e nas recomendadas. */ /* antes: 2026-10-17-aulasleva1 */   /* 17/10 (noite): aulas Avaliacoes (ver, responder e denunciar) e Falar com o Vik regravadas com a voz da Malu (mesmas chaves); aula NOVA mod-indique na janela Indique e receba; cartao 'Sua primeira live em 3 passos' ganhou o atalho 'Ver a aula do ensaio' no passo 2; niveis das aulas revistos (essenciais: + Localizacao e Dia a dia; recomendadas: + Desempenho, Avaliacoes e Vik). */ /* antes: 2026-10-17-aulasmalu */   /* 17/10: 13 videoaulas do lojista regravadas com a voz da Malu e a tela de hoje (inicio, perfil, local, cardapio, promocoes, eventos, fotos, info, whatsapp, plano, pontos, desempenho, diaadia): so troca id e duracao no catalogo de aulas, mesmas chaves (ninguem perde o progresso); mod-fotos virou 'Fotos e videos: a vitrine da sua pagina'. */ /* antes: 2026-10-16-boasvindas */   /* 16/10: aula de boas-vindas regravada (chave nova mod-boasvindas2: abre para todo lojista que ainda nao viu a nova, inclusive quem ja tinha terminado as boas-vindas; voz Malu, paisagens e trilha) com DUAS versoes: horizontal no computador e vertical no celular em pe (campo idV no catalogo de aulas; palco 9:16 com a classe mvVert). Mesma chave: quem ja tinha visto continua em dia. PRIMEIRA ENTRADA: conta nova sem ramo ve primeiro o video de boas-vindas; quando acaba (ou e fechado) abre a escolha do ramo; salvo o ramo, segue para a proxima aula do comeco (mvBoasVindasPrimeiro / mvAposRamo). */ /* antes: 2026-10-15-ramodepois */   /* 14/10: teste gratis PROVISORIO de 7 dias antes de confirmar o e-mail (robo ativar-trial 2026-10-14-provisorio). Aviso do topo diz que o teste ja comecou, quantos dias faltam e o que a confirmacao libera (30 dias, live aberta, assinar); confirmou, o painel pede de novo ao robo e vira 30 dias contados do inicio. Faixa de fim de teste some no provisorio; Meu plano explica. */ /* antes: 2026-10-14-cadastro2 */   /* 12/10: cadastro que chega com ?criar=1&ramo= le o catalogo unico de ramos (ramos.js) antes do mapa antigo: o QR com ramo do cracha abre o formulario com o ramo marcado, inclusive food truck, feira, barbearia e outros sem pagina na /aovivo. Nada mais muda na tela. */ /* antes: 2026-10-10-teatro */   /* 10/10: videoaulas com layout de YouTube (palco grande + lista com capas a direita, marca no alto), a aba Tutoriais abre essa janela com TODAS as aulas do painel; Tutoriais no menu lateral e no alto do menu do celular; cartao 'Videoaulas do painel' no Inicio com quantas aulas existem, quantas foram vistas e a barra (progresso em negocios/{uid}/estado/tutoriais); aulas em tres niveis: Essenciais (vermelho), Recomendadas (amarelo) e Complementares (azul), lista MOVIKI_TUTORIAIS.niveis. Nao tranca nada. Quem entrega na sua cidade: a busca sem resultado nao repete mais o link de cadastro dos entregadores (LOG-1), ele fica so na nota fixa. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): o aviso do Google tambem reconhece o navegador do TikTok (iPhone: musical_ly/BytedanceWebview) e cita Instagram, Facebook ou TikTok */ /* antes: 2026-10-09-origem */   /* 09/10: no navegador do Instagram/Facebook, botao "Abrir no navegador e entrar com Google" (leva ramo, UTMs e clique do anuncio); cadastro manda a origem (UTMs + pagina anterior) ao robo */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): aviso de e-mail nao confirmado diz o que libera (30 dias gratis, 2 lives, ensaio) e o painel percebe a confirmacao sozinho ao voltar para a aba (e a cada 30 s, ate 20 vezes) */ /* antes: 2026-10-07-cadastro1 */   /* 07/10 (P75 fase 1): cadastro em menos telas. Quem chega do anuncio/da /aovivo com ?criar=1 e ramo reconhecido (?ramo= ou utm_content) cai direto no cadastro com o ramo escolhido e 'trocar'; macro novo Loja de bairro / Shopping (quiz-segmentos 2026-10-07-lojas); apelido do link nasce do nome e se ajusta sozinho se estiver ocupado; avisos do teste gratis dizem que a live continua no Premium (o Pro nao tem live). */ /* antes: 2026-10-06-denuncia */   /* 06/10 (plano 2.2): botao Denunciar nas avaliacoes, status da denuncia (denuncias_avaliacao, regras v34) */   /* 05/10 (tarde): mais duas aulas ligadas, fora do cartao roxo (chave por lojista): Lista VIP (mod-pedidos-vip, xXfUAufXwNI, 1:10) no fim da sanfona Lista VIP e Quem entrega na sua cidade (mod-pedidos-logistica, RpyCDiolMRw, 1:06) no fim da sanfona Quem entrega. Campo novo `so` no catalogo de aulas: aula de recurso liberado conta por conta (Envio, Lista VIP, Quem entrega) so aparece na aba Tutoriais para quem tem o recurso. */ /* antes: 2026-10-05-aulasped */   /* 05/10: duas aulas novas ligadas. Estoque (mod-pedidos-estoque, FcDeU8jKm2A, 1:01) no fim da sanfona Estoque e como nona aula do cartao roxo da Central; Envio para outras cidades (mod-pedidos-envio, FvdijWk2QkQ, 1:49) no fim do bloco #pedEnvBox, fora do cartao roxo (chave por lojista). */ /* antes: 2026-10-04-freteauto */   /* 04/10 (P70 etapa 6): Sua entrega > Envio ganhou Frete automatico (Melhor Envio do lojista: token cifrado no robo, CEP de origem, peso medio por peca e peso por produto no cardapio, caixa padrao, acrescimo, dias ate postar, seguro opcional, simulacao). So com a chave freteAuto ligada pelo dono. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): Pedidos > Quem entrega na sua cidade (parceiros de entrega aprovados pelo dono: busca por cidade/UF, cartao com servicos e Chamar no WhatsApp; o Moviki so apresenta). So com a chave logistica ligada pelo dono. */ /* antes: 2026-10-03-vip */    /* 03/10 (P70 etapa 4): Pedidos > Lista VIP (quem pediu aviso da proxima live: contagem, lista do WhatsApp com aviso e sair, link para divulgar, Avisar agora com a live no ar). So com a chave listaVip ligada pelo dono. */ /* antes: 2026-10-03-rastreio */   /* 03/10 (P70 etapa 3): pedido de envio ganhou codigo de rastreio na ficha (Correios, Jadlog, Loggi, J&T ou outra), vira Enviado sozinho, aviso pronto no WhatsApp do lojista com o link de acompanhamento www.moviki.com.br/pedido/... */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): Sua entrega ganhou Envio para outras cidades (tabela por regiao, so com o recurso ligado pelo dono) e o produto ganhou 'pode ir pelo correio' (escondido nos ramos de comida); Central mostra Envio. */ /* antes: 2026-10-01-conforto2 */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-faixafundador. 01/10 (P65): conforto visual v2 aprovado (inicio na ordem de uso, aulas numa linha, sem cartao repetido da Central, sem brilho e sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu (mvtema.js) */
 
   /* ==========================================================
      CAIXA DE MENSAGENS DO LOJISTA — 27/08/2026
@@ -7404,9 +7440,15 @@ window.mvAbaInicial=function(){
     const btn=el('btnSalvar');limparAvisoP();
     const nome=el('nome').value.trim();
     if(!nome){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('Dê um nome ao seu negócio (aba Perfil).');return;}
+    /* 2026-10-16-lojaonline: nome novo nao pode ser link (regra v35). O nome que ja estava
+       gravado passa sem mudar, para nao travar o save do cardapio de quem ja tinha. */
+    if(nome!==nomeDoBanco&&window.mvTemLink&&window.mvTemLink(nome)){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('No nome vai só o nome do negócio, sem link. O link da sua loja vai no campo “Link da sua loja online”.');return;}
+    const _lojaTxt=el('lojaOnline')?el('lojaOnline').value.trim():'';
+    const _loja=_lojaTxt?(window.mvLojaUrl?window.mvLojaUrl(_lojaTxt):''):'';
+    if(_lojaTxt&&!_loja){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('O link da loja online não parece um endereço válido. Ex.: https://sualoja.com.br');return;}
     const apelidoDigitado=el('apelido').value.trim();
     let slug='';
-    if(apelidoDigitado){slug=limpaSlug(apelidoDigitado);if(slug.length<3){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('O apelido precisa ter ao menos 3 letras/números (sem espaços ou acentos).');return;}if(RESERVADOS.includes(slug)){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('Esse apelido é reservado, escolha outro.');return;}}
+    if(apelidoDigitado){slug=limpaSlug(apelidoDigitado);if(slug.length<3){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('O apelido precisa ter ao menos 3 letras/números (sem espaços ou acentos).');return;}if(slug!==slugSalvo&&slugBarrado(slug)){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('Esse apelido é reservado, escolha outro.');return;}}
     btn.disabled=true;const t=btn.textContent;btn.textContent='Salvando...';
     try{
       if(slug){const ref=doc(db,'slugs',slug);const snap=await getDoc(ref);if(snap.exists()&&snap.data().uid!==usuarioAtual.uid){abrirTab('perfil');if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados');erroP('O apelido "'+slug+'" já está em uso. Escolha outro.');btn.disabled=false;btn.textContent=t;return;}if(!snap.exists()){await setDoc(ref,{uid:usuarioAtual.uid});}el('apelido').value=slug;}
@@ -7444,7 +7486,11 @@ window.mvAbaInicial=function(){
       var _cor=el('corInput')?el('corInput').value:'';if(/^#[0-9a-fA-F]{6}$/.test(_cor))dados.cor=_cor;dados.whiteLabel=el('wlToggle')?!!el('wlToggle').checked:false;dados.autorizaDivulgacao=el('divulgaToggle')?!!el('divulgaToggle').checked:false;
       if(coords){dados.lat=coords.lat;dados.lng=coords.lng;}
       if(slug){dados.slug=slug;}
+      /* 2026-10-16-lojaonline: so grava o campo quando tem link ou quando ja existia (para apagar).
+         Assim, quem nunca usou a loja online nao depende da regra v35 para salvar. */
+      if(_loja||lojaDoBanco){dados.lojaOnline=_loja;}
       await setDoc(doc(db,'negocios',usuarioAtual.uid),dados,{merge:true});
+      nomeDoBanco=nome; if(_loja) lojaDoBanco=true; if(el('lojaOnline')) el('lojaOnline').value=_loja;
       okP('✅ Tudo salvo!');
       if(slug) mostrarLink(slug);
       onbSalvo=true;atualizarOnboarding(false);
@@ -7720,7 +7766,10 @@ window.mvAbaInicial=function(){
       const snap=await getDoc(doc(db,'negocios',uid));
       if(snap.exists()){
         const d=snap.data();
-        el('nome').value=d.nome||'';if(el('appTit')&&d.nome)el('appTit').textContent=d.nome;el('recado').value=d.recado||'';el('apelido').value=d.slug||'';if(el('whatsapp'))el('whatsapp').value=d.whatsapp||'';
+        el('nome').value=d.nome||'';nomeDoBanco=d.nome||'';lojaDoBanco=('lojaOnline' in d);if(el('lojaOnline'))el('lojaOnline').value=(typeof d.lojaOnline==='string')?d.lojaOnline:'';
+        /* 2026-10-16-lojaonline: nome gravado como link (cadastros de antes da trava) -> aviso no Perfil. */
+        try{ if(window.mvTemLink&&window.mvTemLink(d.nome)) setTimeout(function(){ abrirTab('perfil'); if(window.mvAccAbrir)mvAccAbrir('acc-perfil-dados'); erroP('Seu nome está como um link. Troque pelo nome do negócio (ex.: Luana Perfumes) e cole o link no campo “Link da sua loja online”.'); },1200); }catch(_){}
+        if(el('appTit')&&d.nome)el('appTit').textContent=d.nome;el('recado').value=d.recado||'';el('apelido').value=d.slug||'';if(el('whatsapp'))el('whatsapp').value=d.whatsapp||'';
         if(el('infoHorario'))el('infoHorario').value=d.horario||'';if(el('infoEndereco')){el('infoEndereco').value=d.endereco||'';endOk=d.endereco?{texto:d.endereco,lat:d.lat,lng:d.lng}:null;if(window.endPintar)window.endPintar();}if(el('infoEntrega'))el('infoEntrega').value=d.entrega||'';if(el('infoPreco'))el('infoPreco').value=(typeof d.precoMedio==='number'&&d.precoMedio>0)?d.precoMedio.toFixed(2).replace('.',','):'';
         if(el('corInput'))el('corInput').value=(typeof d.cor==='string'&&/^#[0-9a-fA-F]{6}$/.test(d.cor))?d.cor:'#00D4FF';if(el('wlToggle'))el('wlToggle').checked=(d.whiteLabel===true);if(el('divulgaToggle'))el('divulgaToggle').checked=(d.autorizaDivulgacao===true);
         setStatus(d.status||'fechado');
@@ -7796,7 +7845,7 @@ window.mvAbaInicial=function(){
   window.mqzSlugLivre=async function(valor){
     const slug=limpaSlug(valor||'');
     if(slug.length<3) return {estado:'curto',slug:slug};
-    if(RESERVADOS.includes(slug)) return {estado:'reservado',slug:slug};
+    if(slugBarrado(slug)) return {estado:'reservado',slug:slug};
     try{
       const s=await getDoc(doc(db,'slugs',slug));
       return {estado:s.exists()?'ocupado':'livre',slug:slug};
@@ -7807,12 +7856,13 @@ window.mvAbaInicial=function(){
     try{
       const nome=(d.nome||'').trim();
       if(!nome) return {ok:false,erro:'Dê um nome ao seu negócio.'};
+      if(window.mvTemLink&&window.mvTemLink(nome)) return {ok:false,erro:'No nome vai só o nome do negócio, sem link.'};
       const email=(d.email||'').trim();
       const senha=d.senha||'';
       const whatsapp=(function(x){x=String(x||'').replace(/\D/g,'').replace(/^0+/,'');return (x.length>=12&&x.slice(0,2)==='55')?x.slice(2):x;})(d.whatsapp);
       const slug=limpaSlug(d.slug||'');
       if(slug.length<3) return {ok:false,erro:'Escolha um apelido de link com pelo menos 3 letras/números.'};
-      if(RESERVADOS.includes(slug)) return {ok:false,erro:'Esse apelido é reservado, escolha outro.'};
+      if(slugBarrado(slug)) return {ok:false,erro:'Esse apelido é reservado, escolha outro.'};
       /* 2026-10-15-ramodepois (P82): o ramo virou OPCIONAL no cadastro. Sem ramo, a conta
          nasce sem segmento e sem cardapio de exemplo; o painel pede o ramo logo na entrada
          (mqzPedirRamo) e so entao grava segmento + cardapio de exemplo (mqzSalvarRamo). */
@@ -7843,6 +7893,7 @@ window.mvAbaInicial=function(){
           cardapio:tpl,slug:s,atualizadoEm:serverTimestamp()
         };
         if(whatsapp) dn.whatsapp=whatsapp;
+        const _lj=window.mvLojaUrl?window.mvLojaUrl(d.lojaOnline):''; if(_lj) dn.lojaOnline=_lj;   /* 2026-10-16-lojaonline */
         return dn;
       };
       try{
@@ -8011,6 +8062,7 @@ window.mvAbaInicial=function(){
       cardapio:tpl,slug:slug,atualizadoEm:serverTimestamp()
     };
     if(whatsapp) dadosNegocio.whatsapp=whatsapp;
+    const _lj=window.mvLojaUrl?window.mvLojaUrl(d.lojaOnline):''; if(_lj) dadosNegocio.lojaOnline=_lj;   /* 2026-10-16-lojaonline */
     await setDoc(doc(db,'negocios',user.uid),dadosNegocio,{merge:true});
     await carregarDados(user.uid);
     atualizarOnboarding(false);
@@ -8053,9 +8105,10 @@ window.mvAbaInicial=function(){
     // Validação LOCAL (nada de rede aqui — ver comentário do bug lá em cima).
     const nome=(d.nome||'').trim();
     if(!nome) return {ok:false,erro:'Dê um nome ao seu negócio.'};
+    if(window.mvTemLink&&window.mvTemLink(nome)) return {ok:false,erro:'No nome vai só o nome do negócio, sem link.'};
     const slug=limpaSlug(d.slug||'');
     if(slug.length<3) return {ok:false,erro:'Escolha um apelido de link com pelo menos 3 letras/números.'};
-    if(RESERVADOS.includes(slug)) return {ok:false,erro:'Esse apelido é reservado, escolha outro.'};
+    if(slugBarrado(slug)) return {ok:false,erro:'Esse apelido é reservado, escolha outro.'};
     try{
       const cred=await autenticarGoogleQuiz('comerciante',d);
       return await gravarComercianteGoogle(cred,d);
@@ -8105,7 +8158,7 @@ window.mvAbaInicial=function(){
         _bv.classList.remove('ok');_bv.classList.remove('escondido');
         try{ mvVerifAuto(true); }catch(_){}
       }
-      coords=null;slugSalvo='';onbOculto=false;onbSalvo=false;onbDone=false;try{if(user&&localStorage.getItem('moviki_onb_'+user.uid))onbDone=true;}catch(_){}el('linkPronto').classList.add('escondido');
+      coords=null;slugSalvo='';nomeDoBanco='';lojaDoBanco=false;onbOculto=false;onbSalvo=false;onbDone=false;try{if(user&&localStorage.getItem('moviki_onb_'+user.uid))onbDone=true;}catch(_){}el('linkPronto').classList.add('escondido');
       el('listaCategorias').innerHTML='';el('listaPromos').innerHTML='';el('listaEventos').innerHTML='';galSet([]);
       el('gpsInfo').innerHTML='📍 Localização ainda não definida.';
       abrirTab('perfil');
@@ -11112,7 +11165,7 @@ window.mvAbaInicial=function(){
     return true;
   };
   document.addEventListener('input',function(e){
-    if(e.target&&e.target.id==='qzNome'){ slugAuto(e.target.value); return; }
+    if(e.target&&e.target.id==='qzNome'){ mqzNomeLink(e.target); slugAuto(e.target.value); return; }
     if(e.target&&e.target.id==='qzSlug'){ slugManual=true; }
     if(e.target&&e.target.id==='qzSlug'){
       var t=$('qzSlugTxt'); if(t)t.textContent=slugPreview(e.target.value)||'seunegocio';
@@ -11134,6 +11187,20 @@ window.mvAbaInicial=function(){
      chamam, mas nao escondem mais o formulario. */
   window.mqzAbrirEmailA=function(){ var c=$('qzEmailA'); if(c)c.focus(); };
   window.mqzFecharEmailA=function(){ var e=$('qzA3Erro'); if(e)e.textContent=''; };
+  /* 2026-10-16-lojaonline: colou link no nome -> o link vai para o campo da loja online
+     e o nome fica vazio com o aviso. Nao bloqueia ninguem: so poe cada coisa no lugar. */
+  function mqzNomeLink(inp){
+    var dica=$('qzNomeDica');
+    if(!window.mvTemLink || !window.mvTemLink(inp.value)){ if(dica&&inp.value.trim()){ dica.style.display='none'; dica.setAttribute('data-link','0'); } return; }
+    var u=window.mvLojaUrl?window.mvLojaUrl(inp.value):'';
+    var box=$('qzLojaBox'), loja=$('qzLoja');
+    if(u&&loja){ loja.value=u; if(box) box.style.display='block'; }
+    inp.value='';
+    if(dica){ dica.setAttribute('data-link','1'); dica.className='qzSlugMsg erro'; dica.style.display='block';
+      dica.textContent=u?'Isso é o link da sua loja, né? Coloquei ele no campo certo aqui embaixo. Aqui vai só o nome do negócio, ex.: Luana Perfumes.':'Aqui vai só o nome do negócio, sem link. Ex.: Luana Perfumes.'; }
+    cadEv('cad_nome_link',{movido:u?'sim':'nao'});
+    try{ inp.focus(); }catch(_){}
+  }
   window.mqzMudarSlug=function(){ var b=$('qzSlugEdit'); if(b)b.style.display='block'; var c=$('qzSlug'); if(c)c.focus(); try{ if(window.mvEv) mvEv('cad_mudar_apelido',{}); }catch(_){} };
   // Medicao do cadastro (2026-10-14-cadastro2): cada passo e cada erro viram evento no GA4,
   // para enxergar onde a tela perde gente. Nunca leva e-mail, nome ou telefone.
@@ -11177,10 +11244,12 @@ window.mvAbaInicial=function(){
       nome:($('qzNome')&&$('qzNome').value)||'',
       whatsapp:($('qzWhats')&&$('qzWhats').value)||'',
       slug:($('qzSlug')&&$('qzSlug').value)||'',
+      lojaOnline:($('qzLoja')&&$('qzLoja').value)||'',
       template:escolhaSubtipo
     };
     cadEv('cad_google_clique',{});
     if(!dados.nome.trim()){if(erro)erro.textContent='D\u00ea um nome ao seu neg\u00f3cio.';cadErro('google','nome');return;}
+    if(window.mvTemLink&&window.mvTemLink(dados.nome)){if(erro)erro.textContent='No nome vai s\u00f3 o nome do neg\u00f3cio, sem link.';cadErro('google','nome');return;}
     dados.slug=slugGarantido(dados.nome,dados.slug);
     if(!window.mqzCriarComercianteGoogle){if(erro)erro.textContent='N\u00e3o consegui conectar agora. Recarregue a p\u00e1gina.';cadErro('google','conectar');return;}
     var t=btn.innerHTML; btn.disabled=true; btn.innerHTML='Aguarde...';
@@ -11343,10 +11412,12 @@ window.mvAbaInicial=function(){
       email:($('qzEmailA')&&$('qzEmailA').value)||'',
       senha:($('qzSenhaA')&&$('qzSenhaA').value)||'',
       slug:($('qzSlug')&&$('qzSlug').value)||'',
+      lojaOnline:($('qzLoja')&&$('qzLoja').value)||'',
       template:escolhaSubtipo
     };
     cadEv('cad_email_enviar',{});
     if(!dados.nome.trim()){if(erro)erro.textContent='Dê um nome ao seu negócio.';cadErro('email','nome');return;}
+    if(window.mvTemLink&&window.mvTemLink(dados.nome)){if(erro)erro.textContent='No nome vai só o nome do negócio, sem link.';cadErro('email','nome');return;}
     if(!dados.email.trim()){if(erro)erro.textContent='Digite seu e-mail.';cadErro('email','e-mail');return;}
     if(dados.senha.length<6){if(erro)erro.textContent='A senha precisa ter pelo menos 6 caracteres.';cadErro('email','senha');return;}
     dados.slug=slugGarantido(dados.nome,dados.slug);
