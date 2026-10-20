@@ -88,6 +88,26 @@ describe('negocios/{uid} — o cadastro do lojista', () => {
   });
 });
 
+/* ===== v37 (19/10/2026, P85 Fase 2b): video de capa ===== */
+describe('negocios/{uid} — capaVideo v37', () => {
+  before(() => semear());
+  const base = { nome: 'Loja' };
+  const grava = (extra) => setDoc(doc(dono(), 'negocios', DONO), { ...base, ...extra });
+  const url = (uid) => 'https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/capavideo%2F' + uid + '%2F1760900000000.mp4?alt=media&token=0b1c2d3e-4f50-6172-8394-a5b6c7d8e9f0';
+
+  test('video na pasta do proprio lojista passa; vazio tambem', async () => {
+    await assertSucceeds(grava({ capaVideo: url(DONO) }));
+    await assertSucceeds(grava({ capaVideo: '' }));
+  });
+  test('video da pasta de outro lojista e negado', async () => {
+    await assertFails(grava({ capaVideo: url('outroLojistaXYZ') }));
+  });
+  test('endereco de fora do Storage do Moviki e negado', async () => {
+    await assertFails(grava({ capaVideo: 'https://exemplo.com/video.mp4' }));
+    await assertFails(grava({ capaVideo: 'javascript:alert(1)' }));
+  });
+});
+
 /* ===== v36 (19/10/2026, P85 Fase 2a): vitrine nivel mercado ===== */
 describe('negocios/{uid} — campos da vitrine v36', () => {
   before(() => semear());

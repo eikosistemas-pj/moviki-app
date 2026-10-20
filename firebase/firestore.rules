@@ -3,6 +3,16 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================================
+    //  v37 — 19/10/2026 — VIDEO DE CAPA (P85 Fase 2b)
+    //    Campo NOVO e OPCIONAL negocios/{uid}.capaVideo: o endereco do video
+    //    curto que roda sem som no topo da pagina publica. So aceita ''
+    //    (sem video) ou o endereco do Storage do Moviki NA PASTA DO PROPRIO
+    //    LOJISTA (capavideo/{uid}/...). O arquivo sobe direto do painel pelas
+    //    regras do Storage (storage.rules 19/10/2026: so MP4, ate 4 MB).
+    //    O resto do arquivo e a v36, letra por letra.
+    //  ORDEM: publicar ANTES do painel 2026-10-19-capavideo (e as regras do
+    //  Storage junto). Invertido, todo "Salvar tudo" com video e negado.
+    // ==========================================================
     //  v36 — 19/10/2026 — PAGINA PUBLICA NIVEL MERCADO (P85 Fase 2a)
     //    Cinco campos NOVOS e OPCIONAIS em negocios/{uid}, todos escritos
     //    pelo proprio lojista no painel e lidos pela pagina publica:
@@ -689,6 +699,7 @@ service cloud.firestore {
       allow write: if request.auth != null
                    && request.auth.uid == uid
                    && negocioValido(request.resource.data)
+                   && capaVideoOk(request.resource.data, uid)   // v37
                    // v35: nome nao e link. O nome que ja esta gravado passa
                    // sem mudar, para nao travar o painel de quem ja tem.
                    && ( !temLink(request.resource.data.nome)
@@ -1792,7 +1803,7 @@ service cloud.firestore {
     }
 
     function negocioValido(d) {
-      return d.keys().hasOnly(['nome','status','recado','cardapio','promocoes','eventos','fotos','videos','atualizadoEm','lat','lng','slug','whatsapp','markerLogo','cor','whiteLabel','segmento','segmentoMacro','autorizaDivulgacao','horario','endereco','entrega','precoMedio','capa','lojaOnline','tema','horarios','faq','redes','agendaLives'])
+      return d.keys().hasOnly(['nome','status','recado','cardapio','promocoes','eventos','fotos','videos','atualizadoEm','lat','lng','slug','whatsapp','markerLogo','cor','whiteLabel','segmento','segmentoMacro','autorizaDivulgacao','horario','endereco','entrega','precoMedio','capa','lojaOnline','tema','horarios','faq','redes','agendaLives','capaVideo'])
         && d.nome is string && d.nome.size() >= 1 && d.nome.size() <= 80
         && (!('status' in d) || (d.status is string && d.status in ['aberto','fechado']))
         && (!('recado' in d) || (d.recado is string && d.recado.size() <= 280))
@@ -1873,6 +1884,13 @@ service cloud.firestore {
         && (!('faq' in d) || (d.faq is list && d.faq.size() <= 8))
         && (!('redes' in d) || redesValidas(d.redes))
         && (!('agendaLives' in d) || (d.agendaLives is list && d.agendaLives.size() <= 5));
+    }
+    // v37 (19/10/2026): video de capa so do Storage do Moviki, na pasta do dono
+    function capaVideoOk(d, uid) {
+      return !('capaVideo' in d)
+        || ( d.capaVideo is string && d.capaVideo.size() <= 400
+             && ( d.capaVideo == ''
+                  || d.capaVideo.matches('^https://firebasestorage[.]googleapis[.]com/v0/b/moviki-app[.]firebasestorage[.]app/o/capavideo%2F' + uid + '%2F[0-9]{10,16}[.]mp4[?]alt=media&token=[A-Za-z0-9-]{20,60}$') ) );
     }
     // 'HH:MM-HH:MM' ou vazio (fechado no dia)
     function horaDiaValida(v) {
