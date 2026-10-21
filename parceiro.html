@@ -833,6 +833,7 @@ body{background-image:none}
         <nav class="mvNav" id="mvNav">
           <a class="mvNavIt mvNavVolta" id="navVoltarNeg" href="index.html" style="display:none"><img class="mvNavIco" src="icones/pagina.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Voltar ao painel do negócio</span></a>
           <div class="mvNavVoltaSep" id="navVoltarSep" style="display:none"></div>
+          <button type="button" class="mvNavIt" id="navVirarLoj" data-virar-loj="1" style="display:none"><img class="mvNavIco" src="icones/pagina.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Colocar meu negócio no mapa</span></button>
           <button type="button" class="mvNavIt ativo" data-nav="visao"><img class="mvNavIco" src="icones/inicio.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Visão geral</span></button>
           <button type="button" class="mvNavIt" data-nav="indicacoes"><img class="mvNavIco" src="icones/usuarios.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Indicações</span></button>
           <button type="button" class="mvNavIt" data-nav="comissoes"><img class="mvNavIco" src="icones/comissoes.png" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>Comissões</span></button>
@@ -997,13 +998,13 @@ body{background-image:none}
               <span class="sdBolha cinza"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.6v.4"/></svg></span>
             </div>
             <div class="sdAtraso" id="sdAtraso" hidden role="status">
-              <div class="sdAtTit">⏳ Retido pela mensalidade em atraso</div>
+              <div class="sdAtTit" id="sdAtTit">⏳ Retido pela mensalidade em atraso</div>
               <div class="sdV" id="sdAtValor">R$ 0,00</div>
               <div class="sdR" id="sdAtNota">Comissões das suas indicações que ficam presas até você pagar.</div>
               <div class="sdAtConta"><span class="sdAtNum" id="sdAtDias">30 dias</span><span class="sdAtRot" id="sdAtRot">para essas comissões serem perdidas</span></div>
               <div class="sdAtBarra"><i id="sdAtBarra"></i></div>
               <div class="sdR" id="sdAtPrazo"></div>
-              <a class="sdAtBtn" href="/">Pagar a mensalidade do meu negócio</a>
+              <a class="sdAtBtn" id="sdAtBtn" href="/">Pagar a mensalidade do meu negócio</a>
             </div>
             <button type="button" class="btnSaque" id="btnSaque" disabled>Solicitar saque</button>
             <p class="cdSub" id="saqueNota">Saque mínimo de R$ 20,00. O Pix cai na sua chave cadastrada em até 1 dia útil (24h).</p>
@@ -1638,6 +1639,12 @@ body{background-image:none}
           <p class="rcTxt">Sua conta tem um negócio cadastrado no Moviki.</p>
           <a class="rcBtn" href="index.html">Voltar ao painel do negócio</a>
         </div>
+        <!-- 20/10/2026: parceiro sem negocio pode abrir um na mesma conta -->
+        <div class="rc" id="rcVirarLoj" style="display:none">
+          <div class="rcTit">Tem um negócio?</div>
+          <p class="rcTxt">Coloque no mapa com esta mesma conta. Seu painel de parceiro continua igual.</p>
+          <button type="button" class="rcBtn" data-virar-loj="1">Colocar meu negócio no mapa</button>
+        </div>
       </aside>
 
     </div><!-- /mvShell -->
@@ -1703,6 +1710,7 @@ body{background-image:none}
     <a href="https://wa.me/554120186848?text=Ol%C3%A1!%20Sou%20parceiro%20Moviki%20e%20preciso%20de%20ajuda." target="_blank" rel="noopener"><img src="icones/whatsapp.png" alt="" onerror="this.style.display='none'">Falar com o suporte</a>
     <a href="regulamento.html"><img src="icones/termos.png" alt="" onerror="this.style.display='none'">Regulamento do programa</a>
     <a id="linkVoltarNeg" href="index.html" style="display:none"><img src="icones/pagina.png" alt="" onerror="this.style.display='none'">Voltar ao painel do negócio</a>
+    <button type="button" id="maisVirarLoj" data-virar-loj="1" style="display:none"><img src="icones/pagina.png" alt="" onerror="this.style.display='none'">Colocar meu negócio no mapa</button>
     <div class="cfTema" role="group" aria-label="Aparência do painel"><span class="cfTemaRot">Aparência</span><div class="cfTemaSeg"><button type="button" data-cf-tema="escuro" aria-pressed="true">🌙 Escuro</button><button type="button" data-cf-tema="claro" aria-pressed="false">☀️ Claro</button></div></div>
     <div class="menuSec">Conta</div>
     <button type="button" id="sair3"><img src="icones/sair.png" alt="" onerror="this.style.display='none'">Sair da conta</button>
@@ -1737,6 +1745,25 @@ body{background-image:none}
   </div>
 
   <button type="button" class="btn" data-fechar="ovConheca">Entendi, voltar</button>
+</div></div>
+
+<!-- ======= modal: parceiro abrindo um negocio (20/10/2026, regulamento 2.4) =======
+     A regra vem ANTES do botao: quem e parceiro precisa saber o que muda na
+     comissao antes de criar o negocio, nao descobrir depois. -->
+<div class="ov centro hide" id="ovVirarLoj"><div class="folha">
+  <button type="button" class="folhaX" data-fechar="ovVirarLoj" aria-label="Fechar">✕</button>
+  <div class="folhaTit">Colocar meu negócio no mapa</div>
+  <p class="rcTxt" style="margin:0 0 12px">Você usa esta mesma conta para o negócio e para o Programa de Parceiros. Antes de seguir, veja o que muda na sua comissão:</p>
+  <ul class="rcLista">
+    <li><b>1</b><span>O seu negócio começa com o <b>teste grátis</b>. Durante o teste, você continua recebendo as comissões das suas indicações normalmente.</span></li>
+    <li><b>2</b><span>Quando o teste acabar, para continuar recebendo, o seu negócio precisa estar num <b>plano pago</b> (Pró, Premium ou Enterprise).</span></li>
+    <li><b>3</b><span>Sem plano pago, as comissões ficam <b>retidas por 30 dias</b>. Assinando dentro do prazo, elas são liberadas; depois dele, as retidas são perdidas.</span></li>
+    <li><b>4</b><span>No plano <b>Básico</b>, gratuito, o negócio continua no mapa, mas a comissão de parceiro não é paga.</span></li>
+    <li><b>5</b><span>A sua própria assinatura <b>não gera comissão</b> para você.</span></li>
+  </ul>
+  <p class="rcTxt" style="margin:0 0 12px">Regra completa no <a href="regulamento.html" style="color:inherit;text-decoration:underline">Regulamento</a>, cláusula 2.4.</p>
+  <a class="btn" href="index.html?virarLojista=1" id="btnVirarLoj" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Entendi, colocar meu negócio</a>
+  <button type="button" class="btn sec" data-fechar="ovVirarLoj" style="margin-top:8px">Agora não</button>
 </div></div>
 
 <!-- ======= modal: como funciona o saldo ======= -->
@@ -1780,7 +1807,7 @@ body{background-image:none}
      cartao do evento (os videos de Natal da Onda 3 tem arvore e pisca-pisca e
      so entram em 20/11). Com ?evento=<id> na previa, tudo aparece, para
      conferir antes. */
-  window.MOVIKI_VERSAO = '2026-10-20-amostra';   /* 20/10 (noite): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (QjCq1MhrdZA) e 'Sua entrega' (YDK1US97BG4, 2:22) regravadas sobre as lojas de amostra completas; mesmas chaves. */ /* antes: 2026-10-20-aulasp85 */   /* 20/10 (P85): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (mod-live-cardapio, lf4NVwllA0w, 1:26) e 'Sua entrega: bairros, taxa, entrega gratis e reserva' (mod-pedidos-entrega, 5OEL8fXWJJs, 2:21) regravadas; mesmas chaves. Antes: 2026-10-17-bvparceiro. */   /* 17/10: aula de boas-vindas do parceiro 'Bem-vindo a equipe Moviki' (mod-parc-boasvindas, voz Malu, 4:42) no lugar da abertura (mod-parc-abertura sai do catalogo); duas versoes, horizontal no computador e vertical no celular em pe (idV, palco 9:16); abre sozinha para quem ainda nao viu (mvBvParceiro, 1 vez por sessao). Antes: 2026-10-17-aulasparc. */   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-17-retido (card Saldo com a comissao retida pelo atraso e contagem regressiva, regulamento 1.5 item 2.4), que veio de 2026-10-16-linkramo. */
+  window.MOVIKI_VERSAO = '2026-10-20-viralojista';   /* 20/10 (noite, 2): parceiro sem negocio ganha 'Colocar meu negocio no mapa' (menu lateral, Mais e coluna da direita) com a folha da regra da comissao ANTES do botao (regulamento 2.4, opcao B) -> index.html?virarLojista=1. Parceiro que abriu o negocio depois: aviso verde 'comissoes normais no teste' e, acabado o teste sem plano, card de retido com o texto do teste (motivo fim_teste). */ /* antes: 2026-10-20-amostra */   /* 20/10 (noite): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (QjCq1MhrdZA) e 'Sua entrega' (YDK1US97BG4, 2:22) regravadas sobre as lojas de amostra completas; mesmas chaves. */ /* antes: 2026-10-20-aulasp85 */   /* 20/10 (P85): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (mod-live-cardapio, lf4NVwllA0w, 1:26) e 'Sua entrega: bairros, taxa, entrega gratis e reserva' (mod-pedidos-entrega, 5OEL8fXWJJs, 2:21) regravadas; mesmas chaves. Antes: 2026-10-17-bvparceiro. */   /* 17/10: aula de boas-vindas do parceiro 'Bem-vindo a equipe Moviki' (mod-parc-boasvindas, voz Malu, 4:42) no lugar da abertura (mod-parc-abertura sai do catalogo); duas versoes, horizontal no computador e vertical no celular em pe (idV, palco 9:16); abre sozinha para quem ainda nao viu (mvBvParceiro, 1 vez por sessao). Antes: 2026-10-17-aulasparc. */   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-17-retido (card Saldo com a comissao retida pelo atraso e contagem regressiva, regulamento 1.5 item 2.4), que veio de 2026-10-16-linkramo. */
   /* 16/10: peca por ramo do Material de apoio leva /p/apelido?ramo=<k> (miniatura e live do ramo); ramos.js carregado com o catalogo. Antes: 2026-10-13-arroba. */   /* 13/10 (P80): bloco "Seu @ no Instagram" em Meus dados (prova de posse pelo codigo na bio) e foto do Instagram no cracha so com o @ provado. Antes: 2026-10-10-pixaula. */   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
   /* 2026-10-10-teatro: videoaulas com layout de YouTube (marca no alto, palco grande, lista com as capas a direita), selo das aulas com barra e contagem das opcionais, e a aula OPCIONAL do Material de apoio (mod-parc-material, OZ9vgwH2W_U) no fim da secao. Trava e selo continuam contando so as obrigatorias. Lista em tres niveis: Essenciais (vermelho, as obrigatorias que liberam o link), Recomendadas (amarelo) e Complementares (azul), campo `nivel` do modulo opcional. Antes: 2026-10-06-pixcarimbo. */
 
@@ -1875,6 +1902,8 @@ body{background-image:none}
     if(f){ fecharOv(f.getAttribute('data-fechar')); return; }
     const ir = alvo.closest ? alvo.closest('[data-ir]') : null;
     if(ir){ ['ovMais','ovShare'].forEach(fecharOv); irSec(ir.getAttribute('data-ir')); return; }
+    const vl = alvo.closest ? alvo.closest('[data-virar-loj]') : null;
+    if(vl){ fecharOv('ovMais'); abrirOv('ovVirarLoj'); try{ if(window.mvEv) mvEv('parceiro_virar_lojista',{etapa:'abriu'}); }catch(_){} return; }
     const cp = alvo.closest ? alvo.closest('[data-copiar]') : null;
     if(cp){ copiarLink(); return; }
     const wp = alvo.closest ? alvo.closest('[data-wpp]') : null;
@@ -2302,6 +2331,7 @@ body{background-image:none}
       try{
         const n = await getDoc(doc(db,'negocios',user.uid));
         if(n.exists()){ mostrarVoltar(); avisoLojistaSemPlano(user.uid); }
+        else mostrarVirarLojista();
       }catch(_){ mostrarVoltar(); }
       pmIniciar(user);
       try{ cpIniciar(user); }catch(e){ console.error('area do criador:', e); }
@@ -2352,6 +2382,14 @@ body{background-image:none}
         .catch(function(){});
       }).catch(function(){});
     }catch(e){}
+  }
+
+  /* 20/10/2026 — parceiro sem negocio: atalho para abrir um na mesma conta.
+     O index.html com ?virarLojista=1 nao manda de volta para ca (como faz com
+     parceiro puro) e abre o formulario do negocio. */
+  function mostrarVirarLojista(){
+    ['navVirarLoj','maisVirarLoj'].forEach(function(id){ const x = el(id); if(x) x.style.display='flex'; });
+    const c = el('rcVirarLoj'); if(c) c.style.display='block';
   }
 
   function mostrarVoltar(){
@@ -2729,10 +2767,15 @@ body{background-image:none}
      Aqui so se MOSTRA: quem decide liberar ou perder e o robo. */
   const ATRASO_PRAZO_DIAS = 30;
   let atrasoTimer = null;
-  function pintarAtraso(prazoMs){
+  function pintarAtraso(prazoMs, motivo){
     const box = el('sdAtraso');
     if(!box) return;
     const r = MEU.retidoAtraso || {};
+    /* 20/10/2026: motivo 'fim_teste' = parceiro que abriu um negocio e o teste
+       gratis acabou sem plano pago. Mesma contagem, outro texto. */
+    const teste = (motivo || r.motivo) === 'fim_teste';
+    txt('sdAtTit', teste ? '⏳ Retido: o teste grátis do seu negócio acabou' : '⏳ Retido pela mensalidade em atraso');
+    txt('sdAtBtn', teste ? 'Escolher o plano do meu negócio' : 'Pagar a mensalidade do meu negócio');
     const valor = Number(r.valor) || 0, qtd = Number(r.qtd) || 0;
     const restaMs = prazoMs - Date.now();
     if(restaMs <= 0){ box.hidden = true; return; }
@@ -2741,8 +2784,8 @@ body{background-image:none}
     box.classList.toggle('urg', dias <= 7);
     txt('sdAtValor', brl(valor));
     txt('sdAtNota', qtd
-      ? (qtd + (qtd === 1 ? ' comissão das suas indicações presa' : ' comissões das suas indicações presas') + ' até você pagar a mensalidade.')
-      : 'Nada retido até agora. O que entrar durante o atraso fica preso até você pagar.');
+      ? (qtd + (qtd === 1 ? ' comissão das suas indicações presa' : ' comissões das suas indicações presas') + (teste ? ' até o seu negócio estar num plano pago.' : ' até você pagar a mensalidade.'))
+      : (teste ? 'Nada retido até agora. O que entrar até você escolher um plano fica preso.' : 'Nada retido até agora. O que entrar durante o atraso fica preso até você pagar.'));
     if(dias <= 1){
       const horas = Math.max(1, Math.ceil(restaMs / 3600000));
       txt('sdAtDias', 'Último dia');
@@ -2753,7 +2796,7 @@ body{background-image:none}
     }
     const barra = el('sdAtBarra');
     if(barra) barra.style.width = Math.max(3, Math.min(100, Math.round(dias / ATRASO_PRAZO_DIAS * 100))) + '%';
-    txt('sdAtPrazo', 'Pague até ' + new Date(prazoMs).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', timeZone:'America/Sao_Paulo' }) + ' e tudo o que ficou retido é liberado aqui. Depois disso, é perdido.');
+    txt('sdAtPrazo', (teste ? 'Assine um plano até ' : 'Pague até ') + new Date(prazoMs).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', timeZone:'America/Sao_Paulo' }) + ' e tudo o que ficou retido é liberado aqui. Depois disso, é perdido.');
   }
 
   async function avisoLojistaSemPlano(uid){
@@ -2763,13 +2806,27 @@ body{background-image:none}
       const vence = d && d.vence_em && typeof d.vence_em.toMillis === 'function' ? d.vence_em.toMillis() : 0;
       const pagante = !!(d && d.ativo === true && (!vence || vence > Date.now()) && d.periodo !== 'trial');
       if(pagante) return;
+      /* 20/10/2026 (regulamento 2.4, opcao B): parceiro que ABRIU o negocio
+         depois de ser parceiro recebe normal no teste gratis; acabado o teste
+         sem plano pago, retem 30 dias. Quem decide e o robo (createTime dos
+         documentos); aqui so se mostra. O teste comecou quando o negocio nasceu:
+         inicioTeste (ou o vencimento menos 30 dias) depois do cadastro de
+         parceiro = parceiro primeiro. */
+      const testeVence = d && d.periodo === 'trial' ? vence : 0;
+      const testeIni = d && d.periodo === 'trial'
+        ? ((d.inicioTeste && typeof d.inicioTeste.toMillis === 'function') ? d.inicioTeste.toMillis() : (vence ? vence - ATRASO_PRAZO_DIAS * 86400000 : 0)) : 0;
+      const parceiroDesde = ms(MEU.criadoEm);
+      const parceiroAntes = !!(testeIni && parceiroDesde && parceiroDesde < testeIni);
+      const emTesteB = parceiroAntes && testeVence > Date.now();
+      const fimTesteB = parceiroAntes && testeVence && testeVence <= Date.now();
       const desde = d && d.periodo !== 'trial' && d.atrasoDesde && typeof d.atrasoDesde.toMillis === 'function' ? d.atrasoDesde.toMillis() : 0;
-      const prazoMs = desde ? desde + ATRASO_PRAZO_DIAS * 86400000 : 0;
+      const prazoMs = desde ? desde + ATRASO_PRAZO_DIAS * 86400000 : (fimTesteB ? testeVence + ATRASO_PRAZO_DIAS * 86400000 : 0);
       const emCarencia = prazoMs > Date.now();
+      const motivoB = !desde && fimTesteB ? 'fim_teste' : 'atraso';
       if(emCarencia && MEU.status === 'aprovado'){
-        pintarAtraso(prazoMs);
+        pintarAtraso(prazoMs, motivoB);
         if(atrasoTimer) clearInterval(atrasoTimer);
-        atrasoTimer = setInterval(function(){ pintarAtraso(prazoMs); }, 60000);
+        atrasoTimer = setInterval(function(){ pintarAtraso(prazoMs, motivoB); }, 60000);
       }
       if(el('avisoLojistaPlano')) return;
       const box = document.createElement('div');
@@ -2777,11 +2834,21 @@ body{background-image:none}
       box.setAttribute('role','alert');
       box.style.cssText = 'margin:0 0 14px;padding:12px 14px;border-radius:12px;border:1px solid #f5b942;background:rgba(245,185,66,.12);color:inherit;font-size:14px;line-height:1.45';
       const t = document.createElement('div');
-      t.textContent = emCarencia
+      const dataBR = function(x){ return new Date(x).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', timeZone:'America/Sao_Paulo' }); };
+      if(emTesteB){
+        box.style.borderColor = 'rgba(46,229,157,.55)';
+        box.style.background = 'rgba(46,229,157,.10)';
+        box.setAttribute('role','status');
+      }
+      t.textContent = emTesteB
+        ? '✅ O seu negócio está no teste grátis até ' + dataBR(testeVence) + '. Como você já era parceiro antes de abrir o negócio, as comissões das suas indicações continuam normais durante o teste. Depois dele, para continuar recebendo, o negócio precisa estar num plano pago (Pró, Premium ou Enterprise); sem plano, as comissões ficam retidas por 30 dias e, passado o prazo, são perdidas (Regulamento, cláusula 2.4).'
+        : (emCarencia && motivoB === 'fim_teste')
+        ? '⚠️ O teste grátis do seu negócio terminou em ' + dataBR(testeVence) + '. Pelo regulamento (cláusula 2.4), as comissões das suas indicações ficam retidas até ' + dataBR(prazoMs) + ': assinando um plano pago dentro do prazo, elas são liberadas; depois dele, as retidas são perdidas. No plano Básico a comissão não é paga. A contagem está no card de saldo.'
+        : emCarencia
         ? '⚠️ A mensalidade do seu negócio no Moviki está em atraso. Pelo regulamento (cláusula 2.4), as comissões das suas indicações ficam retidas por até 30 dias a partir do vencimento: pagando dentro do prazo, elas são liberadas; depois dele, as comissões do período em atraso são perdidas. A contagem está no card de saldo.'
         : '⚠️ Você também tem um negócio no Moviki. Pelo regulamento (cláusula 2.4), você só recebe comissão enquanto o plano do SEU negócio estiver pago e em dia (Pró, Premium ou Enterprise). No teste grátis e no Básico, suas indicações continuam registradas, mas os pagamentos delas nesse período não geram comissão — nem depois.';
       const lk = document.createElement('a');
-      lk.href = '/'; lk.textContent = emCarencia ? 'Ir para o painel do meu negócio e pagar a mensalidade' : 'Ir para o painel do meu negócio e ver os planos';
+      lk.href = '/'; lk.textContent = emTesteB ? 'Ir para o painel do meu negócio' : ((emCarencia && motivoB !== 'fim_teste') ? 'Ir para o painel do meu negócio e pagar a mensalidade' : 'Ir para o painel do meu negócio e ver os planos');
       lk.style.cssText = 'display:inline-block;margin-top:8px;font-weight:700;text-decoration:underline;color:inherit';
       box.appendChild(t); box.appendChild(lk);
       const alvo = document.querySelector('section[data-sec="visao"]');
