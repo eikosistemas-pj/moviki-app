@@ -52,6 +52,8 @@ Campo `eventos` no topo do `catalogo.json`. Cada evento vira um **cartão** no p
 - Peça só de época (sem preço) pode ficar sem `valido_ate`. Se a cena é de uma data (árvore de Natal, Réveillon), use `a_partir_de` e `valido_ate` para ela aparecer só na época.
 - Conferir antes de entrar no ar: `app.moviki.com.br/parceiro.html?evento=<id>` mostra o cartão fora do prazo, marcado "prévia". O painel do dono lista os eventos em Atalhos do dono.
 - Evento novo = só o catálogo (e as artes). O `parceiro.html` não muda.
+- **4º botão do Material de apoio (desde 21/10/2026):** evento com `botao` ganha um botão no topo do Material de apoio, ao lado dos 3 fixos (abaixo de "Panfletos com o seu QR"), só entre `inicio` e `fim`. Ele abre todas as peças do evento num lugar só. `botao`: `nome`, `sub`, `icone` (1 caractere), `fundo`, `borda`, `texto` (cores só em `#hex`). A borda pisca (menos para quem pede movimento reduzido). Black Friday = fundo `#0b0b0d`, borda `#d4af37`; Natal = fundo vermelho escuro e borda dourada.
+- **`so_evento`: "<id do evento>"** na peça = ela aparece só no botão do evento, não no ramo nem em "Para qualquer negócio".
 
 ## Regras de conteúdo
 - Toda legenda começa com `#publi` (Guia CONAR 2026: conteúdo comissionado é publicidade).

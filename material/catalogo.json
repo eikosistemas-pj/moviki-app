@@ -1,5 +1,5 @@
 {
-  "versao": "2026-10-21-black-friday-ugc",
+  "versao": "2026-10-21-botao-black-friday",
   "atualizado": "2026-10-21",
   "eventos": [
     {
@@ -23,9 +23,9 @@
       "id": "black-friday",
       "titulo": "Black Friday",
       "sub": "Em novembro o cliente procura oferta pelo celular. Mostre ao lojista que ele pode fazer a live da loja e vender ao vivo na semana da Black Friday.",
-      "inicio": "2026-11-01",
+      "inicio": "2026-10-21",
       "fim": "2026-11-30",
-      "cor": "#ff7a1a",
+      "cor": "#d4af37",
       "link": "parceiro",
       "mensagem": "Oi! Na Black Friday muita gente compra pelo celular. Com o Moviki você faz a live da sua loja e vende ao vivo, sem aplicativo e sem precisar de seguidores. Dá para testar 30 dias grátis: {link}",
       "itens": [
@@ -51,7 +51,15 @@
         "video-shopping-moda",
         "texto-abordagem-live",
         "texto-objecao-seguidores"
-      ]
+      ],
+      "botao": {
+        "nome": "Material Black Friday",
+        "sub": "Tudo da Black Friday num lugar só",
+        "icone": "★",
+        "fundo": "#0b0b0d",
+        "borda": "#d4af37",
+        "texto": "#ffffff"
+      }
     },
     {
       "id": "natal",
@@ -105,7 +113,8 @@
       "legenda": "#publi Black Friday ao vivo: a cliente vê, pergunta e paga sem sair da tela.\n\nNo caminho de sempre, ela clica no anúncio, cai na loja inteira, procura o produto, vai pro carrinho e para no cadastro. Na live do Moviki é uma tela só: o produto fixado com o preço, a dúvida respondida no chat e a compra num toque.\n\nO pedido pago chega na Central de Pedidos. Monte a sua Black Friday ao vivo.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "geral",
-      "valido_ate": "2026-11-27"
+      "valido_ate": "2026-11-27",
+      "so_evento": "black-friday"
     },
     {
       "id": "ugc-bastidores-bf-perfumaria",
@@ -122,7 +131,8 @@
       "legenda": "#publi Foto não tem cheiro. Na live da Black Friday, a cliente pergunta e compra.\n\nPor trás de uma live numa perfumaria: a lojista borrifa, descreve as notas e tira a dúvida no chat, e o pedido chega pago enquanto a equipe embala o presente.\n\nNo Moviki, a loja abre a live pelo celular e a cliente compra sem sair da tela, sem carrinho e sem checkout.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "beleza",
-      "valido_ate": "2026-11-30"
+      "valido_ate": "2026-11-30",
+      "so_evento": "black-friday"
     },
     {
       "id": "ugc-bastidores-bf-bijuteria",
@@ -139,7 +149,8 @@
       "legenda": "#publi Na Black Friday, todas perguntam a mesma coisa. Na live, uma resposta atende todas.\n\nPor trás de uma live numa loja de bijuterias: a lojista mostra o brilho, o tamanho e o fecho, e cada resposta no chat vale para todo mundo que está assistindo.\n\nNo Moviki, a cliente compra num toque e o pedido chega pago na Central de Pedidos.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "joalheria",
-      "valido_ate": "2026-11-30"
+      "valido_ate": "2026-11-30",
+      "so_evento": "black-friday"
     },
     {
       "id": "ugc-bastidores-bf-boutique",
@@ -156,7 +167,8 @@
       "legenda": "#publi Ela clicou no anúncio de Black Friday e desistiu no checkout. Na live, ela compra num toque.\n\nPor trás de uma live numa boutique: a lojista mostra o tricô de perto, responde o tamanho no chat e a equipe acompanha cada pedido pago.\n\nNo Moviki, a cliente vê a peça, pergunta e compra sem procurar no meio da loja inteira.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "moda",
-      "valido_ate": "2026-11-30"
+      "valido_ate": "2026-11-30",
+      "so_evento": "black-friday"
     },
     {
       "id": "ugc-bastidores-bf-brecho",
@@ -173,7 +185,8 @@
       "legenda": "#publi Na Black Friday, peça única não espera “te passo o Pix depois”.\n\nPor trás de uma live num brechó: a lojista mostra o couro, o forro e cada detalhe, e a cliente garante a peça antes de outra pessoa.\n\nNo Moviki, a live chama quem já é cliente da loja, a compra sai num toque e o pedido chega pago.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link.",
       "categoria": "moda",
-      "valido_ate": "2026-11-30"
+      "valido_ate": "2026-11-30",
+      "so_evento": "black-friday"
     },
     {
       "id": "feed-universal-cliente-no-celular",
