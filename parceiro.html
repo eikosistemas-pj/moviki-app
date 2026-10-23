@@ -362,6 +362,19 @@ input::placeholder{color:#6b7f96}
 .igPosse .igPassos{margin:10px 0 0;padding-left:20px;font-size:13px;line-height:1.55;color:var(--mv-txt-2,inherit)}
 .igPosse .igCodigo{display:inline-flex;gap:8px;align-items:center;margin-top:10px;padding:8px 12px;border-radius:10px;border:1px dashed var(--mv-linha-forte);font:700 18px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:1px}
 .igPosse .fotoBtns .btn{width:auto}
+/* 22/10/2026: Dados para receber (CPF/CNPJ, nome, nascimento) — exigidos para o saque */
+.fisBloco{padding:14px;margin-bottom:14px;border:1px solid var(--mv-linha);border-radius:var(--mv-r-lg);background:var(--mv-campo)}
+.fisBloco .fisTopo{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.fisBloco .fisSit{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;border:1px solid var(--mv-erro);color:var(--mv-erro)}
+.fisBloco .fisSit.ok{border-color:var(--mv-ok);color:var(--mv-ok)}
+.fisTipo{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.fisTipo label{display:flex;gap:9px;align-items:flex-start;margin:0;font-weight:600;cursor:pointer;padding:10px;border:1px solid var(--mv-linha);border-radius:var(--mv-r-sm)}
+.fisTipo label small{display:block;font-weight:400;color:var(--mv-txt-3);margin-top:2px;line-height:1.4}
+.fisTipo input,.fisMei input{width:auto;margin-top:3px;flex:0 0 auto}
+.fisMei{display:flex;gap:9px;align-items:center;margin:12px 0 0;font-weight:600}
+.fisLinha{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 0;border-bottom:1px solid var(--mv-linha)}
+.fisLinha span:first-child{color:var(--mv-txt-3)}
+.sqNf{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}.sqNf input{flex:1 1 220px;padding:8px 10px;font-size:13px}.sqNf .btn{width:auto;margin:0;padding:8px 12px;font-size:13px}
 .certSelo{margin-top:13px;padding-top:13px;border-top:1px solid var(--mv-linha);display:flex;gap:11px;align-items:flex-start}
 .certCarimbo{flex:0 0 auto;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid;position:relative}
 .certCarimbo svg{width:20px;height:20px}
@@ -1097,7 +1110,7 @@ body{background-image:none}
             <ul class="rcLista" style="margin-top:12px">
               <li><b>1</b><span>A comissão nasce quando o seu indicado paga a mensalidade dele.</span></li>
               <li><b>2</b><span>Ela fica alguns dias em análise (aparece em "Aguardando liberação") e depois entra no seu saldo.</span></li>
-              <li><b>3</b><span>Com R$ 20,00 ou mais disponíveis, você pede o saque e recebe na chave Pix cadastrada em "Meus dados".</span></li>
+              <li><b>3</b><span>Com R$ 20,00 ou mais disponíveis, você pede o saque e recebe na chave Pix cadastrada em "Meus dados". Com CPF, o pagamento sai 1 vez por mês (a partir do dia 10) com o INSS retido; com CNPJ/MEI, sai quando você informa a nota fiscal.</span></li>
               <li><b>4</b><span>Depois de pedir, o Pix é enviado em <b>até 1 dia útil (24h)</b>. Pedido no fim de semana ou feriado cai no próximo dia útil.</span></li>
             </ul>
           </div>
@@ -1565,6 +1578,50 @@ body{background-image:none}
               <div class="aviso" id="avisoIg"></div>
             </div>
 
+            <!-- 22/10/2026: DADOS PARA RECEBER. Sem eles o robo nao paga comissao
+                 (api/parceiro-fiscal + pagar-saque). O documento inteiro fica so
+                 no servidor; aqui volta mascarado. -->
+            <div class="fisBloco" id="fisBloco">
+              <div class="fisTopo">
+                <div class="fotoTit">Dados para receber</div>
+                <span class="fisSit" id="fisSit">Falta preencher</span>
+              </div>
+              <div class="fotoSub" id="fisTexto">Obrigatório para sacar. A lei exige saber quem recebe a comissão (CPF ou CNPJ) e que o parceiro seja maior de 18 anos.</div>
+              <div id="fisView" class="hide">
+                <div class="fisLinha"><span>Recebe como</span><b id="fisVTipo">—</b></div>
+                <div class="fisLinha"><span id="fisVDocRot">Documento</span><b id="fisVDoc">—</b></div>
+                <div class="fisLinha"><span id="fisVNomeRot">Nome</span><b id="fisVNome" style="text-align:right">—</b></div>
+                <div class="fisLinha" id="fisVNascL"><span>Nascimento</span><b id="fisVNasc">—</b></div>
+                <div class="fotoSub" id="fisVRegra" style="margin-top:10px"></div>
+                <div class="fotoBtns"><button type="button" class="btn sec" id="btnFisEditar">Alterar dados para receber</button></div>
+              </div>
+              <div id="fisEdit">
+                <div class="fisTipo" role="radiogroup" aria-label="Como você recebe">
+                  <label><input type="radio" name="fisTipo" value="pf" id="fisPF"><span>Pessoa física (CPF)<small>Pagamento 1 vez por mês, a partir do dia 10, com 11% de INSS retido (e Imposto de Renda, se houver), como manda a lei. Você recebe o recibo.</small></span></label>
+                  <label><input type="radio" name="fisTipo" value="pj" id="fisPJ"><span>Empresa ou MEI (CNPJ)<small>Saque quando quiser, sem desconto. A cada saque você emite a nota fiscal de serviço para a Eiko e informa a chave dela aqui.</small></span></label>
+                </div>
+                <label for="fisDoc" id="fisDocRot">CPF</label>
+                <input id="fisDoc" type="text" inputmode="numeric" maxlength="18" placeholder="Só números" autocomplete="off">
+                <label for="fisNome" id="fisNomeRot">Nome completo (como está no CPF)</label>
+                <input id="fisNome" type="text" maxlength="120" autocomplete="name">
+                <div id="fisPFCampos">
+                  <label for="fisNasc">Data de nascimento</label>
+                  <input id="fisNasc" type="date" min="1910-01-01">
+                </div>
+                <div id="fisPJCampos" class="hide">
+                  <label class="fisMei"><input type="checkbox" id="fisMei"> Sou MEI</label>
+                  <label for="fisResp">Nome do responsável (opcional)</label>
+                  <input id="fisResp" type="text" maxlength="120">
+                </div>
+                <div class="fotoSub" style="margin-top:10px">A chave Pix de recebimento precisa estar no mesmo CPF ou CNPJ. Usamos estes dados só para pagar e cumprir a lei fiscal, como explica a Política de privacidade.</div>
+                <div class="fotoBtns">
+                  <button type="button" class="btn" id="btnFisSalvar">Salvar dados para receber</button>
+                  <button type="button" class="btn sec hide" id="btnFisCancelar">Cancelar</button>
+                </div>
+              </div>
+              <div class="aviso" id="avisoFis"></div>
+            </div>
+
             <div id="dadosView">
               <div class="lRow" style="grid-template-columns:minmax(0,1fr) auto"><span class="lSub" style="display:block">Nome</span><span class="lVal" id="vNome">—</span></div>
               <div class="lRow" style="grid-template-columns:minmax(0,1fr) auto"><span class="lSub" style="display:block">E-mail</span><span class="lVal" id="vEmail" style="white-space:normal;word-break:break-all">—</span></div>
@@ -1774,7 +1831,7 @@ body{background-image:none}
     <li><b>1</b><span>Quando um indicado seu paga a mensalidade, a comissão é registrada na hora.</span></li>
     <li><b>2</b><span>Ela fica alguns dias em <b>Aguardando liberação</b> — é o prazo de segurança contra estorno.</span></li>
     <li><b>3</b><span>Passado o prazo, o valor entra em <b>Disponível para saque</b>.</span></li>
-    <li><b>4</b><span>Com R$ 20,00 ou mais, você pede o saque e recebe na chave Pix cadastrada em Meus dados.</span></li>
+    <li><b>4</b><span>Com R$ 20,00 ou mais, você pede o saque e recebe na chave Pix cadastrada em Meus dados (preencha também os Dados para receber: CPF ou CNPJ).</span></li>
     <li><b>5</b><span>Depois do pedido, o Pix é enviado em <b>até 1 dia útil (24h)</b> — fim de semana e feriado contam no próximo dia útil.</span></li>
   </ul>
   <button type="button" class="btn" data-fechar="ovSaldo">Entendi</button>
@@ -1807,7 +1864,7 @@ body{background-image:none}
      cartao do evento (os videos de Natal da Onda 3 tem arvore e pisca-pisca e
      so entram em 20/11). Com ?evento=<id> na previa, tudo aparece, para
      conferir antes. */
-  window.MOVIKI_VERSAO = '2026-10-21-botaoevento';   /* 21/10: Material de apoio ganha o 4o botao do topo, so durante o evento (eventos[].botao no catalogo: Black Friday preto com borda dourada piscando; Natal vermelho e dourado), com todo o material do evento num lugar so; peca com so_evento sai dos ramos. */ /* antes: 2026-10-20-viralojista */   /* 20/10 (noite, 2): parceiro sem negocio ganha 'Colocar meu negocio no mapa' (menu lateral, Mais e coluna da direita) com a folha da regra da comissao ANTES do botao (regulamento 2.4, opcao B) -> index.html?virarLojista=1. Parceiro que abriu o negocio depois: aviso verde 'comissoes normais no teste' e, acabado o teste sem plano, card de retido com o texto do teste (motivo fim_teste). */ /* antes: 2026-10-20-amostra */   /* 20/10 (noite): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (QjCq1MhrdZA) e 'Sua entrega' (YDK1US97BG4, 2:22) regravadas sobre as lojas de amostra completas; mesmas chaves. */ /* antes: 2026-10-20-aulasp85 */   /* 20/10 (P85): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (mod-live-cardapio, lf4NVwllA0w, 1:26) e 'Sua entrega: bairros, taxa, entrega gratis e reserva' (mod-pedidos-entrega, 5OEL8fXWJJs, 2:21) regravadas; mesmas chaves. Antes: 2026-10-17-bvparceiro. */   /* 17/10: aula de boas-vindas do parceiro 'Bem-vindo a equipe Moviki' (mod-parc-boasvindas, voz Malu, 4:42) no lugar da abertura (mod-parc-abertura sai do catalogo); duas versoes, horizontal no computador e vertical no celular em pe (idV, palco 9:16); abre sozinha para quem ainda nao viu (mvBvParceiro, 1 vez por sessao). Antes: 2026-10-17-aulasparc. */   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-17-retido (card Saldo com a comissao retida pelo atraso e contagem regressiva, regulamento 1.5 item 2.4), que veio de 2026-10-16-linkramo. */
+  window.MOVIKI_VERSAO = '2026-10-22-fiscal';   /* 22/10: Meus dados ganhou 'Dados para receber' (Pessoa fisica CPF ou Empresa/MEI CNPJ, documento validado, nome/razao social, nascimento 18+; robo /api/parceiro-fiscal), obrigatorio para sacar ('Completar dados para receber'). CPF: pago 1 vez por mes a partir do dia 10 com INSS 11% (e IR) retido, a lista de saques mostra bruto/INSS/IR. CNPJ: saque livre, informa a chave de acesso da NFS-e (50 numeros) no pedido em Saques. Antes: '2026-10-21-botaoevento'. */ /* 21/10: Material de apoio ganha o 4o botao do topo, so durante o evento (eventos[].botao no catalogo: Black Friday preto com borda dourada piscando; Natal vermelho e dourado), com todo o material do evento num lugar so; peca com so_evento sai dos ramos. */ /* antes: 2026-10-20-viralojista */   /* 20/10 (noite, 2): parceiro sem negocio ganha 'Colocar meu negocio no mapa' (menu lateral, Mais e coluna da direita) com a folha da regra da comissao ANTES do botao (regulamento 2.4, opcao B) -> index.html?virarLojista=1. Parceiro que abriu o negocio depois: aviso verde 'comissoes normais no teste' e, acabado o teste sem plano, card de retido com o texto do teste (motivo fim_teste). */ /* antes: 2026-10-20-amostra */   /* 20/10 (noite): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (QjCq1MhrdZA) e 'Sua entrega' (YDK1US97BG4, 2:22) regravadas sobre as lojas de amostra completas; mesmas chaves. */ /* antes: 2026-10-20-aulasp85 */   /* 20/10 (P85): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (mod-live-cardapio, lf4NVwllA0w, 1:26) e 'Sua entrega: bairros, taxa, entrega gratis e reserva' (mod-pedidos-entrega, 5OEL8fXWJJs, 2:21) regravadas; mesmas chaves. Antes: 2026-10-17-bvparceiro. */   /* 17/10: aula de boas-vindas do parceiro 'Bem-vindo a equipe Moviki' (mod-parc-boasvindas, voz Malu, 4:42) no lugar da abertura (mod-parc-abertura sai do catalogo); duas versoes, horizontal no computador e vertical no celular em pe (idV, palco 9:16); abre sozinha para quem ainda nao viu (mvBvParceiro, 1 vez por sessao). Antes: 2026-10-17-aulasparc. */   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-17-retido (card Saldo com a comissao retida pelo atraso e contagem regressiva, regulamento 1.5 item 2.4), que veio de 2026-10-16-linkramo. */
   /* 16/10: peca por ramo do Material de apoio leva /p/apelido?ramo=<k> (miniatura e live do ramo); ramos.js carregado com o catalogo. Antes: 2026-10-13-arroba. */   /* 13/10 (P80): bloco "Seu @ no Instagram" em Meus dados (prova de posse pelo codigo na bio) e foto do Instagram no cracha so com o @ provado. Antes: 2026-10-10-pixaula. */   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
   /* 2026-10-10-teatro: videoaulas com layout de YouTube (marca no alto, palco grande, lista com as capas a direita), selo das aulas com barra e contagem das opcionais, e a aula OPCIONAL do Material de apoio (mod-parc-material, OZ9vgwH2W_U) no fim da secao. Trava e selo continuam contando so as obrigatorias. Lista em tres niveis: Essenciais (vermelho, as obrigatorias que liberam o link), Recomendadas (amarelo) e Complementares (azul), campo `nivel` do modulo opcional. Antes: 2026-10-06-pixcarimbo. */
 
@@ -2338,6 +2395,7 @@ body{background-image:none}
       carregarComissoes();
       carregarSaques();
       carregarIndicacoes();
+      try{ carregarFiscal(); }catch(_){}
     }catch(e){
       telas('login');
       txt('avisoLogin','Não foi possível carregar seus dados. Tente entrar de novo.');
@@ -2556,6 +2614,91 @@ body{background-image:none}
      robo confere pela busca oficial da Meta. Tudo no servidor: o painel so
      mostra. Quem grava "confirmado" e o robo (Admin SDK); a regra do
      Firestore nao deixa o parceiro escrever esses campos. */
+  /* ==========================================================
+     22/10/2026 — DADOS PARA RECEBER (robo /api/parceiro-fiscal).
+     CPF/CNPJ, nome ou razao social e nascimento (18+). Sem eles o saque
+     nao e pedido aqui e o robo nao paga. PF: 1 pagamento por mes, a partir
+     do dia 10, com INSS 11% (e IR) retido. PJ: saque livre com a chave da
+     NFS-e que ele emite para a Eiko.
+     ========================================================== */
+  const ROBO_FISCAL = 'https://moviki-robo.vercel.app/api/parceiro-fiscal';
+  let FIS = { completo:false, carregado:false };
+  async function fisChamar(corpo){
+    const user = auth.currentUser; if(!user) throw new Error('sessao');
+    const tk = await user.getIdToken();
+    const r = await fetch(ROBO_FISCAL, { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+tk}, body: JSON.stringify(corpo) });
+    const j = (await r.json().catch(() => null)) || { ok:false };
+    j._http = r.status; return j;
+  }
+  function fisTipoSel(){ const a = document.querySelector('input[name="fisTipo"]:checked'); return a ? a.value : ''; }
+  function fisAjustarForm(){
+    const t = fisTipoSel();
+    txt('fisDocRot', t === 'pj' ? 'CNPJ' : 'CPF');
+    txt('fisNomeRot', t === 'pj' ? 'Razão social (como está no CNPJ)' : 'Nome completo (como está no CPF)');
+    el('fisPFCampos').classList.toggle('hide', t === 'pj');
+    el('fisPJCampos').classList.toggle('hide', t !== 'pj');
+  }
+  function pintarFiscal(){
+    const ok = FIS.completo === true;
+    const sit = el('fisSit'); if(sit){ sit.textContent = ok ? 'Completo' : 'Falta preencher'; sit.classList.toggle('ok', ok); }
+    el('fisView').classList.toggle('hide', !ok);
+    el('fisEdit').classList.toggle('hide', ok);
+    el('btnFisCancelar').classList.toggle('hide', !ok);
+    if(ok){
+      txt('fisVTipo', FIS.tipo === 'pj' ? (FIS.mei ? 'MEI (CNPJ)' : 'Empresa (CNPJ)') : 'Pessoa física (CPF)');
+      txt('fisVDocRot', FIS.tipo === 'pj' ? 'CNPJ' : 'CPF'); txt('fisVDoc', FIS.documento || '—');
+      txt('fisVNomeRot', FIS.tipo === 'pj' ? 'Razão social' : 'Nome'); txt('fisVNome', FIS.nome || '—');
+      el('fisVNascL').classList.toggle('hide', FIS.tipo === 'pj'); txt('fisVNasc', FIS.nascimento || '—');
+      const dia = FIS.diaPagamentoPF || 10;
+      txt('fisVRegra', FIS.tipo === 'pj'
+        ? 'Você saca quando quiser, a partir de R$ 20,00. Depois de pedir, emita a nota fiscal de serviço para EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA (CNPJ 68.289.841/0001-02) no valor do saque e informe a chave de acesso dela em Saques. O Pix sai em até 1 dia útil depois da nota.'
+        : 'Pedidos de saque a partir de R$ 20,00 são pagos 1 vez por mês, a partir do dia ' + dia + ', com 11% de INSS retido (e Imposto de Renda, se o valor do mês passar da faixa de isenção). O recibo fica com a nossa contabilidade.');
+      txt('fisTexto', 'Usados para pagar suas comissões e cumprir a lei fiscal.');
+    } else {
+      txt('fisTexto', 'Obrigatório para sacar. A lei exige saber quem recebe a comissão (CPF ou CNPJ) e que o parceiro seja maior de 18 anos.');
+    }
+    atualizarBotaoSaque();
+  }
+  async function carregarFiscal(){
+    try{ const j = await fisChamar({ acao:'ver' }); if(j && j.ok){ FIS = Object.assign({ carregado:true }, j); } else FIS.carregado = true; }
+    catch(_){ FIS.carregado = true; }
+    pintarFiscal(); carregarSaques();
+  }
+  (function ligarFiscal(){
+    document.querySelectorAll('input[name="fisTipo"]').forEach(r => r.addEventListener('change', fisAjustarForm));
+    const bE = el('btnFisEditar'); if(bE) bE.onclick = () => {
+      if(FIS.tipo){ const r = el(FIS.tipo === 'pj' ? 'fisPJ' : 'fisPF'); if(r) r.checked = true; }
+      el('fisNome').value = FIS.nome || ''; el('fisDoc').value = ''; el('fisMei').checked = FIS.mei === true; el('fisResp').value = FIS.responsavel || '';
+      fisAjustarForm(); el('fisView').classList.add('hide'); el('fisEdit').classList.remove('hide');
+      txt('avisoFis', 'Por segurança, digite o documento de novo. Trocar o CPF/CNPJ avisa a nossa equipe.');
+    };
+    const bC = el('btnFisCancelar'); if(bC) bC.onclick = () => { txt('avisoFis',''); pintarFiscal(); };
+    const bS = el('btnFisSalvar'); if(bS) bS.onclick = async () => {
+      const av = el('avisoFis'); av.className = 'aviso'; av.textContent = '';
+      const tipo = fisTipoSel();
+      if(!tipo){ av.textContent = 'Escolha se você recebe com CPF ou com CNPJ.'; return; }
+      const corpo = { acao:'salvar', tipo, documento: el('fisDoc').value, nome: el('fisNome').value };
+      if(tipo === 'pf') corpo.nascimento = el('fisNasc').value;
+      else { corpo.mei = el('fisMei').checked; corpo.responsavel = el('fisResp').value; }
+      bS.disabled = true; bS.textContent = 'Salvando…';
+      try{
+        const j = await fisChamar(corpo);
+        if(j && j.ok){ FIS = Object.assign({ carregado:true, diaPagamentoPF: FIS.diaPagamentoPF }, j); av.className = 'aviso ok'; av.textContent = 'Dados salvos. Você já pode pedir saque.'; pintarFiscal(); }
+        else av.textContent = (j && j.mensagem) || 'Não deu para salvar agora. Tente de novo.';
+      }catch(_){ av.textContent = 'Sem conexão. Tente de novo.'; }
+      bS.disabled = false; bS.textContent = 'Salvar dados para receber';
+    };
+  })();
+  window.mvNfSaque = async function(id){
+    const inp = el('nf_' + id), av = el('nfAv_' + id); if(!inp) return;
+    if(av){ av.textContent = 'Enviando…'; av.style.color = ''; }
+    try{
+      const j = await fisChamar({ acao:'nota_saque', saqueId:id, chave: inp.value });
+      if(j && j.ok){ carregarSaques(); return; }
+      if(av){ av.textContent = (j && j.mensagem) || 'Não deu para enviar.'; av.style.color = 'var(--mv-erro)'; }
+    }catch(_){ if(av){ av.textContent = 'Sem conexão.'; av.style.color = 'var(--mv-erro)'; } }
+  };
+
   const ROBO_POSSE = 'https://moviki-robo.vercel.app/api/novo-parceiro?posse=1';
   function igNorm(a){ return String(a||'').trim().toLowerCase().replace(/^@+/,''); }
   function igConfirmadoAqui(){
@@ -3052,26 +3195,42 @@ body{background-image:none}
   function atualizarBotaoSaque(){
     const b = el('btnSaque'), nota = el('saqueNota');
     if(!b || !nota) return;
+    const pjF = FIS.completo && FIS.tipo === 'pj', pfF = FIS.completo && FIS.tipo === 'pf';
     if(saquePendente){
       b.disabled = true; b.textContent = 'Saque solicitado ✓';
-      nota.textContent = 'Saque em processamento. O Pix é enviado em até 1 dia útil (24h) e aparece aqui como pago.';
+      nota.textContent = pfF
+        ? 'Saque registrado. Pagamento a partir do dia ' + (FIS.diaPagamentoPF || 10) + ' do mês, com o INSS retido, e aparece aqui como pago.'
+        : pjF ? 'Saque registrado. Informe a chave da nota fiscal em Saques: o Pix sai em até 1 dia útil depois dela.'
+        : 'Saque em processamento. O Pix é enviado em até 1 dia útil (24h) e aparece aqui como pago.';
+    } else if(COM.aReceber >= 20 && FIS.carregado && !FIS.completo){
+      b.disabled = false; b.textContent = 'Completar dados para receber';
+      nota.textContent = 'Você tem ' + brl(COM.aReceber) + ' para sacar. Antes, preencha em Meus dados o CPF ou CNPJ de quem recebe.';
     } else if(COM.aReceber < 20){
       b.disabled = true; b.textContent = 'Solicitar saque';
       nota.textContent = 'Saque mínimo de R$ 20,00. Continue divulgando para acumular.';
     } else {
       b.disabled = false; b.textContent = 'Solicitar saque';
-      nota.textContent = 'Você pode sacar ' + brl(COM.aReceber) + ' na sua chave Pix cadastrada.';
+      nota.textContent = 'Você pode sacar ' + brl(COM.aReceber) + ' na sua chave Pix cadastrada.' +
+        (pfF ? ' Pessoa física: pago a partir do dia ' + (FIS.diaPagamentoPF || 10) + ', com 11% de INSS retido.' : pjF ? ' Depois do pedido, informe a chave da sua nota fiscal.' : '');
     }
   }
 
   async function solicitarSaque(){
     const av = el('avisoSaque'); if(av){ av.className='aviso'; av.textContent=''; }
     if(saquePendente || COM.aReceber < 20) return;
+    if(!FIS.completo){
+      if(av) av.textContent = 'Preencha os Dados para receber (CPF ou CNPJ) em "Meus dados" antes de sacar.';
+      irSec('dados'); try{ el('fisBloco').scrollIntoView({behavior:'smooth', block:'start'}); }catch(_){}
+      return;
+    }
     if(!MEU.pix || MEU.pix.length < 3){
       if(av) av.textContent = 'Cadastre sua chave Pix em "Meus dados" antes de sacar.';
       irSec('dados'); return;
     }
-    if(!confirm('Pedir saque de ' + brl(COM.aReceber) + ' na chave Pix ' + MEU.pix + '?\n\nO Pix é enviado em até 1 dia útil (24h). Pedido feito no fim de semana ou feriado é pago no próximo dia útil.')) return;
+    const _regraTxt = FIS.tipo === 'pf'
+      ? 'Pessoa física: o pagamento sai a partir do dia ' + (FIS.diaPagamentoPF || 10) + ' do mês, com 11% de INSS retido (e IR, se houver).'
+      : 'Empresa/MEI: depois do pedido, emita a nota fiscal para a Eiko e informe a chave dela em Saques. O Pix sai em até 1 dia útil depois da nota.';
+    if(!confirm('Pedir saque de ' + brl(COM.aReceber) + ' na chave Pix ' + MEU.pix + '?\n\n' + _regraTxt)) return;
     const b = el('btnSaque'); b.disabled = true; b.textContent = 'Enviando…';
     try{
       await addDoc(collection(db,'saques'), {
@@ -3081,7 +3240,10 @@ body{background-image:none}
         pedidoEm: serverTimestamp()
       });
       saquePendente = true; atualizarBotaoSaque();
-      if(av){ av.className='aviso ok'; av.textContent='Saque solicitado! O Pix cai na sua chave cadastrada em até 1 dia útil (24h). Pedidos feitos no fim de semana ou feriado são pagos no próximo dia útil.'; }
+      if(av){ av.className='aviso ok'; av.textContent = FIS.tipo === 'pf'
+        ? 'Saque solicitado! Ele é pago a partir do dia ' + (FIS.diaPagamentoPF || 10) + ' do mês, com o INSS retido.'
+        : FIS.tipo === 'pj' ? 'Saque solicitado! Agora informe a chave da nota fiscal em Saques, logo abaixo.'
+        : 'Saque solicitado! O Pix cai na sua chave cadastrada em até 1 dia útil (24h). Pedidos feitos no fim de semana ou feriado são pagos no próximo dia útil.'; }
       carregarSaques();
     }catch(e){
       b.disabled = false; b.textContent = 'Solicitar saque';
@@ -3266,14 +3428,19 @@ body{background-image:none}
     try{
       const r = await getDocs(query(collection(db,'saques'), where('parceiroUid','==',MEU.uid)));
       SAQUES = [];
-      r.forEach(d=>{ const s = d.data() || {}; SAQUES.push({ id:d.id, valor:Number(s.valorSolicitado)||0, pago:Number(s.valorPago)||0, status:s.status||'solicitado', quando:ms(s.pedidoEm), pagoEm:ms(s.pagoEm) }); });
+      r.forEach(d=>{ const s = d.data() || {}; SAQUES.push({ id:d.id, valor:Number(s.valorSolicitado)||0, pago:Number(s.valorPago)||0, status:s.status||'solicitado', quando:ms(s.pedidoEm), pagoEm:ms(s.pagoEm), bruto:Number(s.valorBruto)||0, inss:Number(s.inssRetido)||0, irrf:Number(s.irrfRetido)||0, nf:s.nfseChave||'' }); });
       SAQUES.sort((a,b)=> b.quando - a.quando);
       if(!SAQUES.length){ alvo.innerHTML = '<div class="vazio">Você ainda não pediu nenhum saque. O primeiro fica disponível a partir de R$ 20,00 de saldo.</div>'; return; }
       alvo.innerHTML = SAQUES.map(s=>{
         const pago = s.status === 'pago';
         return '<div class="lRow"><span class="lAv"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18"/><path d="M16.5 7.5C15.6 6.3 14 5.7 12 5.7c-2.5 0-4 1.1-4 2.9 0 4.3 8.6 2.1 8.6 6.5 0 1.9-1.7 3.2-4.6 3.2-2.2 0-3.9-.7-4.8-2"/></svg></span>'
           + '<span class="lTxt"><span class="lNome">'+brl(pago && s.pago ? s.pago : s.valor)+'</span>'
-          + '<span class="lSub">'+(pago ? ('Pago em ' + dataBR(s.pagoEm || s.quando)) : 'Pedido em ' + dataBR(s.quando))+'</span></span>'
+          + '<span class="lSub">'+(pago ? ('Pago em ' + dataBR(s.pagoEm || s.quando)) : 'Pedido em ' + dataBR(s.quando))
+          + (pago && (s.inss || s.irrf) ? ' · bruto ' + brl(s.bruto) + ', INSS ' + brl(s.inss) + (s.irrf ? ', IR ' + brl(s.irrf) : '') : '')
+          + (!pago && FIS.tipo === 'pj' ? (s.nf ? ' · nota fiscal informada ✓' : '') : '')
+          + '</span>'
+          + (!pago && FIS.tipo === 'pj' && !s.nf ? '<span class="sqNf"><input id="nf_'+s.id+'" inputmode="numeric" maxlength="60" placeholder="Chave de acesso da NFS-e (50 números)"><button type="button" class="btn" onclick="mvNfSaque(\''+s.id+'\')">Enviar nota</button><span class="lSub" id="nfAv_'+s.id+'"></span></span>' : '')
+          + '</span>'
           + '<span class="lDir"><span class="pill '+(pago?'ok':'warn')+'">'+(pago?'Pago':'Em análise')+'</span></span></div>';
       }).join('');
     }catch(e){
