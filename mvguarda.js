@@ -19,6 +19,13 @@
  *     no texto copiado (caracteres de largura zero) e no HTML salvo.
  *  5. Conta travada (congelada, suspensa ou banida): cobre a tela e sai do login.
  *
+ *  6. REGISTRO DE ACESSO do Marco Civil (22/10/2026): com alguém logado, manda
+ *     ao robô (moviki-robo /api/acesso, DIRETO — não pelo /api/guarda, que
+ *     passa pela Vercel do app e perderia o IP de quem acessa) um aviso de
+ *     sessão ao entrar e a cada 30 min. O servidor grava IP, data e hora por
+ *     6 meses (art. 15 da Lei 12.965/2014). Independe da chave da Guarda:
+ *     é obrigação legal, não medição — só a chave-mestra local o desliga.
+ *
  * Nunca derruba a página: tudo em try/catch; se a API falhar, nada acontece.
  * CHAVE-MESTRA local: MV_GUARDA_LIGADO = false e subir o arquivo.
  * Chave-mestra do sistema: painel guarda.html > "Guarda ligada" (sem deploy).
@@ -30,7 +37,7 @@
   // >>> CHAVE-MESTRA LOCAL. false = este arquivo não faz nada. <<<
   var MV_GUARDA_LIGADO = true;
 
-  var VERSAO = '2026-09-28-guarda1';
+  var VERSAO = '2026-10-22-acesso';   /* 22/10: + registro de acesso do Marco Civil (item 6). Antes: 2026-09-28-guarda1 */
   var W = window, D = document;
   if (W.mvGuarda) return;
   var api = { versao: VERSAO, estado: 'desligado', marca: '' };
@@ -481,11 +488,36 @@
       })();
     }).catch(function () {});
   }
+  /* ---------------------------------------------------------------- */
+  /* 9. REGISTRO DE ACESSO (Marco Civil, art. 15) — 22/10/2026          */
+  /* ---------------------------------------------------------------- */
+  var ACESSO_API = (local && W.MV_ACESSO_API) || 'https://moviki-robo.vercel.app/api/acesso';
+  var ACESSO_MS = 30 * 60 * 1000, acessoTimer = null;
+  function avisarAcesso() {
+    if (!usuario) return;
+    try {
+      usuario.getIdToken().then(function (t) {
+        if (!t) return;
+        return fetch(ACESSO_API, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ acao: 'sessao', t: t, painel: PAGINA }), credentials: 'omit', cache: 'no-store',
+        });
+      }).catch(function () {});
+    } catch (e) {}
+  }
+  function ligarAcesso() {
+    if (acessoTimer) return;
+    avisarAcesso();
+    acessoTimer = setInterval(avisarAcesso, ACESSO_MS);
+  }
+  function desligarAcesso() { if (acessoTimer) { clearInterval(acessoTimer); acessoTimer = null; } }
+
   function ligarAuth(auth, onChange, sair) {
     api._sair = function () { try { return sair(auth); } catch (e) {} };
     onChange(auth, function (u) {
-      if (u && !travado) { usuario = u; comecar(); }
-      else if (!u) { usuario = null; tokenAtual = ''; parar(); if (!travado) tirarMarca(); }
+      if (u) { usuario = u; ligarAcesso(); }
+      if (u && !travado) { comecar(); }
+      else if (!u) { usuario = null; tokenAtual = ''; desligarAcesso(); parar(); if (!travado) tirarMarca(); }
     });
   }
 
