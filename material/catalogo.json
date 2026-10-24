@@ -1,6 +1,6 @@
 {
-  "versao": "2026-10-21-artes-black-friday",
-  "atualizado": "2026-10-21",
+  "versao": "2026-10-24-eu-quero",
+  "atualizado": "2026-10-24",
   "eventos": [
     {
       "id": "fundador",
@@ -118,6 +118,23 @@
     }
   ],
   "itens": [
+    {
+      "id": "video-live-do-eu-quero-ao-pedido-pago-parceiro",
+      "tipo": "video",
+      "titulo": "Do \"eu quero\" ao pedido pago, em 4 passos",
+      "formato": "Reels/Story 9:16",
+      "duracao": "0:43",
+      "peso": "19,5 MB",
+      "arquivo": "https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/material%2Fvideo-live-do-eu-quero-ao-pedido-pago-parceiro.mp4?alt=media",
+      "capa": "material/capas/video-live-do-eu-quero-ao-pedido-pago-parceiro.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Ela comentou \"eu quero\" na sua live. Aí começou a espera: preço no direct, chave Pix, comprovante. E a venda esfriou.\n\nNa live do Moviki o caminho é curto: a cliente entra pelo seu link, vê o produto fixado com o preço, compra com um toque e paga por Pix sem sair da transmissão. O pedido pago chega organizado na Central de Pedidos, pronto para separar.\n\nPagamento com Pix dentro da transmissão: recurso do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels ou Story. No Story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
+      "categoria": "geral",
+      "so_parceiro": true
+    },
     {
       "id": "bf-ao-vivo",
       "tipo": "video",
