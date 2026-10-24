@@ -1642,6 +1642,10 @@ body{background-image:none}
           <div class="cd">
             <div class="cdTit" style="margin-bottom:12px">Conta</div>
             <button type="button" class="rcBtn" id="sair">Sair da conta</button>
+            <!-- 24/10/2026: exclusao da conta pelo proprio parceiro (LGPD art. 18, VI).
+                 Mesmo pedido do painel do lojista: robo /api/excluir-conta registra,
+                 o dono executa em ate 48 h pela tela Exclusoes. -->
+            <button type="button" class="rcBtn" data-excluir-conta="1" style="margin-top:10px;border-color:rgba(229,72,77,.55);color:#ff8a8d">Excluir minha conta</button>
           </div>
         </section>
 
@@ -1771,6 +1775,7 @@ body{background-image:none}
     <div class="cfTema" role="group" aria-label="Aparência do painel"><span class="cfTemaRot">Aparência</span><div class="cfTemaSeg"><button type="button" data-cf-tema="escuro" aria-pressed="true">🌙 Escuro</button><button type="button" data-cf-tema="claro" aria-pressed="false">☀️ Claro</button></div></div>
     <div class="menuSec">Conta</div>
     <button type="button" id="sair3"><img src="icones/sair.png" alt="" onerror="this.style.display='none'">Sair da conta</button>
+    <button type="button" data-excluir-conta="1" style="color:#ff8a8d"><img src="icones/exclusoes.png" alt="" onerror="this.style.display='none'">Excluir minha conta</button>
   </div>
   <button type="button" class="btn sec" data-fechar="ovMais">Fechar</button>
 </div></div>
@@ -1823,6 +1828,40 @@ body{background-image:none}
   <button type="button" class="btn sec" data-fechar="ovVirarLoj" style="margin-top:8px">Agora não</button>
 </div></div>
 
+<!-- ======= modal: excluir minha conta (24/10/2026) =======
+     Pedido, nao exclusao na hora: o robo (/api/excluir-conta) registra em
+     exclusoes/{uid}, avisa o dono no Telegram e manda e-mail ao parceiro; o
+     dono executa pela tela Exclusoes (api/exclusoes, que ja trata parceiro:
+     apelido vira lapide, espelho /v/ sai, comissoes e saques nao pagos saem,
+     dados fiscais guardados 5 anos se ja recebeu). -->
+<div class="ov centro hide" id="ovExcluir"><div class="folha">
+  <button type="button" class="folhaX" data-fechar="ovExcluir" aria-label="Fechar">✕</button>
+  <div id="excPasso1">
+    <div class="folhaTit">Excluir minha conta</div>
+    <p class="rcTxt" style="margin:0 0 12px">Isto remove sua conta de parceiro e os seus dados do Moviki. A exclusão é <b style="color:#ff8a8d">definitiva</b> e não dá para desfazer.</p>
+    <div id="excSaldo" class="hide" style="margin:0 0 12px;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,190,80,.5);background:rgba(255,190,80,.10);font-size:13px;line-height:1.45"></div>
+    <ul class="rcLista">
+      <li><b>1</b><span>Seu link, seu crachá e a sua página de verificação param de funcionar. O seu apelido não volta a ficar disponível.</span></li>
+      <li><b>2</b><span>Comissões ainda não pagas e pedidos de saque ainda não pagos são <b>cancelados</b>.</span></li>
+      <li><b>3</b><span>Os negócios que você indicou continuam no Moviki normalmente.</span></li>
+      <li><b>4</b><span>Se você já recebeu alguma comissão, o registro do pagamento e o seu CPF ou CNPJ ficam guardados por 5 anos, como exige a lei fiscal.</span></li>
+      <li id="excNegItem" class="hide"><b>5</b><span>Esta conta também tem um <b>negócio</b> no Moviki: ele é excluído junto (página, cardápio, dados e assinatura).</span></li>
+    </ul>
+    <p class="rcTxt" style="margin:12px 0 12px">Sua conta é excluída em até 48 horas. Até lá você continua usando o painel normalmente.</p>
+    <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.45;margin:0 0 12px;cursor:pointer"><input type="checkbox" id="excOk" style="margin-top:2px;width:auto"> <span>Entendo que minha conta e meus dados serão excluídos.</span></label>
+    <button type="button" class="btn" id="excBtn" disabled style="background:#e5484d;color:#fff;border-color:#e5484d">Solicitar exclusão da conta</button>
+    <button type="button" class="btn sec" data-fechar="ovExcluir" style="margin-top:8px">Cancelar</button>
+    <div class="aviso" id="excAviso"></div>
+  </div>
+  <div id="excPasso2" class="hide" style="text-align:center">
+    <div style="font-size:42px;line-height:1;margin:6px 0 8px">✅</div>
+    <div class="folhaTit">Pedido recebido</div>
+    <p class="rcTxt" style="margin:0 0 14px">Sua conta será excluída em até 48 horas e você recebe a confirmação por e-mail. Mudou de ideia? Fale com o suporte antes disso.</p>
+    <a class="btn sec" href="https://wa.me/554120186848?text=Ol%C3%A1!%20Sou%20parceiro%20Moviki%20e%20pedi%20a%20exclus%C3%A3o%20da%20minha%20conta." target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;text-decoration:none;margin-bottom:8px">Falar com o suporte</a>
+    <button type="button" class="btn" data-fechar="ovExcluir">Entendi</button>
+  </div>
+</div></div>
+
 <!-- ======= modal: como funciona o saldo ======= -->
 <div class="ov centro hide" id="ovSaldo"><div class="folha">
   <button type="button" class="folhaX" data-fechar="ovSaldo" aria-label="Fechar">✕</button>
@@ -1864,6 +1903,7 @@ body{background-image:none}
      cartao do evento (os videos de Natal da Onda 3 tem arvore e pisca-pisca e
      so entram em 20/11). Com ?evento=<id> na previa, tudo aparece, para
      conferir antes. */
+  /* 24/10: botao 'Excluir minha conta' (Meus dados > Conta e Mais > Conta) com o pedido ao robo /api/excluir-conta. A marca NAO mudou de proposito: a tabela MARCAS_CONFERIDAS do Vik (moviki-ai) nao entrou nesta entrega; trocar a marca junto com o Vik na proxima. */
   window.MOVIKI_VERSAO = '2026-10-22-fiscal';   /* 22/10: Meus dados ganhou 'Dados para receber' (Pessoa fisica CPF ou Empresa/MEI CNPJ, documento validado, nome/razao social, nascimento 18+; robo /api/parceiro-fiscal), obrigatorio para sacar ('Completar dados para receber'). CPF: pago 1 vez por mes a partir do dia 10 com INSS 11% (e IR) retido, a lista de saques mostra bruto/INSS/IR. CNPJ: saque livre, informa a chave de acesso da NFS-e (50 numeros) no pedido em Saques. Antes: '2026-10-21-botaoevento'. */ /* 21/10: Material de apoio ganha o 4o botao do topo, so durante o evento (eventos[].botao no catalogo: Black Friday preto com borda dourada piscando; Natal vermelho e dourado), com todo o material do evento num lugar so; peca com so_evento sai dos ramos. */ /* antes: 2026-10-20-viralojista */   /* 20/10 (noite, 2): parceiro sem negocio ganha 'Colocar meu negocio no mapa' (menu lateral, Mais e coluna da direita) com a folha da regra da comissao ANTES do botao (regulamento 2.4, opcao B) -> index.html?virarLojista=1. Parceiro que abriu o negocio depois: aviso verde 'comissoes normais no teste' e, acabado o teste sem plano, card de retido com o texto do teste (motivo fim_teste). */ /* antes: 2026-10-20-amostra */   /* 20/10 (noite): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (QjCq1MhrdZA) e 'Sua entrega' (YDK1US97BG4, 2:22) regravadas sobre as lojas de amostra completas; mesmas chaves. */ /* antes: 2026-10-20-aulasp85 */   /* 20/10 (P85): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (mod-live-cardapio, lf4NVwllA0w, 1:26) e 'Sua entrega: bairros, taxa, entrega gratis e reserva' (mod-pedidos-entrega, 5OEL8fXWJJs, 2:21) regravadas; mesmas chaves. Antes: 2026-10-17-bvparceiro. */   /* 17/10: aula de boas-vindas do parceiro 'Bem-vindo a equipe Moviki' (mod-parc-boasvindas, voz Malu, 4:42) no lugar da abertura (mod-parc-abertura sai do catalogo); duas versoes, horizontal no computador e vertical no celular em pe (idV, palco 9:16); abre sozinha para quem ainda nao viu (mvBvParceiro, 1 vez por sessao). Antes: 2026-10-17-aulasparc. */   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-17-retido (card Saldo com a comissao retida pelo atraso e contagem regressiva, regulamento 1.5 item 2.4), que veio de 2026-10-16-linkramo. */ /* conformidade:ok (prazo de pagamento do CPF) */
   /* 16/10: peca por ramo do Material de apoio leva /p/apelido?ramo=<k> (miniatura e live do ramo); ramos.js carregado com o catalogo. Antes: 2026-10-13-arroba. */   /* 13/10 (P80): bloco "Seu @ no Instagram" em Meus dados (prova de posse pelo codigo na bio) e foto do Instagram no cracha so com o @ provado. Antes: 2026-10-10-pixaula. */   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
   /* 2026-10-10-teatro: videoaulas com layout de YouTube (marca no alto, palco grande, lista com as capas a direita), selo das aulas com barra e contagem das opcionais, e a aula OPCIONAL do Material de apoio (mod-parc-material, OZ9vgwH2W_U) no fim da secao. Trava e selo continuam contando so as obrigatorias. Lista em tres niveis: Essenciais (vermelho, as obrigatorias que liberam o link), Recomendadas (amarelo) e Complementares (azul), campo `nivel` do modulo opcional. Antes: 2026-10-06-pixcarimbo. */
@@ -1971,10 +2011,58 @@ body{background-image:none}
     if(sh){ compartilharNativo(); return; }
     const pc = alvo.closest ? alvo.closest('[data-parceiro]') : null;
     if(pc){ fecharOv('ovShare'); irSec('divulgacao'); return; }
+    const xc = alvo.closest ? alvo.closest('[data-excluir-conta]') : null;
+    if(xc){ fecharOv('ovMais'); excAbrir(); return; }
   });
   document.addEventListener('keydown', ev=>{
-    if(ev.key === 'Escape') ['ovMais','ovShare','ovConheca','ovSaldo'].forEach(fecharOv);
+    if(ev.key === 'Escape') ['ovMais','ovShare','ovConheca','ovSaldo','ovExcluir'].forEach(fecharOv);
   });
+
+  /* ---------- excluir minha conta (24/10/2026) ----------
+     Mesmo pedido do painel do lojista (moviki-robo /api/excluir-conta, so
+     aceita a origem app.moviki.com.br). O robo e idempotente: pedido repetido
+     nao duplica nem avisa de novo. */
+  function excAbrir(){
+    show('excPasso1'); hide('excPasso2'); txt('excAviso', '');
+    const ok = el('excOk'); if(ok) ok.checked = false;
+    const b = el('excBtn'); if(b){ b.disabled = true; b.textContent = 'Solicitar exclusão da conta'; }
+    const naoPago = (Number(COM.aReceber)||0) + (Number(COM.retido)||0);
+    const sd = el('excSaldo');
+    if(sd){
+      if(naoPago > 0){
+        sd.textContent = 'Você tem ' + brl(naoPago) + ' em comissões ainda não pagas. Esse valor é cancelado com a exclusão. Se quiser receber, peça o saque e espere o pagamento antes de excluir.';
+        sd.classList.remove('hide');
+      } else sd.classList.add('hide');
+    }
+    const r = el('rcVoltar'); const temNeg = !!(r && r.style.display === 'block');
+    const ni = el('excNegItem'); if(ni) ni.classList.toggle('hide', !temNeg);
+    abrirOv('ovExcluir');
+    try{ if(window.mvEv) mvEv('parceiro_excluir_conta',{etapa:'abriu'}); }catch(_){}
+  }
+  (function(){
+    const ok = el('excOk'), b = el('excBtn');
+    if(ok && b) ok.addEventListener('change', ()=>{ b.disabled = !ok.checked; });
+    if(!b) return;
+    b.addEventListener('click', async ()=>{
+      if(!ok || !ok.checked) return;
+      b.disabled = true; b.textContent = 'Enviando...'; txt('excAviso', '');
+      try{
+        const user = auth.currentUser; if(!user) throw new Error('sessao');
+        const tk = await user.getIdToken();
+        const r = await fetch('https://moviki-robo.vercel.app/api/excluir-conta', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ idToken: tk }) });
+        const j = (await r.json().catch(() => null)) || {};
+        if(r.ok && j.ok){
+          hide('excPasso1'); show('excPasso2');
+          try{ if(window.mvEv) mvEv('parceiro_excluir_conta',{etapa:'pediu'}); }catch(_){}
+          return;
+        }
+        txt('excAviso', r.status === 429 ? 'Muitos pedidos seguidos. Tente de novo mais tarde.' : 'Não consegui registrar agora. Tente de novo em instantes ou fale com o suporte.');
+      }catch(e){
+        txt('excAviso', 'Não consegui registrar agora. Tente de novo em instantes ou fale com o suporte.');
+      }
+      b.disabled = false; b.textContent = 'Solicitar exclusão da conta';
+    });
+  })();
 
   /* ---------- troca de telas ---------- */
   function telas(qual){ ['carregando','login','semcadastro','painel'].forEach(t => t===qual ? show(t) : hide(t)); }
