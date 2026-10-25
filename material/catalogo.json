@@ -1,6 +1,6 @@
 {
-  "versao": "2026-10-24-eu-quero",
-  "atualizado": "2026-10-24",
+  "versao": "2026-10-25-calculadora",
+  "atualizado": "2026-10-25",
   "eventos": [
     {
       "id": "fundador",
@@ -118,6 +118,35 @@
     }
   ],
   "itens": [
+    {
+      "id": "calculadora-taxas-feed",
+      "tipo": "feed",
+      "titulo": "Quanto a plataforma tira de cada venda sua?",
+      "formato": "Feed 4:5",
+      "arquivo": "material/feed/calculadora-taxas-feed.jpg",
+      "capa": "material/capas/calculadora-taxas-feed.webp",
+      "w": 1080,
+      "h": 1350,
+      "peso": "198 KB",
+      "novo": true,
+      "legenda": "#publi Você sabe quanto a plataforma tira de cada venda da sua loja? Em muita plataforma de live, cada pedido paga uma porcentagem e mais uma tarifa. Quanto mais você vende, mais deixa lá.\n\nNo Moviki você paga só a mensalidade, sem porcentagem por venda, e o Pix do seu catálogo cai direto na sua conta. Quer ver com o preço do seu produto? No link, desça até os planos e toque em “Compare o Moviki com outras plataformas”: a calculadora grátis mostra, lado a lado, quanto cada uma cobra, com a tarifa da página oficial.\n\n30 dias grátis, com a live liberada. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "geral"
+    },
+    {
+      "id": "story-calculadora-taxas",
+      "tipo": "story",
+      "titulo": "Quanto a plataforma tira de cada venda sua? (story)",
+      "formato": "Story 9:16",
+      "arquivo": "material/stories/story-calculadora-taxas.jpg",
+      "capa": "material/capas/story-calculadora-taxas.webp",
+      "w": 1080,
+      "h": 1920,
+      "peso": "224 KB",
+      "novo": true,
+      "legenda": "#publi Quanto a plataforma tira de cada venda sua? No Moviki é só a mensalidade: sem porcentagem por venda, com o Pix do catálogo direto na sua conta.\n\nNo link, desça até os planos e toque em “Compare o Moviki com outras plataformas” para fazer a conta com o preço do seu produto.\n\n30 dias grátis, com a live liberada. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "geral",
+      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo."
+    },
     {
       "id": "video-live-do-eu-quero-ao-pedido-pago-parceiro",
       "tipo": "video",
