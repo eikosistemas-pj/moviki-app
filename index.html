@@ -3557,10 +3557,10 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
         <div class="mvAccBody" id="acc-fin-cartao-body">
           <ol class="finPassos">
             <li>Na hora de pagar, o cliente escolhe <b>Pix</b> ou <b>Cartão</b> e em quantas vezes.</li>
-            <li>No cartão, ele digita os dados na <b>página segura do Mercado Pago ou do Asaas</b>, a conta que você conectar. O número do cartão não passa pelo Moviki.</li>
-            <li>O dinheiro cai na <b>sua conta</b> (Mercado Pago ou Asaas) e o pedido é confirmado sozinho.</li>
+            <li id="finCartaoPasso2">No cartão, ele digita os dados na <b>página segura do Mercado Pago ou do Asaas</b>, a conta que você conectar. O número do cartão não passa pelo Moviki.</li>
+            <li id="finCartaoPasso3">O dinheiro cai na <b>sua conta</b> (Mercado Pago ou Asaas) e o pedido é confirmado sozinho.</li>
           </ol>
-          <div class="finCent">O <b>Pix continua do jeito que você escolheu</b>: o cartão é uma forma a mais de pagar. A taxa do cartão é da conta que recebe (Mercado Pago ou Asaas) e é descontada de você; o <b>Moviki não cobra nada por venda</b> e o dinheiro não passa pelo Moviki. No Asaas, o parcelamento é <b>sem juros para o cliente</b> (a taxa das parcelas fica com você, como na maquininha). No Mercado Pago, quem decide se o parcelado tem juros para o cliente é a <b>sua conta Mercado Pago</b>. O prazo para o dinheiro ficar livre é o da conta que recebe.</div>
+          <div class="finCent" id="finCartaoCent">O <b>Pix continua do jeito que você escolheu</b>: o cartão é uma forma a mais de pagar. A taxa do cartão é da conta que recebe (Mercado Pago ou Asaas) e é descontada de você; o <b>Moviki não cobra nada por venda</b> e o dinheiro não passa pelo Moviki. No Asaas, o parcelamento é <b>sem juros para o cliente</b> (a taxa das parcelas fica com você, como na maquininha). No Mercado Pago, quem decide se o parcelado tem juros para o cliente é a <b>sua conta Mercado Pago</b>. O prazo para o dinheiro ficar livre é o da conta que recebe.</div>
           <div class="finAlerta escondido" id="finCartaoSemConta" style="margin-top:12px"><b>Para aceitar cartão, conecte uma conta que recebe o cartão.</b> <span id="finCartaoSemMP">O mais fácil é o <b>Mercado Pago</b>: um clique, você entra na sua conta e autoriza. </span>Conectar não muda o seu Pix.<br><button type="button" class="btn escondido" id="finBtnMPConectar1" style="margin-top:10px;margin-right:8px" onclick="finMPConectar()">Conectar Mercado Pago</button><button type="button" class="btn" style="margin-top:10px" onclick="finCartaoConectar()">Conectar minha conta Asaas</button></div>
           <div class="finCent escondido" id="finMPBox" style="margin-top:12px"></div>
           <div id="finAvisoMP" class="aviso"></div>
@@ -9051,6 +9051,12 @@ window.mvAbaInicial=function(){
     const a = (finEstado && finEstado.asaas) || {};
     const c = (finEstado && finEstado.cartao) || {};
     const b1 = el('finBtnMPConectar1'); if (b1) b1.classList.toggle('escondido', !m.disponivel);
+    /* Sem o Mercado Pago liberado, os textos falam so do Asaas (o lojista nao ve um caminho que nao existe). */
+    if (!m.disponivel) {
+      const p2 = el('finCartaoPasso2'); if (p2) p2.innerHTML = 'No cartão, ele digita os dados na <b>página segura do Asaas</b>. O número do cartão não passa pelo Moviki.';
+      const p3 = el('finCartaoPasso3'); if (p3) p3.innerHTML = 'O dinheiro cai na <b>sua conta Asaas</b> e o pedido é confirmado sozinho.';
+      const ce = el('finCartaoCent'); if (ce) ce.innerHTML = 'O <b>Pix continua do jeito que você escolheu</b>: o cartão é uma forma a mais de pagar. A taxa do cartão é do Asaas e é descontada de você; o <b>Moviki não cobra nada por venda</b> e o dinheiro não passa pelo Moviki. O parcelamento é <b>sem juros para o cliente</b>: a taxa das parcelas fica com você, como na maquininha. O prazo para o dinheiro do cartão ficar livre é o do Asaas (e lá você pode antecipar).';
+    }
     const t1 = el('finCartaoSemMP'); if (t1) t1.classList.toggle('escondido', !m.disponivel);
     const box = el('finMPBox');
     if (box) {
