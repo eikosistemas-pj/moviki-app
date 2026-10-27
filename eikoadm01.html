@@ -842,6 +842,15 @@ table.mvTab td b{font-weight:700}
             <div class="cdSub" style="margin-top:11px">A <b>receita estimada</b> conta todo mundo em plano pago, inclusive quem ainda está nos 30 dias grátis e não paga nada. <b>A pagar em comissões</b> é o que os parceiros já têm direito a sacar.</div>
           </div>
 
+          <!-- 27/10/2026: PARCEIROS EM DESTAQUE — marco novo (1a indicacao, indicado
+               que fez a 1a live, 1o pagante, rede, ritmo forte...) achado pelo robo
+               (lib/marcosParceiro.js, na hora do cadastro indicado e 2x por dia).
+               O mesmo aviso chega no Telegram com o botao do perfil. -->
+          <div class="cd hide" id="cdDestaques">
+            <div class="cdTopo"><div><div class="cdTit">🌟 Parceiros em destaque <span class="pill warn" id="ppDestQtd" style="margin-left:6px">…</span></div><div class="cdSub">Parceiro que acabou de passar de um degrau. Abra o perfil, mande os parabéns direto da empresa e, se quiser, libere um bônus. O marco sai daqui quando você reconhece ou dispensa.</div></div><button type="button" class="btnMini" id="ppDestAtualizar">Atualizar</button></div>
+            <div class="ppDest" id="ppDestLista"></div>
+          </div>
+
           <!-- 17/10/2026: LOJISTAS PARA SEGUIR. Loja completa (ramo + 3 produtos com foto + @)
                entra aqui pelo robo (lib/seguirLojista.js) e avisa no Telegram. O robo NAO segue
                ninguem (a Meta nao permite): o dono segue a mao e marca "Ja segui". -->
@@ -1086,6 +1095,110 @@ table.mvTab td b{font-weight:700}
             </div>
             <div id="parcBox"><div class="vazio">Carregando…</div></div>
           </div>
+        </section>
+
+        <!-- ============ SEÇÃO: PERFIL DO PARCEIRO (27/10/2026) ============
+             Aberta pelo botão "Ver perfil" de cada parceiro, pelo cartão
+             "Parceiros em destaque" e pelo link ?parceiro=<uid> do aviso do
+             Telegram. Tudo vem do robô (api/parceiro-perfil.js): o navegador do
+             dono não alcança marcos do lojista nem reconhecimentos. Bônus em
+             dinheiro nasce no robô, nunca aqui. -->
+        <section data-sec="parcPerfil" class="hide">
+          <style>
+            .ppNav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 12px}
+            .ppHero{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(0,212,255,.10),rgba(0,102,255,.04) 45%,transparent 70%),var(--mv-surf);border:1px solid var(--mv-linha-forte)}
+            .ppHeroTopo{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+            .ppAv{width:88px;height:88px;border-radius:50%;flex:0 0 88px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#fff;background:var(--mv-grad);box-shadow:0 0 0 3px var(--mv-surf),0 0 0 5px rgba(0,212,255,.55);overflow:hidden}
+            .ppAv img{width:100%;height:100%;object-fit:cover;display:block}
+            .ppQuem{flex:1 1 220px;min-width:0}
+            .ppNome{font-size:21px;font-weight:800;color:var(--mv-txt);line-height:1.2;overflow-wrap:anywhere}
+            .ppPills{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0 6px}
+            .ppLinha{color:var(--mv-txt-3);font-size:12.5px;line-height:1.55;overflow-wrap:anywhere}
+            .ppLinha a{color:var(--mv-ciano);text-decoration:none;font-weight:700}
+            .ppAcoes{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+            .ppAcoes .btnMini{padding:9px 13px}
+            .ppBtnRec{border-color:rgba(255,176,32,.6)!important;color:#ffc04d!important;background:rgba(255,176,32,.10)!important;font-weight:800!important}
+            .ppAlerta{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:11px 13px;border-radius:12px;border:1px solid rgba(255,176,32,.45);background:rgba(255,176,32,.08);font-size:13px;line-height:1.5;color:var(--mv-txt-2)}
+            .ppAlerta b{color:#ffc04d}
+            .ppKpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+            .ppK{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:11px 12px;min-width:0}
+            .ppK .v{font-size:20px;font-weight:800;color:var(--mv-txt);line-height:1.15;font-variant-numeric:tabular-nums}
+            .ppK .r{font-size:11.5px;color:var(--mv-txt-3);margin-top:3px;line-height:1.35}
+            .ppK .s{font-size:11px;color:var(--mv-txt-3);margin-top:2px}
+            .ppAbas{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+            .ppAbas button,.ppChips button{border:1px solid var(--mv-linha);background:var(--mv-campo);color:var(--mv-txt-2);border-radius:99px;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+            .ppAbas button.on,.ppChips button.on{border-color:var(--mv-ciano);color:var(--mv-ciano);background:rgba(0,212,255,.08)}
+            .ppChips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+            .ppChips button b{margin-left:5px;color:var(--mv-txt)}
+            .ppGraf{position:relative}
+            .ppGraf svg{display:block;width:100%;height:auto;overflow:visible}
+            .ppGraf .eixo{fill:var(--mv-txt-3);font-size:10.5px;font-family:var(--mv-fonte)}
+            .ppGraf .grade{stroke:var(--mv-linha);stroke-width:1}
+            .ppGraf .base{stroke:var(--mv-linha-forte);stroke-width:1}
+            .ppGraf .rot{fill:var(--mv-txt);font-size:11px;font-weight:700;font-family:var(--mv-fonte)}
+            .ppGraf .alvo{fill:transparent;cursor:crosshair}
+            .ppGraf .guia{stroke:var(--mv-txt-3);stroke-width:1;stroke-dasharray:3 3}
+            .ppDica{position:absolute;pointer-events:none;z-index:3;background:var(--mv-bg-2);border:1px solid var(--mv-linha-forte);border-radius:10px;padding:8px 10px;font-size:12px;line-height:1.5;color:var(--mv-txt-2);box-shadow:var(--mv-sombra);white-space:nowrap;transform:translate(-50%,-100%)}
+            .ppDica b{color:var(--mv-txt)}
+            .ppDica i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+            .ppLeg{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--mv-txt-2);margin:8px 0 2px}
+            .ppLeg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+            .ppLeg i.linha{height:3px;border-radius:2px;vertical-align:3px;width:14px}
+            .ppTab{width:100%;border-collapse:collapse;font-size:12.5px}
+            .ppTab th,.ppTab td{padding:7px 8px;border-bottom:1px solid var(--mv-linha);text-align:left;vertical-align:top}
+            .ppTab th{color:var(--mv-txt-3);font-weight:700;font-size:11.5px}
+            .ppTab td.n,.ppTab th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+            .ppDin{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:18px}
+            @media(max-width:860px){.ppDin{grid-template-columns:1fr}}
+            .ppTabWrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+            .ppDuas{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+            @media(max-width:860px){.ppDuas{grid-template-columns:1fr}}
+            .ppBar{display:grid;grid-template-columns:minmax(90px,140px) 1fr 34px;gap:8px;align-items:center;font-size:12.5px;margin:6px 0;color:var(--mv-txt-2)}
+            .ppBar .t{height:10px;border-radius:5px;background:var(--mv-campo);border:1px solid var(--mv-linha);overflow:hidden}
+            .ppBar .t i{display:block;height:100%;background:#1596c2;border-radius:0 4px 4px 0}
+            .ppBar .n{text-align:right;color:var(--mv-txt);font-weight:700}
+            .ppLista{display:grid;gap:8px}
+            .ppIt{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px;font-size:12.5px;line-height:1.45}
+            .ppIt.novo{border-color:rgba(255,176,32,.55);background:rgba(255,176,32,.06)}
+            .ppIt .info{flex:1 1 220px;min-width:0}
+            .ppIt .info b{color:var(--mv-txt)}
+            .ppIt .sub{color:var(--mv-txt-3);font-size:11.5px;overflow-wrap:anywhere}
+            .ppIt .bots{display:flex;gap:6px;flex-wrap:wrap}
+            .ppIt .pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+            .ppIt .pills .pill{font-size:11px;padding:2px 8px}
+            .ppIt .val{font-weight:800;color:var(--mv-txt);font-variant-numeric:tabular-nums;white-space:nowrap}
+            .ppRec label{display:block;font-size:12px;font-weight:700;color:var(--mv-txt-2);margin:12px 0 6px}
+            .ppRec textarea{width:100%;min-height:150px;resize:vertical;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;color:var(--mv-txt);font:inherit;font-size:13.5px;line-height:1.55;padding:11px 12px;box-sizing:border-box}
+            .ppRec input[type=text],.ppRec input[type=number]{background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);font:inherit;font-size:13px;padding:8px 10px;box-sizing:border-box}
+            .ppRec .linhaVal{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+            .ppRec .linhaVal input{width:110px}
+            .ppRec .conta{font-size:11.5px;color:var(--mv-txt-3);text-align:right;margin-top:4px}
+            .ppRec .chk{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--mv-txt-2);margin-top:10px;font-weight:600}
+            .ppRec .resumo{margin-top:12px;padding:11px 13px;border-radius:12px;background:var(--mv-campo);border:1px dashed var(--mv-linha-forte);font-size:12.5px;line-height:1.6;color:var(--mv-txt-2)}
+            .ppRec .enviar{margin-top:12px;width:100%;border:0;border-radius:12px;padding:13px 16px;font:inherit;font-size:14.5px;font-weight:800;color:#06111f;background:linear-gradient(135deg,#ffd166,#ffb020);cursor:pointer}
+            .ppRec .enviar:disabled{opacity:.6;cursor:wait}
+            .ppRec .msg{margin-top:10px;font-size:13px;line-height:1.5}
+            .ppIdeias{margin-top:14px;border-top:1px solid var(--mv-linha);padding-top:12px}
+            .ppIdeias summary{cursor:pointer;font-weight:800;color:var(--mv-txt);font-size:13px}
+            .ppIdeias ul{margin:8px 0 0 18px;padding:0;color:var(--mv-txt-2);font-size:12.5px;line-height:1.65}
+            .ppVazio{color:var(--mv-txt-3);font-size:12.5px;padding:6px 0}
+            .ppDest{display:grid;gap:8px;margin-top:8px}
+            @media(max-width:520px){.ppAv{width:70px;height:70px;flex-basis:70px;font-size:26px}.ppNome{font-size:19px}}
+            .ppMarcos{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+            .ppMarcos .ppIt{flex-direction:column;align-items:stretch}
+            .ppMarcos .ppIt .val{align-self:flex-end}
+            .ppMarcos .ppIt .info{flex:0 0 auto}
+            .ppIt .sub{text-align:left;margin:0}
+            .ppIt .pills .pill,.ppLinha .pill{flex:0 0 auto;width:auto;max-width:100%;white-space:normal}
+            .ppTab .pill{font-size:11px;padding:2px 8px}
+            .ppRec .chk{justify-content:flex-start}
+            .ppRec .chk input{width:auto!important;flex:0 0 auto;margin:0}
+          </style>
+          <div class="ppNav">
+            <button type="button" class="btnMini" id="ppVoltar">← Parceiros</button>
+            <button type="button" class="btnMini" id="ppAtualizar">Atualizar</button>
+          </div>
+          <div id="ppCorpo"><div class="cd"><div class="cdSub">Carregando…</div></div></div>
         </section>
 
         <!-- ============ SEÇÃO: COMISSÕES E SAQUES ============ -->
@@ -2252,7 +2365,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-26-aceitewa';   /* 26/10 (3): cartao Travados mostra 'Aceitou ajuda no WhatsApp' (caixa de aceite do cadastro, robo novo-cliente grava avisos_cliente.waAceite). Antes: 2026-10-26-avisotravado. */   /* 26/10 (2): cartao Travados mostra 'Aviso no Telegram ha X' (robo lib/travadoAviso.js manda 1 aviso por conta). Antes: 2026-10-26-travados. */   /* 26/10: cartao 'Travados no comeco' na Visao geral (quem criou a conta e parou antes da 1a live, pela etapa, com WhatsApp e mensagem pronta; robo api/funil-dono acoes travados e travado_chamei) e o Funil do lojista ganha 'Tipo' e '3 fotos'. Antes: 2026-10-22-fiscal. */   /* 22/10: pagar comissao mostra CPF/CNPJ do parceiro, retencao do PF (bruto, INSS 11%, IR, Pix pelo liquido) e a nota do PJ (pede a chave da NFS-e no pagamento avulso); botao 'Relatorio do mes para a contabilidade' (CSV, robo /api/parceiro-fiscal). Antes: 2026-10-20-pdf. */ /* 20/10 (2): Panfletos com QR ganha 'Enviar PDF por e-mail' (robo api/funil-dono, acao panfleto_email; PDF 300 dpi, A5 com sangria e TrimBox) e 'Baixar PDF'; o botao Enviar virou Compartilhar. */ /* antes: 2026-10-20-panfletos */   /* 20/10: menu 'Panfletos com QR' — os panfletos do Material de apoio com o QR da Eiko Sistemas (/aovivo ou /fundador, utm_campaign=eiko, ramo opcional): imprimir em A5, baixar para a grafica, enviar e copiar texto. */ /* antes: 2026-10-19-lojaonline */   /* 19/10: entra o pacote 2026-10-16-lojaonline (Negocios marca '⚠ link no nome' e 'loja online', Precisa de voce conta os negocios com link no nome, CSV com a coluna Loja online) por cima da 2026-10-17-vippadrao. */ /* antes: 2026-10-17-vippadrao */ /* 17/10 (3): P84 Recursos mostra a Lista VIP ligada por padrao (so false desliga). */ /* antes: 2026-10-17-seguir2 */ /* 17/10 (2): funil e Lojistas para seguir carregam depois do login (antes: relogio fixo na abertura, dava 'sem sessao' para quem entrava depois de 4 s). Antes: 2026-10-17-seguir. */ /* 17/10: cartao 'Lojistas para seguir' na Visao geral (fila do robo api/funil-dono, acoes seguir_lista / seguir_feito: Abrir @ e Ja segui). Antes: 2026-10-13-arroba. */   /* 13/10 (P80): situacao do @ de cada parceiro (provado / sem prova / precisa de olho), confirmacao ao aprovar @ sem prova e trava ao marcar criador sem prova */ /* antes: 2026-10-13-agenda */   /* 13/10 (noite 2): microfone e 'Mandar como ordem' em cada tarefa, ao lado da nota; robo novo criado no Claude aparece sozinho (o Maestro le a agenda toda hora) */ /* antes: 2026-10-13-ordens */   /* 13/10 (noite): aba Robos ganha ORDENS — caixa de comando com microfone (ditado do navegador) em cada robo e no topo; o Maestro entrega em ate 1 hora e a resposta volta aqui */ /* antes: 2026-10-13-custos */   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-27-perfilparceiro';   /* 27/10: botao 'Ver perfil do parceiro' em cada cadastro abre a secao Perfil do parceiro (foto, area de atuacao, indicados com situacao e 1a live, rede, dinheiro, grafico de 12 meses, marcos) com 'Reconhecer': mensagem na caixa do painel dele + e-mail e, se quiser, bonus em dinheiro (robo api/parceiro-perfil.js). Cartao 'Parceiros em destaque' na Visao geral e link ?parceiro=<uid> do aviso do Telegram. Antes: 2026-10-26-aceitewa. */   /* 26/10 (3): cartao Travados mostra 'Aceitou ajuda no WhatsApp' (caixa de aceite do cadastro, robo novo-cliente grava avisos_cliente.waAceite). Antes: 2026-10-26-avisotravado. */   /* 26/10 (2): cartao Travados mostra 'Aviso no Telegram ha X' (robo lib/travadoAviso.js manda 1 aviso por conta). Antes: 2026-10-26-travados. */   /* 26/10: cartao 'Travados no comeco' na Visao geral (quem criou a conta e parou antes da 1a live, pela etapa, com WhatsApp e mensagem pronta; robo api/funil-dono acoes travados e travado_chamei) e o Funil do lojista ganha 'Tipo' e '3 fotos'. Antes: 2026-10-22-fiscal. */   /* 22/10: pagar comissao mostra CPF/CNPJ do parceiro, retencao do PF (bruto, INSS 11%, IR, Pix pelo liquido) e a nota do PJ (pede a chave da NFS-e no pagamento avulso); botao 'Relatorio do mes para a contabilidade' (CSV, robo /api/parceiro-fiscal). Antes: 2026-10-20-pdf. */ /* 20/10 (2): Panfletos com QR ganha 'Enviar PDF por e-mail' (robo api/funil-dono, acao panfleto_email; PDF 300 dpi, A5 com sangria e TrimBox) e 'Baixar PDF'; o botao Enviar virou Compartilhar. */ /* antes: 2026-10-20-panfletos */   /* 20/10: menu 'Panfletos com QR' — os panfletos do Material de apoio com o QR da Eiko Sistemas (/aovivo ou /fundador, utm_campaign=eiko, ramo opcional): imprimir em A5, baixar para a grafica, enviar e copiar texto. */ /* antes: 2026-10-19-lojaonline */   /* 19/10: entra o pacote 2026-10-16-lojaonline (Negocios marca '⚠ link no nome' e 'loja online', Precisa de voce conta os negocios com link no nome, CSV com a coluna Loja online) por cima da 2026-10-17-vippadrao. */ /* antes: 2026-10-17-vippadrao */ /* 17/10 (3): P84 Recursos mostra a Lista VIP ligada por padrao (so false desliga). */ /* antes: 2026-10-17-seguir2 */ /* 17/10 (2): funil e Lojistas para seguir carregam depois do login (antes: relogio fixo na abertura, dava 'sem sessao' para quem entrava depois de 4 s). Antes: 2026-10-17-seguir. */ /* 17/10: cartao 'Lojistas para seguir' na Visao geral (fila do robo api/funil-dono, acoes seguir_lista / seguir_feito: Abrir @ e Ja segui). Antes: 2026-10-13-arroba. */   /* 13/10 (P80): situacao do @ de cada parceiro (provado / sem prova / precisa de olho), confirmacao ao aprovar @ sem prova e trava ao marcar criador sem prova */ /* antes: 2026-10-13-agenda */   /* 13/10 (noite 2): microfone e 'Mandar como ordem' em cada tarefa, ao lado da nota; robo novo criado no Claude aparece sozinho (o Maestro le a agenda toda hora) */ /* antes: 2026-10-13-ordens */   /* 13/10 (noite): aba Robos ganha ORDENS — caixa de comando com microfone (ditado do navegador) em cada robo e no topo; o Maestro entrega em ate 1 hora e a resposta volta aqui */ /* antes: 2026-10-13-custos */   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2500,6 +2613,7 @@ table.mvTab td b{font-weight:700}
     telas('painel');
     irSec('visao');
     carregarTudo(false);
+    ppLinkDireto();   /* 27/10/2026: aviso do Telegram abre o perfil do parceiro direto */
     crachaDonoIniciar();
     // A caixa de mensagens liga sozinha no login: sem isso o número vermelho de
     // "não lidas" só apareceria depois de entrar na seção — que é justamente o
@@ -2516,6 +2630,8 @@ table.mvTab td b{font-weight:700}
     setTimeout(()=>{ try{ fnCarregar(false); }catch(e){} try{ sgCarregar(false); }catch(e){} }, 1500);
     // 26/10/2026: travados no comeco (mesma leitura do funil, pedida a parte)
     setTimeout(()=>{ try{ tvCarregar(false); }catch(e){} }, 2600);
+    // 27/10/2026: parceiros em destaque (marcos novos achados pelo robo)
+    setTimeout(()=>{ try{ ppDestCarregar(false); }catch(e){} }, 3200);
   });
 
   async function carregarTudo(recarregando){
@@ -2928,15 +3044,17 @@ table.mvTab td b{font-weight:700}
     if(!lista.length){ el('parcBox').innerHTML = '<div class="vazio">Nenhum parceiro com esse filtro.</div>'; return; }
     el('parcBox').innerHTML = lista.map(p=>{
       const st = EST[p.status] || {n:(p.status||'—'), c:'off'};
-      let acoes = '';
+      /* 27/10/2026: perfil completo do parceiro (secao parcPerfil) */
+      let acoes = '<button type="button" class="btnMini ok" data-acao="perfil" data-uid="'+esc(p.uid)+'" style="font-weight:800">Ver perfil do parceiro</button>';
+      let dest = null; try{ dest = ppDestDe(p.uid); }catch(_){ dest = null; }
       if(p.status === 'pendente'){
-        acoes = '<button type="button" class="btnMini ok" data-acao="aprovar" data-uid="'+esc(p.uid)+'">Aprovar</button>'+
+        acoes += '<button type="button" class="btnMini ok" data-acao="aprovar" data-uid="'+esc(p.uid)+'">Aprovar</button>'+
                 '<button type="button" class="btnMini perigo" data-acao="recusar" data-uid="'+esc(p.uid)+'">Recusar</button>';
       } else if(p.status === 'aprovado'){
-        acoes = '<button type="button" class="btnMini" data-acao="reenviar" data-uid="'+esc(p.uid)+'">Reenviar boas-vindas</button>'+
+        acoes += '<button type="button" class="btnMini" data-acao="reenviar" data-uid="'+esc(p.uid)+'">Reenviar boas-vindas</button>'+
                 '<button type="button" class="btnMini perigo" data-acao="suspender" data-uid="'+esc(p.uid)+'">Suspender</button>';
       } else {
-        acoes = '<button type="button" class="btnMini ok" data-acao="aprovar" data-uid="'+esc(p.uid)+'">Reativar</button>';
+        acoes += '<button type="button" class="btnMini ok" data-acao="aprovar" data-uid="'+esc(p.uid)+'">Reativar</button>';
       }
       /* 2026-10-01-apelido: trocar apelido e nome exibido (pelo robo). */
       acoes += '<button type="button" class="btnMini" data-acao="apelido" data-uid="'+esc(p.uid)+'">Trocar apelido</button>';
@@ -2948,6 +3066,7 @@ table.mvTab td b{font-weight:700}
       return '<div class="icard">'+
         '<div class="icTopo"><div class="icNome">'+esc(p.nome||'(sem nome)')+' <span class="pill '+st.c+'">'+st.n+'</span></div>'+
         '<span class="icData">'+dataBR(ms(p.criadoEm))+'</span></div>'+
+        (dest ? '<div style="margin:2px 0 4px"><span class="pill warn" style="white-space:normal;line-height:1.45">🌟 ' + esc(dest.marcos.map(m => m.titulo).join(' · ')) + '</span></div>' : '')+
         '<div class="icInfo">'+
           '<div><span class="icK">E-mail</span><span class="icV">'+esc(p.email||'—')+'</span></div>'+
           (p.arroba ? '<div><span class="icK">@ dele</span><span class="icV">'+esc(p.arroba)+arrChip(p)+'</span></div>' : '')+
@@ -3082,6 +3201,7 @@ table.mvTab td b{font-weight:700}
     const msg = el('pmsg_'+uid);
     if(acao === 'pix'){ copiar(p.pix||''); feedback(b,'copiado'); return; }
     if(acao === 'uid'){ copiar(uid||''); feedback(b,'copiado'); return; }
+    if(acao === 'perfil'){ abrirPerfilParceiro(uid); return; }
     if(acao === 'recusar' && !confirm('Recusar este parceiro?')) return;
     /* 13/10/2026 (P80): aprovar @ sem prova, ou que pede olho, e decisao consciente. */
     if(acao === 'aprovar' && p.arroba && (!arrOk(p) || arrRevisao(p).length)){
@@ -4332,6 +4452,494 @@ table.mvTab td b{font-weight:700}
   if(el('tvAtualizar')) el('tvAtualizar').addEventListener('click', ()=>tvCarregar(true));
 
   /* ==========================================================
+     PERFIL DO PARCEIRO — 27/10/2026
+     Pedido do Paulo: clicar no parceiro e ver tudo dele num lugar só (foto,
+     onde divulga, indicados, rede, dinheiro, evolução), receber alerta quando
+     ele anda bem e, dali mesmo, mandar os parabéns direto da empresa e soltar
+     um bônus. Robô: api/parceiro-perfil.js (perfil, destaques, reconhecer,
+     marco_visto; só dono com Google). Todo texto que vem do parceiro ou do
+     lojista passa por esc().
+     ========================================================== */
+  const PP_URL = 'https://moviki-robo.vercel.app/api/parceiro-perfil';
+  const PP_COR = { a:'#1596c2', b:'#a855f7' };   /* validados no fundo escuro (dataviz): faixa de luz, daltonismo e contraste */
+  let PP = null, PP_UID = '', PP_ABA = 'ind', PP_FILTRO = '', PP_TABELA = false, PP_COM_TUDO = false, PP_DEST = [], PP_DEST_N = 0;
+  let PP_SEL = { marco:'', bonus:0, motivo:'', editado:false, chave:'' };
+  const PP_SIT = { pagante:'ok', teste:'info', parado:'perigo', basico:'off', sem_loja:'off' };
+  const PP_SIT_FILTRO = [['','Todos'],['pagante','Pagantes'],['teste','Em teste'],['live','Fizeram live'],['parado','Pararam'],['basico','Básico']];
+  const PP_CANAL = { instagram:'Instagram/TikTok', whatsapp:'WhatsApp', associacoes:'Associações' };
+
+  async function ppRobo(corpo){
+    if(!USER) throw new Error('sem sessão');
+    const tk = await USER.getIdToken();
+    const r = await fetch(PP_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(Object.assign({idToken:tk}, corpo))});
+    const j = await r.json().catch(()=>({}));
+    if(r.status === 404 && !j.erro) throw new Error('O robô ainda não tem o perfil do parceiro. Aprove primeiro o PR do moviki-robo.');
+    if(!r.ok || !j.ok) throw new Error(j.mensagem || j.erro || ('HTTP ' + r.status));
+    return j;
+  }
+  function ppIni(nome){
+    const p = String(nome||'').trim().split(/\s+/).filter(Boolean);
+    return ((p[0]||'?').charAt(0) + (p.length > 1 ? p[p.length-1].charAt(0) : '')).toUpperCase();
+  }
+  function ppRamo(s){ const t = String(s||'').replace(/[-_]+/g,' ').trim(); return t ? t.charAt(0).toUpperCase() + t.slice(1) : 'Sem tipo'; }
+  function ppMes(k){ const m = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']; const p = String(k||'').split('-'); return (m[Number(p[1])-1]||'?') + '/' + String(p[0]||'').slice(2); }
+  function ppChave(){ const a = new Uint8Array(10); crypto.getRandomValues(a); return Array.from(a, b => b.toString(16).padStart(2,'0')).join(''); }
+  function ppNomeCurto(n){ return String(n||'').trim().split(/\s+/)[0] || 'parceiro'; }
+
+  /* ---------- abrir ---------- */
+  async function abrirPerfilParceiro(uid){
+    uid = String(uid||'').replace(/[^a-zA-Z0-9]/g,''); if(!uid) return;
+    PP_UID = uid; PP = null; PP_FILTRO = ''; PP_SEL = { marco:'', bonus:0, motivo:'', editado:false, chave:ppChave() };
+    irSec('parcPerfil');
+    document.querySelectorAll('#mvNav .mvNavIt[data-nav]').forEach(b=> b.classList.toggle('ativo', b.getAttribute('data-nav') === 'parceiros'));
+    document.querySelectorAll('#mvBar button[data-bar]').forEach(b=> b.classList.toggle('on', b.getAttribute('data-bar') === 'parceiros'));
+    const p = PARC.filter(x => x.uid === uid)[0];
+    el('ppCorpo').innerHTML = '<div class="cd ppHero"><div class="ppHeroTopo"><div class="ppAv">' + esc(ppIni(p && p.nome)) + '</div><div class="ppQuem"><div class="ppNome">' + esc((p && p.nome) || 'Parceiro') + '</div><div class="ppLinha">Montando o perfil completo…</div></div></div></div>';
+    await ppCarregar();
+  }
+  window.mvAbrirPerfilParceiro = abrirPerfilParceiro;
+
+  async function ppCarregar(){
+    const b = el('ppAtualizar'); if(b){ b.disabled = true; b.textContent = 'Buscando…'; }
+    try{
+      const j = await ppRobo({acao:'perfil', uid:PP_UID});
+      PP = j.perfil; ppPintar();
+    }catch(e){
+      el('ppCorpo').innerHTML = '<div class="cd"><div class="avisoRegra">Não consegui montar o perfil: ' + esc(e && e.message || 'erro') + '</div></div>';
+    }finally{ if(b){ b.disabled = false; b.textContent = 'Atualizar'; } }
+  }
+  el('ppVoltar').addEventListener('click', ()=>{ irSec('parceiros'); });
+  el('ppAtualizar').addEventListener('click', ()=>{ if(PP_UID) ppCarregar(); });
+
+  /* ---------- pintar ---------- */
+  function ppPintar(){
+    if(!PP) return;
+    const p = PP.parceiro, r = PP.resumo;
+    const pend = PP.marcos.filter(m => !m.visto);
+    const st = EST[p.status] || {n:(p.status||'—'), c:'off'};
+    const link = 'https://moviki.com.br/p/' + encodeURIComponent(p.slug||'');
+    const cracha = 'https://moviki.com.br/v/' + encodeURIComponent(p.slug||'');
+    const foto = /^data:image\/(png|jpe?g|webp);base64,[A-Za-z0-9+\/=]+$/.test(p.foto||'') ? '<img src="' + p.foto + '" alt="">' : esc(ppIni(p.nome));
+    const prova = p.arroba ? (p.igConfirmado ? ' <span class="pill ok">@ provado</span>' : ' <span class="pill warn">@ sem prova</span>') : '';
+    const pills = [
+      '<span class="pill ' + st.c + '">' + esc(st.n) + '</span>',
+      p.nivelNome ? '<span class="pill info">Nível ' + esc(p.nivelNome) + ' · ' + num(p.nivelAtivos) + ' ativos</span>' : '<span class="pill off">Sem nível ainda</span>',
+      p.criador ? '<span class="pill info">Criador</span>' : '',
+      p.fiscalOk ? '<span class="pill ok">Dados para receber: ' + (p.fiscalTipo === 'pj' ? 'CNPJ' : 'CPF') + '</span>' : '<span class="pill warn">Sem dados para receber</span>',
+      p.aulasEm ? '<span class="pill ok">Aulas concluídas</span>' : '<span class="pill off">Aulas pendentes</span>',
+      p.condutaEm ? '<span class="pill ok">Conduta aceita</span>' : '',
+      p.retido > 0 ? '<span class="pill perigo">' + brl(p.retido) + ' retido (atraso)</span>' : ''
+    ].join('');
+    const linhas = [
+      'Parceiro desde <b>' + dataBR(p.criadoEm) + '</b>' + (p.indicadoPor ? ' · veio pela rede de <b>/' + esc(p.indicadoPor) + '</b>' : ''),
+      (p.arroba ? '<b>@' + esc(String(p.arroba).replace(/^@+/,'')) + '</b>' + prova + (p.igSeguidores ? ' · ' + num(p.igSeguidores) + ' seguidores' : '') + ' · ' : '') + esc(p.email || ''),
+      '<a href="' + link + '" target="_blank" rel="noopener">moviki.com.br/p/' + esc(p.slug) + '</a> · <a href="' + cracha + '" target="_blank" rel="noopener">crachá /v/' + esc(p.slug) + '</a>'
+    ];
+    let h = '';
+    /* --- cabeçalho --- */
+    h += '<div class="cd ppHero"><div class="ppHeroTopo"><div class="ppAv">' + foto + '</div><div class="ppQuem">' +
+      '<div class="ppNome">' + esc(p.nome || '(sem nome)') + '</div><div class="ppPills">' + pills + '</div>' +
+      linhas.map(l => '<div class="ppLinha">' + l + '</div>').join('') + '</div></div>' +
+      '<div class="ppAcoes">' +
+        '<button type="button" class="btnMini ppBtnRec" data-pp="irRec">🎉 Reconhecer / dar bônus</button>' +
+        '<button type="button" class="btnMini" data-pp="conversa">Abrir conversa</button>' +
+        '<button type="button" class="btnMini" data-pp="copiarLink">Copiar link dele</button>' +
+        '<button type="button" class="btnMini" data-pp="irComissoes">Comissões e saques</button>' +
+      '</div>' +
+      (pend.length ? '<div class="ppAlerta"><span>🌟</span><div><b>' + (pend.length === 1 ? '1 marco novo' : pend.length + ' marcos novos') + ' esperando o seu reconhecimento:</b> ' + pend.map(m => esc(m.titulo)).join(' · ') + '</div></div>' : '') +
+    '</div>';
+
+    /* --- números --- */
+    const k = (v, rot, sub) => '<div class="ppK"><div class="v">' + v + '</div><div class="r">' + rot + '</div>' + (sub ? '<div class="s">' + sub + '</div>' : '') + '</div>';
+    h += '<div class="cd"><div class="cdTopo"><div class="cdTit">Desempenho</div></div><div class="ppKpis">' +
+      k(num(r.indicacoes), 'Indicações', r.ultimaIndicacaoEm ? 'última ' + sgHa(r.ultimaIndicacaoEm) : 'nenhuma ainda') +
+      k(num(r.fezLive), 'Fizeram a 1ª live', r.indicacoes ? Math.round(r.fezLive / r.indicacoes * 100) + '% dos indicados' : '') +
+      k(num(r.emTeste), 'Em teste grátis', '') +
+      k(num(r.pagantes), 'Pagantes hoje', r.conversao + '% de conversão') +
+      k(brl(r.comissaoTotal), 'Ganhou no total', 'pago ' + brl(r.pago)) +
+      k(brl(r.liberado), 'Liberado para saque', 'a receber ' + brl(r.aReceber)) +
+      k(brl(r.bonusTotal + r.nivelTotal), 'Bônus recebidos', 'Moviki ' + brl(r.bonusTotal) + ' · nível ' + brl(r.nivelTotal)) +
+      k(num(r.rede) + (r.rede3 ? ' + ' + num(r.rede3) : ''), 'Parceiros na rede', 'nível 2' + (r.rede3 ? ' + nível 3' : '')) +
+    '</div></div>';
+
+    /* --- evolução --- */
+    h += '<div class="cd"><div class="cdTopo"><div><div class="cdTit">Evolução mês a mês</div><div class="cdSub">Últimos 12 meses (6 no celular; a tabela mostra os 12). Toque ou passe o mouse no mês para ver os números.</div></div>' +
+      '<button type="button" class="btnMini" data-pp="tabela">' + (PP_TABELA ? 'Ver gráfico' : 'Ver em tabela') + '</button></div>' +
+      '<div class="ppAbas"><button type="button" data-ppaba="ind" class="' + (PP_ABA === 'ind' ? 'on' : '') + '">Indicações e pagantes</button><button type="button" data-ppaba="din" class="' + (PP_ABA === 'din' ? 'on' : '') + '">Ganhos (R$)</button></div>' +
+      '<div id="ppGrafBox"></div></div>';
+
+    /* --- marcos (grade larga) --- */
+    h += '<div class="cd"><div class="cdTopo"><div><div class="cdTit">Marcos</div><div class="cdSub">O robô avisa no seu Telegram quando ele passa de um degrau. Os novos ficam em amarelo até você reconhecer ou dispensar.</div></div></div><div class="ppMarcos">' +
+      (PP.marcos.length ? PP.marcos.map(m => {
+        const sit = !m.visto ? '<span class="pill warn">Novo</span>' : m.atendidoCom === 'bonus' ? '<span class="pill ok">Reconhecido com bônus</span>' : m.atendidoCom === 'mensagem' ? '<span class="pill ok">Parabéns enviado</span>' : m.historico ? '<span class="pill off">Antes do perfil existir</span>' : '<span class="pill off">Dispensado</span>';
+        return '<div class="ppIt' + (!m.visto ? ' novo' : '') + '"><div class="info"><b>' + esc(m.titulo) + '</b><div class="sub">' + (m.historico ? 'já tinha alcançado antes de ' + dataBR(m.em) : dataBR(m.em)) + ' · ' + (m.sug > 0 ? 'sugestão: bônus de ' + brl(m.sug) : 'sugestão: parabéns') + '</div><div class="pills">' + sit + '</div></div>' +
+          (!m.visto ? '<div class="bots"><button type="button" class="btnMini ok" data-pp="recMarco" data-k="' + esc(m.k) + '">Reconhecer</button><button type="button" class="btnMini" data-pp="dispensar" data-k="' + esc(m.k) + '">Dispensar</button></div>' : '') + '</div>';
+      }).join('') : '<div class="ppVazio">Nenhum marco ainda. O primeiro é a primeira indicação.</div>') +
+    '</div></div>';
+
+    /* --- reconhecer --- */
+    h += ppHtmlRec();
+
+    /* --- indicados --- */
+    const ind = PP.indicados || [];
+    const cont = { '':ind.length, pagante:0, teste:0, live:0, parado:0, basico:0 };
+    ind.forEach(i => { if(cont[i.situacao] != null) cont[i.situacao]++; if(i.fezLive) cont.live++; });
+    const lista = ind.filter(i => !PP_FILTRO || (PP_FILTRO === 'live' ? i.fezLive : i.situacao === PP_FILTRO));
+    h += '<div class="cd"><div class="cdTopo"><div><div class="cdTit">Indicados por ele <span class="pill off" style="margin-left:6px">' + ind.length + '</span></div><div class="cdSub">Situação de hoje de cada negócio que entrou pelo link dele, com a comissão que já gerou.</div></div></div>' +
+      '<div class="ppChips">' + PP_SIT_FILTRO.map(f => '<button type="button" data-ppfiltro="' + f[0] + '" class="' + (PP_FILTRO === f[0] ? 'on' : '') + '">' + f[1] + '<b>' + (cont[f[0]] || 0) + '</b></button>').join('') + '</div>' +
+      '<div class="ppMarcos">' + (lista.length ? lista.map(i => {
+        const nome = i.nome ? esc(i.nome) : '<span style="color:var(--mv-txt-3)">(conta sem loja)</span>';
+        const pg = i.slug ? ' <a href="https://moviki.com.br/' + encodeURIComponent(i.slug) + '" target="_blank" rel="noopener" style="color:var(--mv-ciano);font-size:11.5px;text-decoration:none">/' + esc(i.slug) + '</a>' : '';
+        const ps = ['<span class="pill ' + (PP_SIT[i.situacao] || 'off') + '">' + esc(i.situacaoRot) + (i.testeAte ? ' até ' + dataBR(i.testeAte).slice(0,5) : '') + '</span>',
+          i.fezLive ? '<span class="pill ok">1ª live ' + dataBR(i.primeiraLiveEm).slice(0,5) + '</span>' : (i.ensaios ? '<span class="pill info">' + i.ensaios + ' ensaio(s)</span>' : '<span class="pill off">Sem live</span>'),
+          i.vendeuNaLive ? '<span class="pill ok">Vendeu na live</span>' : ''].join('');
+        return '<div class="ppIt"><div class="info"><b>' + nome + '</b>' + pg + '<div class="sub">' + esc(ppRamo(i.ramo)) + ' · cadastro ' + dataBR(i.cadastroEm) + '</div><div class="pills">' + ps + '</div></div><div class="val">' + (i.comissao ? brl(i.comissao) : '—') + '</div></div>';
+      }).join('') : '<div class="ppVazio">' + (ind.length ? 'Nenhum indicado neste filtro.' : 'Ainda sem indicação.') + '</div>') + '</div></div>';
+
+    /* --- área de atuação + rede --- */
+    const canais = (p.canais || []);
+    const ramos = PP.ramos || [];
+    const maxR = ramos.reduce((m, x) => Math.max(m, x.n), 0) || 1;
+    const rede = PP.rede || [];
+    h += '<div class="ppDuas">' +
+      '<div class="cd"><div class="cdTopo"><div class="cdTit">Área de atuação</div></div>' +
+        '<div class="cdSub" style="margin-bottom:6px">Onde ele divulga</div><div class="ppChips">' +
+          ['instagram','whatsapp','associacoes'].map(c => '<span class="pill ' + (canais.indexOf(c) >= 0 ? 'info' : 'off') + '">' + PP_CANAL[c] + '</span>').join('') + '</div>' +
+        '<div class="cdSub" style="margin:10px 0 2px">Ramos que ele está trazendo</div>' +
+        (ramos.length ? ramos.slice(0, 7).map(x => '<div class="ppBar"><span>' + esc(ppRamo(x.ramo)) + '</span><span class="t"><i style="width:' + Math.max(6, Math.round(x.n / maxR * 100)) + '%"></i></span><span class="n">' + x.n + '</span></div>').join('') : '<div class="ppVazio">Ainda sem indicado com o tipo do negócio escolhido.</div>') +
+      '</div>' +
+      '<div class="cd"><div class="cdTopo"><div><div class="cdTit">Rede dele</div><div class="cdSub">Parceiros que entraram pelo link de parceiro dele (nível 2) e pelos deles (nível 3).</div></div></div><div class="ppLista">' +
+        (rede.length ? rede.map(x => {
+          const s2 = EST[x.status] || {n:(x.status||'—'), c:'off'};
+          return '<div class="ppIt"><div class="info"><b>' + esc(x.nome || '(sem nome)') + '</b> <span class="sub">/' + esc(x.slug) + '</span><div class="pills"><span class="pill info">Nível ' + x.nivel + '</span><span class="pill ' + s2.c + '">' + esc(s2.n) + '</span>' + (x.via ? '<span class="pill off">via /' + esc(x.via) + '</span>' : '') + '</div></div><div class="bots"><button type="button" class="btnMini" data-pp="abrirOutro" data-uid="' + esc(x.uid) + '">Ver perfil</button></div></div>';
+        }).join('') : '<div class="ppVazio">Ainda não trouxe nenhum parceiro.</div>') +
+      '</div></div>' +
+    '</div>';
+
+    /* --- dinheiro (tabelas) --- */
+    const SAQ_ROT = { pago:'Pago', solicitado:'Pedido', falhou:'Falhou', recusado:'Recusado', processando:'Processando' };
+    const comLista = PP_COM_TUDO ? PP.comissoes : PP.comissoes.slice(0, 12);
+    h += '<div class="cd"><div class="cdTopo"><div><div class="cdTit">Dinheiro</div><div class="cdSub">Pix: <code>' + esc(p.pix || '—') + '</code> · ' + (p.fiscalOk ? 'dados para receber em dia (' + (p.fiscalTipo === 'pj' ? 'CNPJ' : 'CPF') + ')' : 'sem dados para receber: o saque não sai') + '</div></div></div>' +
+      '<div class="ppDin">' +
+        '<div><div class="cdSub" style="margin:0 0 6px">Comissões e bônus</div>' +
+          (PP.comissoes.length ? '<div class="ppTabWrap"><table class="ppTab"><thead><tr><th>Data</th><th>O quê</th><th>Situação</th><th class="n">Valor</th></tr></thead><tbody>' +
+            comLista.map(c => {
+              const rot = c.tipo === 'bonus' ? '🎉 Bônus da Moviki' + (c.motivo ? ' · ' + esc(c.motivo) : '') : c.tipo === 'marco' ? '🏅 ' + esc(c.motivo || 'Bônus de nível') : 'Nível ' + c.nivel + ' · ' + esc(c.comp) + (c.teste ? ' (teste)' : '');
+              const s3 = c.estornada ? '<span class="pill off">Estornada</span>' : c.pago ? '<span class="pill ok">Paga</span>' : (c.liberaEm && c.liberaEm > Date.now()) ? '<span class="pill warn">Libera ' + dataBR(c.liberaEm).slice(0,5) + '</span>' : '<span class="pill info">Disponível</span>';
+              return '<tr><td>' + dataBR(c.criadoEm).slice(0,5) + '</td><td>' + rot + '</td><td>' + s3 + '</td><td class="n">' + brl(c.valor) + '</td></tr>';
+            }).join('') + '</tbody></table></div>' +
+            (PP.comissoes.length > 12 ? '<button type="button" class="btnMini" data-pp="comTudo" style="margin-top:8px">' + (PP_COM_TUDO ? 'Mostrar menos' : 'Ver todas (' + PP.comissoes.length + ')') + '</button>' : '')
+          : '<div class="ppVazio">Nenhuma comissão ainda.</div>') +
+        '</div>' +
+        '<div><div class="cdSub" style="margin:0 0 6px">Saques</div>' +
+          (PP.saques.length ? '<div class="ppTabWrap"><table class="ppTab"><thead><tr><th>Data</th><th>Situação</th><th class="n">Valor</th></tr></thead><tbody>' +
+            PP.saques.slice(0, 15).map(s => '<tr><td>' + dataBR(s.pagoEm || s.pedidoEm) + '</td><td>' + esc(SAQ_ROT[s.status] || s.status || '—') + (s.origem === 'dono' ? ' · pago por você' : '') + '</td><td class="n">' + brl(s.valor) + '</td></tr>').join('') + '</tbody></table></div>'
+          : '<div class="ppVazio">Nenhum saque ainda.</div>') +
+          (p.retido > 0 ? '<div class="ppAlerta" style="margin-top:10px">' + brl(p.retido) + ' retido pela carência de 30 dias (mensalidade do negócio dele em atraso ou teste acabado).</div>' : '') +
+        '</div>' +
+      '</div></div>';
+
+    el('ppCorpo').innerHTML = h;
+    ppGrafico();
+    ppAtualizarResumo();
+  }
+
+  /* ---------- gráfico (SVG, um eixo só) ---------- */
+  function ppGrafico(){
+    const box = el('ppGrafBox'); if(!box || !PP) return;
+    /* tela estreita (celular): os 6 meses mais recentes, para a letra do eixo
+       nao ficar minuscula; a tabela continua com os 12 */
+    const curto = !PP_TABELA && box.clientWidth > 0 && box.clientWidth < 520;
+    const s = curto ? (PP.serie || []).slice(-6) : (PP.serie || []);
+    const din = PP_ABA === 'din';
+    const fmt = din ? (v => brl(v)) : (v => num(v));
+    const A = din ? s.map(x => Math.max(0, x.ganhos - x.bonus)) : s.map(x => x.indicacoes);
+    const B = din ? s.map(x => x.bonus) : s.map(x => x.pagantes);
+    const nomeA = din ? 'Comissões' : 'Indicações no mês';
+    const nomeB = din ? 'Bônus (nível e Moviki)' : 'Indicados pagando no mês';
+    if(PP_TABELA){
+      box.innerHTML = '<div class="ppTabWrap"><table class="ppTab"><thead><tr><th>Mês</th><th class="n">' + nomeA + '</th><th class="n">' + nomeB + '</th>' + (din ? '<th class="n">Total</th>' : '') + '</tr></thead><tbody>' +
+        s.map((x, i) => '<tr><td>' + ppMes(x.mes) + '</td><td class="n">' + fmt(A[i]) + '</td><td class="n">' + fmt(B[i]) + '</td>' + (din ? '<td class="n">' + fmt(A[i] + B[i]) + '</td>' : '') + '</tr>').join('') + '</tbody></table></div>';
+      return;
+    }
+    const W = curto ? 360 : 640, H = curto ? 210 : 230, L = din ? 56 : 30, R = 8, T = 18, Bm = 26;
+    const total = s.map((x, i) => din ? A[i] + B[i] : Math.max(A[i], B[i]));
+    let max = Math.max.apply(null, total.concat([din ? 10 : 2]));
+    const passo = din ? (max <= 50 ? 10 : max <= 200 ? 50 : max <= 1000 ? 200 : 500) : (max <= 5 ? 1 : max <= 20 ? 5 : max <= 50 ? 10 : 25);
+    max = Math.ceil(max / passo) * passo;
+    const y = v => T + (H - T - Bm) * (1 - v / max);
+    const bw = (W - L - R) / s.length;
+    let g = '';
+    for(let v = 0; v <= max + 0.0001; v += passo){
+      g += '<line class="' + (v === 0 ? 'base' : 'grade') + '" x1="' + L + '" x2="' + (W - R) + '" y1="' + y(v).toFixed(1) + '" y2="' + y(v).toFixed(1) + '"/>';
+      g += '<text class="eixo" x="' + (L - 6) + '" y="' + (y(v) + 3.5).toFixed(1) + '" text-anchor="end">' + (din ? 'R$ ' + num(v) : num(v)) + '</text>';
+    }
+    let marcas = '', pontos = [];
+    s.forEach((x, i) => {
+      const cx = L + bw * i + bw / 2;
+      const w = Math.min(26, bw * 0.56);
+      g += '<text class="eixo" x="' + cx.toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle">' + ppMes(x.mes) + '</text>';
+      if(din){
+        /* coluna empilhada: comissões embaixo, bônus em cima, 2 px de folga entre as duas */
+        const hA = (H - T - Bm) * (A[i] / max), hB = (H - T - Bm) * (B[i] / max);
+        if(hA > 0) marcas += '<path d="' + ppColuna(cx - w/2, y(0), w, hA, hB > 0 ? 0 : 4) + '" fill="' + PP_COR.a + '"/>';
+        if(hB > 0) marcas += '<path d="' + ppColuna(cx - w/2, y(0) - hA - (hA > 0 ? 2 : 0), w, Math.max(0, hB - (hA > 0 ? 2 : 0)), 4) + '" fill="' + PP_COR.b + '"/>';
+      } else {
+        const hA = (H - T - Bm) * (A[i] / max);
+        if(hA > 0) marcas += '<path d="' + ppColuna(cx - w/2, y(0), w, hA, 4) + '" fill="' + PP_COR.a + '"/>';
+        pontos.push([cx, y(B[i])]);
+      }
+    });
+    if(!din && pontos.length){
+      marcas += '<polyline fill="none" stroke="' + PP_COR.b + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="' + pontos.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ') + '"/>';
+      pontos.forEach(p => { marcas += '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="4" fill="' + PP_COR.b + '" stroke="var(--mv-surf)" stroke-width="2"/>'; });
+    }
+    /* rótulo só no último mês (o resto mora na dica e na tabela) */
+    const ult = s.length - 1;
+    if(ult >= 0 && total[ult] > 0) marcas += '<text class="rot" x="' + (L + bw * ult + bw / 2).toFixed(1) + '" y="' + (y(din ? total[ult] : A[ult]) - 6).toFixed(1) + '" text-anchor="middle">' + (din ? brl(total[ult]) : num(A[ult])) + '</text>';
+    let alvos = '';
+    s.forEach((x, i) => { alvos += '<rect class="alvo" data-i="' + i + '" x="' + (L + bw * i).toFixed(1) + '" y="' + T + '" width="' + bw.toFixed(1) + '" height="' + (H - T - Bm) + '"/>'; });
+    box.innerHTML = '<div class="ppGraf"><svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + (din ? 'Ganhos por mês' : 'Indicações e pagantes por mês') + '">' + g + '<line class="guia" id="ppGuia" x1="0" x2="0" y1="' + T + '" y2="' + (H - Bm) + '" style="display:none"/>' + marcas + alvos + '</svg><div class="ppDica hide" id="ppDica"></div></div>' +
+      '<div class="ppLeg"><span><i style="background:' + PP_COR.a + '"></i>' + nomeA + '</span><span><i class="' + (din ? '' : 'linha') + '" style="background:' + PP_COR.b + '"></i>' + nomeB + '</span></div>';
+    const svg = box.querySelector('svg'), dica = el('ppDica'), guia = el('ppGuia');
+    function mostrar(i){
+      const r = svg.getBoundingClientRect(), esc2 = r.width / W, x = s[i];
+      const cx = L + bw * i + bw / 2;
+      guia.setAttribute('x1', cx); guia.setAttribute('x2', cx); guia.style.display = '';
+      dica.innerHTML = '<b>' + ppMes(x.mes) + '</b><br><i style="background:' + PP_COR.a + '"></i>' + nomeA + ': <b>' + fmt(A[i]) + '</b><br><i style="background:' + PP_COR.b + '"></i>' + nomeB + ': <b>' + fmt(B[i]) + '</b>' + (din ? '<br>Total: <b>' + fmt(A[i] + B[i]) + '</b>' : '');
+      dica.classList.remove('hide');
+      let px = cx * esc2; px = Math.max(80, Math.min(r.width - 80, px));
+      dica.style.left = px + 'px'; dica.style.top = (T * esc2 + 4) + 'px';
+    }
+    function esconder(){ dica.classList.add('hide'); guia.style.display = 'none'; }
+    svg.querySelectorAll('.alvo').forEach(a => {
+      a.addEventListener('mouseenter', () => mostrar(Number(a.getAttribute('data-i'))));
+      a.addEventListener('touchstart', () => mostrar(Number(a.getAttribute('data-i'))), {passive:true});
+      a.addEventListener('click', () => mostrar(Number(a.getAttribute('data-i'))));
+    });
+    svg.addEventListener('mouseleave', esconder);
+  }
+  /* coluna com cantos de 4 px só no topo (a ponta do dado), base reta no eixo */
+  function ppColuna(x, base, w, h, raio){
+    const r = Math.min(raio, w / 2, h);
+    const top = base - h;
+    if(r <= 0) return 'M' + x + ',' + base + 'V' + top + 'H' + (x + w) + 'V' + base + 'Z';
+    return 'M' + x + ',' + base + 'V' + (top + r) + 'Q' + x + ',' + top + ' ' + (x + r) + ',' + top + 'H' + (x + w - r) + 'Q' + (x + w) + ',' + top + ' ' + (x + w) + ',' + (top + r) + 'V' + base + 'Z';
+  }
+
+  /* ---------- reconhecer: mensagem + bônus ---------- */
+  function ppOpcoes(){
+    const pend = PP.marcos.filter(m => !m.visto);
+    const out = pend.map(m => ({k:m.k, t:m.titulo, sug:m.sug, novo:true}));
+    out.push({k:'destaque', t:'Destaque do mês', sug:50});
+    out.push({k:'livre', t:'Mensagem livre', sug:0});
+    return out;
+  }
+  function ppModelo(k){
+    const p = PP.parceiro, r = PP.resumo, n = ppNomeCurto(p.nome);
+    const ult = (PP.indicados || [])[0];
+    const loja = ult && ult.nome ? ' — ' + ult.nome + ' entrou no Moviki pelo seu link' : '';
+    const abre = 'Oi, ' + n + '! Aqui é a equipe Moviki. 🎉\n\n';
+    const fecha = '\n\nObrigado por acreditar no Moviki. Conte com a gente para o que precisar.\nEquipe Moviki';
+    let corpo;
+    if(k === 'ind1') corpo = 'A sua primeira indicação chegou' + loja + '. O primeiro passo é o mais difícil, e você já deu.\n\nUma dica que faz diferença: ajude esse lojista a fazer o ensaio da primeira live (ninguém vê e não gasta as lives do teste). É o passo que mais ajuda o lojista a começar.';
+    else if(/^ind\d+/.test(k)) corpo = 'Você chegou a ' + r.indicacoes + ' indicações. Isso mostra consistência, e a gente está acompanhando cada uma.\n\nContinue levando os seus indicados até a primeira live: é ali que o lojista entende o Moviki.';
+    else if(k === 'live1') corpo = 'Um lojista que você indicou fez a primeira live de verdade. Esse é o momento em que o lojista entende o Moviki, e você ajudou a chegar lá.';
+    else if(/^live\d+/.test(k)) corpo = r.fezLive + ' lojistas indicados por você já fizeram live. Você não está só indicando: está levando o lojista até o resultado. Isso faz toda a diferença.';
+    else if(k === 'pag1') corpo = 'O seu primeiro indicado assinou um plano. É um marco e tanto: daqui em diante a comissão desse cliente entra no seu saldo a cada mensalidade paga.';
+    else if(/^pag\d+/.test(k)) corpo = 'Você já tem ' + r.pagantes + ' indicados pagando. Parabéns pelo trabalho bem feito.';
+    else if(k === 'rede1') corpo = 'Você trouxe o primeiro parceiro para a sua rede. Ajude essa pessoa nos primeiros passos: as aulas do painel e o crachá com QR já dão um bom começo.';
+    else if(/^rede\d+/.test(k)) corpo = 'A sua rede já tem ' + r.rede + ' parceiros. Você está formando um time.';
+    else if(/^ritmo-/.test(k)) corpo = 'Que semana! Foram 3 ou mais indicações em 7 dias. A gente viu o seu ritmo e quis te dizer isso direto.';
+    else if(k === 'destaque') corpo = 'Você é um dos destaques do Programa de Parceiros neste mês. Obrigado pela dedicação.';
+    else corpo = '';
+    return abre + corpo + '{BONUS}' + fecha;
+  }
+  function ppTextoBonus(v){
+    return v > 0 ? '\n\nComo reconhecimento, a Moviki liberou um bônus de ' + brl(v) + ' no seu saldo. Ele aparece em Comissões como "Bônus da Moviki".' : '';
+  }
+  function ppAplicarModelo(){
+    const ta = el('ppMsg'); if(!ta) return;
+    if(PP_SEL.editado) return;
+    ta.value = ppModelo(PP_SEL.marco || 'livre').replace('{BONUS}', ppTextoBonus(PP_SEL.bonus));
+    ppAtualizarResumo();
+  }
+  function ppHtmlRec(){
+    const ops = ppOpcoes();
+    const p = PP.parceiro, t = PP.tetos || {bonus:300, mes:1000};
+    if(!PP_SEL.marco || !ops.some(o => o.k === PP_SEL.marco)){
+      PP_SEL.marco = ops[0].k; PP_SEL.editado = false;
+      PP_SEL.bonus = p.status === 'aprovado' ? ops[0].sug : 0;
+      PP_SEL.motivo = ops[0].k === 'livre' ? '' : ops[0].t;
+    }
+    const vals = [0, 5, 10, 20, 50, 100];
+    const podeBonus = p.status === 'aprovado';
+    const sugeridos = (PP.sugestoes || []).map(x => '<li><b>' + esc(x.titulo) + '</b>: ' + (x.sug > 0 ? 'parabéns + ' + brl(x.sug) : 'mensagem de parabéns') + '</li>').join('');
+    return '<div class="cd ppRec" id="ppRec"><div class="cdTopo"><div><div class="cdTit">🎉 Reconhecer ' + esc(ppNomeCurto(p.nome)) + '</div><div class="cdSub">A mensagem chega na caixa <b>Falar com o Moviki</b> do painel dele (com o aviso vermelho) e por e-mail. O bônus entra no saldo dele na hora, como <b>Bônus da Moviki</b>.</div></div></div>' +
+      '<label>Motivo</label><div class="ppChips" id="ppOps">' + ops.map(o => '<button type="button" data-ppop="' + esc(o.k) + '" class="' + (PP_SEL.marco === o.k ? 'on' : '') + '">' + (o.novo ? '🌟 ' : '') + esc(o.t) + '</button>').join('') + '</div>' +
+      '<label>Bônus em dinheiro</label><div class="linhaVal" id="ppVals">' + vals.map(v => '<button type="button" class="btnMini' + (PP_SEL.bonus === v ? ' ok' : '') + '" data-ppval="' + v + '"' + (!podeBonus && v > 0 ? ' disabled' : '') + '>' + (v ? brl(v) : 'Só mensagem') + '</button>').join('') +
+        '<input type="number" id="ppValOutro" min="1" max="' + t.bonus + '" step="1" placeholder="Outro (R$)"' + (!podeBonus ? ' disabled' : '') + '></div>' +
+      (!podeBonus ? '<div class="cdSub" style="margin-top:6px">Bônus só para parceiro aprovado. A mensagem pode ir.</div>' : '') +
+      '<label for="ppMotivo">Descrição do bônus (aparece no extrato dele)</label><input type="text" id="ppMotivo" maxlength="80" style="width:100%" value="' + esc(PP_SEL.motivo) + '">' +
+      '<label for="ppMsg">Mensagem</label><textarea id="ppMsg" maxlength="1500"></textarea><div class="conta" id="ppConta"></div>' +
+      '<label class="chk"><input type="checkbox" id="ppEmail" checked> Mandar também por e-mail' + (p.email ? ' (' + esc(p.email) + ')' : '') + '</label>' +
+      '<div class="resumo" id="ppResumo"></div>' +
+      '<button type="button" class="enviar" id="ppEnviar">Enviar reconhecimento</button><div class="msg" id="ppRecMsg"></div>' +
+      '<details class="ppIdeias"><summary>Ideias de bonificação</summary><ul>' + sugeridos +
+        '<li><b>Destaque do mês</b>: o parceiro que mais trouxe lojista até a 1ª live leva a mensagem e um bônus.</li>' +
+        '<li>Os bônus de nível (Prata R$ 25, Ouro R$ 50, Diamante R$ 150, Esmeralda R$ 300) o robô já paga sozinho: não precisa repetir.</li>' +
+        '<li>Bônus é reconhecimento caso a caso. Nunca anunciar como regra nem como promessa em material de divulgação.</li>' +
+        '<li>Teto: ' + brl(t.bonus) + ' por envio e ' + brl(t.mes) + ' por parceiro no mês. O saque segue a regra de sempre (CPF a partir do dia 10 com INSS/IR retidos; CNPJ com a nota).</li>' +
+      '</ul></details></div>';
+  }
+  function ppAtualizarResumo(){
+    const ta = el('ppMsg'), box = el('ppResumo'); if(!ta || !box) return;
+    if(!ta.value){ ta.value = ppModelo(PP_SEL.marco || 'livre').replace('{BONUS}', ppTextoBonus(PP_SEL.bonus)); }
+    txt('ppConta', ta.value.length + ' / 1500');
+    const email = el('ppEmail') && el('ppEmail').checked;
+    box.innerHTML = 'Vai para: <b>caixa de mensagens do painel dele</b>' + (email ? ' + <b>e-mail</b>' : '') +
+      (PP_SEL.bonus > 0 ? '<br>Bônus: <b>' + brl(PP_SEL.bonus) + '</b> liberado na hora no saldo dele · descrição: <b>' + esc(el('ppMotivo').value || '—') + '</b>' : '<br>Sem bônus em dinheiro.') +
+      (PP_SEL.marco && PP.marcos.some(m => m.k === PP_SEL.marco && !m.visto) ? '<br>O marco sai da lista de destaques.' : '');
+    const b = el('ppEnviar'); if(b) b.textContent = PP_SEL.bonus > 0 ? 'Enviar mensagem e liberar ' + brl(PP_SEL.bonus) : 'Enviar mensagem';
+  }
+  function ppEscolherOpcao(k){
+    const o = ppOpcoes().filter(x => x.k === k)[0]; if(!o) return;
+    PP_SEL.marco = k; PP_SEL.editado = false;
+    PP_SEL.bonus = PP.parceiro.status === 'aprovado' ? o.sug : 0;
+    PP_SEL.motivo = k === 'livre' ? '' : o.t;
+    document.querySelectorAll('#ppOps button').forEach(b => b.classList.toggle('on', b.getAttribute('data-ppop') === k));
+    document.querySelectorAll('#ppVals button').forEach(b => b.classList.toggle('ok', Number(b.getAttribute('data-ppval')) === PP_SEL.bonus));
+    el('ppMotivo').value = PP_SEL.motivo; el('ppValOutro').value = '';
+    ppAplicarModelo();
+  }
+  function ppEscolherValor(v){
+    v = Math.round((Number(v) || 0) * 100) / 100;
+    const ta = el('ppMsg');
+    if(PP_SEL.editado && ta){
+      /* texto editado à mão: só troca a frase do bônus, sem apagar o resto */
+      const antes = ppTextoBonus(PP_SEL.bonus), depois = ppTextoBonus(v);
+      if(antes && ta.value.indexOf(antes) >= 0) ta.value = ta.value.replace(antes, depois);
+      else if(!antes && depois){ const i = ta.value.lastIndexOf('\n\nObrigado'); ta.value = i >= 0 ? ta.value.slice(0, i) + depois + ta.value.slice(i) : ta.value + depois; }
+    }
+    PP_SEL.bonus = v;
+    document.querySelectorAll('#ppVals button').forEach(b => b.classList.toggle('ok', Number(b.getAttribute('data-ppval')) === v));
+    if(v > 0 && !el('ppMotivo').value){ const o = ppOpcoes().filter(x => x.k === PP_SEL.marco)[0]; el('ppMotivo').value = o && o.k !== 'livre' ? o.t : 'Reconhecimento'; }
+    ppAplicarModelo(); ppAtualizarResumo();
+  }
+  async function ppEnviar(){
+    const b = el('ppEnviar'), m = el('ppRecMsg'), p = PP.parceiro;
+    const mensagem = el('ppMsg').value.trim(), motivo = el('ppMotivo').value.trim(), bonus = PP_SEL.bonus;
+    m.style.color = 'var(--mv-erro)';
+    if(mensagem.length < 10){ m.textContent = 'Escreva a mensagem.'; return; }
+    if(bonus > 0 && !motivo){ m.textContent = 'Escreva a descrição do bônus (ela aparece no extrato dele).'; return; }
+    const conf = bonus > 0
+      ? 'Liberar ' + brl(bonus) + ' de bônus para ' + p.nome + ' e mandar a mensagem?\n\nO valor entra no saldo dele agora e sai do caixa da Eiko quando ele sacar.'
+      : 'Mandar a mensagem para ' + p.nome + '?';
+    if(!confirm(conf)) return;
+    b.disabled = true; m.style.color = 'var(--mv-txt-3)'; m.textContent = 'Enviando…';
+    try{
+      const marco = PP.marcos.some(x => x.k === PP_SEL.marco) ? PP_SEL.marco : '';
+      const j = await ppRobo({acao:'reconhecer', uid:PP_UID, mensagem, bonus, motivo, marco, chave:PP_SEL.chave, email: el('ppEmail').checked});
+      const partes = [];
+      if(j.repetido) partes.push('Esse envio já tinha sido feito (nada saiu em dobro).');
+      else {
+        partes.push(j.painel === 'enviado' ? 'Mensagem na caixa do painel dele ✓' : 'A caixa de mensagens falhou');
+        if(j.email === 'enviado') partes.push('e-mail enviado ✓'); else if(j.email !== 'desligado') partes.push('e-mail não saiu (' + j.email + ')');
+        if(j.bonus > 0) partes.push('bônus de ' + brl(j.bonus) + ' no saldo dele ✓');
+      }
+      PP_SEL = { marco:'', bonus:0, motivo:'', editado:false, chave:ppChave() };
+      await ppCarregar();
+      const m2 = el('ppRecMsg'); if(m2){ m2.style.color = 'var(--mv-ok)'; m2.textContent = partes.join(' · '); }
+      ppDestCarregar(false);
+      try{ carregarComissoes(); }catch(_){}
+    }catch(e){
+      b.disabled = false; m.style.color = 'var(--mv-erro)'; m.textContent = e && e.message || 'Não deu certo.';
+    }
+  }
+
+  /* ---------- cliques e digitação dentro do perfil ---------- */
+  el('ppCorpo').addEventListener('click', async ev => {
+    const t = ev.target;
+    const aba = t.closest && t.closest('[data-ppaba]'); if(aba){ PP_ABA = aba.getAttribute('data-ppaba'); document.querySelectorAll('[data-ppaba]').forEach(x => x.classList.toggle('on', x === aba)); ppGrafico(); return; }
+    const fl = t.closest && t.closest('[data-ppfiltro]'); if(fl){ PP_FILTRO = fl.getAttribute('data-ppfiltro'); ppPintarMantendoRec(); return; }
+    const op = t.closest && t.closest('[data-ppop]'); if(op){ ppEscolherOpcao(op.getAttribute('data-ppop')); return; }
+    const vl = t.closest && t.closest('[data-ppval]'); if(vl){ el('ppValOutro').value = ''; ppEscolherValor(vl.getAttribute('data-ppval')); return; }
+    if(t.id === 'ppEnviar'){ ppEnviar(); return; }
+    const b = t.closest && t.closest('[data-pp]'); if(!b) return;
+    const a = b.getAttribute('data-pp');
+    if(a === 'irRec'){ const r = el('ppRec'); if(r) r.scrollIntoView({behavior:'smooth', block:'start'}); return; }
+    if(a === 'tabela'){ PP_TABELA = !PP_TABELA; b.textContent = PP_TABELA ? 'Ver gráfico' : 'Ver em tabela'; ppGrafico(); return; }
+    if(a === 'conversa'){ irSec('mensagens'); setTimeout(()=>{ try{ abrirConversa(PP_UID); }catch(_){} }, 200); return; }
+    if(a === 'copiarLink'){ copiar('https://moviki.com.br/p/' + PP.parceiro.slug); feedback(b, 'Copiado!'); return; }
+    if(a === 'irComissoes'){ irSec('comissoes'); return; }
+    if(a === 'comTudo'){ PP_COM_TUDO = !PP_COM_TUDO; ppPintarMantendoRec(); return; }
+    if(a === 'abrirOutro'){ abrirPerfilParceiro(b.getAttribute('data-uid')); return; }
+    if(a === 'recMarco'){ ppEscolherOpcao(b.getAttribute('data-k')); const r = el('ppRec'); if(r) r.scrollIntoView({behavior:'smooth', block:'start'}); return; }
+    if(a === 'dispensar'){
+      if(!confirm('Dispensar este marco sem mandar nada?')) return;
+      b.disabled = true;
+      try{ await ppRobo({acao:'marco_visto', uid:PP_UID, marco:b.getAttribute('data-k')}); PP_SEL = { marco:'', bonus:0, motivo:'', editado:false, chave:ppChave() }; await ppCarregar(); ppDestCarregar(false); }
+      catch(e){ b.disabled = false; alert('Não consegui agora: ' + (e && e.message || 'erro')); }
+    }
+  });
+  el('ppCorpo').addEventListener('input', ev => {
+    const t = ev.target;
+    if(t.id === 'ppMsg'){ PP_SEL.editado = true; ppAtualizarResumo(); }
+    else if(t.id === 'ppMotivo'){ PP_SEL.motivo = t.value; ppAtualizarResumo(); }
+    else if(t.id === 'ppValOutro'){ const v = Math.min(Number((PP.tetos||{}).bonus) || 300, Math.max(0, Math.round(Number(t.value) || 0))); ppEscolherValor(v); }
+  });
+  el('ppCorpo').addEventListener('change', ev => { if(ev.target.id === 'ppEmail') ppAtualizarResumo(); });
+  /* repinta sem perder o que ele estava escrevendo */
+  function ppPintarMantendoRec(){
+    const ta = el('ppMsg'), mo = el('ppMotivo'), em = el('ppEmail');
+    const guard = { msg: ta ? ta.value : '', mot: mo ? mo.value : '', em: em ? em.checked : true };
+    const y = window.scrollY;
+    ppPintar();
+    if(el('ppMsg')){ el('ppMsg').value = guard.msg; el('ppMotivo').value = guard.mot; el('ppEmail').checked = guard.em; ppAtualizarResumo(); }
+    window.scrollTo(0, y);
+  }
+
+  /* ---------- cartão "Parceiros em destaque" (Visão geral) ---------- */
+  function ppDestPintar(){
+    const card = el('cdDestaques'), box = el('ppDestLista'); if(!card || !box) return;
+    PP_DEST_N = PP_DEST.length;
+    txt('ppDestQtd', String(PP_DEST_N));
+    card.classList.toggle('hide', !PP_DEST_N);
+    box.innerHTML = PP_DEST.map(d => {
+      const c = d.contadores || {};
+      return '<div class="ppIt novo"><div class="info"><b>' + esc(d.nome || '(parceiro)') + '</b> <span class="sub">/' + esc(d.slug) + '</span>' +
+        '<div class="sub">' + num(c.indicacoes) + ' indicações · ' + num(c.lives) + ' com live · ' + num(c.pagantes) + ' pagantes · rede ' + num(c.rede) + '</div>' +
+        '<div class="pills">' + d.marcos.map(m => '<span class="pill warn">🌟 ' + esc(m.titulo) + ' · ' + sgHa(m.em) + '</span>').join('') + '</div></div>' +
+        '<div class="bots"><button type="button" class="btnMini ppBtnRec" data-ppdest="' + esc(d.uid) + '">Abrir perfil e reconhecer</button></div></div>';
+    }).join('');
+    try{ pintarPendencias(); }catch(_){}
+    try{ pintarParceiros(); }catch(_){}
+  }
+  async function ppDestCarregar(manual){
+    const b = el('ppDestAtualizar'); if(manual && b){ b.disabled = true; b.textContent = 'Buscando…'; }
+    if(!USER) return;
+    try{ const j = await ppRobo({acao:'destaques'}); PP_DEST = j.lista || []; ppDestPintar(); }
+    catch(e){ if(manual){ const box = el('ppDestLista'); if(box){ el('cdDestaques').classList.remove('hide'); box.innerHTML = '<div class="cdSub">Não consegui buscar agora (' + esc(e && e.message || 'erro') + ').</div>'; } } }
+    finally{ if(manual && b){ b.disabled = false; b.textContent = 'Atualizar'; } }
+  }
+  el('ppDestAtualizar').addEventListener('click', ()=>ppDestCarregar(true));
+  el('ppDestLista').addEventListener('click', ev => { const b = ev.target.closest && ev.target.closest('[data-ppdest]'); if(b) abrirPerfilParceiro(b.getAttribute('data-ppdest')); });
+  function ppDestDe(uid){ return PP_DEST.filter(d => d.uid === uid)[0] || null; }
+
+  /* ---------- link direto do Telegram: eikoadm01.html?parceiro=<uid> ---------- */
+  function ppLinkDireto(){
+    try{
+      const u = new URLSearchParams(location.search).get('parceiro');
+      if(u && /^[A-Za-z0-9]{3,64}$/.test(u)){
+        const q = new URLSearchParams(location.search); q.delete('parceiro');
+        const resto = q.toString();
+        history.replaceState(null, '', location.pathname + (resto ? '?' + resto : '') + location.hash);
+        abrirPerfilParceiro(u);
+      }
+    }catch(_){}
+  }
+
+  /* ==========================================================
      ROBÔS — 13/10/2026
      Todos os robôs (tarefas agendadas do Claude) num lugar só. Busca e marca
      pelo robô do servidor (api/robos.js, só dono com sessão do Google). Os
@@ -4646,6 +5254,8 @@ table.mvTab td b{font-weight:700}
     if(pe) itens.push({n:pe, t:(pe === 1 ? '1 pedido de exclusão de conta' : pe + ' pedidos de exclusão de conta'), ir:'exclusoes'});
     const pln = NEG.filter(negLinkNoNome).length;   /* 2026-10-16-lojaonline */
     if(pln) itens.push({n:pln, t:(pln === 1 ? '1 negócio com link no nome' : pln + ' negócios com link no nome'), ir:'negocios'});
+    let pdz = 0; try{ pdz = PP_DEST_N; }catch(_){ pdz = 0; }   /* 27/10/2026: parceiros em destaque */
+    if(pdz) itens.push({n:pdz, t:(pdz === 1 ? '1 parceiro em destaque para reconhecer' : pdz + ' parceiros em destaque para reconhecer'), ir:'visao'});
     const pcr = CR_PECAS.filter(x=>x.status === 'aguardando').length;
     if(pcr) itens.push({n:pcr, t:(pcr === 1 ? '1 peça de criador esperando aprovação' : pcr + ' peças de criador esperando aprovação'), ir:'criadores'});
 
