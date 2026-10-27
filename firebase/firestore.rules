@@ -3,6 +3,21 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // ==========================================================
+    //  v38 — 26/10/2026 — LISTAGEM FECHADA (auditoria de engenharia reversa)
+    //    negocios, live_sessoes, parceiros_publicos, slugs e ponto_slugs
+    //    deixam de aceitar LISTA anonima. A leitura documento a documento
+    //    (get) continua publica: pagina do lojista, /v/, live e QR seguem
+    //    iguais. Antes, um unico getDocs(collection(db,'negocios')) entregava
+    //    a base inteira de lojistas (nome, WhatsApp, endereco, posicao) e a
+    //    de parceiros a quem quisesse copiar ou abordar a carteira.
+    //    Conferido no codigo de 26/10: nenhuma pagina publica lista essas
+    //    colecoes; so o painel do dono (isAdmin) e as funcoes do site, que
+    //    leem pela conta de servico (IAM, fora das regras).
+    //    Fica de fora, de proposito: pontos/{pid} (a pagina publica lista com
+    //    where ownerUid) — fechar exige limit() no 404.html antes.
+    //    O resto do arquivo e a v37, letra por letra.
+    // ==========================================================
+    // ==========================================================
     //  v37 — 19/10/2026 — VIDEO DE CAPA (P85 Fase 2b)
     //    Campo NOVO e OPCIONAL negocios/{uid}.capaVideo: o endereco do video
     //    curto que roda sem som no topo da pagina publica. So aceita ''
@@ -695,7 +710,8 @@ service cloud.firestore {
     // ==========================================================
 
     match /negocios/{uid} {
-      allow read: if true;
+      allow get: if true;
+      allow list: if isAdmin();   // v38: busca publica so documento a documento
       allow write: if request.auth != null
                    && request.auth.uid == uid
                    && negocioValido(request.resource.data)
@@ -964,7 +980,8 @@ service cloud.firestore {
     // `match /{documento=**}` concede escrita ao dono, e regra do Firestore
     // nao tem "deny" — bastaria UM match permitindo para a trava sumir.
     match /live_sessoes/{uid} {
-      allow read: if true;
+      allow get: if true;
+      allow list: if isAdmin();   // v38: busca publica so documento a documento
       allow write: if false;
     }
 
@@ -1291,7 +1308,8 @@ service cloud.firestore {
     // ==========================================================
 
     match /parceiros_publicos/{slug} {
-      allow read: if true;
+      allow get: if true;
+      allow list: if isAdmin();   // v38: busca publica so documento a documento
       allow write: if false;   // so o Admin SDK do moviki-robo grava
     }
 
@@ -1520,7 +1538,8 @@ service cloud.firestore {
     }
 
     match /slugs/{slug} {
-      allow read: if true;
+      allow get: if true;
+      allow list: if isAdmin();   // v38: busca publica so documento a documento
       allow create: if request.auth != null
                     // v31: nao nasce por cima de endereco de ponto de venda.
                     && !exists(/databases/$(database)/documents/ponto_slugs/$(slug))
@@ -1606,7 +1625,8 @@ service cloud.firestore {
     }
 
     match /ponto_slugs/{slug} {
-      allow read: if true;
+      allow get: if true;
+      allow list: if isAdmin();   // v38: busca publica so documento a documento
       allow write: if false;
     }
 
