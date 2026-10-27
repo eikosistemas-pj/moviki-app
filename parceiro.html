@@ -987,6 +987,37 @@ body{background-image:none}
             <p class="cdSub" style="margin-top:12px">O nível é recalculado mês a mês. Se um cliente seu deixar de pagar, ele sai da conta — por isso manter o cliente ativo vale tanto quanto trazer um novo. As regras estão no <a href="regulamento.html" target="_blank" rel="noopener" style="color:var(--mv-ciano)">Regulamento</a>.</p>
           </div>
 
+          <!-- ============ SUA JORNADA (27/10/2026) ============
+               Pedido do Paulo: o parceiro ve a propria evolucao (o mesmo
+               grafico do painel do dono, lojistas e parceiros separados) e o
+               caminho para os proximos marcos, com incentivo. Regras: so
+               contagem (nunca R$ projetado, nunca promessa de ganho), o foco
+               dos proximos passos e o LOJISTA (a rede aparece, mas por ultimo).
+               Dados: robo api/parceiro-perfil, acao jornada (so dele). ===== -->
+          <div class="cd soAprovado jnCard" id="jnCard">
+            <div class="cdTopo">
+              <div>
+                <div class="cdTit">Sua jornada</div>
+                <p class="cdSub" id="jnSub">Carregando a sua evolução…</p>
+              </div>
+            </div>
+            <div class="jnNovo hide" id="jnNovo" role="status"></div>
+            <div class="jnChips" id="jnChips"></div>
+            <div class="jnBloco">
+              <div class="jnRot">Seus próximos marcos</div>
+              <div class="jnProx" id="jnProx"></div>
+            </div>
+            <div class="jnDica hide" id="jnDica"></div>
+            <div class="jnBloco">
+              <div class="jnRotLinha"><span class="jnRot">Mês a mês</span><button type="button" class="cdLink" id="jnTabBtn">Ver em tabela</button></div>
+              <div id="jnGraf"><div class="vazio">Carregando…</div></div>
+            </div>
+            <div class="jnBloco">
+              <div class="jnRot">Suas conquistas</div>
+              <div class="jnConq" id="jnConq"></div>
+            </div>
+          </div>
+
           <!-- saldo: no celular fica aqui; no desktop o script leva pra coluna da direita -->
           <div class="cd soAprovado" id="cardSaldo">
             <div class="cdTopo">
@@ -1904,7 +1935,7 @@ body{background-image:none}
      so entram em 20/11). Com ?evento=<id> na previa, tudo aparece, para
      conferir antes. */
   /* 24/10: botao 'Excluir minha conta' (Meus dados > Conta e Mais > Conta) com o pedido ao robo /api/excluir-conta. A marca NAO mudou de proposito: a tabela MARCAS_CONFERIDAS do Vik (moviki-ai) nao entrou nesta entrega; trocar a marca junto com o Vik na proxima. */
-  window.MOVIKI_VERSAO = '2026-10-27-bonus';   /* 27/10: extrato de Comissoes mostra 'Bonus da Moviki' (com o motivo) e 'Bonus do nivel X' com nome proprio, e esses bonus (nivel 0) deixam de contar como Nivel 1 / recorrente do mes. O bonus da Moviki e a mensagem chegam pelo painel do dono (Perfil do parceiro, robo api/parceiro-perfil.js); a mensagem cai na caixa 'Falar com o Moviki'. Antes: '2026-10-25-excluir'. */   /* 25/10: marca trocada para fechar a ponta do Vik do botao 'Excluir minha conta' (Meus dados > Conta e Mais > Conta, PR #117 de 24/10, que manteve a marca de proposito). Tela sem mudanca nesta entrega. Antes: '2026-10-22-fiscal'. */ /* 22/10: Meus dados ganhou 'Dados para receber' (Pessoa fisica CPF ou Empresa/MEI CNPJ, documento validado, nome/razao social, nascimento 18+; robo /api/parceiro-fiscal), obrigatorio para sacar ('Completar dados para receber'). CPF: pago 1 vez por mes a partir do dia 10 com INSS 11% (e IR) retido, a lista de saques mostra bruto/INSS/IR. CNPJ: saque livre, informa a chave de acesso da NFS-e (50 numeros) no pedido em Saques. Antes: '2026-10-21-botaoevento'. */ /* 21/10: Material de apoio ganha o 4o botao do topo, so durante o evento (eventos[].botao no catalogo: Black Friday preto com borda dourada piscando; Natal vermelho e dourado), com todo o material do evento num lugar so; peca com so_evento sai dos ramos. */ /* antes: 2026-10-20-viralojista */   /* 20/10 (noite, 2): parceiro sem negocio ganha 'Colocar meu negocio no mapa' (menu lateral, Mais e coluna da direita) com a folha da regra da comissao ANTES do botao (regulamento 2.4, opcao B) -> index.html?virarLojista=1. Parceiro que abriu o negocio depois: aviso verde 'comissoes normais no teste' e, acabado o teste sem plano, card de retido com o texto do teste (motivo fim_teste). */ /* antes: 2026-10-20-amostra */   /* 20/10 (noite): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (QjCq1MhrdZA) e 'Sua entrega' (YDK1US97BG4, 2:22) regravadas sobre as lojas de amostra completas; mesmas chaves. */ /* antes: 2026-10-20-aulasp85 */   /* 20/10 (P85): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (mod-live-cardapio, lf4NVwllA0w, 1:26) e 'Sua entrega: bairros, taxa, entrega gratis e reserva' (mod-pedidos-entrega, 5OEL8fXWJJs, 2:21) regravadas; mesmas chaves. Antes: 2026-10-17-bvparceiro. */   /* 17/10: aula de boas-vindas do parceiro 'Bem-vindo a equipe Moviki' (mod-parc-boasvindas, voz Malu, 4:42) no lugar da abertura (mod-parc-abertura sai do catalogo); duas versoes, horizontal no computador e vertical no celular em pe (idV, palco 9:16); abre sozinha para quem ainda nao viu (mvBvParceiro, 1 vez por sessao). Antes: 2026-10-17-aulasparc. */   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-17-retido (card Saldo com a comissao retida pelo atraso e contagem regressiva, regulamento 1.5 item 2.4), que veio de 2026-10-16-linkramo. */ /* conformidade:ok (prazo de pagamento do CPF) */
+  window.MOVIKI_VERSAO = '2026-10-27-jornada';   /* 27/10 (madrugada): Inicio ganha o card 'Sua jornada' (robo api/parceiro-perfil acao jornada): numeros dele, proximos marcos com barra (o mais perto em destaque), o proximo passo (lojista em teste sem live / sem indicacao / parado ha 14 dias), grafico mes a mes com lojistas indicados, parceiros trazidos e lojistas pagando (tabela), conquistas com data e 'Nova conquista' uma vez por aparelho. So contagem, nunca R$ projetado. Antes: '2026-10-27-bonus'. */   /* 27/10: extrato de Comissoes mostra 'Bonus da Moviki' (com o motivo) e 'Bonus do nivel X' com nome proprio, e esses bonus (nivel 0) deixam de contar como Nivel 1 / recorrente do mes. O bonus da Moviki e a mensagem chegam pelo painel do dono (Perfil do parceiro, robo api/parceiro-perfil.js); a mensagem cai na caixa 'Falar com o Moviki'. Antes: '2026-10-25-excluir'. */   /* 25/10: marca trocada para fechar a ponta do Vik do botao 'Excluir minha conta' (Meus dados > Conta e Mais > Conta, PR #117 de 24/10, que manteve a marca de proposito). Tela sem mudanca nesta entrega. Antes: '2026-10-22-fiscal'. */ /* 22/10: Meus dados ganhou 'Dados para receber' (Pessoa fisica CPF ou Empresa/MEI CNPJ, documento validado, nome/razao social, nascimento 18+; robo /api/parceiro-fiscal), obrigatorio para sacar ('Completar dados para receber'). CPF: pago 1 vez por mes a partir do dia 10 com INSS 11% (e IR) retido, a lista de saques mostra bruto/INSS/IR. CNPJ: saque livre, informa a chave de acesso da NFS-e (50 numeros) no pedido em Saques. Antes: '2026-10-21-botaoevento'. */ /* 21/10: Material de apoio ganha o 4o botao do topo, so durante o evento (eventos[].botao no catalogo: Black Friday preto com borda dourada piscando; Natal vermelho e dourado), com todo o material do evento num lugar so; peca com so_evento sai dos ramos. */ /* antes: 2026-10-20-viralojista */   /* 20/10 (noite, 2): parceiro sem negocio ganha 'Colocar meu negocio no mapa' (menu lateral, Mais e coluna da direita) com a folha da regra da comissao ANTES do botao (regulamento 2.4, opcao B) -> index.html?virarLojista=1. Parceiro que abriu o negocio depois: aviso verde 'comissoes normais no teste' e, acabado o teste sem plano, card de retido com o texto do teste (motivo fim_teste). */ /* antes: 2026-10-20-amostra */   /* 20/10 (noite): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (QjCq1MhrdZA) e 'Sua entrega' (YDK1US97BG4, 2:22) regravadas sobre as lojas de amostra completas; mesmas chaves. */ /* antes: 2026-10-20-aulasp85 */   /* 20/10 (P85): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (mod-live-cardapio, lf4NVwllA0w, 1:26) e 'Sua entrega: bairros, taxa, entrega gratis e reserva' (mod-pedidos-entrega, 5OEL8fXWJJs, 2:21) regravadas; mesmas chaves. Antes: 2026-10-17-bvparceiro. */   /* 17/10: aula de boas-vindas do parceiro 'Bem-vindo a equipe Moviki' (mod-parc-boasvindas, voz Malu, 4:42) no lugar da abertura (mod-parc-abertura sai do catalogo); duas versoes, horizontal no computador e vertical no celular em pe (idV, palco 9:16); abre sozinha para quem ainda nao viu (mvBvParceiro, 1 vez por sessao). Antes: 2026-10-17-aulasparc. */   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-17-retido (card Saldo com a comissao retida pelo atraso e contagem regressiva, regulamento 1.5 item 2.4), que veio de 2026-10-16-linkramo. */ /* conformidade:ok (prazo de pagamento do CPF) */
   /* 16/10: peca por ramo do Material de apoio leva /p/apelido?ramo=<k> (miniatura e live do ramo); ramos.js carregado com o catalogo. Antes: 2026-10-13-arroba. */   /* 13/10 (P80): bloco "Seu @ no Instagram" em Meus dados (prova de posse pelo codigo na bio) e foto do Instagram no cracha so com o @ provado. Antes: 2026-10-10-pixaula. */   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
   /* 2026-10-10-teatro: videoaulas com layout de YouTube (marca no alto, palco grande, lista com as capas a direita), selo das aulas com barra e contagem das opcionais, e a aula OPCIONAL do Material de apoio (mod-parc-material, OZ9vgwH2W_U) no fim da secao. Trava e selo continuam contando so as obrigatorias. Lista em tres niveis: Essenciais (vermelho, as obrigatorias que liberam o link), Recomendadas (amarelo) e Complementares (azul), campo `nivel` do modulo opcional. Antes: 2026-10-06-pixcarimbo. */
 
@@ -3171,6 +3202,7 @@ body{background-image:none}
       txt('kRec', brl(porMes[mesAtual] ? porMes[mesAtual].n1 : 0));
       txt('kAtivos', String(ativosMes.size));
       renderNivel(ativosMes.size);
+      carregarJornada();
       const nv = el('kVar');
       if(nv){
         if(gAnt > 0){
@@ -3276,6 +3308,199 @@ body{background-image:none}
     }
     escada.innerHTML = html;
   }
+
+
+  /* ==========================================================
+     SUA JORNADA — 27/10/2026
+     A evolucao do proprio parceiro (robo api/parceiro-perfil, acao jornada).
+     Gatilhos usados, todos verdadeiros e sem promessa de ganho:
+     - progresso visivel ate o proximo marco (quanto falta, barra);
+     - o marco mais perto em destaque (reta final);
+     - sequencia de meses trazendo alguem;
+     - conquista nova comemorada uma vez (guardada no aparelho);
+     - o proximo passo concreto (ex.: ajudar quem esta em teste sem live).
+     Nunca R$ projetado e nunca "vai ganhar": so contagem e o que ele ja fez.
+     ========================================================== */
+  const JN_COR = { a:'#1596c2', b:'#a855f7', c:'#c2741c' };   /* validados no fundo do painel (escuro e claro) */
+  const JN_MES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  let JN = null, JN_TABELA = false, jnCarregou = false;
+  function jnMes(k){ const p = String(k||'').split('-'); return (JN_MES[Number(p[1]) - 1] || '?') + '/' + String(p[0]||'').slice(2); }
+  function jnDataCurta(ms){ if(!ms) return ''; const d = new Date(ms); return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear(); }
+
+  async function carregarJornada(){
+    if(jnCarregou || MEU.status !== 'aprovado' || !auth.currentUser) return;
+    jnCarregou = true;
+    try{
+      const tk = await auth.currentUser.getIdToken();
+      const r = await fetch('https://moviki-robo.vercel.app/api/parceiro-perfil', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ idToken: tk, acao: 'jornada' }) });
+      const j = await r.json().catch(() => ({}));
+      if(!r.ok || !j.ok || !j.jornada) throw new Error(j.erro || 'falhou');
+      JN = j.jornada;
+      pintarJornada();
+    }catch(e){
+      jnCarregou = false;
+      txt('jnSub', 'Não deu para carregar a sua jornada agora. Atualize a página em alguns instantes.');
+      const g = el('jnGraf'); if(g) g.innerHTML = '';
+    }
+  }
+
+  function jnFrase(r){
+    if(!r.indicacoes && !r.rede) return 'Tudo começa com a primeira indicação. O seu link está pronto para ser compartilhado.';
+    if(!r.jaPagaram) return 'Você já começou a abrir caminho. O próximo grande passo é o seu primeiro lojista pagante.';
+    if(r.pagantesHoje < 11) return 'Você já tem lojista pagando. Cada novo cliente ativo aproxima você do próximo nível.';
+    return 'Você está construindo uma carteira de verdade. Continue cuidando de quem já está com você.';
+  }
+  function jnFrasePasso(p){
+    if(p.falta === 1) return 'Falta só 1. Você está a um passo.';
+    if(p.pct >= 60) return 'Mais da metade do caminho já foi.';
+    if(p.familia === 'lives') return 'Ajudar seus lojistas no ensaio é o caminho para a 1ª live deles.';
+    if(p.familia === 'pagantes') return 'Acompanhar quem está no teste grátis é o que você pode fazer agora.';
+    return '';
+  }
+
+  function pintarJornada(){
+    if(!JN) return;
+    const r = JN.resumo || {};
+    txt('jnSub', jnFrase(r));
+
+    /* números que ele já tem (só contagem) */
+    const chips = [];
+    chips.push('<span class="jnChip"><b>' + (r.indicacoes || 0) + '</b><span>' + ((r.indicacoes === 1) ? 'lojista indicado' : 'lojistas indicados') + '</span></span>');
+    if(r.fezLive) chips.push('<span class="jnChip"><b>' + r.fezLive + '</b><span>' + (r.fezLive === 1 ? 'já fez live' : 'já fizeram live') + '</span></span>');
+    if(r.jaPagaram) chips.push('<span class="jnChip"><b>' + r.jaPagaram + '</b><span>' + (r.jaPagaram === 1 ? 'já pagou' : 'já pagaram') + '</span></span>');
+    if(r.rede) chips.push('<span class="jnChip"><b>' + r.rede + '</b><span>' + (r.rede === 1 ? 'parceiro na sua rede' : 'parceiros na sua rede') + '</span></span>');
+    if(r.mesesSeguidos >= 2) chips.push('<span class="jnChip fogo"><b>🔥 ' + r.mesesSeguidos + '</b><span>meses seguidos trazendo gente</span></span>');
+    else if(r.ult30) chips.push('<span class="jnChip"><b>' + r.ult30 + '</b><span>nos últimos 30 dias</span></span>');
+    el('jnChips').innerHTML = chips.join('');
+
+    /* próximos marcos: o mais perto primeiro */
+    const prox = (JN.proximos || []).slice(0, 3);
+    el('jnProx').innerHTML = prox.length ? prox.map((p, i) => {
+      const frase = jnFrasePasso(p);
+      return '<div class="jnPasso' + (i === 0 ? ' perto' : '') + '">' +
+        '<div class="jnPassoTopo"><span class="jnPassoTit">' + esc(p.titulo) + '</span><span class="jnPassoN"><b>' + p.atual + '</b> de ' + p.alvo + '</span></div>' +
+        '<div class="nvBarra"><i style="width:' + Math.max(4, Math.min(100, p.pct)) + '%"></i></div>' +
+        (i === 0 && frase ? '<div class="jnPassoFrase">' + frase + '</div>' : '') +
+      '</div>';
+    }).join('') : '<div class="jnVazio">Você passou por todos os marcos daqui. Que jornada!</div>';
+
+    /* o próximo passo concreto */
+    const dica = el('jnDica');
+    let d = '';
+    if(r.emTesteSemLive > 0){
+      d = '<span class="jnDicaIco">🎥</span><div><p><b>' + r.emTesteSemLive + (r.emTesteSemLive === 1 ? ' lojista seu está' : ' lojistas seus estão') + ' no teste grátis e ainda não fez a 1ª live.</b> O ensaio deixa a primeira vez sem pressão: ninguém assiste. Ofereça ajuda agora.</p>' +
+        '<button type="button" class="cdLink" data-jn="indicacoes">Ver minhas indicações</button></div>';
+    } else if(!r.indicacoes){
+      d = '<span class="jnDicaIco">🚀</span><div><p><b>Comece pelos lojistas que você já conhece.</b> Mande o seu link para 3 deles hoje, com uma mensagem sua.</p>' +
+        '<button type="button" class="cdLink" data-jn="copiar">Copiar meu link</button></div>';
+    } else if(r.ultimaEm && (Date.now() - r.ultimaEm) > 14 * 86400000){
+      const dias = Math.floor((Date.now() - r.ultimaEm) / 86400000);
+      d = '<span class="jnDicaIco">⏳</span><div><p><b>Faz ' + dias + ' dias desde a sua última indicação.</b> Um lojista novo por semana já muda o mês. Que tal mandar o seu link para alguém hoje?</p>' +
+        '<button type="button" class="cdLink" data-jn="copiar">Copiar meu link</button></div>';
+    }
+    dica.innerHTML = d; dica.classList.toggle('hide', !d);
+
+    /* conquistas, a mais recente primeiro */
+    const cq = JN.conquistas || [];
+    el('jnConq').innerHTML = cq.length ? cq.slice(0, 8).map(c => '<span class="jnMedalha">🏅 ' + esc(c.titulo) + (c.em ? ' <small>' + jnDataCurta(c.em) + '</small>' : '') + '</span>').join('')
+      : '<div class="jnVazio">A sua primeira conquista aparece aqui quando o primeiro lojista se cadastrar pelo seu link.</div>';
+
+    jnComemorar(cq);
+    jnGrafico();
+  }
+
+  /* conquista nova: comemora UMA vez por aparelho (a primeira visita só guarda) */
+  function jnComemorar(cq){
+    const chave = 'mv_jn_vistos_' + (auth.currentUser ? auth.currentUser.uid : '');
+    let vistos = null;
+    try{ vistos = JSON.parse(localStorage.getItem(chave) || 'null'); }catch(_){ vistos = null; }
+    const agora = cq.map(c => c.k);
+    try{ localStorage.setItem(chave, JSON.stringify(agora)); }catch(_){}
+    if(!Array.isArray(vistos)) return;
+    const novas = cq.filter(c => vistos.indexOf(c.k) < 0);
+    if(!novas.length) return;
+    const box = el('jnNovo');
+    box.innerHTML = '<span class="jnTrofeu">🏆</span><div><b>' + (novas.length === 1 ? 'Nova conquista: ' + esc(novas[0].titulo) : novas.length + ' conquistas novas') + '</b>' +
+      '<span>' + (novas.length === 1 ? 'Parabéns! Isso é trabalho seu.' : esc(novas.map(n => n.titulo).join(' · '))) + '</span></div>';
+    box.classList.remove('hide'); box.classList.add('entra');
+  }
+
+  function jnGrafico(){
+    const box = el('jnGraf'); if(!box || !JN) return;
+    const larg = box.clientWidth || 600;
+    const curto = larg < 520;
+    const s = curto ? (JN.serie || []).slice(-6) : (JN.serie || []).slice(-12);
+    const A = s.map(x => x.indicacoes || 0), C = s.map(x => x.parceiros || 0), B = s.map(x => x.pagantes || 0);
+    const nA = 'Lojistas indicados', nC = 'Parceiros trazidos', nB = 'Lojistas pagando no mês';
+    if(JN_TABELA){
+      box.innerHTML = '<table class="jnTab"><thead><tr><th>Mês</th><th class="n">' + nA + '</th><th class="n">' + nC + '</th><th class="n">' + nB + '</th></tr></thead><tbody>' +
+        (JN.serie || []).map(x => '<tr><td>' + jnMes(x.mes) + '</td><td class="n">' + (x.indicacoes||0) + '</td><td class="n">' + (x.parceiros||0) + '</td><td class="n">' + (x.pagantes||0) + '</td></tr>').join('') + '</tbody></table>';
+      return;
+    }
+    const W = curto ? 360 : 640, H = curto ? 200 : 220, L = 26, R = 8, T = 18, Bm = 24;
+    const tot = s.map((x, i) => Math.max(A[i] + C[i], B[i]));
+    let max = Math.max.apply(null, tot.concat([2]));
+    const passo = max <= 5 ? 1 : max <= 20 ? 5 : max <= 50 ? 10 : 25;
+    max = Math.ceil(max / passo) * passo;
+    const y = v => T + (H - T - Bm) * (1 - v / max);
+    const bw = (W - L - R) / s.length, alt = H - T - Bm;
+    const col = (x, base, w, h, raio) => {
+      if(h <= 0) return '';
+      const r2 = Math.min(raio, w / 2, h);
+      return 'M' + x + ',' + base + 'V' + (base - h + r2) + 'Q' + x + ',' + (base - h) + ' ' + (x + r2) + ',' + (base - h) + 'H' + (x + w - r2) + 'Q' + (x + w) + ',' + (base - h) + ' ' + (x + w) + ',' + (base - h + r2) + 'V' + base + 'Z';
+    };
+    let g = '', m = '', pts = [];
+    for(let v = 0; v <= max + 1e-6; v += passo){
+      g += '<line class="' + (v === 0 ? 'base' : 'grade') + '" x1="' + L + '" x2="' + (W - R) + '" y1="' + y(v).toFixed(1) + '" y2="' + y(v).toFixed(1) + '"/>';
+      g += '<text class="eixo" x="' + (L - 6) + '" y="' + (y(v) + 3.5).toFixed(1) + '" text-anchor="end">' + v + '</text>';
+    }
+    s.forEach((x, i) => {
+      const cx = L + bw * i + bw / 2, w = Math.min(26, bw * 0.56);
+      g += '<text class="eixo" x="' + cx.toFixed(1) + '" y="' + (H - 7) + '" text-anchor="middle">' + jnMes(x.mes) + '</text>';
+      const hA = alt * (A[i] / max), hC = alt * (C[i] / max);
+      if(hA > 0) m += '<path d="' + col(cx - w/2, y(0), w, hA, hC > 0 ? 0 : 4) + '" fill="' + JN_COR.a + '"/>';
+      if(hC > 0) m += '<path d="' + col(cx - w/2, y(0) - hA - (hA > 0 ? 2 : 0), w, Math.max(0, hC - (hA > 0 ? 2 : 0)), 4) + '" fill="' + JN_COR.c + '"/>';
+      pts.push([cx, y(B[i])]);
+    });
+    m += '<polyline fill="none" stroke="' + JN_COR.b + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="' + pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ') + '"/>';
+    pts.forEach(p => { m += '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3.5" fill="' + JN_COR.b + '" stroke="var(--mv-surf)" stroke-width="2"/>'; });
+    const u = s.length - 1;
+    if(u >= 0 && A[u] + C[u] > 0) m += '<text class="rot" x="' + (L + bw * u + bw / 2).toFixed(1) + '" y="' + (y(A[u] + C[u]) - 6).toFixed(1) + '" text-anchor="middle">' + (A[u] + C[u]) + '</text>';
+    let alvos = '';
+    s.forEach((x, i) => { alvos += '<rect class="alvo" data-i="' + i + '" x="' + (L + bw * i).toFixed(1) + '" y="' + T + '" width="' + bw.toFixed(1) + '" height="' + alt + '"/>'; });
+    box.innerHTML = '<div class="jnGrafWrap"><svg class="jnGrafSvg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Lojistas indicados, parceiros trazidos e lojistas pagando por mês">' + g +
+      '<line class="guia" id="jnGuia" x1="0" x2="0" y1="' + T + '" y2="' + (H - Bm) + '" style="display:none"/>' + m + alvos + '</svg><div class="jnDicaG hide" id="jnDicaG"></div></div>' +
+      '<div class="jnLeg"><span><i style="background:' + JN_COR.a + '"></i>' + nA + '</span><span><i style="background:' + JN_COR.c + '"></i>' + nC + '</span><span><i class="linha" style="background:' + JN_COR.b + '"></i>' + nB + '</span></div>';
+    const svg = box.querySelector('svg'), dc = el('jnDicaG'), guia = el('jnGuia');
+    function mostra(i){
+      const rr = svg.getBoundingClientRect(), e2 = rr.width / W, cx = L + bw * i + bw / 2;
+      guia.setAttribute('x1', cx); guia.setAttribute('x2', cx); guia.style.display = '';
+      dc.innerHTML = '<b>' + jnMes(s[i].mes) + '</b><br><i style="background:' + JN_COR.a + '"></i>' + nA + ': <b>' + A[i] + '</b><br><i style="background:' + JN_COR.c + '"></i>' + nC + ': <b>' + C[i] + '</b><br><i style="background:' + JN_COR.b + '"></i>' + nB + ': <b>' + B[i] + '</b>';
+      dc.classList.remove('hide');
+      let px = cx * e2; px = Math.max(90, Math.min(rr.width - 90, px));
+      dc.style.left = px + 'px'; dc.style.top = (T * e2 + 2) + 'px';
+    }
+    svg.querySelectorAll('.alvo').forEach(a => {
+      const i = Number(a.getAttribute('data-i'));
+      a.addEventListener('mouseenter', () => mostra(i));
+      a.addEventListener('touchstart', () => mostra(i), {passive:true});
+      a.addEventListener('click', () => mostra(i));
+    });
+    svg.addEventListener('mouseleave', () => { dc.classList.add('hide'); guia.style.display = 'none'; });
+  }
+
+  (function(){
+    const c = el('jnCard'); if(!c) return;
+    c.addEventListener('click', ev => {
+      const b = ev.target.closest ? ev.target.closest('[data-jn],#jnTabBtn') : null; if(!b) return;
+      if(b.id === 'jnTabBtn'){ JN_TABELA = !JN_TABELA; b.textContent = JN_TABELA ? 'Ver gráfico' : 'Ver em tabela'; jnGrafico(); return; }
+      const a = b.getAttribute('data-jn');
+      if(a === 'indicacoes'){ try{ window.mvIrSec('indicacoes'); }catch(_){} return; }
+      if(a === 'copiar'){ const bc = el('btnCopiar'); if(bc){ bc.click(); b.textContent = 'Link copiado!'; } else { try{ window.mvIrSec('divulgacao'); }catch(_){} } }
+    });
+    let jnTimer = null;
+    window.addEventListener('resize', () => { clearTimeout(jnTimer); jnTimer = setTimeout(() => { if(JN && !JN_TABELA) jnGrafico(); }, 200); });
+  })();
 
   function atualizarBarraSaque(){
     const i = el('rcBarraI'), n = el('rcBarraNota');
@@ -4866,6 +5091,62 @@ button.mvTutQuadro:hover{border-color:var(--ciano,#2EE59D)}
 :where(html[data-tema="claro"]) .mvNvr b:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#8a6400}
 :where(html[data-tema="claro"]) .mvNvc b:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:#1565c0}
 .mvAuLista>.mvAuSecao:first-child{border-top:0;margin-top:2px;padding-top:2px}
+
+/* ============ SUA JORNADA (27/10/2026) ============ */
+.jnCard .hide{display:none!important}
+.jnNovo{display:flex;align-items:center;gap:12px;margin:12px 0 4px;padding:12px 14px;border-radius:14px;
+  background:linear-gradient(120deg,rgba(255,196,64,.16),rgba(46,229,157,.10));border:1px solid rgba(255,196,64,.45)}
+.jnNovo .jnTrofeu{flex:0 0 auto;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:rgba(255,196,64,.18)}
+.jnNovo b{display:block;font-size:14.5px;color:var(--mv-txt-1)}
+.jnNovo span{font-size:13px;color:var(--mv-txt-2);line-height:1.45}
+.jnNovo.entra{animation:jnEntra .7s cubic-bezier(.2,.9,.3,1.3) 1}
+@keyframes jnEntra{0%{transform:scale(.92);opacity:0}100%{transform:scale(1);opacity:1}}
+.jnChips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.jnChip{display:inline-flex;align-items:baseline;gap:6px;padding:8px 12px;border-radius:12px;border:1px solid var(--mv-linha);background:rgba(255,255,255,.03)}
+:where(html[data-tema="claro"]) .jnChip:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){background:rgba(20,40,70,0.04)}
+.jnChip b{font-size:18px;font-weight:700;color:var(--mv-txt-1);font-variant-numeric:tabular-nums}
+.jnChip span{font-size:12.5px;color:var(--mv-txt-2)}
+.jnChip.fogo{border-color:rgba(255,150,60,.55);background:rgba(255,150,60,.10)}
+.jnBloco{margin-top:18px}
+.jnRot{font-size:12.5px;font-weight:700;color:var(--mv-txt-3);letter-spacing:.02em}
+.jnRotLinha{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.jnProx{display:flex;flex-direction:column;gap:9px;margin-top:9px}
+.jnPasso{padding:11px 13px;border-radius:12px;border:1px solid var(--mv-linha);background:rgba(255,255,255,.03)}
+:where(html[data-tema="claro"]) .jnPasso:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){background:rgba(20,40,70,0.04)}
+.jnPasso.perto{border-color:var(--mv-ciano);background:rgba(46,229,157,.08)}
+.jnPassoTopo{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.jnPassoTit{font-size:14px;font-weight:700;color:var(--mv-txt-1)}
+.jnPassoN{font-size:12.5px;color:var(--mv-txt-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.jnPassoN b{color:var(--mv-ciano)}
+.jnPasso .nvBarra{margin-top:8px;height:7px}
+.jnPassoFrase{margin-top:7px;font-size:12.5px;color:var(--mv-txt-2);line-height:1.45}
+.jnDica{margin-top:16px;display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border-radius:12px;background:rgba(59,157,255,.08);border:1px solid rgba(59,157,255,.32)}
+.jnDica .jnDicaIco{flex:0 0 auto;font-size:18px;line-height:1.2}
+.jnDica p{font-size:13.5px;color:var(--mv-txt-2);line-height:1.5}
+.jnDica p b{color:var(--mv-txt-1)}
+.jnDica button{margin-top:8px}
+.jnGrafSvg{width:100%;height:auto;display:block;margin-top:8px;overflow:visible}
+.jnGrafSvg .grade{stroke:var(--mv-linha);stroke-width:1;stroke-dasharray:3 4}
+.jnGrafSvg .base{stroke:var(--mv-linha-forte,var(--mv-linha));stroke-width:1}
+.jnGrafSvg .eixo{font-size:10.5px;fill:var(--mv-txt-3)}
+.jnGrafSvg .rot{font-size:11.5px;font-weight:700;fill:var(--mv-txt-1)}
+.jnGrafSvg .alvo{fill:transparent;cursor:pointer}
+.jnGrafSvg .guia{stroke:var(--mv-txt-3);stroke-width:1;stroke-dasharray:2 3}
+.jnGrafWrap{position:relative}
+.jnDicaG{position:absolute;transform:translateX(-50%);pointer-events:none;padding:8px 10px;border-radius:10px;background:var(--mv-surf-2,var(--mv-surf));border:1px solid var(--mv-linha);box-shadow:var(--mv-sombra);font-size:12px;line-height:1.55;color:var(--mv-txt-2);white-space:nowrap;z-index:2}
+.jnDicaG b{color:var(--mv-txt-1)}
+.jnDicaG i,.jnLeg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:0}
+.jnLeg i.linha{height:3px;border-radius:2px;vertical-align:3px;width:12px}
+.jnLeg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:12px;color:var(--mv-txt-2)}
+.jnTab{width:100%;border-collapse:collapse;margin-top:8px;font-size:12.5px}
+.jnTab th,.jnTab td{padding:7px 6px;border-bottom:1px solid var(--mv-linha);text-align:left;color:var(--mv-txt-2)}
+.jnTab th{font-weight:700;color:var(--mv-txt-3)}
+.jnTab .n{text-align:right;font-variant-numeric:tabular-nums}
+.jnConq{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+.jnMedalha{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;border:1px solid rgba(255,196,64,.45);background:rgba(255,196,64,.08);font-size:12.5px;color:var(--mv-txt-1)}
+.jnMedalha small{color:var(--mv-txt-3);font-size:11px}
+.jnVazio{font-size:13px;color:var(--mv-txt-3)}
+@media (prefers-reduced-motion:reduce){.jnNovo.entra{animation:none}}
 </style>
 <script>
 /* ===================== TUTORIAIS EM VIDEO - PARCEIRO ======================
