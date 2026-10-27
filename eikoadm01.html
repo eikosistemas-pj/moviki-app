@@ -1106,7 +1106,10 @@ table.mvTab td b{font-weight:700}
         <section data-sec="parcPerfil" class="hide">
           <style>
             .ppNav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 12px}
-            .ppHero{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(0,212,255,.10),rgba(0,102,255,.04) 45%,transparent 70%),var(--mv-surf);border:1px solid var(--mv-linha-forte)}
+            .comFiltro{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px;padding:12px 14px;border-radius:14px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.35)}
+  .comFiltroTxt{font-size:14.5px}.comFiltroTxt b{color:var(--mv-ciano)}
+  .comFiltroBots{display:flex;gap:8px;flex-wrap:wrap}
+  .ppHero{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(0,212,255,.10),rgba(0,102,255,.04) 45%,transparent 70%),var(--mv-surf);border:1px solid var(--mv-linha-forte)}
             .ppHeroTopo{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
             .ppAv{width:88px;height:88px;border-radius:50%;flex:0 0 88px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#fff;background:var(--mv-grad);box-shadow:0 0 0 3px var(--mv-surf),0 0 0 5px rgba(0,212,255,.55);overflow:hidden}
             .ppAv img{width:100%;height:100%;object-fit:cover;display:block}
@@ -2365,7 +2368,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-27-marcosreais';   /* 27/10 (noite): marcos com a data real e nomes claros ('Primeiro lojista indicado', 'Primeiro parceiro na rede dele'); mensagem pronta do 1o lojista considera os parceiros que ele ja trouxe; numeros dizem 'lojistas indicados' e 'parceiros na rede'. Antes: 2026-10-27-perfilparceiro. */   /* 27/10: botao 'Ver perfil do parceiro' em cada cadastro abre a secao Perfil do parceiro (foto, area de atuacao, indicados com situacao e 1a live, rede, dinheiro, grafico de 12 meses, marcos) com 'Reconhecer': mensagem na caixa do painel dele + e-mail e, se quiser, bonus em dinheiro (robo api/parceiro-perfil.js). Cartao 'Parceiros em destaque' na Visao geral e link ?parceiro=<uid> do aviso do Telegram. Antes: 2026-10-26-aceitewa. */   /* 26/10 (3): cartao Travados mostra 'Aceitou ajuda no WhatsApp' (caixa de aceite do cadastro, robo novo-cliente grava avisos_cliente.waAceite). Antes: 2026-10-26-avisotravado. */   /* 26/10 (2): cartao Travados mostra 'Aviso no Telegram ha X' (robo lib/travadoAviso.js manda 1 aviso por conta). Antes: 2026-10-26-travados. */   /* 26/10: cartao 'Travados no comeco' na Visao geral (quem criou a conta e parou antes da 1a live, pela etapa, com WhatsApp e mensagem pronta; robo api/funil-dono acoes travados e travado_chamei) e o Funil do lojista ganha 'Tipo' e '3 fotos'. Antes: 2026-10-22-fiscal. */   /* 22/10: pagar comissao mostra CPF/CNPJ do parceiro, retencao do PF (bruto, INSS 11%, IR, Pix pelo liquido) e a nota do PJ (pede a chave da NFS-e no pagamento avulso); botao 'Relatorio do mes para a contabilidade' (CSV, robo /api/parceiro-fiscal). Antes: 2026-10-20-pdf. */ /* 20/10 (2): Panfletos com QR ganha 'Enviar PDF por e-mail' (robo api/funil-dono, acao panfleto_email; PDF 300 dpi, A5 com sangria e TrimBox) e 'Baixar PDF'; o botao Enviar virou Compartilhar. */ /* antes: 2026-10-20-panfletos */   /* 20/10: menu 'Panfletos com QR' — os panfletos do Material de apoio com o QR da Eiko Sistemas (/aovivo ou /fundador, utm_campaign=eiko, ramo opcional): imprimir em A5, baixar para a grafica, enviar e copiar texto. */ /* antes: 2026-10-19-lojaonline */   /* 19/10: entra o pacote 2026-10-16-lojaonline (Negocios marca '⚠ link no nome' e 'loja online', Precisa de voce conta os negocios com link no nome, CSV com a coluna Loja online) por cima da 2026-10-17-vippadrao. */ /* antes: 2026-10-17-vippadrao */ /* 17/10 (3): P84 Recursos mostra a Lista VIP ligada por padrao (so false desliga). */ /* antes: 2026-10-17-seguir2 */ /* 17/10 (2): funil e Lojistas para seguir carregam depois do login (antes: relogio fixo na abertura, dava 'sem sessao' para quem entrava depois de 4 s). Antes: 2026-10-17-seguir. */ /* 17/10: cartao 'Lojistas para seguir' na Visao geral (fila do robo api/funil-dono, acoes seguir_lista / seguir_feito: Abrir @ e Ja segui). Antes: 2026-10-13-arroba. */   /* 13/10 (P80): situacao do @ de cada parceiro (provado / sem prova / precisa de olho), confirmacao ao aprovar @ sem prova e trava ao marcar criador sem prova */ /* antes: 2026-10-13-agenda */   /* 13/10 (noite 2): microfone e 'Mandar como ordem' em cada tarefa, ao lado da nota; robo novo criado no Claude aparece sozinho (o Maestro le a agenda toda hora) */ /* antes: 2026-10-13-ordens */   /* 13/10 (noite): aba Robos ganha ORDENS — caixa de comando com microfone (ditado do navegador) em cada robo e no topo; o Maestro entrega em ate 1 hora e a resposta volta aqui */ /* antes: 2026-10-13-custos */   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-27-dinheirodele';   /* 27/10 (madrugada): no perfil do parceiro, 'Comissoes dele' e 'Saques dele' abrem a secao Comissoes so com aquele parceiro (pagar, historico de saques e de comissoes); o menu continua mostrando todos. Antes: 2026-10-27-marcosreais. */   /* 27/10 (noite): marcos com a data real e nomes claros ('Primeiro lojista indicado', 'Primeiro parceiro na rede dele'); mensagem pronta do 1o lojista considera os parceiros que ele ja trouxe; numeros dizem 'lojistas indicados' e 'parceiros na rede'. Antes: 2026-10-27-perfilparceiro. */   /* 27/10: botao 'Ver perfil do parceiro' em cada cadastro abre a secao Perfil do parceiro (foto, area de atuacao, indicados com situacao e 1a live, rede, dinheiro, grafico de 12 meses, marcos) com 'Reconhecer': mensagem na caixa do painel dele + e-mail e, se quiser, bonus em dinheiro (robo api/parceiro-perfil.js). Cartao 'Parceiros em destaque' na Visao geral e link ?parceiro=<uid> do aviso do Telegram. Antes: 2026-10-26-aceitewa. */   /* 26/10 (3): cartao Travados mostra 'Aceitou ajuda no WhatsApp' (caixa de aceite do cadastro, robo novo-cliente grava avisos_cliente.waAceite). Antes: 2026-10-26-avisotravado. */   /* 26/10 (2): cartao Travados mostra 'Aviso no Telegram ha X' (robo lib/travadoAviso.js manda 1 aviso por conta). Antes: 2026-10-26-travados. */   /* 26/10: cartao 'Travados no comeco' na Visao geral (quem criou a conta e parou antes da 1a live, pela etapa, com WhatsApp e mensagem pronta; robo api/funil-dono acoes travados e travado_chamei) e o Funil do lojista ganha 'Tipo' e '3 fotos'. Antes: 2026-10-22-fiscal. */   /* 22/10: pagar comissao mostra CPF/CNPJ do parceiro, retencao do PF (bruto, INSS 11%, IR, Pix pelo liquido) e a nota do PJ (pede a chave da NFS-e no pagamento avulso); botao 'Relatorio do mes para a contabilidade' (CSV, robo /api/parceiro-fiscal). Antes: 2026-10-20-pdf. */ /* 20/10 (2): Panfletos com QR ganha 'Enviar PDF por e-mail' (robo api/funil-dono, acao panfleto_email; PDF 300 dpi, A5 com sangria e TrimBox) e 'Baixar PDF'; o botao Enviar virou Compartilhar. */ /* antes: 2026-10-20-panfletos */   /* 20/10: menu 'Panfletos com QR' — os panfletos do Material de apoio com o QR da Eiko Sistemas (/aovivo ou /fundador, utm_campaign=eiko, ramo opcional): imprimir em A5, baixar para a grafica, enviar e copiar texto. */ /* antes: 2026-10-19-lojaonline */   /* 19/10: entra o pacote 2026-10-16-lojaonline (Negocios marca '⚠ link no nome' e 'loja online', Precisa de voce conta os negocios com link no nome, CSV com a coluna Loja online) por cima da 2026-10-17-vippadrao. */ /* antes: 2026-10-17-vippadrao */ /* 17/10 (3): P84 Recursos mostra a Lista VIP ligada por padrao (so false desliga). */ /* antes: 2026-10-17-seguir2 */ /* 17/10 (2): funil e Lojistas para seguir carregam depois do login (antes: relogio fixo na abertura, dava 'sem sessao' para quem entrava depois de 4 s). Antes: 2026-10-17-seguir. */ /* 17/10: cartao 'Lojistas para seguir' na Visao geral (fila do robo api/funil-dono, acoes seguir_lista / seguir_feito: Abrir @ e Ja segui). Antes: 2026-10-13-arroba. */   /* 13/10 (P80): situacao do @ de cada parceiro (provado / sem prova / precisa de olho), confirmacao ao aprovar @ sem prova e trava ao marcar criador sem prova */ /* antes: 2026-10-13-agenda */   /* 13/10 (noite 2): microfone e 'Mandar como ordem' em cada tarefa, ao lado da nota; robo novo criado no Claude aparece sozinho (o Maestro le a agenda toda hora) */ /* antes: 2026-10-13-ordens */   /* 13/10 (noite): aba Robos ganha ORDENS — caixa de comando com microfone (ditado do navegador) em cada robo e no topo; o Maestro entrega em ate 1 hora e a resposta volta aqui */ /* antes: 2026-10-13-custos */   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2432,6 +2435,8 @@ table.mvTab td b{font-weight:700}
   /* ---------- estado ---------- */
   let USER = null, EH_ADMIN_BANCO = false;
   let NEG = [], PLANO_DE = {}, EM_TESTE = {}, PRECO_MES = {}, PARC = [], COMIS = [], SAQ = [], NL = [], EXC = [], PONTOS = 0;
+  /* 27/10: Comissoes e saques filtrados por um parceiro (botoes do perfil). Vazio = todos. */
+  let COM_FILTRO = '';
   let MET = null;
   let CR_PECAS = [];   // criador_pecas (22/09/2026)
   let saquePix = {};
@@ -2440,7 +2445,9 @@ table.mvTab td b{font-weight:700}
 
   /* ---------- navegação entre seções ---------- */
   const SEC_BARRA = ['visao','negocios','parceiros'];
-  function irSec(nome){
+  function irSec(nome, manterFiltro){
+    /* entrar em Comissoes pelo menu mostra todos; so o perfil do parceiro filtra */
+    if(nome === 'comissoes' && !manterFiltro && COM_FILTRO){ COM_FILTRO = ''; try{ pintarComissoes(); }catch(_){} }
     document.querySelectorAll('section[data-sec]').forEach(s=>{
       s.classList.toggle('hide', s.getAttribute('data-sec') !== nome);
     });
@@ -3336,10 +3343,66 @@ table.mvTab td b{font-weight:700}
     return (p && p.pix) || '';
   }
 
+  /* 27/10: botoes "Comissoes dele" e "Saques dele" do perfil do parceiro. Abre a
+     secao Comissoes mostrando so aquele parceiro (com os mesmos botoes de pagar)
+     e o historico dele; o menu lateral continua mostrando todos. */
+  function ppIrDinheiro(alvo){
+    if(!PP_UID) return;
+    COM_FILTRO = PP_UID;
+    irSec('comissoes', true);
+    const vai = () => {
+      pintarComissoes();
+      const x = el(alvo === 'saques' ? 'saqueBox' : 'comBox');
+      const cd = x && x.closest('.cd');
+      if(cd) setTimeout(() => cd.scrollIntoView({behavior:'smooth', block:'start'}), 380);
+    };
+    if(!COMIS.length && !SAQ.length) carregarComissoes().then(vai); else vai();
+  }
+  const COM_SAQ_ROT = { pago:'Pago', solicitado:'Pedido', falhou:'Pix não saiu', recusado:'Recusado', processando:'Processando' };
+  function comFiltroBarra(){
+    const sec = document.querySelector('section[data-sec="comissoes"]'); if(!sec) return;
+    let b = el('comFiltro');
+    if(!b){
+      b = document.createElement('div'); b.id = 'comFiltro'; b.className = 'comFiltro';
+      sec.insertBefore(b, sec.firstChild);
+      b.addEventListener('click', ev => {
+        const t = ev.target.closest ? ev.target.closest('[data-comf]') : null; if(!t) return;
+        if(t.getAttribute('data-comf') === 'perfil'){ const u = COM_FILTRO; if(u && window.mvAbrirPerfilParceiro) window.mvAbrirPerfilParceiro(u); return; }
+        COM_FILTRO = ''; pintarComissoes(); window.scrollTo({top:0, behavior:'smooth'});
+      });
+    }
+    if(!COM_FILTRO){ b.classList.add('hide'); b.innerHTML = ''; return; }
+    b.classList.remove('hide');
+    b.innerHTML = '<div class="comFiltroTxt">Mostrando só <b>' + esc(nomeParceiro(COM_FILTRO)) + '</b></div>' +
+      '<div class="comFiltroBots"><button type="button" class="btnMini" data-comf="perfil">← Voltar ao perfil</button>' +
+      '<button type="button" class="btnMini" data-comf="todos">Ver de todos os parceiros</button></div>';
+  }
+  function comHistSaques(uid){
+    const l = SAQ.filter(s => s.parceiroUid === uid).sort((a,b) => ms(b.pagoEm || b.pedidoEm) - ms(a.pedidoEm || a.pagoEm));
+    if(!l.length) return '<div class="cdSub" style="margin-top:12px">Nenhum saque na história dele.</div>';
+    return '<div class="cdSub" style="margin:14px 0 6px">Todos os saques dele</div><div class="tabRola"><table class="mvTab"><thead><tr><th>Pedido em</th><th>Situação</th><th>Pago em</th><th class="num">Valor</th></tr></thead><tbody>' +
+      l.map(s => '<tr><td>' + dataBR(ms(s.pedidoEm)) + '</td><td>' + esc(COM_SAQ_ROT[s.status] || s.status || '—') + (s.origem === 'dono' ? ' · pago por você' : '') + '</td><td>' + (s.pagoEm ? dataBR(ms(s.pagoEm)) : '—') + '</td><td class="num">' + brl(s.valor != null ? s.valor : s.valorSolicitado) + '</td></tr>').join('') +
+      '</tbody></table></div>';
+  }
+  function comHistComissoes(uid){
+    const agora = Date.now();
+    const l = COMIS.filter(c => c.parceiroUid === uid).sort((a,b) => ms(b.criadoEm) - ms(a.criadoEm));
+    if(!l.length) return '<div class="cdSub" style="margin-top:12px">Nenhuma comissão dele ainda.</div>';
+    return '<div class="cdSub" style="margin:14px 0 6px">Todas as comissões e bônus dele (' + l.length + ')</div><div class="tabRola"><table class="mvTab"><thead><tr><th>Data</th><th>O quê</th><th>Situação</th><th class="num">Valor</th></tr></thead><tbody>' +
+      l.map(c => {
+        const rot = c.tipo === 'bonus' ? '🎉 Bônus da Moviki' + (c.motivo ? ' · ' + esc(c.motivo) : '') : c.tipo === 'marco' ? '🏅 ' + esc(c.motivo || 'Bônus de nível') : 'Nível ' + (c.nivel || '?') + (c.competencia ? ' · ' + esc(c.competencia) : '') + (c.teste ? ' (teste)' : '');
+        const lib = ms(c.liberaEm);
+        const sit = c.estornada ? '<span class="pill off">Estornada</span>' : c.pago ? '<span class="pill ok">Paga</span>' : (lib && lib > agora) ? '<span class="pill warn">Libera ' + dataBR(lib).slice(0,5) + '</span>' : '<span class="pill info">Disponível</span>';
+        return '<tr><td>' + dataBR(ms(c.criadoEm)) + '</td><td>' + rot + '</td><td>' + sit + '</td><td class="num">' + brl(c.valor) + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+  }
+
   function pintarComissoes(){
-    const pend = SAQ.filter(s=>s.status === 'solicitado' || s.status === 'falhou').sort((a,b)=>ms(a.pedidoEm) - ms(b.pedidoEm));
-    badge('badCom', pend.length); badge('badComM', pend.length);
+    const pendTodos = SAQ.filter(s=>s.status === 'solicitado' || s.status === 'falhou').sort((a,b)=>ms(a.pedidoEm) - ms(b.pedidoEm));
+    badge('badCom', pendTodos.length); badge('badComM', pendTodos.length);
+    const pend = COM_FILTRO ? pendTodos.filter(s => s.parceiroUid === COM_FILTRO) : pendTodos;
     txt('saqueChip', pend.length + (pend.length === 1 ? ' pedido' : ' pedidos'));
+    comFiltroBarra();
 
     el('saqueBox').innerHTML = pend.length ? pend.map(s=>{
       saquePix[s.id] = pixParceiro(s.parceiroUid);
@@ -3364,13 +3427,15 @@ table.mvTab td b{font-weight:700}
         '</div>'+
         '<div class="icMsg" id="smsg_'+esc(s.id)+'"></div>'+
       '</div>';
-    }).join('') : '<div class="vazio">Nenhum saque solicitado no momento.</div>';
+    }).join('') : '<div class="vazio">' + (COM_FILTRO ? 'Nenhum saque pedido por ele agora.' : 'Nenhum saque solicitado no momento.') + '</div>';
+    if(COM_FILTRO) el('saqueBox').innerHTML += comHistSaques(COM_FILTRO);
 
     const r = resumoPorParceiro();
-    const linhas = Object.keys(r).map(u=>({uid:u, nome:nomeParceiro(u), r:r[u]}))
+    const linhasTodas = Object.keys(r).map(u=>({uid:u, nome:nomeParceiro(u), r:r[u]}))
       .filter(x=>x.r.total > 0).sort((a,b)=>b.r.receber - a.r.receber);
-    const aPagar = linhas.reduce((s,x)=>s + x.r.receber, 0);
+    const aPagar = linhasTodas.reduce((s,x)=>s + x.r.receber, 0);
     txt('kAPagar', brl(aPagar));
+    const linhas = COM_FILTRO ? linhasTodas.filter(x => x.uid === COM_FILTRO) : linhasTodas;
 
     // quem já tem pedido de saque aberto paga pelo card de cima, não pela linha
     const comPedido = {};
@@ -3394,7 +3459,8 @@ table.mvTab td b{font-weight:700}
           '<td>'+acao+'<div class="icMsg" id="cmsg_'+esc(x.uid)+'"></div></td></tr>';
         }).join('')+
         '</tbody></table></div>'
-      : '<div class="vazio">Nenhuma comissão ainda. Aparece aqui quando um indicado pagar.</div>';
+      : '<div class="vazio">' + (COM_FILTRO ? 'Nada a receber nem pago para ele ainda.' : 'Nenhuma comissão ainda. Aparece aqui quando um indicado pagar.') + '</div>';
+    if(COM_FILTRO) el('comBox').innerHTML += comHistComissoes(COM_FILTRO);
 
     // lista de parceiros do "Ensaio de pagamento"
     const sel = el('tsParc');
@@ -4544,7 +4610,8 @@ table.mvTab td b{font-weight:700}
         '<button type="button" class="btnMini ppBtnRec" data-pp="irRec">🎉 Reconhecer / dar bônus</button>' +
         '<button type="button" class="btnMini" data-pp="conversa">Abrir conversa</button>' +
         '<button type="button" class="btnMini" data-pp="copiarLink">Copiar link dele</button>' +
-        '<button type="button" class="btnMini" data-pp="irComissoes">Comissões e saques</button>' +
+        '<button type="button" class="btnMini" data-pp="irComissoes">Comissões dele</button>' +
+        '<button type="button" class="btnMini" data-pp="irSaques">Saques dele</button>' +
       '</div>' +
       (pend.length ? '<div class="ppAlerta"><span>🌟</span><div><b>' + (pend.length === 1 ? '1 marco novo' : pend.length + ' marcos novos') + ' esperando o seu reconhecimento:</b> ' + pend.map(m => esc(m.titulo)).join(' · ') + '</div></div>' : '') +
     '</div>';
@@ -4874,7 +4941,7 @@ table.mvTab td b{font-weight:700}
     if(a === 'tabela'){ PP_TABELA = !PP_TABELA; b.textContent = PP_TABELA ? 'Ver gráfico' : 'Ver em tabela'; ppGrafico(); return; }
     if(a === 'conversa'){ irSec('mensagens'); setTimeout(()=>{ try{ abrirConversa(PP_UID); }catch(_){} }, 200); return; }
     if(a === 'copiarLink'){ copiar('https://moviki.com.br/p/' + PP.parceiro.slug); feedback(b, 'Copiado!'); return; }
-    if(a === 'irComissoes'){ irSec('comissoes'); return; }
+    if(a === 'irComissoes' || a === 'irSaques'){ ppIrDinheiro(a === 'irSaques' ? 'saques' : 'comissoes'); return; }
     if(a === 'comTudo'){ PP_COM_TUDO = !PP_COM_TUDO; ppPintarMantendoRec(); return; }
     if(a === 'abrirOutro'){ abrirPerfilParceiro(b.getAttribute('data-uid')); return; }
     if(a === 'recMarco'){ ppEscolherOpcao(b.getAttribute('data-k')); const r = el('ppRec'); if(r) r.scrollIntoView({behavior:'smooth', block:'start'}); return; }
