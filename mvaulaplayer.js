@@ -1,4 +1,10 @@
-/*! MOVIKI mvaulaplayer.js | versao 2026-10-19-recarrega | repo: moviki-app
+/*! MOVIKI mvaulaplayer.js | versao 2026-10-27-qualidade | repo: moviki-app
+ *
+ * 27/10/2026 - QUALIDADE: o modo Automatico do YouTube abria a aula em 240p no
+ * computador do Paulo. O player passa a PEDIR alta qualidade (vq=hd1080 no
+ * player e setPlaybackQuality ao ficar pronto e ao comecar a tocar). E pedido,
+ * nao ordem: o YouTube pode ignorar, e com internet lenta continua baixando.
+ * Nao muda medicao, visto verde nem vigia. Antes: 2026-10-19-recarrega.
  *
  * O MOTOR UNICO DAS VIDEOAULAS — o player, a medicao dos 90% e o visto verde.
  *
@@ -307,6 +313,13 @@
     fechar(s);
   }
 
+  /* 27/10/2026: pede alta qualidade. A API marca como obsoleto e pode nao
+     fazer nada; nunca pode derrubar a aula, por isso o try. */
+  function pedirHD(p) {
+    try { if (p && typeof p.setPlaybackQualityRange === 'function') p.setPlaybackQualityRange('hd720', 'hd1080'); } catch (_) {}
+    try { if (p && typeof p.setPlaybackQuality === 'function') p.setPlaybackQuality('hd1080'); } catch (_) {}
+  }
+
   function eventos(s) {
     return {
       onReady: function (e) {
@@ -315,13 +328,14 @@
         s.pronto = true;
         tirarBotao(s);
         try { var d = e.target.getDuration(); if (d > 0) s.dur = d; } catch (_) {}
+        pedirHD(e.target);
       },
       onStateChange: function (e) {
         if (s.fim) return;
         if (!s.pronto) { s.pronto = true; tirarBotao(s); diario('pronto', s.v.k, 'pelo-estado'); }
         s.estado = e.data;
         var E = (window.YT && window.YT.PlayerState) || { PLAYING: 1, ENDED: 0 };
-        if (e.data === E.PLAYING) { s.ultimoMs = 0; s.acabou = false; s.parado = 0; return; }
+        if (e.data === E.PLAYING) { s.ultimoMs = 0; s.acabou = false; s.parado = 0; if (!s.hdPedido) { s.hdPedido = true; pedirHD(e.target); } return; }
         if (e.data === E.ENDED) {
           tique(s);
           guardar(s.chave);
@@ -353,7 +367,7 @@
         op.videoId = s.v.id;
         op.host = 'https://www.youtube-nocookie.com';
         op.width = '100%'; op.height = '100%';
-        op.playerVars = { autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1 };
+        op.playerVars = { autoplay: 1, rel: 0, modestbranding: 1, playsinline: 1, vq: 'hd1080' };
         try { op.playerVars.origin = location.origin; } catch (_) {}
       }
       s.p = new window.YT.Player(s.id, op);
@@ -380,7 +394,7 @@
     var origem = '';
     try { origem = '&origin=' + encodeURIComponent(location.origin); } catch (_) {}
     f.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(s.v.id) +
-            '?rel=0&modestbranding=1&playsinline=1&autoplay=1&enablejsapi=1' + origem;
+            '?rel=0&modestbranding=1&playsinline=1&autoplay=1&enablejsapi=1&vq=hd1080' + origem;
     f.title = s.v.t || 'Aula';
     f.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen';
     f.setAttribute('allowfullscreen', '');
