@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<!-- MOVIKI faro/avisos.html | versao 2026-10-28-avisos | sair da lista de aviso de Guias FARO novos (link do e-mail: ?e=<id>&t=<HMAC>). Sair apaga o cadastro no robo. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://moviki-robo.vercel.app; base-uri 'self'; object-src 'none'; form-action 'self'">
+<title>Avisos dos Guias FARO | Moviki</title>
+<link rel="icon" href="/favicon512.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/faro/faro.css">
+<script src="/faro/faro.js"></script>
+<style>.estado{max-width:520px;margin:3rem auto;text-align:center;padding:0 1.2rem}.estado .grande{font-size:2.6rem}</style>
+</head>
+<body>
+<header class="topo" style="padding-bottom:2rem">
+  <div class="wrap"><div class="barra"><img src="/logo.png" alt="Moviki"><a href="mailto:suporte@moviki.com.br">Ajuda</a></div>
+  <div class="serie">Guias FARO</div><h1 style="font-size:clamp(1.6rem,4vw,2.2rem)">Avisos de guias novos</h1></div>
+</header>
+<div class="estado">
+  <div class="grande" id="ico">⏳</div>
+  <h2 id="titulo">Tirando você da lista…</h2>
+  <p class="mini" id="texto"></p>
+</div>
+<script>
+(function () {
+  'use strict';
+  var u = new URLSearchParams(location.search), e = u.get('e') || '', t = u.get('t') || '';
+  function fim(ico, titulo, texto) { document.getElementById('ico').textContent = ico; document.getElementById('titulo').textContent = titulo; document.getElementById('texto').textContent = texto; }
+  if (!e || !t) return fim('🔗', 'Link incompleto', 'Use o link "Sair da lista de avisos" do e-mail, ou escreva para suporte@moviki.com.br.');
+  window.FARO.post({ acao: 'avisos_sair', e: e, t: t }).then(function (r) {
+    if (r && r.ok) return fim('✅', 'Pronto, você saiu da lista', 'Não vamos mais avisar de guias novos neste e-mail. O seu cadastro na lista foi apagado. Os guias que você comprou continuam liberados.');
+    fim('⚠️', 'Não foi possível', (r && r.mensagem) || 'Tente de novo em instantes ou escreva para suporte@moviki.com.br.');
+  }).catch(function () { fim('📶', 'Sem conexão', 'Confira a internet e abra o link de novo.'); });
+})();
+</script>
+</body>
+</html>

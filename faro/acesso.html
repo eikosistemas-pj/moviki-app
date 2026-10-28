@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/acesso.html | versao 2026-10-28-acesso2 (instalar de verdade: manifesto com start_url, so fora do iPhone; botao de velocidade do audio; PDF em outra aba; cartao da surpresa leva a /faro/surpresa.html) | antes 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) ; botao Instalar o guia no celular (manifesto sem start_url: o atalho guarda o link pessoal) | antes 2026-10-28-faro1 -->
+<!-- MOVIKI faro/acesso.html | versao 2026-10-28-avisos (bloco Quero saber do proximo guia: assuntos + caixa de consentimento, robo avisos_ver/quero/sair; botao Mandar o guia para o meu WhatsApp) | antes 2026-10-28-acesso2 (instalar de verdade: manifesto com start_url, so fora do iPhone; botao de velocidade do audio; PDF em outra aba; cartao da surpresa leva a /faro/surpresa.html) | antes 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) ; botao Instalar o guia no celular (manifesto sem start_url: o atalho guarda o link pessoal) | antes 2026-10-28-faro1 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -26,7 +26,7 @@
 <script src="/faro/faro.js"></script>
 <style>
 .area{display:grid;grid-template-columns:1fr;gap:1.2rem;margin-top:-1.8rem;position:relative}
-@media (min-width:861px){.area{grid-template-columns:1.15fr .85fr;grid-template-areas:"video ler" "video moviki" "audio moviki" "audio guarde";align-items:start}#bVideo{grid-area:video}#bLer{grid-area:ler}#bAudio{grid-area:audio}#bMoviki{grid-area:moviki}#bGuarde{grid-area:guarde}}
+@media (min-width:861px){.area{grid-template-columns:1.15fr .85fr;grid-template-areas:"video ler" "video moviki" "audio avisos" "audio guarde";align-items:start}#bAvisos{grid-area:avisos}#bVideo{grid-area:video}#bLer{grid-area:ler}#bAudio{grid-area:audio}#bMoviki{grid-area:moviki}#bGuarde{grid-area:guarde}}
 .bloco{background:#fff;border:1px solid var(--linha);border-radius:18px;padding:1.2rem;box-shadow:0 10px 30px rgba(13,27,42,.06)}
 .bloco h2{font-size:1.15rem;margin:0 0 .7rem}
 .bloco video{border-radius:12px;width:100%;background:#0b141e}
@@ -54,7 +54,12 @@
 .passos{margin:.8rem 0 0;padding-left:1.3rem}.passos li{margin:.45rem 0}
 .passos b{color:var(--marinho)}
 .caixaPlayer{display:flex;align-items:center;gap:.5rem}
+.caixaPlayer[hidden]{display:none}
 .caixaPlayer audio{flex:1;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0}
+.chip{display:inline-flex;align-items:center;gap:.4rem;border:1.5px solid var(--linha);border-radius:999px;padding:.5rem .85rem;font-size:.92rem;cursor:pointer;background:#fff;user-select:none}
+.chip input{width:16px;height:16px;accent-color:var(--verde)}
+.chip.on{border-color:var(--verde2);background:rgba(16,185,129,.08)}
 .vel{flex:0 0 auto;font-family:Poppins;font-weight:700;font-size:.92rem;color:#062b1f;background:var(--verde2);border:0;border-radius:999px;padding:.5rem .8rem;min-width:3.4rem;cursor:pointer}
 </style>
 </head>
@@ -96,10 +101,26 @@
       <p>Quando terminar o guia, abra a surpresa: é o jeito de o cliente achar você na areia, todo dia.</p>
       <a class="btn" id="ctaMoviki" href="/faro/surpresa.html?utm_source=faro&amp;utm_medium=guia&amp;utm_campaign=verao-na-praia">Abrir a surpresa</a>
     </div>
+    <div class="bloco" id="bAvisos" hidden>
+      <h2>🔔 Quer saber do próximo guia?</h2>
+      <div id="avForm">
+        <p class="mini" style="margin:0">Escolha os assuntos. Avisamos por e-mail só quando sair um Guia FARO deles.</p>
+        <div class="chips" id="avChips"></div>
+        <label class="check"><input type="checkbox" id="avAceite"> <span id="avTexto"></span></label>
+        <button class="btn btn-verde" id="avQuero" type="button" style="width:100%;margin-top:.8rem">Quero ser avisado</button>
+        <p class="msg" id="avMsg"></p>
+      </div>
+      <div id="avOk" hidden>
+        <p style="margin:0">✓ Você vai ser avisado por e-mail sobre: <b id="avLista"></b>.</p>
+        <p class="mini" style="margin:.6rem 0 0"><a href="#" id="avMudar">Mudar assuntos</a> · <a href="#" id="avSair">Parar de receber</a></p>
+      </div>
+    </div>
     <div class="bloco" id="bGuarde">
       <h2>Deixe o guia no seu celular</h2>
       <p class="mini" style="margin:0 0 .8rem" id="instTexto">Instale o guia e ele fica com ícone próprio na tela do celular: um toque e você volta aqui, mesmo se fechar o navegador.</p>
       <button class="btn btn-verde" id="instalar2" type="button" style="width:100%" hidden>📲 Instalar o guia no celular</button>
+      <a class="btn btn-claro" id="zap" target="_blank" rel="noopener" style="width:100%;margin-top:.6rem">💬 Mandar o guia para o meu WhatsApp</a>
+      <p class="mini" style="margin:.5rem 0 0">Abre o WhatsApp com o seu link. Escolha você mesmo na lista e envie: o guia fica guardado na conversa.</p>
       <p class="mini" style="margin:.8rem 0 0">Este endereço é só seu e também está no e-mail de entrega. Para pedir a devolução em até 7 dias, escreva para suporte@moviki.com.br.</p>
     </div>
   </div>
@@ -209,7 +230,59 @@
     $('#ler').addEventListener('click', function () { F.ev('faro_ler', { produto: r.produto }); });
     $('#pdf').addEventListener('click', function () { F.ev('faro_pdf', { produto: r.produto }); });
     $('#ctaMoviki').addEventListener('click', function () { F.ev('faro_cta_moviki', { produto: r.produto }); });
+    var linkProprio = location.origin + '/faro/acesso.html?v=' + encodeURIComponent(v) + '&t=' + encodeURIComponent(t);
+    $('#zap').href = 'https://wa.me/?text=' + encodeURIComponent('Meu Guia FARO (link pessoal, não compartilhe): ' + linkProprio);
+    $('#zap').addEventListener('click', function () { F.ev('faro_whatsapp', { produto: r.produto }); });
+    carregarAvisos(r);
   }).catch(function () { erro('Sem conexão', 'Confira a internet e recarregue a página.'); });
+
+  /* Aviso de guias novos: opcional, por assunto, com a caixa desmarcada.
+     Se o robo nao responder, o bloco simplesmente nao aparece. */
+  function carregarAvisos(r) {
+    var marcados = [];
+    function desenhar(opcoes, sel) {
+      var box = $('#avChips'); box.innerHTML = '';
+      Object.keys(opcoes).forEach(function (k) {
+        var l = document.createElement('label'); l.className = 'chip' + (sel.indexOf(k) > -1 ? ' on' : '');
+        l.innerHTML = '<input type="checkbox" value="' + F.esc(k) + '"' + (sel.indexOf(k) > -1 ? ' checked' : '') + '>' + F.esc(opcoes[k]);
+        l.querySelector('input').addEventListener('change', function () { l.classList.toggle('on', this.checked); });
+        box.appendChild(l);
+      });
+    }
+    function mostrar(a, opcoes) {
+      if (a.inscrito) {
+        $('#avForm').hidden = true; $('#avOk').hidden = false;
+        $('#avLista').textContent = (a.assuntos || []).map(function (k) { return opcoes[k] || k; }).join(', ');
+      } else { $('#avForm').hidden = false; $('#avOk').hidden = true; }
+    }
+    F.post({ acao: 'avisos_ver', venda: v, t: t }).then(function (a) {
+      if (!a || !a.ok || !a.podeInscrever || !a.opcoes) return;
+      var opcoes = a.opcoes; marcados = a.assuntos || [];
+      $('#avTexto').textContent = a.texto || '';
+      desenhar(opcoes, marcados.length ? marcados : [r.produto === 'verao-na-praia' ? 'praia' : '']);
+      mostrar(a, opcoes); $('#bAvisos').hidden = false;
+      $('#avQuero').addEventListener('click', function () {
+        var sel = Array.prototype.map.call(document.querySelectorAll('#avChips input:checked'), function (i) { return i.value; });
+        $('#avMsg').textContent = ''; $('#avMsg').style.color = '';
+        if (!sel.length) { $('#avMsg').textContent = 'Escolha pelo menos um assunto.'; return; }
+        if (!$('#avAceite').checked) { $('#avMsg').textContent = 'Marque a caixa para receber os avisos.'; return; }
+        this.disabled = true; var bt = this;
+        F.post({ acao: 'avisos_quero', venda: v, t: t, assuntos: sel, aceite: true }).then(function (x) {
+          bt.disabled = false;
+          if (!x || !x.ok) { $('#avMsg').textContent = (x && x.mensagem) || 'Não deu certo agora. Tente de novo.'; return; }
+          F.ev('faro_avisos', { produto: r.produto, assuntos: sel.join(',') });
+          mostrar(x, opcoes);
+        }).catch(function () { bt.disabled = false; $('#avMsg').textContent = 'Sem conexão. Tente de novo.'; });
+      });
+      $('#avMudar').addEventListener('click', function (e) { e.preventDefault(); $('#avAceite').checked = false; $('#avForm').hidden = false; $('#avOk').hidden = true; });
+      $('#avSair').addEventListener('click', function (e) {
+        e.preventDefault();
+        F.post({ acao: 'avisos_sair', venda: v, t: t }).then(function (x) {
+          if (x && x.ok) { $('#avAceite').checked = false; desenhar(opcoes, []); mostrar({ inscrito: false }, opcoes); $('#avMsg').style.color = 'var(--suave)'; $('#avMsg').textContent = 'Pronto, você não recebe mais os avisos.'; }
+        });
+      });
+    }).catch(function () {});
+  }
 
   function carregarAudio(r) {
     fetch(r.audio, { cache: 'no-cache' }).then(function (x) { return x.json(); }).then(function (j) {
