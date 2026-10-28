@@ -1,4 +1,6 @@
 /* Guias FARO (Moviki) — ajudantes comuns. 28/10/2026.
+   versao 2026-10-28-parceiro: guarda o ?ref= do parceiro (mesmo cookie mv_ref do programa, 90 dias,
+   ultimo clique vence) e a pagina de venda manda o apelido na compra: 50% do guia para o parceiro.
    O preço e a entrega vêm SEMPRE do robô (moviki-robo /api/faro): a página só mostra. */
 (function () {
   'use strict';
@@ -43,5 +45,28 @@
     var t = document.createElement('textarea'); t.value = txt; document.body.appendChild(t); t.select();
     try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(t); return Promise.resolve();
   }
-  window.FARO = { API: API, esc: esc, reais: reais, get: get, post: post, origem: origem, ev: ev, copiar: copiar };
+  /* Indicacao do parceiro: a mesma regra do painel (index.html): URL > cookie
+     mv_ref (.moviki.com.br) > localStorage, janela de 90 dias. Gravar aqui faz a
+     pessoa que comprou o guia e depois cria conta no Moviki, no mesmo aparelho,
+     tambem ficar como indicacao do parceiro. */
+  var limpaRef = function (v) { return String(v || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 40); };
+  function guardarRef(r) {
+    try { localStorage.setItem('moviki_ref', r); localStorage.setItem('moviki_ref_em', String(Date.now())); } catch (e) {}
+    try { document.cookie = 'mv_ref=' + encodeURIComponent(r) + '; Max-Age=7776000; Path=/; Domain=.moviki.com.br; SameSite=Lax; Secure'; } catch (e) {}
+  }
+  function ref() {
+    try {
+      var u = limpaRef(new URLSearchParams(location.search).get('ref'));
+      if (u.length >= 3) { guardarRef(u); return u; }
+      var m = document.cookie.match(/(?:^|;\s*)mv_ref=([^;]*)/);
+      var c = m ? limpaRef(decodeURIComponent(m[1])) : '';
+      if (c.length >= 3) return c;
+      var l = limpaRef(localStorage.getItem('moviki_ref'));
+      var em = parseInt(localStorage.getItem('moviki_ref_em') || '0', 10) || 0;
+      if (l.length >= 3 && (!em || Date.now() - em <= 7776000000)) return l;
+    } catch (e) {}
+    return '';
+  }
+  ref();   /* grava na chegada, em qualquer pagina dos guias */
+  window.FARO = { API: API, esc: esc, reais: reais, get: get, post: post, origem: origem, ev: ev, copiar: copiar, ref: ref };
 })();

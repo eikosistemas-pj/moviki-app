@@ -1937,6 +1937,7 @@ body{background-image:none}
      so entram em 20/11). Com ?evento=<id> na previa, tudo aparece, para
      conferir antes. */
   /* 24/10: botao 'Excluir minha conta' (Meus dados > Conta e Mais > Conta) com o pedido ao robo /api/excluir-conta. A marca NAO mudou de proposito: a tabela MARCAS_CONFERIDAS do Vik (moviki-ai) nao entrou nesta entrega; trocar a marca junto com o Vik na proxima. */
+  /* 28/10/2026 (guiasfaro): Material de apoio ganhou o botao de largura inteira 'Guias FARO' (catalogo, campo faro): como funciona, ler o guia de graca, copiar o link do guia com o apelido, WhatsApp, resumo e lista das vendas de guia (robo api/faro parc_guias/parc_ler) e as pecas com {link_guia:...}; extrato mostra 'Guia FARO · 50% da venda'. MARCA DO VIK MANTIDA DE PROPOSITO: o moviki-ai nao pode ser anexado nesta sessao; trocar a marca sem a tabela do Vik deixaria o Vik em modo cauteloso para todos. Quem abrir o moviki-ai fecha esta ponta (marca nova aqui + MARCAS_CONFERIDAS + catalogo). */
   window.MOVIKI_VERSAO = '2026-10-27-aulanova';   /* 27/10: a aula do cracha ganhou chave nova (mod-parc-cracha2) e volta como '1 aula nova' para todo parceiro, inclusive quem ja tinha visto; o link nao retranca. Sino 'Novidades do programa' com a novidade da aula (botao 'Assistir a aula do cracha') e da Sua jornada, ponto aceso de novo para todos. Antes: '2026-10-27-aulacracha'. */ /* 27/10: aula 'Seu cracha e a sua pagina de convite' (mod-parc-cracha, 2:02, 8Gm6gCqMPCk) regravada com o cracha vivo e a pagina de convite nova; mesma chave. Tela sem mudanca. Antes: '2026-10-27-jornada'. */   /* 27/10 (madrugada): Inicio ganha o card 'Sua jornada' (robo api/parceiro-perfil acao jornada): numeros dele, proximos marcos com barra (o mais perto em destaque), o proximo passo (lojista em teste sem live / sem indicacao / parado ha 14 dias), grafico mes a mes com lojistas indicados, parceiros trazidos e lojistas pagando (tabela), conquistas com data e 'Nova conquista' uma vez por aparelho. So contagem, nunca R$ projetado. Antes: '2026-10-27-bonus'. */   /* 27/10: extrato de Comissoes mostra 'Bonus da Moviki' (com o motivo) e 'Bonus do nivel X' com nome proprio, e esses bonus (nivel 0) deixam de contar como Nivel 1 / recorrente do mes. O bonus da Moviki e a mensagem chegam pelo painel do dono (Perfil do parceiro, robo api/parceiro-perfil.js); a mensagem cai na caixa 'Falar com o Moviki'. Antes: '2026-10-25-excluir'. */   /* 25/10: marca trocada para fechar a ponta do Vik do botao 'Excluir minha conta' (Meus dados > Conta e Mais > Conta, PR #117 de 24/10, que manteve a marca de proposito). Tela sem mudanca nesta entrega. Antes: '2026-10-22-fiscal'. */ /* 22/10: Meus dados ganhou 'Dados para receber' (Pessoa fisica CPF ou Empresa/MEI CNPJ, documento validado, nome/razao social, nascimento 18+; robo /api/parceiro-fiscal), obrigatorio para sacar ('Completar dados para receber'). CPF: pago 1 vez por mes a partir do dia 10 com INSS 11% (e IR) retido, a lista de saques mostra bruto/INSS/IR. CNPJ: saque livre, informa a chave de acesso da NFS-e (50 numeros) no pedido em Saques. Antes: '2026-10-21-botaoevento'. */ /* 21/10: Material de apoio ganha o 4o botao do topo, so durante o evento (eventos[].botao no catalogo: Black Friday preto com borda dourada piscando; Natal vermelho e dourado), com todo o material do evento num lugar so; peca com so_evento sai dos ramos. */ /* antes: 2026-10-20-viralojista */   /* 20/10 (noite, 2): parceiro sem negocio ganha 'Colocar meu negocio no mapa' (menu lateral, Mais e coluna da direita) com a folha da regra da comissao ANTES do botao (regulamento 2.4, opcao B) -> index.html?virarLojista=1. Parceiro que abriu o negocio depois: aviso verde 'comissoes normais no teste' e, acabado o teste sem plano, card de retido com o texto do teste (motivo fim_teste). */ /* antes: 2026-10-20-amostra */   /* 20/10 (noite): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (QjCq1MhrdZA) e 'Sua entrega' (YDK1US97BG4, 2:22) regravadas sobre as lojas de amostra completas; mesmas chaves. */ /* antes: 2026-10-20-aulasp85 */   /* 20/10 (P85): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (mod-live-cardapio, lf4NVwllA0w, 1:26) e 'Sua entrega: bairros, taxa, entrega gratis e reserva' (mod-pedidos-entrega, 5OEL8fXWJJs, 2:21) regravadas; mesmas chaves. Antes: 2026-10-17-bvparceiro. */   /* 17/10: aula de boas-vindas do parceiro 'Bem-vindo a equipe Moviki' (mod-parc-boasvindas, voz Malu, 4:42) no lugar da abertura (mod-parc-abertura sai do catalogo); duas versoes, horizontal no computador e vertical no celular em pe (idV, palco 9:16); abre sozinha para quem ainda nao viu (mvBvParceiro, 1 vez por sessao). Antes: 2026-10-17-aulasparc. */   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-17-retido (card Saldo com a comissao retida pelo atraso e contagem regressiva, regulamento 1.5 item 2.4), que veio de 2026-10-16-linkramo. */ /* conformidade:ok (prazo de pagamento do CPF) */
   /* 16/10: peca por ramo do Material de apoio leva /p/apelido?ramo=<k> (miniatura e live do ramo); ramos.js carregado com o catalogo. Antes: 2026-10-13-arroba. */   /* 13/10 (P80): bloco "Seu @ no Instagram" em Meus dados (prova de posse pelo codigo na bio) e foto do Instagram no cracha so com o @ provado. Antes: 2026-10-10-pixaula. */   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
   /* 2026-10-10-teatro: videoaulas com layout de YouTube (marca no alto, palco grande, lista com as capas a direita), selo das aulas com barra e contagem das opcionais, e a aula OPCIONAL do Material de apoio (mod-parc-material, OZ9vgwH2W_U) no fim da secao. Trava e selo continuam contando so as obrigatorias. Lista em tres niveis: Essenciais (vermelho, as obrigatorias que liberam o link), Recomendadas (amarelo) e Complementares (azul), campo `nivel` do modulo opcional. Antes: 2026-10-06-pixcarimbo. */
@@ -2495,7 +2496,9 @@ body{background-image:none}
            desde" - o cracha e a unica tela que mostra esse dado ao estranho. */
         criadoEm: ms(MEU.criadoEm) || (MEU.criadoEm ? (Date.parse(MEU.criadoEm) || 0) : 0),
         treinado: !!MEU.aulasEm,
-        aprovado: (MEU.status || '') === 'aprovado'
+        aprovado: (MEU.status || '') === 'aprovado',
+        /* 28/10/2026: Guias FARO no Material de apoio chamam o robo com o token */
+        token: function(){ return user.getIdToken(); }
       };
       window.dispatchEvent(new Event('mv-parceiro-pronto'));
 
@@ -3161,7 +3164,7 @@ body{background-image:none}
            'marco') nascem com nivel 0. Antes o "|| 1" os contava como Nivel 1:
            o extrato dizia "Nivel 1 · 15% recorrente" e o bonus inflava a
            recorrente do mes. Comissao antiga sem nivel continua Nivel 1. */
-        const extra = (c.tipo === 'bonus' || c.tipo === 'marco');
+        const extra = (c.tipo === 'bonus' || c.tipo === 'marco' || c.tipo === 'guia');   /* 28/10: 'guia' = Guia FARO (50% da venda), separada da recorrente */
         const nivel = extra ? 0 : (Number(c.nivel) || 1);
         const criado = ms(c.criadoEm);
         const comp = c.competencia || (criado ? chaveMes(new Date(criado)) : '');
@@ -3173,7 +3176,7 @@ body{background-image:none}
         else situacao = 'disponivel';
 
         lista.push({ id:d.id, valor:v, nivel, comp, criado, libMs, situacao, lojistaUid:c.lojistaUid||'',
-                     tipo: extra ? c.tipo : '', motivo: String(c.motivo || ''), nivelParceiro: String(c.nivelParceiro || '') });
+                     tipo: extra ? c.tipo : '', motivo: String(c.motivo || ''), nivelParceiro: String(c.nivelParceiro || ''), produto: String(c.produto || '') });
 
         if(c.estornada) return;
         total += v;
@@ -3710,8 +3713,9 @@ body{background-image:none}
       const extra = c.situacao === 'retida' && c.libMs ? ('libera em ' + dataBR(c.libMs)) : s.rot;
       /* 27/10/2026: bonus com nome proprio no extrato */
       const NOME_NV = {bronze:'Bronze', prata:'Prata', ouro:'Ouro', diamante:'Diamante', esmeralda:'Esmeralda'};
-      const av = c.tipo === 'bonus' ? '🎉' : c.tipo === 'marco' ? '🏅' : String(c.nivel);
-      const nome = c.tipo === 'bonus' ? 'Bônus da Moviki'
+      const av = c.tipo === 'bonus' ? '🎉' : c.tipo === 'marco' ? '🏅' : c.tipo === 'guia' ? '📘' : String(c.nivel);
+      const nome = c.tipo === 'guia' ? ('Guia FARO · 50% da venda' + (c.produto === 'verao-na-praia' ? ' (Vender na praia)' : ''))
+        : c.tipo === 'bonus' ? 'Bônus da Moviki'
         : c.tipo === 'marco' ? ('Bônus do nível ' + (NOME_NV[c.nivelParceiro] || c.nivelParceiro || ''))
         : (NIVEL[c.nivel] || ('Nível '+c.nivel));
       const sub = c.tipo === 'bonus' && c.motivo ? (c.motivo + ' · ' + extra) : extra;
@@ -6881,6 +6885,50 @@ function mvQR(texto){
 .mcV2 .mcSeta{font-size:14px;color:var(--mv-txt-3,#8fa6c4);transition:transform .2s ease;flex:0 0 auto}
 :where(html[data-tema="claro"]) .mcV2 .mcSeta:where(:not(.marca *,.mvTopo *,.mvSideLogo *)){color:var(--mv-txt-3,#142030)}
 .mcV2 .mcRamoBtn.aberto .mcSeta{transform:rotate(180deg)}
+/* 2026-10-28-guiasfaro: botao de largura inteira e painel dos Guias FARO */
+.mcV2 .mcFaro{display:flex;align-items:center;gap:14px;width:100%;margin:0 0 10px;padding:12px 14px;border-radius:16px;border:2px solid #f4c76b;cursor:pointer;font-family:inherit;text-align:left;color:#fff;background:linear-gradient(120deg,#0d1b2a 0%,#12324a 55%,#0a7d5a 120%);box-shadow:0 10px 26px rgba(10,125,90,.25)}
+.mcV2 .mcFaro.on{box-shadow:0 0 0 2px #f4c76b,0 0 22px rgba(244,199,107,.45)}
+.mcV2 .mcFaroCapas{position:relative;flex:0 0 74px;height:74px}
+.mcV2 .mcFaroCapas img{position:absolute;top:0;width:48px;height:72px;object-fit:cover;border-radius:7px;box-shadow:0 6px 14px rgba(0,0,0,.45)}
+.mcV2 .mcFaroCapas img:first-child{left:0;z-index:2}
+.mcV2 .mcFaroCapas img:last-child{left:24px;top:2px;filter:grayscale(1) brightness(.8)}
+.mcV2 .mcFaroTxt{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.mcV2 .mcFaroTxt small{font-size:11px;font-weight:800;letter-spacing:.08em;color:#f4c76b}
+.mcV2 .mcFaroTxt b{font-size:18px;color:#fff;line-height:1.15}
+.mcV2 .mcFaroTxt span{font-size:13px;color:#d6e7f2}
+.mcV2 .mcFaroIr{font-size:28px;color:#f4c76b;flex:0 0 auto}
+.faroPainel{display:flex;flex-direction:column;gap:12px}
+.faroCab{border-radius:16px;padding:14px 16px;color:#fff;background:linear-gradient(120deg,#0d1b2a,#12324a 60%,#0a7d5a 130%);border:1px solid rgba(244,199,107,.5)}
+.faroCab small{font-size:11px;font-weight:800;letter-spacing:.08em;color:#f4c76b}
+.faroCab h3{margin:4px 0 6px;font-size:18px;line-height:1.25;color:#fff}
+.faroCab p{margin:0;font-size:13px;color:#d6e7f2;line-height:1.5}
+.faroComo{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:14px;padding:10px 14px}
+.faroComo summary{cursor:pointer;font-weight:800;font-size:14px}
+.faroComo ol{margin:8px 0 0;padding-left:20px;font-size:13px;line-height:1.55;color:var(--mv-txt-2)}
+.faroComo li{margin:6px 0}
+.faroRegra{font-size:12px;color:var(--mv-txt-3);margin:8px 0 0}
+.faroResumo{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.faroResumo div{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:2px}
+.faroResumo b{font-size:16px}
+.faroResumo span{font-size:12px;color:var(--mv-txt-3)}
+@media(max-width:620px){.faroResumo{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.faroGuias{display:flex;flex-direction:column;gap:10px}
+.faroGuia{display:flex;gap:12px;background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:14px;padding:10px}
+.faroGuia img{width:84px;height:126px;object-fit:cover;border-radius:9px;flex:0 0 84px}
+.faroGuia.breve img{filter:grayscale(1) brightness(.8)}
+.faroGInfo{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1;font-size:13px}
+.faroGInfo b{font-size:15px}
+.faroGSub{font-size:12px;color:var(--mv-txt-3)}
+.faroGBts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.faroGBts button{flex:1 1 auto;min-width:110px;border-radius:10px;padding:9px 10px;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;border:1px solid var(--mv-linha-forte);background:transparent;color:var(--mv-txt)}
+.faroGBts button.pri{background:var(--mv-grad);color:#02131f;border:none}
+.faroGBts button.wpp{background:var(--mv-whats);color:#04210f;border:none}
+.faroGBts button[disabled]{opacity:.45;cursor:not-allowed}
+.faroLista{background:var(--mv-surf);border:1px solid var(--mv-linha);border-radius:14px;padding:10px 12px}
+.faroLin{display:grid;grid-template-columns:48px 1fr auto auto;gap:8px;font-size:13px;padding:6px 0;border-top:1px solid var(--mv-linha);align-items:center}
+.faroLin:first-of-type{border-top:0}
+.faroLin span:nth-child(3){color:var(--mv-txt-3);font-size:12px}
+.faroPecasTit{font-size:12px;font-weight:700;color:var(--mv-txt-3);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
 /* 2026-10-21-botaoevento: 4o botao do Material de apoio, so durante o evento (Black Friday preto e dourado, Natal vermelho e dourado...). Cores vem do catalogo (eventos[].botao). */
 .mcV2 .mcPrinc.mcEv{background:var(--ev-fundo,#0b0b0d);border:2px solid var(--ev-borda,#d4af37);color:var(--ev-txt,#fff);animation:mcEvPisca 1.8s ease-in-out infinite}
 .mcV2 .mcPrinc.mcEv .mcTxt b{color:var(--ev-txt,#fff)}
@@ -7121,6 +7169,7 @@ function mvQR(texto){
     var kc = limpa(it.categoria);
     return (ok[kc] === kc) ? kc : '';
   }
+  function linkGuia(slug, g, meio){ return 'https://app.moviki.com.br/faro/' + g + '/?ref=' + encodeURIComponent(slug) + '&utm_source=parceiro&utm_medium=' + (meio || 'link') + '&utm_campaign=' + g; }
   function trocar(txt, it){
     var d = dados() || {};
     var slug = d.slug || '';
@@ -7135,6 +7184,9 @@ function mvQR(texto){
       .replace(/\{link_parceiro\}/g, slug ? 'https://moviki.com.br/pp/' + slug : 'moviki.com.br')
       /* 2026-10-01-fundador: {link_fundador} = /f/apelido, cai direto na /fundador. */
       .replace(/\{link_fundador\}/g, slug ? 'https://moviki.com.br/f/' + slug : 'moviki.com.br/fundador')
+      /* 2026-10-28-guiasfaro: {link_guia:<guia>} = pagina de venda do Guia FARO com o
+         apelido do parceiro (?ref=), o mesmo ref do programa. 50% de cada guia vendido. */
+      .replace(/\{link_guia:([a-z0-9-]+)\}/g, function(_, g){ return slug ? linkGuia(slug, g, 'material') : 'app.moviki.com.br/faro'; })
       .replace(/\{meu_nome\}/g, nome);
   }
 
@@ -7177,7 +7229,9 @@ function mvQR(texto){
                  typeof e.titulo === 'string' && e.titulo && Array.isArray(e.itens);
         }) : [];
         /* 2026-10-21-botaoevento: peca "so_evento" mora so no botao do evento (nao entra nos ramos) */
-        CAT = { versao: String((j && j.versao) || ''), itens: itens, cats: cats, eventos: evs };
+        /* 2026-10-28-guiasfaro: botao de tela inteira "Guias FARO" (campo faro do catalogo) */
+        var fr = (j && j.faro && typeof j.faro === 'object' && Array.isArray(j.faro.itens)) ? { nome: String(j.faro.nome || 'Guias FARO'), sub: String(j.faro.sub || ''), itens: j.faro.itens } : null;
+        CAT = { versao: String((j && j.versao) || ''), itens: itens, cats: cats, eventos: evs, faro: fr };
         return CAT;
       })
       .catch(function(e){ PEDINDO = null; throw e; });
@@ -7248,9 +7302,15 @@ function mvQR(texto){
     var por = {}; CAT.itens.forEach(function(it){ por[it.id] = it; });
     return e.itens.map(function(i){ return por[i]; }).filter(Boolean);
   }
+  function itensFaro(){
+    if(!CAT || !CAT.faro) return [];
+    var por = {}; CAT.itens.forEach(function(it){ por[it.id] = it; });
+    return CAT.faro.itens.map(function(i){ return por[i]; }).filter(Boolean);
+  }
   function daCateg(){
     if(!CAT) return [];
     if(CATEG.indexOf('ev:') === 0) return itensDoEvento(CATEG.slice(3));
+    if(CATEG === 'faro') return itensFaro();
     var base = CAT.itens.filter(function(it){ return !it.so_evento; });
     if(!CATEG) return base;
     return base.filter(function(it){ return it.categoria === CATEG; });
@@ -7264,6 +7324,7 @@ function mvQR(texto){
         var achou = false, i;
         for(i=0;i<cs.length;i++) if(cs[i].id === CATEG) achou = true;
         evBotoes().forEach(function(e){ if(CATEG === 'ev:' + e.id) achou = true; });
+        if(CATEG === 'faro' && itensFaro().length) achou = true;
         if(!achou){
           CATEG = cs[0].id;
           for(i=0;i<cs.length;i++) if(cs[i].id === 'geral') CATEG = 'geral';
@@ -7318,6 +7379,14 @@ function mvQR(texto){
     var atual = null, i;
     for(i=0;i<ramos.length;i++) if(ramos[i].id === CATEG) atual = ramos[i];
     var h = '';
+    /* 2026-10-28-guiasfaro: Guias FARO, botao de largura inteira acima dos outros */
+    var nf = itensFaro().length;
+    if(CAT && CAT.faro && nf){
+      h += '<button type="button" data-matcat="faro" class="mcFaro' + (CATEG === 'faro' ? ' on' : '') + '">' +
+           '<span class="mcFaroCapas" aria-hidden="true"><img src="faro/capas/verao-na-praia.jpg" alt="" loading="lazy"><img src="faro/capas/natal-por-encomenda.jpg" alt="" loading="lazy"></span>' +
+           '<span class="mcFaroTxt"><small>NOVO · Produtos digitais</small><b>' + esc(CAT.faro.nome) + '</b><span>' + esc(CAT.faro.sub) + '</span></span>' +
+           '<span class="mcFaroIr" aria-hidden="true">›</span></button>';
+    }
     if(topo.length){
       h += '<div class="mcTopo">';
       topo.forEach(function(c){
@@ -7379,12 +7448,12 @@ function mvQR(texto){
     var itens = daCateg().filter(function(it){ return FILTRO === 'tudo' || it.tipo === FILTRO; });
     /* o panfleto com QR sempre primeiro: e o que so existe aqui */
     itens.sort(function(a,b){ return (b.destaque?1:0) - (a.destaque?1:0); });
-    if(!itens.length){ g.innerHTML = '<div class="matVazio" style="grid-column:1/-1">Nada aqui ainda. Material novo chega sempre.</div>'; return; }
-    var h = '';
+    var h = CATEG === 'faro' ? '<div class="faroPainel" id="faroPainel" style="grid-column:1/-1">' + faroHTML() + '</div><div class="faroPecasTit" style="grid-column:1/-1">Peças prontas para divulgar (o link já é o seu)</div>' : '';
+    if(!itens.length){ g.innerHTML = h + '<div class="matVazio" style="grid-column:1/-1">Nada aqui ainda. Material novo chega sempre.</div>'; if(CATEG === 'faro') faroCarregar(); return; }
     itens.forEach(function(it){
       if(it.tipo === 'texto'){
         h += '<div class="matTexto"><div class="matCardTit">' + esc(it.titulo) + '</div>' +
-             '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto, it) : it.texto.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
+             '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto, it) : it.texto.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}|\{link_guia:[a-z0-9-]+\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
              '<div class="matAcoes"><button type="button" class="pri" data-matcopiar="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Copiar texto</button>' +
              '<button type="button" class="wpp" data-matwpp="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Mandar no WhatsApp</button></div></div>';
         return;
@@ -7403,6 +7472,7 @@ function mvQR(texto){
            '</span></button>' + redesHTML(it.id, lib, false) + '</div>';
     });
     g.innerHTML = h;
+    if(CATEG === 'faro') faroCarregar();
   }
 
   function pintarPorta(){
@@ -7473,6 +7543,111 @@ function mvQR(texto){
     });
   }
 
+
+  /* ============================================================ GUIAS FARO
+     2026-10-28-guiasfaro, decisao do Paulo: o parceiro divulga os Guias FARO
+     com o link dele e recebe 50% de cada guia vendido. Le os guias de graca.
+     Dados do robo (api/faro, acoes parc_guias e parc_ler, com o token).
+     A comissao fica "a liberar" ate passar o prazo de desistencia do comprador
+     (7 dias + 1) e depois entra no saque como as outras. ===================== */
+  var FARO = null, FARO_PEDINDO = false, FARO_ERRO = '';
+  var ROBO_FARO = 'https://moviki-robo.vercel.app/api/faro';
+  function brlF(v){ return 'R$ ' + (Number(v) || 0).toFixed(2).replace('.', ','); }
+  function dataF(ms){ var d = new Date(ms - 3*3600000); return String(d.getUTCDate()).padStart(2,'0') + '/' + String(d.getUTCMonth()+1).padStart(2,'0'); }
+  function faroPost(corpo){
+    var d = dados();
+    if(!d || typeof d.token !== 'function') return Promise.reject(new Error('sem sessao'));
+    return d.token().then(function(tk){
+      return fetch(ROBO_FARO, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(Object.assign({ idToken: tk }, corpo)) })
+        .then(function(r){ return r.json().catch(function(){ return {}; }); });
+    });
+  }
+  function faroCarregar(forcar){
+    if((FARO && !forcar) || FARO_PEDINDO) return;
+    FARO_PEDINDO = true;
+    faroPost({ acao:'parc_guias' }).then(function(r){
+      FARO_PEDINDO = false;
+      if(r && r.ok){ FARO = r; FARO_ERRO = ''; }
+      else FARO_ERRO = (r && r.mensagem) || 'Não deu para carregar os seus guias agora.';
+      var p = el('faroPainel'); if(p) p.innerHTML = faroHTML();
+    }).catch(function(){ FARO_PEDINDO = false; FARO_ERRO = 'Não deu para carregar os seus guias agora.'; var p = el('faroPainel'); if(p) p.innerHTML = faroHTML(); });
+  }
+  function faroHTML(){
+    var lib = porta().ok;
+    var h = '<div class="faroCab"><div><small>GUIAS FARO · PRODUTOS DIGITAIS DO MOVIKI</small><h3>Divulgue os Guias FARO e receba 50% de cada guia vendido</h3>' +
+      '<p>São guias curtos para quem vende na rua, na praia e em eventos. Quem compra pelo seu link vira venda sua, e quem depois cria conta no Moviki pelo guia, no mesmo celular, também fica como indicação sua.</p></div></div>';
+    h += '<details class="faroComo" open><summary>Como funciona (1 minuto de leitura)</summary><ol>' +
+      '<li><b>Leia o guia.</b> Ele é grátis para você: toque em <b>Ler o guia</b>. Indicar o que você conhece convence mais.</li>' +
+      '<li><b>Divulgue com o seu link.</b> As peças abaixo já levam o seu link na legenda. Ou toque em <b>Copiar meu link</b>.</li>' +
+      '<li><b>A pessoa compra o guia dela,</b> no Pix ou no cartão, na página do guia. O acesso dela é só dela.</li>' +
+      '<li><b>Você recebe 50% do valor pago.</b> A comissão aparece aqui e no seu extrato como <b>Guia FARO</b>, fica <b>a liberar</b> por 8 dias (o comprador tem 7 dias para desistir; no cartão, até o dinheiro cair) e depois entra no seu saque, com as mesmas regras das outras comissões. Se a compra for devolvida, a comissão é cancelada.</li>' +
+      '</ol><p class="faroRegra">Regras: post com o seu link é publicidade e leva <b>#publi</b> no início. Não prometa ganho nem resultado. Compra feita por você mesmo não gera comissão.</p></details>';
+    if(FARO_ERRO && !FARO){ return h + '<div class="matPorta">' + esc(FARO_ERRO) + '</div>'; }
+    if(!FARO){ return h + '<div class="matCarregando">Carregando os seus guias…</div>'; }
+    var r = FARO.resumo || {};
+    h += '<div class="faroResumo">' +
+      '<div><b>' + (r.vendas || 0) + '</b><span>guias vendidos</span></div>' +
+      '<div><b>' + brlF(r.aLiberar) + '</b><span>a liberar' + (r.proxima ? ' · próxima em ' + dataF(r.proxima) : '') + '</span></div>' +
+      '<div><b>' + brlF(r.liberado) + '</b><span>liberado para saque</span></div>' +
+      '<div><b>' + brlF(r.pago) + '</b><span>já recebido</span></div></div>';
+    h += '<div class="faroGuias">';
+    (FARO.guias || []).forEach(function(g){
+      h += '<div class="faroGuia"><img src="' + esc(g.capa) + '" alt="" loading="lazy">' +
+        '<div class="faroGInfo"><b>' + esc(String(g.titulo).replace(/^Guia FARO\s*[—-]\s*/, '')) + '</b>' +
+        '<span>' + brlF(g.pix) + ' no Pix · você recebe <b>' + brlF(g.comissaoPix) + '</b></span>' +
+        '<span class="faroGSub">No cartão: ' + brlF(g.cartao) + ' · você recebe ' + brlF(g.comissaoCartao) + '</span>' +
+        '<div class="faroGBts"><button type="button" class="pri" data-faroler="' + esc(g.slug) + '">📖 Ler o guia</button>' +
+        '<button type="button" data-farocopiar="' + esc(g.slug) + '"' + (lib ? '' : ' disabled') + '>🔗 Copiar meu link</button>' +
+        '<button type="button" class="wpp" data-farowpp="' + esc(g.slug) + '"' + (lib ? '' : ' disabled') + '>💬 WhatsApp</button></div></div></div>';
+    });
+    (FARO.emBreve || []).forEach(function(g){
+      h += '<div class="faroGuia breve"><img src="' + esc(g.capa) + '" alt="" loading="lazy">' +
+        '<div class="faroGInfo"><b>' + esc(String(g.titulo).replace(/^Guia FARO\s*[—-]\s*/, '')) + '</b><span>Em breve · ' + esc(g.previsao || '') + '</span>' +
+        '<span class="faroGSub">Quando abrir, ele aparece aqui com o seu link e as peças prontas.</span></div></div>';
+    });
+    h += '</div>';
+    if(!lib) h += '<div class="matPorta" style="margin-top:10px">Para divulgar, o seu link precisa estar liberado (cadastro aprovado, aulas e compromisso de divulgação). Ler o guia já pode.</div>';
+    var cs = FARO.comissoes || [];
+    if(cs.length){
+      var SITF = { a_liberar:'a liberar', liberada:'liberada', paga:'recebida', estornada:'cancelada (compra devolvida)' };
+      h += '<div class="faroLista"><div class="matLegTit">Suas vendas de guias</div>' + cs.map(function(c){
+        return '<div class="faroLin"><span>' + dataF(c.criado) + '</span><span>' + esc(faroNome(c.produto)) + '</span><span>' + esc(SITF[c.situacao] || c.situacao) + (c.situacao === 'a_liberar' && c.liberaEm ? ' em ' + dataF(c.liberaEm) : '') + '</span><b>' + brlF(c.valor) + '</b></div>';
+      }).join('') + '</div>';
+    }
+    return h;
+  }
+  function faroNome(slug){ var g = faroGuia(slug); return g ? String(g.titulo).replace(/^Guia FARO\s*[—-]\s*/, '') : slug; }
+  function faroGuia(slug){ return FARO && (FARO.guias || []).filter(function(g){ return g.slug === slug; })[0]; }
+  document.addEventListener('click', function(e){
+    var t = e.target; if(!t || !t.closest) return;
+    var b;
+    if((b = t.closest('[data-faroler]'))){
+      var slug = b.getAttribute('data-faroler'), bb = b;
+      var jan = null; try{ jan = window.open('about:blank', '_blank'); }catch(_){}
+      bb.disabled = true; bb.textContent = 'Abrindo…';
+      faroPost({ acao:'parc_ler', produto: slug }).then(function(r){
+        bb.disabled = false; bb.textContent = '📖 Ler o guia';
+        if(r && r.ok && r.acesso){ if(jan){ jan.location.href = r.acesso; } else { location.href = r.acesso; } ev('faro_ler', slug); }
+        else { if(jan) try{ jan.close(); }catch(_){} toast((r && r.mensagem) || 'Não deu para abrir o guia agora.'); }
+      }).catch(function(){ bb.disabled = false; bb.textContent = '📖 Ler o guia'; if(jan) try{ jan.close(); }catch(_){} toast('Não deu para abrir o guia agora.'); });
+      return;
+    }
+    if((b = t.closest('[data-farocopiar]'))){
+      var g = faroGuia(b.getAttribute('data-farocopiar')); if(!g || !porta().ok) return;
+      var bc = b;
+      copiar(g.link).then(function(){ bc.textContent = 'Copiado ✓'; setTimeout(function(){ bc.textContent = '🔗 Copiar meu link'; }, 2200); ev('faro_copiar', g.slug); })
+        .catch(function(){ toast(g.link, 8000); });
+      return;
+    }
+    if((b = t.closest('[data-farowpp]'))){
+      var g2 = faroGuia(b.getAttribute('data-farowpp')); if(!g2 || !porta().ok) return;
+      var d = dados() || {}, nome = String(d.nome || '').trim().split(/\s+/)[0] || 'eu';
+      var txw = 'Oi! Aqui é ' + nome + ' (#publi: indico os guias do Moviki). Lembrei de você: o ' + String(g2.titulo) + ' tem o passo a passo, com leitura no celular, PDF e áudio. Se te interessar, é por aqui: ' + g2.link;
+      window.open('https://wa.me/?text=' + encodeURIComponent(txw), '_blank', 'noopener');
+      ev('faro_whatsapp', g2.slug); return;
+    }
+  });
+
   /* ------------------------------------------------------------ previa */
   function msg(t){ var m = el('matOvMsg'); if(m){ m.textContent = t || ''; if(t) setTimeout(function(){ if(m.textContent === t) m.textContent = ''; }, 4500); } }
   function liberarBlobUrl(){ if(BLOBURL){ try{ URL.revokeObjectURL(BLOBURL); }catch(e){} BLOBURL = ''; } }
@@ -7488,7 +7663,7 @@ function mvQR(texto){
     el('matOvDica').textContent = it.dica || '';
     el('matOvDica').hidden = !it.dica;
     el('matOvPorta').innerHTML = p.ok ? '' : portaHTML(p);
-    var leg = it.legenda ? (p.ok ? trocar(it.legenda, it) : it.legenda.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}/g,'(seu link aparece aqui)')) : '';
+    var leg = it.legenda ? (p.ok ? trocar(it.legenda, it) : it.legenda.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}|\{link_guia:[a-z0-9-]+\}/g,'(seu link aparece aqui)')) : '';
     el('matOvLeg').textContent = leg;
     el('matOvLegBox').hidden = !leg;
     el('matOvAcoes').hidden = !p.ok;
@@ -7743,7 +7918,7 @@ function mvQR(texto){
   function evPeca(it, lib){
     if(it.tipo === 'texto'){
       return '<div class="matTexto"><div class="matCardTit">' + esc(it.titulo) + '</div>' +
-        '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto, it) : it.texto.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
+        '<div class="matTextoCorpo">' + esc(lib ? trocar(it.texto, it) : it.texto.replace(/\{link\}|\{verificacao\}|\{link_parceiro\}|\{link_fundador\}|\{link_guia:[a-z0-9-]+\}/g,'(seu link aparece aqui)').replace(/\{meu_nome\}/g,'(seu nome)')) + '</div>' +
         '<div class="matAcoes"><button type="button" class="pri" data-matcopiar="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Copiar texto</button>' +
         '<button type="button" class="wpp" data-matwpp="' + esc(it.id) + '"' + (lib?'':' disabled') + '>Mandar no WhatsApp</button></div></div>';
     }
