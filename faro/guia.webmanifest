@@ -1,0 +1,15 @@
+{
+  "name": "Guia FARO",
+  "short_name": "Guia FARO",
+  "description": "O seu Guia FARO do Moviki: leitura, PDF e audiobook.",
+  "scope": "/faro/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1b2a",
+  "theme_color": "#0d1b2a",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/faro/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/faro/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

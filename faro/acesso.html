@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/acesso.html | versao 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) | antes 2026-10-28-faro1 -->
+<!-- MOVIKI faro/acesso.html | versao 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) ; botao Instalar o guia no celular (manifesto sem start_url: o atalho guarda o link pessoal) | antes 2026-10-28-faro1 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -9,6 +9,16 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; media-src 'self'; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <title>Seu Guia FARO | Moviki</title>
 <link rel="icon" href="/favicon512.png">
+<!-- Instalar no celular. O manifesto NAO tem start_url de proposito: o atalho abre o endereco
+     da propria pagina, com o link pessoal (?v=&t=). No iPhone o app instalado nao enxerga o
+     armazenamento do Safari, entao o link precisa ir no endereco. -->
+<link rel="manifest" href="/faro/guia.webmanifest">
+<link rel="apple-touch-icon" href="/faro/icone-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Guia FARO">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0d1b2a">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/faro/faro.css">
@@ -40,6 +50,9 @@
 .moviki p{color:#e6fff5;margin:.3rem 0 1rem}
 .moviki .btn{background:#fff;color:#0a5c43}
 .estado{max-width:520px;margin:3rem auto;text-align:center}
+.instalar{margin-top:1rem;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28);font-size:.98rem;padding:.75rem 1.2rem}
+.passos{margin:.8rem 0 0;padding-left:1.3rem}.passos li{margin:.45rem 0}
+.passos b{color:var(--marinho)}
 </style>
 </head>
 <body>
@@ -49,6 +62,7 @@
     <div class="serie">Guia FARO</div>
     <h1 id="titulo" style="font-size:clamp(1.6rem,4vw,2.4rem)">Abrindo o seu guia…</h1>
     <p class="lead" id="sub" style="margin:0"></p>
+    <button class="btn instalar" id="instalar" type="button" hidden>📲 Instalar o guia no celular</button>
   </div>
 </header>
 
@@ -80,12 +94,22 @@
       <a class="btn" id="ctaMoviki" href="https://app.moviki.com.br/?criar=1&amp;utm_source=faro&amp;utm_medium=guia&amp;utm_campaign=verao-na-praia" target="_blank" rel="noopener">Criar minha página grátis</a>
     </div>
     <div class="bloco" id="bGuarde">
-      <h2>Guarde este link</h2>
-      <p class="mini" style="margin:0">Este endereço é só seu. Ele também está no e-mail de entrega. Para pedir a devolução em até 7 dias, escreva para suporte@moviki.com.br.</p>
+      <h2>Deixe o guia no seu celular</h2>
+      <p class="mini" style="margin:0 0 .8rem" id="instTexto">Instale o guia e ele fica com ícone próprio na tela do celular: um toque e você volta aqui, mesmo se fechar o navegador.</p>
+      <button class="btn btn-verde" id="instalar2" type="button" style="width:100%" hidden>📲 Instalar o guia no celular</button>
+      <p class="mini" style="margin:.8rem 0 0">Este endereço é só seu e também está no e-mail de entrega. Para pedir a devolução em até 7 dias, escreva para suporte@moviki.com.br.</p>
     </div>
   </div>
   <p class="mini" style="text-align:center;margin:2.4rem 0">Guia FARO · Moviki · EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA · CNPJ 68.289.841/0001-02</p>
 </main>
+
+<div class="folha" id="folhaInst" role="dialog" aria-modal="true" aria-labelledby="instTitulo">
+  <div class="caixa">
+    <button class="fechar" type="button" aria-label="Fechar" id="instFechar">×</button>
+    <h3 id="instTitulo">Instalar o guia</h3>
+    <div id="instCorpo"></div>
+  </div>
+</div>
 
 <div class="estado" id="estado" hidden>
   <div style="font-size:2.6rem">🔒</div>
@@ -110,6 +134,42 @@
     Array.prototype.forEach.call(document.querySelectorAll('video,audio'), function (m) { if (m !== e.target && !m.paused) m.pause(); });
   }, true);
 
+  /* ---------- Instalar no celular ---------- */
+  var pedidoInstalar = null;
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); pedidoInstalar = e; });
+  var ua = navigator.userAgent || '';
+  var noIphone = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  var dentroDeApp = /Instagram|FBAN|FBAV|FB_IAB|Line\/|TikTok|musical_ly|Bytedance|GSA\/|; wv\)/.test(ua);
+  function instalado() { try { return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } }
+  function folha(html) { $('#instCorpo').innerHTML = html; $('#folhaInst').classList.add('on'); }
+  $('#instFechar').addEventListener('click', function () { $('#folhaInst').classList.remove('on'); });
+  $('#folhaInst').addEventListener('click', function (e) { if (e.target === this) this.classList.remove('on'); });
+  function copiarLink() {
+    var ok = function () { var b = $('#instCopiar'); if (b) b.textContent = '✓ Link copiado'; };
+    try { navigator.clipboard.writeText(location.href).then(ok, function () { prompt('Copie o link:', location.href); }); } catch (e) { prompt('Copie o link:', location.href); }
+  }
+  function instalar(produto) {
+    F.ev('faro_instalar', { produto: produto, via: pedidoInstalar ? 'nativo' : (noIphone ? 'iphone' : (dentroDeApp ? 'app' : 'manual')) });
+    if (pedidoInstalar) {
+      pedidoInstalar.prompt();
+      pedidoInstalar.userChoice.then(function (c) {
+        if (c && c.outcome === 'accepted') folha('<p>Pronto! O ícone <b>Guia FARO</b> vai aparecer na tela do seu celular. É só tocar nele para voltar aqui.</p>');
+      }).catch(function () {});
+      pedidoInstalar = null;
+      return;
+    }
+    if (dentroDeApp) {
+      folha('<p>Você abriu o guia dentro de outro aplicativo, e ele não deixa instalar.</p><ol class="passos"><li>Toque nos <b>3 pontinhos</b> (ou no ícone de compartilhar) no canto da tela.</li><li>Escolha <b>Abrir no navegador</b> (Chrome ou Safari).</li><li>Lá, toque de novo em <b>Instalar o guia no celular</b>.</li></ol><button class="btn btn-claro" id="instCopiar" type="button" style="width:100%;margin-top:.6rem">Copiar o link do guia</button>');
+      $('#instCopiar').addEventListener('click', copiarLink);
+      return;
+    }
+    if (noIphone) {
+      folha('<ol class="passos"><li>Toque em <b>Compartilhar</b> (o quadrado com a seta para cima ⬆️), embaixo ou no topo da tela.</li><li>Role e toque em <b>Adicionar à Tela de Início</b>.</li><li>Toque em <b>Adicionar</b>. O ícone <b>Guia FARO</b> aparece na sua tela.</li></ol>');
+      return;
+    }
+    folha('<ol class="passos"><li>Toque nos <b>3 pontinhos ⋮</b> no canto de cima do navegador.</li><li>Toque em <b>Instalar app</b> ou <b>Adicionar à tela inicial</b>.</li><li>Confirme. O ícone <b>Guia FARO</b> aparece na sua tela.</li></ol>');
+  }
+
   function erro(titulo, texto) {
     $('#titulo').textContent = titulo; $('#sub').textContent = '';
     $('#estadoTitulo').textContent = titulo; $('#estadoTexto').textContent = texto; $('#estado').hidden = false;
@@ -132,6 +192,10 @@
     $('#ler').href = r.leitura; $('#pdf').href = r.pdf;
     if (r.acessoAte) { var d = r.acessoAte.split('-'); $('#validade').textContent = 'Acesso liberado até ' + d[2] + '/' + d[1] + '/' + d[0] + '.'; }
     $('#conteudo').hidden = false;
+    /* O link pessoal fica no endereco, para o atalho instalado abrir direto o guia. */
+    try { if (!u.get('v')) history.replaceState(null, '', location.pathname + '?v=' + encodeURIComponent(v) + '&t=' + encodeURIComponent(t)); } catch (e) {}
+    if (instalado()) { $('#instTexto').textContent = 'O guia já está instalado neste celular. Toque no ícone Guia FARO para voltar aqui quando quiser.'; }
+    else { ['#instalar', '#instalar2'].forEach(function (id) { $(id).hidden = false; $(id).addEventListener('click', function () { instalar(r.produto); }); }); }
     F.ev('faro_acesso', { produto: r.produto });
     carregarAudio(r);
     $('#video').addEventListener('play', function () { F.ev('faro_video', { produto: r.produto }); }, { once: true });
