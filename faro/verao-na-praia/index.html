@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<!-- MOVIKI faro/verao-na-praia/index.html | versao 2026-10-28-og (miniatura do link refeita: og-verao.jpg 1200x630 com o titulo no centro, que e o pedaco que o WhatsApp mostra; botao Mandar o guia para o meu WhatsApp na tela de pago) -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; media-src 'self'; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
@@ -8,7 +9,14 @@
 <meta name="description" content="O passo a passo para montar a sua venda na areia: o que vender, licença da prefeitura, preço, kit, ponto, Pix e como fazer o cliente voltar. Com vídeo, audiobook, PDF e checklist.">
 <meta property="og:title" content="Guia FARO: vender na praia neste verão">
 <meta property="og:description" content="Do zero até o Pix na areia, na ordem certa. Vídeo, audiobook, PDF e checklist.">
-<meta property="og:image" content="https://app.moviki.com.br/faro/verao-na-praia/capa.jpg">
+<meta property="og:image" content="https://app.moviki.com.br/faro/verao-na-praia/og-verao.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Guia FARO: vender na praia neste verão. Vídeo, áudio e PDF.">
+<meta property="og:site_name" content="Moviki">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:url" content="https://app.moviki.com.br/faro/verao-na-praia/">
 <meta property="og:type" content="product">
 <link rel="icon" href="/favicon512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -203,6 +211,8 @@
       <h3>Pagamento confirmado!</h3>
       <p>Seu guia está pronto. Também mandamos o link para o seu e-mail.</p>
       <a class="btn btn-verde" id="linkAcesso" style="width:100%">Abrir meu guia</a>
+      <a class="btn btn-claro" id="zapAcesso" target="_blank" rel="noopener" style="width:100%;margin-top:.6rem">💬 Mandar o guia para o meu WhatsApp</a>
+      <p class="mini" style="margin:.5rem 0 0">Abre o WhatsApp com o link pronto. Escolha você mesmo na lista e envie: o guia fica guardado na sua conversa.</p>
     </div>
   </div>
 </div>
@@ -309,7 +319,9 @@
       F.post({ acao: 'status', venda: venda, segredo: segredo }).then(function (r) {
         if (r && r.pago && r.acesso) {
           try { localStorage.removeItem(CHAVE); } catch (x) {}
-          $('#linkAcesso').href = r.acesso; passo('passoOk');
+          $('#linkAcesso').href = r.acesso;
+          $('#zapAcesso').href = 'https://wa.me/?text=' + encodeURIComponent('Meu Guia FARO (link pessoal, não compartilhe): ' + r.acesso);
+          passo('passoOk');
           F.ev('faro_pago', { produto: PRODUTO });
           return;
         }
