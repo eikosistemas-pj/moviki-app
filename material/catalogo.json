@@ -1,5 +1,5 @@
 {
-  "versao": "2026-10-28-natalcapa",
+  "versao": "2026-10-28-natalpresente",
   "atualizado": "2026-10-28",
   "eventos": [
     {
@@ -243,7 +243,7 @@
       "capa": "material/capas/faro-natal-video.webp",
       "w": 1080,
       "h": 1920,
-      "peso": "1,8 MB",
+      "peso": "1,9 MB",
       "novo": true,
       "faro": "natal-por-encomenda",
       "so_evento": "faro",
