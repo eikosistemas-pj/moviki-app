@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/acesso.html | versao 2026-10-28-surpresa (boas-vindas com o cartao 'Tem surpresa no final'; ?v=2 para o celular nao mostrar o video antigo do cache) | antes 2026-10-28-biblioteca (link Meus guias no topo leva a Biblioteca FARO ja entrando pelo link desta compra) | antes 2026-10-28-instalar4 (o botao nunca fica parado: tentando ou nao a janela nativa do Chrome, as instrucoes abrem sempre; os 3 pontinhos podem estar embaixo no Chrome novo; codigo para o suporte no fim da folha) | antes 2026-10-28-instalar3 (instalar: o Chrome confirma que o guia e instalavel, mas quem abre pelo Gmail ou pelo WhatsApp esta numa aba embutida que nao instala; as instrucoes agora trazem o botao Abrir no Chrome (Android, intent) ou Abrir no Safari (iPhone, x-safari) antes dos passos) | antes 2026-10-28-indicar (bloco Indique o guia para um amigo: manda a PAGINA DE VENDA com utm_source=faro_indica e um codigo do indicador tirado do hash da venda, nunca o link de acesso; o botao do WhatsApp pessoal virou Guardar o guia no meu WhatsApp) | antes 2026-10-28-avisos (bloco Quero saber do proximo guia: assuntos + caixa de consentimento, robo avisos_ver/quero/sair; botao Mandar o guia para o meu WhatsApp) | antes 2026-10-28-acesso2 (instalar de verdade: manifesto com start_url, so fora do iPhone; botao de velocidade do audio; PDF em outra aba; cartao da surpresa leva a /faro/surpresa.html) | antes 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) ; botao Instalar o guia no celular (manifesto sem start_url: o atalho guarda o link pessoal) | antes 2026-10-28-faro1 -->
+<!-- MOVIKI faro/acesso.html | versao 2026-10-28-natal2 (audio.json pode trazer um aviso, mostrado embaixo da lista dos capitulos: o Natal sai com o audiobook em partes) | antes 2026-10-28-natal (Guia 2 Natal por encomenda: surpresa propria por guia e assunto datas marcado no aviso de guias novos) | antes 2026-10-28-surpresa (boas-vindas com o cartao 'Tem surpresa no final'; ?v=2 para o celular nao mostrar o video antigo do cache) | antes 2026-10-28-biblioteca (link Meus guias no topo leva a Biblioteca FARO ja entrando pelo link desta compra) | antes 2026-10-28-instalar4 (o botao nunca fica parado: tentando ou nao a janela nativa do Chrome, as instrucoes abrem sempre; os 3 pontinhos podem estar embaixo no Chrome novo; codigo para o suporte no fim da folha) | antes 2026-10-28-instalar3 (instalar: o Chrome confirma que o guia e instalavel, mas quem abre pelo Gmail ou pelo WhatsApp esta numa aba embutida que nao instala; as instrucoes agora trazem o botao Abrir no Chrome (Android, intent) ou Abrir no Safari (iPhone, x-safari) antes dos passos) | antes 2026-10-28-indicar (bloco Indique o guia para um amigo: manda a PAGINA DE VENDA com utm_source=faro_indica e um codigo do indicador tirado do hash da venda, nunca o link de acesso; o botao do WhatsApp pessoal virou Guardar o guia no meu WhatsApp) | antes 2026-10-28-avisos (bloco Quero saber do proximo guia: assuntos + caixa de consentimento, robo avisos_ver/quero/sair; botao Mandar o guia para o meu WhatsApp) | antes 2026-10-28-acesso2 (instalar de verdade: manifesto com start_url, so fora do iPhone; botao de velocidade do audio; PDF em outra aba; cartao da surpresa leva a /faro/surpresa.html) | antes 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) ; botao Instalar o guia no celular (manifesto sem start_url: o atalho guarda o link pessoal) | antes 2026-10-28-faro1 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -61,6 +61,7 @@
 .chip input{width:16px;height:16px;accent-color:var(--verde)}
 .chip.on{border-color:var(--verde2);background:rgba(16,185,129,.08)}
 .vel{flex:0 0 auto;font-family:Poppins;font-weight:700;font-size:.92rem;color:#062b1f;background:var(--verde2);border:0;border-radius:999px;padding:.5rem .8rem;min-width:3.4rem;cursor:pointer}
+.audioAviso{margin:10px 2px 0;font-size:.88rem;color:var(--suave)}
 </style>
 </head>
 <body>
@@ -97,8 +98,8 @@
     </div>
     <div class="moviki" id="bMoviki">
       <div class="serie" style="color:#fff3d1">🎁 Surpresa do Moviki</div>
-      <h2>Tem um presente para o seu ponto na praia</h2>
-      <p>Quando terminar o guia, abra a surpresa: é o jeito de o cliente achar você na areia, todo dia.</p>
+      <h2 id="surTit">Tem um presente para o seu ponto na praia</h2>
+      <p id="surTxt">Quando terminar o guia, abra a surpresa: é o jeito de o cliente achar você na areia, todo dia.</p>
       <a class="btn" id="ctaMoviki" href="/faro/surpresa.html?utm_source=faro&amp;utm_medium=guia&amp;utm_campaign=verao-na-praia">Abrir a surpresa</a>
     </div>
     <div class="bloco" id="bIndicar" hidden>
@@ -263,6 +264,12 @@
     try { if (!u.get('v')) history.replaceState(null, '', location.pathname + '?v=' + encodeURIComponent(v) + '&t=' + encodeURIComponent(t)); } catch (e) {}
     if (instalado()) { $('#instTexto').textContent = 'O guia já está instalado neste celular. Toque no ícone Guia FARO para voltar aqui quando quiser.'; }
     else { ['#instalar', '#instalar2'].forEach(function (id) { $(id).hidden = false; $(id).addEventListener('click', function () { instalar(r.produto); }); }); }
+    /* Cada guia tem a sua surpresa (28/10/2026, Guia 2). Guia sem entrada aqui fica com a da praia. */
+    var SURPRESAS = {
+      'natal-por-encomenda': { t: 'Tem um presente para o seu Natal', p: 'Quando terminar o guia, abra a surpresa: é o jeito de mandar o seu cardápio de Natal num link só.', h: '/faro/natal-por-encomenda/surpresa.html?utm_source=faro&utm_medium=guia&utm_campaign=natal-por-encomenda' }
+    };
+    var sur = SURPRESAS[r.produto];
+    if (sur) { $('#surTit').textContent = sur.t; $('#surTxt').textContent = sur.p; $('#ctaMoviki').setAttribute('href', sur.h); }
     F.ev('faro_acesso', { produto: r.produto });
     carregarAudio(r);
     $('#video').addEventListener('play', function () { F.ev('faro_video', { produto: r.produto }); }, { once: true });
@@ -331,7 +338,7 @@
       if (!a || !a.ok || !a.podeInscrever || !a.opcoes) return;
       var opcoes = a.opcoes; marcados = a.assuntos || [];
       $('#avTexto').textContent = a.texto || '';
-      desenhar(opcoes, marcados.length ? marcados : [r.produto === 'verao-na-praia' ? 'praia' : '']);
+      desenhar(opcoes, marcados.length ? marcados : [({ 'verao-na-praia': 'praia', 'natal-por-encomenda': 'datas' })[r.produto] || '']);
       mostrar(a, opcoes); $('#bAvisos').hidden = false;
       $('#avQuero').addEventListener('click', function () {
         var sel = Array.prototype.map.call(document.querySelectorAll('#avChips input:checked'), function (i) { return i.value; });
@@ -360,6 +367,8 @@
     fetch(r.audio, { cache: 'no-cache' }).then(function (x) { return x.json(); }).then(function (j) {
       var caps = (j && j.capitulos) || [];
       if (!caps.length) { $('#audioVazio').hidden = false; return; }
+      /* Aviso opcional do audio.json (ex.: audiobook chegando em partes). Texto, nunca HTML. */
+      if (j.aviso) { var av = document.createElement('p'); av.className = 'audioAviso'; av.textContent = String(j.aviso); $('#faixas').insertAdjacentElement('afterend', av); }
       var ouvidos = {}; try { ouvidos = JSON.parse(localStorage.getItem('faro_ouvidos_' + r.produto) || '{}'); } catch (e) {}
       var ul = $('#faixas'), player = $('#player'), caixa = $('#caixaPlayer'), atual = -1, itens = [];
       /* Velocidade como no WhatsApp: 1x → 1,5x → 2x. Fica guardada no aparelho. */
