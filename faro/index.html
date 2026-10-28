@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/index.html | versao 2026-10-28-artigo (rodape com os artigos gratis do site e a central /guias) | antes 2026-10-28-natal (Guia 2 Natal por encomenda na vitrine, primeiro da lista) | antes 2026-10-28-biblioteca (link Ja comprou? Meus guias para a Biblioteca FARO) | antes 2026-10-28-og (miniatura do link: og-verao.jpg) -->
+<!-- MOVIKI faro/index.html | versao 2026-10-28-rodizio (rodizio da temporada: card de guia com data-ate some sozinho depois da data ou quando o robo diz que nao vende mais; sem guia nenhum aparece o aviso do proximo) | antes 2026-10-28-artigo (rodape com os artigos gratis do site e a central /guias) | antes 2026-10-28-natal (Guia 2 Natal por encomenda na vitrine, primeiro da lista) | antes 2026-10-28-biblioteca (link Ja comprou? Meus guias para a Biblioteca FARO) | antes 2026-10-28-og (miniatura do link: og-verao.jpg) -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
@@ -43,7 +43,7 @@
 </header>
 <main class="secao">
   <div class="wrap">
-    <a class="guia" href="/faro/natal-por-encomenda/">
+    <a class="guia" href="/faro/natal-por-encomenda/" data-guia="natal-por-encomenda" data-ate="2026-12-15">
       <img src="/faro/natal-por-encomenda/capa.jpg" alt="Guia FARO Natal por encomenda">
       <div>
         <span class="etq">Natal 2026 · novo</span>
@@ -52,7 +52,7 @@
         <span class="btn btn-verde" id="precoNatal">Ver o guia</span>
       </div>
     </a>
-    <a class="guia" href="/faro/verao-na-praia/">
+    <a class="guia" href="/faro/verao-na-praia/" data-guia="verao-na-praia" data-ate="2027-02-28">
       <img src="/faro/verao-na-praia/capa.jpg" alt="Guia FARO Vender na praia neste verão">
       <div>
         <span class="etq">Temporada 2026/2027</span>
@@ -61,15 +61,27 @@
         <span class="btn btn-verde" id="precoVerao">Ver o guia</span>
       </div>
     </a>
+    <p class="mini" id="semGuia" style="display:none;margin-top:1rem;font-size:1.05rem">Os guias desta temporada já fecharam. O próximo sai em breve.</p>
     <p class="mini" style="margin-top:2rem">Novos guias saem conforme a época do ano. Os guias FARO são publicados pelo Moviki, que coloca o seu negócio no mapa em tempo real.</p>
   </div>
 </main>
 <footer class="rodape"><div class="wrap"><p>Moviki · EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA · CNPJ 68.289.841/0001-02 · <a href="https://moviki.com.br/termos.html">Termos</a> · <a href="https://moviki.com.br/privacidade.html">Privacidade</a></p><p>Artigos grátis no site: <a href="https://www.moviki.com.br/guia/vender-encomenda-de-natal">encomendas de Natal</a> · <a href="https://www.moviki.com.br/guia/vender-na-praia">vender na praia</a> · <a href="https://www.moviki.com.br/guias">todos os guias</a></p></div></footer>
 <script>
 FARO.origem();
-[['verao-na-praia', 'precoVerao'], ['natal-por-encomenda', 'precoNatal']].forEach(function (g) {
-  FARO.get({ acao: 'produto', p: g[0] }).then(function (r) {
-    if (r && r.ok) document.getElementById(g[1]).textContent = 'Ver o guia · ' + FARO.reais(r.pix) + ' no Pix';
+/* Rodizio da temporada (28/10/2026): guia que passou da data (data-ate) ou que o
+   robo diz que nao vende mais some da vitrine; o proximo guia entra com o card dele. */
+function faroSome(card) {
+  card.style.display = 'none';
+  var vis = [].filter.call(document.querySelectorAll('a.guia[data-guia]'), function (c) { return c.style.display !== 'none'; });
+  if (!vis.length) document.getElementById('semGuia').style.display = '';
+}
+var hojeBR = new Date(Date.now() - 3 * 3600000).toISOString().slice(0, 10);
+[].forEach.call(document.querySelectorAll('a.guia[data-guia]'), function (card) {
+  if (card.getAttribute('data-ate') && hojeBR > card.getAttribute('data-ate')) { faroSome(card); return; }
+  FARO.get({ acao: 'produto', p: card.getAttribute('data-guia') }).then(function (r) {
+    var b = card.querySelector('.btn');
+    if (r && r.ok) { if (b) b.textContent = 'Ver o guia · ' + FARO.reais(r.pix) + ' no Pix'; }
+    else if (r && r.erro === 'indisponivel') faroSome(card);
   }).catch(function () {});
 });
 </script>
