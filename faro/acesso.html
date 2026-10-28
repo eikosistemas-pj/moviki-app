@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/acesso.html | versao 2026-10-28-avisos (bloco Quero saber do proximo guia: assuntos + caixa de consentimento, robo avisos_ver/quero/sair; botao Mandar o guia para o meu WhatsApp) | antes 2026-10-28-acesso2 (instalar de verdade: manifesto com start_url, so fora do iPhone; botao de velocidade do audio; PDF em outra aba; cartao da surpresa leva a /faro/surpresa.html) | antes 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) ; botao Instalar o guia no celular (manifesto sem start_url: o atalho guarda o link pessoal) | antes 2026-10-28-faro1 -->
+<!-- MOVIKI faro/acesso.html | versao 2026-10-28-indicar (bloco Indique o guia para um amigo: manda a PAGINA DE VENDA com utm_source=faro_indica e um codigo do indicador tirado do hash da venda, nunca o link de acesso; o botao do WhatsApp pessoal virou Guardar o guia no meu WhatsApp) | antes 2026-10-28-avisos (bloco Quero saber do proximo guia: assuntos + caixa de consentimento, robo avisos_ver/quero/sair; botao Mandar o guia para o meu WhatsApp) | antes 2026-10-28-acesso2 (instalar de verdade: manifesto com start_url, so fora do iPhone; botao de velocidade do audio; PDF em outra aba; cartao da surpresa leva a /faro/surpresa.html) | antes 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) ; botao Instalar o guia no celular (manifesto sem start_url: o atalho guarda o link pessoal) | antes 2026-10-28-faro1 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -101,6 +101,14 @@
       <p>Quando terminar o guia, abra a surpresa: é o jeito de o cliente achar você na areia, todo dia.</p>
       <a class="btn" id="ctaMoviki" href="/faro/surpresa.html?utm_source=faro&amp;utm_medium=guia&amp;utm_campaign=verao-na-praia">Abrir a surpresa</a>
     </div>
+    <div class="bloco" id="bIndicar" hidden>
+      <h2>🤝 Indique o guia para um amigo</h2>
+      <p class="mini" style="margin:0 0 .8rem">Conhece alguém que pode aproveitar este guia? Mande para ele. O seu amigo recebe a página do guia e compra o dele: o seu acesso continua só seu.</p>
+      <a class="btn btn-verde" id="indZap" target="_blank" rel="noopener" style="width:100%">💬 Indicar pelo WhatsApp</a>
+      <button class="btn btn-claro" id="indOutros" type="button" style="width:100%;margin-top:.6rem" hidden>📤 Indicar por outro aplicativo</button>
+      <button class="btn btn-claro" id="indCopiar" type="button" style="width:100%;margin-top:.6rem">🔗 Copiar o link para indicar</button>
+      <p class="msg" id="indMsg"></p>
+    </div>
     <div class="bloco" id="bAvisos" hidden>
       <h2>🔔 Quer saber do próximo guia?</h2>
       <div id="avForm">
@@ -119,8 +127,8 @@
       <h2>Deixe o guia no seu celular</h2>
       <p class="mini" style="margin:0 0 .8rem" id="instTexto">Instale o guia e ele fica com ícone próprio na tela do celular: um toque e você volta aqui, mesmo se fechar o navegador.</p>
       <button class="btn btn-verde" id="instalar2" type="button" style="width:100%" hidden>📲 Instalar o guia no celular</button>
-      <a class="btn btn-claro" id="zap" target="_blank" rel="noopener" style="width:100%;margin-top:.6rem">💬 Mandar o guia para o meu WhatsApp</a>
-      <p class="mini" style="margin:.5rem 0 0">Abre o WhatsApp com o seu link. Escolha você mesmo na lista e envie: o guia fica guardado na conversa.</p>
+      <a class="btn btn-claro" id="zap" target="_blank" rel="noopener" style="width:100%;margin-top:.6rem">💬 Guardar o guia no meu WhatsApp</a>
+      <p class="mini" style="margin:.5rem 0 0">Abre o WhatsApp com o seu link pessoal. Escolha você mesmo na lista (a conversa com o seu próprio número) e envie: o guia fica guardado ali. Para indicar um amigo, use o botão Indicar acima, nunca este link.</p>
       <p class="mini" style="margin:.8rem 0 0">Este endereço é só seu e também está no e-mail de entrega. Para pedir a devolução em até 7 dias, escreva para suporte@moviki.com.br.</p>
     </div>
   </div>
@@ -233,8 +241,40 @@
     var linkProprio = location.origin + '/faro/acesso.html?v=' + encodeURIComponent(v) + '&t=' + encodeURIComponent(t);
     $('#zap').href = 'https://wa.me/?text=' + encodeURIComponent('Meu Guia FARO (link pessoal, não compartilhe): ' + linkProprio);
     $('#zap').addEventListener('click', function () { F.ev('faro_whatsapp', { produto: r.produto }); });
+    carregarIndicar(r, v);
     carregarAvisos(r);
   }).catch(function () { erro('Sem conexão', 'Confira a internet e recarregue a página.'); });
+
+  /* Indicar o guia: manda a PAGINA DE VENDA, nunca o link de acesso. Quem abre paga o dele.
+     O codigo do indicador sai do hash da venda (nao revela a venda nem da acesso a nada)
+     e chega ao robo como utm_campaign, para o painel do dono contar as indicacoes. */
+  function carregarIndicar(r, v) {
+    var base = location.origin + '/faro/' + encodeURIComponent(r.produto) + '/';
+    function montar(cod) {
+      var link = base + '?utm_source=faro_indica&utm_medium=amigo' + (cod ? '&utm_campaign=i-' + cod : '');
+      var nome = r.titulo || 'Guia FARO';
+      var texto = 'Estou usando o Guia FARO "' + nome + '" e lembrei de você. Se te interessar, é por aqui: ' + link;
+      $('#indZap').href = 'https://wa.me/?text=' + encodeURIComponent(texto);
+      $('#indZap').addEventListener('click', function () { F.ev('faro_indicar', { produto: r.produto, via: 'whatsapp' }); });
+      $('#indCopiar').addEventListener('click', function () {
+        F.copiar(link).then(function () { $('#indMsg').textContent = '✓ Link copiado. Cole na conversa com o seu amigo.'; });
+        F.ev('faro_indicar', { produto: r.produto, via: 'copiar' });
+      });
+      if (navigator.share) {
+        $('#indOutros').hidden = false;
+        $('#indOutros').addEventListener('click', function () {
+          navigator.share({ title: nome, text: texto.replace(' ' + link, ''), url: link }).catch(function () {});
+          F.ev('faro_indicar', { produto: r.produto, via: 'outros' });
+        });
+      }
+      $('#bIndicar').hidden = false;
+    }
+    try {
+      crypto.subtle.digest('SHA-256', new TextEncoder().encode('faro-indica|' + v)).then(function (b) {
+        montar(Array.prototype.map.call(new Uint8Array(b), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('').slice(0, 10));
+      }).catch(function () { montar(''); });
+    } catch (e) { montar(''); }
+  }
 
   /* Aviso de guias novos: opcional, por assunto, com a caixa desmarcada.
      Se o robo nao responder, o bloco simplesmente nao aparece. */
