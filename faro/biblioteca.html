@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<!-- MOVIKI faro/biblioteca.html | versao 2026-10-28-biblioteca (Biblioteca FARO "estilo Netflix", pedido do Paulo em 28/10: todos os guias em fileiras de capas; os que a pessoa tem ficam coloridos e abrem o guia; os outros ficam em preto e branco e levam a compra; "Em breve" para guia anunciado. Entrada sem senha: codigo de 6 numeros no e-mail da compra (moviki-robo /api/faro bib_codigo, bib_entrar) ou pelo link pessoal de uma compra (biblioteca com venda+t). A sessao fica neste aparelho (localStorage faro_bib), 180 dias.) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<title>Biblioteca FARO | Moviki</title>
+<link rel="icon" href="/favicon512.png">
+<link rel="apple-touch-icon" href="/faro/icone-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Guia FARO">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b141e">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/faro/faro.css">
+<script src="/mvmetrica.js"></script>
+<script src="/faro/faro.js"></script>
+<style>
+body{background:#0b141e;color:#e8eef4}
+.bib-topo{padding:1rem 0 .4rem}
+.bib-topo .barra{display:flex;align-items:center;justify-content:space-between}
+.bib-topo .barra img{height:30px}
+.bib-topo .barra a,.bib-topo .barra button{color:#a9c2d3;font-size:.9rem;background:none;border:0;cursor:pointer;text-decoration:none;font-family:Inter,sans-serif}
+.bib-titulo{font-family:Poppins;font-weight:800;font-size:clamp(1.6rem,4.5vw,2.4rem);color:#fff;margin:1.2rem 0 .2rem}
+.bib-sub{color:#a9c2d3;margin:0 0 1.2rem}
+.fileira{margin:1.4rem 0 .6rem}
+.fileira h2{font-family:Poppins;font-size:1.15rem;color:#fff;margin:0 0 .7rem}
+.trilho{display:flex;gap:.9rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:.2rem .1rem 1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.trilho::-webkit-scrollbar{display:none}
+.capa{flex:0 0 auto;width:min(42vw,200px);scroll-snap-align:start;cursor:pointer;-webkit-tap-highlight-color:transparent;color:inherit;text-decoration:none;background:none;border:0;padding:0;text-align:left;font:inherit}
+.capa .img{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:2/3;background:#16222f;box-shadow:0 10px 26px rgba(0,0,0,.45);transition:transform .15s}
+.capa:hover .img,.capa:focus-visible .img{transform:scale(1.03)}
+.capa img{width:100%;height:100%;object-fit:cover;display:block}
+.capa.cinza img{filter:grayscale(1) brightness(.75)}
+.capa .selo{position:absolute;right:.5rem;top:.5rem;background:rgba(11,20,30,.82);color:#fff;font-size:.72rem;font-weight:700;padding:.25rem .55rem;border-radius:999px;font-family:Inter}
+.capa .selo.tem{background:#10b981;color:#062b1f}
+.capa .selo.breve{background:#f4c76b;color:#3a2a00}
+.capa .nome{font-weight:600;font-size:.92rem;margin:.55rem 0 .1rem;color:#fff;line-height:1.25}
+.capa .acao{font-size:.82rem;color:#a9c2d3}
+.capa .acao b{color:#10b981}
+.cartao{background:#fff;color:var(--texto);border-radius:18px;padding:1.4rem;max-width:460px;margin:1.6rem auto;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.cartao h2{margin:0 0 .4rem;font-size:1.25rem}
+.cartao p{margin:.2rem 0 .6rem;color:var(--suave)}
+.cartao .msg.ok{color:var(--verde)}
+.aviso{background:#16222f;border:1px solid #23364a;border-radius:14px;padding:1rem;color:#cfdbe6;margin:1rem 0;font-size:.95rem}
+.carregando{text-align:center;color:#a9c2d3;margin:3rem 0}
+</style>
+</head>
+<body>
+<header class="bib-topo">
+  <div class="wrap">
+    <div class="barra"><img src="/logo.png" alt="Moviki"><span><a href="mailto:suporte@moviki.com.br">Ajuda</a> <button id="sair" type="button" hidden>· Sair</button></span></div>
+    <div class="bib-titulo">Biblioteca FARO</div>
+    <p class="bib-sub" id="sub">Todos os Guias FARO num lugar só.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="carregando" id="carregando">Abrindo a sua biblioteca…</p>
+
+  <!-- Entrar com o codigo do e-mail -->
+  <div class="cartao" id="entrar" hidden>
+    <div id="passo1">
+      <h2>Entre com o seu e-mail</h2>
+      <p>Use o e-mail da compra. Mandamos um código de 6 números, sem senha.</p>
+      <label class="campo">E-mail<input id="email" type="email" autocomplete="email" inputmode="email" maxlength="120"></label>
+      <button class="btn btn-verde" id="pedir" type="button" style="width:100%;margin-top:1rem">Receber o código</button>
+      <p class="msg" id="msg1"></p>
+    </div>
+    <div id="passo2" hidden>
+      <h2>Digite o código</h2>
+      <p id="txt2">Mandamos para o seu e-mail. Olhe também em Promoções e no spam.</p>
+      <label class="campo">Código<input id="codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" style="letter-spacing:.4em;font-size:1.3rem;text-align:center"></label>
+      <button class="btn btn-verde" id="entrarBtn" type="button" style="width:100%;margin-top:1rem">Entrar</button>
+      <p class="mini" style="margin:.8rem 0 0"><a href="#" id="outroEmail">Usar outro e-mail</a> · <a href="#" id="reenviar">Mandar de novo</a></p>
+      <p class="msg" id="msg2"></p>
+    </div>
+  </div>
+
+  <!-- A estante -->
+  <div id="estante" hidden>
+    <section class="fileira" id="fMeus" hidden>
+      <h2>Seus guias</h2>
+      <div class="trilho" id="tMeus"></div>
+    </section>
+    <section class="fileira">
+      <h2>Todos os Guias FARO</h2>
+      <div class="trilho" id="tTodos"></div>
+    </section>
+    <div class="aviso" id="avisoBreve" hidden></div>
+    <p class="mini" style="color:#7f97aa;margin:2rem 0">Os guias em preto e branco você ainda não tem: toque para ver e comprar. Os coloridos já são seus.</p>
+  </div>
+  <p class="mini" style="text-align:center;margin:2.4rem 0;color:#7f97aa">Guia FARO · Moviki · EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA · CNPJ 68.289.841/0001-02</p>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var F = window.FARO, $ = function (s) { return document.querySelector(s); };
+  var KBIB = 'faro_bib', KACESSO = 'faro_acesso';
+  var ua = navigator.userAgent || '';
+  var noIphone = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  /* mesmo app do guia (instalado abre aqui); no iPhone o manifesto nao entra (ver acesso.html) */
+  if (!noIphone) { var lm = document.createElement('link'); lm.rel = 'manifest'; lm.href = '/faro/guia.webmanifest'; document.head.appendChild(lm); }
+
+  function ler(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function gravar(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+
+  var u = new URLSearchParams(location.search);
+  var v = u.get('v'), t = u.get('t');
+  if (v || t) { try { history.replaceState(null, '', location.pathname); } catch (e) {} }
+
+  function mostrarEntrar() {
+    $('#carregando').hidden = true; $('#estante').hidden = true; $('#entrar').hidden = false; $('#sair').hidden = true;
+    $('#sub').textContent = 'Todos os Guias FARO num lugar só.';
+  }
+
+  function capa(g) {
+    var a = document.createElement('button'); a.type = 'button';
+    a.className = 'capa' + (g.tem ? '' : ' cinza');
+    var selo = g.tem ? '<span class="selo tem">Seu</span>' : (g.emBreve ? '<span class="selo breve">Em breve</span>' : '');
+    var acao = g.tem ? '<b>Abrir</b>' : (g.emBreve ? 'Chega em ' + F.esc(g.previsao || 'breve') : (g.aVenda ? F.reais(g.pix) + ' no Pix' : 'Fora de venda'));
+    a.innerHTML = '<div class="img">' + (g.capa ? '<img src="' + F.esc(g.capa) + '" alt="" loading="lazy">' : '') + selo + '</div>' +
+      '<div class="nome">' + F.esc(String(g.titulo || '').replace(/^Guia FARO\s*[—-]\s*/, '')) + '</div><div class="acao">' + acao + '</div>';
+    a.addEventListener('click', function () {
+      if (g.tem && g.acesso) { F.ev('faro_bib_abrir', { produto: g.slug }); location.href = g.acesso; return; }
+      if (g.emBreve) {
+        F.ev('faro_bib_breve', { produto: g.slug });
+        var av = $('#avisoBreve'); av.hidden = false;
+        av.innerHTML = '<b>' + F.esc(String(g.titulo).replace(/^Guia FARO\s*[—-]\s*/, '')) + '</b> está sendo preparado. Para receber o aviso quando abrir, entre num guia seu e marque <b>Quero saber do próximo guia</b>.';
+        av.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      if (g.aVenda && g.pagina) { F.ev('faro_bib_comprar', { produto: g.slug }); location.href = g.pagina + '?utm_source=faro_biblioteca&utm_medium=app&utm_campaign=' + encodeURIComponent(g.slug); }
+    });
+    return a;
+  }
+
+  function desenhar(r) {
+    $('#carregando').hidden = true; $('#entrar').hidden = true; $('#estante').hidden = false; $('#sair').hidden = !ler(KBIB);
+    $('#sub').textContent = (r.nome ? r.nome + ', aqui' : 'Aqui') + ' estão os seus Guias FARO' + (r.email ? ' (' + r.email + ')' : '') + '.';
+    var meus = (r.guias || []).filter(function (g) { return g.tem; });
+    var tm = $('#tMeus'); tm.innerHTML = ''; meus.forEach(function (g) { tm.appendChild(capa(g)); });
+    $('#fMeus').hidden = !meus.length;
+    var tt = $('#tTodos'); tt.innerHTML = '';
+    (r.guias || []).slice().sort(function (a, b) { return (a.tem === b.tem) ? 0 : (a.tem ? 1 : -1); }).forEach(function (g) { tt.appendChild(capa(g)); });
+    F.ev('faro_biblioteca', { guias: meus.length });
+  }
+
+  function abrir(corpo, deLink) {
+    F.post(Object.assign({ acao: 'biblioteca' }, corpo)).then(function (r) {
+      if (r && r.ok) { if (r.token) gravar(KBIB, r.token); desenhar(r); return; }
+      if (corpo.token) gravar(KBIB, null);
+      if (deLink) gravar(KACESSO, null);
+      mostrarEntrar();
+      if (r && r.mensagem && !corpo.token) $('#msg1').textContent = r.mensagem;
+    }).catch(function () { $('#carregando').textContent = 'Sem conexão. Confira a internet e recarregue a página.'; });
+  }
+
+  /* ordem: link da compra no endereco > sessao guardada > link guardado pelo guia > entrar com codigo */
+  var guardado = null; try { guardado = JSON.parse(ler(KACESSO) || 'null'); } catch (e) {}
+  if (v && t) abrir({ venda: v, t: t }, false);
+  else if (ler(KBIB)) abrir({ token: ler(KBIB) }, false);
+  else if (guardado && guardado.v && guardado.t) abrir({ venda: guardado.v, t: guardado.t }, true);
+  else mostrarEntrar();
+
+  /* ---------- entrar com o codigo ---------- */
+  var emailAtual = '';
+  function pedir() {
+    var em = String($('#email').value || '').trim();
+    if (!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(em)) { $('#msg1').textContent = 'Confira o e-mail.'; return; }
+    $('#pedir').disabled = true; $('#msg1').textContent = '';
+    F.post({ acao: 'bib_codigo', email: em }).then(function (r) {
+      $('#pedir').disabled = false;
+      if (!r || !r.ok) { $('#msg1').textContent = (r && r.mensagem) || 'Não deu certo agora. Tente de novo.'; return; }
+      emailAtual = em; $('#passo1').hidden = true; $('#passo2').hidden = false;
+      $('#txt2').textContent = r.mensagem || 'Se este e-mail tiver um Guia FARO, o código chega em instantes.';
+      $('#codigo').focus(); F.ev('faro_bib_codigo', {});
+    }).catch(function () { $('#pedir').disabled = false; $('#msg1').textContent = 'Sem conexão. Tente de novo.'; });
+  }
+  $('#pedir').addEventListener('click', pedir);
+  $('#email').addEventListener('keydown', function (e) { if (e.key === 'Enter') pedir(); });
+  function entrar() {
+    var c = String($('#codigo').value || '').replace(/\D/g, '');
+    if (c.length !== 6) { $('#msg2').textContent = 'Digite os 6 números.'; return; }
+    $('#entrarBtn').disabled = true; $('#msg2').textContent = '';
+    F.post({ acao: 'bib_entrar', email: emailAtual, codigo: c }).then(function (r) {
+      $('#entrarBtn').disabled = false;
+      if (!r || !r.ok || !r.token) { $('#msg2').textContent = (r && r.mensagem) || 'Não deu certo. Peça um código novo.'; return; }
+      gravar(KBIB, r.token); F.ev('faro_bib_entrou', {});
+      $('#entrar').hidden = true; $('#carregando').hidden = false; abrir({ token: r.token }, false);
+    }).catch(function () { $('#entrarBtn').disabled = false; $('#msg2').textContent = 'Sem conexão. Tente de novo.'; });
+  }
+  $('#entrarBtn').addEventListener('click', entrar);
+  $('#codigo').addEventListener('input', function () { if (String(this.value).replace(/\D/g, '').length === 6) entrar(); });
+  $('#outroEmail').addEventListener('click', function (e) { e.preventDefault(); $('#passo2').hidden = true; $('#passo1').hidden = false; $('#codigo').value = ''; $('#msg2').textContent = ''; });
+  $('#reenviar').addEventListener('click', function (e) { e.preventDefault(); $('#passo2').hidden = true; $('#passo1').hidden = false; $('#email').value = emailAtual; pedir(); });
+  $('#sair').addEventListener('click', function () { gravar(KBIB, null); gravar(KACESSO, null); mostrarEntrar(); });
+})();
+</script>
+</body>
+</html>
