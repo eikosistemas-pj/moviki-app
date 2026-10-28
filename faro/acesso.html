@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/acesso.html | versao 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) ; botao Instalar o guia no celular (manifesto sem start_url: o atalho guarda o link pessoal) | antes 2026-10-28-faro1 -->
+<!-- MOVIKI faro/acesso.html | versao 2026-10-28-acesso2 (instalar de verdade: manifesto com start_url, so fora do iPhone; botao de velocidade do audio; PDF em outra aba; cartao da surpresa leva a /faro/surpresa.html) | antes 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) ; botao Instalar o guia no celular (manifesto sem start_url: o atalho guarda o link pessoal) | antes 2026-10-28-faro1 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -9,10 +9,10 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; media-src 'self'; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <title>Seu Guia FARO | Moviki</title>
 <link rel="icon" href="/favicon512.png">
-<!-- Instalar no celular. O manifesto NAO tem start_url de proposito: o atalho abre o endereco
-     da propria pagina, com o link pessoal (?v=&t=). No iPhone o app instalado nao enxerga o
-     armazenamento do Safari, entao o link precisa ir no endereco. -->
-<link rel="manifest" href="/faro/guia.webmanifest">
+<!-- Instalar no celular. O Chrome so oferece "Instalar" com manifesto que tem start_url
+     (/faro/acesso.html); o app instalado no Android le o link pessoal guardado pelo navegador.
+     No iPhone o app da tela de inicio NAO enxerga o que o Safari guardou: la o manifesto nao entra
+     (o script so o poe fora do iPhone) e o atalho usa o endereco da pagina, com ?v=&t=. -->
 <link rel="apple-touch-icon" href="/faro/icone-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -53,6 +53,9 @@
 .instalar{margin-top:1rem;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28);font-size:.98rem;padding:.75rem 1.2rem}
 .passos{margin:.8rem 0 0;padding-left:1.3rem}.passos li{margin:.45rem 0}
 .passos b{color:var(--marinho)}
+.caixaPlayer{display:flex;align-items:center;gap:.5rem}
+.caixaPlayer audio{flex:1;min-width:0}
+.vel{flex:0 0 auto;font-family:Poppins;font-weight:700;font-size:.92rem;color:#062b1f;background:var(--verde2);border:0;border-radius:999px;padding:.5rem .8rem;min-width:3.4rem;cursor:pointer}
 </style>
 </head>
 <body>
@@ -76,7 +79,7 @@
       <h2>2. Leia ou baixe</h2>
       <div class="acoes">
         <a class="btn btn-verde" id="ler">📖 Ler o guia na tela</a>
-        <a class="btn btn-claro" id="pdf" download>📄 Baixar o PDF</a>
+        <a class="btn btn-claro" id="pdf" target="_blank" rel="noopener">📄 Baixar o PDF</a>
       </div>
       <p class="mini" style="margin:.8rem 0 0" id="validade"></p>
     </div>
@@ -85,13 +88,13 @@
       <p class="mini" style="margin:-.3rem 0 .6rem">Toque num capítulo para ouvir. Ao terminar, o próximo começa sozinho.</p>
       <p class="mini" id="audioVazio" hidden>O audiobook está sendo finalizado e aparece aqui assim que ficar pronto. O texto completo já está liberado.</p>
       <ul class="faixa" id="faixas"></ul>
-      <audio id="player" controls preload="none" hidden></audio>
+      <div class="caixaPlayer" id="caixaPlayer" hidden><audio id="player" controls preload="none"></audio><button class="vel" id="vel" type="button" aria-label="Velocidade do áudio">1x</button></div>
     </div>
     <div class="moviki" id="bMoviki">
-      <div class="serie" style="color:#fff3d1">Capítulo 9 na prática</div>
-      <h2>Coloque o seu ponto no mapa</h2>
-      <p>Crie a página do seu negócio no Moviki e mostre ao cliente onde você está na praia, em tempo real. Teste grátis, sem cartão.</p>
-      <a class="btn" id="ctaMoviki" href="https://app.moviki.com.br/?criar=1&amp;utm_source=faro&amp;utm_medium=guia&amp;utm_campaign=verao-na-praia" target="_blank" rel="noopener">Criar minha página grátis</a>
+      <div class="serie" style="color:#fff3d1">🎁 Surpresa do Moviki</div>
+      <h2>Tem um presente para o seu ponto na praia</h2>
+      <p>Quando terminar o guia, abra a surpresa: é o jeito de o cliente achar você na areia, todo dia.</p>
+      <a class="btn" id="ctaMoviki" href="/faro/surpresa.html?utm_source=faro&amp;utm_medium=guia&amp;utm_campaign=verao-na-praia">Abrir a surpresa</a>
     </div>
     <div class="bloco" id="bGuarde">
       <h2>Deixe o guia no seu celular</h2>
@@ -136,6 +139,10 @@
 
   /* ---------- Instalar no celular ---------- */
   var pedidoInstalar = null;
+  /* manifesto so fora do iPhone (ver comentario no topo) */
+  if (!(/iPhone|iPad|iPod/.test(navigator.userAgent || '') || (/Macintosh/.test(navigator.userAgent || '') && navigator.maxTouchPoints > 1))) {
+    var lm = document.createElement('link'); lm.rel = 'manifest'; lm.href = '/faro/guia.webmanifest'; document.head.appendChild(lm);
+  }
   window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); pedidoInstalar = e; });
   var ua = navigator.userAgent || '';
   var noIphone = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
@@ -209,7 +216,20 @@
       var caps = (j && j.capitulos) || [];
       if (!caps.length) { $('#audioVazio').hidden = false; return; }
       var ouvidos = {}; try { ouvidos = JSON.parse(localStorage.getItem('faro_ouvidos_' + r.produto) || '{}'); } catch (e) {}
-      var ul = $('#faixas'), player = $('#player'), atual = -1, itens = [];
+      var ul = $('#faixas'), player = $('#player'), caixa = $('#caixaPlayer'), atual = -1, itens = [];
+      /* Velocidade como no WhatsApp: 1x → 1,5x → 2x. Fica guardada no aparelho. */
+      var VELS = [1, 1.5, 2], vel = 1;
+      try { vel = Number(localStorage.getItem('faro_vel')) || 1; } catch (e) {}
+      if (VELS.indexOf(vel) < 0) vel = 1;
+      function aplicarVel() { player.defaultPlaybackRate = vel; player.playbackRate = vel; $('#vel').textContent = String(vel).replace('.', ',') + 'x'; }
+      $('#vel').addEventListener('click', function () {
+        vel = VELS[(VELS.indexOf(vel) + 1) % VELS.length]; aplicarVel();
+        try { localStorage.setItem('faro_vel', String(vel)); } catch (e) {}
+        F.ev('faro_audio_vel', { produto: r.produto, vel: vel });
+      });
+      player.addEventListener('loadedmetadata', aplicarVel);
+      player.addEventListener('play', aplicarVel);
+      aplicarVel();
       caps.forEach(function (c, i) {
         var li = document.createElement('li');
         var min = Math.floor((c.duracao || 0) / 60), seg = Math.round((c.duracao || 0) % 60);
@@ -228,17 +248,17 @@
       }
       function fechar() {
         itens.forEach(function (li) { li.querySelector('.lugar').hidden = true; });
-        player.hidden = true;
+        caixa.hidden = true;
       }
       function tocar(i) {
-        if (i === atual && !player.hidden) {           /* mesmo capitulo: pausa ou continua */
+        if (i === atual && !caixa.hidden) {           /* mesmo capitulo: pausa ou continua */
           if (player.paused) player.play().catch(function () {}); else player.pause();
           return;
         }
         atual = i;
         fechar();
         var lugar = itens[i].querySelector('.lugar');
-        lugar.appendChild(player); lugar.hidden = false; player.hidden = false;
+        lugar.appendChild(caixa); lugar.hidden = false; caixa.hidden = false;
         player.src = r.base + caps[i].arquivo;
         player.play().catch(function () {});
         icones();
