@@ -1,1 +1,61 @@
-{"versao":"2026-10-28","capitulos":[]}
+{
+ "versao": "2026-10-28",
+ "voz": "Malu",
+ "capitulos": [
+  {
+   "titulo": "Antes de começar",
+   "arquivo": "audio/capitulo-00.mp3",
+   "duracao": 74
+  },
+  {
+   "titulo": "Por que este verão é a sua janela",
+   "arquivo": "audio/capitulo-01.mp3",
+   "duracao": 86
+  },
+  {
+   "titulo": "Escolher o que vender",
+   "arquivo": "audio/capitulo-02.mp3",
+   "duracao": 136
+  },
+  {
+   "titulo": "Licença sem dor de cabeça",
+   "arquivo": "audio/capitulo-03.mp3",
+   "duracao": 174
+  },
+  {
+   "titulo": "Higiene e segurança do alimento no calor",
+   "arquivo": "audio/capitulo-04.mp3",
+   "duracao": 103
+  },
+  {
+   "titulo": "O preço que fecha a conta",
+   "arquivo": "audio/capitulo-05.mp3",
+   "duracao": 131
+  },
+  {
+   "titulo": "Montar o seu kit",
+   "arquivo": "audio/capitulo-06.mp3",
+   "duracao": 76
+  },
+  {
+   "titulo": "O ponto e o horário",
+   "arquivo": "audio/capitulo-07.mp3",
+   "duracao": 89
+  },
+  {
+   "titulo": "Vender na areia: abordagem e Pix",
+   "arquivo": "audio/capitulo-08.mp3",
+   "duracao": 72
+  },
+  {
+   "titulo": "Ser encontrado: o cliente que volta",
+   "arquivo": "audio/capitulo-09.mp3",
+   "duracao": 106
+  },
+  {
+   "titulo": "Checklist final e mensagens prontas",
+   "arquivo": "audio/capitulo-10.mp3",
+   "duracao": 65
+  }
+ ]
+}
