@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/index.html | versao 2026-10-28-biblioteca (link Ja comprou? Meus guias para a Biblioteca FARO) | antes 2026-10-28-og (miniatura do link: og-verao.jpg) -->
+<!-- MOVIKI faro/index.html | versao 2026-10-28-natal (Guia 2 Natal por encomenda na vitrine, primeiro da lista) | antes 2026-10-28-biblioteca (link Ja comprou? Meus guias para a Biblioteca FARO) | antes 2026-10-28-og (miniatura do link: og-verao.jpg) -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
 <title>Guias FARO | Moviki</title>
-<meta name="description" content="Guias curtos e práticos para quem vende na rua, na praia e em eventos. Vídeo, audiobook, PDF e checklist.">
+<meta name="description" content="Guias curtos e práticos para quem vende na rua, na praia, em eventos e por encomenda. Vídeo, audiobook, PDF e checklist.">
 <meta property="og:title" content="Guias FARO | Moviki">
-<meta property="og:description" content="Guias curtos e práticos para quem vende na rua, na praia e em eventos. Vídeo, audiobook, PDF e checklist.">
+<meta property="og:description" content="Guias curtos e práticos para quem vende na rua, na praia, em eventos e por encomenda. Vídeo, audiobook, PDF e checklist.">
 <meta property="og:image" content="https://app.moviki.com.br/faro/verao-na-praia/og-verao.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -38,11 +38,20 @@
     <div class="barra"><a href="https://moviki.com.br"><img src="/logo.png" alt="Moviki"></a><a href="/faro/biblioteca.html">📚 Já comprou? Meus guias</a></div>
     <div class="serie">Guias FARO</div>
     <h1>O que fazer agora, para vender no momento certo.</h1>
-    <p class="lead">Guias curtos e práticos para quem vende na rua, na praia e em eventos. Cada guia chega com vídeo, audiobook, PDF e checklist.</p>
+    <p class="lead">Guias curtos e práticos para quem vende na rua, na praia, em eventos e por encomenda. Cada guia chega com vídeo, audiobook, PDF e checklist.</p>
   </div>
 </header>
 <main class="secao">
   <div class="wrap">
+    <a class="guia" href="/faro/natal-por-encomenda/">
+      <img src="/faro/natal-por-encomenda/capa.jpg" alt="Guia FARO Natal por encomenda">
+      <div>
+        <span class="etq">Natal 2026 · novo</span>
+        <h3>Natal por encomenda</h3>
+        <p>Do cardápio à entrega do dia 24: lei e rótulo, preço com o seu tempo, calendário de encomendas, sinal no Pix e entrega.</p>
+        <span class="btn btn-verde" id="precoNatal">Ver o guia</span>
+      </div>
+    </a>
     <a class="guia" href="/faro/verao-na-praia/">
       <img src="/faro/verao-na-praia/capa.jpg" alt="Guia FARO Vender na praia neste verão">
       <div>
@@ -58,9 +67,11 @@
 <footer class="rodape"><div class="wrap"><p>Moviki · EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA · CNPJ 68.289.841/0001-02 · <a href="https://moviki.com.br/termos.html">Termos</a> · <a href="https://moviki.com.br/privacidade.html">Privacidade</a></p></div></footer>
 <script>
 FARO.origem();
-FARO.get({ acao: 'produto', p: 'verao-na-praia' }).then(function (r) {
-  if (r && r.ok) document.getElementById('precoVerao').textContent = 'Ver o guia · ' + FARO.reais(r.pix) + ' no Pix';
-}).catch(function () {});
+[['verao-na-praia', 'precoVerao'], ['natal-por-encomenda', 'precoNatal']].forEach(function (g) {
+  FARO.get({ acao: 'produto', p: g[0] }).then(function (r) {
+    if (r && r.ok) document.getElementById(g[1]).textContent = 'Ver o guia · ' + FARO.reais(r.pix) + ' no Pix';
+  }).catch(function () {});
+});
 </script>
 </body>
 </html>

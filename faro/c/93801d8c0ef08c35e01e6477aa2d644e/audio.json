@@ -1,0 +1,42 @@
+{
+ "versao": "2026-10-28-parte1",
+ "voz": "Malu",
+ "capitulos": [
+  {
+   "titulo": "Antes de começar",
+   "arquivo": "audio/capitulo-00.mp3",
+   "duracao": 74
+  },
+  {
+   "titulo": "Por que o Natal é a sua janela",
+   "arquivo": "audio/capitulo-01.mp3",
+   "duracao": 120
+  },
+  {
+   "titulo": "O cardápio de Natal",
+   "arquivo": "audio/capitulo-02.mp3",
+   "duracao": 131
+  },
+  {
+   "titulo": "Vender em dia com a lei",
+   "arquivo": "audio/capitulo-03.mp3",
+   "duracao": 171
+  },
+  {
+   "titulo": "Higiene, conservação e rótulo",
+   "arquivo": "audio/capitulo-04.mp3",
+   "duracao": 149
+  },
+  {
+   "titulo": "O preço que fecha a conta",
+   "arquivo": "audio/capitulo-05.mp3",
+   "duracao": 157
+  },
+  {
+   "titulo": "O calendário das encomendas",
+   "arquivo": "audio/capitulo-06.mp3",
+   "duracao": 116
+  }
+ ],
+ "aviso": "A narração dos capítulos 7 a 11 chega nos próximos dias, aqui mesmo, no seu acesso. O texto completo já está em Ler o guia e no PDF."
+}
