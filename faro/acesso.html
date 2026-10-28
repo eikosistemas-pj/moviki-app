@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<!-- MOVIKI faro/acesso.html | versao 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) | antes 2026-10-28-faro1 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -22,14 +23,18 @@
 .acoes{display:grid;gap:.6rem}
 .acoes .btn{width:100%}
 .faixa{list-style:none;padding:0;margin:0}
-.faixa li{display:flex;align-items:center;gap:.8rem;padding:.6rem .4rem;border-bottom:1px solid var(--linha);cursor:pointer;border-radius:10px}
-.faixa li:hover{background:var(--fundo)}
+.faixa li{border-bottom:1px solid var(--linha);border-radius:10px}
+.faixa .linha{display:flex;align-items:center;gap:.8rem;padding:.7rem .4rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.faixa .linha:hover{background:var(--fundo);border-radius:10px}
 .faixa li.on{background:rgba(16,185,129,.09)}
+.faixa .ic{width:2rem;height:2rem;flex:0 0 2rem;border-radius:50%;background:rgba(16,185,129,.14);color:var(--verde);display:flex;align-items:center;justify-content:center;font-size:.8rem}
+.faixa li.on .ic{background:var(--verde2);color:#062b1f}
+.faixa .lugar{padding:0 .4rem .7rem}
 .faixa .n{font-family:Poppins;font-weight:700;color:var(--verde2);width:2rem}
 .faixa .t{flex:1;font-weight:600;color:var(--marinho);font-size:.95rem}
 .faixa .d{font-size:.82rem;color:var(--suave)}
 .faixa .feito{color:var(--verde);font-weight:800}
-#player{width:100%;margin:.6rem 0 0}
+#player{width:100%;display:block}
 .moviki{background:linear-gradient(135deg,#0a7d5a,#10b981);color:#fff;border-radius:18px;padding:1.4rem}
 .moviki h2{color:#fff}
 .moviki p{color:#e6fff5;margin:.3rem 0 1rem}
@@ -50,7 +55,7 @@
 <main class="wrap" id="conteudo" hidden>
   <div class="area">
     <div class="bloco" id="bVideo">
-      <h2>1. Comece pelo vídeo (1 minuto)</h2>
+      <h2>1. Boas-vindas</h2>
       <video id="video" controls playsinline preload="metadata"></video>
     </div>
     <div class="bloco" id="bLer">
@@ -63,6 +68,7 @@
     </div>
     <div class="bloco" id="bAudio">
       <h2>3. Ouça por capítulo</h2>
+      <p class="mini" style="margin:-.3rem 0 .6rem">Toque num capítulo para ouvir. Ao terminar, o próximo começa sozinho.</p>
       <p class="mini" id="audioVazio" hidden>O audiobook está sendo finalizado e aparece aqui assim que ficar pronto. O texto completo já está liberado.</p>
       <ul class="faixa" id="faixas"></ul>
       <audio id="player" controls preload="none" hidden></audio>
@@ -99,6 +105,11 @@
     else { var s = JSON.parse(localStorage.getItem(CHAVE) || 'null'); if (s) { v = s.v; t = s.t; } }
   } catch (e) {}
 
+  /* Um som por vez: qualquer video ou audio que comecar a tocar pausa os outros. */
+  document.addEventListener('play', function (e) {
+    Array.prototype.forEach.call(document.querySelectorAll('video,audio'), function (m) { if (m !== e.target && !m.paused) m.pause(); });
+  }, true);
+
   function erro(titulo, texto) {
     $('#titulo').textContent = titulo; $('#sub').textContent = '';
     $('#estadoTitulo').textContent = titulo; $('#estadoTexto').textContent = texto; $('#estado').hidden = false;
@@ -113,7 +124,11 @@
     $('#titulo').textContent = (r.nome ? r.nome + ', o' : 'O') + ' seu guia está aqui';
     $('#sub').textContent = r.titulo || '';
     document.title = (r.titulo || 'Guia FARO') + ' | Moviki';
-    $('#video').src = r.video; $('#video').poster = r.base + 'poster.jpg';
+    /* Dentro do guia vai a boas-vindas (o video de apresentacao ja foi visto na pagina de venda).
+       Se o arquivo de boas-vindas faltar, volta para o video que o robo indicar. */
+    var vid = $('#video');
+    vid.addEventListener('error', function () { if (vid.src.indexOf('boas-vindas') > -1 && r.video) { vid.src = r.video; vid.poster = r.base + 'poster.jpg'; } }, { once: true });
+    vid.src = r.base + 'boas-vindas.mp4'; vid.poster = r.base + 'poster-boas-vindas.jpg';
     $('#ler').href = r.leitura; $('#pdf').href = r.pdf;
     if (r.acessoAte) { var d = r.acessoAte.split('-'); $('#validade').textContent = 'Acesso liberado até ' + d[2] + '/' + d[1] + '/' + d[0] + '.'; }
     $('#conteudo').hidden = false;
@@ -130,24 +145,50 @@
       var caps = (j && j.capitulos) || [];
       if (!caps.length) { $('#audioVazio').hidden = false; return; }
       var ouvidos = {}; try { ouvidos = JSON.parse(localStorage.getItem('faro_ouvidos_' + r.produto) || '{}'); } catch (e) {}
-      var ul = $('#faixas'), player = $('#player'), atual = -1;
+      var ul = $('#faixas'), player = $('#player'), atual = -1, itens = [];
       caps.forEach(function (c, i) {
         var li = document.createElement('li');
         var min = Math.floor((c.duracao || 0) / 60), seg = Math.round((c.duracao || 0) % 60);
-        li.innerHTML = '<span class="n">' + String(i).padStart(2, '0') + '</span><span class="t">' + F.esc(c.titulo) + '</span><span class="d">' + (c.duracao ? min + ':' + String(seg).padStart(2, '0') : '') + '</span><span class="feito">' + (ouvidos[c.arquivo] ? '✓' : '') + '</span>';
-        li.addEventListener('click', function () { tocar(i); });
-        ul.appendChild(li);
+        li.innerHTML = '<div class="linha" role="button" tabindex="0"><span class="ic">▶</span><span class="n">' + String(i).padStart(2, '0') + '</span><span class="t">' + F.esc(c.titulo) + '</span><span class="d">' + (c.duracao ? min + ':' + String(seg).padStart(2, '0') : '') + '</span><span class="feito">' + (ouvidos[c.arquivo] ? '✓' : '') + '</span></div><div class="lugar" hidden></div>';
+        var linha = li.querySelector('.linha');
+        linha.addEventListener('click', function () { tocar(i); });
+        linha.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tocar(i); } });
+        ul.appendChild(li); itens.push(li);
       });
+      function icones() {
+        itens.forEach(function (li, k) {
+          var on = k === atual;
+          li.classList.toggle('on', on);
+          li.querySelector('.ic').textContent = on && !player.paused ? '❚❚' : '▶';
+        });
+      }
+      function fechar() {
+        itens.forEach(function (li) { li.querySelector('.lugar').hidden = true; });
+        player.hidden = true;
+      }
       function tocar(i) {
-        atual = i; player.hidden = false; player.src = r.base + caps[i].arquivo; player.play().catch(function () {});
-        Array.prototype.forEach.call(ul.children, function (li, k) { li.classList.toggle('on', k === i); });
+        if (i === atual && !player.hidden) {           /* mesmo capitulo: pausa ou continua */
+          if (player.paused) player.play().catch(function () {}); else player.pause();
+          return;
+        }
+        atual = i;
+        fechar();
+        var lugar = itens[i].querySelector('.lugar');
+        lugar.appendChild(player); lugar.hidden = false; player.hidden = false;
+        player.src = r.base + caps[i].arquivo;
+        player.play().catch(function () {});
+        icones();
+        try { itens[i].scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { }
         F.ev('faro_audio', { produto: r.produto, capitulo: i });
       }
+      player.addEventListener('play', icones);
+      player.addEventListener('pause', icones);
       player.addEventListener('ended', function () {
         if (atual < 0) return;
         ouvidos[caps[atual].arquivo] = 1; try { localStorage.setItem('faro_ouvidos_' + r.produto, JSON.stringify(ouvidos)); } catch (e) {}
-        ul.children[atual].querySelector('.feito').textContent = '✓';
+        itens[atual].querySelector('.feito').textContent = '✓';
         if (atual + 1 < caps.length) tocar(atual + 1);
+        else { fechar(); atual = -1; icones(); }
       });
     }).catch(function () { $('#audioVazio').hidden = false; });
   }
