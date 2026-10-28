@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; media-src 'self'; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<title>Seu Guia FARO | Moviki</title>
+<link rel="icon" href="/favicon512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/faro/faro.css">
+<script src="/mvmetrica.js"></script>
+<script src="/faro/faro.js"></script>
+<style>
+.area{display:grid;grid-template-columns:1fr;gap:1.2rem;margin-top:-1.8rem;position:relative}
+@media (min-width:861px){.area{grid-template-columns:1.15fr .85fr;grid-template-areas:"video ler" "video moviki" "audio moviki" "audio guarde";align-items:start}#bVideo{grid-area:video}#bLer{grid-area:ler}#bAudio{grid-area:audio}#bMoviki{grid-area:moviki}#bGuarde{grid-area:guarde}}
+.bloco{background:#fff;border:1px solid var(--linha);border-radius:18px;padding:1.2rem;box-shadow:0 10px 30px rgba(13,27,42,.06)}
+.bloco h2{font-size:1.15rem;margin:0 0 .7rem}
+.bloco video{border-radius:12px;width:100%;background:#0b141e}
+.acoes{display:grid;gap:.6rem}
+.acoes .btn{width:100%}
+.faixa{list-style:none;padding:0;margin:0}
+.faixa li{display:flex;align-items:center;gap:.8rem;padding:.6rem .4rem;border-bottom:1px solid var(--linha);cursor:pointer;border-radius:10px}
+.faixa li:hover{background:var(--fundo)}
+.faixa li.on{background:rgba(16,185,129,.09)}
+.faixa .n{font-family:Poppins;font-weight:700;color:var(--verde2);width:2rem}
+.faixa .t{flex:1;font-weight:600;color:var(--marinho);font-size:.95rem}
+.faixa .d{font-size:.82rem;color:var(--suave)}
+.faixa .feito{color:var(--verde);font-weight:800}
+#player{width:100%;margin:.6rem 0 0}
+.moviki{background:linear-gradient(135deg,#0a7d5a,#10b981);color:#fff;border-radius:18px;padding:1.4rem}
+.moviki h2{color:#fff}
+.moviki p{color:#e6fff5;margin:.3rem 0 1rem}
+.moviki .btn{background:#fff;color:#0a5c43}
+.estado{max-width:520px;margin:3rem auto;text-align:center}
+</style>
+</head>
+<body>
+<header class="topo" style="padding-bottom:3.2rem">
+  <div class="wrap">
+    <div class="barra"><img src="/logo.png" alt="Moviki"><a href="mailto:suporte@moviki.com.br">Ajuda</a></div>
+    <div class="serie">Guia FARO</div>
+    <h1 id="titulo" style="font-size:clamp(1.6rem,4vw,2.4rem)">Abrindo o seu guia…</h1>
+    <p class="lead" id="sub" style="margin:0"></p>
+  </div>
+</header>
+
+<main class="wrap" id="conteudo" hidden>
+  <div class="area">
+    <div class="bloco" id="bVideo">
+      <h2>1. Comece pelo vídeo (1 minuto)</h2>
+      <video id="video" controls playsinline preload="metadata"></video>
+    </div>
+    <div class="bloco" id="bLer">
+      <h2>2. Leia ou baixe</h2>
+      <div class="acoes">
+        <a class="btn btn-verde" id="ler">📖 Ler o guia na tela</a>
+        <a class="btn btn-claro" id="pdf" download>📄 Baixar o PDF</a>
+      </div>
+      <p class="mini" style="margin:.8rem 0 0" id="validade"></p>
+    </div>
+    <div class="bloco" id="bAudio">
+      <h2>3. Ouça por capítulo</h2>
+      <p class="mini" id="audioVazio" hidden>O audiobook está sendo finalizado e aparece aqui assim que ficar pronto. O texto completo já está liberado.</p>
+      <ul class="faixa" id="faixas"></ul>
+      <audio id="player" controls preload="none" hidden></audio>
+    </div>
+    <div class="moviki" id="bMoviki">
+      <div class="serie" style="color:#fff3d1">Capítulo 9 na prática</div>
+      <h2>Coloque o seu ponto no mapa</h2>
+      <p>Crie a página do seu negócio no Moviki e mostre ao cliente onde você está na praia, em tempo real. Teste grátis, sem cartão.</p>
+      <a class="btn" id="ctaMoviki" href="https://app.moviki.com.br/?criar=1&amp;utm_source=faro&amp;utm_medium=guia&amp;utm_campaign=verao-na-praia" target="_blank" rel="noopener">Criar minha página grátis</a>
+    </div>
+    <div class="bloco" id="bGuarde">
+      <h2>Guarde este link</h2>
+      <p class="mini" style="margin:0">Este endereço é só seu. Ele também está no e-mail de entrega. Para pedir a devolução em até 7 dias, escreva para suporte@moviki.com.br.</p>
+    </div>
+  </div>
+  <p class="mini" style="text-align:center;margin:2.4rem 0">Guia FARO · Moviki · EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA · CNPJ 68.289.841/0001-02</p>
+</main>
+
+<div class="estado" id="estado" hidden>
+  <div style="font-size:2.6rem">🔒</div>
+  <h2 id="estadoTitulo">Não foi possível abrir</h2>
+  <p id="estadoTexto" class="mini"></p>
+  <a class="btn btn-claro" href="mailto:suporte@moviki.com.br">Falar com o suporte</a>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var F = window.FARO, $ = function (s) { return document.querySelector(s); };
+  var CHAVE = 'faro_acesso';
+  var u = new URLSearchParams(location.search), v = u.get('v') || '', t = u.get('t') || '';
+  try {
+    if (v && t) localStorage.setItem(CHAVE, JSON.stringify({ v: v, t: t }));
+    else { var s = JSON.parse(localStorage.getItem(CHAVE) || 'null'); if (s) { v = s.v; t = s.t; } }
+  } catch (e) {}
+
+  function erro(titulo, texto) {
+    $('#titulo').textContent = titulo; $('#sub').textContent = '';
+    $('#estadoTitulo').textContent = titulo; $('#estadoTexto').textContent = texto; $('#estado').hidden = false;
+  }
+  if (!v || !t) return erro('Link incompleto', 'Abra o guia pelo botão do e-mail de entrega.');
+
+  F.post({ acao: 'acesso', venda: v, t: t }).then(function (r) {
+    if (!r || !r.ok) {
+      if (r && (r.erro === 'link' || r.erro === 'venda')) { try { localStorage.removeItem(CHAVE); } catch (e) {} }
+      return erro('Não foi possível abrir', (r && r.mensagem) || 'Tente de novo em instantes ou fale com o suporte.');
+    }
+    $('#titulo').textContent = (r.nome ? r.nome + ', o' : 'O') + ' seu guia está aqui';
+    $('#sub').textContent = r.titulo || '';
+    document.title = (r.titulo || 'Guia FARO') + ' | Moviki';
+    $('#video').src = r.video; $('#video').poster = r.base + 'poster.jpg';
+    $('#ler').href = r.leitura; $('#pdf').href = r.pdf;
+    if (r.acessoAte) { var d = r.acessoAte.split('-'); $('#validade').textContent = 'Acesso liberado até ' + d[2] + '/' + d[1] + '/' + d[0] + '.'; }
+    $('#conteudo').hidden = false;
+    F.ev('faro_acesso', { produto: r.produto });
+    carregarAudio(r);
+    $('#video').addEventListener('play', function () { F.ev('faro_video', { produto: r.produto }); }, { once: true });
+    $('#ler').addEventListener('click', function () { F.ev('faro_ler', { produto: r.produto }); });
+    $('#pdf').addEventListener('click', function () { F.ev('faro_pdf', { produto: r.produto }); });
+    $('#ctaMoviki').addEventListener('click', function () { F.ev('faro_cta_moviki', { produto: r.produto }); });
+  }).catch(function () { erro('Sem conexão', 'Confira a internet e recarregue a página.'); });
+
+  function carregarAudio(r) {
+    fetch(r.audio, { cache: 'no-cache' }).then(function (x) { return x.json(); }).then(function (j) {
+      var caps = (j && j.capitulos) || [];
+      if (!caps.length) { $('#audioVazio').hidden = false; return; }
+      var ouvidos = {}; try { ouvidos = JSON.parse(localStorage.getItem('faro_ouvidos_' + r.produto) || '{}'); } catch (e) {}
+      var ul = $('#faixas'), player = $('#player'), atual = -1;
+      caps.forEach(function (c, i) {
+        var li = document.createElement('li');
+        var min = Math.floor((c.duracao || 0) / 60), seg = Math.round((c.duracao || 0) % 60);
+        li.innerHTML = '<span class="n">' + String(i).padStart(2, '0') + '</span><span class="t">' + F.esc(c.titulo) + '</span><span class="d">' + (c.duracao ? min + ':' + String(seg).padStart(2, '0') : '') + '</span><span class="feito">' + (ouvidos[c.arquivo] ? '✓' : '') + '</span>';
+        li.addEventListener('click', function () { tocar(i); });
+        ul.appendChild(li);
+      });
+      function tocar(i) {
+        atual = i; player.hidden = false; player.src = r.base + caps[i].arquivo; player.play().catch(function () {});
+        Array.prototype.forEach.call(ul.children, function (li, k) { li.classList.toggle('on', k === i); });
+        F.ev('faro_audio', { produto: r.produto, capitulo: i });
+      }
+      player.addEventListener('ended', function () {
+        if (atual < 0) return;
+        ouvidos[caps[atual].arquivo] = 1; try { localStorage.setItem('faro_ouvidos_' + r.produto, JSON.stringify(ouvidos)); } catch (e) {}
+        ul.children[atual].querySelector('.feito').textContent = '✓';
+        if (atual + 1 < caps.length) tocar(atual + 1);
+      });
+    }).catch(function () { $('#audioVazio').hidden = false; });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<title>Guias FARO | Moviki</title>
+<meta name="description" content="Guias curtos e práticos para quem vende na rua, na praia e em eventos. Vídeo, audiobook, PDF e checklist.">
+<meta property="og:image" content="https://app.moviki.com.br/faro/verao-na-praia/capa.jpg">
+<link rel="icon" href="/favicon512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/faro/faro.css">
+<script src="/mvmetrica.js"></script>
+<script src="/faro/faro.js"></script>
+<style>
+.guia{display:grid;grid-template-columns:320px 1fr;gap:1.4rem;align-items:center;background:#fff;border:1px solid var(--linha);border-radius:20px;padding:1rem;text-decoration:none;color:inherit;box-shadow:0 14px 34px rgba(13,27,42,.08)}
+.guia img{border-radius:12px;width:100%}
+.guia h3{font-size:1.3rem}
+.guia p{margin:.2rem 0 .8rem;color:var(--suave)}
+@media (max-width:700px){.guia{grid-template-columns:1fr}}
+.etq{display:inline-block;background:rgba(244,199,107,.25);color:#7a5a12;font-weight:700;font-size:.78rem;padding:.25rem .6rem;border-radius:999px}
+</style>
+</head>
+<body>
+<header class="topo">
+  <div class="wrap">
+    <div class="barra"><a href="https://moviki.com.br"><img src="/logo.png" alt="Moviki"></a></div>
+    <div class="serie">Guias FARO</div>
+    <h1>O que fazer agora, para vender no momento certo.</h1>
+    <p class="lead">Guias curtos e práticos para quem vende na rua, na praia e em eventos. Cada guia chega com vídeo, audiobook, PDF e checklist.</p>
+  </div>
+</header>
+<main class="secao">
+  <div class="wrap">
+    <a class="guia" href="/faro/verao-na-praia/">
+      <img src="/faro/verao-na-praia/capa.jpg" alt="Guia FARO Vender na praia neste verão">
+      <div>
+        <span class="etq">Temporada 2026/2027</span>
+        <h3>Vender na praia neste verão</h3>
+        <p>Do zero ao Pix na areia: o que vender, licença, preço, kit, ponto e como fazer o cliente voltar.</p>
+        <span class="btn btn-verde" id="precoVerao">Ver o guia</span>
+      </div>
+    </a>
+    <p class="mini" style="margin-top:2rem">Novos guias saem conforme a época do ano. Os guias FARO são publicados pelo Moviki, que coloca o seu negócio no mapa em tempo real.</p>
+  </div>
+</main>
+<footer class="rodape"><div class="wrap"><p>Moviki · EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA · CNPJ 68.289.841/0001-02 · <a href="https://moviki.com.br/termos.html">Termos</a> · <a href="https://moviki.com.br/privacidade.html">Privacidade</a></p></div></footer>
+<script>
+FARO.origem();
+FARO.get({ acao: 'produto', p: 'verao-na-praia' }).then(function (r) {
+  if (r && r.ok) document.getElementById('precoVerao').textContent = 'Ver o guia · ' + FARO.reais(r.pix) + ' no Pix';
+}).catch(function () {});
+</script>
+</body>
+</html>
