@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/biblioteca.html | versao 2026-10-28-entrar-facil (pedido do Paulo em 28/10 a noite, publico 45+: o e-mail traz o botao Entrar na minha biblioteca, que entra sozinho (?entrar=), o codigo virou alternativa, e o botao Nao consigo entrar: quero ajuda no WhatsApp (robo bib_ajuda)) | antes 2026-10-28-biblioteca (Biblioteca FARO "estilo Netflix", pedido do Paulo em 28/10: todos os guias em fileiras de capas; os que a pessoa tem ficam coloridos e abrem o guia; os outros ficam em preto e branco e levam a compra; "Em breve" para guia anunciado. Entrada sem senha: codigo de 6 numeros no e-mail da compra (moviki-robo /api/faro bib_codigo, bib_entrar) ou pelo link pessoal de uma compra (biblioteca com venda+t). A sessao fica neste aparelho (localStorage faro_bib), 180 dias.) -->
+<!-- MOVIKI faro/biblioteca.html | versao 2026-10-28-menu (pedido do Paulo em 28/10 a noite: os guias a venda aparecem com selo A VENDA / NOVO, preco e prazo, inclusive para quem ainda nao entrou; fileiras Seus guias, A venda agora e Em breve; o Ajuda e o Sair viraram o botao Menu do alto (o menu marca Seu nos guias ja comprados, faro_meus), igual em toda pagina dos guias; Nao consigo entrar abre direto pelo menu, #ajuda) | antes 2026-10-28-entrar-facil (pedido do Paulo em 28/10 a noite, publico 45+: o e-mail traz o botao Entrar na minha biblioteca, que entra sozinho (?entrar=), o codigo virou alternativa, e o botao Nao consigo entrar: quero ajuda no WhatsApp (robo bib_ajuda)) | antes 2026-10-28-biblioteca (Biblioteca FARO "estilo Netflix", pedido do Paulo em 28/10: todos os guias em fileiras de capas; os que a pessoa tem ficam coloridos e abrem o guia; os outros ficam em preto e branco e levam a compra; "Em breve" para guia anunciado. Entrada sem senha: codigo de 6 numeros no e-mail da compra (moviki-robo /api/faro bib_codigo, bib_entrar) ou pelo link pessoal de uma compra (biblioteca com venda+t). A sessao fica neste aparelho (localStorage faro_bib), 180 dias.) -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -25,7 +25,7 @@ body{background:#0b141e;color:#e8eef4}
 .bib-topo{padding:1rem 0 .4rem}
 .bib-topo .barra{display:flex;align-items:center;justify-content:space-between}
 .bib-topo .barra img{height:30px}
-.bib-topo .barra a,.bib-topo .barra button{color:#a9c2d3;font-size:.9rem;background:none;border:0;cursor:pointer;text-decoration:none;font-family:Inter,sans-serif}
+.bib-topo .barra > a,.bib-topo .barra button:not(.fm-btn){color:#a9c2d3;font-size:.9rem;background:none;border:0;cursor:pointer;text-decoration:none;font-family:Inter,sans-serif}
 .bib-titulo{font-family:Poppins;font-weight:800;font-size:clamp(1.6rem,4.5vw,2.4rem);color:#fff;margin:1.2rem 0 .2rem}
 .bib-sub{color:#a9c2d3;margin:0 0 1.2rem}
 .fileira{margin:1.4rem 0 .6rem}
@@ -37,6 +37,12 @@ body{background:#0b141e;color:#e8eef4}
 .capa:hover .img,.capa:focus-visible .img{transform:scale(1.03)}
 .capa img{width:100%;height:100%;object-fit:cover;display:block}
 .capa.cinza img{filter:grayscale(1) brightness(.75)}
+.capa .selos{position:absolute;left:.5rem;top:.5rem;display:flex;flex-wrap:wrap;gap:.25rem;max-width:calc(100% - 1rem)}
+.capa .selos .selo-venda{margin:0;box-shadow:0 3px 10px rgba(0,0,0,.35);font-size:.74rem;padding:.25rem .6rem}
+.capa .preco{position:absolute;left:0;right:0;bottom:0;padding:1.6rem .6rem .55rem;background:linear-gradient(transparent,rgba(5,12,20,.92));color:#fff;font:800 .95rem Poppins,sans-serif}
+.capa .preco small{display:block;font:600 .74rem Inter,sans-serif;color:#f4c76b}
+.capa .comprar{display:inline-block;margin-top:.35rem;background:#10b981;color:#062b1f;font-weight:700;font-size:.85rem;border-radius:999px;padding:.35rem .8rem}
+.capa.breve img{filter:saturate(.35) brightness(.7)}
 .capa .selo{position:absolute;right:.5rem;top:.5rem;background:rgba(11,20,30,.82);color:#fff;font-size:.72rem;font-weight:700;padding:.25rem .55rem;border-radius:999px;font-family:Inter}
 .capa .selo.tem{background:#10b981;color:#062b1f}
 .capa .selo.breve{background:#f4c76b;color:#3a2a00}
@@ -54,7 +60,7 @@ body{background:#0b141e;color:#e8eef4}
 <body>
 <header class="bib-topo">
   <div class="wrap">
-    <div class="barra"><img src="/logo.png" alt="Moviki"><span><a href="mailto:suporte@moviki.com.br">Ajuda</a> <button id="sair" type="button" hidden>· Sair</button></span></div>
+    <div class="barra"><a href="/faro/"><img src="/logo.png" alt="Moviki"></a><span data-faro-menu></span></div>
     <div class="bib-titulo">Biblioteca FARO</div>
     <p class="bib-sub" id="sub">Todos os Guias FARO num lugar só.</p>
   </div>
@@ -63,10 +69,16 @@ body{background:#0b141e;color:#e8eef4}
 <main class="wrap">
   <p class="carregando" id="carregando">Abrindo a sua biblioteca…</p>
 
+  <!-- Quem ainda nao entrou ja ve o que esta a venda (catalogo VENDA do faro.js, preco do robo) -->
+  <section class="fileira" id="fVendaFora" hidden>
+    <h2>🔥 À venda agora</h2>
+    <div class="trilho" id="tVendaFora"></div>
+  </section>
+
   <!-- Entrar com o codigo do e-mail -->
   <div class="cartao" id="entrar" hidden>
     <div id="passo1">
-      <h2>Entre com o seu e-mail</h2>
+      <h2>Já comprou? Entre com o seu e-mail</h2>
       <p>Use o e-mail da compra. Mandamos um e-mail com o botão <b>Entrar na minha biblioteca</b>: é só tocar nele. Sem senha.</p>
       <label class="campo">E-mail<input id="email" type="email" autocomplete="email" inputmode="email" maxlength="120"></label>
       <button class="btn btn-verde" id="pedir" type="button" style="width:100%;margin-top:1rem">Receber o botão de entrar</button>
@@ -101,12 +113,16 @@ body{background:#0b141e;color:#e8eef4}
       <h2>Seus guias</h2>
       <div class="trilho" id="tMeus"></div>
     </section>
-    <section class="fileira">
-      <h2>Todos os Guias FARO</h2>
-      <div class="trilho" id="tTodos"></div>
+    <section class="fileira" id="fVenda" hidden>
+      <h2>🔥 À venda agora</h2>
+      <div class="trilho" id="tVenda"></div>
+    </section>
+    <section class="fileira" id="fBreve" hidden>
+      <h2>Em breve</h2>
+      <div class="trilho" id="tBreve"></div>
     </section>
     <div class="aviso" id="avisoBreve" hidden></div>
-    <p class="mini" style="color:#7f97aa;margin:2rem 0">Os guias em preto e branco você ainda não tem: toque para ver e comprar. Os coloridos já são seus.</p>
+    <p class="mini" style="color:#7f97aa;margin:2rem 0">Toque num guia <b style="color:#fff">À venda</b> para ver o que tem dentro e comprar. Os da fileira <b style="color:#fff">Seus guias</b> já são seus: toque para abrir. Para voltar a qualquer lugar, use o botão <b style="color:#fff">Menu</b> lá em cima.</p>
   </div>
   <p class="mini" style="text-align:center;margin:2.4rem 0;color:#7f97aa">Guia FARO · Moviki · EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA · CNPJ 68.289.841/0001-02</p>
 </main>
@@ -115,6 +131,7 @@ body{background:#0b141e;color:#e8eef4}
 (function () {
   'use strict';
   var F = window.FARO, $ = function (s) { return document.querySelector(s); };
+  F.menu();
   var KBIB = 'faro_bib', KACESSO = 'faro_acesso';
   var ua = navigator.userAgent || '';
   var noIphone = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
@@ -129,15 +146,38 @@ body{background:#0b141e;color:#e8eef4}
   if (v || t || ent) { try { history.replaceState(null, '', location.pathname); } catch (e) {} }
 
   function mostrarEntrar() {
-    $('#carregando').hidden = true; $('#estante').hidden = true; $('#entrar').hidden = false; $('#sair').hidden = true;
+    $('#carregando').hidden = true; $('#estante').hidden = true; $('#entrar').hidden = false;
     $('#sub').textContent = 'Todos os Guias FARO num lugar só.';
+    vitrineFora();
+    if (location.hash === '#ajuda') abrirAjuda();
+  }
+
+  /* guias a venda para quem ainda nao entrou: o preco e o "ainda vende?" saem do robo */
+  var foraFeita = false;
+  function vitrineFora() {
+    if (foraFeita) { $('#fVendaFora').hidden = !$('#tVendaFora').children.length; return; }
+    foraFeita = true;
+    var t = $('#tVendaFora');
+    F.aVenda().forEach(function (v) {
+      var g = { slug: v.slug, titulo: v.titulo, capa: v.capa, pagina: v.pagina, aVenda: true, pix: null };
+      var el = capa(g); el.hidden = true; t.appendChild(el);
+      F.get({ acao: 'produto', p: v.slug }).then(function (r) {
+        if (r && r.ok) { g.pix = r.pix; var n = capa(g); t.replaceChild(n, el); $('#fVendaFora').hidden = false; }
+      }).catch(function () {});
+    });
   }
 
   function capa(g) {
     var a = document.createElement('button'); a.type = 'button';
-    a.className = 'capa' + (g.tem ? '' : ' cinza');
+    var info = F.infoVenda(g.slug) || {};
+    var vende = !g.tem && !g.emBreve && g.aVenda;
+    a.className = 'capa' + (g.emBreve ? ' breve' : (!g.tem && !vende ? ' cinza' : ''));
     var selo = g.tem ? '<span class="selo tem">Seu</span>' : (g.emBreve ? '<span class="selo breve">Em breve</span>' : '');
-    var acao = g.tem ? '<b>Abrir</b>' : (g.emBreve ? 'Chega em ' + F.esc(g.previsao || 'breve') : (g.aVenda ? F.reais(g.pix) + ' no Pix' : 'Fora de venda'));
+    if (vende) {
+      selo = '<span class="selos"><span class="selo-venda">À venda</span>' + (info.novo ? '<span class="selo-venda novo">Novo</span>' : '') + '</span>' +
+        (g.pix != null ? '<span class="preco">' + F.reais(g.pix) + ' no Pix' + (info.prazo ? '<small>' + F.esc(info.prazo) + '</small>' : '') + '</span>' : '');
+    }
+    var acao = g.tem ? '<b>Abrir</b>' : (g.emBreve ? 'Chega em ' + F.esc(g.previsao || 'breve') : (vende ? '<span class="comprar">Ver e comprar ›</span>' : 'Fora de venda'));
     a.innerHTML = '<div class="img">' + (g.capa ? '<img src="' + F.esc(g.capa) + '" alt="" loading="lazy">' : '') + selo + '</div>' +
       '<div class="nome">' + F.esc(String(g.titulo || '').replace(/^Guia FARO\s*[—-]\s*/, '')) + '</div><div class="acao">' + acao + '</div>';
     a.addEventListener('click', function () {
@@ -149,19 +189,22 @@ body{background:#0b141e;color:#e8eef4}
         av.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
-      if (g.aVenda && g.pagina) { F.ev('faro_bib_comprar', { produto: g.slug }); location.href = g.pagina + '?utm_source=faro_biblioteca&utm_medium=app&utm_campaign=' + encodeURIComponent(g.slug); }
+      if (g.aVenda && g.pagina) { F.ev('faro_bib_comprar', { produto: g.slug }); location.href = g.pagina + (g.pagina.indexOf('?') > -1 ? '&' : '?') + 'utm_source=faro_biblioteca&utm_medium=app&utm_campaign=' + encodeURIComponent(g.slug); }
     });
     return a;
   }
 
   function desenhar(r) {
-    $('#carregando').hidden = true; $('#entrar').hidden = true; $('#estante').hidden = false; $('#sair').hidden = !ler(KBIB);
+    $('#carregando').hidden = true; $('#entrar').hidden = true; $('#fVendaFora').hidden = true; $('#estante').hidden = false;
     $('#sub').textContent = (r.nome ? r.nome + ', aqui' : 'Aqui') + ' estão os seus Guias FARO' + (r.email ? ' (' + r.email + ')' : '') + '.';
     var meus = (r.guias || []).filter(function (g) { return g.tem; });
+    gravar('faro_meus', meus.map(function (g) { return g.slug; }).join(','));   /* o menu mostra "Seu" em vez de "A venda" */
     var tm = $('#tMeus'); tm.innerHTML = ''; meus.forEach(function (g) { tm.appendChild(capa(g)); });
     $('#fMeus').hidden = !meus.length;
-    var tt = $('#tTodos'); tt.innerHTML = '';
-    (r.guias || []).slice().sort(function (a, b) { return (a.tem === b.tem) ? 0 : (a.tem ? 1 : -1); }).forEach(function (g) { tt.appendChild(capa(g)); });
+    var venda = (r.guias || []).filter(function (g) { return !g.tem && !g.emBreve && g.aVenda; });
+    var breve = (r.guias || []).filter(function (g) { return !g.tem && g.emBreve; });
+    var tv = $('#tVenda'); tv.innerHTML = ''; venda.forEach(function (g) { tv.appendChild(capa(g)); }); $('#fVenda').hidden = !venda.length;
+    var tb = $('#tBreve'); tb.innerHTML = ''; breve.forEach(function (g) { tb.appendChild(capa(g)); }); $('#fBreve').hidden = !breve.length;
     F.ev('faro_biblioteca', { guias: meus.length });
   }
 
@@ -216,14 +259,17 @@ body{background:#0b141e;color:#e8eef4}
   $('#codigo').addEventListener('input', function () { if (String(this.value).replace(/\D/g, '').length === 6) entrar(); });
   $('#outroEmail').addEventListener('click', function (e) { e.preventDefault(); $('#passo2').hidden = true; $('#passo1').hidden = false; $('#codigo').value = ''; $('#msg2').textContent = ''; });
   $('#reenviar').addEventListener('click', function (e) { e.preventDefault(); $('#passo2').hidden = true; $('#passo1').hidden = false; $('#email').value = emailAtual; pedir(); });
-  $('#sair').addEventListener('click', function () { gravar(KBIB, null); gravar(KACESSO, null); mostrarEntrar(); });
 
   /* ---------- ajuda no WhatsApp ---------- */
-  $('#ajudaAbrir').addEventListener('click', function () {
-    $('#ajuda').hidden = false; this.hidden = true;
+  function abrirAjuda() {
+    if ($('#entrar').hidden) return;
+    $('#ajuda').hidden = false; $('#ajudaAbrir').hidden = true;
     if (emailAtual || $('#email').value) $('#ajudaEmail').value = emailAtual || $('#email').value;
+    $('#ajuda').scrollIntoView({ behavior: 'smooth', block: 'center' });
     $('#ajudaWa').focus(); F.ev('faro_bib_ajuda_abrir', {});
-  });
+  }
+  $('#ajudaAbrir').addEventListener('click', abrirAjuda);
+  window.addEventListener('hashchange', function () { if (location.hash === '#ajuda') abrirAjuda(); });
   $('#ajudaPedir').addEventListener('click', function () {
     var wa = String($('#ajudaWa').value || '').replace(/\D/g, '');
     if (wa.length < 10 || wa.length > 13) { $('#msgAjuda').textContent = 'Confira o WhatsApp com DDD.'; return; }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/verao-na-praia/index.html | versao 2026-10-28-artigo (rodape com o link do artigo gratis no site e da central /guias) | antes 2026-10-28-parceiro (a compra leva o apelido do parceiro que indicou, ?ref= ou cookie mv_ref: 50% do guia para ele) | antes 2026-10-28-video2 (video de venda sem o "comece pelo capitulo zero" no fim: quem ainda nao comprou nao tem capitulo; ultimo cartao virou Texto, audio e uma tarefa / Em cada capitulo. Bom verao e boas vendas!; ?v=2 contra o cache) | antes 2026-10-28-indicar (botao do WhatsApp da tela de pago virou Guardar o guia no meu WhatsApp, para nao confundir com indicar) | antes 2026-10-28-og (miniatura do link refeita: og-verao.jpg 1200x630 com o titulo no centro, que e o pedaco que o WhatsApp mostra; botao Mandar o guia para o meu WhatsApp na tela de pago) -->
+<!-- MOVIKI faro/verao-na-praia/index.html | versao 2026-10-28-menu (botao Menu no alto e atalho Todos os guias para voltar ao comeco) | antes 2026-10-28-artigo (rodape com o link do artigo gratis no site e da central /guias) | antes 2026-10-28-parceiro (a compra leva o apelido do parceiro que indicou, ?ref= ou cookie mv_ref: 50% do guia para ele) | antes 2026-10-28-video2 (video de venda sem o "comece pelo capitulo zero" no fim: quem ainda nao comprou nao tem capitulo; ultimo cartao virou Texto, audio e uma tarefa / Em cada capitulo. Bom verao e boas vendas!; ?v=2 contra o cache) | antes 2026-10-28-indicar (botao do WhatsApp da tela de pago virou Guardar o guia no meu WhatsApp, para nao confundir com indicar) | antes 2026-10-28-og (miniatura do link refeita: og-verao.jpg 1200x630 com o titulo no centro, que e o pedaco que o WhatsApp mostra; botao Mandar o guia para o meu WhatsApp na tela de pago) -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; media-src 'self'; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
@@ -29,7 +29,7 @@
 
 <header class="topo">
   <div class="wrap">
-    <div class="barra"><a href="/faro/"><img src="/logo.png" alt="Moviki"></a><a href="#perguntas">Dúvidas</a></div>
+    <div class="barra"><a href="/faro/"><img src="/logo.png" alt="Moviki"></a><span style="display:flex;align-items:center;gap:.6rem"><a href="#perguntas" class="vit-bib">Dúvidas</a><span data-faro-menu></span></span></div>
     <div class="heroi">
       <div>
         <div class="serie">Guia FARO · Temporada 2026/2027</div>
@@ -219,6 +219,8 @@
 </div>
 
 <script>
+FARO.menu({ volta: /\/faro\/biblioteca\.html/.test(document.referrer || '') ? { href: '/faro/biblioteca.html', txt: 'Minha biblioteca' } : { href: '/faro/', txt: 'Todos os guias' } });
+
 (function () {
   'use strict';
   var F = window.FARO, PRODUTO = 'verao-na-praia', CHAVE = 'faro_compra_' + PRODUTO;

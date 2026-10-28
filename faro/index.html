@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/index.html | versao 2026-10-28-rodizio (rodizio da temporada: card de guia com data-ate some sozinho depois da data ou quando o robo diz que nao vende mais; sem guia nenhum aparece o aviso do proximo) | antes 2026-10-28-artigo (rodape com os artigos gratis do site e a central /guias) | antes 2026-10-28-natal (Guia 2 Natal por encomenda na vitrine, primeiro da lista) | antes 2026-10-28-biblioteca (link Ja comprou? Meus guias para a Biblioteca FARO) | antes 2026-10-28-og (miniatura do link: og-verao.jpg) -->
+<!-- MOVIKI faro/index.html | versao 2026-10-28-menu (botao Menu no alto, selo A venda / Novo nos cards e o prazo real do Natal) | antes 2026-10-28-rodizio (rodizio da temporada: card de guia com data-ate some sozinho depois da data ou quando o robo diz que nao vende mais; sem guia nenhum aparece o aviso do proximo) | antes 2026-10-28-artigo (rodape com os artigos gratis do site e a central /guias) | antes 2026-10-28-natal (Guia 2 Natal por encomenda na vitrine, primeiro da lista) | antes 2026-10-28-biblioteca (link Ja comprou? Meus guias para a Biblioteca FARO) | antes 2026-10-28-og (miniatura do link: og-verao.jpg) -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
@@ -29,13 +29,14 @@
 .guia h3{font-size:1.3rem}
 .guia p{margin:.2rem 0 .8rem;color:var(--suave)}
 @media (max-width:700px){.guia{grid-template-columns:1fr}}
+@media (max-width:420px){.vit-bib{display:none}}
 .etq{display:inline-block;background:rgba(244,199,107,.25);color:#7a5a12;font-weight:700;font-size:.78rem;padding:.25rem .6rem;border-radius:999px}
 </style>
 </head>
 <body>
 <header class="topo">
   <div class="wrap">
-    <div class="barra"><a href="https://moviki.com.br"><img src="/logo.png" alt="Moviki"></a><a href="/faro/biblioteca.html">📚 Já comprou? Meus guias</a></div>
+    <div class="barra"><a href="https://moviki.com.br"><img src="/logo.png" alt="Moviki"></a><span style="display:flex;align-items:center;gap:.6rem"><a href="/faro/biblioteca.html" class="vit-bib">📚 Meus guias</a><span data-faro-menu></span></span></div>
     <div class="serie">Guias FARO</div>
     <h1>O que fazer agora, para vender no momento certo.</h1>
     <p class="lead">Guias curtos e práticos para quem vende na rua, na praia, em eventos e por encomenda. Cada guia chega com vídeo, audiobook, PDF e checklist.</p>
@@ -46,7 +47,7 @@
     <a class="guia" href="/faro/natal-por-encomenda/" data-guia="natal-por-encomenda" data-ate="2026-12-15">
       <img src="/faro/natal-por-encomenda/capa.jpg" alt="Guia FARO Natal por encomenda">
       <div>
-        <span class="etq">Natal 2026 · novo</span>
+        <span class="selo-venda">À venda</span><span class="selo-venda novo">Novo</span><span class="etq">Vende até 15/12</span>
         <h3>Natal por encomenda</h3>
         <p>Do cardápio à entrega do dia 24: lei e rótulo, preço com o seu tempo, calendário de encomendas, sinal no Pix e entrega.</p>
         <span class="btn btn-verde" id="precoNatal">Ver o guia</span>
@@ -55,7 +56,7 @@
     <a class="guia" href="/faro/verao-na-praia/" data-guia="verao-na-praia" data-ate="2027-02-28">
       <img src="/faro/verao-na-praia/capa.jpg" alt="Guia FARO Vender na praia neste verão">
       <div>
-        <span class="etq">Temporada 2026/2027</span>
+        <span class="selo-venda">À venda</span><span class="etq">Temporada 2026/2027</span>
         <h3>Vender na praia neste verão</h3>
         <p>Do zero ao Pix na areia: o que vender, licença, preço, kit, ponto e como fazer o cliente voltar.</p>
         <span class="btn btn-verde" id="precoVerao">Ver o guia</span>
@@ -68,6 +69,7 @@
 <footer class="rodape"><div class="wrap"><p>Moviki · EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA · CNPJ 68.289.841/0001-02 · <a href="https://moviki.com.br/termos.html">Termos</a> · <a href="https://moviki.com.br/privacidade.html">Privacidade</a></p><p>Artigos grátis no site: <a href="https://www.moviki.com.br/guia/vender-encomenda-de-natal">encomendas de Natal</a> · <a href="https://www.moviki.com.br/guia/vender-na-praia">vender na praia</a> · <a href="https://www.moviki.com.br/guias">todos os guias</a></p></div></footer>
 <script>
 FARO.origem();
+FARO.menu();
 /* Rodizio da temporada (28/10/2026): guia que passou da data (data-ate) ou que o
    robo diz que nao vende mais some da vitrine; o proximo guia entra com o card dele. */
 function faroSome(card) {
