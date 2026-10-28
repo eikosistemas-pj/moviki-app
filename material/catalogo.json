@@ -1,5 +1,5 @@
 {
-  "versao": "2026-10-28-guiafaronatal",
+  "versao": "2026-10-28-natalcapa",
   "atualizado": "2026-10-28",
   "eventos": [
     {
@@ -206,7 +206,7 @@
       "capa": "material/capas/faro-natal-feed.webp",
       "w": 1080,
       "h": 1350,
-      "peso": "129 KB",
+      "peso": "171 KB",
       "novo": true,
       "faro": "natal-por-encomenda",
       "so_evento": "faro",
@@ -224,7 +224,7 @@
       "capa": "material/capas/faro-natal-story.webp",
       "w": 1080,
       "h": 1920,
-      "peso": "162 KB",
+      "peso": "219 KB",
       "novo": true,
       "faro": "natal-por-encomenda",
       "so_evento": "faro",
