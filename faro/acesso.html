@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/acesso.html | versao 2026-10-28-instalar3 (instalar: o Chrome confirma que o guia e instalavel, mas quem abre pelo Gmail ou pelo WhatsApp esta numa aba embutida que nao instala; as instrucoes agora trazem o botao Abrir no Chrome (Android, intent) ou Abrir no Safari (iPhone, x-safari) antes dos passos) | antes 2026-10-28-indicar (bloco Indique o guia para um amigo: manda a PAGINA DE VENDA com utm_source=faro_indica e um codigo do indicador tirado do hash da venda, nunca o link de acesso; o botao do WhatsApp pessoal virou Guardar o guia no meu WhatsApp) | antes 2026-10-28-avisos (bloco Quero saber do proximo guia: assuntos + caixa de consentimento, robo avisos_ver/quero/sair; botao Mandar o guia para o meu WhatsApp) | antes 2026-10-28-acesso2 (instalar de verdade: manifesto com start_url, so fora do iPhone; botao de velocidade do audio; PDF em outra aba; cartao da surpresa leva a /faro/surpresa.html) | antes 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) ; botao Instalar o guia no celular (manifesto sem start_url: o atalho guarda o link pessoal) | antes 2026-10-28-faro1 -->
+<!-- MOVIKI faro/acesso.html | versao 2026-10-28-biblioteca (link Meus guias no topo leva a Biblioteca FARO ja entrando pelo link desta compra) | antes 2026-10-28-instalar4 (o botao nunca fica parado: tentando ou nao a janela nativa do Chrome, as instrucoes abrem sempre; os 3 pontinhos podem estar embaixo no Chrome novo; codigo para o suporte no fim da folha) | antes 2026-10-28-instalar3 (instalar: o Chrome confirma que o guia e instalavel, mas quem abre pelo Gmail ou pelo WhatsApp esta numa aba embutida que nao instala; as instrucoes agora trazem o botao Abrir no Chrome (Android, intent) ou Abrir no Safari (iPhone, x-safari) antes dos passos) | antes 2026-10-28-indicar (bloco Indique o guia para um amigo: manda a PAGINA DE VENDA com utm_source=faro_indica e um codigo do indicador tirado do hash da venda, nunca o link de acesso; o botao do WhatsApp pessoal virou Guardar o guia no meu WhatsApp) | antes 2026-10-28-avisos (bloco Quero saber do proximo guia: assuntos + caixa de consentimento, robo avisos_ver/quero/sair; botao Mandar o guia para o meu WhatsApp) | antes 2026-10-28-acesso2 (instalar de verdade: manifesto com start_url, so fora do iPhone; botao de velocidade do audio; PDF em outra aba; cartao da surpresa leva a /faro/surpresa.html) | antes 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) ; botao Instalar o guia no celular (manifesto sem start_url: o atalho guarda o link pessoal) | antes 2026-10-28-faro1 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -66,7 +66,7 @@
 <body>
 <header class="topo" style="padding-bottom:3.2rem">
   <div class="wrap">
-    <div class="barra"><img src="/logo.png" alt="Moviki"><a href="mailto:suporte@moviki.com.br">Ajuda</a></div>
+    <div class="barra"><img src="/logo.png" alt="Moviki"><span><a href="/faro/biblioteca.html" id="bibLink" style="margin-right:.9rem">📚 Meus guias</a><a href="mailto:suporte@moviki.com.br">Ajuda</a></span></div>
     <div class="serie">Guia FARO</div>
     <h1 id="titulo" style="font-size:clamp(1.6rem,4vw,2.4rem)">Abrindo o seu guia…</h1>
     <p class="lead" id="sub" style="margin:0"></p>
@@ -186,13 +186,18 @@
   }
   function instalar(produto) {
     F.ev('faro_instalar', { produto: produto, via: pedidoInstalar ? 'nativo' : (noIphone ? 'iphone' : (dentroDeApp ? 'app' : 'manual')) });
+    /* Pedido nativo do Chrome: tenta, mas NUNCA fica so nele (28/10, celular do Paulo:
+       o botao "ficava parado"). As instrucoes abrem sempre, por baixo da janela do Chrome. */
+    var tentouNativo = false;
     if (pedidoInstalar) {
-      pedidoInstalar.prompt();
-      pedidoInstalar.userChoice.then(function (c) {
-        if (c && c.outcome === 'accepted') folha('<p>Pronto! O ícone <b>Guia FARO</b> vai aparecer na tela do seu celular. É só tocar nele para voltar aqui.</p>');
-      }).catch(function () {});
-      pedidoInstalar = null;
-      return;
+      tentouNativo = true;
+      var p = pedidoInstalar; pedidoInstalar = null;
+      try {
+        var r = p.prompt(); if (r && r.catch) r.catch(function () {});
+        p.userChoice.then(function (c) {
+          if (c && c.outcome === 'accepted') folha('<p>Pronto! O ícone <b>Guia FARO</b> vai aparecer na tela do seu celular. É só tocar nele para voltar aqui.</p>');
+        }).catch(function () {});
+      } catch (e) {}
     }
     if (dentroDeApp) {
       folha('<p>Você abriu o guia dentro de outro aplicativo, e ele não deixa instalar.</p><a class="btn btn-verde" id="instFora" href="' + linkFora().replace(/"/g, '&quot;') + '" style="width:100%;margin-bottom:.4rem">Abrir no navegador</a><p class="mini" style="margin:.4rem 0 .2rem">Se o botão não abrir:</p><ol class="passos"><li>Toque nos <b>3 pontinhos</b> (ou no ícone de compartilhar) no canto da tela.</li><li>Escolha <b>Abrir no navegador</b> (Chrome ou Safari).</li><li>Lá, toque de novo em <b>Instalar o guia no celular</b>.</li></ol><button class="btn btn-claro" id="instCopiar" type="button" style="width:100%;margin-top:.6rem">Copiar o link do guia</button>');
@@ -205,8 +210,15 @@
       ligarAbrirFora();
       return;
     }
-    folha(abrirFora('Chrome') + '<ol class="passos"><li>Toque nos <b>3 pontinhos ⋮</b> no canto de cima do navegador.</li><li>Toque em <b>Instalar app</b> ou <b>Adicionar à tela inicial</b> (no Samsung Internet: <b>Adicionar página a</b> → <b>Tela inicial</b>).</li><li>Confirme. O ícone <b>Guia FARO</b> aparece na sua tela.</li></ol>');
+    folha((tentouNativo ? '<p class="mini" style="margin:0 0 .6rem">Se a janela de instalar não apareceu, faça pelo menu do navegador:</p>' : abrirFora('Chrome')) +
+      '<ol class="passos"><li>Toque nos <b>3 pontinhos ⋮</b> do Chrome. Eles ficam ao lado da barra do endereço: em cima ou <b>embaixo</b> da tela, conforme o seu Chrome.</li><li>Toque em <b>Adicionar à tela inicial</b> (ou <b>Instalar app</b>) e depois em <b>Instalar</b>. No Samsung Internet: <b>Adicionar página a</b> → <b>Tela inicial</b>.</li><li>O ícone <b>Guia FARO</b> aparece na sua tela.</li></ol>' +
+      '<p class="mini" style="margin:.8rem 0 0;opacity:.6">Código para o suporte: ' + diag(tentouNativo) + '</p>');
     ligarAbrirFora();
+  }
+  /* Codigo curto que o Paulo/suporte pede por print quando a instalacao falha. */
+  function diag(nativo) {
+    var m = (ua.match(/Chrome\/(\d+)/) || [])[1] || '-';
+    return 'P' + (nativo ? 1 : 0) + ' M' + (document.querySelector('link[rel=manifest]') ? 1 : 0) + ' S' + (instalado() ? 1 : 0) + ' C' + m + (dentroDeApp ? ' A1' : '') + (/; wv\)/.test(ua) ? ' W1' : '');
   }
   /* Quem abre o link pelo Gmail ou pelo WhatsApp fica numa aba EMBUTIDA desses
      aplicativos, que nao instala nada. O primeiro passo e abrir no navegador de verdade. */
@@ -261,6 +273,7 @@
     $('#zap').href = 'https://wa.me/?text=' + encodeURIComponent('Meu Guia FARO (link pessoal, não compartilhe): ' + linkProprio);
     $('#zap').addEventListener('click', function () { F.ev('faro_whatsapp', { produto: r.produto }); });
     carregarIndicar(r, v);
+    $('#bibLink').href = '/faro/biblioteca.html?v=' + encodeURIComponent(v) + '&t=' + encodeURIComponent(t);
     carregarAvisos(r);
   }).catch(function () { erro('Sem conexão', 'Confira a internet e recarregue a página.'); });
 
