@@ -1,5 +1,6 @@
 /* Guias FARO (Moviki) — estilo comum da vitrine, da página de venda e da área do comprador.
-   Cores da marca: marinho #0d1b2a, verde #0a7d5a / #10b981, areia #f4c76b. 28/10/2026 */
+   Cores da marca: marinho #0d1b2a, verde #0a7d5a / #10b981, areia #f4c76b. 28/10/2026
+   versao 2026-10-28-instalar3: a folha de instrucoes fica por cima da barra de medicao (antes a barra cobria os passos). */
 :root{--marinho:#0d1b2a;--marinho2:#12324a;--verde:#0a7d5a;--verde2:#10b981;--areia:#f4c76b;--texto:#1d2a38;--suave:#5b6b80;--fundo:#fbf8f1;--linha:#e7e1d3;--erro:#b42318}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -65,7 +66,7 @@ details p{margin:.6rem 0 0;color:var(--suave)}
 .rodape{background:var(--marinho);color:#a9c2d3;padding:2rem 0;font-size:.85rem}
 .rodape a{color:#d6e7f2}
 /* compra */
-.folha{position:fixed;inset:0;background:rgba(6,14,22,.62);display:none;align-items:flex-end;justify-content:center;z-index:50;padding:0}
+.folha{position:fixed;inset:0;background:rgba(6,14,22,.62);display:none;align-items:flex-end;justify-content:center;z-index:2147483001;padding:0}
 .folha.on{display:flex}
 .folha .caixa{background:#fff;width:100%;max-width:520px;max-height:94vh;overflow:auto;border-radius:22px 22px 0 0;padding:1.4rem 1.3rem 1.6rem;animation:sobe .22s ease-out}
 @media (min-width:640px){.folha{align-items:center}.folha .caixa{border-radius:22px}}
