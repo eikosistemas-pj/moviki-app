@@ -1,5 +1,5 @@
 {
-  "versao": "2026-10-28-guiasfaro",
+  "versao": "2026-10-28-faroartes",
   "atualizado": "2026-10-28",
   "eventos": [
     {
@@ -127,7 +127,7 @@
       "capa": "material/capas/faro-verao-feed.webp",
       "w": 1080,
       "h": 1350,
-      "peso": "138 KB",
+      "peso": "243 KB",
       "novo": true,
       "faro": "verao-na-praia",
       "so_evento": "faro",
@@ -145,7 +145,7 @@
       "capa": "material/capas/faro-verao-story.webp",
       "w": 1080,
       "h": 1920,
-      "peso": "180 KB",
+      "peso": "287 KB",
       "novo": true,
       "faro": "verao-na-praia",
       "so_evento": "faro",
