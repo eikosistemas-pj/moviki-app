@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/biblioteca.html | versao 2026-10-28-biblioteca (Biblioteca FARO "estilo Netflix", pedido do Paulo em 28/10: todos os guias em fileiras de capas; os que a pessoa tem ficam coloridos e abrem o guia; os outros ficam em preto e branco e levam a compra; "Em breve" para guia anunciado. Entrada sem senha: codigo de 6 numeros no e-mail da compra (moviki-robo /api/faro bib_codigo, bib_entrar) ou pelo link pessoal de uma compra (biblioteca com venda+t). A sessao fica neste aparelho (localStorage faro_bib), 180 dias.) -->
+<!-- MOVIKI faro/biblioteca.html | versao 2026-10-28-entrar-facil (pedido do Paulo em 28/10 a noite, publico 45+: o e-mail traz o botao Entrar na minha biblioteca, que entra sozinho (?entrar=), o codigo virou alternativa, e o botao Nao consigo entrar: quero ajuda no WhatsApp (robo bib_ajuda)) | antes 2026-10-28-biblioteca (Biblioteca FARO "estilo Netflix", pedido do Paulo em 28/10: todos os guias em fileiras de capas; os que a pessoa tem ficam coloridos e abrem o guia; os outros ficam em preto e branco e levam a compra; "Em breve" para guia anunciado. Entrada sem senha: codigo de 6 numeros no e-mail da compra (moviki-robo /api/faro bib_codigo, bib_entrar) ou pelo link pessoal de uma compra (biblioteca com venda+t). A sessao fica neste aparelho (localStorage faro_bib), 180 dias.) -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -67,18 +67,31 @@ body{background:#0b141e;color:#e8eef4}
   <div class="cartao" id="entrar" hidden>
     <div id="passo1">
       <h2>Entre com o seu e-mail</h2>
-      <p>Use o e-mail da compra. Mandamos um código de 6 números, sem senha.</p>
+      <p>Use o e-mail da compra. Mandamos um e-mail com o botão <b>Entrar na minha biblioteca</b>: é só tocar nele. Sem senha.</p>
       <label class="campo">E-mail<input id="email" type="email" autocomplete="email" inputmode="email" maxlength="120"></label>
-      <button class="btn btn-verde" id="pedir" type="button" style="width:100%;margin-top:1rem">Receber o código</button>
+      <button class="btn btn-verde" id="pedir" type="button" style="width:100%;margin-top:1rem">Receber o botão de entrar</button>
       <p class="msg" id="msg1"></p>
     </div>
     <div id="passo2" hidden>
-      <h2>Digite o código</h2>
+      <h2>Abra o seu e-mail</h2>
       <p id="txt2">Mandamos para o seu e-mail. Olhe também em Promoções e no spam.</p>
+      <p>Toque no botão verde <b>Entrar na minha biblioteca</b>. Ou, se preferir, digite aqui o código que veio no mesmo e-mail:</p>
       <label class="campo">Código<input id="codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" style="letter-spacing:.4em;font-size:1.3rem;text-align:center"></label>
       <button class="btn btn-verde" id="entrarBtn" type="button" style="width:100%;margin-top:1rem">Entrar</button>
       <p class="mini" style="margin:.8rem 0 0"><a href="#" id="outroEmail">Usar outro e-mail</a> · <a href="#" id="reenviar">Mandar de novo</a></p>
       <p class="msg" id="msg2"></p>
+    </div>
+    <!-- 28/10/2026 (noite): ajuda no WhatsApp para quem nao consegue entrar (robo bib_ajuda: aviso ao Paulo, numero nao guardado) -->
+    <div style="border-top:1px solid #e5e9ee;margin-top:1.2rem;padding-top:1rem">
+      <button class="btn" id="ajudaAbrir" type="button" style="width:100%;background:#eaf7f1;color:#0a6b4c;border:1px solid #bfe6d6">Não consigo entrar: quero ajuda no WhatsApp</button>
+      <div id="ajuda" hidden style="margin-top:.8rem">
+        <p>Deixe o seu WhatsApp e uma pessoa da nossa equipe chama você para ajudar a entrar.</p>
+        <label class="campo">Seu WhatsApp com DDD<input id="ajudaWa" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="(83) 99999-9999"></label>
+        <label class="campo" style="margin-top:.6rem">E-mail da compra (se lembrar)<input id="ajudaEmail" type="email" inputmode="email" autocomplete="email" maxlength="120"></label>
+        <button class="btn btn-verde" id="ajudaPedir" type="button" style="width:100%;margin-top:1rem">Quero ajuda</button>
+        <p class="mini" style="margin:.6rem 0 0">Usamos o número só para esta ajuda; ele não fica guardado no nosso sistema. <a href="https://www.moviki.com.br/privacidade" target="_blank" rel="noopener">Privacidade</a></p>
+        <p class="msg" id="msgAjuda"></p>
+      </div>
     </div>
   </div>
 
@@ -112,8 +125,8 @@ body{background:#0b141e;color:#e8eef4}
   function gravar(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
 
   var u = new URLSearchParams(location.search);
-  var v = u.get('v'), t = u.get('t');
-  if (v || t) { try { history.replaceState(null, '', location.pathname); } catch (e) {} }
+  var v = u.get('v'), t = u.get('t'), ent = u.get('entrar');
+  if (v || t || ent) { try { history.replaceState(null, '', location.pathname); } catch (e) {} }
 
   function mostrarEntrar() {
     $('#carregando').hidden = true; $('#estante').hidden = true; $('#entrar').hidden = false; $('#sair').hidden = true;
@@ -157,14 +170,17 @@ body{background:#0b141e;color:#e8eef4}
       if (r && r.ok) { if (r.token) gravar(KBIB, r.token); desenhar(r); return; }
       if (corpo.token) gravar(KBIB, null);
       if (deLink) gravar(KACESSO, null);
+      /* botao de entrar vencido, mas este aparelho ja tinha sessao: usa a sessao */
+      if (corpo.entrar && ler(KBIB)) { abrir({ token: ler(KBIB) }, false); return; }
       mostrarEntrar();
       if (r && r.mensagem && !corpo.token) $('#msg1').textContent = r.mensagem;
     }).catch(function () { $('#carregando').textContent = 'Sem conexão. Confira a internet e recarregue a página.'; });
   }
 
-  /* ordem: link da compra no endereco > sessao guardada > link guardado pelo guia > entrar com codigo */
+  /* ordem: botao de entrar do e-mail > link da compra no endereco > sessao guardada > link guardado pelo guia > entrar com codigo */
   var guardado = null; try { guardado = JSON.parse(ler(KACESSO) || 'null'); } catch (e) {}
-  if (v && t) abrir({ venda: v, t: t }, false);
+  if (ent) { F.ev('faro_bib_botao', {}); abrir({ entrar: ent }, false); }
+  else if (v && t) abrir({ venda: v, t: t }, false);
   else if (ler(KBIB)) abrir({ token: ler(KBIB) }, false);
   else if (guardado && guardado.v && guardado.t) abrir({ venda: guardado.v, t: guardado.t }, true);
   else mostrarEntrar();
@@ -179,7 +195,7 @@ body{background:#0b141e;color:#e8eef4}
       $('#pedir').disabled = false;
       if (!r || !r.ok) { $('#msg1').textContent = (r && r.mensagem) || 'Não deu certo agora. Tente de novo.'; return; }
       emailAtual = em; $('#passo1').hidden = true; $('#passo2').hidden = false;
-      $('#txt2').textContent = r.mensagem || 'Se este e-mail tiver um Guia FARO, o código chega em instantes.';
+      $('#txt2').textContent = r.mensagem || 'Se este e-mail tiver um Guia FARO, o e-mail chega em instantes.';
       $('#codigo').focus(); F.ev('faro_bib_codigo', {});
     }).catch(function () { $('#pedir').disabled = false; $('#msg1').textContent = 'Sem conexão. Tente de novo.'; });
   }
@@ -201,6 +217,23 @@ body{background:#0b141e;color:#e8eef4}
   $('#outroEmail').addEventListener('click', function (e) { e.preventDefault(); $('#passo2').hidden = true; $('#passo1').hidden = false; $('#codigo').value = ''; $('#msg2').textContent = ''; });
   $('#reenviar').addEventListener('click', function (e) { e.preventDefault(); $('#passo2').hidden = true; $('#passo1').hidden = false; $('#email').value = emailAtual; pedir(); });
   $('#sair').addEventListener('click', function () { gravar(KBIB, null); gravar(KACESSO, null); mostrarEntrar(); });
+
+  /* ---------- ajuda no WhatsApp ---------- */
+  $('#ajudaAbrir').addEventListener('click', function () {
+    $('#ajuda').hidden = false; this.hidden = true;
+    if (emailAtual || $('#email').value) $('#ajudaEmail').value = emailAtual || $('#email').value;
+    $('#ajudaWa').focus(); F.ev('faro_bib_ajuda_abrir', {});
+  });
+  $('#ajudaPedir').addEventListener('click', function () {
+    var wa = String($('#ajudaWa').value || '').replace(/\D/g, '');
+    if (wa.length < 10 || wa.length > 13) { $('#msgAjuda').textContent = 'Confira o WhatsApp com DDD.'; return; }
+    var btn = this; btn.disabled = true; $('#msgAjuda').textContent = '';
+    F.post({ acao: 'bib_ajuda', whatsapp: wa, email: String($('#ajudaEmail').value || '').trim() }).then(function (r) {
+      btn.disabled = false;
+      if (r && r.ok) { $('#msgAjuda').className = 'msg ok'; $('#msgAjuda').textContent = r.mensagem; btn.hidden = true; F.ev('faro_bib_ajuda', {}); return; }
+      $('#msgAjuda').textContent = (r && r.mensagem) || 'Não deu certo agora. Escreva para suporte@moviki.com.br.';
+    }).catch(function () { btn.disabled = false; $('#msgAjuda').textContent = 'Sem conexão. Tente de novo.'; });
+  });
 })();
 </script>
 </body>
