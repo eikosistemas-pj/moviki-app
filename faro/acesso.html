@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/acesso.html | versao 2026-10-28-parcmodo (leitura do parceiro em modo proprio, pedido do Paulo: no alto o Kit para vender em 1 minuto (para quem e, o que tem dentro, preco, a comissao dele, o link DELE com copiar e WhatsApp, mensagens prontas); saem os botoes do comprador (indicar, guardar no WhatsApp, instalar, avisos, surpresa); video de venda no lugar da boas-vindas; voltar leva ao painel do parceiro) | antes 2026-10-28-menu (botao Menu no alto (Minha biblioteca, guias a venda, inicio, ajuda) e atalho Minha biblioteca para voltar) | antes 2026-10-28-natal2 (audio.json pode trazer um aviso, mostrado embaixo da lista dos capitulos: o Natal sai com o audiobook em partes) | antes 2026-10-28-natal (Guia 2 Natal por encomenda: surpresa propria por guia e assunto datas marcado no aviso de guias novos) | antes 2026-10-28-surpresa (boas-vindas com o cartao 'Tem surpresa no final'; ?v=2 para o celular nao mostrar o video antigo do cache) | antes 2026-10-28-biblioteca (link Meus guias no topo leva a Biblioteca FARO ja entrando pelo link desta compra) | antes 2026-10-28-instalar4 (o botao nunca fica parado: tentando ou nao a janela nativa do Chrome, as instrucoes abrem sempre; os 3 pontinhos podem estar embaixo no Chrome novo; codigo para o suporte no fim da folha) | antes 2026-10-28-instalar3 (instalar: o Chrome confirma que o guia e instalavel, mas quem abre pelo Gmail ou pelo WhatsApp esta numa aba embutida que nao instala; as instrucoes agora trazem o botao Abrir no Chrome (Android, intent) ou Abrir no Safari (iPhone, x-safari) antes dos passos) | antes 2026-10-28-indicar (bloco Indique o guia para um amigo: manda a PAGINA DE VENDA com utm_source=faro_indica e um codigo do indicador tirado do hash da venda, nunca o link de acesso; o botao do WhatsApp pessoal virou Guardar o guia no meu WhatsApp) | antes 2026-10-28-avisos (bloco Quero saber do proximo guia: assuntos + caixa de consentimento, robo avisos_ver/quero/sair; botao Mandar o guia para o meu WhatsApp) | antes 2026-10-28-acesso2 (instalar de verdade: manifesto com start_url, so fora do iPhone; botao de velocidade do audio; PDF em outra aba; cartao da surpresa leva a /faro/surpresa.html) | antes 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) ; botao Instalar o guia no celular (manifesto sem start_url: o atalho guarda o link pessoal) | antes 2026-10-28-faro1 -->
+<!-- MOVIKI faro/acesso.html | versao 2026-10-29-parclayout (no computador, em modo parceiro, o kit fica no alto em largura total, com duas colunas e as mensagens lado a lado; video e leitura a esquerda, audio a direita) | antes 2026-10-28-parcmodo (leitura do parceiro em modo proprio, pedido do Paulo: no alto o Kit para vender em 1 minuto (para quem e, o que tem dentro, preco, a comissao dele, o link DELE com copiar e WhatsApp, mensagens prontas); saem os botoes do comprador (indicar, guardar no WhatsApp, instalar, avisos, surpresa); video de venda no lugar da boas-vindas; voltar leva ao painel do parceiro) | antes 2026-10-28-menu (botao Menu no alto (Minha biblioteca, guias a venda, inicio, ajuda) e atalho Minha biblioteca para voltar) | antes 2026-10-28-natal2 (audio.json pode trazer um aviso, mostrado embaixo da lista dos capitulos: o Natal sai com o audiobook em partes) | antes 2026-10-28-natal (Guia 2 Natal por encomenda: surpresa propria por guia e assunto datas marcado no aviso de guias novos) | antes 2026-10-28-surpresa (boas-vindas com o cartao 'Tem surpresa no final'; ?v=2 para o celular nao mostrar o video antigo do cache) | antes 2026-10-28-biblioteca (link Meus guias no topo leva a Biblioteca FARO ja entrando pelo link desta compra) | antes 2026-10-28-instalar4 (o botao nunca fica parado: tentando ou nao a janela nativa do Chrome, as instrucoes abrem sempre; os 3 pontinhos podem estar embaixo no Chrome novo; codigo para o suporte no fim da folha) | antes 2026-10-28-instalar3 (instalar: o Chrome confirma que o guia e instalavel, mas quem abre pelo Gmail ou pelo WhatsApp esta numa aba embutida que nao instala; as instrucoes agora trazem o botao Abrir no Chrome (Android, intent) ou Abrir no Safari (iPhone, x-safari) antes dos passos) | antes 2026-10-28-indicar (bloco Indique o guia para um amigo: manda a PAGINA DE VENDA com utm_source=faro_indica e um codigo do indicador tirado do hash da venda, nunca o link de acesso; o botao do WhatsApp pessoal virou Guardar o guia no meu WhatsApp) | antes 2026-10-28-avisos (bloco Quero saber do proximo guia: assuntos + caixa de consentimento, robo avisos_ver/quero/sair; botao Mandar o guia para o meu WhatsApp) | antes 2026-10-28-acesso2 (instalar de verdade: manifesto com start_url, so fora do iPhone; botao de velocidade do audio; PDF em outra aba; cartao da surpresa leva a /faro/surpresa.html) | antes 2026-10-28-player (video de boas-vindas no lugar da apresentacao; um som por vez: video e capitulos se pausam entre si; player aberto embaixo do capitulo que toca, fecha no fim e passa sozinho para o proximo) ; botao Instalar o guia no celular (manifesto sem start_url: o atalho guarda o link pessoal) | antes 2026-10-28-faro1 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -72,6 +72,8 @@
 .parcKit .preco b{color:#10b981}
 .parcKit .meuLink{display:block;word-break:break-all;background:rgba(255,255,255,.1);border-radius:10px;padding:.6rem .8rem;font:600 .86rem Inter,monospace;color:#fff;margin:.3rem 0 .6rem}
 .parcKit .frase{background:rgba(255,255,255,.07);border-radius:12px;padding:.7rem .8rem;margin:.5rem 0}
+/* 29/10 (noite): no computador o kit ocupa a largura toda no alto (o Paulo viu o kit espremido na coluna da direita e o audio la embaixo) */
+@media (min-width:861px){.area.parc{grid-template-columns:1.15fr .85fr;grid-template-areas:"parc parc" "video audio" "ler audio"}#bParc{grid-area:parc;margin-bottom:0;padding:1.6rem 1.8rem}.parcKit .pkCols{display:grid;grid-template-columns:1fr 1fr;gap:2.2rem}#pkFrases{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}#pkFrases .frase{margin:0;display:flex;flex-direction:column;justify-content:space-between}.parcKit .aviso{max-width:none}}
 .parcKit .frase p{margin:0 0 .5rem;font-size:.92rem;overflow-wrap:anywhere}
 .parcKit .frase button{background:#10b981;color:#062b1f;border:0;border-radius:999px;font:700 .85rem Poppins,sans-serif;padding:.45rem .9rem;cursor:pointer;min-height:40px}
 .parcKit .aviso{font-size:.84rem;color:#a9c2d3;margin:1rem 0 0}
@@ -96,16 +98,19 @@
       <span class="tag">Modo parceiro</span>
       <h2>Kit para vender em 1 minuto</h2>
       <p style="margin:.2rem 0 0" id="pkResumo"></p>
+      <div class="pkCols"><div class="pkEsq">
       <h3>Para quem é</h3>
       <p style="margin:0" id="pkParaQuem"></p>
       <h3>O que tem dentro</h3>
       <ul id="pkDentro"></ul>
       <div class="preco" id="pkPreco"></div>
+      </div><div class="pkDir">
       <h3>Seu link de venda</h3>
       <span class="meuLink" id="pkLink"></span>
       <a class="btn btn-verde" id="pkZap" target="_blank" rel="noopener">💬 Mandar no WhatsApp com o meu link</a>
       <button class="btn btn-claro" id="pkCopiar" type="button" style="margin-top:.6rem">🔗 Copiar o meu link</button>
       <p class="msg" id="pkMsg" style="color:#10b981"></p>
+      </div></div>
       <h3>Mensagens prontas (já com o seu link)</h3>
       <div id="pkFrases"></div>
       <p class="aviso">O guia completo está logo abaixo, para você conhecer o que está vendendo. Esta leitura é só sua: vale 3 dias e renova cada vez que você toca em <b>Ler o guia</b> no seu painel. Não mande este endereço para ninguém; para vender, use sempre o seu link acima. Sem prometer renda ou resultado ao cliente.</p>
@@ -304,7 +309,13 @@ FARO.menu({ volta: { href: '/faro/biblioteca.html', txt: 'Minha biblioteca', id:
     var SURPRESAS = {
       'natal-por-encomenda': { t: 'Tem um presente para o seu Natal', p: 'Quando terminar o guia, abra a surpresa: é o jeito de mandar o seu cardápio de Natal num link só.', h: '/faro/natal-por-encomenda/surpresa.html?utm_source=faro&utm_medium=guia&utm_campaign=natal-por-encomenda' }
     };
+    /* 29/10 (noite): os guias novos levam a surpresa geral, que muda o texto pelo guia (utm_campaign) */
+    SURPRESAS['black-friday-ao-vivo'] = { t: 'Tem um presente para a sua Black Friday', p: 'Quando terminar o guia, abra a surpresa: é o lugar onde a sua live de esquenta e a da sexta acontecem.' };
+    SURPRESAS['food-truck-eventos'] = { t: 'Tem um presente para o seu food truck', p: 'Quando terminar o guia, abra a surpresa: é o jeito de o cliente do evento achar o seu truck de novo.' };
+    SURPRESAS['morango-cravejado'] = { t: 'Tem um presente para as suas fornadas', p: 'Quando terminar o guia, abra a surpresa: é o jeito de mostrar a fornada da semana num link só.' };
+    SURPRESAS['comecar-a-vender-na-rua'] = { t: 'Tem um presente para a sua banca', p: 'Quando terminar o guia, abra a surpresa: é o jeito de o cliente achar você mesmo quando você muda de ponto.' };
     var sur = SURPRESAS[r.produto];
+    if (sur && !sur.h) sur.h = '/faro/surpresa.html?utm_source=faro&utm_medium=guia&utm_campaign=' + encodeURIComponent(r.produto);
     if (sur) { $('#surTit').textContent = sur.t; $('#surTxt').textContent = sur.p; $('#ctaMoviki').setAttribute('href', sur.h); }
     F.ev('faro_acesso', { produto: r.produto });
     carregarAudio(r);
@@ -363,6 +374,7 @@ FARO.menu({ volta: { href: '/faro/biblioteca.html', txt: 'Minha biblioteca', id:
       div.appendChild(b); box.appendChild(div);
     });
     $('#bParc').hidden = false;
+    var ar = document.querySelector('.area'); if (ar) ar.classList.add('parc');
     if (r.acessoAte) { var a = r.acessoAte.split('-'); $('#validade').textContent = 'Leitura de parceiro liberada até ' + a[2] + '/' + a[1] + '/' + a[0] + '.'; }
     $('#conteudo').hidden = false;
     carregarAudio(r);
