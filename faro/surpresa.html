@@ -139,7 +139,7 @@ FARO.menu();
       fim: 'Crie a página do seu negócio na véspera do primeiro dia e cole o QR code na banca.', cta: 'Criar minha página grátis'
     }
   };
-  var q = (location.search.match(/[?&]utm_campaign=([a-z0-9-]+)/) || [])[1] || 'verao-na-praia';
+  var q = (location.search.match(/[?&](?:utm_campaign|g)=([a-z0-9-]+)/) || [])[1] || 'verao-na-praia';
   var g = G[q];
   function esc(t) { return F.esc ? F.esc(t) : String(t); }
   if (g) {

@@ -14,7 +14,15 @@ audio_mensagens: As mensagens prontas para abrir as encomendas, confirmar o pedi
 
 Este guia foi feito para uma pessoa só: você, que cozinha bem, já ouviu "você devia vender isso" e quer aproveitar o Natal para começar a vender por encomenda, ou para vender mais do que no ano passado.
 
-**Que erro é esse do título?** É o erro mais comum de quem vende comida feita em casa no Natal: escolher o preço "de olho", sem colocar na conta as horas que passa na cozinha, e aceitar todo pedido que chega, sem sinal e sem limite. A pessoa vende o mês inteiro, entrega tudo no dia 24 com os pés doendo e descobre em janeiro que trabalhou de graça. O capítulo 3 mostra esse erro numa conta simples. Os outros capítulos fecham as portas por onde ele entra.
+**Que erro é esse do título?** É o erro mais comum de quem vende comida feita em casa no Natal: escolher o preço "de olho", sem colocar na conta as horas que passa na cozinha, e aceitar todo pedido que chega, sem sinal e sem limite. A pessoa vende o mês inteiro, entrega tudo no dia 24 com os pés doendo e descobre em janeiro que trabalhou de graça. O capítulo 3 mostra esse erro numa conta simples. E ele não entra por uma porta só. Entra por cinco:
+
+- o preço sem a sua hora (capítulo 3);
+- pedido demais para o seu forno (capítulo 6);
+- o pedido perdido no meio das conversas do WhatsApp (capítulo 9);
+- o cancelamento de véspera, sem sinal (capítulo 10);
+- o cliente que some depois do Natal (capítulo 11).
+
+Cada um desses capítulos fecha uma porta. E no fim do guia tem um presente: ele encaixa no calendário que você vai montar no capítulo 6, mas só faz sentido depois das contas. Por isso fica para o final.
 
 Este guia não promete dinheiro fácil. Ninguém sério promete. O que ele entrega é o caminho inteiro, na ordem certa:
 
@@ -30,7 +38,7 @@ Este guia não promete dinheiro fácil. Ninguém sério promete. O que ele entre
 **Como usar este guia**
 
 - **Leia ou escute** um capítulo por vez. Cada capítulo tem o seu áudio: dá para ouvir enquanto o forno trabalha.
-- **Faça a tarefa do fim de cada capítulo.** São tarefas pequenas, de 10 a 20 minutos. Quando chegar ao último capítulo, o seu Natal por encomenda vai estar montado no papel.
+- **Faça a tarefa do fim de cada capítulo.** São tarefas pequenas, de 10 a 20 minutos. Somadas, cabem em duas a quatro horas, espalhadas pelo mês: dá para fazer enquanto a massa descansa. Quando chegar ao último capítulo, o seu Natal por encomenda vai estar montado no papel.
 - **Use o checklist do final** antes de abrir as encomendas e na semana da entrega.
 
 Uma coisa importante: as regras sobre produção de alimentos em casa, licença e vigilância sanitária mudam de cidade para cidade. Este guia mostra o caminho que vale no país todo e onde conferir na sua prefeitura. Sempre confirme lá.
@@ -212,6 +220,10 @@ Faça uma conta honesta: quantas unidades do seu carro-chefe você consegue prod
 
 **Exemplo ilustrativo:** se você faz 40 pães de mel por dia e vai ter 5 dias de produção, são 200. Tirando 20% de folga, o seu limite é 160.
 
+**Se você trabalha fora ou cuida da casa**
+
+A conta é a mesma, só que com as horas que você tem de verdade. Se você só consegue cozinhar à noite e no fim de semana, conte só essas horas. Um limite pequeno e cumprido vale mais do que um limite grande que vira noite em claro.
+
 Fechar não é perder venda. "Encomendas encerradas, a agenda lotou" é uma frase verdadeira que faz o cliente lembrar de pedir mais cedo no ano que vem.
 
 **As datas que você precisa definir**
@@ -248,7 +260,7 @@ Pequenas empresas, escritórios e lojas compram presentes de fim de ano para cli
 
 Embalagem de Natal some das lojas e encarece em dezembro. Calcule quantas vai precisar pelo seu limite de encomendas do capítulo 6 e compre em novembro.
 
-> **No Moviki:** a sua página ganha um **QR code**. Imprima no cartão que vai em cada caixa: quem ganhou o presente aponta a câmera do celular e cai direto no seu cardápio, com foto e preço, sem precisar pedir o seu número para ninguém.
+> **No Moviki:** a sua página ganha um **QR code**. Imprima no cartão que vai em cada caixa: quem ganhou o presente aponta a câmera do celular e cai direto na sua página (com o cardápio, foto e preço a partir do plano Pró), sem precisar pedir o seu número para ninguém.
 
 **Tarefa do capítulo:** escolha a embalagem de cada produto e do kit, monte uma de amostra e tire a foto que vai no seu cardápio.
 
@@ -278,6 +290,10 @@ Use os dois avisos fortes do capítulo 6:
 1. **Na abertura:** mostre os três produtos, a embalagem pronta, o preço e a data de corte.
 2. **Na última chamada:** mostre a produção andando e diga, com verdade, quanto ainda cabe na agenda.
 
+**E se ninguém pedir na primeira semana?**
+
+É o normal. Lembra da pesquisa do Sebrae-SP no capítulo 1? **44%** das pessoas compram uns 15 dias antes do Natal. Silêncio no fim de novembro não quer dizer que o cardápio não agradou: quer dizer que muita gente ainda não decidiu. Continue no status, um produto por dia, e guarde força para a última chamada.
+
 > **No Moviki:** a sua live fica num link só seu, como moviki.com.br/live/sua-loja, que o cliente abre direto no celular, **sem baixar aplicativo**. Antes de aparecer para alguém, você faz o **ensaio**: uma live de verdade que **ninguém vê**, de até 10 minutos, para ajustar a luz e perder a vergonha. O teste grátis inclui **2 lives**, as duas que este calendário pede: a da abertura e a da última chamada.
 
 **Tarefa do capítulo:** monte o seu cardápio de Natal com a foto da amostra e mande no status hoje. Depois, mande para as 20 pessoas da sua lista do capítulo 1.
@@ -286,7 +302,7 @@ E quando os pedidos começarem a chegar, todos ao mesmo tempo, pelo WhatsApp?
 
 ## capitulo-9 | O pedido pelo WhatsApp sem bagunça
 
-O WhatsApp é ótimo para conversar e péssimo para guardar pedido. Uma pessoa pede por áudio, outra muda a quantidade três mensagens depois, uma terceira manda "quero aquele de ontem". No dia 22 ninguém acha mais nada, e é assim que a encomenda some ou sai errada.
+Esta é a terceira porta do erro do título. O WhatsApp é ótimo para conversar e péssimo para guardar pedido. Uma pessoa pede por áudio, outra muda a quantidade três mensagens depois, uma terceira manda "quero aquele de ontem". No dia 22 ninguém acha mais nada, e é assim que a encomenda some ou sai errada.
 
 **Uma regra só para pedir**
 
@@ -308,7 +324,7 @@ Quando a soma bater no limite do capítulo 6, mude o status para "Encomendas enc
 
 Se você fechar 40 encomendas, são 40 conversas, 40 resumos digitados, 40 sinais conferidos e 40 linhas na planilha, no mesmo mês em que o forno não para. É aqui que muita gente desiste no meio do caminho: não por falta de cliente, mas por falta de mãos.
 
-> **No Moviki:** o seu cardápio de Natal fica numa página só sua, com o seu link, foto, preço e um recado no topo, como "Encomendas de Natal abertas até 18/12". Nos planos Premium e Enterprise, o cliente faz o pedido **sozinho** por essa página, sem você digitar resumo, e paga no **Pix direto na sua conta**. E todos os pedidos chegam numa **central**, numerados, com a etapa de cada um: separando, pronto, saiu e entregue.
+> **No Moviki:** a partir do plano Pró, o seu cardápio de Natal fica numa página só sua, com o seu link, foto e preço: em vez de mandar a lista dez vezes por dia, você manda o mesmo link para todo mundo. Nos planos Premium e Enterprise, o cliente faz o pedido **sozinho** por essa página, sem você digitar resumo, e paga no **Pix direto na sua conta**. E todos os pedidos chegam numa **central**, numerados, com a etapa de cada um: separando, pronto, saiu e entregue.
 
 **Tarefa do capítulo:** escreva a sua regra de pedido e a mensagem de resumo, e monte a planilha com as colunas deste capítulo.
 
@@ -316,7 +332,7 @@ O pedido está escrito. Mas encomenda só está garantida de verdade quando uma 
 
 ## capitulo-10 | Sinal no Pix, cancelamento e entrega até o dia 24
 
-O medo aqui é velho conhecido: "o cliente cancela no dia 23 e eu fico com o salpicão pronto e o prejuízo na mão". A encomenda só está garantida quando o pedido está escrito, o sinal caiu na sua conta e a entrega está marcada. Este capítulo amarra as três coisas.
+A quarta porta, e o medo aqui é velho conhecido: "o cliente cancela no dia 23 e eu fico com o salpicão pronto e o prejuízo na mão". A encomenda só está garantida quando o pedido está escrito, o sinal caiu na sua conta e a entrega está marcada. Este capítulo amarra as três coisas.
 
 **O sinal no Pix**
 
@@ -355,7 +371,7 @@ Dia 24, tudo entregue. Mas o melhor negócio do seu Natal ainda não aconteceu. 
 
 ## capitulo-11 | Depois do dia 25: o cliente que volta na Páscoa
 
-O Natal acaba no dia 25. O cliente que gostou da sua farofa, do seu panetone ou da sua cesta, não. Quem cresce vendendo por encomenda é quem transforma o cliente de um Natal em cliente do ano inteiro: Páscoa, Dia das Mães, festa junina, aniversário.
+A quinta porta é a mais silenciosa. O Natal acaba no dia 25. O cliente que gostou da sua farofa, do seu panetone ou da sua cesta, não. Quem cresce vendendo por encomenda é quem transforma o cliente de um Natal em cliente do ano inteiro: Páscoa, Dia das Mães, festa junina, aniversário.
 
 **O problema**
 
@@ -389,29 +405,41 @@ Olhe para trás um minuto. Se você fez as tarefas, já tem:
 - a regra de sinal, a data de cancelamento e as janelas de entrega;
 - a mensagem de "gostou?" e a data da Páscoa marcada.
 
-O seu Natal por encomenda está montado. Falta uma coisa só: **o lugar onde tudo isso fica junto**. O link que você manda no status e imprime no cartão, o cardápio com foto e preço que o cliente olha sem pedir a lista de novo, a live que mostra a sua cozinha, a lista de quem quer ser avisado e o endereço que continua o mesmo na Páscoa.
+O seu Natal por encomenda está montado. Agora volte às cinco portas do erro do título e veja como cada uma ficou:
+
+- **O preço sem a sua hora:** fechada, com a ficha de custo.
+- **Pedido demais para o seu forno:** fechada, com o limite e as datas.
+- **O cancelamento de véspera:** fechada, com o sinal no Pix e a data limite.
+- **O pedido perdido no WhatsApp:** fechada pela metade. A planilha resolve, mas você ainda manda o cardápio de novo para cada pessoa que pergunta "quanto é?", no mesmo mês em que o forno não para.
+- **O cliente que some depois do Natal:** fechada pela metade. O cartão vai na caixa, mas ele precisa apontar para um endereço que continue o mesmo em abril.
+
+O que sobrou não é falta de capricho seu. É falta de lugar: **um link só**, que você manda no status e imprime no cartão, com o cardápio com foto e preço que o cliente olha sem pedir a lista de novo, a live que mostra a sua cozinha, a lista de quem quer ser avisado e um endereço que continua o mesmo na Páscoa.
 
 Foi para isso que o Moviki foi feito. Ele não é coisa de loja grande: foi feito para quem vende fora de loja, por encomenda, em feira, em evento, na rua. E é aqui que entra o presente deste guia.
 
 **O presente: 30 dias de teste grátis do Moviki**
 
-O teste grátis do Moviki dura 30 dias, contados a partir do cadastro. Faça a conta de trás para a frente, a partir da entrega: quem cria a conta em **24 de novembro** tem os 30 dias até a **véspera de Natal, 24 de dezembro**, cobrindo a abertura das encomendas, a última chamada, o corte e a entrega. Se você está lendo isto depois dessa data, os 30 dias já cobrem toda a sua temporada. Se vai abrir as encomendas antes, crie a conta antes: o teste cobre a abertura e o grosso dos pedidos, e no fim você decide se continua.
+O teste grátis do Moviki dura 30 dias, contados do dia do cadastro, e inclui **2 lives**: as duas que o seu calendário do capítulo 6 pede, a da abertura das encomendas e a da última chamada.
+
+Por isso, o melhor dia para criar a conta é **o dia em que você for montar o cardápio**, uns dias antes de abrir as encomendas. Exemplo ilustrativo: quem abre as encomendas em 24 de novembro e faz a última chamada em 16 de dezembro cria a conta perto de 20 de novembro, e os 30 dias cobrem o cadastro do cardápio, os ensaios, as duas lives e a data de corte. Se você está lendo isto em meados de novembro ou depois, esse dia é hoje.
 
 No teste você tem:
 
-- a página do seu negócio, com o seu link, o seu cardápio de Natal com foto e preço e o recado no topo, como "Encomendas abertas até 18/12";
+- a página do seu negócio, com o seu link e o seu cardápio de Natal com foto e preço;
 - o **QR code** da sua página, para o cartão de cada caixa;
-- a **live pelo celular** no seu link, que o cliente abre sem baixar aplicativo: são **2 lives**, as duas do seu calendário, a da abertura e a da última chamada;
+- a **live pelo celular** no seu link, que o cliente abre sem baixar aplicativo: são **2 lives**, a da abertura e a da última chamada;
 - os **ensaios** que ninguém vê, quantos você precisar (até 5 por dia), sem gastar as 2 lives;
 - a **Lista VIP**, com o botão "Me avise da próxima live".
 
-O que fica nos planos Premium e Enterprise, se você quiser seguir depois: o cliente fazer o pedido sozinho pela página e pagar no Pix direto na sua conta, a central de pedidos com as etapas, a taxa de entrega por bairro, a entrega grátis acima de um valor e o cartão pela sua própria conta. No teste, o pedido continua com você, pelo WhatsApp, com o resumo e o sinal do capítulo 10.
+E o que o teste não tem, para você não ser pego de surpresa: o cliente fazer o pedido sozinho pela página e pagar no Pix direto na sua conta, a central de pedidos com as etapas, a taxa de entrega por bairro, a entrega grátis acima de um valor e o cartão pela sua própria conta ficam nos planos Premium e Enterprise. No teste, o pedido continua com você, pelo WhatsApp, com o resumo e o sinal do capítulo 10. Funciona, e você já sabe fazer.
 
-**Em 3 passos, hoje**
+**Em 3 passos, no dia de montar o cardápio**
 
 1. **Crie a sua conta** pelo link da surpresa, no fim deste guia, e **confirme o seu e-mail**: é a confirmação que libera os 30 dias e a live aberta ao público.
 2. **Cadastre os seus três produtos e o kit**, com a foto da amostra e o preço. Você já escolheu tudo nos capítulos 2, 3 e 7.
-3. **Coloque o recado com a sua data de corte e faça o seu primeiro ensaio**, mostrando uma caixa pronta. Quando se sentir à vontade, marque a live de abertura das encomendas.
+3. **Faça o seu primeiro ensaio**, mostrando uma caixa pronta, e imprima o QR code para o cartão das caixas. Quando se sentir à vontade, marque a live de abertura das encomendas.
+
+Depois do passo 2, faça uma coisa que pouca gente faz: aponte a câmera do seu celular para o seu próprio QR code. É a primeira vez que você vê o seu cardápio do jeito que a cliente vai ver, com a caixa de presente na mão.
 
 **Você não fica sozinho**
 
@@ -420,15 +448,22 @@ No cadastro, marque a caixa para receber ajuda do Moviki no seu WhatsApp. A noss
 **As dúvidas que sobram, respondidas**
 
 - **Preciso de cartão de crédito para testar?** Não. O teste começa no cadastro.
-- **E depois dos 30 dias?** Se quiser continuar, você escolhe um plano: o Pró (R$ 39,90 por mês, para manter o cardápio com foto e preço), o Premium (R$ 69,90 por mês, com o pedido pela página no Pix, a live, a central de pedidos e a entrega por bairro) ou o Enterprise (R$ 129,90 por mês). Se não assinar, a sua conta volta para o plano Básico, que é grátis, com o seu link e o lugar no mapa.
+- **E se eu não gostar?** Não tem nada para cancelar. Sem cartão, nada é cobrado. Depois dos 30 dias, se você não escolher um plano, a conta volta para o Básico grátis.
+- **E depois dos 30 dias?** Se quiser continuar, você escolhe um plano: o Pró (R$ 39,90 por mês, para manter o cardápio com foto e preço no ar até a entrega e na Páscoa), o Premium (R$ 69,90 por mês, com o pedido pela página no Pix, a live, a central de pedidos e a entrega por bairro) ou o Enterprise (R$ 129,90 por mês). Se não assinar, a sua conta volta para o plano Básico, que é grátis, com o seu link e o lugar no mapa, sem o cardápio.
 - **O Moviki fica com parte da minha venda?** Não. 0% por venda. No Premium e no Enterprise, o Pix do pedido cai direto na sua conta.
+- **Como sei que não é golpe?** Você não dá cartão nem paga nada para testar, e o Moviki não toca no seu dinheiro: o sinal e o restante vão para a sua chave Pix. O nome e o CNPJ da empresa que publica este guia estão no rodapé.
+- **Meus clientes são mais velhos e não usam aplicativo.** Eles não precisam. O link abre no celular como uma página comum, e o QR code abre com a câmera. E quem prefere pedir por áudio continua pedindo pelo WhatsApp, do jeito do capítulo 9.
+- **Vou ter de largar o WhatsApp?** Não. O seu link vai justamente no status, na lista de transmissão e no cartão da caixa.
+- **E a minha lista de clientes?** A planilha do capítulo 9 é sua, com ou sem o Moviki. E a Lista VIP é do seu negócio.
 - **Isso não é para loja grande?** Não. É para quem vende fora de loja e quer um endereço só seu, sem montar site nem pagar por pedido.
 - **Não sou bom com tecnologia.** Se você sabe mandar foto no WhatsApp, sabe cadastrar um produto. O ensaio existe para você treinar sem ninguém ver, e a equipe ajuda pelo WhatsApp.
-- **E se eu não vender?** Ninguém pode garantir venda, nem nós. O que o Moviki faz é tirar do caminho o que costuma travar quem vende por encomenda: a lista de preços mandada dez vezes por dia, o pedido perdido no meio das conversas e o cliente que some depois do Natal. O resto é a sua comida, o seu capricho e as pessoas que já confiam em você.
+- **E se eu não vender?** Ninguém pode garantir venda, nem nós. O que o Moviki faz é tirar do caminho o que costuma travar quem vende por encomenda: a lista de preços mandada dez vezes por dia, o cardápio que ninguém acha depois e o cliente que some depois do Natal. O resto é a sua comida, o seu capricho e as pessoas que já confiam em você.
 
-Imagine a manhã do dia 24. As caixas fechadas na mesa, com fita, etiqueta e o cartão com o QR code. A planilha batida, cada sinal conferido no banco, as entregas agrupadas por bairro. Você dormiu na noite do dia 23. E em cada casa que recebe uma caixa sua, o seu link fica guardado para a Páscoa.
+Imagine a manhã do dia 24. As caixas fechadas na mesa, com fita, etiqueta e o cartão com o QR code. A planilha batida, cada sinal conferido no banco, as entregas agrupadas por bairro. Você dormiu na noite do dia 23. E em abril, numa casa onde ninguém sabia o seu nome, alguém pega o cartão que ficou na gaveta, aponta a câmera e encontra o seu cardápio de Páscoa no mesmo endereço.
 
-**Tarefa do capítulo:** abra a surpresa no fim do guia, crie a sua conta e cadastre o seu carro-chefe hoje.
+Falta só abrir a porta. O botão verde **"Abrir a surpresa"** está no fim do guia, logo depois do checklist.
+
+**Tarefa do capítulo:** abra a surpresa hoje para ver o que preparamos. Se já é o dia de montar o cardápio, crie a sua conta e cadastre o seu carro-chefe. Se ainda não é, escreva esse dia na folha da geladeira, ao lado das outras datas.
 
 ## capitulo-13 | Checklist final e mensagens prontas
 
@@ -448,7 +483,7 @@ Imagine a manhã do dia 24. As caixas fechadas na mesa, com fita, etiqueta e o c
 - [ ] Cartão com o seu contato, o seu link e o QR code
 - [ ] Regra de pedido, resumo e planilha prontos
 - [ ] Regra de sinal, de cancelamento e de cartão escrita
-- [ ] Página com o cardápio de Natal e o recado da data de corte
+- [ ] Cardápio de Natal com foto, preço e data de corte, sempre o mesmo, num link ou numa imagem
 
 **Na abertura e na última chamada**
 

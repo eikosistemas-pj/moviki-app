@@ -6,7 +6,7 @@ edicao: 2026/2027
 campanha: comecar-a-vender-na-rua
 surpresa: /faro/surpresa.html
 surpresa_titulo: Você terminou o guia. Tem um presente do Moviki para o seu primeiro mês na rua!
-surpresa_sub: 30 dias de teste grátis para o cliente achar você no mapa, onde você estiver, da primeira semana ao fechamento do mês.
+surpresa_sub: O seu link e o seu pino no mapa, onde você estiver, são grátis. E os 30 dias de teste cabem no seu primeiro mês: catálogo com foto e preço e Lista VIP, da primeira semana ao fechamento.
 audio_mensagens: As mensagens prontas para o status, para avisar que mudou de ponto, para o cliente que comprou pela primeira vez e para a encomenda estão no texto e no PDF deste capítulo, para você copiar e colar.
 ---
 
@@ -15,6 +15,10 @@ audio_mensagens: As mensagens prontas para o status, para avisar que mudou de po
 Este guia foi feito para você que vai começar a vender na rua, ou acabou de começar. Pode ser um carrinho de lanche, uma barraca na praça, uma mesa na feira, uma caixa de doces no ponto de ônibus ou a venda de porta em porta no bairro. Comida, bebida, artesanato, roupa, utilidade: o caminho é parecido.
 
 **Por que "evite os erros do primeiro mês"?** Porque é no começo que quem vende na rua mais perde dinheiro e tempo, quase sempre pelos mesmos motivos: paga taxa para abrir um MEI que é de graça, monta a banca onde a prefeitura não deixa, copia o preço do vizinho sem fazer a conta, entrega o produto por causa de um comprovante falso, muda de ponto e o cliente perde você de vista. Nenhum desses erros é falta de vontade. É falta de saber a ordem das coisas.
+
+Se você já tentou vender na rua e desistiu, este guia também é para você. Leia procurando qual desses erros pegou você da outra vez. Quase sempre foi um deles, e erro conhecido é erro que dá para evitar.
+
+Guarde o último erro da lista, porque é o único que você nem vê acontecer. Imagine a cena (inventada, mas acontece toda semana em algum bairro): um senhor de boné compra o seu lanche na terça, gosta e diz "sexta eu volto". Na sexta chove, e você leva a banca para baixo da marquise, dois quarteirões depois. Ele passa no ponto de sempre, não vê você e compra na padaria. Ninguém te avisa que você perdeu um cliente de toda semana. Os outros erros, o caderno e a disciplina resolvem. Esse precisa de mais uma peça, e ela aparece no capítulo 12.
 
 Este guia não promete dinheiro fácil. Ninguém sério promete. Vender na rua é trabalho pesado, com sol, chuva, cliente que some e dia que não sai nada. O que ele entrega é o caminho inteiro, na ordem certa:
 
@@ -35,6 +39,7 @@ Este guia não promete dinheiro fácil. Ninguém sério promete. Vender na rua �
 - **Leia ou escute** um capítulo por vez. Cada capítulo tem o seu áudio: dá para ouvir no ônibus ou enquanto monta a banca.
 - **Faça a tarefa do fim de cada capítulo** antes de passar para o próximo. São tarefas pequenas. Quando chegar ao último capítulo, o seu negócio de rua vai estar montado no papel, pronto para o primeiro dia.
 - **Use o checklist do final** antes do primeiro dia e no fim do primeiro mês.
+- **Chegue até o fim.** Depois do último capítulo tem um presente do Moviki e uma surpresa para abrir.
 
 **Uma coisa importante:** regra de MEI muda por lei, e regra de licença para vender na rua é de cada prefeitura. Os valores deste guia foram conferidos em fontes oficiais em outubro de 2026. Sempre que você ler "confira no portal oficial", confira mesmo: é o que protege você.
 
@@ -293,7 +298,7 @@ Nos primeiros dias, anote quantas unidades vendeu em cada hora. Em duas semanas 
 
 **O cliente que perde você de vista**
 
-O cliente gostou do seu lanche na terça. Na sexta, ele quer de novo, mas você mudou de ponto por causa da chuva. Ele não sabe onde você está e compra de outro. Você não perdeu uma venda: perdeu um cliente que ia voltar toda semana.
+Lembra do senhor de boné, lá do começo? Ele gostou do seu lanche na terça. Na sexta, quer de novo, mas você mudou de ponto por causa da chuva. Ele não sabe onde você está e compra de outro. Você não perdeu uma venda: perdeu um cliente que ia voltar toda semana.
 
 Quem vende na rua precisa de um jeito simples de o cliente saber **onde você está agora**. Sem nenhum aplicativo, o caminho é avisar sempre que mudar:
 
@@ -303,7 +308,11 @@ Quem vende na rua precisa de um jeito simples de o cliente saber **onde você es
 
 Funciona, mas depende de o cliente ver o status naquela hora. Por isso vale ter também um endereço fixo que mostra onde você está.
 
-> **No Moviki:** o seu negócio aparece **no mapa, em tempo real, onde você está agora**. Mudou de ponto por causa da chuva, foi para a feira de sábado, está na porta da escola só na saída: o cliente abre o seu link e vê onde você está. Isso já vem no plano **Básico, que é grátis**.
+**"Meu cliente é mais velho, não mexe com essas coisas"**
+
+Muitos mexem mais do que parece: quem manda áudio para a família sabe abrir um link que chega no WhatsApp. Para quem não abre nem link, ficam o aviso na banca e a conversa no ponto de sempre. Use os três caminhos juntos, e ninguém fica para trás.
+
+> **No Moviki:** o seu negócio aparece **no mapa, em tempo real, onde você está agora**. Mudou de ponto por causa da chuva, foi para a feira de sábado, está na porta da escola só na saída: o cliente abre o seu link, sem baixar nada, e vê onde você está. Isso já vem no plano **Básico, que é grátis**.
 
 Para avisar o bairro, você vai usar o celular. "Mas eu não sou bom de celular." Ótimo: o próximo capítulo foi feito para você.
 
@@ -490,6 +499,8 @@ Voltando ao suco ilustrativo do capítulo 4, que deixa R$ 3,60 por copo: o DAS d
 
 Some o faturamento todo mês e compare com o limite do ano (capítulo 1). Faturamento é tudo o que entrou de vendas, não o lucro. Se estiver perto do limite, procure orientação antes de passar dele.
 
+Agora você sabe pôr qualquer custo à prova. No próximo capítulo tem uma ferramenta que você pode usar no primeiro mês inteiro antes de fazer essa conta, e a peça que falta para o senhor de boné.
+
 **Tarefa do capítulo:** abra a conta do negócio, comece o caderno de caixa hoje, defina a sua retirada fixa e faça a conta de quantas unidades pagam o seu DAS.
 
 ## capitulo-12 | O seu presente: 30 dias para o seu primeiro mês na rua
@@ -508,11 +519,17 @@ Olhe para trás um minuto. Se você fez as tarefas, já tem:
 
 O seu negócio de rua está montado. Falta uma coisa só: **o lugar onde o cliente acha tudo isso, onde você estiver, a qualquer hora**. O endereço que vai no QR da banca, no status, no panfleto e na resposta da encomenda, e que mostra onde você está hoje, mesmo quando a chuva mudou o seu ponto.
 
+É a cena do começo do guia. O senhor de boné queria voltar. O que faltou não foi lanche, nem preço, nem vontade. Foi um jeito de ele saber que você estava dois quarteirões depois.
+
 Foi para isso que o Moviki foi feito. E é aqui que entra o presente deste guia.
+
+**Primeiro, o que é grátis para sempre**
+
+O seu link (moviki.com.br/seu-nome) e o seu pino no mapa, em tempo real, estão no plano **Básico, que é grátis**. Não é teste: ficam com você.
 
 **O presente: 30 dias de teste grátis do Moviki**
 
-Lembra do capítulo 10? O seu primeiro mês tem 30 dias. O teste grátis do Moviki também. Se você criar a conta na véspera do seu primeiro dia, o teste acompanha o roteiro inteiro:
+Por cima disso vem o presente. Lembra do capítulo 10? O seu primeiro mês tem 30 dias. O teste grátis do Moviki também. Se você criar a conta na véspera do seu primeiro dia, o teste acompanha o roteiro inteiro:
 
 - **na semana 1,** o QR code já está na banca e o cliente acha você no mapa, onde você está;
 - **na semana 2,** quem voltou entra na sua **Lista VIP**, com a autorização registrada;
@@ -527,11 +544,24 @@ No teste você tem:
 - a **Lista VIP**, com o botão "Me avise da próxima live";
 - e, se um dia quiser mostrar a banca ao vivo para quem está em casa, **2 lives pelo celular** e o **ensaio**, uma live que ninguém vê, para treinar sem gastar as 2 lives.
 
+Uma coisa fica de fora do teste, e é bom saber antes: o pedido e o pagamento feitos pelo cliente sozinho na sua página, do capítulo 9, são dos planos Premium e Enterprise. No teste, o cliente te acha e vê o catálogo; a encomenda continua pela sua mensagem de cardápio e o pagamento pelo seu QR do Pix, conferido no banco.
+
 **Em 3 passos, hoje**
 
 1. **Crie a sua conta** pelo link da surpresa, no fim deste guia, e **confirme o seu e-mail**: é a confirmação que libera os 30 dias. O melhor momento é a véspera do seu primeiro dia de rua; se você já começou, hoje mesmo.
 2. **Cadastre os seus produtos** com as fotos do capítulo 7, os preços do capítulo 4 e o seu horário.
 3. **Imprima o QR code** e cole na banca e no panfleto. Ponha o link no status e na bio.
+
+**Uma coisa que só dá para ver testando**
+
+Depois de cadastrar, ligue a localização em casa e peça para alguém da família abrir o seu link no celular dele. Você vai ver o nome da sua banca, o seu carro-chefe com foto e o seu pino no mapa, no lugar em que você está. É exatamente o que o senhor de boné vai ver na sexta de chuva.
+
+**Para ficar claro antes de começar**
+
+- Você não informa cartão de crédito para testar.
+- O Moviki não fica com nenhuma parte da sua venda: 0%.
+- Se não quiser continuar, não precisa fazer nada: a conta volta ao Básico grátis, com o link e o pino no mapa.
+- E você tem ajuda pelo WhatsApp, se marcar a caixa no cadastro.
 
 **Você não fica sozinho**
 
@@ -544,11 +574,17 @@ No cadastro, marque a caixa para receber ajuda do Moviki no seu WhatsApp. A noss
 - **O Moviki fica com parte da minha venda?** Não. 0% por venda. O Pix cai direto na sua conta.
 - **Mensalidade não é mais um custo?** Só se você quiser um plano pago, e você decide com a conta do capítulo 11, com os seus números.
 - **Não sou bom com tecnologia.** O capítulo 7 mostrou que você não precisa ser, e a equipe ajuda pelo WhatsApp.
+- **Não tenho tempo para mais uma coisa.** Os produtos você cadastra uma vez, com as fotos e os preços que já fez. No dia, é abrir o Moviki quando chegar ao ponto. O resto é o trabalho que você já faz.
+- **Isso não é golpe?** Desconfiar é sinal de que você leu o capítulo 1. O Moviki é da EIKO Sistemas, com o CNPJ no rodapé deste guia. Para testar você não paga nada nem informa cartão. E vale a regra de sempre: ninguém, nem o Moviki, precisa da senha do seu banco.
+- **Meu cliente é mais velho e não usa aplicativo.** Ele não precisa baixar nada: o seu link abre no navegador do celular, como um site, e o QR abre com a câmera. E o status e o aviso na banca continuam valendo para quem preferir.
+- **E se o Moviki acabar um dia?** Tudo o que você montou neste guia é seu e funciona sem ele: o MEI, a licença, a ficha de custo, o caderno de caixa, a lista de transmissão. O Moviki não segura o seu dinheiro: o Pix cai direto na sua conta.
 - **E se eu não vender?** Ninguém pode garantir venda, nem nós. O que o Moviki faz é tirar do seu caminho o cliente que não acha você quando você muda de ponto e o cliente que não sabe o que você vende nem quanto custa. O resto é o seu produto, o seu preço e a sua constância, que você já montou.
 
-Imagine uma terça de chuva. Você levou a banca para baixo da marquise, dois quarteirões depois. O cliente da semana passada abre o seu link, vê você no mapa e chega. A notificação do banco apita com o Pix. À noite, no caderno de caixa, o dia fechou. E a chuva não levou o seu cliente embora.
+Imagine uma sexta de chuva. Você levou a banca para baixo da marquise, dois quarteirões depois. O senhor de boné abre o seu link, vê você no mapa e chega. A notificação do banco apita com o Pix. À noite, no caderno de caixa, o dia fechou. A cena do começo do guia, agora com outro final: a chuva não levou o seu cliente embora.
 
-**Tarefa do capítulo:** abra a surpresa no fim do guia, crie a sua conta na véspera do seu primeiro dia (ou hoje, se já começou) e cole o QR code na banca.
+**O próximo passo é um toque:** abra a surpresa no fim deste guia. É por ela que você cria a sua conta.
+
+**Tarefa do capítulo:** abra a surpresa no fim do guia, crie a sua conta na véspera do seu primeiro dia (ou hoje, se já começou), peça para alguém de casa abrir o seu link e cole o QR code na banca.
 
 ## capitulo-13 | Checklist final e mensagens prontas
 
@@ -569,6 +605,7 @@ Imagine uma terça de chuva. Você levou a banca para baixo da marquise, dois qu
 - [ ] Fotos da banca prontas
 - [ ] Mensagem de cardápio e regra de encomenda escritas
 - [ ] Página no Moviki com os produtos e o QR code na banca
+- [ ] Link aberto no celular de outra pessoa, para conferir o seu pino no mapa
 
 **Todo dia**
 
