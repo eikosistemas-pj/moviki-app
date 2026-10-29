@@ -231,7 +231,7 @@ Vender doce feito em casa é permitido, mas tem regra. E a regra é mais simples
 
 **Passo 1: abra o seu MEI com a ocupação certa**
 
-O MEI é aberto pela internet, no portal do governo, de graça. Você ganha CNPJ, pode emitir nota e contribui para a Previdência pagando um boleto mensal fixo, o DAS. Para o morango cravejado, a ocupação que mais serve é **Doceiro(a) independente**. O limite de faturamento do MEI é de 81 mil reais por ano em 2026; uma lei sancionada em outubro de 2026 sobe esse limite para 110 mil reais a partir de janeiro de 2027 (confira no Portal do Empreendedor, gov.br/mei). Confirme a ocupação e o código dela na lista oficial na hora de abrir.
+O MEI é aberto pela internet, no portal do governo, de graça. Você ganha CNPJ, pode emitir nota e contribui para a Previdência pagando um boleto mensal fixo, o DAS. Para o morango cravejado, a ocupação que mais serve é **Doceiro(a) independente**. O limite de faturamento do MEI é de 81 mil reais por ano em 2026; a Lei Complementar 238, sancionada em 21 de outubro de 2026, sobe esse limite para 110 mil reais a partir de janeiro de 2027 (confira no Portal do Empreendedor, gov.br/mei). Confirme a ocupação e o código dela na lista oficial na hora de abrir.
 
 **Passo 2: converse com a vigilância sanitária da sua cidade**
 

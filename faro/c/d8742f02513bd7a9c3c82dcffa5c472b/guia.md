@@ -88,7 +88,7 @@ Para quem vende comida, bebida ou produto, o mais comum é pagar **R$ 82,05 por 
 **O limite de faturamento**
 
 - **Em 2026**, o MEI pode faturar até **81 mil reais por ano**. Quem abre no meio do ano tem um limite proporcional: 81 mil divididos por 12 dá 6.750 reais por mês de atividade.
-- **A partir de 1º de janeiro de 2027**, o limite sobe para **110 mil reais por ano**, e em 2028 para 140 mil. A lei que muda isso foi sancionada em 21 de outubro de 2026 (confira o número da lei no Portal do Empreendedor, gov.br/mei). A mesma lei permite ao MEI ter até dois empregados a partir de 2027.
+- **A partir de 1º de janeiro de 2027**, o limite sobe para **110 mil reais por ano**, e em 2028 para 140 mil. A lei que muda isso é a Lei Complementar 238, sancionada em 21 de outubro de 2026. A mesma lei permite ao MEI ter até dois empregados a partir de 2027.
 
 Faturamento é tudo o que entra das vendas, e não o que sobra. Se você chegar perto do limite, procure o Sebrae ou um contador antes de passar dele.
 

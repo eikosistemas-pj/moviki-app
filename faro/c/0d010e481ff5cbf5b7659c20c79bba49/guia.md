@@ -187,7 +187,7 @@ O caminho geral vale no país todo: empresa aberta, licença para vender, boas p
 
 Para quem está começando, o MEI costuma ser o primeiro passo. O código de atividade mais ligado a food truck e venda de comida na rua é o de **serviços ambulantes de alimentação** (CNAE 5612-1/00). Para quem faz bufê em festas e eventos, existe o de **serviços de alimentação para eventos e recepções** (CNAE 5620-1/02). Escolha as ocupações certas na lista oficial do MEI na hora de abrir.
 
-Em 2026, o MEI pode faturar até 81 mil reais por ano e ter no máximo um empregado. Uma lei sancionada em outubro de 2026 sobe esse limite para 110 mil reais a partir de janeiro de 2027 e permite até dois empregados. Confira os valores atualizados no Portal do Empreendedor (gov.br/mei). Quem já passa disso, ou pretende passar, precisa conversar com um contador sobre outro enquadramento.
+Em 2026, o MEI pode faturar até 81 mil reais por ano e ter no máximo um empregado. A Lei Complementar 238, sancionada em 21 de outubro de 2026, sobe esse limite para 110 mil reais a partir de janeiro de 2027 e permite até dois empregados. Confira os valores atualizados no Portal do Empreendedor (gov.br/mei). Quem já passa disso, ou pretende passar, precisa conversar com um contador sobre outro enquadramento.
 
 **2. A licença para vender**
 
