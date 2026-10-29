@@ -1,6 +1,6 @@
 {
-  "versao": "2026-10-28-natalpresente",
-  "atualizado": "2026-10-28",
+  "versao": "2026-10-29-hamburgueria",
+  "atualizado": "2026-10-29",
   "eventos": [
     {
       "id": "fundador",
@@ -3099,6 +3099,37 @@
       "categoria": "beleza"
     },
     {
+      "id": "story-hamburgueria-ao-vivo",
+      "tipo": "story",
+      "titulo": "Hamburgueria: o lanche saindo da chapa, ao vivo",
+      "formato": "Story 9:16",
+      "arquivo": "material/stories/story-hamburgueria-ao-vivo.jpg",
+      "capa": "material/capas/story-hamburgueria-ao-vivo.webp",
+      "w": 1080,
+      "h": 1920,
+      "peso": "259 KB",
+      "novo": true,
+      "legenda": "#publi Hambúrguer bonito na chapa e ninguém vê. A foto do cardápio não mostra o queijo derretendo nem o pão saindo quentinho.\n\nCom o Moviki, a hamburgueria abre uma live pelo próprio celular, mostra o lanche sendo montado, responde no chat quem pergunta do combo e recebe o pedido no WhatsApp. Retirada no balcão ou entrega da própria loja.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
+      "categoria": "alimentacao",
+      "ramo": "hamburgueria"
+    },
+    {
+      "id": "feed-hamburgueria-ao-vivo",
+      "tipo": "feed",
+      "titulo": "Hamburgueria: mostre o lanche ao vivo",
+      "formato": "Feed 4:5",
+      "arquivo": "material/feed/feed-hamburgueria-ao-vivo.jpg",
+      "capa": "material/capas/feed-hamburgueria-ao-vivo.webp",
+      "w": 1080,
+      "h": 1350,
+      "peso": "181 KB",
+      "novo": true,
+      "legenda": "#publi Hambúrguer bonito na chapa e ninguém vê.\n\nNa live do Moviki, a hamburgueria mostra o lanche saindo da chapa, tira a dúvida do combo no chat e recebe o pedido direto no WhatsApp. Sem aplicativo para baixar, sem estúdio, pelo celular da loja. O Moviki não cobra comissão por venda.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "alimentacao",
+      "ramo": "hamburgueria"
+    },
+    {
       "id": "story-hamburguer-no-mapa",
       "tipo": "story",
       "titulo": "Seu hambúrguer no mapa e em vídeo",
@@ -3111,7 +3142,8 @@
       "novo": false,
       "legenda": "#publi Oito da noite. Tem gente com fome a quatro quadras de você decidindo onde pedir.\n\nApareça no mapa dela. Mostre o lanche em vídeo, marque onde você está hoje e receba o pedido antes que ela abra outro aplicativo.\n\nO celular que você já usa dá conta.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
-      "categoria": "alimentacao"
+      "categoria": "alimentacao",
+      "ramo": "hamburgueria"
     },
     {
       "id": "story-servico-ao-vivo",
