@@ -1,5 +1,5 @@
 /*!
- * MOVIKI ramos.js | versao 2026-10-12-ramos2 | repo: moviki-app
+ * MOVIKI ramos.js | versao 2026-10-29-ramos3 | repo: moviki-app
  * Endereço público: https://app.moviki.com.br/ramos.js
  *
  * CATÁLOGO ÚNICO DE RAMOS (12/10/2026)
@@ -94,7 +94,8 @@
       a:['sertanejo','casa-do-norte','casa-nordestina','produtos-regionais','regionais','nordestinos'],
       r:'Carne e queijo: venda no bairro, com retirada no balcão ou entrega local (sem envio para outra cidade).' },
     { k:'emporio',     n:'Empório / Frios',            g:'comida', q:'acougue',    d:1, m:'alimentacao' },
-    { k:'foodtruck',   n:'Hamburgueria / Food truck',  g:'comida', q:'foodtruck',  m:'alimentacao', a:['hamburgueria','food-truck'] },
+    { k:'foodtruck',   n:'Food truck',                 g:'comida', q:'foodtruck',  m:'alimentacao', a:['food-truck'] },
+    { k:'hamburgueria',n:'Hamburgueria',               g:'comida', q:'foodtruck',  d:1, m:'alimentacao', a:['hamburguer','burger','smash'] },
     { k:'pizzaria',    n:'Pizzaria',                   g:'comida', q:'pizzaria',   m:'alimentacao' },
     { k:'sushi',       n:'Sushi / Japonesa',           g:'comida', q:'sushi',      m:'alimentacao' },
     { k:'lanches',     n:'Pastel / Lanche de rua',     g:'comida', q:'lanches',    m:'alimentacao', a:['pastelaria'] },
@@ -140,7 +141,8 @@
   }
 
   window.MOVIKI_RAMOS = {
-    versao: '2026-10-12-ramos2',   /* 12/10 (manhã): + sertanejos, página da /aovivo publicada no mesmo dia */
+    versao: '2026-10-29-ramos3',   /* 29/10: + hamburgueria (página da /aovivo no mesmo dia); food truck deixa de ser 'Hamburgueria / Food truck' */
+    /* antes: 2026-10-12-ramos2 */   /* 12/10 (manhã): + sertanejos, página da /aovivo publicada no mesmo dia */
     grupos: GRUPOS,
     lista: LISTA,
     achar: achar,
