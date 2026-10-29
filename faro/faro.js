@@ -1,4 +1,5 @@
 /* Guias FARO (Moviki) — ajudantes comuns. 28/10/2026.
+   29/10 (tarde): o guia Live que vende virou Black Friday ao vivo (titulo e cor do kit; o slug fica ate o lancamento).
    versao 2026-10-29-kit: pedido do Paulo em 29/10 (visual futurista, com movimento, cada guia como um KIT 3D:
    o livro e o CD do audiobook com a mesma arte). FARO.kit monta o kit, FARO.neo liga o tema (ceu, farol,
    grade, revelacao ao rolar, giro do kit pelo mouse ou pela rolagem). BREVE = guias escritos sem venda;
@@ -83,7 +84,7 @@
   ];
   /* Guias escritos, ainda sem venda (o mesmo EM_BREVE do robo). Saem daqui quando entram no VENDA. */
   var BREVE = [
-    { slug: 'live-que-vende', titulo: 'Live que vende', capa: '/faro/capas/live-que-vende.jpg' },
+    { slug: 'live-que-vende', titulo: 'Não dê desconto na Black Friday antes de ler isto', capa: '/faro/capas/live-que-vende.jpg' },
     { slug: 'food-truck-eventos', titulo: 'Food truck em eventos', capa: '/faro/capas/food-truck-eventos.jpg' },
     { slug: 'morango-cravejado', titulo: 'Morango cravejado para vender', capa: '/faro/capas/morango-cravejado.jpg' },
     { slug: 'comecar-a-vender-na-rua', titulo: 'Começar a vender na rua', capa: '/faro/capas/comecar-a-vender-na-rua.jpg' }
@@ -93,7 +94,7 @@
   var KITS = {
     'natal-por-encomenda': { cor: '#d62b35', curto: 'Natal por encomenda' },
     'verao-na-praia': { cor: '#1f86dc', curto: 'Vender na praia' },
-    'live-que-vende': { cor: '#9047e8', curto: 'Live que vende' },
+    'live-que-vende': { cor: '#e0a800', curto: 'Black Friday ao vivo' },
     'food-truck-eventos': { cor: '#e8791c', curto: 'Food truck em eventos' },
     'morango-cravejado': { cor: '#df2050', curto: 'Morango cravejado' },
     'comecar-a-vender-na-rua': { cor: '#1697cf', curto: 'Começar a vender na rua' }
