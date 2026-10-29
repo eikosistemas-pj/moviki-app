@@ -652,6 +652,56 @@ table.mvTab td b{font-weight:700}
 .pfIt img{width:100%;aspect-ratio:1748/2480;object-fit:cover;border-radius:8px;background:#0b1220}
 .pfIt b{font-size:12.5px;line-height:1.35;font-weight:600}
 .pfIt small{font-size:11px;color:var(--mv-txt-3)}
+/* 29/10/2026: Vender Guia FARO pelo celular (cartao no topo de Guias FARO) */
+.fvAbas{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:thin}
+.fvAba{flex:0 0 auto;width:92px;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:12px;padding:6px;cursor:pointer;color:var(--mv-txt);font-family:inherit;text-align:left}
+.fvAba.on{border-color:var(--mv-ciano);box-shadow:0 0 0 2px rgba(0,212,255,.25)}
+.fvAba img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:8px;display:block;background:#0b1220}
+.fvAba small{display:block;font-size:11px;line-height:1.3;margin-top:5px;color:var(--mv-txt-2)}
+.fvCab{display:flex;gap:12px;align-items:flex-start;margin-top:4px}
+.fvCab img{width:84px;aspect-ratio:2/3;object-fit:cover;border-radius:10px;flex:0 0 auto;background:#0b1220}
+.fvCab b{display:block;font-size:15px;line-height:1.35}
+.fvPreco{font-size:13.5px;color:var(--mv-ok);margin-top:4px;font-weight:600}
+.fvPrazo{font-size:12.5px;color:var(--mv-txt-3);margin-top:2px}
+.fvPrinc{display:grid;gap:8px;margin-top:12px}
+.fvGrande{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:52px;border-radius:14px;border:0;font-family:inherit;font-size:15.5px;font-weight:700;cursor:pointer;color:#04121f;background:var(--mv-grad)}
+.fvGrande.wa{background:var(--mv-whats);color:#04210f}
+.fvGrande.sec{background:var(--mv-campo);color:var(--mv-txt);border:1px solid var(--mv-linha-forte)}
+.fvGrande svg{width:20px;height:20px}
+.fvForm{display:grid;gap:8px;padding:12px;border:1px solid var(--mv-linha);border-radius:12px;background:var(--mv-bg-2)}
+.fvForm input{width:100%;box-sizing:border-box;background:var(--mv-campo);border:1px solid var(--mv-linha);border-radius:10px;color:var(--mv-txt);font-family:inherit;font-size:16px;padding:11px 12px}
+.fvTit{font-size:13.5px;font-weight:700;margin:18px 0 8px}
+.fvBtns{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.fvBtns .btnMini{width:100%;min-height:42px}
+.fvKit{border:1px solid var(--mv-linha);border-radius:12px;padding:10px 12px;margin-top:12px;background:var(--mv-bg-2)}
+.fvKit summary{cursor:pointer;font-weight:700;font-size:14px}
+.fvKit ul{margin:6px 0 0 18px;padding:0;font-size:13px;color:var(--mv-txt-2)}
+.fvFrase{border:1px solid var(--mv-linha);border-radius:10px;padding:9px 10px;margin-top:8px;font-size:13px;color:var(--mv-txt-2);white-space:pre-line;overflow-wrap:anywhere;word-break:break-word;min-width:0}
+.fvFrase .fvBtns{margin-top:8px}
+.fvPecas{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.fvPeca{border:1px solid var(--mv-linha);border-radius:12px;padding:10px;background:var(--mv-bg-2)}
+.fvPeca .fvThumb{display:block;width:100%;max-height:260px;object-fit:contain;border-radius:8px;background:#0b1220}
+.fvPeca b{display:block;font-size:13px;margin:8px 0 2px}
+.fvPeca small{display:block;font-size:12px;color:var(--mv-txt-3);margin-bottom:8px}
+.fvPeca .fvBtns{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
+.fvPeca .btnMini{padding-left:6px;padding-right:6px}
+.fvBreve{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
+.fvBreve div{flex:0 0 auto;width:92px;font-size:11px;color:var(--mv-txt-3);line-height:1.3}
+.fvBreve img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:8px;filter:grayscale(.85);opacity:.8;display:block;margin-bottom:4px}
+.fvAviso{font-size:12.5px;color:var(--mv-ok);min-height:18px;margin-top:6px}
+.fvOv{position:fixed;inset:0;z-index:9999;background:#ffffff;color:#0b1220;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;padding:18px 16px 24px;box-sizing:border-box;text-align:center}
+.fvOv.hide{display:none}
+.fvOvTopo{display:flex;gap:10px;align-items:center;max-width:420px;width:100%;text-align:left}
+.fvOvTopo img{width:54px;aspect-ratio:2/3;object-fit:cover;border-radius:6px;flex:0 0 auto}
+.fvOvTopo b{font-size:15px;line-height:1.3;display:block}
+.fvOvTopo span{font-size:14px;color:#0f7a4f;font-weight:700}
+.fvOv canvas{width:min(84vw,340px);height:auto;margin:16px auto 6px;display:block;image-rendering:pixelated}
+.fvOvDiz{font-size:17px;font-weight:700;margin-top:4px}
+.fvOvUrl{font-size:12.5px;color:#55657a;margin-top:4px;word-break:break-all}
+.fvOvAcoes{display:grid;gap:8px;width:100%;max-width:420px;margin-top:16px}
+.fvOvAcoes button{min-height:48px;border-radius:12px;border:1px solid #cfd8e3;background:#f3f6fa;color:#0b1220;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.fvOvAcoes button.wa{background:#25D366;border-color:#25D366;color:#04210f}
+.fvOvMsg{font-size:13px;color:#0f7a4f;min-height:18px;margin-top:8px}
 .pfPrev{margin-top:16px;border-top:1px solid var(--mv-linha);padding-top:14px}
 .pfPrevTit{font-size:14px;font-weight:700;margin-bottom:10px}
 .pfPrevImg{display:flex;justify-content:center;margin-bottom:10px}
@@ -806,6 +856,11 @@ table.mvTab td b{font-weight:700}
             <button type="button" class="crAtalho" data-ir="atalhos" id="btnCrachaAtalho">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM20 14h1M14 20h3M20 17v4"/></svg>
               <span><b>Meu crachá com QR code</b><small>Para cadastrar lojista na rua</small></span>
+            </button>
+            <!-- 29/10/2026: atalho para vender Guia FARO na rua (QR, WhatsApp do cliente, compra neste celular) -->
+            <button type="button" class="crAtalho" data-ir="faro" style="margin-top:8px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h6M8 11h4"/></svg>
+              <span><b>Vender Guia FARO agora</b><small>QR para o cliente, WhatsApp dele e todas as redes</small></span>
             </button>
           </div>
 
@@ -1787,6 +1842,14 @@ table.mvTab td b{font-weight:700}
              criador autorizou no painel dele E o dono aprovou aqui. -->
         <!-- 28/10/2026: Guias FARO (produtos digitais vendidos pela conta Asaas da Eiko; robo api/faro.js, acao adm_resumo, so dono com Google) -->
         <section data-sec="faro" class="hide">
+          <!-- 29/10/2026: VENDER GUIA FARO PELO CELULAR (pedido do Paulo: vender os guias cara a cara, nos clientes, pelo celular).
+               So dado publico (catalogo do Material de apoio + preco do robo); o kit de 1 minuto vem do adm_resumo. Codigo no <script> "VENDER GUIA FARO". -->
+          <div class="cd" id="fvCard">
+            <div class="cdTopo"><div><div class="cdTit">Vender agora · pelo celular</div><div class="cdSub">Na frente do cliente: mostre o QR, mande no WhatsApp dele ou abra a compra aqui mesmo. Embaixo, tudo para mandar o link e postar nas redes do Moviki. Venda daqui aparece em "De onde vieram" como <b>dono_qr</b>, <b>dono_whatsapp</b>, <b>dono_instagram</b>…</div></div></div>
+            <div class="fvAbas" id="fvAbas"></div>
+            <div id="fvGuia"><div class="cdSub">Carregando os guias…</div></div>
+            <div id="fvBreveBox" class="hide"><div class="fvTit">Chegando (para contar ao cliente)</div><div class="fvBreve" id="fvBreve"></div></div>
+          </div>
           <div class="cd">
             <div class="cdTopo"><div><div class="cdTit">Guias FARO</div><div class="cdSub">Vendas dos guias digitais (app.moviki.com.br/faro). O dinheiro entra na conta Asaas da Eiko; o guia é liberado sozinho quando o Asaas confirma. NFS-e destes guias não sai automática: confira com a Contabilizei o código do serviço.</div></div><button type="button" class="btnMini" id="faroAtualizar">Atualizar</button></div>
             <div class="lvK">
@@ -2434,7 +2497,7 @@ table.mvTab td b{font-weight:700}
 
   /* Marca de versão: digitar MOVIKI_VERSAO no console do navegador diz na hora
      qual arquivo está no ar. */
-  window.MOVIKI_VERSAO = '2026-10-29-miniramo2';   /* 29/10 (2): atalho do ramo hamburgueria no Convidar comerciante. Antes: 2026-10-29-miniramo. */   /* 29/10: Convidar comerciante ganha o RAMO do link — /aovivo?ramo=<k> (padrao moda) no lugar do comerciantes.html: a miniatura no Direct e no WhatsApp vira a cena da live do ramo (og/aovivo/<k>.jpg) e nao mais o telefone da confeitaria; previa da miniatura na tela; mensagens do comerciante falam da live. Antes: 2026-10-28-faroperfis. */   /* 28/10 (noite, 3): cada tema do Radar FARO ganha 'Jogadas para chegar antes' e 'Perfis do Instagram para seguir' (conferidos na Meta pelo robo, Abrir @ e Ja segui; robo api/faro.js acoes adm_perfis e adm_seguido). Antes: 2026-10-28-faroregua. */   /* 28/10 (noite, 2): Guias FARO ganha o cartao 'Radar de temas · proximos guias' (nota, janela, status e os topicos de cada guia; robo lib/faroRadar.js no adm_resumo). Antes: 2026-10-28-faroaviso. */   /* 28/10 (noite): Guias FARO ganha 'Avisar os inscritos de um guia novo' (contar e mandar, robo api/faro.js acao adm_avisar). Antes: 2026-10-28-faro. */   /* 28/10: menu 'Guias FARO' com as vendas dos guias digitais (robo api/faro.js, acao adm_resumo). Antes: 2026-10-27-instagram. */   /* 27/10 (noite): textos dos cartoes de redes com o @movikiliveshop; antes 2026-10-27-funilrecolhido; 27/10 (tarde): 'Ultimos cadastros' do Funil do lojista recolhido por padrao (Ver lista); antes ocupava ~2.300 px da Visao geral. Antes: 2026-10-27-travadosmenu. */   /* 27/10 (manha): cartao 'Travados no comeco' compacto em menu — uma linha por etapa com a contagem e quantos faltam chamar; a lista abre so na etapa tocada (6 por vez, 'Mostrar mais'); texto longo foi para 'Como funciona'. Antes: 2026-10-27-graficorede. */   /* 27/10 (madrugada, 2): grafico do perfil do parceiro empilha lojistas indicados e parceiros trazidos por mes (robo perfilParceiro serie.parceiros), com legenda, dica e tabela. Antes: 2026-10-27-dinheirodele. */   /* 27/10 (madrugada): no perfil do parceiro, 'Comissoes dele' e 'Saques dele' abrem a secao Comissoes so com aquele parceiro (pagar, historico de saques e de comissoes); o menu continua mostrando todos. Antes: 2026-10-27-marcosreais. */   /* 27/10 (noite): marcos com a data real e nomes claros ('Primeiro lojista indicado', 'Primeiro parceiro na rede dele'); mensagem pronta do 1o lojista considera os parceiros que ele ja trouxe; numeros dizem 'lojistas indicados' e 'parceiros na rede'. Antes: 2026-10-27-perfilparceiro. */   /* 27/10: botao 'Ver perfil do parceiro' em cada cadastro abre a secao Perfil do parceiro (foto, area de atuacao, indicados com situacao e 1a live, rede, dinheiro, grafico de 12 meses, marcos) com 'Reconhecer': mensagem na caixa do painel dele + e-mail e, se quiser, bonus em dinheiro (robo api/parceiro-perfil.js). Cartao 'Parceiros em destaque' na Visao geral e link ?parceiro=<uid> do aviso do Telegram. Antes: 2026-10-26-aceitewa. */   /* 26/10 (3): cartao Travados mostra 'Aceitou ajuda no WhatsApp' (caixa de aceite do cadastro, robo novo-cliente grava avisos_cliente.waAceite). Antes: 2026-10-26-avisotravado. */   /* 26/10 (2): cartao Travados mostra 'Aviso no Telegram ha X' (robo lib/travadoAviso.js manda 1 aviso por conta). Antes: 2026-10-26-travados. */   /* 26/10: cartao 'Travados no comeco' na Visao geral (quem criou a conta e parou antes da 1a live, pela etapa, com WhatsApp e mensagem pronta; robo api/funil-dono acoes travados e travado_chamei) e o Funil do lojista ganha 'Tipo' e '3 fotos'. Antes: 2026-10-22-fiscal. */   /* 22/10: pagar comissao mostra CPF/CNPJ do parceiro, retencao do PF (bruto, INSS 11%, IR, Pix pelo liquido) e a nota do PJ (pede a chave da NFS-e no pagamento avulso); botao 'Relatorio do mes para a contabilidade' (CSV, robo /api/parceiro-fiscal). Antes: 2026-10-20-pdf. */ /* 20/10 (2): Panfletos com QR ganha 'Enviar PDF por e-mail' (robo api/funil-dono, acao panfleto_email; PDF 300 dpi, A5 com sangria e TrimBox) e 'Baixar PDF'; o botao Enviar virou Compartilhar. */ /* antes: 2026-10-20-panfletos */   /* 20/10: menu 'Panfletos com QR' — os panfletos do Material de apoio com o QR da Eiko Sistemas (/aovivo ou /fundador, utm_campaign=eiko, ramo opcional): imprimir em A5, baixar para a grafica, enviar e copiar texto. */ /* antes: 2026-10-19-lojaonline */   /* 19/10: entra o pacote 2026-10-16-lojaonline (Negocios marca '⚠ link no nome' e 'loja online', Precisa de voce conta os negocios com link no nome, CSV com a coluna Loja online) por cima da 2026-10-17-vippadrao. */ /* antes: 2026-10-17-vippadrao */ /* 17/10 (3): P84 Recursos mostra a Lista VIP ligada por padrao (so false desliga). */ /* antes: 2026-10-17-seguir2 */ /* 17/10 (2): funil e Lojistas para seguir carregam depois do login (antes: relogio fixo na abertura, dava 'sem sessao' para quem entrava depois de 4 s). Antes: 2026-10-17-seguir. */ /* 17/10: cartao 'Lojistas para seguir' na Visao geral (fila do robo api/funil-dono, acoes seguir_lista / seguir_feito: Abrir @ e Ja segui). Antes: 2026-10-13-arroba. */   /* 13/10 (P80): situacao do @ de cada parceiro (provado / sem prova / precisa de olho), confirmacao ao aprovar @ sem prova e trava ao marcar criador sem prova */ /* antes: 2026-10-13-agenda */   /* 13/10 (noite 2): microfone e 'Mandar como ordem' em cada tarefa, ao lado da nota; robo novo criado no Claude aparece sozinho (o Maestro le a agenda toda hora) */ /* antes: 2026-10-13-ordens */   /* 13/10 (noite): aba Robos ganha ORDENS — caixa de comando com microfone (ditado do navegador) em cada robo e no topo; o Maestro entrega em ate 1 hora e a resposta volta aqui */ /* antes: 2026-10-13-custos */   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
+  window.MOVIKI_VERSAO = '2026-10-29-farovender';   /* 29/10 (3): Guias FARO ganha no topo o cartao 'Vender agora · pelo celular' (QR em tela cheia com a tela acesa, WhatsApp do cliente sem guardar o numero, abrir a compra neste celular, kit de 1 minuto do adm_resumo, link em 12 canais, todas as pecas do FARO para postar, mensagens prontas na voz da empresa; links sem ref com utm_source=dono_<canal>); atalho na Visao geral e ?vender=1. Antes: 2026-10-29-miniramo2. */    /* 29/10 (2): atalho do ramo hamburgueria no Convidar comerciante. Antes: 2026-10-29-miniramo. */   /* 29/10: Convidar comerciante ganha o RAMO do link — /aovivo?ramo=<k> (padrao moda) no lugar do comerciantes.html: a miniatura no Direct e no WhatsApp vira a cena da live do ramo (og/aovivo/<k>.jpg) e nao mais o telefone da confeitaria; previa da miniatura na tela; mensagens do comerciante falam da live. Antes: 2026-10-28-faroperfis. */   /* 28/10 (noite, 3): cada tema do Radar FARO ganha 'Jogadas para chegar antes' e 'Perfis do Instagram para seguir' (conferidos na Meta pelo robo, Abrir @ e Ja segui; robo api/faro.js acoes adm_perfis e adm_seguido). Antes: 2026-10-28-faroregua. */   /* 28/10 (noite, 2): Guias FARO ganha o cartao 'Radar de temas · proximos guias' (nota, janela, status e os topicos de cada guia; robo lib/faroRadar.js no adm_resumo). Antes: 2026-10-28-faroaviso. */   /* 28/10 (noite): Guias FARO ganha 'Avisar os inscritos de um guia novo' (contar e mandar, robo api/faro.js acao adm_avisar). Antes: 2026-10-28-faro. */   /* 28/10: menu 'Guias FARO' com as vendas dos guias digitais (robo api/faro.js, acao adm_resumo). Antes: 2026-10-27-instagram. */   /* 27/10 (noite): textos dos cartoes de redes com o @movikiliveshop; antes 2026-10-27-funilrecolhido; 27/10 (tarde): 'Ultimos cadastros' do Funil do lojista recolhido por padrao (Ver lista); antes ocupava ~2.300 px da Visao geral. Antes: 2026-10-27-travadosmenu. */   /* 27/10 (manha): cartao 'Travados no comeco' compacto em menu — uma linha por etapa com a contagem e quantos faltam chamar; a lista abre so na etapa tocada (6 por vez, 'Mostrar mais'); texto longo foi para 'Como funciona'. Antes: 2026-10-27-graficorede. */   /* 27/10 (madrugada, 2): grafico do perfil do parceiro empilha lojistas indicados e parceiros trazidos por mes (robo perfilParceiro serie.parceiros), com legenda, dica e tabela. Antes: 2026-10-27-dinheirodele. */   /* 27/10 (madrugada): no perfil do parceiro, 'Comissoes dele' e 'Saques dele' abrem a secao Comissoes so com aquele parceiro (pagar, historico de saques e de comissoes); o menu continua mostrando todos. Antes: 2026-10-27-marcosreais. */   /* 27/10 (noite): marcos com a data real e nomes claros ('Primeiro lojista indicado', 'Primeiro parceiro na rede dele'); mensagem pronta do 1o lojista considera os parceiros que ele ja trouxe; numeros dizem 'lojistas indicados' e 'parceiros na rede'. Antes: 2026-10-27-perfilparceiro. */   /* 27/10: botao 'Ver perfil do parceiro' em cada cadastro abre a secao Perfil do parceiro (foto, area de atuacao, indicados com situacao e 1a live, rede, dinheiro, grafico de 12 meses, marcos) com 'Reconhecer': mensagem na caixa do painel dele + e-mail e, se quiser, bonus em dinheiro (robo api/parceiro-perfil.js). Cartao 'Parceiros em destaque' na Visao geral e link ?parceiro=<uid> do aviso do Telegram. Antes: 2026-10-26-aceitewa. */   /* 26/10 (3): cartao Travados mostra 'Aceitou ajuda no WhatsApp' (caixa de aceite do cadastro, robo novo-cliente grava avisos_cliente.waAceite). Antes: 2026-10-26-avisotravado. */   /* 26/10 (2): cartao Travados mostra 'Aviso no Telegram ha X' (robo lib/travadoAviso.js manda 1 aviso por conta). Antes: 2026-10-26-travados. */   /* 26/10: cartao 'Travados no comeco' na Visao geral (quem criou a conta e parou antes da 1a live, pela etapa, com WhatsApp e mensagem pronta; robo api/funil-dono acoes travados e travado_chamei) e o Funil do lojista ganha 'Tipo' e '3 fotos'. Antes: 2026-10-22-fiscal. */   /* 22/10: pagar comissao mostra CPF/CNPJ do parceiro, retencao do PF (bruto, INSS 11%, IR, Pix pelo liquido) e a nota do PJ (pede a chave da NFS-e no pagamento avulso); botao 'Relatorio do mes para a contabilidade' (CSV, robo /api/parceiro-fiscal). Antes: 2026-10-20-pdf. */ /* 20/10 (2): Panfletos com QR ganha 'Enviar PDF por e-mail' (robo api/funil-dono, acao panfleto_email; PDF 300 dpi, A5 com sangria e TrimBox) e 'Baixar PDF'; o botao Enviar virou Compartilhar. */ /* antes: 2026-10-20-panfletos */   /* 20/10: menu 'Panfletos com QR' — os panfletos do Material de apoio com o QR da Eiko Sistemas (/aovivo ou /fundador, utm_campaign=eiko, ramo opcional): imprimir em A5, baixar para a grafica, enviar e copiar texto. */ /* antes: 2026-10-19-lojaonline */   /* 19/10: entra o pacote 2026-10-16-lojaonline (Negocios marca '⚠ link no nome' e 'loja online', Precisa de voce conta os negocios com link no nome, CSV com a coluna Loja online) por cima da 2026-10-17-vippadrao. */ /* antes: 2026-10-17-vippadrao */ /* 17/10 (3): P84 Recursos mostra a Lista VIP ligada por padrao (so false desliga). */ /* antes: 2026-10-17-seguir2 */ /* 17/10 (2): funil e Lojistas para seguir carregam depois do login (antes: relogio fixo na abertura, dava 'sem sessao' para quem entrava depois de 4 s). Antes: 2026-10-17-seguir. */ /* 17/10: cartao 'Lojistas para seguir' na Visao geral (fila do robo api/funil-dono, acoes seguir_lista / seguir_feito: Abrir @ e Ja segui). Antes: 2026-10-13-arroba. */   /* 13/10 (P80): situacao do @ de cada parceiro (provado / sem prova / precisa de olho), confirmacao ao aprovar @ sem prova e trava ao marcar criador sem prova */ /* antes: 2026-10-13-agenda */   /* 13/10 (noite 2): microfone e 'Mandar como ordem' em cada tarefa, ao lado da nota; robo novo criado no Claude aparece sozinho (o Maestro le a agenda toda hora) */ /* antes: 2026-10-13-ordens */   /* 13/10 (noite): aba Robos ganha ORDENS — caixa de comando com microfone (ditado do navegador) em cada robo e no topo; o Maestro entrega em ate 1 hora e a resposta volta aqui */ /* antes: 2026-10-13-custos */   /* 13/10 (tarde): Custos e margem ganha 'Sugestoes dos robos' — o robo financeiro sugere custo novo ou valor novo e o dono aplica com um toque (grava pelo mesmo caminho do Salvar tudo) */ /* antes: 2026-10-13-robos */   /* 13/10: aba Robos — todos os robos (tarefas agendadas do Claude) num lugar so, com Vi / Feito / Ignorar que chega aos robos e ao Claude (robo /api/robos) */ /* antes: 2026-10-12-ramoqr */   /* 12/10: cracha do dono com seletor de RAMO — o QR leva o ramo (/v/apelido?ramo=farmacia) e a /v/ manda o cadastro ja com o ramo marcado e o 'entender melhor' para a live do ramo. Catalogo unico em ramos.js. */ /* antes: 2026-10-09-tiktok */   /* 09/10 (tarde): Kit TikTok mostra e baixa o video com a cartela "Mande LIVE no direct" (Release tiktok-kit do robo social; media-src com github.com) */ /* antes: 2026-10-09-origem */   /* 09/10: Funil do lojista ganha "De onde vem o lojista" (cadastros, teste, 1a live e pagante por canal) e a origem em cada cadastro da lista */ /* antes: 2026-10-08-confirma1 */   /* 08/10 (P75): lista do Funil do lojista mostra quantos lembretes de confirmar o e-mail o robo ja mandou */ /* antes: 2026-10-07-funil */   /* 07/10 (P75 fase 1, B5): cartao Funil do lojista na Visao geral (robo /api/funil-dono) */ /* antes: 2026-10-06-denuncias */   /* 06/10 (plano 2.2): cartao Avaliacoes denunciadas em Configuracoes (robo /api/avaliacao) */   /* 04/10 (P70 etapa 6): chave Frete automatico (Melhor Envio) no cartao de recursos; so vale com Envio para outras cidades ligado. */ /* antes: 2026-10-04-logistica */   /* 04/10 (P70 etapa 5): chave Quem entrega na cidade no cartao de recursos e cartao Parceiros de entrega (pendentes, aprovados, suspensos). */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): cartao de recursos ganha a chave Lista VIP. */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): chave Envio para outras cidades no cartao de recursos; pedido de envio na lista. Montado sobre 2026-10-03-regras. */ /* antes: 2026-10-03-regras (cartao Regras do Firebase no ar) */ /* antes: 2026-10-03-recursos */   /* 03/10 (P70): Pedidos > Recursos novos por lojista (carrinho na live). */ /* antes: 2026-10-03-google */   /* anterior: 2026-10-01-mapa. 03/10: painel do dono entra so com o Google (2 etapas da conta Google); senha so com ?senha=1 */
 
   const ADMIN_EMAILS = ["paulorico2030@gmail.com"];
 
@@ -2688,6 +2751,7 @@ table.mvTab td b{font-weight:700}
     irSec('visao');
     carregarTudo(false);
     ppLinkDireto();   /* 27/10/2026: aviso do Telegram abre o perfil do parceiro direto */
+    try{ if(new URLSearchParams(location.search).has('vender')) irSec('faro'); }catch(_){}   /* 29/10/2026: atalho na tela inicial do celular abre direto em Vender Guia FARO */
     crachaDonoIniciar();
     // A caixa de mensagens liga sozinha no login: sem isso o número vermelho de
     // "não lidas" só apareceria depois de entrar na seção — que é justamente o
@@ -7979,6 +8043,7 @@ table.mvTab td b{font-weight:700}
   const FARO_ST = {pago:'Pago', aguardando:'Esperando', estornado:'Devolvido', vencido:'Venceu'};
   const faroR = v => 'R$ ' + (Number(v)||0).toFixed(2).replace('.', ',');
   async function faroAbrir(manual){
+    try{ if(window.mvFaroVenda) window.mvFaroVenda.abrir(); }catch(_){}   /* 29/10: cartao Vender agora (dado publico ja aparece) */
     const b = el('faroAtualizar'); const t0 = b ? b.textContent : '';
     if(b){ b.disabled = true; b.textContent = 'Contando…'; }
     try{
@@ -7987,6 +8052,7 @@ table.mvTab td b{font-weight:700}
       const r = await fetch('https://moviki-robo.vercel.app/api/faro', {method:'POST', headers:{'Content-Type':'application/json', 'Authorization':'Bearer ' + tk}, body:JSON.stringify({acao:'adm_resumo'})});
       const j = await r.json().catch(()=>({}));
       if(!r.ok || !j.ok) throw new Error(j.mensagem || j.erro || ('HTTP ' + r.status));
+      try{ if(window.mvFaroVenda) window.mvFaroVenda.dados(j); }catch(_){}   /* 29/10: kit de 1 minuto, prazo e Em breve */
       const ps = j.produtos || [];
       const soma = k => ps.reduce((a,p)=>a + (Number(p[k])||0), 0);
       el('faroKPagas').textContent = soma('pagas');
@@ -9649,5 +9715,435 @@ table.mvTab td b{font-weight:700}
 })();
 </script>
 
+<!-- 29/10/2026: QR do Guia FARO em tela cheia, para o cliente apontar a camera -->
+<div class="fvOv hide" id="fvQrOv" role="dialog" aria-modal="true" aria-label="QR do guia para o cliente">
+  <div class="fvOvTopo"><img id="fvQrCapa" src="" alt=""><div><b id="fvQrTit">—</b><span id="fvQrPreco"></span></div></div>
+  <canvas id="fvQrCv" width="680" height="680" role="img" aria-label="QR code da página do guia"></canvas>
+  <div class="fvOvDiz">Aponte a câmera do seu celular</div>
+  <div class="fvOvUrl" id="fvQrUrl"></div>
+  <div class="fvOvAcoes">
+    <button type="button" class="wa" data-fvqr="wa">Mandar no WhatsApp dele</button>
+    <button type="button" data-fvqr="abrir">Abrir a compra neste celular</button>
+    <button type="button" data-fvqr="copiar">Copiar o link</button>
+    <button type="button" data-fvqr="outro" id="fvQrOutro">Mostrar outro guia</button>
+    <button type="button" data-fvqr="fechar">Fechar</button>
+  </div>
+  <div class="fvOvMsg" id="fvQrMsg"></div>
+</div>
+<script>
+/* =========================================================================
+   VENDER GUIA FARO PELO CELULAR (2026-10-29-farovender)
+   Pedido do Paulo (29/10/2026): "quando eu tiver nos clientes pessoalmente com
+   meu celular, eu quero tentar fazer a venda tambem" — o material do FARO e
+   todos os botoes de publicacao possiveis no painel do dono.
+   Fora do bloco de modulo de proposito, como o cracha e os panfletos: usa o
+   mvqr.js (script classico) e, se falhar, so este cartao fica sem — o painel
+   continua.
+   Fontes:
+     - material/catalogo.json (pecas e textos do FARO: campo "faro" de cada item)
+     - robo GET /api/faro?acao=produto&p=<guia> (preco publico, o mesmo da pagina)
+     - adm_resumo (bloco de modulo chama window.mvFaroVenda.dados(j)): preco,
+       prazo, capa, resumo, KIT de 1 minuto e os "Em breve". Sem ele, o cartao
+       funciona so com o preco publico.
+   Link do dono: SEM ?ref (venda da empresa, sem comissao) e com
+   utm_source=dono_<canal>: a venda cai em "De onde vieram" pelo canal.
+   Numero do WhatsApp do cliente: so monta o wa.me, nunca e guardado.
+   Guia novo: as pecas entram sozinhas pelo catalogo; o reel "Comente" e o
+   video do TikTok entram por uma linha em EXTRAS (palavra do ManyChat).
+   ========================================================================= */
+(function(){
+  var APP = 'https://app.moviki.com.br';
+  var ROBO = 'https://moviki-robo.vercel.app/api/faro';
+  var EXTRAS = {
+    'verao-na-praia':      { palavra:'VERÃO', reel:'faro/verao-na-praia/reel-comente-verao.mp4', tiktok:'faro/verao-na-praia/tiktok-mande-verao.mp4', horizontal:'faro/verao-na-praia/apresentacao.mp4', poster:'faro/verao-na-praia/poster.jpg' },
+    'natal-por-encomenda': { palavra:'NATAL', reel:'faro/natal-por-encomenda/reel-comente-natal.mp4', tiktok:'faro/natal-por-encomenda/tiktok-mande-natal.mp4', horizontal:'faro/natal-por-encomenda/apresentacao.mp4', poster:'faro/natal-por-encomenda/poster.jpg' }
+  };
+  var CAT = null, GUIAS = null, BREVE = [], SEL = '', DO_DONO = false, carregando = false;
+  var BLOBS = {}, WAKE = null;
+
+  function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function hoje(){ var d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth()+1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function reais(v){ return 'R$ ' + (Number(v)||0).toFixed(2).replace('.', ','); }
+  function dataBr(d){ return d ? String(d).split('-').reverse().slice(0, 2).join('/') : ''; }
+  function local(u){ return String(u || '').replace(/^https:\/\/app\.moviki\.com\.br\//, '').replace(/^\//, ''); }
+  function celular(){ return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || ''); }
+  function guia(slug){ return (GUIAS || []).filter(function(g){ return g.slug === slug; })[0] || null; }
+  function link(slug, canal){
+    if(canal === 'qr') return APP + '/faro/' + slug + '/?utm_source=dono_qr';   /* curto: QR menos denso */
+    return APP + '/faro/' + slug + '/?utm_source=dono_' + canal + '&utm_medium=dono&utm_campaign=' + encodeURIComponent(slug);
+  }
+  function precoTxt(g){ return reais(g.pix) + ' no Pix · ' + reais(g.cartao) + ' no cartão'; }
+  function nomeCurto(g){ return String(g.curto || g.titulo || '').replace(/^Guia FARO\s*[—-]\s*/, 'Guia FARO '); }
+
+  var __av = 0;
+  function aviso(t){ var a = el('fvAviso'); if(!a) return; a.textContent = t || ''; clearTimeout(__av); if(t) __av = setTimeout(function(){ a.textContent = ''; }, 6000); }
+  function copiar(t){
+    if(navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t);
+    return new Promise(function(ok, falha){
+      try{ var ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); var r = document.execCommand('copy'); ta.remove(); r ? ok() : falha(); }catch(e){ falha(e); }
+    });
+  }
+  function abrir(u){
+    if(/^(sms|mailto|fb-messenger|tg):/i.test(u)){ location.href = u; return; }
+    try{ window.open(u, '_blank', 'noopener'); }catch(e){ location.href = u; }
+  }
+
+  /* ---------------------------------------------------------- textos
+     O Material de apoio e escrito na voz do parceiro (#publi, {meu_nome}).
+     Aqui quem fala e a propria empresa: sai o #publi, entra "Paulo, do Moviki". */
+  function voz(t, slug, canal){
+    return String(t || '')
+      .replace(/\s*\(#publi:[^)]*\)/gi, '')
+      .replace(/#publi\s*/gi, '')
+      .replace(/\{meu_nome\}/g, 'Paulo, do Moviki')
+      .replace(/\{link_guia:([a-z0-9-]+)\}/g, function(_, s){ return link(s || slug, canal); })
+      .replace(/\{link\}/g, link(slug, canal))
+      .replace(/[ \t]{2,}/g, ' ').trim();
+  }
+  function semLink(t){
+    return String(t || '').split('\n').filter(function(l){ return !/\{link_guia:|\{link\}|https?:\/\//.test(l); }).join('\n').replace(/\n{3,}/g, '\n\n').replace(/[ \t]*(O guia está aqui|Link|É por aqui|Se te interessar, é por aqui):?\s*$/gim, '').trim();
+  }
+  function msgGeral(g, canal){
+    var f = g.kit && g.kit.frases && g.kit.frases[0];
+    if(f) return f.replace(/\{preco\}/g, reais(g.pix)).replace(/\{link\}/g, link(g.slug, canal));
+    return nomeCurto(g) + (g.resumo ? ': ' + g.resumo : '') + '\n\nLeitura no celular, PDF e áudio por ' + reais(g.pix) + ' no Pix, e 7 dias para desistir se não servir.\n\n' + link(g.slug, canal);
+  }
+  function msgCliente(g, nome){
+    return 'Oi' + (nome ? ', ' + nome : '') + '! Aqui é o Paulo, do Moviki. Foi bom conversar com você.\n\n' +
+      'Segue o ' + nomeCurto(g) + (g.resumo ? ': ' + g.resumo : '.') + '\n\n' +
+      'Tem leitura no celular, PDF e áudio, por ' + reais(g.pix) + ' no Pix (ou ' + reais(g.cartao) + ' no cartão), e 7 dias para desistir se não servir.' +
+      (g.vendaAte ? ' Vende até ' + dataBr(g.vendaAte) + '.' : '') + '\n\nÉ por aqui: ' + link(g.slug, 'whatsapp');
+  }
+  function waNumero(v){
+    var d = String(v || '').replace(/\D/g, '');
+    if(d.length === 10 || d.length === 11) d = '55' + d;
+    return /^55\d{10,11}$/.test(d) ? d : '';
+  }
+
+  /* ---------------------------------------------------------- dados */
+  function pecas(slug){
+    var h = hoje();
+    return ((CAT && CAT.itens) || []).filter(function(it){
+      return it.faro === slug && (!it.valido_ate || String(it.valido_ate) >= h) && (!it.a_partir_de || String(it.a_partir_de) <= h);
+    });
+  }
+  function slugsDoCatalogo(){
+    var vistos = {};
+    ((CAT && CAT.itens) || []).forEach(function(it){ if(it.faro) vistos[it.faro] = 1; });
+    Object.keys(EXTRAS).forEach(function(k){ vistos[k] = 1; });
+    return Object.keys(vistos);
+  }
+  function carregarCatalogo(){
+    if(CAT) return Promise.resolve(CAT);
+    return fetch('material/catalogo.json', { cache:'no-cache' }).then(function(r){ return r.json(); }).then(function(j){ CAT = j || { itens: [] }; return CAT; }).catch(function(){ CAT = { itens: [] }; return CAT; });
+  }
+  function precosPublicos(){
+    /* sem o adm_resumo (sessao ainda nao pronta ou robo antigo): preco publico, o mesmo da pagina */
+    return Promise.all(slugsDoCatalogo().map(function(s){
+      return fetch(ROBO + '?acao=produto&p=' + encodeURIComponent(s)).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+        return j && j.ok ? { slug: s, titulo: j.titulo, curto: '', pix: j.pix, cartao: j.cartao, vendaAte: j.vendaAte || '', capa: 'faro/capas/' + s + '.jpg', resumo: '', kit: null } : null;
+      }).catch(function(){ return null; });
+    })).then(function(l){ return l.filter(Boolean); });
+  }
+
+  function iniciar(){
+    if(carregando) return; carregando = true;
+    carregarCatalogo().then(function(){
+      if(DO_DONO && GUIAS) return GUIAS;
+      return precosPublicos().then(function(l){ if(!DO_DONO) GUIAS = l; return GUIAS; });
+    }).then(function(){ pintar(); }).catch(function(){ pintar(); }).then(function(){ carregando = false; });
+  }
+
+  /* chamado pelo bloco de modulo quando o adm_resumo chega */
+  function dados(j){
+    try{
+      var gs = (j && j.guias) || [];
+      if(gs.length && gs[0].pix != null){
+        GUIAS = gs.map(function(g){ return { slug: g.slug, titulo: g.titulo, curto: g.curto || '', pix: g.pix, cartao: g.cartao, vendaAte: g.vendaAte || '', capa: local(g.capa) || ('faro/capas/' + g.slug + '.jpg'), resumo: g.resumo || '', kit: g.kit || null }; });
+        DO_DONO = true;
+      }
+      BREVE = (j && j.emBreve) || [];
+      carregarCatalogo().then(pintar);
+    }catch(e){}
+  }
+
+  /* ---------------------------------------------------------- tela */
+  var ICO = {
+    qr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM20 14h1M14 20h3M20 17v4"/></svg>',
+    wa: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.2 14.8l-.4-.2-2.6.7.7-2.5-.2-.4A8 8 0 0 1 12 4z"/></svg>',
+    car: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.5L22 8H6"/></svg>'
+  };
+  var CANAIS_LINK = [
+    ['wa', 'WhatsApp'], ['tg', 'Telegram'], ['ms', 'Messenger', 'cel'], ['fb', 'Facebook'], ['x', 'X (Twitter)'],
+    ['th', 'Threads'], ['in', 'LinkedIn'], ['sms', 'SMS'], ['em', 'E-mail'], ['cp', 'Copiar link'], ['sh', 'Mais apps…'], ['ab', 'Abrir a página']
+  ];
+  var REDES_PECA = {
+    ig: ['Instagram', 'https://www.instagram.com/'], fb: ['Facebook', 'https://www.facebook.com/'], tt: ['TikTok', 'https://www.tiktok.com/upload'],
+    yt: ['YouTube', 'https://studio.youtube.com/'], kw: ['Kwai', 'https://www.kwai.com/'], wa: ['WhatsApp', ''], tg: ['Telegram', 'https://web.telegram.org/'], sh: ['Mais apps…', '']
+  };
+
+  function pintar(){
+    var abas = el('fvAbas'), box = el('fvGuia'); if(!abas || !box) return;
+    var gs = GUIAS || [];
+    if(!gs.length){ abas.innerHTML = ''; box.innerHTML = '<div class="cdSub">Nenhum guia à venda agora (ou o robô não respondeu). Toque em Atualizar no cartão abaixo.</div>'; pintarBreve(); return; }
+    if(!SEL || !guia(SEL)){ var salvo = ''; try{ salvo = sessionStorage.getItem('mv_fv_guia') || ''; }catch(e){} SEL = guia(salvo) ? salvo : gs[0].slug; }
+    abas.innerHTML = gs.length < 2 ? '' : gs.map(function(g){
+      return '<button type="button" class="fvAba' + (g.slug === SEL ? ' on' : '') + '" data-fvaba="' + esc(g.slug) + '"><img src="' + esc(g.capa) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'"><small>' + esc(nomeCurto(g).replace(/^Guia FARO /, '')) + '</small></button>';
+    }).join('');
+    var g = guia(SEL), ex = EXTRAS[g.slug] || {};
+    var h = '';
+    h += '<div class="fvCab"><img src="' + esc(g.capa) + '" alt="" onerror="this.style.visibility=\'hidden\'"><div><b>' + esc(g.titulo) + '</b>' +
+         '<div class="fvPreco">' + esc(precoTxt(g)) + '</div>' +
+         '<div class="fvPrazo">' + (g.vendaAte ? 'Vende até ' + esc(dataBr(g.vendaAte)) + ' · ' : '') + '7 dias para desistir · sem comissão (venda da empresa)</div></div></div>';
+    h += '<div class="fvPrinc">' +
+         '<button type="button" class="fvGrande" data-fv="qr">' + ICO.qr + 'Mostrar o QR para o cliente</button>' +
+         '<button type="button" class="fvGrande wa" data-fv="waform">' + ICO.wa + 'Mandar no WhatsApp do cliente</button>' +
+         '<div class="fvForm hide" id="fvWaForm">' +
+           '<input type="text" id="fvWaNome" placeholder="Nome do cliente (opcional)" autocomplete="off" maxlength="40">' +
+           '<input type="tel" id="fvWaNum" placeholder="WhatsApp com DDD — ex.: 83 99999-9999" autocomplete="off" inputmode="tel" maxlength="20">' +
+           '<button type="button" class="fvGrande wa" data-fv="waenviar">' + ICO.wa + 'Abrir a conversa com a mensagem pronta</button>' +
+           '<div class="cdSub">O número não fica guardado em lugar nenhum: só abre o WhatsApp com ele.</div>' +
+         '</div>' +
+         '<button type="button" class="fvGrande sec" data-fv="abrir">' + ICO.car + 'Abrir a compra neste celular</button>' +
+         '</div>';
+    h += '<div class="cdSub" style="margin-top:6px">Cliente com dificuldade no celular? Abra a compra aqui, preencha com o e-mail dele e ele paga o Pix pelo app do banco. O guia chega no e-mail dele.</div>';
+    h += '<div class="fvAviso" id="fvAviso"></div>';
+
+    if(g.kit){
+      var k = g.kit;
+      h += '<details class="fvKit" open><summary>O que falar · kit de 1 minuto</summary>' +
+           (k.paraQuem ? '<div class="cdSub" style="margin-top:6px"><b>Para quem é:</b> ' + esc(k.paraQuem) + '</div>' : '') +
+           (k.dentro && k.dentro.length ? '<div class="cdSub" style="margin-top:6px"><b>O que tem dentro:</b></div><ul>' + k.dentro.map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '') +
+           (k.frases || []).map(function(f, i){
+             var t = f.replace(/\{preco\}/g, reais(g.pix)).replace(/\{link\}/g, link(g.slug, 'whatsapp'));
+             return '<div class="fvFrase">' + esc(t) + '<div class="fvBtns">' + botoesTexto('kit' + i) + '</div></div>';
+           }).join('') +
+           '</details>';
+    }
+
+    h += '<div class="fvTit">Mandar o link do guia</div><div class="fvBtns">' + CANAIS_LINK.filter(function(c){ return c[2] !== 'cel' || celular(); }).map(function(c){
+      return '<button type="button" class="btnMini" data-fvlink="' + c[0] + '">' + esc(c[1]) + '</button>';
+    }).join('') + '</div>';
+
+    var ps = pecas(g.slug).filter(function(it){ return it.tipo === 'feed' || it.tipo === 'story' || it.tipo === 'video'; });
+    var extras = [];
+    if(ex.reel) extras.push({ id: 'x-reel-' + g.slug, tipo: 'video', titulo: 'Reel “Comente ' + ex.palavra + '” (Instagram)', formato: 'Reels 9:16 · quem comenta recebe o link no direct pelo ManyChat', arquivo: ex.reel, poster: ex.poster, palavra: ex.palavra, x: 'reel' });
+    if(ex.tiktok) extras.push({ id: 'x-tt-' + g.slug, tipo: 'video', titulo: 'Vídeo “Mande ' + ex.palavra + ' no direct” (TikTok)', formato: 'TikTok 9:16 · o link chega no direct pelo ManyChat', arquivo: ex.tiktok, poster: ex.poster, palavra: ex.palavra, x: 'tiktok' });
+    if(ex.horizontal) extras.push({ id: 'x-hz-' + g.slug, tipo: 'video', titulo: 'Vídeo de venda horizontal', formato: 'YouTube, Facebook e WhatsApp 16:9', arquivo: ex.horizontal, poster: ex.poster, x: 'horizontal' });
+    var todas = extras.concat(ps);
+    h += '<details class="fvKit"><summary>Postar nas redes do Moviki (' + todas.length + ' peças)</summary>';
+    h += '<div class="cdSub" style="margin:8px 0">No celular, cada botão abre a lista de apps com o arquivo junto e a legenda já copiada: é só escolher o app e colar. Instagram e TikTok levam a chamada da palavra (' + esc(ex.palavra || 'GUIA') + ') no lugar do link, que não é clicável lá.</div>';
+    h += todas.length ? '<div class="fvPecas">' + todas.map(pecaHTML).join('') + '</div>' : '<div class="cdSub">Sem peças no Material de apoio para este guia ainda.</div>';
+    h += '</details>';
+
+    var txs = pecas(g.slug).filter(function(it){ return it.tipo === 'texto'; });
+    if(txs.length){
+      h += '<details class="fvKit"><summary>Mensagens prontas (' + txs.length + ')</summary>' + txs.map(function(it){
+        return '<div class="fvFrase"><b style="display:block;margin-bottom:4px;color:var(--mv-txt)">' + esc(String(it.titulo || '').replace(/^Mensagem /, 'Mensagem ')) + '</b>' + esc(voz(it.texto, g.slug, 'whatsapp')) + '<div class="fvBtns">' + botoesTexto('cat:' + it.id) + '</div></div>';
+      }).join('') + '</details>';
+    }
+    box.innerHTML = h;
+    pintarBreve();
+  }
+  function botoesTexto(chave){
+    return [['wa','WhatsApp'],['tg','Telegram'],['sms','SMS'],['em','E-mail'],['cp','Copiar'],['sh','Mais apps…']].map(function(c){
+      return '<button type="button" class="btnMini" data-fvtx="' + esc(chave) + '" data-fvtxc="' + c[0] + '">' + c[1] + '</button>';
+    }).join('');
+  }
+  function pecaHTML(it){
+    var thumb = it.tipo === 'video'
+      ? '<video class="fvThumb" controls playsinline preload="none"' + ((it.capa || it.poster) ? ' poster="' + esc(local(it.capa || it.poster)) + '"' : '') + ' src="' + esc(local(it.arquivo)) + '"></video>'
+      : '<img class="fvThumb" src="' + esc(local(it.capa || it.arquivo)) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">';
+    var redes = it.tipo === 'video'
+      ? (it.x === 'tiktok' ? ['tt','ig','kw','yt','fb','wa','sh'] : it.x === 'horizontal' ? ['yt','fb','wa','tg','sh'] : ['ig','tt','fb','yt','kw','wa','sh'])
+      : (it.tipo === 'story' ? ['ig','fb','wa','sh'] : ['ig','fb','wa','tg','sh']);
+    return '<div class="fvPeca">' + thumb + '<b>' + esc(it.titulo) + '</b><small>' + esc(it.formato || '') + (it.duracao ? ' · ' + esc(it.duracao) : '') + '</small>' +
+      '<div class="fvBtns">' + redes.map(function(r){ return '<button type="button" class="btnMini" data-fvrede="' + r + '" data-fvpeca="' + esc(it.id) + '">' + esc(REDES_PECA[r][0]) + '</button>'; }).join('') +
+      '<button type="button" class="btnMini" data-fvbaixar="' + esc(it.id) + '">Baixar</button>' +
+      '<button type="button" class="btnMini" data-fvleg="' + esc(it.id) + '">Copiar legenda</button></div></div>';
+  }
+  function pintarBreve(){
+    var b = el('fvBreve'), bx = el('fvBreveBox'); if(!b || !bx) return;
+    if(!BREVE.length){ bx.classList.add('hide'); return; }
+    bx.classList.remove('hide');
+    b.innerHTML = BREVE.map(function(e){ return '<div><img src="' + esc(local(e.capa)) + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' + esc(String(e.titulo || '').replace(/^Guia FARO\s*[—-]\s*/, '')) + (e.previsao ? '<br><b>' + esc(e.previsao) + '</b>' : '') + '</div>'; }).join('');
+  }
+
+  /* ---------------------------------------------------------- pecas e legendas */
+  function acharPeca(id){
+    var g = guia(SEL); if(!g) return null;
+    var ex = EXTRAS[g.slug] || {};
+    if(/^x-/.test(id)){
+      var tipo = id.indexOf('x-reel-') === 0 ? 'reel' : id.indexOf('x-tt-') === 0 ? 'tiktok' : 'horizontal';
+      var arq = tipo === 'reel' ? ex.reel : tipo === 'tiktok' ? ex.tiktok : ex.horizontal;
+      return arq ? { id: id, tipo: 'video', arquivo: arq, x: tipo, legenda: (pecas(g.slug).filter(function(i){ return i.tipo === 'video'; })[0] || {}).legenda || '' } : null;
+    }
+    return ((CAT && CAT.itens) || []).filter(function(i){ return i.id === id; })[0] || null;
+  }
+  function legenda(it, rede){
+    var g = guia(SEL); if(!g) return '';
+    var ex = EXTRAS[g.slug] || {}, pal = ex.palavra || 'GUIA';
+    var base = it.legenda || msgGeral(g, 'x');
+    var canal = { ig:'instagram', fb:'facebook', tt:'tiktok', yt:'youtube', kw:'kwai', wa:'whatsapp', tg:'telegram', sh:'compartilhar' }[rede] || 'redes';
+    if(rede === 'ig') return '💬 Comente ' + pal + ' que eu te mando o link do guia no direct.\n\n' + semLink(voz(base.replace(/\{link_guia:[a-z0-9-]+\}|\{link\}/g, ''), g.slug, canal));
+    if(rede === 'tt') return '📩 Mande ' + pal + ' no direct que o link do guia chega na hora.\n\n' + semLink(voz(base.replace(/\{link_guia:[a-z0-9-]+\}|\{link\}/g, ''), g.slug, canal));
+    var t = voz(base, g.slug, canal);
+    if(t.indexOf(APP + '/faro/') < 0) t += '\n\n' + link(g.slug, canal);
+    return t;
+  }
+  function nomeArq(u){ return String(u || '').split('/').pop().split('?')[0] || 'guia-faro'; }
+  function obter(it){
+    if(BLOBS[it.id]) return Promise.resolve(BLOBS[it.id]);
+    return fetch(local(it.arquivo)).then(function(r){ if(!r.ok) throw new Error('http'); return r.blob(); }).then(function(b){ var o = { blob: b, nome: nomeArq(it.arquivo) }; BLOBS[it.id] = o; return o; });
+  }
+  function arquivoDe(o){ try{ return new File([o.blob], o.nome, { type: o.blob.type || (/\.mp4$/i.test(o.nome) ? 'video/mp4' : 'image/jpeg') }); }catch(e){ return null; } }
+  function baixarObj(o){ var u = URL.createObjectURL(o.blob), a = document.createElement('a'); a.href = u; a.download = o.nome; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ try{ URL.revokeObjectURL(u); }catch(e){} }, 8000); }
+  function podeArquivo(){ return !!(navigator.canShare && navigator.share && window.File); }
+  function rotulo(b, t){ b.textContent = t; }
+
+  function postar(b){
+    var rede = b.getAttribute('data-fvrede'), it = acharPeca(b.getAttribute('data-fvpeca')); if(!it || !REDES_PECA[rede]) return;
+    var leg = legenda(it, rede), nome = REDES_PECA[rede][0];
+    try{ copiar(leg).catch(function(){}); }catch(e){}   /* dentro do toque */
+    var orig = b.getAttribute('data-rot') || b.textContent; b.setAttribute('data-rot', orig);
+    if(podeArquivo()){
+      var vai = function(o){
+        var f = arquivoDe(o);
+        if(!f || !navigator.canShare({ files: [f] })){ rotulo(b, orig); aviso('Este celular não deixa mandar o arquivo direto. Use Baixar e poste pela galeria (a legenda já está copiada).'); return; }
+        /* so o arquivo: o WhatsApp do Android descarta o arquivo quando vai texto junto (16/09/2026) */
+        aviso((rede === 'sh' ? 'Escolha o app' : 'Escolha o ' + nome) + ' na lista. A legenda já está copiada: é só colar.');
+        navigator.share({ files: [f] }).then(function(){ rotulo(b, orig); }).catch(function(e){
+          if(e && e.name === 'NotAllowedError'){ rotulo(b, 'Toque de novo'); aviso('Pronto! Toque de novo em ' + nome + '.'); return; }
+          rotulo(b, orig);
+        });
+      };
+      if(BLOBS[it.id]){ vai(BLOBS[it.id]); return; }
+      rotulo(b, 'Preparando…');
+      obter(it).then(vai).catch(function(){ rotulo(b, orig); aviso('Não deu para preparar o arquivo. Tente de novo.'); });
+      return;
+    }
+    /* computador: abre a rede ja (senao o bloqueador barra) e baixa o arquivo */
+    var url = rede === 'wa' ? 'https://wa.me/?text=' + encodeURIComponent(leg) : REDES_PECA[rede][1];
+    if(url) abrir(url);
+    rotulo(b, 'Baixando…');
+    obter(it).then(function(o){ baixarObj(o); rotulo(b, orig); aviso('Arquivo baixado e legenda copiada. No ' + nome + ', crie a publicação, escolha o arquivo e cole a legenda.'); })
+      .catch(function(){ rotulo(b, orig); aviso('Não deu para baixar agora. Tente de novo.'); });
+  }
+
+  /* ---------------------------------------------------------- link por canal */
+  function mandarLink(c){
+    var g = guia(SEL); if(!g) return;
+    var canal = { wa:'whatsapp', tg:'telegram', ms:'messenger', fb:'facebook', x:'x', th:'threads', in:'linkedin', sms:'sms', em:'email', cp:'copiar', sh:'compartilhar', ab:'balcao' }[c];
+    var u = link(g.slug, canal), t = msgGeral(g, canal), e = encodeURIComponent;
+    var txSemLink = t.replace(u, '').trim();
+    if(c === 'wa') return abrir('https://wa.me/?text=' + e(t));
+    if(c === 'tg') return abrir('https://t.me/share/url?url=' + e(u) + '&text=' + e(txSemLink));
+    if(c === 'ms') return abrir('fb-messenger://share/?link=' + e(u));
+    if(c === 'fb') return abrir('https://www.facebook.com/sharer/sharer.php?u=' + e(u));
+    if(c === 'x')  return abrir('https://twitter.com/intent/tweet?text=' + e(txSemLink) + '&url=' + e(u));
+    if(c === 'th') return abrir('https://www.threads.net/intent/post?text=' + e(t));
+    if(c === 'in') return abrir('https://www.linkedin.com/sharing/share-offsite/?url=' + e(u));
+    if(c === 'sms') return abrir('sms:?&body=' + e(t));
+    if(c === 'em') return abrir('mailto:?subject=' + e(nomeCurto(g)) + '&body=' + e(t));
+    if(c === 'ab') return abrir(u);
+    if(c === 'cp') return copiar(u).then(function(){ aviso('Link copiado.'); }).catch(function(){ aviso(u); });
+    if(c === 'sh'){
+      if(navigator.share) return navigator.share({ title: nomeCurto(g), text: txSemLink, url: u }).catch(function(){});
+      return copiar(t).then(function(){ aviso('Mensagem com o link copiada.'); }).catch(function(){});
+    }
+  }
+  function mandarTexto(chave, c){
+    var g = guia(SEL); if(!g) return;
+    var canal = { wa:'whatsapp', tg:'telegram', sms:'sms', em:'email', cp:'copiar', sh:'compartilhar' }[c] || 'texto';
+    var t = '';
+    if(chave.indexOf('kit') === 0){ var f = g.kit && g.kit.frases && g.kit.frases[Number(chave.slice(3))]; t = f ? f.replace(/\{preco\}/g, reais(g.pix)).replace(/\{link\}/g, link(g.slug, canal)) : ''; }
+    else { var it = acharPeca(chave.slice(4)); t = it ? voz(it.texto, g.slug, canal) : ''; }
+    if(!t) return;
+    var e = encodeURIComponent;
+    if(c === 'wa') return abrir('https://wa.me/?text=' + e(t));
+    if(c === 'tg') return abrir('https://t.me/share/url?url=' + e(link(g.slug, canal)) + '&text=' + e(t.replace(link(g.slug, canal), '').trim()));
+    if(c === 'sms') return abrir('sms:?&body=' + e(t));
+    if(c === 'em') return abrir('mailto:?subject=' + e(nomeCurto(g)) + '&body=' + e(t));
+    if(c === 'cp') return copiar(t).then(function(){ aviso('Mensagem copiada.'); }).catch(function(){});
+    if(c === 'sh'){ if(navigator.share) return navigator.share({ text: t }).catch(function(){}); return copiar(t).then(function(){ aviso('Mensagem copiada.'); }); }
+  }
+
+  /* ---------------------------------------------------------- QR em tela cheia */
+  function qrAbrir(){
+    var g = guia(SEL); if(!g) return;
+    var u = link(g.slug, 'qr');
+    var q = window.mvQR ? window.mvQR(u) : null;
+    if(!q || !window.mvQRDesenhar){ aviso('O gerador de QR não carregou. Use "Mandar no WhatsApp do cliente".'); return; }
+    window.mvQRDesenhar(el('fvQrCv'), q, 680, '#ffffff', '#0b1220');
+    el('fvQrCapa').src = g.capa; el('fvQrTit').textContent = g.titulo; el('fvQrPreco').textContent = precoTxt(g);
+    el('fvQrUrl').textContent = u.replace(/^https:\/\//, '').replace(/\?.*$/, '');
+    el('fvQrOutro').classList.toggle('hide', (GUIAS || []).length < 2);
+    el('fvQrMsg').textContent = '';
+    el('fvQrOv').classList.remove('hide'); document.body.style.overflow = 'hidden';
+    /* tela acesa enquanto o cliente aponta a camera */
+    try{ if(navigator.wakeLock && navigator.wakeLock.request) navigator.wakeLock.request('screen').then(function(w){ WAKE = w; }).catch(function(){}); }catch(e){}
+  }
+  function qrFechar(){
+    el('fvQrOv').classList.add('hide'); document.body.style.overflow = '';
+    try{ if(WAKE){ WAKE.release(); WAKE = null; } }catch(e){}
+  }
+  function escolher(slug){ SEL = slug; try{ sessionStorage.setItem('mv_fv_guia', slug); }catch(e){} pintar(); }
+
+  document.addEventListener('click', function(ev){
+    var t = ev.target; if(!t || !t.closest) return;
+    var b;
+    if((b = t.closest('[data-fvaba]'))){ escolher(b.getAttribute('data-fvaba')); return; }
+    if((b = t.closest('[data-fvqr]'))){
+      var a = b.getAttribute('data-fvqr'), g = guia(SEL);
+      if(a === 'fechar') return qrFechar();
+      if(a === 'outro'){ var gs = GUIAS || [], i = gs.indexOf(g); escolher(gs[(i + 1) % gs.length].slug); return qrAbrir(); }
+      if(a === 'abrir'){ qrFechar(); return abrir(link(g.slug, 'balcao')); }
+      if(a === 'copiar') return copiar(link(g.slug, 'copiar')).then(function(){ el('fvQrMsg').textContent = 'Link copiado.'; }).catch(function(){});
+      if(a === 'wa'){ qrFechar(); var f = el('fvWaForm'); if(f){ f.classList.remove('hide'); f.scrollIntoView({ block:'center', behavior:'smooth' }); setTimeout(function(){ var n = el('fvWaNum'); if(n) n.focus(); }, 350); } return; }
+      return;
+    }
+    if((b = t.closest('[data-fv]'))){
+      var ac = b.getAttribute('data-fv'), gg = guia(SEL); if(!gg) return;
+      if(ac === 'qr') return qrAbrir();
+      if(ac === 'abrir') return abrir(link(gg.slug, 'balcao'));
+      if(ac === 'waform'){ var fm = el('fvWaForm'); if(fm){ fm.classList.toggle('hide'); if(!fm.classList.contains('hide')) setTimeout(function(){ var n = el('fvWaNum'); if(n) n.focus(); }, 50); } return; }
+      if(ac === 'waenviar'){
+        var num = waNumero((el('fvWaNum') || {}).value), nome = String((el('fvWaNome') || {}).value || '').trim().split(/\s+/)[0].slice(0, 30);
+        var msg = msgCliente(gg, nome);
+        if(!num){
+          if(String((el('fvWaNum') || {}).value || '').trim()){ aviso('Confira o número: DDD + número, ex.: 83 99999-9999.'); return; }
+          abrir('https://wa.me/?text=' + encodeURIComponent(msg)); return;   /* sem numero: escolhe o contato no WhatsApp */
+        }
+        abrir('https://wa.me/' + num + '?text=' + encodeURIComponent(msg));
+        var c1 = el('fvWaNum'), c2 = el('fvWaNome'); if(c1) c1.value = ''; if(c2) c2.value = '';   /* nada fica na tela para o proximo cliente */
+        return;
+      }
+      return;
+    }
+    if((b = t.closest('[data-fvlink]'))){ mandarLink(b.getAttribute('data-fvlink')); return; }
+    if((b = t.closest('[data-fvtx]'))){ mandarTexto(b.getAttribute('data-fvtx'), b.getAttribute('data-fvtxc')); return; }
+    if((b = t.closest('[data-fvrede]'))){ postar(b); return; }
+    if((b = t.closest('[data-fvbaixar]'))){
+      var it = acharPeca(b.getAttribute('data-fvbaixar')); if(!it) return;
+      var o0 = b.textContent; b.textContent = 'Baixando…';
+      obter(it).then(function(o){ baixarObj(o); b.textContent = o0; aviso('Download iniciado.'); }).catch(function(){ b.textContent = o0; abrir(local(it.arquivo)); });
+      return;
+    }
+    if((b = t.closest('[data-fvleg]'))){
+      var it2 = acharPeca(b.getAttribute('data-fvleg')); if(!it2) return;
+      copiar(legenda(it2, 'fb')).then(function(){ aviso('Legenda copiada (com o link). Para Instagram e TikTok, use o botão da rede: a legenda vem com a chamada da palavra.'); }).catch(function(){});
+      return;
+    }
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && el('fvQrOv') && !el('fvQrOv').classList.contains('hide')) qrFechar(); });
+  document.addEventListener('visibilitychange', function(){
+    /* o celular solta a tela acesa quando a aba some; volta a pedir ao voltar com o QR aberto */
+    if(document.visibilityState === 'visible' && el('fvQrOv') && !el('fvQrOv').classList.contains('hide') && navigator.wakeLock){ try{ navigator.wakeLock.request('screen').then(function(w){ WAKE = w; }).catch(function(){}); }catch(e){} }
+  });
+
+  window.mvFaroVenda = { abrir: iniciar, dados: dados };
+})();
+</script>
 </body>
 </html>
