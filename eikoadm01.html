@@ -5476,7 +5476,7 @@ table.mvTab td b{font-weight:700}
   (function(){
     var R = window.MOVIKI_RAMOS || null;
     var CH = 'mv_conv_ramo', BASE = 'https://moviki.com.br/aovivo', OG = 'https://www.moviki.com.br/og/aovivo/', V = '20261016';
-    var FIXOS = ['moda','boutique','moda-masculina','moda-praia','calcados','cosmeticos','semijoias','confeitaria'];
+    var FIXOS = ['moda','boutique','moda-masculina','moda-praia','calcados','cosmeticos','semijoias','confeitaria','hamburgueria'];
     var ramo = null;
     function achar(k){ var e = (R && k) ? R.achar(k) : null; return (e && e.d === 1) ? e : null; }
     try{ var g = localStorage.getItem(CH); ramo = (g === null) ? achar('moda') : achar(g); }catch(e){ ramo = achar('moda'); }
