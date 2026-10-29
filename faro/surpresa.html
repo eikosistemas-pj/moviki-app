@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/surpresa.html | versao 2026-10-29-funil (29/10: o teste lista as 2 lives, o ensaio e a Lista VIP, igual ao capitulo do presente dos guias) | antes 2026-10-28-menu (botao Menu no alto; Voltar ao guia virou o atalho embaixo do logo) | antes 2026-10-28-surpresa | apresentacao do Moviki para quem terminou o Guia FARO (pedido do Paulo: o comprador nao cai direto no cadastro sem saber o que e o Moviki). So fatos do plano Basico e do teste gratis, iguais ao site. -->
+<!-- MOVIKI faro/surpresa.html | versao 2026-10-29-por-guia (29/10, noite: a mesma pagina fala com o leitor de cada guia pelo utm_campaign do link do guia: Black Friday, food truck, morango, rua; sem campanha conhecida fica a da praia) | antes 2026-10-29-funil (29/10: o teste lista as 2 lives, o ensaio e a Lista VIP, igual ao capitulo do presente dos guias) | antes 2026-10-28-menu (botao Menu no alto; Voltar ao guia virou o atalho embaixo do logo) | antes 2026-10-28-surpresa | apresentacao do Moviki para quem terminou o Guia FARO (pedido do Paulo: o comprador nao cai direto no cadastro sem saber o que e o Moviki). So fatos do plano Basico e do teste gratis, iguais ao site. -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -35,8 +35,8 @@
     <a class="fm-volta" href="/faro/acesso.html" id="voltarTopo">← Voltar ao guia</a>
     <div class="presente">🎁</div>
     <div class="serie">Surpresa do Moviki</div>
-    <h1>O seu ponto da praia no mapa. De graça.</h1>
-    <p class="lead">No guia você aprendeu a vender na areia. Agora é o cliente que precisa achar você: com o Moviki, ele abre o seu link e vê onde você está agora.</p>
+    <h1 id="sTit">O seu ponto da praia no mapa. De graça.</h1>
+    <p class="lead" id="sLead">No guia você aprendeu a vender na areia. Agora é o cliente que precisa achar você: com o Moviki, ele abre o seu link e vê onde você está agora.</p>
     <div class="cta">
       <a class="btn btn-verde" data-cta href="https://app.moviki.com.br/?criar=1&amp;utm_source=faro&amp;utm_medium=guia&amp;utm_campaign=verao-na-praia">Criar minha página grátis</a>
       <p class="mini" style="margin:0">Sem cartão e sem mensalidade no plano Básico.</p>
@@ -46,9 +46,9 @@
 
 <section class="secao">
   <div class="wrap estreito">
-    <h2>Como funciona na praia</h2>
-    <div class="grade" style="grid-template-columns:1fr">
-      <div class="cartao passo"><div class="ico">🔗</div><div><h3>Seu link próprio</h3><p>Você ganha um endereço com o nome do seu negócio, como moviki.com.br/seu-nome. Coloque no status do WhatsApp, no Instagram e no cartão com QR Code do capítulo 9.</p></div></div>
+    <h2 id="sComo">Como funciona na praia</h2>
+    <div class="grade" style="grid-template-columns:1fr" id="sPassos">
+      <div class="cartao passo"><div class="ico">🔗</div><div><h3>Seu link próprio</h3><p>Você ganha um endereço com o nome do seu negócio, como moviki.com.br/seu-nome. Coloque no status do WhatsApp, no Instagram e no cartão com QR Code que você monta no guia.</p></div></div>
       <div class="cartao passo"><div class="ico">📍</div><div><h3>Chegou, apareceu no mapa</h3><p>Na praia, abra o Moviki no celular e ligue a localização ao vivo: o seu ponto aparece no mapa onde você está, com aberto ou fechado e um recado do dia.</p></div></div>
       <div class="cartao passo"><div class="ico">🔁</div><div><h3>O cliente volta</h3><p>Quem comprou ontem abre o mesmo link hoje e vê se você já chegou e em que parte da praia está.</p></div></div>
     </div>
@@ -74,7 +74,7 @@
 <section class="secao fim">
   <div class="wrap estreito">
     <h2>Abra o seu presente</h2>
-    <p class="mini" style="margin:0">Crie a página do seu negócio e ligue o ao vivo no primeiro dia de praia.</p>
+    <p class="mini" style="margin:0" id="sFim">Crie a página do seu negócio e ligue o ao vivo no primeiro dia de praia.</p>
     <div class="cta">
       <a class="btn btn-verde" data-cta href="https://app.moviki.com.br/?criar=1&amp;utm_source=faro&amp;utm_medium=guia&amp;utm_campaign=verao-na-praia">Criar minha página grátis</a>
       <a class="btn btn-claro" href="/faro/acesso.html" id="voltarFim">← Voltar ao guia</a>
@@ -95,9 +95,70 @@ FARO.menu();
 (function () {
   'use strict';
   var F = window.FARO || { ev: function () {} };
-  F.ev('faro_surpresa', { produto: 'verao-na-praia' });
+  /* 29/10 (noite): cada guia manda o leitor para ca com utm_campaign=<guia>. O texto conversa com o guia que ele
+     acabou de ler. So recursos que existem, com o plano certo (venda pela pagina = Premium e Enterprise). */
+  var G = {
+    'black-friday-ao-vivo': {
+      tit: 'A sua Black Friday ao vivo começa aqui.',
+      lead: 'No guia você montou a oferta sem prejuízo, a lista de quem quer ser avisado e o roteiro. Falta o lugar onde tudo isso acontece: o link da sua loja, a live pelo celular e o ensaio que ninguém vê.',
+      como: 'Como funciona na sua Black Friday',
+      passos: [['🔗', 'O link da sua loja', 'Um endereço com o nome da loja, como moviki.com.br/sua-loja, com o seu catálogo de foto e preço no teste. Vai no status, no Instagram e no cartaz do balcão.'],
+               ['🎬', 'O ensaio que ninguém vê', 'Uma live de verdade, só para você: até 10 minutos, até 5 vezes por dia, para acertar a luz, a fala e o roteiro. Não gasta as lives do teste.'],
+               ['🔴', 'As 2 lives do teste', 'Uma para o esquenta e outra para a sexta, 27. A cliente abre o link no celular, sem baixar aplicativo.'],
+               ['🔔', 'A Lista VIP', 'Na sua página e na live tem o botão "Me avise da próxima live". Quem toca recebe o aviso quando você entra ao vivo.']],
+      fim: 'Crie a conta, faça o primeiro ensaio hoje e marque a live de esquenta.', cta: 'Criar minha conta e ganhar os 30 dias'
+    },
+    'food-truck-eventos': {
+      tit: 'O seu food truck no mapa, onde ele está hoje.',
+      lead: 'No guia você montou a proposta, o cardápio curto e a conta da taxa. Agora o cliente que comeu no evento precisa achar você de novo: com o Moviki, ele abre o seu link e vê onde o truck está agora.',
+      como: 'Como funciona no seu truck',
+      passos: [['🔗', 'O link do seu truck', 'Um endereço com o nome do truck, como moviki.com.br/seu-truck. Vai no portfólio para o organizador, no status e no cartão de cada pedido.'],
+               ['📍', 'Chegou ao evento, apareceu no mapa', 'Ligue a localização ao vivo e o truck aparece no mapa onde está, com aberto ou fechado e o recado do dia.'],
+               ['🧾', 'O cardápio no QR do balcão', 'No teste, o cardápio com foto e preço vai num QR code no começo da fila: o cliente escolhe enquanto espera.'],
+               ['🔁', 'O cliente volta', 'Quem comeu no sábado abre o mesmo link na semana seguinte e vê onde você estacionou.']],
+      fim: 'Crie a página do seu truck e leve o QR code para o próximo evento.', cta: 'Criar a página do meu truck'
+    },
+    'morango-cravejado': {
+      tit: 'A sua fornada da semana num link só.',
+      lead: 'No guia você fez a conta, acertou a receita e montou a embalagem. Agora falta o lugar onde a cliente vê o cardápio, a foto e o dia da próxima fornada, sem você repetir tudo no WhatsApp.',
+      como: 'Como funciona nas suas fornadas',
+      passos: [['🔗', 'O seu link próprio', 'Um endereço com o nome da sua marca, como moviki.com.br/sua-marca, com o cardápio de foto e preço no teste. Vai no status e no cartão da caixa.'],
+               ['📷', 'O QR code no cartão', 'Quem ganhou o doce de presente aponta o celular e cai no seu cardápio.'],
+               ['🎬', 'A live da montagem', 'No teste você tem 2 lives e o ensaio que ninguém vê: mostre o cravejado sendo montado, que é o que vende esse doce.'],
+               ['🔔', 'A Lista VIP', 'A cliente toca em "Me avise da próxima live" e recebe o aviso quando você entra ao vivo com a fornada nova.']],
+      fim: 'Crie a sua página, cadastre o cravejado com a foto do corte e faça o primeiro ensaio.', cta: 'Criar a minha página'
+    },
+    'comecar-a-vender-na-rua': {
+      tit: 'O cliente acha você, mesmo quando você muda de ponto.',
+      lead: 'No guia você abriu o MEI, fez a conta do preço e escolheu o ponto. Agora o cliente da terça precisa achar você na sexta: com o Moviki, ele abre o seu link e vê onde você está agora.',
+      como: 'Como funciona na sua banca',
+      passos: [['🔗', 'O seu link próprio', 'Um endereço com o nome do seu negócio, como moviki.com.br/seu-nome. Vai no status, na banca e no panfleto.'],
+               ['📍', 'Chegou, apareceu no mapa', 'Ligue a localização ao vivo e a banca aparece no mapa onde está, com aberto ou fechado e o recado do dia. Choveu e mudou de lugar? O mapa muda junto.'],
+               ['🧾', 'O QR code na banca', 'No teste, o cardápio com foto e preço vai num QR code: o cliente vê tudo antes de chegar ao caixa.'],
+               ['🔁', 'O cliente volta', 'Quem comprou uma vez abre o mesmo link e vê onde você está hoje, sem precisar perguntar.']],
+      fim: 'Crie a página do seu negócio na véspera do primeiro dia e cole o QR code na banca.', cta: 'Criar minha página grátis'
+    }
+  };
+  var q = (location.search.match(/[?&](?:utm_campaign|g)=([a-z0-9-]+)/) || [])[1] || 'verao-na-praia';
+  var g = G[q];
+  function esc(t) { return F.esc ? F.esc(t) : String(t); }
+  if (g) {
+    document.title = g.tit + ' | Guia FARO';
+    document.getElementById('sTit').textContent = g.tit;
+    document.getElementById('sLead').textContent = g.lead;
+    document.getElementById('sComo').textContent = g.como;
+    document.getElementById('sFim').textContent = g.fim;
+    document.getElementById('sPassos').innerHTML = g.passos.map(function (p) {
+      return '<div class="cartao passo"><div class="ico">' + p[0] + '</div><div><h3>' + esc(p[1]) + '</h3><p>' + esc(p[2]) + '</p></div></div>';
+    }).join('');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-cta]'), function (a) {
+      a.href = 'https://app.moviki.com.br/?criar=1&utm_source=faro&utm_medium=guia&utm_campaign=' + q;
+      a.textContent = g.cta;
+    });
+  }
+  F.ev('faro_surpresa', { produto: q });
   Array.prototype.forEach.call(document.querySelectorAll('[data-cta]'), function (a) {
-    a.addEventListener('click', function () { F.ev('faro_cta_moviki', { produto: 'verao-na-praia', de: 'surpresa' }); });
+    a.addEventListener('click', function () { F.ev('faro_cta_moviki', { produto: q, de: 'surpresa' }); });
   });
 })();
 </script>

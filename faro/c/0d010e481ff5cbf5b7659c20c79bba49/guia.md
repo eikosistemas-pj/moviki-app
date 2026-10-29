@@ -12,6 +12,12 @@ audio_mensagens: As mensagens prontas para o organizador, para o status do dia d
 
 ## capitulo-0 | Antes de começar
 
+Imagine o fim de um evento bom. A fila dobrou a esquina, o pão acabou antes da hora, você está com o braço doendo e o caixa cheio. Muita gente comeu a sua comida e gostou.
+
+Agora a pergunta que quase ninguém faz: **na segunda-feira, quantas dessas pessoas sabem onde encontrar você?**
+
+Para a maioria dos trucks, a resposta é quase nenhuma. O cliente comeu, gostou, foi embora, e o truck voltou a ser um desconhecido. É a perda que não aparece no caixa. Este guia vai levar você até a vaga no evento certo, e vai terminar respondendo essa pergunta.
+
 Este guia foi feito para você, que já tem, ou está montando, um food truck, um trailer, um carrinho ou uma barraca de comida e quer sair do ponto de sempre para trabalhar em eventos: feiras, festas da cidade, shows, corridas, casamentos, confraternizações de empresa e a temporada de fim de ano e verão.
 
 **Por que "os melhores eventos"?** Porque evento bom não é o maior. É o que tem público para o seu produto, uma taxa que cabe na sua conta e um organizador que chama você de novo. Este guia não promete faturamento. Evento bom existe, evento ruim também, e ninguém sério garante o resultado de um dia de chuva. O que ele entrega é o caminho inteiro, na ordem certa:
@@ -22,7 +28,7 @@ Este guia foi feito para você, que já tem, ou está montando, um food truck, u
 4. o cardápio que faz a fila andar;
 5. o preço que a taxa não come e a quantidade que não vira lixo;
 6. o pagamento rápido, sem golpe;
-7. como fazer o cliente te achar de novo depois que o evento acaba.
+7. e a resposta daquela pergunta: como fazer o cliente te achar de novo depois que o evento acaba.
 
 **Como usar este guia**
 
@@ -78,6 +84,8 @@ Quem trabalha dos dois jeitos dorme melhor: o serviço contratado segura o mês,
 A dúvida que mais trava quem quer entrar em evento é esta: "o organizador do festival grande não responde quem é pequeno". Muitas vezes é verdade. Ele precisa de segurança: quer saber que você já serviu muita gente sem travar a praça de alimentação. Quem nunca fez evento não tem como mostrar isso. Ainda.
 
 A saída é não começar pelo maior. Comece pela porta que abre mais fácil e use cada evento pequeno para juntar a prova que o grande pede.
+
+**E se você já fez evento e voltou no prejuízo?** Você não está sozinho, e quase nunca foi a comida. Na maioria das vezes foi uma destas três coisas: o evento era errado para o seu produto, a taxa não cabia na conta, ou você levou comida demais (ou de menos). As três têm capítulo neste guia: o 4, o 7 e o 8. Um evento ruim ensina mais do que parece, desde que você saiba ler o que deu errado.
 
 **As portas de entrada**
 
@@ -259,7 +267,7 @@ Cada item novo é mais ingrediente para levar, mais espaço na geladeira e mais 
 - Preço redondo: R$ 30 é mais rápido de cobrar e de dar troco do que R$ 28,90.
 - **Cardápio na frente da fila**, não só no balcão, para o cliente decidir enquanto espera.
 
-> **No Moviki:** o QR code da sua página vai num cartaz no começo da fila. O cliente aponta a câmera e vê o cardápio com foto e preço de cada item no próprio celular, enquanto espera. Quando chega ao caixa, já sabe o número do combo. O link e o QR code estão no plano Básico, que é grátis; o cardápio com foto e preço vem a partir do Pró e entra no teste grátis.
+> **No Moviki:** o QR code da sua página vai num cartaz no começo da fila. O cliente aponta a câmera e vê o cardápio com foto e preço de cada item no próprio celular, enquanto espera. Quando chega ao caixa, já sabe o número do combo. E tem um efeito que o cartaz de papel não tem: quem abriu o seu cardápio na fila sai do evento com o seu endereço no celular. O link e o QR code estão no plano Básico, que é grátis; o cardápio com foto e preço vem a partir do Pró e entra no teste grátis.
 
 **Tarefa do capítulo:** escolha os itens do seu cardápio de evento, cronometre cada um e corte o que passar do seu tempo limite.
 
@@ -294,7 +302,7 @@ Agora um evento que cobra 15% do que você vender, num lanche de R$ 30: são **R
 
 Faça essa conta **antes** de assinar, com a taxa daquele evento. Se o preço que fecha a conta for alto demais para aquele público, a resposta honesta é: esse não é um dos melhores eventos para você. Dizer não a um evento ruim também é estratégia.
 
-> **No Moviki:** o Moviki não entra na sua ficha de custo como porcentagem. Ele cobra 0% por venda: o que você paga é uma mensalidade fixa (a partir de R$ 39,90 por mês, em outubro de 2026). Nos planos Premium e Enterprise, em que o cliente pede pela sua página, o Pix cai direto na sua conta. O link e o lugar no mapa estão no plano Básico, que é grátis. Num mês de muitos eventos, a sua venda fica inteira com você.
+> **No Moviki:** o Moviki não entra na sua ficha de custo como porcentagem. Ele cobra 0% por venda: o que você paga é uma mensalidade fixa (a partir de R$ 39,90 por mês, em outubro de 2026). Nos planos Premium e Enterprise, em que o cliente pede pela sua página, o Pix cai direto na sua conta. O link e o lugar no mapa estão no plano Básico, que é grátis. Repare na diferença para a taxa percentual que você acabou de calcular: num mês de muitos eventos, a mensalidade não cresce junto com a sua venda.
 
 **Tarefa do capítulo:** preencha a ficha de custo de cada item com a taxa do próximo evento e faça a conta do dia fraco.
 
@@ -322,6 +330,8 @@ Levar pouco é deixar venda na mesa. Levar muito é jogar comida e dinheiro fora
 **O pedido que chega antes do evento**
 
 O jeito mais seguro de saber quanto levar é ter parte da venda feita antes de sair de casa. Para eventos abertos, ofereça aos seus clientes fiéis combos antecipados, com retirada no evento e um preço especial. Cada combo vendido é uma porção que você já sabe que vai sair. O capítulo 9 mostra como cobrar.
+
+Repare numa condição escondida aqui: só dá para vender antes para quem você consegue avisar. Cliente fiel cujo contato você não tem não compra combo antecipado. Guarde isso: volta com força no capítulo 11.
 
 > **No Moviki:** nos planos Premium e Enterprise, o seu cliente faz o pedido sozinho pela sua página e paga no Pix, que cai direto na sua conta. Você não digita resumo nem confere pedido no meio das conversas. Os pedidos chegam numa central, numerados, e você sabe quantos combos já estão vendidos antes de carregar o truck.
 
@@ -363,7 +373,7 @@ Alguns eventos usam cartão recarregável, pulseira ou ficha. Nesse caso, o dinh
 
 Quem compra pelo WhatsApp ou pela internet compra fora do estabelecimento, e o Código de Defesa do Consumidor dá a essa pessoa 7 dias para desistir. Deixe a regra de cancelamento clara antes de receber. Em caso de dúvida, o Procon da sua cidade orienta.
 
-> **No Moviki:** nos planos Premium e Enterprise, a pré-venda sai pela sua página: o cliente escolhe o combo, paga no Pix e o dinheiro cai direto na sua conta, com 0% de taxa do Moviki. Quem prefere cartão paga pela sua própria conta do Mercado Pago ou do Asaas.
+> **No Moviki:** nos planos Premium e Enterprise, a pré-venda sai pela sua página: o cliente escolhe o combo, paga no Pix e o dinheiro cai direto na sua conta, com 0% de taxa do Moviki. Ele não fica parado em sistema nenhum esperando repasse, como acontece com a ficha do evento. Quem prefere cartão paga pela sua própria conta do Mercado Pago ou do Asaas.
 
 **Tarefa do capítulo:** imprima o QR code do seu Pix em tamanho grande e combine quem cuida do caixa no próximo evento.
 
@@ -429,7 +439,11 @@ Faça a conta com os seus números. **Exemplo** (números ilustrativos): se 150 
 - **Lista de clientes:** pergunte no balcão "quer receber aviso de onde a gente vai estar?". Anote só quem disser sim, e mande só para quem pediu. Quem pedir para sair, tire na hora.
 - **Agenda fixa e conhecida:** "toda sexta na praça tal, sábado em evento". Previsibilidade faz cliente voltar.
 
-> **No Moviki:** o seu truck aparece no mapa, em tempo real, no lugar onde ele está agora, e a sua página moviki.com.br/seu-nome mostra o cardápio e o horário. O cartão do pedido leva esse link: o cliente abre na semana seguinte e vê onde você estacionou hoje. Nos planos Premium e Enterprise, a página tem o botão "Me avise da próxima live": quem toca entra na sua **Lista VIP**, com a autorização registrada, e recebe o aviso quando você abre uma live, por exemplo do lugar onde o truck acabou de montar.
+**"Meu cliente é mais velho, não mexe com essas coisas."** Então o papel trabalha por você: cartão com o WhatsApp em letra grande, e o aviso chegando no WhatsApp, que ele já usa todo dia. Link e QR code são para quem quer; ninguém precisa baixar nada para comprar de você. O que não pode é o cliente, de qualquer idade, ir embora sem nenhum jeito de te achar.
+
+Lembra da pergunta do começo do guia, sobre quantas pessoas sabem onde te encontrar na segunda-feira? Com o cartão e a lista, a resposta deixa de ser "quase nenhuma".
+
+> **No Moviki:** o seu truck aparece no mapa, em tempo real, no lugar onde ele está agora, e a sua página moviki.com.br/seu-nome mostra o cardápio e o horário. O cartão do pedido leva esse link: o cliente abre na semana seguinte e vê onde você estacionou hoje. É um endereço de internet comum: abre pelo WhatsApp ou pela câmera, sem baixar aplicativo. Nos planos Premium e Enterprise, e no teste grátis, a página tem o botão "Me avise da próxima live": quem toca entra na sua **Lista VIP**, com a autorização registrada, e recebe o aviso quando você abre uma live, por exemplo do lugar onde o truck acabou de montar. Você para de anotar nome por nome no caderno.
 
 **Tarefa do capítulo:** faça o cartão ou adesivo com o seu WhatsApp e o seu link, e escreva a pergunta que você vai fazer no balcão para montar a sua lista.
 
@@ -463,7 +477,7 @@ O "depois" é o que mais ajuda a conseguir o próximo: mostra que você já este
 - Não use marca, logo ou música do evento sem permissão do organizador.
 - Não prometa o que não entrega: tempo de espera, quantidade, horário. A foto do Instagram vira cobrança no dia.
 
-> **No Moviki:** a live pelo celular, nos planos Premium e Enterprise, fica num link só seu, como moviki.com.br/live/sua-loja, que o cliente abre sem baixar aplicativo. Dá para mostrar o truck montado e o movimento para quem ainda está a caminho do evento. E existe o **ensaio**: uma live de verdade que ninguém vê, de até 10 minutos, para você testar o enquadramento do truck antes de abrir ao público.
+> **No Moviki:** a live pelo celular, nos planos Premium e Enterprise e no teste grátis, fica num link só seu, como moviki.com.br/live/sua-loja, que o cliente abre sem baixar aplicativo. Dá para mostrar o truck montado e o movimento para quem ainda está a caminho do evento. E existe o **ensaio**: uma live de verdade que ninguém vê, de até 10 minutos, para você testar o enquadramento do truck antes de abrir ao público.
 
 **Tarefa do capítulo:** arrume a bio, crie os quatro destaques e poste o seu último evento com a marcação do organizador.
 
@@ -520,7 +534,11 @@ Olhe para trás um minuto. Se você fez as tarefas, já tem:
 - o cartão com o seu link, a pergunta da lista e o Instagram arrumado;
 - os 30 dias marcados no calendário.
 
-O seu caminho até o próximo evento está montado. Falta uma coisa só: **um lugar onde o cliente te encontra antes, durante e depois do evento**. O link que vai no portfólio, no cartaz da fila e no cartão do pedido. O mapa que mostra onde o truck está hoje. A lista que avisa quando você abre a live.
+O seu caminho até o próximo evento está montado. Você vai chegar organizado, com proposta, papel em dia, preço que fecha a conta e fila andando. Mas volte à pergunta do capítulo 0: **na segunda-feira depois do evento, quantas pessoas sabem onde te encontrar?**
+
+Com o que você montou até aqui, já são mais do que antes: o cartão no pedido, a lista anotada no balcão. Só que as peças estão espalhadas. O cardápio está num PDF, o endereço do truck muda a cada evento, a lista está no caderno e o aviso depende de você lembrar de mandar, um por um, depois de um dia inteiro de chapa. No exemplo ilustrativo do capítulo 11, eram 600 pessoas em quatro eventos. Cada uma que não acha você de novo é um cliente que já gostou da sua comida indo comer em outro lugar.
+
+Falta uma coisa só: **um lugar onde o cliente te encontra antes, durante e depois do evento**. O link que vai no portfólio, no cartaz da fila e no cartão do pedido. O mapa que mostra onde o truck está hoje. A lista que avisa quando você abre a live.
 
 Foi para isso que o Moviki foi feito. E é aqui que entra o presente deste guia.
 
@@ -535,9 +553,11 @@ O teste grátis do Moviki dura 30 dias, o mesmo tamanho do plano do capítulo 13
 
 Um detalhe para você decidir com clareza: o pedido que o cliente faz sozinho pela sua página, com o Pix caindo na sua conta, é dos planos Premium e Enterprise. No teste, você monta a página, o cardápio, o QR e a lista, faz as suas lives e vê tudo funcionando no seu truck antes de decidir qualquer coisa.
 
+E tem uma coisa que nenhum capítulo consegue mostrar no papel: **o seu truck na tela do cliente**. Aponte a câmera do seu celular para o seu próprio QR code e veja o que a pessoa da fila vai ver. Depois faça um ensaio, a live que ninguém assiste, e veja o truck montado como quem está a caminho do evento veria. Isso só se descobre abrindo.
+
 **Em 3 passos, hoje**
 
-1. **Crie a sua conta** pelo link da surpresa, no fim deste guia, e **confirme o seu e-mail**: é a confirmação que libera os 30 dias e a live aberta ao público.
+1. **Crie a sua conta** pelo link da surpresa, no fim deste guia (o botão verde "Abrir a surpresa", logo depois do último capítulo), e **confirme o seu e-mail**: é a confirmação que libera os 30 dias e a live aberta ao público.
 2. **Cadastre o cardápio do evento**, com foto e preço. Você já escolheu e cronometrou os itens no capítulo 6.
 3. **Imprima o QR code** da sua página para o cartaz da fila e, no dia do evento, deixe o truck aparecer no mapa no lugar onde ele montou.
 
@@ -552,11 +572,14 @@ No cadastro, marque a caixa para receber ajuda do Moviki no seu WhatsApp. A noss
 - **Já pago muita mensalidade. Se eu não quiser assinar?** A sua conta volta para o plano Básico, que é grátis e continua com o truck no mapa e o seu link no ar.
 - **O Moviki fica com parte da minha venda?** Não. 0% por venda. O Pix cai direto na sua conta.
 - **Não sou bom com tecnologia.** O ensaio existe para isso, e a equipe ajuda pelo WhatsApp.
+- **Não tenho tempo para mais uma coisa.** Os três passos acima cabem numa noite. Depois, o cardápio cadastrado vale para todos os eventos, e o link é o mesmo em todos os cartões que você imprimir.
+- **Meu cliente é mais velho e não baixa aplicativo.** Não precisa. A sua página e a live abrem por um link, como qualquer link que chega no WhatsApp, ou pela câmera, no QR. Quem preferir continua falando com você pelo WhatsApp, como sempre.
+- **Como sei que isso é sério? E se o Moviki fechar?** O Moviki é da EIKO SISTEMAS, empresa com CNPJ, que está no rodapé deste guia. Para testar, ninguém pede o seu cartão. O dinheiro das suas vendas não passa pelo Moviki: nos planos com pedido pela página, o Pix cai direto na sua conta. E ninguém pode prometer o futuro de empresa nenhuma, por isso este guia foi escrito para funcionar sem o aplicativo: o seu WhatsApp, a sua chave Pix, o seu portfólio e o seu caderno de clientes continuam seus.
 - **E se eu não vender mais?** Ninguém pode garantir venda, nem nós. O que o Moviki faz é tirar do seu caminho o que mais faz o truck perder cliente: a pessoa que não sabe onde você está hoje e a que comeu uma vez e nunca mais te achou. O resto é a sua comida, o seu preço e o seu trabalho, que você já tem.
 
-Imagine o sábado do seu próximo evento. O truck montado, o cartaz com o QR no começo da fila, o cliente escolhendo o combo no celular enquanto espera. Na semana seguinte, alguém que comeu ali abre o seu link, vê no mapa onde você estacionou e aparece no balcão dizendo: "vim porque vi que vocês estavam aqui hoje".
+Imagine o sábado do seu próximo evento. O truck montado, o cartaz com o QR no começo da fila, o cliente escolhendo o combo no celular enquanto espera. Na semana seguinte, alguém que comeu ali abre o seu link, vê no mapa onde você estacionou e aparece no balcão dizendo: "vim porque vi que vocês estavam aqui hoje". Desta vez, a resposta da pergunta da segunda-feira é outra.
 
-**Tarefa do capítulo:** abra a surpresa no fim do guia, crie a sua conta e cadastre o carro-chefe hoje.
+**Tarefa do capítulo:** abra a surpresa no fim do guia, crie a sua conta e cadastre o carro-chefe hoje. Depois, aponte a câmera para o seu QR code e veja o seu truck como o cliente vai ver.
 
 ## capitulo-15 | Checklist final e mensagens prontas
 

@@ -26,10 +26,16 @@ Este guia foi feito para você, lojista de rua, de shopping ou que vende pelo Wh
 6. o pedido fechado no Pix, sem perder venda no privado;
 7. a entrega, a recompra e a emenda com o Natal.
 
+**Os quatro medos que seguram o lojista**
+
+Quase todo lojista que pensa em vender ao vivo trava em um destes quatro: **"vou trabalhar de graça"**, **"ninguém vai assistir"**, **"vou passar vergonha"** e **"vou perder venda no meio da bagunça"**. São medos justos. Cada um tem o seu capítulo aqui, e nenhum se resolve com dinheiro: se resolve com uma conta, um aviso, um ensaio e uma regra.
+
+E no fim do guia tem um presente. Ele encaixa certinho no calendário que você vai montar, mas só faz sentido depois das contas. Por isso fica para o final.
+
 **Como usar este guia**
 
 - **Leia ou escute** um capítulo por vez. Cada capítulo tem o seu áudio: dá para ouvir entre um cliente e outro.
-- **Faça a tarefa do fim de cada capítulo.** São tarefas pequenas, de 10 a 20 minutos. Quando chegar ao último capítulo, a sua Black Friday vai estar montada no papel.
+- **Faça a tarefa do fim de cada capítulo.** São tarefas pequenas, de 10 a 20 minutos. Somadas, cabem em duas a quatro horas, espalhadas por três semanas. Quando chegar ao último capítulo, a sua Black Friday vai estar montada no papel.
 - **Use o checklist do final** no dia da live.
 
 Uma coisa antes de seguir: este guia é uma publicação do Moviki, um aplicativo para o lojista vender ao vivo pelo celular. Em alguns capítulos você vai ver um bloco **"No Moviki"**, mostrando como aquele passo fica mais fácil no aplicativo. Todo o resto funciona com o que você já tem: celular, WhatsApp e a chave Pix da loja.
@@ -62,7 +68,7 @@ O seu problema na Black Friday nunca foi o preço. É o alcance: na sexta à noi
 
 Você pode fazer a Black Friday só com foto no status do WhatsApp. Funciona um pouco. Mas a foto tem três problemas: não tira dúvida, não mostra o caimento e some no meio de outras cem fotos.
 
-A live resolve os três. Ao vivo, você mostra a peça no corpo, vira, aproxima o tecido, lê a pergunta da cliente e responde na hora, pelo nome. É a sua loja, com o seu jeito de vender, no celular de quem não pôde passar na porta.
+A live resolve os três. Ao vivo, você mostra a peça no corpo, vira, aproxima o tecido, lê a pergunta da cliente e responde na hora, pelo nome. É a sua loja, com o seu jeito de vender, no celular de quem não pôde passar na porta e está em casa, no sofá.
 
 **Quem já está fazendo isso**
 
@@ -81,11 +87,15 @@ Não é. A live de um lojista é mais simples do que a de um influenciador, porq
 
 Os próximos capítulos ensinam as três.
 
+**"Mas a minha cliente é mais velha e não mexe com aplicativo"**
+
+Para assistir a uma live, ela não precisa saber nada de aplicativo. Precisa abrir um link que chega no WhatsApp, coisa que ela já faz todo dia com foto, áudio e corrente. E a cliente que não quer ver live nenhuma continua comprando como sempre: no balcão ou pelo WhatsApp. A live é uma porta a mais na sua loja, não a única.
+
 **Tarefa do capítulo:** assista a uma live de vendas de qualquer loja, por 10 minutos. Anote uma coisa que você faria igual e uma que você faria diferente.
 
 ## capitulo-3 | A conta do desconto: oferta forte sem prejuízo
 
-O medo número um do lojista na Black Friday: "vou dar desconto e trabalhar de graça". Esse medo é justo. Desconto sem conta é prejuízo com fila na porta. Este capítulo faz a conta com você.
+O primeiro dos quatro medos: "vou dar desconto e trabalhar de graça". Esse medo é justo. Desconto sem conta é prejuízo com fila na porta. Este capítulo faz a conta com você.
 
 **Primeiro, quanto sobra hoje em cada peça**
 
@@ -177,15 +187,15 @@ Num horário em que a clientela está em casa, por exemplo, 20h. Com a isca, os 
 
 **Sábado a segunda, 28 a 30 de novembro**
 
-- Separar e entregar (capítulo 10).
+- Separar e entregar (capítulo 11).
 - Cortes da live no status e nos stories.
 - **Cyber Monday, segunda, 30/11:** última chamada para o que sobrou, se sobrou.
 
 **Dezembro: o Natal**
 
-Quem comprou na Black Friday é o primeiro a ser chamado para as lives de Natal (capítulo 10).
+Quem comprou na Black Friday é o primeiro a ser chamado para as lives de Natal (capítulo 11).
 
-Repare em uma coisa: o calendário pede **duas lives**, a de esquenta e a da Black Friday. Guarde essa informação para o capítulo 11.
+Repare em uma coisa: o calendário pede **duas lives**, a de esquenta e a da Black Friday. Guarde essa informação: ela volta no capítulo 12.
 
 **Tarefa do capítulo:** marque no calendário do celular a data da live de esquenta, a da live da Black Friday e a da Cyber Monday, com o horário de cada uma.
 
@@ -215,6 +225,12 @@ A live mais forte é a que começa com gente esperando. Por isso, desde o primei
 **Diga o que a pessoa ganha ao assistir**
 
 "Vai ter live" não basta. Diga o motivo: "quem estiver na live vê as ofertas antes de todo mundo", "a isca é só para quem pedir na live", "tenho 6 kits de presente com preço de Black Friday". Sempre verdade.
+
+**"Já tentei live e ninguém apareceu"**
+
+Quando isso acontece, quase sempre faltou uma destas três coisas: o aviso antes, um horário em que a cliente está em casa ou um motivo para assistir. Este capítulo e o calendário resolvem as três.
+
+E se, mesmo assim, aparecer pouca gente na primeira? Não é fracasso, é começo. Cinco clientes que conhecem você, com o celular na mão, valem mais do que quinhentos desconhecidos passando. É para isso que existe o esquenta: a lista cresce, você treina na frente de gente de verdade e chega à sexta com plateia. E quem não assistiu ainda vê os cortes (capítulo 11).
 
 > **No Moviki:** a sua live fica num link só seu, como moviki.com.br/live/sua-loja, que o cliente abre direto no celular, **sem baixar aplicativo e sem criar conta**. Na página da loja e na própria live existe o botão **"Me avise da próxima live"**: a cliente toca uma vez e entra na sua **Lista VIP**, com a autorização dela registrada. Quando você começa a live, ela recebe o aviso. Você não precisa anotar nome por nome, e a lista é sua.
 
@@ -306,7 +322,7 @@ Anuncie no começo da live que ela vai acontecer, sem dizer quando. Isso segura 
 
 ## capitulo-9 | Fechar o pedido no Pix sem perder venda
 
-Toda live de Black Friday tem o mesmo momento perigoso: muitos "QUERO" ao mesmo tempo. Se o caminho entre o "quero" e o dinheiro na conta for confuso, a venda esfria. A cliente comenta, você demora 20 minutos para responder no privado, ela já comprou de outra loja ou desistiu.
+O quarto medo: "vou perder venda no meio da bagunça". Toda live de Black Friday tem o mesmo momento perigoso: muitos "QUERO" ao mesmo tempo. Se o caminho entre o "quero" e o dinheiro na conta for confuso, a venda esfria. A cliente comenta do sofá, você demora 20 minutos para responder no privado, e ela já comprou de outra loja ou desistiu.
 
 **Uma regra só para pedir**
 
@@ -338,7 +354,7 @@ Decida antes da live: "cartão na retirada, aqui na loja" ou um link de pagament
 
 Se a sua live tiver 30 pedidos, são 30 resumos digitados, 30 comprovantes conferidos e 30 respostas, numa sexta à noite, com gente perguntando ao mesmo tempo. É aqui que a maioria das lojas perde venda: não por falta de cliente, mas por falta de mãos.
 
-> **No Moviki:** a sua loja ganha uma página com catálogo, foto e preço de cada peça. Nos planos Premium e Enterprise, o cliente faz o pedido **sozinho** por essa página, sem você digitar resumo, o Pix cai **direto na sua conta**, o cartão pode ser cobrado pela sua própria conta do Mercado Pago ou do Asaas, e o cliente que quer provar antes pode **reservar por 2 horas e pagar na loja**. No plano Enterprise, o cliente paga no **Pix dentro da própria live**, sem sair dela. E todos os pedidos chegam numa **central**, numerados, com a situação de cada um.
+> **No Moviki:** a partir do plano Pró, a sua loja ganha uma página com catálogo, foto e preço de cada peça. Nos planos Premium e Enterprise, o cliente faz o pedido **sozinho** por essa página, sem você digitar resumo, o Pix cai **direto na sua conta**, o cartão pode ser cobrado pela sua própria conta do Mercado Pago ou do Asaas, e o cliente que quer provar antes pode **reservar por 2 horas e pagar na loja**. No plano Enterprise, o cliente paga no **Pix dentro da própria live**, sem sair dela. E todos os pedidos chegam numa **central**, numerados, com a situação de cada um.
 
 **Tarefa do capítulo:** escreva a sua regra de pedido, o prazo de reserva, a mensagem de resumo e a sua resposta para quem quer pagar no cartão.
 
@@ -412,13 +428,20 @@ Olhe para trás um minuto. Se você fez as tarefas, já tem:
 - a regra de pedido, o prazo de reserva e a mensagem do Pix;
 - a taxa de entrega, a regra de troca e a mensagem de recompra.
 
-A sua Black Friday está montada. Falta uma coisa só: **o lugar onde tudo isso acontece ao mesmo tempo**. O link que a cliente abre no sofá, a lista que avisa quando a live começa, o pedido que chega organizado, o Pix que cai na sua conta e o ensaio para você chegar à sexta sem medo.
+A sua Black Friday está montada. Agora lembre dos quatro medos do começo e veja onde cada um ficou:
+
+- **"Vou trabalhar de graça":** resolvido, no papel, com a conta da sobra.
+- **"Vou perder venda na bagunça":** resolvido com a regra do QUERO e o prazo de reserva, desde que sobrem mãos na sexta à noite.
+- **"Ninguém vai assistir":** só metade. A lista existe, mas o aviso ainda sai um por um, na mão, e o "sim" de cada cliente mora num caderno.
+- **"Vou passar vergonha":** só metade. O roteiro está escrito, mas gravar sozinho não é a mesma coisa que estar ao vivo.
+
+O que sobrou não é falta de esforço seu. É falta de lugar. Lembra da pergunta do capítulo 1, como levar a sua loja até o sofá da cliente? Para isso falta **um link que ela abre no sofá**, **uma lista que se avisa sozinha** e **um palco para treinar antes da estreia**.
 
 Foi para isso que o Moviki foi feito. E é aqui que entra o presente deste guia.
 
 **O presente: 30 dias de teste grátis do Moviki**
 
-O teste grátis do Moviki dura 30 dias e inclui **2 lives**. Lembra do calendário do capítulo 5? Ele pede exatamente duas lives: **a de esquenta e a da Black Friday**. Se você criar a conta a partir de novembro, os 30 dias cobrem o esquenta, a Black Friday e a Cyber Monday.
+O teste grátis do Moviki dura 30 dias, contados do dia do cadastro, e inclui **2 lives**. Lembra do calendário do capítulo 5? Ele pede exatamente duas lives: **a de esquenta e a da Black Friday**. A partir de 1º de novembro, qualquer dia antes do esquenta serve: os 30 dias cobrem os ensaios, o esquenta, a sexta e a Cyber Monday.
 
 No teste você tem:
 
@@ -427,11 +450,19 @@ No teste você tem:
 - os **ensaios** que ninguém vê, quantos você precisar (até 5 por dia), sem gastar as 2 lives;
 - a **Lista VIP** com o botão "Me avise da próxima live".
 
+E o que o teste não tem, para você não ser pego de surpresa: o pedido feito pelo cliente sozinho na página e a central de pedidos são dos planos Premium e Enterprise. No teste, o pedido da live segue a regra do capítulo 9: QUERO no comentário, resumo no privado e Pix na sua chave. Funciona, e você já sabe fazer.
+
+**Por que agora, e não na semana da Black Friday**
+
+A data não muda: sexta, 27 de novembro. O que muda é com quantos ensaios você chega até ela. Quem cria a conta na semana 1 do calendário pode chegar à sexta com dez ensaios feitos. Quem cria na quinta, dia 26, chega com nenhum.
+
 **Em 3 passos, hoje**
 
 1. **Crie a sua conta** pelo link da surpresa, no fim deste guia, e **confirme o seu e-mail**: é a confirmação que libera os 30 dias e a live aberta ao público.
 2. **Cadastre as ofertas** da sua Black Friday, com foto e preço. Você já escolheu todas no capítulo 3.
 3. **Faça o seu primeiro ensaio** e, quando se sentir pronto, marque a live de esquenta.
+
+Depois do passo 2, faça uma coisa que pouca gente faz: abra o seu link no seu próprio celular, como se fosse a cliente. É a primeira vez que você vê a sua loja do lado de quem está no sofá.
 
 **Você não fica sozinho**
 
@@ -440,14 +471,21 @@ No cadastro, marque a caixa para receber ajuda do Moviki no seu WhatsApp. A noss
 **As dúvidas que sobram, respondidas**
 
 - **Preciso de cartão de crédito para testar?** Não. O teste começa no cadastro.
-- **E depois dos 30 dias?** Se quiser continuar com a live, você escolhe um plano: o Premium (R$ 69,90 por mês) ou o Enterprise (R$ 129,90 por mês, com o Pix dentro da live e a oferta relâmpago). Para manter só o catálogo, existe o Pró (R$ 39,90 por mês). Se não assinar, a sua conta volta para o plano Básico, que é grátis, com o seu link e o lugar no mapa.
+- **E se eu não gostar?** Não tem nada para cancelar. Sem cartão, nada é cobrado. Depois dos 30 dias, se você não escolher um plano, a conta volta para o Básico grátis.
+- **E depois dos 30 dias?** Se quiser continuar com a live, você escolhe um plano: o Premium (R$ 69,90 por mês, que também libera o pedido pela página e a central) ou o Enterprise (R$ 129,90 por mês, com o Pix dentro da live e a oferta relâmpago). Para manter só o catálogo, existe o Pró (R$ 39,90 por mês). Se não assinar, a sua conta volta para o plano Básico, que é grátis, com o seu link e o lugar no mapa.
 - **O Moviki fica com parte da minha venda?** Não. 0% por venda. O Pix cai direto na sua conta.
-- **Não sou bom com tecnologia.** O ensaio existe para isso, e a equipe ajuda pelo WhatsApp.
-- **E se a live não vender?** Ninguém pode garantir venda, nem nós. O que o Moviki faz é tirar do seu caminho tudo o que costuma travar o lojista: o público que não acha a live, o medo da primeira vez e o pedido que se perde no privado. O resto é a sua loja, a sua oferta e a sua clientela, que você já tem.
+- **Como sei que não é golpe?** Você não dá cartão nem paga nada para testar, e o Moviki não toca no dinheiro das suas vendas: o Pix vai para a sua chave. O nome e o CNPJ da empresa que publica este guia estão no rodapé.
+- **Minha cliente é mais velha e não usa aplicativo.** Ela não precisa. A live abre por um link, no celular, sem baixar nada. Se ela abre foto no WhatsApp, abre a sua live.
+- **Vou ter de largar o WhatsApp e o Instagram?** Não. O seu link vai justamente no status, na lista de transmissão, nos stories e no cartaz do balcão.
+- **E a minha lista de clientes?** A lista dos 20 e o caderno dos "sim" são seus, com ou sem o Moviki. E a Lista VIP é da sua loja.
+- **Não sou bom com tecnologia.** Se você manda foto no WhatsApp, cadastra uma oferta. O ensaio existe para você errar sem ninguém ver, e a equipe ajuda pelo WhatsApp.
+- **E se a live não vender?** Ninguém pode garantir venda, nem nós. O que o Moviki faz é tirar do seu caminho tudo o que costuma travar o lojista: o público que não acha a live, o medo da primeira vez e o aviso mandado um por um. O resto é a sua loja, a sua oferta e a sua clientela, que você já tem.
 
-Imagine a sexta, 27, às 20h. O celular no tripé, a luz de frente, a etiqueta com o preço de antes e o de agora. A sua lista recebe o aviso, a cliente abre o link no sofá, comenta "QUERO 7 M" e o Pix cai na sua conta. Você já ensaiou isso dez vezes.
+Imagine a sexta, 27, às 20h. O celular no tripé, a luz de frente, a etiqueta com o preço de antes e o de agora. Você começa a live e a sua Lista VIP recebe o aviso na hora. A cliente que não pôde passar na loja abre o link no sofá, comenta "QUERO 7 M" e manda o Pix. Você não está nervoso: já fez isso dez vezes, no ensaio.
 
-**Tarefa do capítulo:** abra a surpresa no fim do guia, crie a sua conta e faça o seu primeiro ensaio hoje.
+Falta só abrir a porta. O botão verde **"Abrir a surpresa"** está no fim do guia, logo depois do checklist.
+
+**Tarefa do capítulo:** abra a surpresa, crie a sua conta, abra o seu link no seu celular como se fosse a cliente e faça o seu primeiro ensaio hoje.
 
 ## capitulo-13 | Checklist final e mensagens prontas
 

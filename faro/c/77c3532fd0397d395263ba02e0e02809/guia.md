@@ -12,6 +12,10 @@ audio_mensagens: As mensagens prontas para anunciar a fornada, confirmar a encom
 
 ## capitulo-0 | Antes de começar
 
+Imagine um sábado à noite. O Pix caiu o dia inteiro, a pia está cheia de panela e a mesa, de caixinha vazia. Você abre a geladeira e ali estão cinco morangos que ninguém buscou. Amanhã eles não servem para vender. E aí vem a pergunta que dá um frio na barriga: **depois de tudo isso, sobrou dinheiro?**
+
+Muita doceira só descobre a resposta no fim do mês, e às vezes descobre que trabalhou de graça. Este guia existe para você saber a resposta antes da primeira fornada, e para fazer aqueles cinco morangos na geladeira virarem exceção, não rotina.
+
 Este guia é para você, que faz doce em casa ou quer começar, viu o morango cravejado tomar conta do status de todo mundo e se perguntou: ainda dá tempo de vender?
 
 Doce viral tem duas fases. Na primeira, todo mundo quer provar. Na segunda, a curiosidade passa e fica quem faz bem, cobra certo e entrega bonito. Este guia é para a segunda fase, que é onde você está agora.
@@ -135,6 +139,8 @@ Agora você tem a receita e, depois do lote-teste, um número que nenhuma report
 
 "Chocolate e morango são caros, não vai sobrar nada." Pode ser verdade. Pode ser mentira. A única forma de saber é fazer a conta, e ela cabe numa folha.
 
+Se você já vendeu doce antes e desistiu porque "não sobrava nada", esta folha mostra para onde o dinheiro foi. Quase sempre ele saiu por uma de três portas: o seu tempo que ficou fora do preço, a sobra que foi para o lixo ou uma taxa que comia cada pedido. As três estão aqui embaixo.
+
 **A ficha de custo, em 5 linhas**
 
 Some o custo de uma unidade:
@@ -167,7 +173,7 @@ Depois ajuste olhando três coisas: quanto se cobra perto de você, o tamanho do
 
 **Quanto custa a sobra**
 
-Agora a conta que quase ninguém faz. No mesmo exemplo, se de uma fornada sobram 5 morangos que não podem ser vendidos amanhã, são 5 vezes R$ 7,95: **R$ 39,75 no lixo**, mais o seu sábado. A linha de perda existe para isso, mas ela não aguenta sobra toda semana. O que segura o seu lucro neste doce não é só o preço: é **produzir pelo pedido**. É o assunto dos capítulos 4 e 9.
+Agora a conta que quase ninguém faz. No mesmo exemplo, se de uma fornada sobram 5 morangos que não podem ser vendidos amanhã, são 5 vezes R$ 7,95: **R$ 39,75 no lixo**, mais o seu sábado. São os cinco morangos da geladeira, lá do começo do guia, agora com preço. A linha de perda existe para isso, mas ela não aguenta sobra toda semana. O que segura o seu lucro neste doce não é só o preço: é **produzir pelo pedido**. É o assunto dos capítulos 4 e 9.
 
 **Atenção à fruta**
 
@@ -183,7 +189,7 @@ Segundo a Embrapa, citada pela Gazeta do Povo em 2025, a colheita do morango com
 
 Se você vender por um aplicativo ou plataforma que fica com uma porcentagem de cada pedido, essa porcentagem é mais uma linha de custo. Faça a conta com um número só para exemplo, 20%: num morango de R$ 18, são R$ 3,60 por unidade. A sobra do exemplo, que era R$ 10,05 (R$ 18 menos R$ 7,95), cai para R$ 6,45. Antes de entrar em qualquer plataforma, pergunte quanto ela fica de cada pedido e ponha essa linha na sua ficha.
 
-> **No Moviki:** o Moviki não fica com nenhuma porcentagem da sua venda: **0% por pedido**. O plano Básico, com o seu link e o seu lugar no mapa, é grátis. Os planos pagos são uma mensalidade fixa a partir de R$ 39,90 por mês (outubro de 2026), e nos planos Premium e Enterprise o cliente faz o pedido pela sua página e o Pix cai direto na sua conta. Com a sua ficha na mão, faça a conta: quantos morangos por mês pagam a mensalidade? No exemplo ilustrativo, a sobra de quatro.
+> **No Moviki:** o Moviki não fica com nenhuma porcentagem da sua venda: **0% por pedido**. O plano Básico, com o seu link e o seu lugar no mapa, é grátis. Os planos pagos são uma mensalidade fixa a partir de R$ 39,90 por mês (outubro de 2026), e nos planos Premium e Enterprise o cliente faz o pedido pela sua página e o Pix cai direto na sua conta. Com a sua ficha na mão, faça a conta: quantos morangos por mês pagam a mensalidade? No exemplo ilustrativo, a sobra de quatro morangos paga o Pró, que tem o cardápio com foto e preço; a de sete paga o Premium (R$ 69,90), que é o plano em que o cliente faz o pedido pela página. Uma taxa de 20% sobre a venda, ao contrário, cresce a cada morango que você vende.
 
 **Tarefa do capítulo:** monte a ficha de custo com os preços do seu mercado e o rendimento do seu lote-teste. Defina o preço da unidade e de um kit. Depois anote quanto custaria, em reais, sobrarem 5 unidades de uma fornada.
 
@@ -376,7 +382,7 @@ Encomenda é o jeito mais seguro de vender um doce que dura um dia. Mas pelo Wha
 
 **As cinco regras da encomenda**
 
-1. **Dias fixos de produção.** Por exemplo, sexta e sábado. Assim o cliente aprende quando pedir.
+1. **Dias fixos de produção.** Por exemplo, sexta e sábado. Assim o cliente aprende quando pedir. E, se você trabalha fora ou cuida da casa e acha que "não tem tempo para vender doce", é esta regra que faz caber: você escolhe os dias que a sua semana aguenta, e o resto da semana é seu.
 2. **Data de corte:** pedido até a véspera, ou dois dias antes para kit grande. É ela que deixa você comprar a fruta certa (capítulo 4).
 3. **Limite por dia:** quantos você consegue fazer com calma, menos 20% de folga. Chegou no limite, a fornada fechou.
 4. **Sinal no Pix,** por exemplo 50%, para pedidos grandes e kits de festa. Confira no aplicativo do seu banco antes de anotar como pago, e não aceite comprovante de Pix agendado.
@@ -398,11 +404,15 @@ Numa folha ou no bloco de notas do celular, uma linha por pedido: nome, itens, v
 
 Decida antes: "só Pix", "cartão na retirada, na maquininha" ou um link de pagamento da sua maquininha. Diga a regra no cardápio, para ninguém ser pego de surpresa.
 
+**"Minha cliente é mais velha, só pede por áudio"**
+
+Tudo bem: as cinco regras valem para ela do mesmo jeito. Você escuta o áudio, manda o resumo por escrito e espera o "confirmo". Ninguém precisa mudar o jeito de pedir para comprar de você. O que muda é que você para de guardar tudo de cabeça.
+
 **Faça a conta do privado**
 
-Com 20 encomendas na semana, são 20 conversas, 20 resumos digitados, 20 comprovantes conferidos e 20 confirmações, enquanto você mexe o brigadeiro. Não é falta de cliente que trava a doceira: é falta de mãos.
+Com 20 encomendas na semana, são 20 conversas, 20 resumos digitados, 20 comprovantes conferidos e 20 confirmações, enquanto você mexe o brigadeiro. Não é falta de cliente que trava a doceira: é falta de mãos. E pedido perdido no meio das conversas é morango comprado a mais ou a menos: é a sobra do capítulo 3 voltando pela porta dos fundos.
 
-> **No Moviki:** nos planos Premium e Enterprise, o cliente escolhe os doces na sua página e faz o pedido **sozinho**, sem você digitar resumo, e o Pix cai **direto na sua conta**. Se você ligar a opção, ele pode **reservar por 2 horas e pagar na retirada**. O cartão pode ser cobrado pela sua própria conta do Mercado Pago ou do Asaas, a taxa de entrega fica configurada por bairro e todos os pedidos chegam numa **central**, numerados, com as etapas separando, pronto, saiu e entregue.
+> **No Moviki:** nos planos Premium e Enterprise, o cliente escolhe os doces na sua página e faz o pedido **sozinho**, sem você digitar resumo, e o Pix cai **direto na sua conta**: o dinheiro não passa pelo Moviki. A página abre como qualquer link do WhatsApp, sem baixar aplicativo, e quem preferir continua pedindo por áudio. Se você ligar a opção, ele pode **reservar por 2 horas e pagar na retirada**. O cartão pode ser cobrado pela sua própria conta do Mercado Pago ou do Asaas, a taxa de entrega fica configurada por bairro e todos os pedidos chegam numa **central**, numerados, com as etapas separando, pronto, saiu e entregue.
 
 **Tarefa do capítulo:** defina os seus dias de produção, a data de corte, o limite por dia, a regra de sinal e de cancelamento, e a sua resposta para quem quer pagar no cartão. Monte a folha da semana.
 
@@ -465,6 +475,8 @@ E a próxima data está perto. A travessa cravejada já apareceu como sugestão 
 
 **Tarefa do capítulo:** anote, na sua lista de clientes, o que cada pessoa comprou. Escreva a ideia de uma variação que você poderia testar com a base que já sabe fazer, e a data em que vai oferecer a travessa de Natal.
 
+*Você já tem a receita, a conta, a lista e as regras da encomenda. Falta juntar tudo num lugar só antes do Natal chegar. É o presente do próximo capítulo.*
+
 ## capitulo-12 | O seu presente: 30 dias para vender as fornadas da semana
 
 Olhe para trás um minuto. Se você fez as tarefas, já tem:
@@ -478,7 +490,11 @@ Olhe para trás um minuto. Se você fez as tarefas, já tem:
 - a lista de quem quer ser avisado da próxima fornada;
 - os dias de produção, a data de corte, o sinal e a folha da semana.
 
-O seu negócio de morango cravejado está montado. Falta uma coisa só: **o lugar onde tudo isso fica junto**. O cardápio que o cliente abre pelo QR code do cartão, o aviso que chega para a sua lista quando a fornada sai, o vídeo da montagem que mostra a sua cozinha, e o mapa que diz onde você está no dia da feira.
+O seu negócio de morango cravejado está montado. E lembra daqueles cinco morangos na geladeira, no sábado à noite, do começo do guia? Com a encomenda, a data de corte e a lista, eles deixam de ser rotina.
+
+Mas olhe onde as peças estão hoje: o cardápio numa foto no status que some em 24 horas, a lista num caderno, os pedidos espalhados em vinte conversas, o aviso da fornada mandado um por um enquanto o brigadeiro esfria. Cada pedido que escapa no meio disso é morango comprado errado e cliente que pediu para outra pessoa.
+
+Falta uma coisa só: **o lugar onde tudo isso fica junto**. O cardápio que o cliente abre pelo QR code do cartão, o aviso que chega para a sua lista quando a fornada sai, o vídeo da montagem que mostra a sua cozinha, e o mapa que diz onde você está no dia da feira.
 
 Foi para isso que o Moviki foi feito. E é aqui que entra o presente deste guia.
 
@@ -493,9 +509,15 @@ No teste você tem:
 - os **ensaios** que ninguém vê, até 5 por dia, sem gastar as 2 lives;
 - a **Lista VIP** com o botão "Me avise da próxima live", para quem quer saber quando sai a próxima fornada.
 
+Um detalhe para você decidir com clareza: o pedido que a cliente faz sozinha pela sua página, com o Pix caindo na sua conta, é dos planos Premium e Enterprise. No teste, os pedidos continuam chegando pelo WhatsApp, com as cinco regras do capítulo 9, e você vê a página, o cardápio, a lista e as lives funcionando com o seu doce antes de decidir qualquer coisa.
+
+E tem uma coisa que nenhuma página deste guia consegue mostrar: **o seu morango na tela da cliente**. Aponte a câmera para o seu próprio QR code e veja o que a vizinha vai ver. Depois faça um ensaio, a live que ninguém assiste, e veja a sua bancada, a sua mão e o banho no chocolate como quem está do outro lado veria. Isso só se descobre abrindo.
+
+Se você começar em novembro, os 30 dias terminam antes do Natal. Dá tempo de testar com o cravejado e chegar a dezembro, mês da travessa de Natal, sabendo o que funciona para você.
+
 **Em 3 passos, hoje**
 
-1. **Crie a sua conta** pelo link da surpresa, no fim deste guia, e **confirme o seu e-mail**: é a confirmação que libera os 30 dias e a live aberta ao público.
+1. **Crie a sua conta** pelo link da surpresa, no fim deste guia (o botão verde "Abrir a surpresa", logo depois do último capítulo), e **confirme o seu e-mail**: é a confirmação que libera os 30 dias e a live aberta ao público.
 2. **Cadastre o seu cardápio:** o clássico e as no máximo duas variações do capítulo 2, com as fotos do capítulo 7 e o preço do capítulo 3.
 3. **Faça o seu primeiro ensaio** na bancada, montando um morango. Quando gostar do que viu, marque a live da próxima fornada e avise a sua lista.
 
@@ -510,11 +532,14 @@ No cadastro, marque a caixa para receber ajuda do Moviki no seu WhatsApp. A noss
 - **O Moviki fica com parte da minha venda?** Não. 0% por venda. O Pix cai direto na sua conta.
 - **Aplicativo não é coisa de loja grande?** Não. O Moviki foi feito para quem vende por encomenda, em feira e na rua. Você começa com o cardápio que já montou neste guia.
 - **Não sou boa com tecnologia.** O ensaio existe para isso, e a equipe ajuda pelo WhatsApp.
+- **Não tenho tempo para mais uma coisa.** Os três passos acima cabem numa noite, enquanto o brigadeiro esfria. Depois, o cardápio cadastrado vale para todas as fornadas: você só troca o que muda.
+- **Minha cliente é mais velha e não baixa aplicativo.** Não precisa. A página e a live abrem por um link, como qualquer link que chega no WhatsApp, ou pela câmera, no QR do cartão. Quem preferir continua pedindo por áudio, como sempre.
+- **Como sei que isso é sério? E se o Moviki fechar?** O Moviki é da EIKO SISTEMAS, empresa com CNPJ, que está no rodapé deste guia. Para testar, ninguém pede o seu cartão. O dinheiro das suas vendas não passa pelo Moviki: nos planos com pedido pela página, o Pix cai direto na sua conta. E ninguém pode prometer o futuro de empresa nenhuma, por isso este guia foi escrito para funcionar sem o aplicativo: a sua receita, a sua ficha de custo, o seu WhatsApp, a sua chave Pix e o seu caderno de clientes continuam seus.
 - **E se eu não vender?** Ninguém pode garantir venda, nem nós. O que o Moviki faz é tirar do seu caminho o que costuma travar a doceira: o cliente que não acha o seu cardápio, a lista que fica esquecida no caderno e o pedido que se perde no meio das conversas. O resto é o seu doce, o seu capricho e a sua clientela, que você já começou a montar.
 
-Imagine uma quinta à noite. A folha da semana está fechada, você sabe quantos morangos comprar e nenhum vai sobrar. Na sexta de manhã, o celular está na bancada, com luz de frente. A sua lista recebe o aviso, a vizinha abre o link e vê o morango entrar no chocolate. Você morde, a casquinha estala, e ela pergunta: "Ainda dá para sábado?"
+Imagine uma quinta à noite. A folha da semana está fechada e você sabe exatamente quantos morangos comprar. Na sexta de manhã, o celular está na bancada, com luz de frente. A sua lista recebe o aviso, a vizinha abre o link e vê o morango entrar no chocolate. Você morde, a casquinha estala, e ela pergunta: "Ainda dá para sábado?" No sábado à noite, a geladeira está vazia do jeito certo.
 
-**Tarefa do capítulo:** abra a surpresa no fim do guia, crie a sua conta e faça o seu primeiro ensaio hoje.
+**Tarefa do capítulo:** abra a surpresa no fim do guia, crie a sua conta e faça o seu primeiro ensaio hoje. Depois, aponte a câmera para o seu QR code e veja o seu cardápio como a cliente vai ver.
 
 ## capitulo-13 | Checklist final e mensagens prontas
 

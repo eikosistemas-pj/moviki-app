@@ -6,7 +6,7 @@ edicao: Temporada 2026/2027
 campanha: verao-na-praia
 surpresa: /faro/surpresa.html
 surpresa_titulo: Você terminou o guia. Tem um presente do Moviki para a sua temporada na praia!
-surpresa_sub: 30 dias para o cliente te achar no mapa, no trecho da praia em que você está hoje, bem nas primeiras semanas do verão.
+surpresa_sub: O seu pino no mapa, no trecho da praia em que você está hoje, é grátis. E nos 30 dias de teste a sua página ganha o cardápio com foto, a Lista VIP e 2 lives, bem nas primeiras semanas do verão.
 audio_mensagens: As mensagens prontas para o status do WhatsApp, para o cliente que pediu contato e para o story do Instagram estão no texto e no PDF deste capítulo, para você copiar e colar.
 ---
 
@@ -15,6 +15,10 @@ audio_mensagens: As mensagens prontas para o status do WhatsApp, para o cliente 
 Este guia foi feito para uma pessoa só: você, que olhou para a praia lotada e pensou "eu podia estar vendendo aqui".
 
 **Por que "o que ninguém te conta"?** Porque quase todo mundo que vende na areia aprendeu errando, e o erro custa a temporada. A licença comprada de quem não podia vender licença. O produto que derreteu antes das onze. O preço que parecia bom e não pagava nem o gelo. O cliente que adorou o seu açaí e, no dia seguinte, comprou de outro porque não sabia onde você estava. Ninguém conta essas coisas antes. Este guia conta.
+
+Guarde a última dessas perdas, porque é a mais cara e a única que você nem vê acontecer. Imagine a cena (inventada, mas ela se repete em toda praia do país): uma moça de guarda-sol azul compra o seu açaí, elogia e diz "amanhã eu quero de novo". No dia seguinte ela volta à praia. Você também. Só que vocês não se encontram, e ela compra de quem passou primeiro. Ninguém te avisa que você perdeu uma cliente da temporada inteira. Os dez primeiros capítulos montam a sua temporada. O capítulo 11 resolve essa cena.
+
+Se você já vendeu na praia num verão e não deu certo, leia com atenção redobrada. Quase sempre foi um desses erros, e não falta de jeito. Erro conhecido é erro que dá para evitar.
 
 Ele não promete dinheiro fácil. Ninguém sério promete. O que ele entrega é o caminho inteiro, na ordem certa:
 
@@ -35,6 +39,7 @@ Ele não promete dinheiro fácil. Ninguém sério promete. O que ele entrega é 
 - **Leia ou escute** um capítulo por vez. Cada capítulo tem o seu áudio: dá para ouvir no ônibus, na fila ou preparando a mercadoria.
 - **Faça a tarefa do fim de cada capítulo.** São tarefas pequenas, de 10 a 20 minutos. Guia lido e não feito é só um texto bonito. Quando chegar ao último capítulo, a sua temporada vai estar montada no papel.
 - **Use o checklist do final** na véspera do primeiro dia de venda.
+- **Chegue até o fim.** Depois do último capítulo tem um presente do Moviki e uma surpresa para abrir.
 
 Uma coisa importante: as regras de comércio na praia mudam de cidade para cidade. Neste guia você vai ver exemplos reais de várias prefeituras, mas quem manda na sua areia é a prefeitura da sua cidade. Sempre confirme lá.
 
@@ -202,6 +207,7 @@ Na areia não tem como voltar em casa para buscar o que ficou. O kit precisa est
 - Guarda-sol ou chapéu para você, protetor solar e água para você.
 - QR Code do Pix impresso e plastificado, em lugar visível.
 - Maquininha de cartão carregada, se você aceitar cartão.
+- Celular com a bateria cheia, um carregador portátil e um lugar na sombra para o aparelho. Na areia, conferir o Pix, achar sinal e mostrar onde você está dependem da bateria, e celular no sol forte esquenta e trava.
 - Troco em notas pequenas e moedas.
 - Crachá e autorização da prefeitura, sempre no corpo.
 - Sacos de lixo: um para você e um para oferecer ao cliente. Praia limpa é praia que continua aberta para o ambulante.
@@ -332,7 +338,13 @@ Números ilustrativos, só para mostrar a conta: se 5 clientes por dia gostaram 
 
 A maioria dos aplicativos de venda foi pensada para endereço fixo: loja, restaurante, delivery. Quem vende na areia muda de lugar a cada hora. O que serve para você é o contrário: um mapa que acompanha você.
 
-> **No Moviki:** o cliente abre o seu link e vê no mapa, **em tempo real, em que trecho da praia você está hoje**, junto com o cardápio e os preços. Você liga a localização quando chega e o cartão com QR code que você entrega na areia passa a levar o cliente direto até você, todos os dias da temporada. E, no teste e nos planos Premium e Enterprise, a sua página tem o botão **"Me avise da próxima live"**: quem toca entra na sua **Lista VIP**, com a autorização registrada, e recebe o aviso quando você entra ao vivo, por exemplo, mostrando do seu ponto o primeiro açaí do dia.
+**"E o cliente mais velho, que não mexe com aplicativo?"**
+
+Para ele, o cartãozinho com o seu WhatsApp já resolve: uma mensagem e ele sabe onde você está. E, se o cartão tiver um link, ele não precisa baixar nada: link abre no navegador do celular, como qualquer site, e o QR abre com a câmera. Quem nunca usou aplicativo de venda sabe abrir um link que o neto mandou.
+
+> **No Moviki:** o cliente abre o seu link, sem baixar nada, e vê no mapa, **em tempo real, em que trecho da praia você está hoje**, junto com o cardápio e os preços. Você liga a localização quando chega e o cartão com QR code que você entrega na areia passa a levar o cliente direto até você, todos os dias da temporada. E, no teste e nos planos Premium e Enterprise, a sua página tem o botão **"Me avise da próxima live"**: quem toca entra na sua **Lista VIP**, com a autorização registrada, e recebe o aviso quando você entra ao vivo, por exemplo, mostrando do seu ponto o primeiro açaí do dia.
+
+Lembra da moça do guarda-sol azul, lá do começo? Com o seu cartão na bolsa, ela já tem como te procurar. Falta ela abrir e ver você, hoje, no trecho em que você está. E falta você ver isso funcionando com o seu nome. É o próximo capítulo.
 
 **Tarefa do capítulo:** escreva o texto do seu cartãozinho (nome, produto, WhatsApp ou QR) e mande imprimir. Comece com 100.
 
@@ -351,13 +363,19 @@ Olhe para trás um minuto. Se você fez as tarefas, já tem:
 - a regra do Pix: só entrega com o dinheiro na conta;
 - o cartãozinho para o cliente te achar amanhã.
 
-A sua temporada está montada. Falta uma coisa só: **o lugar onde o cliente te encontra**. Hoje, amanhã, no trecho da tarde, no dia de chuva na feira. O cartão leva até lá. O WhatsApp avisa. Mas é o mapa que mostra onde você está agora.
+A sua temporada está montada. Falta uma coisa só: **o lugar onde o cliente te encontra**. Hoje, amanhã, no trecho da tarde, no dia de chuva na feira. O cartão leva até lá. O WhatsApp avisa, quando o cliente vê o status na hora certa. Mas é o mapa que mostra onde você está agora, sem ele precisar perguntar.
+
+É a cena do começo do guia. A moça do guarda-sol azul queria comprar de novo. O que faltou não foi açaí, nem preço, nem vontade. Foi um jeito de ela saber onde você estava.
 
 Foi para isso que o Moviki foi feito. E é aqui que entra o presente deste guia.
 
+**Primeiro, o que é grátis para sempre**
+
+O seu link (moviki.com.br/seu-nome) e o seu pino no mapa, em tempo real, estão no plano **Básico, que é grátis**. Não é teste: fica com você a temporada inteira e depois dela.
+
 **O presente: 30 dias de teste grátis do Moviki**
 
-O teste grátis dura 30 dias, contados a partir do cadastro. As primeiras semanas da temporada são as que mais pedem ajuste: trecho, horário, preço, combo. São também as semanas em que o cliente novo decide se vai te procurar de novo. Os 30 dias cobrem exatamente esse começo.
+Por cima disso, o presente: 30 dias de teste, contados a partir do cadastro. As primeiras semanas da temporada são as que mais pedem ajuste: trecho, horário, preço, combo. São também as semanas em que o cliente novo decide se vai te procurar de novo. Os 30 dias cobrem exatamente esse começo.
 
 No teste você tem:
 
@@ -367,6 +385,8 @@ No teste você tem:
 - a **Lista VIP** com o botão "Me avise da próxima live";
 - **2 lives** pelo celular, no seu link, que o cliente abre sem baixar aplicativo, e os **ensaios** que ninguém vê (até 10 minutos, até 5 por dia), sem gastar as 2 lives.
 
+Uma coisa fica de fora do teste, e é bom saber antes: o pedido e o pagamento feitos pelo cliente sozinho na sua página, do capítulo 9, são dos planos Premium e Enterprise. No teste, o cliente te acha e vê o cardápio; o pagamento continua no seu QR do Pix, conferido no banco, como você aprendeu.
+
 **Em 3 passos, hoje**
 
 1. **Crie a sua conta** pelo link da surpresa, no fim deste guia, e **confirme o seu e-mail**: é a confirmação que libera os 30 dias e a live aberta ao público.
@@ -374,6 +394,17 @@ No teste você tem:
 3. **Imprima o QR code da sua página**, plastifique e cole na tampa do isopor. No primeiro dia de areia, ligue a localização quando chegar ao seu trecho.
 
 Se a sua estreia ainda está longe, faça só o primeiro passo na semana em que for pisar na areia. Assim os 30 dias caem inteiros na temporada.
+
+**Uma coisa que só dá para ver testando**
+
+Depois de cadastrar, ligue a localização no quintal de casa e peça para alguém da família abrir o seu link no celular dele. Você vai ver o seu nome, o seu açaí (ou o seu produto) e o seu pino no mapa, no lugar em que você está. É exatamente o que a moça do guarda-sol azul vai ver. Se quiser ir além, faça um ensaio: uma live que ninguém assiste, só para você ver como o seu isopor aparece na tela.
+
+**Para ficar claro antes de começar**
+
+- Você não informa cartão de crédito para testar.
+- O Moviki não fica com nenhuma parte da sua venda: 0%.
+- Se não quiser continuar, não precisa fazer nada: a conta volta ao Básico grátis, com o link e o pino no mapa.
+- E você tem ajuda pelo WhatsApp, se marcar a caixa no cadastro.
 
 **Você não fica sozinho**
 
@@ -386,11 +417,17 @@ No cadastro, marque a caixa para receber ajuda do Moviki no seu WhatsApp. A noss
 - **O Moviki fica com parte da minha venda?** Não. 0% por venda. O Pix cai direto na sua conta.
 - **Mensalidade não é mais um custo?** Só se você escolher um plano pago, e aí ela entra na sua ficha do capítulo 5, como qualquer outro custo do dia. Se não se pagar, você volta ao Básico grátis, com o link e o pino no mapa.
 - **Não sou bom com tecnologia.** Você só precisa cadastrar três produtos e ligar a localização. A equipe ajuda pelo WhatsApp.
+- **Não tenho tempo para mais uma coisa.** Os produtos você cadastra uma vez, com a foto e o preço que já decidiu. No dia de praia, é ligar a localização quando chegar ao trecho. O resto do trabalho é o que você já faz.
+- **Isso não é golpe?** Desconfiar é sinal de que você leu o capítulo 3. O Moviki é da EIKO Sistemas, com o CNPJ no rodapé deste guia. Para testar você não paga nada nem informa cartão. E vale a regra de sempre: ninguém, nem o Moviki, precisa da senha do seu banco.
+- **Meu cliente é mais velho e não usa aplicativo.** Ele não precisa baixar nada: o seu link abre no navegador do celular, como um site, e o QR abre com a câmera. E o cartão com o seu WhatsApp continua valendo para quem preferir mandar mensagem.
+- **E se o Moviki acabar um dia?** Tudo o que você montou neste guia é seu e funciona sem ele: a ficha de custo, o kit, o QR do Pix, o cartão com o seu WhatsApp. O Moviki não segura o seu dinheiro: o Pix cai direto na sua conta.
 - **E se eu não vender mais?** Ninguém pode garantir venda, nem nós. Depende do produto, do ponto, do clima e do seu trabalho. O que o Moviki faz é tirar do caminho o problema que nenhum vendedor de praia resolve sozinho: o cliente que gostou de você e não sabe onde te achar.
 
-Imagine o segundo sábado da temporada, dez da manhã. O isopor no trecho de sempre, o QR "ME ACHE AMANHÃ" na tampa. Uma moça que comprou ontem chega com duas amigas: "Te achei pelo mapa". Ela paga no Pix, você confere no banco e entrega. É a terceira vez que ela compra de você.
+Imagine o segundo sábado da temporada, dez da manhã. O isopor no trecho de sempre, o QR "ME ACHE AMANHÃ" na tampa. A moça do guarda-sol azul chega com duas amigas: "Te achei pelo mapa". Ela paga no Pix, você confere no banco e entrega. É a terceira vez que ela compra de você. A cena do começo do guia, agora com outro final.
 
-**Tarefa do capítulo:** abra a surpresa no fim do guia, crie a sua conta e cadastre o seu carro-chefe com foto e preço.
+**O próximo passo é um toque:** abra a surpresa no fim deste guia. Ela mostra o Moviki funcionando para quem vende na praia, e é por ela que você cria a sua conta.
+
+**Tarefa do capítulo:** abra a surpresa no fim do guia, crie a sua conta, cadastre o seu carro-chefe com foto e preço e peça para alguém de casa abrir o seu link.
 
 ## capitulo-12 | Checklist final e mensagens prontas
 
@@ -403,6 +440,7 @@ Imagine o segundo sábado da temporada, dez da manhã. O isopor no trecho de sem
 - [ ] Ficha de custo, preços e combo definidos
 - [ ] Plaquinha de preços pronta
 - [ ] Página no Moviki com cardápio e foto
+- [ ] Link aberto no celular de outra pessoa, para conferir o seu pino no mapa
 - [ ] Cartões com QR Code impressos
 - [ ] Trechos e horários escolhidos, com o sinal do celular testado
 
@@ -414,6 +452,7 @@ Imagine o segundo sábado da temporada, dez da manhã. O isopor no trecho de sem
 - [ ] QR Code da página plastificado, com a etiqueta "ME ACHE AMANHÃ"
 - [ ] Chave Pix anotada em papel
 - [ ] Troco separado
+- [ ] Celular e carregador portátil com a bateria cheia
 - [ ] Crachá e autorização na bolsa
 
 **No dia**
