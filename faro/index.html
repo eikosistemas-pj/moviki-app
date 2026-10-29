@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/index.html | versao 2026-10-28-menu (botao Menu no alto, selo A venda / Novo nos cards e o prazo real do Natal) | antes 2026-10-28-rodizio (rodizio da temporada: card de guia com data-ate some sozinho depois da data ou quando o robo diz que nao vende mais; sem guia nenhum aparece o aviso do proximo) | antes 2026-10-28-artigo (rodape com os artigos gratis do site e a central /guias) | antes 2026-10-28-natal (Guia 2 Natal por encomenda na vitrine, primeiro da lista) | antes 2026-10-28-biblioteca (link Ja comprou? Meus guias para a Biblioteca FARO) | antes 2026-10-28-og (miniatura do link: og-verao.jpg) -->
+<!-- MOVIKI faro/index.html | versao 2026-10-29-kit (pedido do Paulo em 29/10: visual futurista com movimento; cada guia vira um KIT 3D, o livro e o CD do audiobook com a mesma arte; fileira Em breve com os 4 guias escritos; rodizio da temporada igual) | antes 2026-10-28-menu (botao Menu no alto, selo A venda / Novo nos cards e o prazo real do Natal) | antes 2026-10-28-rodizio (rodizio da temporada: card de guia com data-ate some sozinho depois da data ou quando o robo diz que nao vende mais; sem guia nenhum aparece o aviso do proximo) | antes 2026-10-28-artigo (rodape com os artigos gratis do site e a central /guias) | antes 2026-10-28-natal (Guia 2 Natal por encomenda na vitrine, primeiro da lista) | antes 2026-10-28-biblioteca (link Ja comprou? Meus guias para a Biblioteca FARO) | antes 2026-10-28-og (miniatura do link: og-verao.jpg) -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
@@ -19,66 +19,155 @@
 <meta property="og:url" content="https://app.moviki.com.br/faro/">
 <link rel="icon" href="/favicon512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/faro/faro.css">
 <script src="/mvmetrica.js"></script>
 <script src="/faro/faro.js"></script>
 <style>
-.guia{display:grid;grid-template-columns:320px 1fr;gap:1.4rem;align-items:center;background:#fff;border:1px solid var(--linha);border-radius:20px;padding:1rem;text-decoration:none;color:inherit;box-shadow:0 14px 34px rgba(13,27,42,.08)}
-.guia img{border-radius:12px;width:100%}
-.guia h3{font-size:1.3rem}
-.guia p{margin:.2rem 0 .8rem;color:var(--suave)}
-@media (max-width:700px){.guia{grid-template-columns:1fr}}
-@media (max-width:420px){.vit-bib{display:none}}
-.etq{display:inline-block;background:rgba(244,199,107,.25);color:#7a5a12;font-weight:700;font-size:.78rem;padding:.25rem .6rem;border-radius:999px}
+.nh{display:grid;grid-template-columns:1.05fr .95fr;gap:1.5rem;align-items:center;padding:1rem 0 1rem}
+.nh h1{margin:.9rem 0 .9rem}
+.nh .acoes{display:flex;flex-wrap:wrap;gap:.7rem}
+.nh-palco{position:relative;display:flex;justify-content:center}
+.nh-palco .kit{--k:clamp(13px,2vw,21px)}
+.nh-palco .rotulo{position:absolute;left:50%;bottom:-.4rem;transform:translateX(-50%);font:600 .72rem 'Space Grotesk',Inter,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#7ef0c2;white-space:nowrap}
+@media (max-width:860px){.nh{grid-template-columns:1fr}.nh-palco{order:-1}.nh-palco .kit{--k:clamp(12px,3.8vw,17px)}}
+.tit-sec{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.4rem}
+.tit-sec h2{margin:0;font-size:clamp(1.5rem,3.2vw,2.2rem)}
+.vg{--c:#10b981;position:relative;display:grid;grid-template-columns:minmax(260px,400px) 1fr;gap:1.4rem;align-items:center;text-decoration:none;color:inherit;margin:0 0 1.4rem;padding:1.2rem 1.6rem 1.2rem .6rem;border-radius:26px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.1);overflow:hidden;transition:border-color .3s,transform .3s,box-shadow .3s}
+.vg:before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--c),transparent);opacity:.9}
+.vg:after{content:'';position:absolute;width:420px;height:420px;left:-120px;top:50%;transform:translateY(-50%);border-radius:50%;background:radial-gradient(closest-side,var(--c),transparent);opacity:.18;pointer-events:none;transition:opacity .3s}
+.vg:hover,.vg:focus-visible{border-color:rgba(255,255,255,.25);transform:translateY(-4px);box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.vg:hover:after{opacity:.3}
+.vg-palco{position:relative;z-index:1;display:flex;justify-content:center}
+.vg-palco .kit{--k:clamp(12px,1.55vw,17px)}
+.vg-info{position:relative;z-index:1}
+.vg-info h3{font-size:clamp(1.45rem,2.6vw,2rem);margin:.6rem 0 .4rem}
+.vg-info p{margin:0 0 .4rem;color:#b4c5d5;font-size:1.02rem}
+.vg .btn{margin-top:.4rem}
+.vg-prazo{display:inline-flex;align-items:center;gap:.4rem;font:600 .8rem 'Space Grotesk',Inter,sans-serif;letter-spacing:.08em;color:#f4c76b;border:1px solid rgba(244,199,107,.4);border-radius:999px;padding:.2rem .65rem;vertical-align:middle}
+@media (max-width:760px){.vg{grid-template-columns:1fr;padding:1rem 1.1rem 1.3rem}.vg-palco .kit{--k:clamp(12px,3.6vw,16px)}}
+.breves{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.bv{position:relative;border-radius:20px;padding:1.2rem .4rem 1rem;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.14);text-align:center;overflow:hidden}
+.bv .kit{--k:clamp(8px,1vw,11px)}
+.bv:after{content:'';position:absolute;left:0;right:0;height:30%;top:-32%;background:linear-gradient(180deg,transparent,rgba(52,245,197,.06) 85%,rgba(52,245,197,.38) 99.4%,transparent);animation:varre 4.2s linear infinite;pointer-events:none}
+.bv:nth-child(2):after{animation-delay:-1s}.bv:nth-child(3):after{animation-delay:-2.1s}.bv:nth-child(4):after{animation-delay:-3.2s}
+@keyframes varre{to{top:110%}}
+.bv b{display:block;color:#fff;font:700 1rem 'Space Grotesk',Inter,sans-serif;margin:.2rem 0 .1rem;line-height:1.25}
+.bv small{font:600 .7rem 'Space Grotesk',Inter,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#f4c76b}
+@media (max-width:900px){.breves{grid-template-columns:repeat(2,1fr)}.bv .kit{--k:clamp(7px,2.1vw,11px)}}
+.passos{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;counter-reset:p}
+.passo{position:relative;padding:1.3rem 1.2rem;border-radius:18px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.09)}
+.passo:before{counter-increment:p;content:counter(p,decimal-leading-zero);display:block;font:700 2rem 'Space Grotesk',Inter,sans-serif;color:#34f5c5;text-shadow:0 0 18px rgba(52,245,197,.55);margin-bottom:.3rem}
+.passo b{color:#fff;display:block;margin-bottom:.2rem}
+.passo span{color:#9fb4c8;font-size:.95rem}
+@media (max-width:900px){.passos{grid-template-columns:1fr 1fr}}
+@media (max-width:420px){.vit-bib{display:none}.passos{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.bv:after{animation:none;display:none}}
 </style>
 </head>
-<body>
-<header class="topo">
+<body class="neo">
+<header class="topo" data-neo-farol>
   <div class="wrap">
     <div class="barra"><a href="https://moviki.com.br"><img src="/logo.png" alt="Moviki"></a><span style="display:flex;align-items:center;gap:.6rem"><a href="/faro/biblioteca.html" class="vit-bib">📚 Meus guias</a><span data-faro-menu></span></span></div>
-    <div class="serie">Guias FARO</div>
-    <h1>O que fazer agora, para vender no momento certo.</h1>
-    <p class="lead">Guias curtos e práticos para quem vende na rua, na praia, em eventos e por encomenda. Cada guia chega com vídeo, audiobook, PDF e checklist.</p>
+    <div class="nh">
+      <div>
+        <div class="hud"><i></i>Radar FARO · <span id="contaVenda">2 guias</span> à venda agora</div>
+        <h1>O que fazer agora, para vender no momento certo.</h1>
+        <p class="lead">Guias curtos e práticos para quem vende na rua, na praia, em eventos e por encomenda. Cada guia é um kit: o livro para ler no celular, o audiobook para ouvir e o PDF com o checklist.</p>
+        <ul class="kit-itens"><li>📖 Livro digital</li><li>🎧 Audiobook</li><li>📄 PDF</li><li>✅ Checklist</li><li>🎬 Vídeo</li></ul>
+        <div class="acoes"><a class="btn btn-verde" href="#venda">Ver os guias à venda</a><a class="btn btn-vidro" href="/faro/biblioteca.html">Já comprei: meus guias</a></div>
+      </div>
+      <div class="nh-palco"><div id="kitDestaque" data-kit="natal-por-encomenda"></div><span class="rotulo" id="rotuloDestaque">Novo · Natal por encomenda</span></div>
+    </div>
   </div>
 </header>
-<main class="secao">
-  <div class="wrap">
-    <a class="guia" href="/faro/natal-por-encomenda/" data-guia="natal-por-encomenda" data-ate="2026-12-15">
-      <img src="/faro/natal-por-encomenda/capa.jpg" alt="Guia FARO Natal por encomenda">
-      <div>
-        <span class="selo-venda">À venda</span><span class="selo-venda novo">Novo</span><span class="etq">Vende até 15/12</span>
-        <h3>Natal por encomenda</h3>
-        <p>Do cardápio à entrega do dia 24: lei e rótulo, preço com o seu tempo, calendário de encomendas, sinal no Pix e entrega.</p>
-        <span class="btn btn-verde" id="precoNatal">Ver o guia</span>
+
+<main>
+  <section class="secao" id="venda" style="padding-top:2rem">
+    <div class="wrap">
+      <div class="tit-sec rv"><h2>À venda agora</h2><span class="hud"><i></i>Temporada aberta</span></div>
+
+      <a class="vg rv" href="/faro/natal-por-encomenda/" data-guia="natal-por-encomenda" data-ate="2026-12-15" data-kit-host style="--c:#d62b35">
+        <div class="vg-palco"><div data-kit="natal-por-encomenda"></div></div>
+        <div class="vg-info">
+          <span class="selo-venda">À venda</span><span class="selo-venda novo">Novo</span> <span class="vg-prazo">⏳ Vende até 15/12</span>
+          <h3>Natal por encomenda</h3>
+          <p>Do cardápio à entrega do dia 24: lei e rótulo, preço com o seu tempo, calendário de encomendas, sinal no Pix e entrega.</p>
+          <ul class="kit-itens"><li>📖 12 capítulos</li><li>🎧 Audiobook em partes</li><li>📄 PDF</li><li>✅ Checklist</li></ul>
+          <span class="btn btn-verde">Ver o guia</span>
+        </div>
+      </a>
+
+      <a class="vg rv" href="/faro/verao-na-praia/" data-guia="verao-na-praia" data-ate="2027-02-28" data-kit-host style="--c:#1f86dc">
+        <div class="vg-palco"><div data-kit="verao-na-praia"></div></div>
+        <div class="vg-info">
+          <span class="selo-venda">À venda</span> <span class="vg-prazo">☀️ Temporada 2026/2027</span>
+          <h3>Vender na praia neste verão</h3>
+          <p>Do zero ao Pix na areia: o que vender, licença, preço, kit, ponto e como fazer o cliente voltar.</p>
+          <ul class="kit-itens"><li>📖 11 capítulos</li><li>🎧 Audiobook</li><li>📄 PDF</li><li>✅ Checklist</li></ul>
+          <span class="btn btn-verde">Ver o guia</span>
+        </div>
+      </a>
+
+      <p class="mini" id="semGuia" style="display:none;margin-top:1rem;font-size:1.05rem">Os guias desta temporada já fecharam. O próximo sai em breve.</p>
+    </div>
+  </section>
+
+  <section class="secao branca" id="breve">
+    <div class="wrap">
+      <div class="tit-sec rv"><h2>Em breve</h2><span class="hud"><i></i>Em produção</span></div>
+      <p class="estreito rv" style="margin-top:-.6rem">Estes guias já estão escritos. Chegam assim que o audiobook e o vídeo ficarem prontos.</p>
+      <div class="breves rv" id="breves"></div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="wrap">
+      <div class="tit-sec rv"><h2>Como funciona</h2></div>
+      <div class="passos rv">
+        <div class="passo"><b>Escolha o guia</b><span>Veja o que tem dentro e o vídeo de apresentação.</span></div>
+        <div class="passo"><b>Pague no Pix ou no cartão</b><span>No Pix sai mais barato e o acesso chega em segundos.</span></div>
+        <div class="passo"><b>Leia, ouça ou baixe</b><span>No celular, no computador ou impresso. O acesso vale por 1 ano.</span></div>
+        <div class="passo"><b>7 dias para desistir</b><span>Não gostou, devolvemos o dinheiro sem perguntas.</span></div>
       </div>
-    </a>
-    <a class="guia" href="/faro/verao-na-praia/" data-guia="verao-na-praia" data-ate="2027-02-28">
-      <img src="/faro/verao-na-praia/capa.jpg" alt="Guia FARO Vender na praia neste verão">
-      <div>
-        <span class="selo-venda">À venda</span><span class="etq">Temporada 2026/2027</span>
-        <h3>Vender na praia neste verão</h3>
-        <p>Do zero ao Pix na areia: o que vender, licença, preço, kit, ponto e como fazer o cliente voltar.</p>
-        <span class="btn btn-verde" id="precoVerao">Ver o guia</span>
-      </div>
-    </a>
-    <p class="mini" id="semGuia" style="display:none;margin-top:1rem;font-size:1.05rem">Os guias desta temporada já fecharam. O próximo sai em breve.</p>
-    <p class="mini" style="margin-top:2rem">Novos guias saem conforme a época do ano. Os guias FARO são publicados pelo Moviki, que coloca o seu negócio no mapa em tempo real.</p>
-  </div>
+      <p class="mini" style="margin-top:2rem">Novos guias saem conforme a época do ano. Os guias FARO são publicados pelo Moviki, que coloca o seu negócio no mapa em tempo real.</p>
+    </div>
+  </section>
 </main>
 <footer class="rodape"><div class="wrap"><p>Moviki · EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA · CNPJ 68.289.841/0001-02 · <a href="https://moviki.com.br/termos.html">Termos</a> · <a href="https://moviki.com.br/privacidade.html">Privacidade</a></p><p>Artigos grátis no site: <a href="https://www.moviki.com.br/guia/vender-encomenda-de-natal">encomendas de Natal</a> · <a href="https://www.moviki.com.br/guia/vender-na-praia">vender na praia</a> · <a href="https://www.moviki.com.br/guias">todos os guias</a></p></div></footer>
 <script>
 FARO.origem();
 FARO.menu();
+/* Em breve: os guias escritos sem venda (FARO.BREVE), cada um no kit dele */
+(function () {
+  var box = document.getElementById('breves');
+  FARO.BREVE.forEach(function (g) {
+    var d = document.createElement('div'); d.className = 'bv';
+    var k = document.createElement('div'); k.setAttribute('data-kit', g.slug); k.setAttribute('data-breve', '');
+    d.appendChild(k);
+    d.insertAdjacentHTML('beforeend', '<b>' + FARO.esc(g.titulo) + '</b><small>Em breve</small>');
+    box.appendChild(d);
+  });
+  if (!FARO.BREVE.length) document.getElementById('breve').style.display = 'none';
+})();
+/* Destaque do topo: o guia a venda mais novo */
+(function () {
+  var v = FARO.aVenda(); if (!v.length) return;
+  var g = v[0], el = document.getElementById('kitDestaque');
+  el.setAttribute('data-kit', g.slug);
+  document.getElementById('rotuloDestaque').textContent = (g.novo ? 'Novo · ' : 'À venda · ') + g.titulo;
+})();
+FARO.neo();
 /* Rodizio da temporada (28/10/2026): guia que passou da data (data-ate) ou que o
    robo diz que nao vende mais some da vitrine; o proximo guia entra com o card dele. */
-function faroSome(card) {
-  card.style.display = 'none';
-  var vis = [].filter.call(document.querySelectorAll('a.guia[data-guia]'), function (c) { return c.style.display !== 'none'; });
-  if (!vis.length) document.getElementById('semGuia').style.display = '';
+function faroConta() {
+  var vis = [].filter.call(document.querySelectorAll('a.vg[data-guia]'), function (c) { return c.style.display !== 'none'; });
+  document.getElementById('contaVenda').textContent = vis.length === 1 ? '1 guia' : vis.length + ' guias';
+  if (!vis.length) { document.getElementById('semGuia').style.display = ''; document.querySelector('.hud').style.display = 'none'; }
 }
+function faroSome(card) { card.style.display = 'none'; faroConta(); }
 var hojeBR = new Date(Date.now() - 3 * 3600000).toISOString().slice(0, 10);
-[].forEach.call(document.querySelectorAll('a.guia[data-guia]'), function (card) {
+[].forEach.call(document.querySelectorAll('a.vg[data-guia]'), function (card) {
   if (card.getAttribute('data-ate') && hojeBR > card.getAttribute('data-ate')) { faroSome(card); return; }
   FARO.get({ acao: 'produto', p: card.getAttribute('data-guia') }).then(function (r) {
     var b = card.querySelector('.btn');
@@ -86,6 +175,7 @@ var hojeBR = new Date(Date.now() - 3 * 3600000).toISOString().slice(0, 10);
     else if (r && r.erro === 'indisponivel') faroSome(card);
   }).catch(function () {});
 });
+faroConta();
 </script>
 </body>
 </html>

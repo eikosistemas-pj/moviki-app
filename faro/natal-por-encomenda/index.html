@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/natal-por-encomenda/index.html | versao 2026-10-28-menu (botao Menu no alto e atalho Todos os guias para voltar ao comeco) | antes 2026-10-28-presente (video de venda e poster: a caixa de presente no lugar do icone antigo de padaria) | antes 2026-10-28-artigo (rodape com o link do artigo gratis no site e da central /guias) | antes 2026-10-28-natal2 (audiobook em partes: introducao e capitulos 1 a 6 narrados, 7 a 11 nos proximos dias, dito no cartao e na pilha) | antes 2026-10-28-natal | pagina de venda do Guia FARO 2: Natal por encomenda (mesma estrutura e o mesmo robo da praia; compra leva o ?ref do parceiro) -->
+<!-- MOVIKI faro/natal-por-encomenda/index.html | versao 2026-10-29-kit (pedido do Paulo em 29/10: visual futurista com movimento; no topo o KIT 3D do guia, o livro e o CD do audiobook com a mesma arte; o video de venda passou para o monitor logo abaixo do topo; o kit aparece de novo no cartao do preco) | antes 2026-10-28-menu (botao Menu no alto e atalho Todos os guias para voltar ao comeco) | antes 2026-10-28-presente (video de venda e poster: a caixa de presente no lugar do icone antigo de padaria) | antes 2026-10-28-artigo (rodape com o link do artigo gratis no site e da central /guias) | antes 2026-10-28-natal2 (audiobook em partes: introducao e capitulos 1 a 6 narrados, 7 a 11 nos proximos dias, dito no cartao e na pilha) | antes 2026-10-28-natal | pagina de venda do Guia FARO 2: Natal por encomenda (mesma estrutura e o mesmo robo da praia; compra leva o ?ref do parceiro) -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; media-src 'self'; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
@@ -20,36 +20,41 @@
 <meta property="og:type" content="product">
 <link rel="icon" href="/favicon512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/faro/faro.css">
 <script src="/mvmetrica.js"></script>
 <script src="/faro/faro.js"></script>
 </head>
-<body>
+<body class="neo">
 
-<header class="topo">
+<header class="topo" data-neo-farol>
   <div class="wrap">
     <div class="barra"><a href="/faro/"><img src="/logo.png" alt="Moviki"></a><span style="display:flex;align-items:center;gap:.6rem"><a href="#perguntas" class="vit-bib">Dúvidas</a><span data-faro-menu></span></span></div>
     <div class="heroi">
       <div>
-        <div class="serie">Guia FARO · Natal 2026</div>
+        <div class="serie"><i></i>Guia FARO · Natal 2026</div>
         <h1>Natal por encomenda, do cardápio à entrega do dia 24.</h1>
         <p class="lead">As encomendas de Natal duram poucas semanas. Este guia mostra a ordem certa: o cardápio que dá para fazer em lote, vender em dia com a lei e o rótulo, o preço com o seu tempo na conta, quantas encomendas você aguenta, o sinal no Pix e a entrega sem correria.</p>
+        <ul class="kit-itens"><li>📖 12 capítulos</li><li>🎧 Audiobook em partes</li><li>📄 PDF</li><li>✅ Checklist</li><li>💬 Mensagens prontas</li></ul>
         <a href="#comprar" class="btn btn-verde" data-comprar>Quero o guia <span data-preco-pix></span></a>
         <p class="mini" style="margin-top:.8rem">Acesso na hora no seu e-mail · 7 dias para desistir e receber de volta</p>
       </div>
-      <div class="midia">
-        <video id="trailer" src="/faro/natal-por-encomenda/apresentacao.mp4?v=presente" poster="/faro/natal-por-encomenda/poster.jpg?v=presente" controls playsinline preload="none"></video>
-      </div>
+      <div class="kit-palco" data-kit-host><div data-kit="natal-por-encomenda"></div></div>
     </div>
   </div>
 </header>
+
+<section class="neo-tela">
+  <div class="wrap">
+    <div class="monitor rv"><div class="monitor-cab"><span>▶ Veja o guia em 1 minuto</span><span>Guia FARO · Natal</span></div><video id="trailer" src="/faro/natal-por-encomenda/apresentacao.mp4?v=presente" poster="/faro/natal-por-encomenda/poster.jpg?v=presente" controls playsinline preload="none"></video></div>
+  </div>
+</section>
 
 <section class="secao">
   <div class="wrap">
     <h2>Quem se organiza antes entrega tudo no prazo</h2>
     <p class="estreito">Muita gente passa o dia 23 virando a noite na cozinha: aceitou pedido demais, cobrou sem contar as horas de trabalho, não pediu sinal e ficou sem resposta de quem desistiu. O guia junta, num lugar só, o que você precisa decidir antes de abrir as encomendas.</p>
-    <div class="grade">
+    <div class="grade rv">
       <div class="cartao"><div class="ico">🎄</div><h3>O cardápio certo</h3><p>Três produtos que você domina, que dá para fazer em lote e que viajam bem até a ceia.</p></div>
       <div class="cartao"><div class="ico">🛡️</div><h3>Em dia com a lei</h3><p>O MEI certo, o que perguntar na prefeitura e o que vai na etiqueta do produto.</p></div>
       <div class="cartao"><div class="ico">🧮</div><h3>Preço e calendário</h3><p>O custo de cada unidade com o seu tempo na conta, e o limite de encomendas que você aguenta.</p></div>
@@ -62,7 +67,7 @@
   <div class="wrap">
     <h2>O que você recebe</h2>
     <p class="estreito">Você escolhe como consumir: ler na tela, ouvir no ônibus ou imprimir o checklist.</p>
-    <div class="grade">
+    <div class="grade rv">
       <div class="cartao"><div class="ico">🎬</div><h3>Vídeo de apresentação</h3><p>Um minuto para entender o caminho inteiro antes de abrir as encomendas.</p></div>
       <div class="cartao"><div class="ico">📖</div><h3>Guia para ler na tela</h3><p>12 capítulos curtos, feitos para ler no celular.</p></div>
       <div class="cartao"><div class="ico">🎧</div><h3>Audiobook por capítulo</h3><p>Para ouvir enquanto o forno trabalha. A introdução e os capítulos 1 a 6 já estão narrados; os capítulos 7 a 11 chegam nos próximos dias, no mesmo acesso.</p></div>
@@ -76,7 +81,7 @@
 <section class="secao">
   <div class="wrap">
     <h2>Os 12 capítulos</h2>
-    <ol class="caps">
+    <ol class="caps rv">
       <li>Antes de começar<span>Como usar o guia</span></li>
       <li>Por que o Natal é a sua janela<span>Quando as pessoas encomendam</span></li>
       <li>O cardápio de Natal<span>Três produtos, não quinze</span></li>
@@ -119,9 +124,10 @@
 
 <section class="secao" id="comprar">
   <div class="wrap estreito">
-    <div class="preco">
+    <div class="preco rv">
       <div class="serie">Guia FARO · Natal por encomenda</div>
-      <h2>Tudo o que está nesta página</h2>
+      <div data-kit="natal-por-encomenda" data-k="clamp(11px,2.6vw,14px)"></div>
+      <h2>Tudo o que está no kit</h2>
       <ul class="pilha">
         <li>Vídeo de apresentação <b>incluído</b></li>
         <li>12 capítulos para ler na tela <b>incluído</b></li>
@@ -220,6 +226,7 @@
 </div>
 
 <script>
+FARO.neo();
 FARO.menu({ volta: /\/faro\/biblioteca\.html/.test(document.referrer || '') ? { href: '/faro/biblioteca.html', txt: 'Minha biblioteca' } : { href: '/faro/', txt: 'Todos os guias' } });
 
 (function () {
