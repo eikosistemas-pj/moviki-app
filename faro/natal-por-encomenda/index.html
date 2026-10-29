@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/natal-por-encomenda/index.html | versao 2026-10-28-presente (video de venda e poster: a caixa de presente no lugar do icone antigo de padaria) | antes 2026-10-28-artigo (rodape com o link do artigo gratis no site e da central /guias) | antes 2026-10-28-natal2 (audiobook em partes: introducao e capitulos 1 a 6 narrados, 7 a 11 nos proximos dias, dito no cartao e na pilha) | antes 2026-10-28-natal | pagina de venda do Guia FARO 2: Natal por encomenda (mesma estrutura e o mesmo robo da praia; compra leva o ?ref do parceiro) -->
+<!-- MOVIKI faro/natal-por-encomenda/index.html | versao 2026-10-28-menu (botao Menu no alto e atalho Todos os guias para voltar ao comeco) | antes 2026-10-28-presente (video de venda e poster: a caixa de presente no lugar do icone antigo de padaria) | antes 2026-10-28-artigo (rodape com o link do artigo gratis no site e da central /guias) | antes 2026-10-28-natal2 (audiobook em partes: introducao e capitulos 1 a 6 narrados, 7 a 11 nos proximos dias, dito no cartao e na pilha) | antes 2026-10-28-natal | pagina de venda do Guia FARO 2: Natal por encomenda (mesma estrutura e o mesmo robo da praia; compra leva o ?ref do parceiro) -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; media-src 'self'; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
@@ -29,7 +29,7 @@
 
 <header class="topo">
   <div class="wrap">
-    <div class="barra"><a href="/faro/"><img src="/logo.png" alt="Moviki"></a><a href="#perguntas">Dúvidas</a></div>
+    <div class="barra"><a href="/faro/"><img src="/logo.png" alt="Moviki"></a><span style="display:flex;align-items:center;gap:.6rem"><a href="#perguntas" class="vit-bib">Dúvidas</a><span data-faro-menu></span></span></div>
     <div class="heroi">
       <div>
         <div class="serie">Guia FARO · Natal 2026</div>
@@ -220,6 +220,8 @@
 </div>
 
 <script>
+FARO.menu({ volta: /\/faro\/biblioteca\.html/.test(document.referrer || '') ? { href: '/faro/biblioteca.html', txt: 'Minha biblioteca' } : { href: '/faro/', txt: 'Todos os guias' } });
+
 (function () {
   'use strict';
   var F = window.FARO, PRODUTO = 'natal-por-encomenda', CHAVE = 'faro_compra_' + PRODUTO;

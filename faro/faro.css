@@ -1,6 +1,7 @@
 /* Guias FARO (Moviki) — estilo comum da vitrine, da página de venda e da área do comprador.
    Cores da marca: marinho #0d1b2a, verde #0a7d5a / #10b981, areia #f4c76b. 28/10/2026
-   versao 2026-10-28-instalar3: a folha de instrucoes fica por cima da barra de medicao (antes a barra cobria os passos). */
+   versao 2026-10-28-menu: botao Menu no alto de toda pagina dos guias, painel do menu, atalho de voltar e selos A venda / Novo / prazo.
+   antes 2026-10-28-instalar3: a folha de instrucoes fica por cima da barra de medicao (antes a barra cobria os passos). */
 :root{--marinho:#0d1b2a;--marinho2:#12324a;--verde:#0a7d5a;--verde2:#10b981;--areia:#f4c76b;--texto:#1d2a38;--suave:#5b6b80;--fundo:#fbf8f1;--linha:#e7e1d3;--erro:#b42318}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -96,3 +97,28 @@ label.campo input:focus{outline:none;border-color:var(--verde2);box-shadow:0 0 0
 .fixo.on{display:flex}
 .fixo b{font-family:Poppins}
 @media (min-width:821px){.fixo{display:none!important}}
+
+/* ---------- Menu dos guias (2026-10-28-menu) ---------- */
+.fm-btn{display:inline-flex;align-items:center;gap:.45rem;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:.55rem 1rem;font:700 .98rem Poppins,Inter,sans-serif;cursor:pointer;min-height:44px}
+.fm-btn:hover,.fm-btn:focus-visible{background:rgba(255,255,255,.22)}
+.fm-volta{display:inline-flex;align-items:center;min-height:40px;margin:-1.4rem 0 .8rem;padding:.3rem .9rem;border-radius:999px;background:rgba(255,255,255,.1);color:#fff!important;text-decoration:none;font-weight:600;font-size:.95rem}
+.fm-volta:hover{background:rgba(255,255,255,.2)}
+.fm-fundo{position:fixed;inset:0;background:rgba(6,14,22,.55);z-index:2147483002;display:flex;justify-content:flex-end;align-items:flex-start}
+.fm-fundo[hidden]{display:none}
+.fm-caixa{background:#fff;color:var(--texto);width:min(380px,100%);max-height:100vh;overflow:auto;padding:.6rem .8rem 1.4rem;box-shadow:-10px 0 40px rgba(0,0,0,.35);animation:fmEntra .18s ease-out;font-family:Inter,sans-serif}
+@keyframes fmEntra{from{transform:translateX(24px);opacity:.4}to{transform:none;opacity:1}}
+@media (max-width:520px){.fm-caixa{width:100%;min-height:100vh}}
+.fm-cab{display:flex;align-items:center;justify-content:space-between;padding:.5rem .4rem .7rem;border-bottom:1px solid var(--linha);font-family:Poppins;font-size:1.1rem;color:var(--marinho)}
+.fm-x{background:none;border:0;font-size:1.5rem;line-height:1;cursor:pointer;color:var(--suave);min-width:44px;min-height:44px}
+.fm-sec{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--suave);margin:1rem .4rem .35rem}
+.fm-item{display:flex;align-items:center;gap:.8rem;width:100%;text-align:left;background:none;border:0;border-radius:12px;padding:.7rem .6rem;color:var(--marinho);text-decoration:none;cursor:pointer;font:inherit;min-height:52px}
+.fm-item:hover,.fm-item:focus-visible,.fm-guia:hover,.fm-guia:focus-visible{background:#f3f7f5}
+.fm-item b,.fm-guia b{display:block;font-size:1rem}
+.fm-item small,.fm-guia small{display:block;color:var(--suave);font-size:.84rem;line-height:1.3}
+.fm-ico{font-size:1.35rem;width:1.8rem;text-align:center;flex:0 0 auto}
+.fm-sair{color:#8a1c1c}
+.fm-guia{display:flex;align-items:center;gap:.8rem;padding:.55rem .6rem;border-radius:12px;color:var(--marinho);text-decoration:none}
+.fm-guia img{width:54px;height:81px;object-fit:cover;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.18);flex:0 0 auto}
+.fm-selo,.selo-venda{display:inline-block;background:#e8401c;color:#fff;font:800 .7rem Inter,sans-serif;letter-spacing:.04em;text-transform:uppercase;padding:.18rem .5rem;border-radius:999px;margin:0 .3rem .25rem 0}
+.fm-selo.seu{background:#10b981;color:#062b1f}
+.fm-selo.novo,.selo-venda.novo{background:#f4c76b;color:#3a2a00}
