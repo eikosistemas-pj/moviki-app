@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/biblioteca.html | versao 2026-10-28-menu (pedido do Paulo em 28/10 a noite: os guias a venda aparecem com selo A VENDA / NOVO, preco e prazo, inclusive para quem ainda nao entrou; fileiras Seus guias, A venda agora e Em breve; o Ajuda e o Sair viraram o botao Menu do alto (o menu marca Seu nos guias ja comprados, faro_meus), igual em toda pagina dos guias; Nao consigo entrar abre direto pelo menu, #ajuda) | antes 2026-10-28-entrar-facil (pedido do Paulo em 28/10 a noite, publico 45+: o e-mail traz o botao Entrar na minha biblioteca, que entra sozinho (?entrar=), o codigo virou alternativa, e o botao Nao consigo entrar: quero ajuda no WhatsApp (robo bib_ajuda)) | antes 2026-10-28-biblioteca (Biblioteca FARO "estilo Netflix", pedido do Paulo em 28/10: todos os guias em fileiras de capas; os que a pessoa tem ficam coloridos e abrem o guia; os outros ficam em preto e branco e levam a compra; "Em breve" para guia anunciado. Entrada sem senha: codigo de 6 numeros no e-mail da compra (moviki-robo /api/faro bib_codigo, bib_entrar) ou pelo link pessoal de uma compra (biblioteca com venda+t). A sessao fica neste aparelho (localStorage faro_bib), 180 dias.) -->
+<!-- MOVIKI faro/biblioteca.html | versao 2026-10-29-kit (pedido do Paulo em 29/10: visual futurista; cada guia da estante virou o KIT 3D, livro + CD do audiobook com a mesma arte; Seu = colorido, A venda = colorido com selo e preco, fora de venda = preto e branco, Em breve = apagado) | antes 2026-10-28-menu (pedido do Paulo em 28/10 a noite: os guias a venda aparecem com selo A VENDA / NOVO, preco e prazo, inclusive para quem ainda nao entrou; fileiras Seus guias, A venda agora e Em breve; o Ajuda e o Sair viraram o botao Menu do alto (o menu marca Seu nos guias ja comprados, faro_meus), igual em toda pagina dos guias; Nao consigo entrar abre direto pelo menu, #ajuda) | antes 2026-10-28-entrar-facil (pedido do Paulo em 28/10 a noite, publico 45+: o e-mail traz o botao Entrar na minha biblioteca, que entra sozinho (?entrar=), o codigo virou alternativa, e o botao Nao consigo entrar: quero ajuda no WhatsApp (robo bib_ajuda)) | antes 2026-10-28-biblioteca (Biblioteca FARO "estilo Netflix", pedido do Paulo em 28/10: todos os guias em fileiras de capas; os que a pessoa tem ficam coloridos e abrem o guia; os outros ficam em preto e branco e levam a compra; "Em breve" para guia anunciado. Entrada sem senha: codigo de 6 numeros no e-mail da compra (moviki-robo /api/faro bib_codigo, bib_entrar) ou pelo link pessoal de uma compra (biblioteca com venda+t). A sessao fica neste aparelho (localStorage faro_bib), 180 dias.) -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -16,51 +16,59 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0b141e">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/faro/faro.css">
 <script src="/mvmetrica.js"></script>
 <script src="/faro/faro.js"></script>
 <style>
-body{background:#0b141e;color:#e8eef4}
-.bib-topo{padding:1rem 0 .4rem}
+.bib-topo{padding:1rem 0 .4rem;position:relative;overflow:hidden}
+.bib-topo > .wrap{position:relative;z-index:2}
 .bib-topo .barra{display:flex;align-items:center;justify-content:space-between}
 .bib-topo .barra img{height:30px}
 .bib-topo .barra > a,.bib-topo .barra button:not(.fm-btn){color:#a9c2d3;font-size:.9rem;background:none;border:0;cursor:pointer;text-decoration:none;font-family:Inter,sans-serif}
-.bib-titulo{font-family:Poppins;font-weight:800;font-size:clamp(1.6rem,4.5vw,2.4rem);color:#fff;margin:1.2rem 0 .2rem}
+.bib-titulo{font:700 clamp(1.8rem,5vw,2.8rem) 'Space Grotesk',Poppins,sans-serif;color:#fff;margin:.6rem 0 .2rem;letter-spacing:-.015em}
 .bib-sub{color:#a9c2d3;margin:0 0 1.2rem}
-.fileira{margin:1.4rem 0 .6rem}
-.fileira h2{font-family:Poppins;font-size:1.15rem;color:#fff;margin:0 0 .7rem}
-.trilho{display:flex;gap:.9rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:.2rem .1rem 1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.fileira{margin:1.6rem 0 .6rem}
+.fileira h2{font:700 1.25rem 'Space Grotesk',Poppins,sans-serif;color:#fff;margin:0 0 .8rem;display:flex;align-items:center;gap:.6rem}
+.fileira h2:before{content:'';width:1.6rem;height:3px;border-radius:2px;background:#34f5c5;box-shadow:0 0 12px #34f5c5}
+.trilho{display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:.2rem .1rem 1.2rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .trilho::-webkit-scrollbar{display:none}
-.capa{flex:0 0 auto;width:min(42vw,200px);scroll-snap-align:start;cursor:pointer;-webkit-tap-highlight-color:transparent;color:inherit;text-decoration:none;background:none;border:0;padding:0;text-align:left;font:inherit}
-.capa .img{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:2/3;background:#16222f;box-shadow:0 10px 26px rgba(0,0,0,.45);transition:transform .15s}
-.capa:hover .img,.capa:focus-visible .img{transform:scale(1.03)}
-.capa img{width:100%;height:100%;object-fit:cover;display:block}
-.capa.cinza img{filter:grayscale(1) brightness(.75)}
-.capa .selos{position:absolute;left:.5rem;top:.5rem;display:flex;flex-wrap:wrap;gap:.25rem;max-width:calc(100% - 1rem)}
-.capa .selos .selo-venda{margin:0;box-shadow:0 3px 10px rgba(0,0,0,.35);font-size:.74rem;padding:.25rem .6rem}
-.capa .preco{position:absolute;left:0;right:0;bottom:0;padding:1.6rem .6rem .55rem;background:linear-gradient(transparent,rgba(5,12,20,.92));color:#fff;font:800 .95rem Poppins,sans-serif}
-.capa .preco small{display:block;font:600 .74rem Inter,sans-serif;color:#f4c76b}
-.capa .comprar{display:inline-block;margin-top:.35rem;background:#10b981;color:#062b1f;font-weight:700;font-size:.85rem;border-radius:999px;padding:.35rem .8rem}
-.capa.breve img{filter:saturate(.35) brightness(.7)}
-.capa .selo{position:absolute;right:.5rem;top:.5rem;background:rgba(11,20,30,.82);color:#fff;font-size:.72rem;font-weight:700;padding:.25rem .55rem;border-radius:999px;font-family:Inter}
+.capa{--c:#10b981;position:relative;flex:0 0 auto;width:min(46vw,236px);scroll-snap-align:start;cursor:pointer;-webkit-tap-highlight-color:transparent;color:inherit;text-decoration:none;padding:1.9rem .6rem .9rem;text-align:left;font:inherit;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.1);transition:border-color .25s,transform .25s;overflow:hidden}
+.capa:before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--c),transparent)}
+.capa:hover,.capa:focus-visible{border-color:rgba(255,255,255,.28);transform:translateY(-3px);outline:none}
+.capa .kit{--k:min(1.85vw,9.6px)}
+.capa .selos{position:absolute;left:.6rem;top:.6rem;z-index:2;display:flex;flex-wrap:wrap;gap:.25rem;max-width:calc(100% - 1.2rem)}
+.capa .selos .selo-venda{margin:0;box-shadow:0 3px 10px rgba(0,0,0,.35);font-size:.72rem;padding:.22rem .55rem}
+.capa .selo{position:absolute;right:.6rem;top:.6rem;z-index:2;background:rgba(11,20,30,.85);color:#fff;font-size:.72rem;font-weight:700;padding:.25rem .55rem;border-radius:999px;font-family:Inter}
 .capa .selo.tem{background:#10b981;color:#062b1f}
 .capa .selo.breve{background:#f4c76b;color:#3a2a00}
-.capa .nome{font-weight:600;font-size:.92rem;margin:.55rem 0 .1rem;color:#fff;line-height:1.25}
-.capa .acao{font-size:.82rem;color:#a9c2d3}
+.capa .nome{font:700 1rem 'Space Grotesk',Poppins,sans-serif;margin:.2rem .2rem .15rem;color:#fff;line-height:1.25}
+.capa .precol{margin:0 .2rem;font:800 1rem Poppins,sans-serif;color:#fff}
+.capa .precol small{display:block;font:600 .76rem Inter,sans-serif;color:#f4c76b}
+.capa .acao{font-size:.84rem;color:#a9c2d3;margin:.35rem .2rem 0}
 .capa .acao b{color:#10b981}
+.capa .comprar,.capa .abrir{display:inline-block;margin-top:.15rem;background:#10b981;color:#062b1f;font-weight:700;font-size:.88rem;border-radius:999px;padding:.4rem .9rem;box-shadow:0 0 22px rgba(16,185,129,.35)}
+.capa.cinza .nome{color:#aab8c6}
 .cartao{background:#fff;color:var(--texto);border-radius:18px;padding:1.4rem;max-width:460px;margin:1.6rem auto;box-shadow:0 20px 50px rgba(0,0,0,.4)}
 .cartao h2{margin:0 0 .4rem;font-size:1.25rem}
 .cartao p{margin:.2rem 0 .6rem;color:var(--suave)}
 .cartao .msg.ok{color:var(--verde)}
-.aviso{background:#16222f;border:1px solid #23364a;border-radius:14px;padding:1rem;color:#cfdbe6;margin:1rem 0;font-size:.95rem}
+.neo #entrar{background:rgba(10,22,36,.86);border:1px solid rgba(52,245,197,.28);box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 60px rgba(16,185,129,.1);transform:none}
+.neo #entrar h2{color:#fff}
+.neo #entrar p{color:#b4c5d5}
+.neo #entrar label.campo{color:#dbe6f0}
+.neo #entrar .mini a,.neo #entrar p a{color:#7ef0c2}
+.neo #entrar .msg{color:#ff8a7a}
+.neo #entrar .msg.ok{color:#34f5c5}
+.aviso{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:1rem;color:#cfdbe6;margin:1rem 0;font-size:.95rem}
 .carregando{text-align:center;color:#a9c2d3;margin:3rem 0}
 </style>
 </head>
-<body>
-<header class="bib-topo">
+<body class="neo">
+<header class="bib-topo" data-neo-farol>
   <div class="wrap">
     <div class="barra"><a href="/faro/"><img src="/logo.png" alt="Moviki"></a><span data-faro-menu></span></div>
+    <div class="hud"><i></i>Guias FARO</div>
     <div class="bib-titulo">Biblioteca FARO</div>
     <p class="bib-sub" id="sub">Todos os Guias FARO num lugar só.</p>
   </div>
@@ -94,7 +102,7 @@ body{background:#0b141e;color:#e8eef4}
       <p class="msg" id="msg2"></p>
     </div>
     <!-- 28/10/2026 (noite): ajuda no WhatsApp para quem nao consegue entrar (robo bib_ajuda: aviso ao Paulo, numero nao guardado) -->
-    <div style="border-top:1px solid #e5e9ee;margin-top:1.2rem;padding-top:1rem">
+    <div style="border-top:1px solid rgba(255,255,255,.12);margin-top:1.2rem;padding-top:1rem">
       <button class="btn" id="ajudaAbrir" type="button" style="width:100%;background:#eaf7f1;color:#0a6b4c;border:1px solid #bfe6d6">Não consigo entrar: quero ajuda no WhatsApp</button>
       <div id="ajuda" hidden style="margin-top:.8rem">
         <p>Deixe o seu WhatsApp e uma pessoa da nossa equipe chama você para ajudar a entrar.</p>
@@ -132,6 +140,7 @@ body{background:#0b141e;color:#e8eef4}
   'use strict';
   var F = window.FARO, $ = function (s) { return document.querySelector(s); };
   F.menu();
+  F.neo();
   var KBIB = 'faro_bib', KACESSO = 'faro_acesso';
   var ua = navigator.userAgent || '';
   var noIphone = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
@@ -171,21 +180,26 @@ body{background:#0b141e;color:#e8eef4}
     var a = document.createElement('button'); a.type = 'button';
     var info = F.infoVenda(g.slug) || {};
     var vende = !g.tem && !g.emBreve && g.aVenda;
-    a.className = 'capa' + (g.emBreve ? ' breve' : (!g.tem && !vende ? ' cinza' : ''));
+    var cinza = !g.tem && !g.emBreve && !vende;
+    a.className = 'capa' + (g.emBreve ? ' breve' : (cinza ? ' cinza' : ''));
+    a.setAttribute('data-kit-host', '');
+    var kc = (F.KITS[g.slug] || {}).cor; if (kc && !cinza) a.style.setProperty('--c', kc);
+    var nome = String(g.titulo || '').replace(/^Guia FARO\s*[—-]\s*/, '');
     var selo = g.tem ? '<span class="selo tem">Seu</span>' : (g.emBreve ? '<span class="selo breve">Em breve</span>' : '');
-    if (vende) {
-      selo = '<span class="selos"><span class="selo-venda">À venda</span>' + (info.novo ? '<span class="selo-venda novo">Novo</span>' : '') + '</span>' +
-        (g.pix != null ? '<span class="preco">' + F.reais(g.pix) + ' no Pix' + (info.prazo ? '<small>' + F.esc(info.prazo) + '</small>' : '') + '</span>' : '');
-    }
-    var acao = g.tem ? '<b>Abrir</b>' : (g.emBreve ? 'Chega em ' + F.esc(g.previsao || 'breve') : (vende ? '<span class="comprar">Ver e comprar ›</span>' : 'Fora de venda'));
-    a.innerHTML = '<div class="img">' + (g.capa ? '<img src="' + F.esc(g.capa) + '" alt="" loading="lazy">' : '') + selo + '</div>' +
-      '<div class="nome">' + F.esc(String(g.titulo || '').replace(/^Guia FARO\s*[—-]\s*/, '')) + '</div><div class="acao">' + acao + '</div>';
+    if (vende) selo = '<span class="selos"><span class="selo-venda">À venda</span>' + (info.novo ? '<span class="selo-venda novo">Novo</span>' : '') + '</span>';
+    var preco = vende && g.pix != null ? '<div class="precol">' + F.reais(g.pix) + ' no Pix' + (info.prazo ? '<small>' + F.esc(info.prazo) + '</small>' : '') + '</div>' : '';
+    var acao = g.tem ? '<span class="abrir">Abrir ›</span>' : (g.emBreve ? 'Chega em ' + F.esc(g.previsao || 'breve') : (vende ? '<span class="comprar">Ver e comprar ›</span>' : 'Fora de venda'));
+    a.innerHTML = selo + '<div class="kitbox"></div><div class="nome">' + F.esc(nome) + '</div>' + preco + '<div class="acao">' + acao + '</div>';
+    a.setAttribute('aria-label', nome + (g.tem ? ': abrir o guia' : (vende ? ': ver e comprar' : (g.emBreve ? ': em breve' : ': fora de venda'))));
+    var k = a.querySelector('.kitbox');
+    F.kit(k, { slug: g.slug, capa: g.capa, cinza: cinza, breve: !!g.emBreve });
+    F.prender(k);
     a.addEventListener('click', function () {
       if (g.tem && g.acesso) { F.ev('faro_bib_abrir', { produto: g.slug }); location.href = g.acesso; return; }
       if (g.emBreve) {
         F.ev('faro_bib_breve', { produto: g.slug });
         var av = $('#avisoBreve'); av.hidden = false;
-        av.innerHTML = '<b>' + F.esc(String(g.titulo).replace(/^Guia FARO\s*[—-]\s*/, '')) + '</b> está sendo preparado. Para receber o aviso quando abrir, entre num guia seu e marque <b>Quero saber do próximo guia</b>.';
+        av.innerHTML = '<b>' + F.esc(nome) + '</b> está sendo preparado. Para receber o aviso quando abrir, entre num guia seu e marque <b>Quero saber do próximo guia</b>.';
         av.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
