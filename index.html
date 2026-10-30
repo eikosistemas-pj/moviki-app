@@ -4795,7 +4795,7 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
      e pode virar evento-chave e conversao do Google Ads, um por campanha.
      cadastro_indicado continua (com tipo) para quem ja monta relatorio nele. */
   window.MOVIKI_METRICA_IND='2026-09-19-tipocadastro';
-  window.MOVIKI_CADASTRO='2026-10-20-cadastro3';   /* 20/10 (cadastro3): no navegador do Instagram/Facebook/TikTok o e-mail e a senha vem logo depois do nome e a saida para o Chrome vira link pequeno; aviso de medicao espera o cadastro fechar; '30 dias gratis · sem cartao' colado no botao; eventos cad_foco_<campo>, cad_saiu_<ultimo campo> e cad_erro_<motivo>. Antes: 2026-10-20-contaexiste — 20/10: e-mail ja cadastrado + senha certa entra (nao trava); cad_validacao separado de cad_erro. Nao muda a tela que o Vik descreve: MOVIKI_VERSAO segue igual. */
+  window.MOVIKI_CADASTRO='2026-10-29-parceiroquiz';   /* 29/10: cadastro de parceiro pelo quiz nao cai mais no painel de lojista (roteamento espera o cadastro; conta Google ou e-mail que ja existia ganha o cadastro de parceiro na mesma conta; conta sem negocio e sem parceiro com a trilha parceiro abre 'Termine seu cadastro de parceiro'; link ?trilha=parceiro; aceite grava o regulamento 1.7). Antes: 2026-10-20-cadastro3 — 20/10 (cadastro3): no navegador do Instagram/Facebook/TikTok o e-mail e a senha vem logo depois do nome e a saida para o Chrome vira link pequeno; aviso de medicao espera o cadastro fechar; '30 dias gratis · sem cartao' colado no botao; eventos cad_foco_<campo>, cad_saiu_<ultimo campo> e cad_erro_<motivo>. Antes: 2026-10-20-contaexiste — 20/10: e-mail ja cadastrado + senha certa entra (nao trava); cad_validacao separado de cad_erro. Nao muda a tela que o Vik descreve: MOVIKI_VERSAO segue igual. */
   try{
     const _mvSignupOrig=window.mvSignup;
     if(typeof _mvSignupOrig==='function' && !_mvSignupOrig._comRef){
@@ -4916,8 +4916,24 @@ window.mvAbaInicial=function(){
   }
   // Navegadores embutidos (Instagram/Facebook/TikTok/WhatsApp) bloqueiam ou o Google recusa o popup —
   // nesse caso já manda direto pro redirect. O retorno do redirect é tratado abaixo, no boot do módulo.
+  /* 29/10/2026 (2026-10-29-parceiroquiz): cadastro de parceiro pelo quiz caia no painel do
+     LOJISTA. Causa: criar a conta dispara o onAuthStateChanged ANTES de parceiros/{uid} ser
+     gravado; o painel via "sem negocio e sem parceiro" e abria o onboarding de lojista. Se a
+     gravacao falhasse (ou a conta ja existisse), ficava lojista para sempre. Agora: enquanto o
+     cadastro de parceiro corre, o roteamento espera (__mvCriandoParceiro); conta sem negocio e
+     sem parceiro com a trilha 'parceiro' abre "Termine seu cadastro de parceiro".
+     ?trilha=parceiro no link marca a intencao (socorro para quem ja ficou preso). */
+  window.__mvCriandoParceiro=false;
+  try{
+    var _qsTr=new URLSearchParams(location.search);
+    var _tr=_qsTr.get('trilha');
+    if(_tr==='parceiro'||_tr==='lojista') localStorage.setItem('mv_trilha',_tr);
+    else if(_qsTr.get('criar')==='1') localStorage.setItem('mv_trilha','lojista');
+  }catch(_){}
+  try{ var _pdRaw=sessionStorage.getItem('moviki_quiz_pendente'); if(_pdRaw&&((JSON.parse(_pdRaw)||{}).tipo==='parceiro')) window.__mvCriandoParceiro=true; }catch(_){}
+  window.mvLiberarRota=function(){ window.__mvCriandoParceiro=false; if(window.__mvRotaAdiada){ window.__mvRotaAdiada=false; location.reload(); } };
   getRedirectResult(auth).then(function(cred){
-    if(!cred) return;
+    if(!cred){ if(window.__mvCriandoParceiro) window.mvLiberarRota(); return; }
     if(typeof marcarRedirect==='function') marcarRedirect(false);   // voltou bem: libera nova tentativa
     // Voltou do Google por redirect. Se o quiz tinha um cadastro em andamento (respostas
     // guardadas antes de sair da página), termina ele; senão é login normal.
@@ -4930,12 +4946,13 @@ window.mvAbaInicial=function(){
     }
     if(pend&&pend.tipo==='parceiro'){
       return gravarParceiroGoogle(cred,pend.dados).then(function(r){
-        if(r&&r.ok&&!r.jaExistia){ window.location.href=r.redirect||'parceiro.html'; return; }
-        if(window.mqzEsconder)window.mqzEsconder();
-      });
+        if(r&&r.ok){ window.location.href=r.redirect||'parceiro.html'; return; }
+        window.mvLiberarRota();   /* falhou: recarrega e o roteamento abre "Termine seu cadastro de parceiro" */
+      },function(){ window.mvLiberarRota(); });
     }
+    if(window.__mvCriandoParceiro) window.mvLiberarRota();
     return posLoginGoogleNovo(cred);
-  }).catch(function(e){if(e&&e.code)erroAcesso(msgErro(e.code));});
+  }).catch(function(e){ if(window.__mvCriandoParceiro) window.mvLiberarRota(); if(e&&e.code)erroAcesso(msgErro(e.code));});
   window.entrarGoogle=async function(){
     const btn=el('btnGoogle');if(!btn)return;limparAviso();
     btn.disabled=true;const t=btn.innerHTML;btn.innerHTML='Aguarde...';
@@ -8233,6 +8250,7 @@ window.mvAbaInicial=function(){
   };
   // Cria a conta do comerciante a partir do Quiz e já injeta o esqueleto de cardápio do subtipo escolhido.
   window.mqzCriarComerciante=async function(d){
+    try{ localStorage.setItem('mv_trilha','lojista'); }catch(_){}
     try{
       const nome=(d.nome||'').trim();
       if(!nome) return {ok:false,erro:'Dê um nome ao seu negócio.'};
@@ -8439,45 +8457,158 @@ window.mvAbaInicial=function(){
     setTimeout(function(){ try{ cNome.i.focus(); }catch(_){} },50);
   };
 
+  /* 29/10/2026 (2026-10-29-parceiroquiz): UMA gravacao do cadastro de parceiro para os tres
+     caminhos (e-mail, Google e "Termine seu cadastro"). Idempotente: se parceiros/{uid} ja
+     existe, so devolve o painel; se o apelido ja foi reservado por esta conta numa tentativa
+     que caiu no meio, reaproveita. Apelido ja nasce dentro do apelidoLivre() da regra. */
+  const REGULAMENTO_VERSAO='1.7';   /* regulamento.html: Versao 1.7 de 22/10/2026 */
+  const PARC_RESERVADOS=['suporte','oficial','pix','pagamento','pagamentos','admin','ajuda','seguranca','sac','login','atendimento','contato','moviki-oficial'];
+  function parcSlugBarrado(s){ return PARC_RESERVADOS.indexOf(s)>=0||s.indexOf('moviki')>=0||/^(https?|www)/.test(s); }
+  async function gravarParceiroNaConta(user,d){
+    if(!user) return {ok:false,erro:'Sua sessão expirou. Entre de novo.'};
+    const ja=await getDoc(doc(db,'parceiros',user.uid));
+    if(ja.exists()) return {ok:true,redirect:'parceiro.html'};
+    const nome=(d.nome||'').trim().slice(0,80);
+    const pix=(d.pix||'').trim().slice(0,140);
+    if(nome.length<2) return {ok:false,erro:'Digite seu nome completo.'};
+    if(pix.length<3) return {ok:false,erro:'Digite sua chave Pix.'};
+    let base=limpaSlugParc(d.slug||nome);
+    if(base.length<3||parcSlugBarrado(base)) base='parceiro'+Math.floor(Math.random()*9000+1000);
+    let slug='', reservou=false;
+    for(let i=0;i<6&&!reservou;i++){
+      const cand=(i===0)?base.slice(0,40):(base.slice(0,36)+Math.floor(Math.random()*900+100));
+      if(parcSlugBarrado(cand)) continue;
+      try{
+        const s=await getDoc(doc(db,'parceiro_slugs',cand));
+        if(s.exists()){ if(((s.data()||{}).uid)===user.uid){ slug=cand; reservou=true; } continue; }
+        await setDoc(doc(db,'parceiro_slugs',cand),{uid:user.uid});
+        slug=cand; reservou=true;
+      }catch(_){}
+    }
+    if(!reservou) return {ok:false,erro:'Não consegui gerar seu link agora. Tente de novo.'};
+    const dadosParceiro={nome:nome,email:user.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:REGULAMENTO_VERSAO,em:serverTimestamp()},criadoEm:serverTimestamp()};
+    if(refParceiro&&refParceiro.length>=3&&refParceiro.length<=40&&refParceiro!==slug) dadosParceiro.indicadoPor=refParceiro;
+    const arroba=(d.arroba||'').trim().replace(/^@+/,'').slice(0,39);
+    if(arroba) dadosParceiro.arroba='@'+arroba;
+    if(Array.isArray(d.canais)&&d.canais.length){
+      const CANAIS_OK=['instagram','whatsapp','associacoes'];
+      const canais=d.canais.filter(c=>CANAIS_OK.includes(c)).slice(0,3);
+      if(canais.length) dadosParceiro.canais=canais;
+    }
+    await setDoc(doc(db,'parceiros',user.uid),dadosParceiro);
+    try{ localStorage.setItem('mv_trilha','parceiro'); }catch(_){}
+    /* aviso ao robo ANTES de sair da pagina (o redirect cortava o fetch solto) */
+    try{
+      const tk=await user.getIdToken();
+      await Promise.race([
+        fetch(ROBO+'/api/novo-parceiro',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({idToken:tk,uid:user.uid},(window.mvAtrib?window.mvAtrib():{})))}).catch(function(){}),
+        new Promise(function(r){setTimeout(r,4000);})
+      ]);
+    }catch(_){}
+    return {ok:true,redirect:'parceiro.html',novo:true};
+  }
+  function evParceiroCadastrado(metodo){
+    try{ if(window.mvEv) mvEv('parceiro_cadastrado',{origem:'quiz', metodo:metodo, tem_upline:(refParceiro&&refParceiro.length>=3)?'sim':'nao'}); }catch(_){}
+  }
+
   // Cria a conta do parceiro puro (afiliado/influenciador) — sem negocios/{uid}, isento da trava de pagante.
+  // 29/10/2026: e-mail que ja tem conta (lojista ou cadastro que caiu no meio) entra com a senha
+  // digitada e ganha o cadastro de parceiro na MESMA conta — igual ao seja-parceiro desde 04/09.
   window.mqzCriarParceiro=async function(d){
     try{
       const nome=(d.nome||'').trim();
       if(nome.length<2) return {ok:false,erro:'Digite seu nome completo.'};
       const email=(d.email||'').trim();
       const senha=d.senha||'';
-      const pix=(d.pix||'').trim();
-      if(pix.length<3) return {ok:false,erro:'Digite sua chave Pix.'};
-      let slug=limpaSlugParc(d.slug||nome);
-      if(slug.length<3) slug='parceiro'+Math.floor(Math.random()*9000+1000);
-      let livre=false;
-      for(let i=0;i<5&&!livre;i++){
-        const s=await getDoc(doc(db,'parceiro_slugs',slug));
-        if(!s.exists()){livre=true;break;}
-        slug=limpaSlugParc(nome)+Math.floor(Math.random()*900+100);
+      if((d.pix||'').trim().length<3) return {ok:false,erro:'Digite sua chave Pix.'};
+      window.__mvCriandoParceiro=true;
+      try{ localStorage.setItem('mv_trilha','parceiro'); }catch(_){}
+      let user=auth.currentUser, contaNova=false;
+      if(!(user&&user.email&&user.email.toLowerCase()===email.toLowerCase())){
+        try{ await createUserWithEmailAndPassword(auth,email,senha); contaNova=true; }
+        catch(eConta){
+          if(!(eConta&&eConta.code==='auth/email-already-in-use')) throw eConta;
+          try{ await signInWithEmailAndPassword(auth,email,senha); }
+          catch(_){
+            if(!auth.currentUser) window.__mvCriandoParceiro=false;
+            return {ok:false,erro:'Este e-mail já tem conta no Moviki. Digite a senha dessa conta para adicionar o cadastro de parceiro a ela (ou use "Entrar com Google", se foi assim que você criou).'};
+          }
+        }
+        user=auth.currentUser;
       }
-      if(!livre) return {ok:false,erro:'Não consegui gerar seu link agora. Tente de novo.'};
-      await createUserWithEmailAndPassword(auth,email,senha);
-      try{ if(window.mvSignup) mvSignup('parceiro_email'); }catch(_){}
-      try{ if(window.mvEv) mvEv('parceiro_cadastrado',{origem:'quiz', metodo:'email', tem_upline:(refParceiro&&refParceiro.length>=3)?'sim':'nao'}); }catch(_){}
-      const user=auth.currentUser;
-      try{await sendEmailVerification(user);}catch(_){}
-      await setDoc(doc(db,'parceiro_slugs',slug),{uid:user.uid});
-      const dadosParceiro={nome:nome,email:user.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.2',em:serverTimestamp()},criadoEm:serverTimestamp()};
-      if(refParceiro&&refParceiro.length>=3&&refParceiro!==slug) dadosParceiro.indicadoPor=refParceiro;
-      const arroba=(d.arroba||'').trim().replace(/^@+/,'').slice(0,39);
-      if(arroba) dadosParceiro.arroba='@'+arroba;
-      if(Array.isArray(d.canais)&&d.canais.length){
-        const CANAIS_OK=['instagram','whatsapp','associacoes'];
-        const canais=d.canais.filter(c=>CANAIS_OK.includes(c)).slice(0,3);
-        if(canais.length) dadosParceiro.canais=canais;
+      if(contaNova){
+        try{ if(window.mvSignup) mvSignup('parceiro_email'); }catch(_){}
+        try{ await sendEmailVerification(user); }catch(_){}
       }
-      await setDoc(doc(db,'parceiros',user.uid),dadosParceiro);
-      try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-parceiro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:user.uid})}).catch(function(){});}).catch(function(){}); }catch(_){}
-      return {ok:true,redirect:'parceiro.html'};
+      const r=await gravarParceiroNaConta(user,d);
+      if(r&&r.novo) evParceiroCadastrado(contaNova?'email':'conta_existente');
+      return r;
     }catch(e){
+      if(!auth.currentUser) window.__mvCriandoParceiro=false;
       return {ok:false,erro:(e&&e.code)?msgErro(e.code):'Não consegui concluir o cadastro agora. Tente de novo.'};
     }
+  };
+
+  /* 29/10/2026: conta logada SEM negocio e SEM parceiro, com a trilha 'parceiro' (cadastro de
+     parceiro que caiu no meio, ou link ?trilha=parceiro). Pede so nome, Pix e o regulamento e
+     grava na mesma conta. Devolve true se a pessoa preferir colocar um negocio no mapa (o painel
+     de lojista segue normal); no sucesso a pagina vai para o parceiro.html. */
+  window.mvCompletarParceiroAbrir=function(user){
+    return new Promise(function(resolve){
+      try{ if(window.mqzEsconder) window.mqzEsconder(); }catch(_){}
+      const velho=document.getElementById('mvCompletarParc'); if(velho) velho.remove();
+      const ov=document.createElement('div');
+      ov.id='mvCompletarParc';
+      ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-label','Termine seu cadastro de parceiro');
+      ov.style.cssText='position:fixed;inset:0;z-index:9999;background:#02070e;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto';
+      const box=document.createElement('div');
+      box.style.cssText='width:100%;max-width:440px;background:#0f1d30;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:22px 20px;color:#eaf2ff;font-family:inherit;box-shadow:0 20px 60px rgba(0,0,0,.5)';
+      const h=document.createElement('div'); h.textContent='Termine seu cadastro de parceiro'; h.style.cssText='font-size:20px;font-weight:800;margin:0 0 6px';
+      const sub=document.createElement('div'); sub.textContent='Sua conta ('+(user.email||'')+') já existe, mas o cadastro de parceiro não foi concluído. Falta só isto para abrir o seu painel de parceiro.'; sub.style.cssText='font-size:14px;line-height:1.5;color:#a9bbd3;margin:0 0 16px';
+      const campo=function(rot,ph,val){
+        const w=document.createElement('label'); w.style.cssText='display:block;margin:0 0 12px;font-size:13px;font-weight:700;color:#cfe0f5';
+        w.appendChild(document.createTextNode(rot));
+        const i=document.createElement('input'); i.type='text'; i.placeholder=ph; i.value=val||''; i.maxLength=(rot.indexOf('Pix')>=0)?140:80;
+        i.style.cssText='display:block;width:100%;box-sizing:border-box;margin-top:6px;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:#0a1626;color:#fff;font-size:16px;font-family:inherit';
+        w.appendChild(i); return {w:w,i:i};
+      };
+      const cNome=campo('Seu nome','Nome completo',user.displayName||'');
+      const cPix=campo('Sua chave Pix','CPF, e-mail, telefone ou chave aleatória','');
+      const acW=document.createElement('label'); acW.style.cssText='display:flex;gap:10px;align-items:flex-start;margin:0 0 12px;font-size:13px;line-height:1.45;color:#cfe0f5;cursor:pointer';
+      const acI=document.createElement('input'); acI.type='checkbox'; acI.style.cssText='width:20px;height:20px;flex:none;margin-top:1px';
+      const acT=document.createElement('span'); acT.appendChild(document.createTextNode('Li e concordo com o '));
+      const acA=document.createElement('a'); acA.href='regulamento.html'; acA.target='_blank'; acA.rel='noopener'; acA.textContent='Regulamento do Programa de Parceiros'; acA.style.color='#7ff0c2';
+      acT.appendChild(acA); acT.appendChild(document.createTextNode('.'));
+      acW.appendChild(acI); acW.appendChild(acT);
+      const erro=document.createElement('div'); erro.setAttribute('role','alert'); erro.style.cssText='min-height:18px;font-size:13px;color:#ff8a8a;margin:0 0 10px';
+      const ok=document.createElement('button'); ok.type='button'; ok.textContent='Ativar meu link de parceiro';
+      ok.style.cssText='display:block;width:100%;padding:14px;border:0;border-radius:12px;background:linear-gradient(135deg,#2ee59d,#0f8052);color:#04140c;font-weight:800;font-size:16px;cursor:pointer;font-family:inherit';
+      const neg=document.createElement('button'); neg.type='button'; neg.textContent='Não, quero colocar meu negócio no mapa';
+      neg.style.cssText='display:block;width:100%;margin-top:12px;padding:10px;border:0;background:none;color:#a9bbd3;font-size:14px;text-decoration:underline;cursor:pointer;font-family:inherit';
+      const sair=document.createElement('button'); sair.type='button'; sair.textContent='Sair desta conta';
+      sair.style.cssText='display:block;width:100%;padding:6px;border:0;background:none;color:#7f95b3;font-size:13px;cursor:pointer;font-family:inherit';
+      ok.addEventListener('click',async function(){
+        erro.textContent='';
+        if(!acI.checked){ erro.textContent='Você precisa aceitar o regulamento.'; return; }
+        ok.disabled=true; ok.textContent='Ativando seu link…';
+        try{
+          const r=await gravarParceiroNaConta(user,{nome:cNome.i.value,pix:cPix.i.value});
+          if(r&&r.ok){ if(r.novo) evParceiroCadastrado('completar'); window.location.href=r.redirect||'parceiro.html'; return; }
+          erro.textContent=(r&&r.erro)||'Não consegui concluir agora. Tente de novo.';
+        }catch(e){ erro.textContent=(e&&e.code)?msgErro(e.code):'Não consegui concluir agora. Tente de novo.'; }
+        ok.disabled=false; ok.textContent='Ativar meu link de parceiro';
+      });
+      neg.addEventListener('click',function(){
+        try{ localStorage.setItem('mv_trilha','lojista'); }catch(_){}
+        try{ if(window.mvEv) mvEv('parceiro_completar',{escolha:'negocio'}); }catch(_){}
+        ov.remove(); resolve(true);
+      });
+      sair.addEventListener('click',async function(){ ov.remove(); resolve(false); try{ await signOut(auth); }catch(_){} });
+      [h,sub,cNome.w,cPix.w,acW,erro,ok,neg,sair].forEach(function(x){ box.appendChild(x); });
+      ov.appendChild(box); document.body.appendChild(ov);
+      try{ if(window.mvEv) mvEv('parceiro_completar',{escolha:'abriu'}); }catch(_){}
+      setTimeout(function(){ try{ (cNome.i.value?cPix.i:cNome.i).focus(); }catch(_){} },50);
+    });
   };
 
   // ---- Login/cadastro com Google DENTRO do quiz (20/08/2026) ----
@@ -8590,40 +8721,21 @@ window.mvAbaInicial=function(){
     atualizarOnboarding(false);
     return {ok:true,slug:slug,slugTrocado:(slug!==base)};
   }
+  /* 29/10/2026: conta Google que ja existia NAO volta mais "jaExistia" sem gravar nada (fechava o
+     quiz e caia no painel de lojista sem cadastro de parceiro). Agora ganha o cadastro de parceiro
+     na mesma conta; se ja era parceiro, so vai para o painel dele. */
   async function gravarParceiroGoogle(cred,d){
     const info=getAdditionalUserInfo(cred);
-    const user=cred.user;
-    if(info&&!info.isNewUser){ return {ok:true,jaExistia:true}; }
-    try{ if(window.mvSignup) mvSignup('parceiro_google'); }catch(_){}
-    try{ if(window.mvEv) mvEv('parceiro_cadastrado',{origem:'quiz', metodo:'google', tem_upline:(refParceiro&&refParceiro.length>=3)?'sim':'nao'}); }catch(_){}
-    const nome=(d.nome||'').trim();
-    const pix=(d.pix||'').trim();
-    let slug=limpaSlugParc(d.slug||nome);
-    if(slug.length<3) slug='parceiro'+Math.floor(Math.random()*9000+1000);
-    let livre=false;
-    for(let i=0;i<5&&!livre;i++){
-      const s=await getDoc(doc(db,'parceiro_slugs',slug));
-      if(!s.exists()){livre=true;break;}
-      slug=limpaSlugParc(nome)+Math.floor(Math.random()*900+100);
-    }
-    if(!livre) return {ok:false,erro:'Não consegui gerar seu link agora. Tente de novo.'};
-    await setDoc(doc(db,'parceiro_slugs',slug),{uid:user.uid});
-    const dadosParceiro={nome:nome,email:user.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.2',em:serverTimestamp()},criadoEm:serverTimestamp()};
-    if(refParceiro&&refParceiro.length>=3&&refParceiro!==slug) dadosParceiro.indicadoPor=refParceiro;
-    const arroba=(d.arroba||'').trim().replace(/^@+/,'').slice(0,39);
-    if(arroba) dadosParceiro.arroba='@'+arroba;
-    if(Array.isArray(d.canais)&&d.canais.length){
-      const CANAIS_OK=['instagram','whatsapp','associacoes'];
-      const canais=d.canais.filter(c=>CANAIS_OK.includes(c)).slice(0,3);
-      if(canais.length) dadosParceiro.canais=canais;
-    }
-    await setDoc(doc(db,'parceiros',user.uid),dadosParceiro);
-    try{ user.getIdToken().then(function(tk){fetch(ROBO+'/api/novo-parceiro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:user.uid})}).catch(function(){});}).catch(function(){}); }catch(_){}
-    return {ok:true,redirect:'parceiro.html'};
+    const nova=!!(info&&info.isNewUser);
+    if(nova){ try{ if(window.mvSignup) mvSignup('parceiro_google'); }catch(_){} }
+    const r=await gravarParceiroNaConta(cred.user,d);
+    if(r&&r.novo) evParceiroCadastrado(nova?'google':'conta_existente');
+    return r;
   }
   // Cria a conta do comerciante via Google a partir do Quiz — mesma lógica de negócio de
   // mqzCriarComerciante, só que a autenticação é o Google em vez de e-mail/senha.
   window.mqzCriarComercianteGoogle=async function(d){
+    try{ localStorage.setItem('mv_trilha','lojista'); }catch(_){}
     // Validação LOCAL (nada de rede aqui — ver comentário do bug lá em cima).
     const nome=(d.nome||'').trim();
     if(!nome) return {ok:false,erro:'Dê um nome ao seu negócio.'};
@@ -8643,10 +8755,15 @@ window.mvAbaInicial=function(){
     const nome=(d.nome||'').trim();
     if(nome.length<2) return {ok:false,erro:'Digite seu nome completo.'};
     if((d.pix||'').trim().length<3) return {ok:false,erro:'Digite sua chave Pix.'};
+    window.__mvCriandoParceiro=true;
+    try{ localStorage.setItem('mv_trilha','parceiro'); }catch(_){}
     try{
+      /* tentativa anterior ja autenticou e caiu na gravacao: termina na mesma conta */
+      if(auth.currentUser){ const r0=await gravarParceiroNaConta(auth.currentUser,d); if(r0&&r0.novo) evParceiroCadastrado('conta_existente'); return r0; }
       const cred=await autenticarGoogleQuiz('parceiro',d);
       return await gravarParceiroGoogle(cred,d);
     }catch(e){
+      if(!auth.currentUser) window.__mvCriandoParceiro=false;
       return {ok:false,erro:erroGoogleQuiz(e)};
     }
   };
@@ -8656,19 +8773,35 @@ window.mvAbaInicial=function(){
     usuarioAtual=user;
     if(window.mqzEsconderLoader)window.mqzEsconderLoader();
     if(user){
+      /* 29/10/2026: cadastro de parceiro em andamento — quem decide a tela e o proprio cadastro
+         (vai para o parceiro.html no fim). Sem isto o painel de lojista abria por cima. */
+      if(window.__mvCriandoParceiro){ window.__mvRotaAdiada=true; return; }
       // Parceiro puro (afiliado/influenciador, cadastrado via mqzCriarParceiro) NUNCA tem negocios/{uid} —
       // o painel dele é outro, o parceiro.html, só com comissão/link/saque, nada de negócio/cardápio.
       // No cadastro o redirect já acontece na hora (ver mqzCriarParceiro), mas num login normal (2ª vez em
       // diante) cai direto aqui — sem essa checagem, ele via por engano o onboarding de "monte seu negócio".
       try{
-        const _negSnap=await getDoc(doc(db,'negocios',user.uid));
+        /* 29/10/2026: leitura que falha (rede, App Check) tenta de novo antes de cair no lojista */
+        let _negSnap=null,_parSnap=null;
+        for(let _t=0;_t<2;_t++){
+          try{
+            _negSnap=await getDoc(doc(db,'negocios',user.uid));
+            _parSnap=_negSnap.exists()?null:await getDoc(doc(db,'parceiros',user.uid));
+            break;
+          }catch(_eL){ if(_t===1) throw _eL; await new Promise(function(r){setTimeout(r,1500);}); }
+        }
         if(!_negSnap.exists()){
-          const _parSnap=await getDoc(doc(db,'parceiros',user.uid));
           /* 20/10/2026: parceiro que pediu "Colocar meu negocio no mapa" no
              parceiro.html chega com ?virarLojista=1 — abre o formulario do negocio
              em vez de mandar de volta. */
           if(_parSnap.exists()&&window.mvVirarLojistaPedido&&window.mvVirarLojistaPedido()){ window.mvVirarLojistaAbrir(user,_parSnap.data()||{}); return; }
           if(_parSnap.exists()){ window.location.href='parceiro.html'; return; }
+          /* 29/10/2026: sem negocio e sem parceiro, mas a pessoa escolheu ser parceira */
+          let _trilha=''; try{ _trilha=localStorage.getItem('mv_trilha')||''; }catch(_){}
+          if(_trilha==='parceiro'&&window.mvCompletarParceiroAbrir){
+            const _seguir=await window.mvCompletarParceiroAbrir(user);
+            if(!_seguir) return;
+          }
         }
       }catch(_){}
       _mqzJaAutenticouAntes=true;
@@ -12099,6 +12232,7 @@ window.mvAbaInicial=function(){
     pilha=['qzTela1'];
   }
   window.mqzIrCadastro=function(){
+    try{ localStorage.setItem('mv_trilha','lojista'); }catch(_){}
     try{ if(window.mvEv) mvEv('quiz_cadastro_direto',{}); }catch(_){}
     if(!irDiretoAoCadastro()) irCadastroSemRamo();
   };
@@ -12141,7 +12275,7 @@ window.mvAbaInicial=function(){
 
   window.mqzVoltar=function(){ mostrarTela(pilha.pop()||'qzTela1',false); };
   window.mqzIrA2=function(){ renderNivel1(); mostrarTela('qzA2'); };
-  window.mqzIrApresent=function(){ mostrarTela('qzApresent'); };
+  window.mqzIrApresent=function(){ try{ localStorage.setItem('mv_trilha','parceiro'); }catch(_){} mostrarTela('qzApresent'); };
   window.mqzIrB2=function(){ mostrarTela('qzB2'); };
   window.mqzIrB3=function(){ if(!escolhaCanais.length)return; mostrarTela('qzB3'); };
   // Multi-seleção: cada canal alterna independente (o influenciador pode divulgar em mais de um lugar).
@@ -12295,9 +12429,9 @@ window.mvAbaInicial=function(){
     }).catch(function(){ if(erro)erro.textContent='N\u00e3o consegui concluir agora. Tente de novo.'; cadErro('google','conectar'); btn.disabled=false; btn.innerHTML=t; });
   };
 
-  // Cadastro do parceiro com Google \u2014 mesma ideia do comerciante. Se a conta Google j\u00e1 existia
-  // (jaExistia), n\u00e3o for\u00e7a redirect pro painel de parceiro: fecha o quiz e deixa o
-  // onAuthStateChanged decidir o painel certo (pode ser comerciante, n\u00e3o parceiro).
+  // Cadastro do parceiro com Google \u2014 mesma ideia do comerciante. 29/10/2026: conta Google que
+  // j\u00e1 existia ganha o cadastro de parceiro na mesma conta (gravarParceiroNaConta) e vai para o
+  // parceiro.html; o ramo jaExistia abaixo ficou s\u00f3 por seguran\u00e7a.
   // ==========================================================
   //  BUSCA DO @ DO INSTAGRAM — 03/09/2026
   //
