@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- MOVIKI faro/index.html | versao 2026-10-29-kit (pedido do Paulo em 29/10: visual futurista com movimento; cada guia vira um KIT 3D, o livro e o CD do audiobook com a mesma arte; fileira Em breve com os 4 guias escritos; rodizio da temporada igual) | antes 2026-10-28-menu (botao Menu no alto, selo A venda / Novo nos cards e o prazo real do Natal) | antes 2026-10-28-rodizio (rodizio da temporada: card de guia com data-ate some sozinho depois da data ou quando o robo diz que nao vende mais; sem guia nenhum aparece o aviso do proximo) | antes 2026-10-28-artigo (rodape com os artigos gratis do site e a central /guias) | antes 2026-10-28-natal (Guia 2 Natal por encomenda na vitrine, primeiro da lista) | antes 2026-10-28-biblioteca (link Ja comprou? Meus guias para a Biblioteca FARO) | antes 2026-10-28-og (miniatura do link: og-verao.jpg) -->
+<!-- MOVIKI faro/index.html | versao 2026-11-03-blackfriday (Guia 3 Black Friday ao vivo a venda ate 27/11, primeiro da lista e no destaque; Natal com 14 capitulos e audiobook completo) | antes 2026-10-29-kit (pedido do Paulo em 29/10: visual futurista com movimento; cada guia vira um KIT 3D, o livro e o CD do audiobook com a mesma arte; fileira Em breve com os 4 guias escritos; rodizio da temporada igual) | antes 2026-10-28-menu (botao Menu no alto, selo A venda / Novo nos cards e o prazo real do Natal) | antes 2026-10-28-rodizio (rodizio da temporada: card de guia com data-ate some sozinho depois da data ou quando o robo diz que nao vende mais; sem guia nenhum aparece o aviso do proximo) | antes 2026-10-28-artigo (rodape com os artigos gratis do site e a central /guias) | antes 2026-10-28-natal (Guia 2 Natal por encomenda na vitrine, primeiro da lista) | antes 2026-10-28-biblioteca (link Ja comprou? Meus guias para a Biblioteca FARO) | antes 2026-10-28-og (miniatura do link: og-verao.jpg) -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://moviki-robo.vercel.app https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; base-uri 'self'; object-src 'none'; form-action 'self'">
@@ -71,13 +71,13 @@
     <div class="barra"><a href="https://moviki.com.br"><img src="/logo.png" alt="Moviki"></a><span style="display:flex;align-items:center;gap:.6rem"><a href="/faro/biblioteca.html" class="vit-bib">📚 Meus guias</a><span data-faro-menu></span></span></div>
     <div class="nh">
       <div>
-        <div class="hud"><i></i>Radar FARO · <span id="contaVenda">2 guias</span> à venda agora</div>
+        <div class="hud"><i></i>Radar FARO · <span id="contaVenda">3 guias</span> à venda agora</div>
         <h1>O que fazer agora, para vender no momento certo.</h1>
         <p class="lead">Guias curtos e práticos para quem vende na rua, na praia, em eventos e por encomenda. Cada guia é um kit: o livro para ler no celular, o audiobook para ouvir e o PDF com o checklist.</p>
         <ul class="kit-itens"><li>📖 Livro digital</li><li>🎧 Audiobook</li><li>📄 PDF</li><li>✅ Checklist</li><li>🎬 Vídeo</li></ul>
         <div class="acoes"><a class="btn btn-verde" href="#venda">Ver os guias à venda</a><a class="btn btn-vidro" href="/faro/biblioteca.html">Já comprei: meus guias</a></div>
       </div>
-      <div class="nh-palco"><div id="kitDestaque" data-kit="natal-por-encomenda"></div><span class="rotulo" id="rotuloDestaque">Novo · Natal por encomenda</span></div>
+      <div class="nh-palco"><div id="kitDestaque" data-kit="black-friday-ao-vivo"></div><span class="rotulo" id="rotuloDestaque">Novo · Black Friday ao vivo</span></div>
     </div>
   </div>
 </header>
@@ -87,13 +87,24 @@
     <div class="wrap">
       <div class="tit-sec rv"><h2>À venda agora</h2><span class="hud"><i></i>Temporada aberta</span></div>
 
+      <a class="vg rv" href="/faro/black-friday-ao-vivo/" data-guia="black-friday-ao-vivo" data-ate="2026-11-27" data-kit-host style="--c:#e0a800">
+        <div class="vg-palco"><div data-kit="black-friday-ao-vivo"></div></div>
+        <div class="vg-info">
+          <span class="selo-venda">À venda</span><span class="selo-venda novo">Novo</span> <span class="vg-prazo">⏳ Vende até 27/11</span>
+          <h3>Não dê desconto na Black Friday antes de ler isto</h3>
+          <p>Para o lojista: a oferta que não tira o seu lucro, o desconto que o cliente acredita, a live pelo celular e o pedido fechado no Pix.</p>
+          <ul class="kit-itens"><li>📖 14 capítulos</li><li>🎧 Audiobook</li><li>📄 PDF</li><li>✅ Checklist</li></ul>
+          <span class="btn btn-verde">Ver o guia</span>
+        </div>
+      </a>
+
       <a class="vg rv" href="/faro/natal-por-encomenda/" data-guia="natal-por-encomenda" data-ate="2026-12-15" data-kit-host style="--c:#d62b35">
         <div class="vg-palco"><div data-kit="natal-por-encomenda"></div></div>
         <div class="vg-info">
-          <span class="selo-venda">À venda</span><span class="selo-venda novo">Novo</span> <span class="vg-prazo">⏳ Vende até 15/12</span>
+          <span class="selo-venda">À venda</span> <span class="vg-prazo">⏳ Vende até 15/12</span>
           <h3>Natal por encomenda</h3>
           <p>Do cardápio à entrega do dia 24: lei e rótulo, preço com o seu tempo, calendário de encomendas, sinal no Pix e entrega.</p>
-          <ul class="kit-itens"><li>📖 12 capítulos</li><li>🎧 Audiobook em partes</li><li>📄 PDF</li><li>✅ Checklist</li></ul>
+          <ul class="kit-itens"><li>📖 14 capítulos</li><li>🎧 Audiobook</li><li>📄 PDF</li><li>✅ Checklist</li></ul>
           <span class="btn btn-verde">Ver o guia</span>
         </div>
       </a>
@@ -134,7 +145,7 @@
     </div>
   </section>
 </main>
-<footer class="rodape"><div class="wrap"><p>Moviki · EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA · CNPJ 68.289.841/0001-02 · <a href="https://moviki.com.br/termos.html">Termos</a> · <a href="https://moviki.com.br/privacidade.html">Privacidade</a></p><p>Artigos grátis no site: <a href="https://www.moviki.com.br/guia/vender-encomenda-de-natal">encomendas de Natal</a> · <a href="https://www.moviki.com.br/guia/vender-na-praia">vender na praia</a> · <a href="https://www.moviki.com.br/guias">todos os guias</a></p></div></footer>
+<footer class="rodape"><div class="wrap"><p>Moviki · EIKO SISTEMAS DESENVOLVIMENTO DE SOFTWARE LTDA · CNPJ 68.289.841/0001-02 · <a href="https://moviki.com.br/termos.html">Termos</a> · <a href="https://moviki.com.br/privacidade.html">Privacidade</a></p><p>Artigos grátis no site: <a href="https://www.moviki.com.br/guia/black-friday-ao-vivo">Black Friday ao vivo</a> · <a href="https://www.moviki.com.br/guia/vender-encomenda-de-natal">encomendas de Natal</a> · <a href="https://www.moviki.com.br/guia/vender-na-praia">vender na praia</a> · <a href="https://www.moviki.com.br/guias">todos os guias</a></p></div></footer>
 <script>
 FARO.origem();
 FARO.menu();

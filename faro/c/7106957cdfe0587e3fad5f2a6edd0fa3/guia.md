@@ -16,7 +16,7 @@ A Black Friday de 2026 cai na sexta-feira, **27 de novembro**. Na prática, ela 
 
 Este guia foi feito para você, lojista de rua, de shopping ou que vende pelo WhatsApp, que quer vender mais nessa data sem entrar na guerra de preço das lojas grandes.
 
-**Por que "não dê desconto antes de ler isto"?** Porque é na pressa da Black Friday que a loja pequena mais perde dinheiro: dá desconto sem fazer a conta, vende muito e descobre no fim do mês que trabalhou de graça. Ou dá um desconto que o cliente não acredita e não vende nada. Antes de mexer em qualquer etiqueta, faça a conta do capítulo 3. Ele não promete venda. Ninguém sério promete. O que ele entrega é o caminho inteiro, na ordem certa:
+**Por que "não dê desconto antes de ler isto"?** Porque é na pressa da Black Friday que a loja pequena mais perde dinheiro: dá desconto sem fazer a conta, vende muito e descobre no fim do mês que trabalhou de graça. Ou dá um desconto que o cliente não acredita e não vende nada. Antes de mexer em qualquer etiqueta, faça a conta do capítulo 3. Este guia não promete venda. Ninguém sério promete. O que ele entrega é o caminho inteiro, na ordem certa:
 
 1. a oferta que atrai o cliente **sem tirar o seu lucro**;
 2. o desconto que o cliente e o Procon reconhecem como **verdadeiro**;
