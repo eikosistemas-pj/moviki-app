@@ -1,42 +1,76 @@
 {
- "versao": "2026-10-28-parte1",
+ "versao": "2026-11-03-completo",
  "voz": "Malu",
  "capitulos": [
   {
    "titulo": "Antes de começar",
    "arquivo": "audio/capitulo-00.mp3",
-   "duracao": 74
+   "duracao": 216
   },
   {
    "titulo": "Por que o Natal é a sua janela",
    "arquivo": "audio/capitulo-01.mp3",
-   "duracao": 120
+   "duracao": 186
   },
   {
-   "titulo": "O cardápio de Natal",
+   "titulo": "O cardápio de Natal: três itens que cabem no seu forno",
    "arquivo": "audio/capitulo-02.mp3",
-   "duracao": 131
+   "duracao": 167
+  },
+  {
+   "titulo": "O erro que faz você trabalhar de graça: o preço sem a sua hora",
+   "arquivo": "audio/capitulo-03.mp3",
+   "duracao": 291
   },
   {
    "titulo": "Vender em dia com a lei",
-   "arquivo": "audio/capitulo-03.mp3",
-   "duracao": 171
+   "arquivo": "audio/capitulo-04.mp3",
+   "duracao": 193
   },
   {
    "titulo": "Higiene, conservação e rótulo",
-   "arquivo": "audio/capitulo-04.mp3",
-   "duracao": 149
-  },
-  {
-   "titulo": "O preço que fecha a conta",
    "arquivo": "audio/capitulo-05.mp3",
-   "duracao": 157
+   "duracao": 187
   },
   {
-   "titulo": "O calendário das encomendas",
+   "titulo": "O limite de encomendas: dar conta sem virar a noite",
    "arquivo": "audio/capitulo-06.mp3",
-   "duracao": 116
+   "duracao": 197
+  },
+  {
+   "titulo": "Embalagem que vira presente",
+   "arquivo": "audio/capitulo-07.mp3",
+   "duracao": 140
+  },
+  {
+   "titulo": "Divulgar para quem já confia em você",
+   "arquivo": "audio/capitulo-08.mp3",
+   "duracao": 202
+  },
+  {
+   "titulo": "O pedido pelo WhatsApp sem bagunça",
+   "arquivo": "audio/capitulo-09.mp3",
+   "duracao": 187
+  },
+  {
+   "titulo": "Sinal no Pix, cancelamento e entrega até o dia 24",
+   "arquivo": "audio/capitulo-10.mp3",
+   "duracao": 219
+  },
+  {
+   "titulo": "Depois do dia 25: o cliente que volta na Páscoa",
+   "arquivo": "audio/capitulo-11.mp3",
+   "duracao": 144
+  },
+  {
+   "titulo": "O seu presente: 30 dias para o seu Natal por encomenda",
+   "arquivo": "audio/capitulo-12.mp3",
+   "duracao": 541
+  },
+  {
+   "titulo": "Checklist final e mensagens prontas",
+   "arquivo": "audio/capitulo-13.mp3",
+   "duracao": 135
   }
- ],
- "aviso": "Estes áudios são da primeira versão do guia. O texto e o PDF já estão na versão nova (revisada em 29/10/2026), e a narração dela chega nos próximos dias, aqui mesmo, no seu acesso."
+ ]
 }

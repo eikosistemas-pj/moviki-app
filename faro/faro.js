@@ -1,4 +1,6 @@
 /* Guias FARO (Moviki) — ajudantes comuns. 28/10/2026.
+   versao 2026-11-03-blackfriday: Guia FARO 3 a venda (Black Friday ao vivo, ate 27/11); o slug passou de
+   live-que-vende para black-friday-ao-vivo (o mesmo da surpresa) e saiu do BREVE.
    29/10 (fim da tarde): os guias foram reescritos no molde do funil; o Em breve mostra o titulo-gancho de cada capa.
    29/10 (tarde): o guia Live que vende virou Black Friday ao vivo (titulo e cor do kit; o slug fica ate o lancamento).
    versao 2026-10-29-kit: pedido do Paulo em 29/10 (visual futurista, com movimento, cada guia como um KIT 3D:
@@ -80,12 +82,12 @@
 
   /* ---------- Guias a venda agora (selo e prazo real da temporada). Guia novo: uma linha aqui. ---------- */
   var VENDA = [
-    { slug: 'natal-por-encomenda', titulo: 'Natal por encomenda', capa: '/faro/capas/natal-por-encomenda.jpg', pagina: '/faro/natal-por-encomenda/', ate: '2026-12-15', prazo: 'Vende até 15/12', novo: true },
+    { slug: 'black-friday-ao-vivo', titulo: 'Black Friday ao vivo', capa: '/faro/capas/black-friday-ao-vivo.jpg', pagina: '/faro/black-friday-ao-vivo/', ate: '2026-11-27', prazo: 'Vende até 27/11', novo: true },
+    { slug: 'natal-por-encomenda', titulo: 'Natal por encomenda', capa: '/faro/capas/natal-por-encomenda.jpg', pagina: '/faro/natal-por-encomenda/', ate: '2026-12-15', prazo: 'Vende até 15/12' },
     { slug: 'verao-na-praia', titulo: 'Vender na praia neste verão', capa: '/faro/capas/verao-na-praia.jpg', pagina: '/faro/verao-na-praia/', ate: '2027-02-28', prazo: 'Temporada de verão' }
   ];
   /* Guias escritos, ainda sem venda (o mesmo EM_BREVE do robo). Saem daqui quando entram no VENDA. */
   var BREVE = [
-    { slug: 'live-que-vende', titulo: 'Não dê desconto na Black Friday antes de ler isto', capa: '/faro/capas/live-que-vende.jpg' },
     { slug: 'food-truck-eventos', titulo: 'Como colocar seu food truck nos melhores eventos', capa: '/faro/capas/food-truck-eventos.jpg' },
     { slug: 'morango-cravejado', titulo: 'Antes de vender morango cravejado, faça esta conta', capa: '/faro/capas/morango-cravejado.jpg' },
     { slug: 'comecar-a-vender-na-rua', titulo: 'Vai vender na rua? Evite os erros do primeiro mês', capa: '/faro/capas/comecar-a-vender-na-rua.jpg' }
@@ -95,7 +97,7 @@
   var KITS = {
     'natal-por-encomenda': { cor: '#d62b35', curto: 'Natal por encomenda' },
     'verao-na-praia': { cor: '#1f86dc', curto: 'Vender na praia' },
-    'live-que-vende': { cor: '#e0a800', curto: 'Black Friday ao vivo' },
+    'black-friday-ao-vivo': { cor: '#e0a800', curto: 'Black Friday ao vivo' },
     'food-truck-eventos': { cor: '#e8791c', curto: 'Food truck em eventos' },
     'morango-cravejado': { cor: '#df2050', curto: 'Morango cravejado' },
     'comecar-a-vender-na-rua': { cor: '#1697cf', curto: 'Começar a vender na rua' }
