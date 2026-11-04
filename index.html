@@ -7999,7 +7999,7 @@ window.mvAbaInicial=function(){
     const b=el('v3Salvar'); if(b){
       const enviando=_v3.slots.some(function(s){ return s.enviando; });
       b.disabled=!n||enviando||_v3.salvando;
-      b.textContent=_v3.salvando?'Salvando…':(n<tot?'Salvar as '+n+' e continuar':'Salvar e ir para o ensaio');
+      b.textContent=_v3.salvando?'Salvando…':(!n?'Ponha a primeira foto':(n<tot?'Salvar '+(n===1?'a foto':'as '+n+' fotos')+' e continuar':'Salvar e ir para o ensaio'));
     }
   }
   function _v3Foto(i){
