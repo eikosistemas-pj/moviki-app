@@ -1276,6 +1276,20 @@ body{background-image:none}
             <div class="aviso ok" id="avisoCracha"></div>
           </div>
 
+          <!-- ====== MODELOS COMPLETOS (03/11/2026, 2026-11-03-modelosemi) ======
+               Galeria das lojas de EXEMPLO por ramo (catalogo unico modelos.js,
+               o mesmo do cartao "Modelo completo" do painel do lojista).
+               Assistir e livre; mandar no WhatsApp leva o link DO PARCEIRO e
+               por isso obedece as mesmas portas do Material de apoio
+               (aprovado, aulas, compromisso de divulgacao). -->
+          <div class="cd" id="mdCard" hidden>
+            <div class="cdTit">Modelos completos: mostre a loja pronta</div>
+            <p class="cdSub" style="margin-bottom:12px">Uma loja de exemplo do ramo do comerciante, com a página toda preenchida. Mostre na conversa ou mande no WhatsApp com o seu link.</p>
+            <div class="mdLista" id="mdLista"></div>
+            <div class="aviso" id="mdAviso"></div>
+            <p class="mdNota">Lojas fictícias, só para mostrar o que a página pode ter. Outros ramos chegam aos poucos.</p>
+          </div>
+
           <div class="cd soAprovado">
             <div class="cdTit">Indicar outro parceiro</div>
             <p class="cdSub" style="margin-bottom:12px">Chame alguém pra ser parceiro também. Se a pessoa se cadastrar pelo seu link, você recebe um bônus único quando os indicados dela assinarem.</p>
@@ -1938,7 +1952,7 @@ body{background-image:none}
      conferir antes. */
   /* 24/10: botao 'Excluir minha conta' (Meus dados > Conta e Mais > Conta) com o pedido ao robo /api/excluir-conta. A marca NAO mudou de proposito: a tabela MARCAS_CONFERIDAS do Vik (moviki-ai) nao entrou nesta entrega; trocar a marca junto com o Vik na proxima. */
   /* 28/10/2026 (guiasfaro): Material de apoio ganhou o botao de largura inteira 'Guias FARO' (catalogo, campo faro): como funciona, ler o guia de graca, copiar o link do guia com o apelido, WhatsApp, resumo e lista das vendas de guia (robo api/faro parc_guias/parc_ler) e as pecas com {link_guia:...}; extrato mostra 'Guia FARO · 50% da venda'. MARCA DO VIK MANTIDA DE PROPOSITO: o moviki-ai nao pode ser anexado nesta sessao; trocar a marca sem a tabela do Vik deixaria o Vik em modo cauteloso para todos. Quem abrir o moviki-ai fecha esta ponta (marca nova aqui + MARCAS_CONFERIDAS + catalogo). */
-  window.MOVIKI_VERSAO = '2026-10-29-videopausa';   /* 29/10: video que sai da vista para de tocar (aula dos Guias FARO seguia em segundo plano ao trocar de secao): troca de secao, overlay fechado e aba do navegador escondida pausam o video/audio fora da vista (mvPausarEscondidos). Antes: '2026-10-27-aulanova'. */    /* 28/10 (noite, 2): 'Como funciona' dos Guias FARO ganhou a aula em video (voz Malu, 1:19, /faro/aula/aula-guias-faro.mp4) por cima do texto. Marca mantida de proposito, como no pacote dos Guias FARO: a ponta do Vik fica para a sessao no moviki-ai. */   /* 27/10: a aula do cracha ganhou chave nova (mod-parc-cracha2) e volta como '1 aula nova' para todo parceiro, inclusive quem ja tinha visto; o link nao retranca. Sino 'Novidades do programa' com a novidade da aula (botao 'Assistir a aula do cracha') e da Sua jornada, ponto aceso de novo para todos. Antes: '2026-10-27-aulacracha'. */ /* 27/10: aula 'Seu cracha e a sua pagina de convite' (mod-parc-cracha, 2:02, 8Gm6gCqMPCk) regravada com o cracha vivo e a pagina de convite nova; mesma chave. Tela sem mudanca. Antes: '2026-10-27-jornada'. */   /* 27/10 (madrugada): Inicio ganha o card 'Sua jornada' (robo api/parceiro-perfil acao jornada): numeros dele, proximos marcos com barra (o mais perto em destaque), o proximo passo (lojista em teste sem live / sem indicacao / parado ha 14 dias), grafico mes a mes com lojistas indicados, parceiros trazidos e lojistas pagando (tabela), conquistas com data e 'Nova conquista' uma vez por aparelho. So contagem, nunca R$ projetado. Antes: '2026-10-27-bonus'. */   /* 27/10: extrato de Comissoes mostra 'Bonus da Moviki' (com o motivo) e 'Bonus do nivel X' com nome proprio, e esses bonus (nivel 0) deixam de contar como Nivel 1 / recorrente do mes. O bonus da Moviki e a mensagem chegam pelo painel do dono (Perfil do parceiro, robo api/parceiro-perfil.js); a mensagem cai na caixa 'Falar com o Moviki'. Antes: '2026-10-25-excluir'. */   /* 25/10: marca trocada para fechar a ponta do Vik do botao 'Excluir minha conta' (Meus dados > Conta e Mais > Conta, PR #117 de 24/10, que manteve a marca de proposito). Tela sem mudanca nesta entrega. Antes: '2026-10-22-fiscal'. */ /* 22/10: Meus dados ganhou 'Dados para receber' (Pessoa fisica CPF ou Empresa/MEI CNPJ, documento validado, nome/razao social, nascimento 18+; robo /api/parceiro-fiscal), obrigatorio para sacar ('Completar dados para receber'). CPF: pago 1 vez por mes a partir do dia 10 com INSS 11% (e IR) retido, a lista de saques mostra bruto/INSS/IR. CNPJ: saque livre, informa a chave de acesso da NFS-e (50 numeros) no pedido em Saques. Antes: '2026-10-21-botaoevento'. */ /* 21/10: Material de apoio ganha o 4o botao do topo, so durante o evento (eventos[].botao no catalogo: Black Friday preto com borda dourada piscando; Natal vermelho e dourado), com todo o material do evento num lugar so; peca com so_evento sai dos ramos. */ /* antes: 2026-10-20-viralojista */   /* 20/10 (noite, 2): parceiro sem negocio ganha 'Colocar meu negocio no mapa' (menu lateral, Mais e coluna da direita) com a folha da regra da comissao ANTES do botao (regulamento 2.4, opcao B) -> index.html?virarLojista=1. Parceiro que abriu o negocio depois: aviso verde 'comissoes normais no teste' e, acabado o teste sem plano, card de retido com o texto do teste (motivo fim_teste). */ /* antes: 2026-10-20-amostra */   /* 20/10 (noite): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (QjCq1MhrdZA) e 'Sua entrega' (YDK1US97BG4, 2:22) regravadas sobre as lojas de amostra completas; mesmas chaves. */ /* antes: 2026-10-20-aulasp85 */   /* 20/10 (P85): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (mod-live-cardapio, lf4NVwllA0w, 1:26) e 'Sua entrega: bairros, taxa, entrega gratis e reserva' (mod-pedidos-entrega, 5OEL8fXWJJs, 2:21) regravadas; mesmas chaves. Antes: 2026-10-17-bvparceiro. */   /* 17/10: aula de boas-vindas do parceiro 'Bem-vindo a equipe Moviki' (mod-parc-boasvindas, voz Malu, 4:42) no lugar da abertura (mod-parc-abertura sai do catalogo); duas versoes, horizontal no computador e vertical no celular em pe (idV, palco 9:16); abre sozinha para quem ainda nao viu (mvBvParceiro, 1 vez por sessao). Antes: 2026-10-17-aulasparc. */   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-17-retido (card Saldo com a comissao retida pelo atraso e contagem regressiva, regulamento 1.5 item 2.4), que veio de 2026-10-16-linkramo. */ /* conformidade:ok (prazo de pagamento do CPF) */
+  window.MOVIKI_VERSAO = '2026-11-03-modelosemi';   /* 03/11: galeria Modelos completos na Divulgacao (lojas de exemplo por ramo: roupas, perfumaria, semijoias; catalogo unico modelos.js), Assistir livre e WhatsApp/Copiar com o link do parceiro /p/apelido?ramo=, nas mesmas portas do Material de apoio. Antes: 2026-10-29-videopausa. */   /* 29/10: video que sai da vista para de tocar (aula dos Guias FARO seguia em segundo plano ao trocar de secao): troca de secao, overlay fechado e aba do navegador escondida pausam o video/audio fora da vista (mvPausarEscondidos). Antes: '2026-10-27-aulanova'. */    /* 28/10 (noite, 2): 'Como funciona' dos Guias FARO ganhou a aula em video (voz Malu, 1:19, /faro/aula/aula-guias-faro.mp4) por cima do texto. Marca mantida de proposito, como no pacote dos Guias FARO: a ponta do Vik fica para a sessao no moviki-ai. */   /* 27/10: a aula do cracha ganhou chave nova (mod-parc-cracha2) e volta como '1 aula nova' para todo parceiro, inclusive quem ja tinha visto; o link nao retranca. Sino 'Novidades do programa' com a novidade da aula (botao 'Assistir a aula do cracha') e da Sua jornada, ponto aceso de novo para todos. Antes: '2026-10-27-aulacracha'. */ /* 27/10: aula 'Seu cracha e a sua pagina de convite' (mod-parc-cracha, 2:02, 8Gm6gCqMPCk) regravada com o cracha vivo e a pagina de convite nova; mesma chave. Tela sem mudanca. Antes: '2026-10-27-jornada'. */   /* 27/10 (madrugada): Inicio ganha o card 'Sua jornada' (robo api/parceiro-perfil acao jornada): numeros dele, proximos marcos com barra (o mais perto em destaque), o proximo passo (lojista em teste sem live / sem indicacao / parado ha 14 dias), grafico mes a mes com lojistas indicados, parceiros trazidos e lojistas pagando (tabela), conquistas com data e 'Nova conquista' uma vez por aparelho. So contagem, nunca R$ projetado. Antes: '2026-10-27-bonus'. */   /* 27/10: extrato de Comissoes mostra 'Bonus da Moviki' (com o motivo) e 'Bonus do nivel X' com nome proprio, e esses bonus (nivel 0) deixam de contar como Nivel 1 / recorrente do mes. O bonus da Moviki e a mensagem chegam pelo painel do dono (Perfil do parceiro, robo api/parceiro-perfil.js); a mensagem cai na caixa 'Falar com o Moviki'. Antes: '2026-10-25-excluir'. */   /* 25/10: marca trocada para fechar a ponta do Vik do botao 'Excluir minha conta' (Meus dados > Conta e Mais > Conta, PR #117 de 24/10, que manteve a marca de proposito). Tela sem mudanca nesta entrega. Antes: '2026-10-22-fiscal'. */ /* 22/10: Meus dados ganhou 'Dados para receber' (Pessoa fisica CPF ou Empresa/MEI CNPJ, documento validado, nome/razao social, nascimento 18+; robo /api/parceiro-fiscal), obrigatorio para sacar ('Completar dados para receber'). CPF: pago 1 vez por mes a partir do dia 10 com INSS 11% (e IR) retido, a lista de saques mostra bruto/INSS/IR. CNPJ: saque livre, informa a chave de acesso da NFS-e (50 numeros) no pedido em Saques. Antes: '2026-10-21-botaoevento'. */ /* 21/10: Material de apoio ganha o 4o botao do topo, so durante o evento (eventos[].botao no catalogo: Black Friday preto com borda dourada piscando; Natal vermelho e dourado), com todo o material do evento num lugar so; peca com so_evento sai dos ramos. */ /* antes: 2026-10-20-viralojista */   /* 20/10 (noite, 2): parceiro sem negocio ganha 'Colocar meu negocio no mapa' (menu lateral, Mais e coluna da direita) com a folha da regra da comissao ANTES do botao (regulamento 2.4, opcao B) -> index.html?virarLojista=1. Parceiro que abriu o negocio depois: aviso verde 'comissoes normais no teste' e, acabado o teste sem plano, card de retido com o texto do teste (motivo fim_teste). */ /* antes: 2026-10-20-amostra */   /* 20/10 (noite): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (QjCq1MhrdZA) e 'Sua entrega' (YDK1US97BG4, 2:22) regravadas sobre as lojas de amostra completas; mesmas chaves. */ /* antes: 2026-10-20-aulasp85 */   /* 20/10 (P85): no modulo opcional de aulas do lojista, 'Sua pagina vendendo sozinha' (mod-live-cardapio, lf4NVwllA0w, 1:26) e 'Sua entrega: bairros, taxa, entrega gratis e reserva' (mod-pedidos-entrega, 5OEL8fXWJJs, 2:21) regravadas; mesmas chaves. Antes: 2026-10-17-bvparceiro. */   /* 17/10: aula de boas-vindas do parceiro 'Bem-vindo a equipe Moviki' (mod-parc-boasvindas, voz Malu, 4:42) no lugar da abertura (mod-parc-abertura sai do catalogo); duas versoes, horizontal no computador e vertical no celular em pe (idV, palco 9:16); abre sozinha para quem ainda nao viu (mvBvParceiro, 1 vez por sessao). Antes: 2026-10-17-aulasparc. */   /* 17/10: 11 aulas do parceiro regravadas com a voz da Malu e a tela de hoje (mesmas chaves), aula nova OPCIONAL 'Area do criador' (so para criador) e a aula 'Desfazer uma venda' no modulo opcional do lojista. Antes: 2026-10-17-retido (card Saldo com a comissao retida pelo atraso e contagem regressiva, regulamento 1.5 item 2.4), que veio de 2026-10-16-linkramo. */ /* conformidade:ok (prazo de pagamento do CPF) */
   /* 16/10: peca por ramo do Material de apoio leva /p/apelido?ramo=<k> (miniatura e live do ramo); ramos.js carregado com o catalogo. Antes: 2026-10-13-arroba. */   /* 13/10 (P80): bloco "Seu @ no Instagram" em Meus dados (prova de posse pelo codigo na bio) e foto do Instagram no cracha so com o @ provado. Antes: 2026-10-10-pixaula. */   /* 10/10 (noite): so o id da aula mod-live-pix (Complementares) trocado para a regravacao 23jGUqKMaps, 1:30 — o mesmo do liveaulas.js. Antes: 2026-10-10-teatro. */ /* anterior: 2026-10-10-teatro. */   /* anterior: 2026-10-01-conforto. 01/10 18h (P65, correcao): o modo claro so liga DENTRO do painel; carregando, login, cadastro e quiz ficam sempre escuros (mvtema.js). Antes: 2026-10-01-epoca. 01/10 (P65): conforto visual v2 (cartoes neutros, aulas compactas, sem pulsar, escala de letra) e botao Aparencia Claro/Escuro no menu Mais e na lateral (mvtema.js) */
   /* 2026-10-10-teatro: videoaulas com layout de YouTube (marca no alto, palco grande, lista com as capas a direita), selo das aulas com barra e contagem das opcionais, e a aula OPCIONAL do Material de apoio (mod-parc-material, OZ9vgwH2W_U) no fim da secao. Trava e selo continuam contando so as obrigatorias. Lista em tres niveis: Essenciais (vermelho, as obrigatorias que liberam o link), Recomendadas (amarelo) e Complementares (azul), campo `nivel` do modulo opcional. Antes: 2026-10-06-pixcarimbo. */
 
@@ -8151,5 +8165,100 @@ html[data-tema="claro"] .mvTopo,html[data-tema="claro"] .mvSideLogo{color-scheme
   --mv-txt:#e3eaf3;--mv-txt-2:#b4c2d3;--mv-txt-3:#8d9db2}
 html[data-tema="claro"] .mvNovo{color:#0f7a4f!important;border-color:rgba(15,122,79,.45)}
 </style>
+<style>
+/* 2026-11-03-modelosemi: galeria Modelos completos (Divulgacao) */
+.mdLista{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.mdItem{background:var(--mv-surf-2,rgba(255,255,255,.03));border:1px solid var(--mv-linha);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:8px}
+.mdCapa{position:relative;display:block;width:100%;aspect-ratio:3/4;border:0;padding:0;border-radius:10px;overflow:hidden;background:#0b1622;cursor:pointer}
+.mdCapa img{width:100%;height:100%;object-fit:cover;display:block}
+.mdPlay{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center}
+.mdPlay svg{width:22px;height:22px;margin-left:3px}
+.mdDur{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.65);color:#fff;font-size:11.5px;font-weight:600;padding:2px 6px;border-radius:6px}
+.mdNome{font-size:14px;font-weight:700;line-height:1.25;color:var(--mv-txt)}
+.mdLoja{font-size:12px;color:var(--mv-txt-3)}
+.mdBts{display:flex;gap:6px;margin-top:auto}
+.mdBts button{flex:1;min-height:36px;border-radius:10px;border:1px solid var(--mv-linha-forte);background:transparent;color:var(--mv-txt-2);font:600 12.5px/1.1 inherit;cursor:pointer;padding:6px 4px}
+.mdBts .mdWa{background:#1b8a46;border-color:#1b8a46;color:#fff}
+.mdNota{font-size:12px;color:var(--mv-txt-3);margin-top:8px;line-height:1.4}
+.mvMdFundo{position:fixed;inset:0;z-index:99990;background:rgba(3,8,16,.86);display:flex;align-items:center;justify-content:center;padding:16px}
+.mvMdCaixa{position:relative;height:min(86vh,calc((100vw - 32px)*16/9));aspect-ratio:9/16;max-width:calc(100vw - 32px);border-radius:16px;overflow:hidden;background:#000}
+.mvMdCaixa iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.mvMdX{position:fixed;top:12px;right:12px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:22px;cursor:pointer;z-index:99991}
+</style>
+<script src="modelos.js"></script>
+<script>
+(function(){
+  /* 2026-11-03-modelosemi: galeria Modelos completos do painel do parceiro. */
+  var MM = window.MOVIKI_MODELOS;
+  var card = document.getElementById('mdCard'), lista = document.getElementById('mdLista'), aviso = document.getElementById('mdAviso');
+  if(!MM || !MM.lista || !MM.lista.length || !card || !lista) return;
+  function ev(acao, m){ try{ if(window.mvEv) window.mvEv('modelo_parceiro', { acao: acao, ramo: m.ramo }); }catch(_){} }
+  function portaOk(){
+    var d = window.__mvCracha;
+    if(!d || !d.aprovado || !d.slug) return 'O envio com o seu link abre quando o seu cadastro for aprovado. Assistir já pode.';
+    var div = document.querySelector('section[data-sec="divulgacao"]');
+    if(div && div.classList.contains('mvTravado')) return 'Termine as aulas para mandar com o seu link.';
+    var cb = document.getElementById('condBox');
+    if(cb && !cb.hidden && !cb.classList.contains('ok')) return 'Falta um clique: aceite o compromisso de divulgação, no alto desta tela.';
+    return '';
+  }
+  function texto(m){
+    var d = window.__mvCracha || {};
+    return 'Olha como fica ' + m.nome + ' com a página toda pronta no Moviki (é uma loja de exemplo): https://youtube.com/shorts/' + m.id +
+      '\n\nA sua pode ficar assim. Veja como funciona: https://moviki.com.br/p/' + encodeURIComponent(d.slug || '') + '?ramo=' + encodeURIComponent(m.ramo);
+  }
+  function avisar(t, ok){ if(!aviso) return; aviso.textContent = t || ''; aviso.className = 'aviso' + (ok ? ' ok' : ''); }
+  var fundo = null;
+  function fechar(){ if(!fundo) return; fundo.remove(); fundo = null; document.removeEventListener('keydown', tecla); }
+  function tecla(e){ if(e.key === 'Escape') fechar(); }
+  function assistir(m){
+    if(fundo) return;
+    fundo = document.createElement('div'); fundo.className = 'mvMdFundo';
+    fundo.setAttribute('role','dialog'); fundo.setAttribute('aria-modal','true'); fundo.setAttribute('aria-label','Modelo completo: ' + m.nome + ' pronta');
+    var x = document.createElement('button'); x.type = 'button'; x.className = 'mvMdX'; x.setAttribute('aria-label','Fechar'); x.textContent = '\u2715'; x.onclick = fechar;
+    var cx = document.createElement('div'); cx.className = 'mvMdCaixa';
+    var f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(m.id) + '?rel=0&modestbranding=1&playsinline=1&autoplay=1';
+    f.title = 'Modelo completo: ' + m.nome + ' pronta no Moviki';
+    f.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture; fullscreen'; f.setAttribute('allowfullscreen','');
+    cx.appendChild(f); fundo.appendChild(cx); fundo.appendChild(x);
+    fundo.addEventListener('click', function(e){ if(e.target === fundo) fechar(); });
+    document.addEventListener('keydown', tecla);
+    document.body.appendChild(fundo); x.focus();
+    ev('assistir', m);
+  }
+  function whats(m){
+    var p = portaOk(); if(p){ avisar(p); return; }
+    avisar('');
+    window.open('https://wa.me/?text=' + encodeURIComponent(texto(m)), '_blank', 'noopener');
+    ev('whatsapp', m);
+  }
+  function copiar(m){
+    var p = portaOk(); if(p){ avisar(p); return; }
+    var t = texto(m);
+    var ok = function(){ avisar('Mensagem copiada: cole no WhatsApp ou no direct.', true); ev('copiar', m); };
+    try{ navigator.clipboard.writeText(t).then(ok, function(){ avisar('Não deu para copiar neste aparelho. Use o botão WhatsApp.'); }); }
+    catch(_){ avisar('Não deu para copiar neste aparelho. Use o botão WhatsApp.'); }
+  }
+  MM.lista.forEach(function(m){
+    var it = document.createElement('div'); it.className = 'mdItem';
+    var cp = document.createElement('button'); cp.type = 'button'; cp.className = 'mdCapa'; cp.setAttribute('aria-label', 'Assistir: ' + m.tit);
+    var im = document.createElement('img'); im.src = m.capa; im.alt = ''; im.width = 300; im.height = 400;
+    var pl = document.createElement('span'); pl.className = 'mdPlay'; pl.setAttribute('aria-hidden','true');
+    pl.appendChild(document.createRange().createContextualFragment('<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'));
+    var du = document.createElement('span'); du.className = 'mdDur'; du.textContent = m.dur;
+    cp.appendChild(im); cp.appendChild(pl); cp.appendChild(du); cp.onclick = function(){ assistir(m); };
+    var nm = document.createElement('div'); nm.className = 'mdNome'; nm.textContent = m.curto;
+    var lj = document.createElement('div'); lj.className = 'mdLoja'; lj.textContent = 'Exemplo: ' + m.loja;
+    var bts = document.createElement('div'); bts.className = 'mdBts';
+    var bw = document.createElement('button'); bw.type = 'button'; bw.className = 'mdWa'; bw.textContent = 'WhatsApp'; bw.onclick = function(){ whats(m); };
+    var bc = document.createElement('button'); bc.type = 'button'; bc.textContent = 'Copiar'; bc.onclick = function(){ copiar(m); };
+    bts.appendChild(bw); bts.appendChild(bc);
+    it.appendChild(cp); it.appendChild(nm); it.appendChild(lj); it.appendChild(bts);
+    lista.appendChild(it);
+  });
+  card.hidden = false;
+})();
+</script>
 </body>
 </html>
