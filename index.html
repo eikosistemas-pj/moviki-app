@@ -2438,7 +2438,7 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
         <div class="drawerNota">O mapa inteligente dos negócios em movimento.</div>
       </nav>
 
-      <div id="modalIndica" class="modalPlano escondido" onclick="if(event.target===this)fecharIndica()">
+      <div id="modalIndica" class="modalPlano mvMedio escondido" onclick="if(event.target===this)fecharIndica()">
         <div class="mpCaixa" style="max-width:460px">
           <button type="button" class="mpFechar" onclick="fecharIndica()" aria-label="Fechar">✕</button>
           <div id="candForm">
@@ -2469,7 +2469,7 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
           </div>
         </div>
       </div>
-      <div id="modalParceiro" class="modalPlano escondido" onclick="if(event.target===this)fecharParceiro()">
+      <div id="modalParceiro" class="modalPlano mvMedio escondido" onclick="if(event.target===this)fecharParceiro()">
         <div class="mpCaixa" style="max-width:460px">
           <button type="button" class="mpFechar" onclick="fecharParceiro()" aria-label="Fechar">✕</button>
           <div class="mpHead"><h2 class="mpTitulo"><img class="icoT" src="icones/indicar.png" alt="" loading="lazy" onerror="mvI(this,'💰')">Indicar agora</h2></div>
@@ -2534,7 +2534,7 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
           <button type="button" class="idxBtn" style="background:transparent;border:1px solid var(--card-borda);color:#cfe0f5" onclick="fecharCandTravado()">Agora não</button>
         </div>
       </div>
-      <div id="modalConheca" class="modalPlano escondido" onclick="if(event.target===this)fecharConheca()">
+      <div id="modalConheca" class="modalPlano mvMedio escondido" onclick="if(event.target===this)fecharConheca()">
         <div class="mpCaixa" style="max-width:520px">
           <button type="button" class="mpFechar" onclick="fecharConheca()" aria-label="Fechar">✕</button>
           <div class="mpHead"><h2 class="mpTitulo"><img class="icoT" src="icones/foguete.png" alt="" loading="lazy" onerror="mvI(this,'🚀')">Conheça o Moviki</h2></div>
@@ -2572,7 +2572,7 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
           <button type="button" class="idxBtn prim" onclick="fecharConheca()">Entendi, voltar</button>
         </div>
       </div>
-      <div id="modalPontos" class="modalPlano escondido" onclick="if(event.target===this)fecharPontos()">
+      <div id="modalPontos" class="modalPlano mvMedio escondido" onclick="if(event.target===this)fecharPontos()">
         <div class="mpCaixa" style="max-width:480px">
           <button type="button" class="mpFechar" onclick="fecharPontos()" aria-label="Fechar">✕</button>
           <div class="mpHead"><h2 class="mpTitulo"><img class="icoT" src="icones/multipontos.png" alt="" loading="lazy" onerror="mvI(this,'📍')">Meus pontos</h2></div>
@@ -2592,7 +2592,7 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
           </div>
         </div>
       </div>
-      <div id="modalMsg" class="modalPlano escondido" onclick="if(event.target===this)fecharMensagens()">
+      <div id="modalMsg" class="modalPlano mvMedio escondido" onclick="if(event.target===this)fecharMensagens()">
         <div class="mpCaixa" style="max-width:560px">
           <button type="button" class="mpFechar" onclick="fecharMensagens()" aria-label="Fechar">✕</button>
           <div class="mpHead"><h2 class="mpTitulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;color:var(--ciano)"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.6 9.6 0 0 1-2.9-.4L3 21l1.6-4.5a8.2 8.2 0 0 1-1-4A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z"/></svg>Falar com o Vik</h2></div>
@@ -2897,22 +2897,24 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
       </div>
 
       <div id="avisoPlano" class="avisoPlano escondido" onclick="abrirPlano()" style="cursor:pointer"><img class="icoM" src="icones/plano.png" alt="" loading="lazy" onerror="mvI(this,'🔒')"><b>Cardápio</b>, <b>Promoções</b> e <b>Eventos</b> são do plano <b>Pró</b>. <u>Clique aqui pra assinar</u>.</div>
-      <div id="modalPlano" class="modalPlano escondido">
+      <div id="modalPlano" class="modalPlano mvLargo escondido">
         <div class="mpCaixa">
           <button class="mpFechar" onclick="fecharPlano()">✕</button>
           <div class="mpHead"><img src="favicon512.png" class="mpIcon" alt=""><h2 class="mpTitulo">Meu plano</h2></div>
           <div id="mpStatus" class="mpStatus"></div>
           <div id="mpCancel" class="mpCancel escondido" aria-live="polite"></div>
-          <div class="mpCampo"><label for="nomeNotaAssinatura">Nome completo ou razão social</label>
+          <div class="mpDados">
+          <div class="mpCampo mpDNome"><label for="nomeNotaAssinatura">Nome completo ou razão social</label>
             <input id="nomeNotaAssinatura" type="text" maxlength="120" placeholder="Como está no CPF ou no CNPJ" autocomplete="name"></div>
-          <div class="mpCampo"><label for="cpfAssinatura">Seu CPF ou CNPJ</label>
+          <div class="mpCampo mpDCpf"><label for="cpfAssinatura">Seu CPF ou CNPJ</label>
             <input id="cpfAssinatura" type="text" placeholder="Só números" inputmode="numeric"></div>
-          <div class="mpCampo" style="display:flex;gap:10px">
+          <div class="mpCampo mpDCep" style="display:flex;gap:10px">
             <div style="flex:2"><label for="cepAssinatura">CEP</label><input id="cepAssinatura" type="text" placeholder="00000-000" inputmode="numeric" maxlength="9" autocomplete="postal-code"></div>
             <div style="flex:1"><label for="numAssinatura">Número</label><input id="numAssinatura" type="text" placeholder="Nº ou S/N" maxlength="10"></div>
           </div>
-          <div id="cepEndereco" class="mpCampo" style="margin-top:-8px;font-size:12px;color:#8fd8a0;min-height:14px"></div>
-          <div class="mpCampo" style="margin-top:-8px;font-size:12px;color:#9fb3c8">A nota fiscal sai neste CPF/CNPJ e endereço e chega no seu e-mail a cada pagamento.</div>
+          <div id="cepEndereco" class="mpCampo mpDEnd" style="margin-top:-8px;font-size:12px;color:#8fd8a0;min-height:14px"></div>
+          <div class="mpCampo mpDNota" style="margin-top:-8px;font-size:12px;color:#9fb3c8">A nota fiscal sai neste CPF/CNPJ e endereço e chega no seu e-mail a cada pagamento.</div>
+          </div>
                     <div class="mpPlanos">
             <div class="mpPlano destaque">
               <div class="mpBadge">Recomendado</div>
@@ -15009,6 +15011,26 @@ html[data-tema="claro"] .cfAulas .cfABar,html[data-tema="claro"] .mvAvisoBarra{b
 html[data-tema="claro"] .bannerTrial.parceiro .btTitulo{color:#0f7a4f}
 html[data-tema="claro"] .mvNovo{color:#0f7a4f!important;border-color:rgba(15,122,79,.45)}
 html[data-tema="claro"] .mvMapaArte{display:none}
+
+/* 2026-11-04-desktop: janelas no computador (pedido do Paulo: Meu plano e as
+   outras janelas ficavam estreitas e compridas no desktop). Celular igual. */
+@media(min-width:640px) and (max-width:1023px){
+  #modalPlano .mpPlano.mpEnt{grid-column:1/-1}
+}
+@media(min-width:1024px){
+  .modalPlano.mvLargo .mpCaixa{max-width:min(1120px,94vw);padding:28px 32px}
+  .modalPlano.mvMedio .mpCaixa{max-width:min(760px,92vw)!important;padding:28px 32px}
+  #modalPlano .mpDados{display:grid;grid-template-columns:1.5fr 1.1fr 1.2fr;column-gap:16px;align-items:end}
+  #modalPlano .mpDados .mpDNome,#modalPlano .mpDados .mpDCpf,#modalPlano .mpDados .mpDCep{margin-bottom:6px}
+  #modalPlano .mpDados .mpDEnd,#modalPlano .mpDados .mpDNota{grid-column:1/-1;margin-top:0}
+  #modalPlano .mpPlanos{grid-template-columns:repeat(3,1fr);gap:16px;align-items:stretch}
+  #modalPlano .mpPlano{display:flex;flex-direction:column;padding:18px 16px}
+  #modalPlano .mpPlano .mpDesc{flex:1}
+  #modalPlano .mpPlano.mpEnt{grid-column:auto}
+  #modalPlano .mpRegras ul{columns:3;column-gap:24px}
+  #modalPlano .mpRegras li{break-inside:avoid}
+  #modalPlano .mpBtnConf{max-width:520px;margin-left:auto;margin-right:auto;display:block}
+}
 </style>
 
 <script>
