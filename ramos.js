@@ -1,5 +1,5 @@
 /*!
- * MOVIKI ramos.js | versao 2026-11-05-ramos4 | repo: moviki-app
+ * MOVIKI ramos.js | versao 2026-11-05-ramos5 | repo: moviki-app
  * Endereço público: https://app.moviki.com.br/ramos.js
  *
  * CATÁLOGO ÚNICO DE RAMOS (12/10/2026)
@@ -72,6 +72,7 @@
     { k:'bolsas',         n:'Bolsas',                g:'moda', q:'bolsas',   d:1, m:'moda',      a:['bolsa','loja-de-bolsas','bolsas-femininas'] },
 
     /* ---- Casa, presentes e tecnologia ---- */
+    { k:'moveis',             n:'Móveis',                    g:'casa', q:'moveis',            d:1, m:'casa',        a:['movel','loja-de-moveis','moveis-planejados','colchoes'] },
     { k:'utilidades',         n:'Utilidades do lar',         g:'casa', q:'casa',              d:1, m:'casa' },
     { k:'cama-mesa-banho',    n:'Cama, mesa e banho',        g:'casa', q:'casa',              d:1, m:'casa' },
     { k:'eletroportateis',    n:'Eletroportáteis',           g:'casa', q:'eletronicos',       d:1, m:'eletronicos', a:['eletrodomesticos'] },
@@ -142,7 +143,8 @@
   }
 
   window.MOVIKI_RAMOS = {
-    versao: '2026-11-05-ramos4',   /* 05/11: + bolsas (página da /aovivo e subtipo do quiz no mesmo dia) */
+    versao: '2026-11-05-ramos5',   /* 05/11: + moveis (página da /aovivo e subtipo do quiz no mesmo dia) */
+    /* antes: 2026-11-05-ramos4 */   /* 05/11: + bolsas (página da /aovivo e subtipo do quiz no mesmo dia) */
     /* antes: 2026-10-29-ramos3 */   /* 29/10: + hamburgueria (página da /aovivo no mesmo dia); food truck deixa de ser 'Hamburgueria / Food truck' */
     /* antes: 2026-10-12-ramos2 */   /* 12/10 (manhã): + sertanejos, página da /aovivo publicada no mesmo dia */
     grupos: GRUPOS,

@@ -1,5 +1,5 @@
 {
-  "versao": "2026-11-05-bolsas-reel",
+  "versao": "2026-11-05-moveis",
   "atualizado": "2026-11-05",
   "eventos": [
     {
@@ -1996,6 +1996,54 @@
       "dica": "Poste como Reels (1min18 passa do limite do Story). Na legenda, deixe o seu link e o #publi.",
       "categoria": "moda",
       "ramo": "bolsas"
+    },
+    {
+      "id": "story-moveis-ao-vivo",
+      "tipo": "story",
+      "titulo": "Móveis: meça o sofá ao vivo",
+      "formato": "Story 9:16",
+      "arquivo": "material/stories/story-moveis-ao-vivo.jpg",
+      "capa": "material/capas/story-moveis-ao-vivo.webp",
+      "w": 1080,
+      "h": 1920,
+      "peso": "232 KB",
+      "novo": true,
+      "legenda": "#publi Foto não mostra se o sofá cabe na sala. A cliente quer saber a medida, se tem em cinza e se a loja entrega e monta.\n\nCom o Moviki, a loja de móveis abre uma live pelo próprio celular, estica a trena na frente da câmera, passa a mão no tecido, abre a gaveta ao vivo e responde no chat quem pergunta da cor e da entrega. Móvel é compra grande: a cliente paga no Pix ou no cartão em até 12x.\n\nPix, cartão e oferta relâmpago dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
+      "categoria": "casa",
+      "ramo": "moveis"
+    },
+    {
+      "id": "feed-moveis-ao-vivo",
+      "tipo": "feed",
+      "titulo": "Móveis: o sofá com a medida na tela, ao vivo",
+      "formato": "Feed 4:5",
+      "arquivo": "material/feed/feed-moveis-ao-vivo.jpg",
+      "capa": "material/capas/feed-moveis-ao-vivo.webp",
+      "w": 1080,
+      "h": 1350,
+      "peso": "168 KB",
+      "novo": true,
+      "legenda": "#publi Foto não mostra se o sofá cabe na sala.\n\nNa live do Moviki, a loja de móveis mede o sofá com a trena na frente da câmera, mostra o tecido de perto, tira a dúvida da cor no chat e a cliente paga no Pix ou no cartão em até 12x. Sem aplicativo para baixar, sem estúdio, pelo celular da loja. O Moviki não cobra comissão por venda.\n\nPix, cartão e oferta relâmpago dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "casa",
+      "ramo": "moveis"
+    },
+    {
+      "id": "video-moveis-ao-vivo",
+      "tipo": "video",
+      "titulo": "Móveis: a loja ao vivo, do começo ao pedido",
+      "formato": "Reels 9:16",
+      "duracao": "1:27",
+      "peso": "21,6 MB",
+      "arquivo": "https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/material%2Freel-moveis-ao-vivo.mp4?alt=media",
+      "capa": "material/capas/reel-moveis-ao-vivo.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Foto não mostra se o sofá cabe na sala. Na live, mostra.\n\nCom o Moviki, a loja de móveis entra ao vivo pelo próprio celular, sem precisar de seguidores: a cliente entra pelo link, sem baixar nada, vê a medida na trena, o tecido de perto e a gaveta abrindo, pergunta no chat se cabe na sala e paga no Pix ou no cartão em até 12x. Do lado da loja, o pedido chega na tela. E fora da live, a página da loja com catálogo, entrega por bairro ou reserva para ver na loja, e a loja no mapa em tempo real.\n\nPix, cartão e oferta relâmpago dentro da transmissão: recursos do plano Enterprise. Cena ilustrativa, loja de exemplo.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels (1min24 passa do limite do Story). Na legenda, deixe o seu link e o #publi.",
+      "categoria": "casa",
+      "ramo": "moveis"
     },
     {
       "id": "video-comercio-bijuteria",
