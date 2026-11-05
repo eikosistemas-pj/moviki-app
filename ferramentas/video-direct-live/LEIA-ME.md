@@ -55,3 +55,9 @@ sfx e trilha: os mesmos do DESEJO de moda (skill desejo-ramo).
 - Página da loja: `cenas_semi_live.py` (2 cenas) com `rec_desejo.py` numa subpasta `loja/` que tenha audio/1.mp3 = fala 10 e audio/2.mp3 = fala 11.
 - `prep_ramo.py <pasta>` gera gancho.mp4, c1..c11.mp4 (ajusta as cenas da loja ao tempo da fala) e depois `montar_desejo.py <pasta>` com o roteiro (copiar roteiro-moda.json trocando "k" e "cor").
 - Semijoias: câmera Veo 3.1 Lite (19 créditos, gen 6aebffd78f9fea8ee18d2271); loja Lua de Prata em loja-semijoias/ (fotos do CDN do Kairogen; coração, solitário e riviera ficaram fora por falta de foto).
+
+## 05/11/2026 01h40 — pedidos do Paulo
+- **Sem vai e volta da câmera:** cada cena usa só o trecho de ida do clipe (arquivos a*), começando em pontos diferentes; cena mais longa que a ida anda um pouco mais devagar (base.py, gravar). Moda e semijoias saíram antes disso.
+- **Kit por ramo:** vídeo do direct carimbado (live-<ramo>.mp4) + capa/miniatura 1080x1920 (capa_live.py <pasta> capa-live-<ramo>.jpg) + versão do feed com a palavra do ramo (quando o funil existir) + item na grade do robô social. As miniaturas de compartilhamento do WhatsApp/Direct (og/aovivo/<ramo>.jpg no site) já existem para os 40 ramos.
+- Lojas de amostra: lojas/build_loja.py <modulo> <pasta_web> monta a página a partir de lojas/loja_<ramo>.py (fotos Seedream 2048 → 900x900, ~13 imagens = ~26 créditos).
+- Calçados: Sola Viva, câmera Veo 3.1 Lite gen 6aec0609d4c0926a31ca03fc (19 cr) + 12 imagens (24 cr).

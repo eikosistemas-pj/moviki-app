@@ -227,8 +227,13 @@ async def gravar(pg, cdp, n, eventos, O, taxa=0.15, cam0=0):
         if f.endswith('.jpg'): os.remove(O + f)
     await cdp.send('Animation.enable'); await cdp.send('Animation.setPlaybackRate', {'playbackRate': taxa})
     t0 = time.time()
+    # 05/11/2026 (pedido do Paulo): sem vai e volta visível. A cena usa só o trecho de ida da câmera (arquivos a*);
+    # se a cena for mais longa que a ida inteira, a câmera anda um pouco mais devagar para caber.
+    F = max(1, sum(1 for f in CAMF if f.startswith('a')))
+    if n <= F: ini = cam0 % (F - n + 1); idx = lambda i: ini + i
+    else: idx = lambda i: int(round(i * (F - 1) / max(1, n - 1)))
     for i in range(n):
-        await pg.evaluate('(n)=>window.__setT&&window.__setT(n)', cam0 + i)
+        await pg.evaluate('(n)=>window.__setT&&window.__setT(n)', idx(i))
         if i in eventos:
             for fn in (eventos[i] if isinstance(eventos[i], list) else [eventos[i]]): await fn()
         await pg.screenshot(path=O + '%04d.jpg' % (i + 1), type='jpeg', quality=90)
