@@ -1,5 +1,5 @@
 /* ==========================================================================
-   versao 2026-11-05-bolsas (subtipo Bolsas no macro Moda). Antes: 2026-10-07-lojas (P75 fase 1: macro "Loja de bairro / Shopping" com 9 ramos + Padaria e Acougue em Alimentacao; o trafego pago de lojas nao achava o proprio ramo)
+   versao 2026-11-05-moveis (subtipo Moveis no macro Loja de bairro / Shopping). Antes: 2026-11-05-bolsas (subtipo Bolsas no macro Moda). Antes: 2026-10-07-lojas (P75 fase 1: macro "Loja de bairro / Shopping" com 9 ramos + Padaria e Acougue em Alimentacao; o trafego pago de lojas nao achava o proprio ramo)
    MOVIKI — Registro de Segmentação do Quiz de Onboarding
    Caminho no repo: moviki-app/quiz/quiz-segmentos.js   (pasta NOVA, isolada)
 
@@ -278,6 +278,31 @@ window.MOVIKI_SEGMENTOS = [
           ] },
           { categoria: '🍽️ Utilidades', produtos: [
             { nome: 'Kit Potes Herméticos', preco: '49,90', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'moveis',
+        label: 'Móveis',
+        emoji: '🛋️',
+        icone: 'quiz/icones/moveis.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '🛋️ Sofás', produtos: [
+            { nome: 'Sofá Retrátil e Reclinável 3 Lugares', preco: '2599,00', acabando: false, descricao: '2,10 m de largura. Pergunte as cores do tecido.' },
+            { nome: 'Poltrona Decorativa', preco: '749,90', acabando: false }
+          ] },
+          { categoria: '🍽️ Mesas e cadeiras', produtos: [
+            { nome: 'Mesa de Jantar com 4 Cadeiras', preco: '1899,00', acabando: false }
+          ] },
+          { categoria: '🛏️ Quarto', produtos: [
+            { nome: 'Cama Box Casal com Colchão', preco: '1599,00', acabando: false },
+            { nome: 'Guarda-roupa Casal 6 Portas', preco: '1999,00', acabando: false }
+          ] },
+          { categoria: '📺 Racks e estantes', produtos: [
+            { nome: 'Rack para TV até 65 polegadas', preco: '699,90', acabando: false },
+            { nome: 'Estante 5 Prateleiras', preco: '499,90', acabando: false }
           ] }
         ]
       },
