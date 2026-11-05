@@ -14,9 +14,9 @@ def nq(k):
 def agora(): return int(time.time() * 1000)
 FIM = agora() + 9 * 60000 + 41000
 def oferta(vend=2, res=0, est=8):
-    return {'nome': P0, 'precoDe': '129,90', 'precoPor': '99,90', 'fimEm': FIM, 'estoque': est, 'vendidos': vend,
+    return {'nome': P0, 'precoDe': PROD[0][1], 'precoPor': PROD[0][2], 'fimEm': FIM, 'estoque': est, 'vendidos': vend,
             'reservas': [agora() + (6 + k) * 60000 for k in range(res)]}
-CHAT0 = [(2, 'Carla', 'Boa noite! Cheguei 👋', 'msg', 40000), (3, 'Bia', 'Que linda essa blusa 😍', 'msg', 20000)]
+CHAT0 = [(2, 'Carla', TXT['chat0'][0], 'msg', 40000), (3, 'Bia', TXT['chat0'][1], 'msg', 20000)]
 
 async def pub(br, fake=None, vw=390, vh=844, dsf=2, espera=5):
     ctx, pg, er = await ctxNovo(br, fake or fakeComprador(chat=CHAT0), roboComprador, vw, vh, dsf)
@@ -28,8 +28,8 @@ async def pub(br, fake=None, vw=390, vh=844, dsf=2, espera=5):
 async def G(br):   # gancho: live em tela cheia 9:16, chat chegando
     ctx, pg, er = await pub(br, vw=432, vh=768, dsf=2.5)
     cdp = await ctx.new_cdp_session(pg)
-    ev = {18: lambda: empurra(pg, (4, 'Dani', 'Tem no M? 🙏')), 60: lambda: empurra(pg, (5, 'Lu', 'Quero essa!', 'quero')),
-          105: lambda: empurra(pg, (6, 'Rose', 'Amei a estampa ❤️'))}
+    ev = {18: lambda: empurra(pg, (4, 'Dani', TXT['g'][0])), 60: lambda: empurra(pg, (5, 'Lu', TXT['g'][1], 'quero')),
+          105: lambda: empurra(pg, (6, 'Rose', TXT['g'][2]))}
     await gravar(pg, cdp, nq('gancho'), ev, R + 'G/', cam0=60); await ctx.close(); return er
 
 async def c1(br):  # a cliente toca no link e a live abre, sem baixar nada
@@ -52,7 +52,7 @@ async def c3(br):  # pergunta no chat, resposta da loja para todos
     cdp = await ctx.new_cdp_session(pg)
     async def rl():
         await pg.evaluate("(()=>{document.querySelectorAll('.__rl').forEach(e=>e.classList.remove('__rl')); const m=[...document.querySelectorAll('#chat .msg.dono, #pilha .msg.dono, .msg.dono')].pop(); m&&m.classList.add('__rl');})()")
-    ev = {8: lambda: empurra(pg, (7, 'Carla', 'Tem no M?')), 55: lambda: empurra(pg, (8, 'Atelier Vinha', 'Tem sim! P, M e G 😊', 'dono')), 62: rl}
+    ev = {8: lambda: empurra(pg, (7, 'Carla', TXT['pergunta'])), 55: lambda: empurra(pg, (8, CFG['nome'], TXT['resposta'], 'dono')), 62: rl}
     await gravar(pg, cdp, nq(3), ev, R + 'c3/', cam0=240); await ctx.close(); return er
 
 async def c4(br):  # toque em Comprar, quantidade e como receber
@@ -84,7 +84,7 @@ async def c6(br):  # oferta relampago com contagem e estoque
     cdp = await ctx.new_cdp_session(pg)
     async def push(o):
         await pg.evaluate("(o)=>{const p='negocios/AV0000000001/estado/live'; const d=Object.assign({},window.__FAKE.docs[p]||{}); d.oferta=o; window.__fsAdd(p,d);}", o)
-    ev = {15: lambda: realce(pg, '#cardFixo'), 70: lambda: push(oferta(3)), 95: lambda: empurra(pg, (9, 'Lu', 'Garanti a minha!', 'quero')),
+    ev = {15: lambda: realce(pg, '#cardFixo'), 70: lambda: push(oferta(3)), 95: lambda: empurra(pg, (9, 'Lu', TXT['garanti'], 'quero')),
           130: lambda: push(oferta(4)), 150: lambda: realce(pg, '#faixaOferta'), 205: lambda: realce(pg, '', False)}
     await gravar(pg, cdp, nq(6), ev, R + 'c6/', cam0=420); await ctx.close(); return er
 
@@ -102,7 +102,7 @@ async def c7(br):  # lado da loja: so o celular, Entrar ao vivo, pedido chega
     async def esc():
         await pg.keyboard.press('Escape')
     async def chega():
-        d = ped(14, 'conferindo', 'Ana Souza', P0, 2, 199.80, 0); d['criadoEm'] = {'__ms': agora()}
+        d = ped(14, 'conferindo', 'Ana Souza', P0, 2, round(2 * num(PROD[0][2] or PROD[0][1]), 2), 0); d['criadoEm'] = {'__ms': agora()}
         await pg.evaluate('([p,d])=>window.__fsAdd(p,d)', ['pedidos/P14', d])
     ev = {15: lambda: realce(pg, '#btnIniciar'), 55: entra, 58: lambda: realce(pg, '', False), 62: ativa, 120: esc, 160: chega, 185: lambda: realce(pg, '#paValor')}
     await gravar(pg, cdp, nq(7), ev, R + 'c7/', cam0=480); await ctx.close(); return er

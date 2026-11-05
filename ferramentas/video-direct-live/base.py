@@ -10,7 +10,8 @@ from playwright.async_api import async_playwright
 W0 = '/home/claude/w'
 APPR, SITER = W0 + '/retrato', W0 + '/site'
 CACHE = W0 + '/cache'
-CAMD = W0 + '/cam'; FOTOS = W0 + '/fotos'
+RAMO = os.environ.get('RAMO', '')   # vazio = moda (Atelier Vinha); senao le ramos/<RAMO>.py
+CAMD = W0 + ('/cam-' + RAMO if RAMO else '/cam'); FOTOS = W0 + ('/fotos-' + RAMO if RAMO else '/fotos')
 os.makedirs(CACHE, exist_ok=True)
 CAMF = sorted(f for f in os.listdir(CAMD) if f.endswith('.jpg'))
 FD = '/usr/share/fonts/truetype/google-fonts/'
@@ -54,6 +55,10 @@ CFG = {'nome': 'Atelier Vinha', 'slug': 'ateliervinha', 'segmento': 'moda', 'rec
        'categoria': 'Novidades', 'titulo': 'Estampas novas de verão',
        'produtos': [['Blusa floral de viscose', '129,90', '99,90', 'blusa.jpg'], ['Vestido chemise', '189,90', None, 'chemise.jpg'],
                     ['Calça pantalona', '159,90', None, 'pantalona.jpg'], ['Bolsa de couro', '149,90', None, 'bolsa.jpg']]}
+TXT = {'g': ['Tem no M? 🙏', 'Quero essa!', 'Amei a estampa ❤️'], 'chat0': ['Boa noite! Cheguei 👋', 'Que linda essa blusa 😍'],
+       'pergunta': 'Tem no M?', 'resposta': 'Tem sim! P, M e G 😊', 'garanti': 'Garanti a minha!'}
+if RAMO:
+    exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ramos', RAMO + '.py')).read())
 def num(v): return float(str(v).replace('.', '').replace(',', '.'))
 PROD = CFG['produtos']; P0 = PROD[0][0]
 NEG = {'nome': CFG['nome'], 'slug': CFG['slug'], 'whatsapp': '41900000000', 'segmento': CFG['segmento'], 'segmentoMacro': 'varejo',
@@ -105,7 +110,7 @@ CSSLIMPA = ("#mvAvisoMed,#mvBoasVindas,.mvTutBox,.lvAulaBox,#bannerVerif,.mvAvis
             ".__rl{outline:3px solid #ffb23f!important;outline-offset:3px!important;box-shadow:0 0 0 6px rgba(255,178,63,.25),0 0 22px rgba(255,154,31,.65)!important;border-radius:10px}")
 HEX = '0123456789abcdef0123456789abcdef'
 WHEP = 'https://customer-x0.cloudflarestream.com/' + HEX + '/webRTC/play'
-COPIA = '00020126580014BR.GOV.BCB.PIX0136a1b2c3d4-e5f6-7890-abcd-ef1234567890520400005303986540599.905802BR5913ATELIER VINHA6008CURITIBA62070503***6304A1B2'
+COPIA = ('00020126580014BR.GOV.BCB.PIX0136a1b2c3d4-e5f6-7890-abcd-ef1234567890520400005303986540599.905802BR59' + ('%02d' % len(CFG['nome'])) + CFG['nome'].upper() + '6008CURITIBA62070503***6304A1B2')
 
 async def ctxNovo(br, fake, robo, vw, vh, dsf, mobile=True):
     ctx = await br.new_context(viewport={'width': vw, 'height': vh}, device_scale_factor=dsf, is_mobile=mobile, has_touch=mobile,

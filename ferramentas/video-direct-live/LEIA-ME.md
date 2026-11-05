@@ -47,3 +47,11 @@ sfx e trilha: os mesmos do DESEJO de moda (skill desejo-ramo).
 - `python3 montar_desejo.py <pasta_do_video>` monta com o roteiro (ver roteiro-moda.json; gancho = gancho.mp4, ini 0, vel 1; todas as cenas com "clip").
 - Carimbo: carimbar.py do Project (claude/protecao-video), trocando os dois "-b:v 3500k" por "-b:v 1900k" na cópia local (nunca subir o carimbar.py para repositório: tem a chave) para ficar abaixo de 25 MB (limite de vídeo no direct do Instagram). cfg de segmentos: cena = duração do gancho, tela = soma das cenas, fim = 60.
 - Moda: 81 s, cerca de 21 MB carimbado.
+
+## Ramo novo (desde 05/11/2026, semijoias feito assim)
+- `ramos/<ramo>.py`: CFG (loja, produtos: [nome, preço, preço da live, foto]) e TXT (falas do chat). Rodar com `RAMO=<ramo> python3 rec_live.py <pasta> G,1,...,9`.
+- Câmera em `/home/claude/w/cam-<ramo>` (a0001.. ida, b.. volta), fotos em `/home/claude/w/fotos-<ramo>` (a 1ª é recorte do quadro da câmera).
+- Se a câmera do Kairogen vier com objeto na borda: cortar a faixa e completar as laterais com o fundo desfocado (ver como foi feito em semijoias: crop 600 de largura + fundo desfocado até 720).
+- Página da loja: `cenas_semi_live.py` (2 cenas) com `rec_desejo.py` numa subpasta `loja/` que tenha audio/1.mp3 = fala 10 e audio/2.mp3 = fala 11.
+- `prep_ramo.py <pasta>` gera gancho.mp4, c1..c11.mp4 (ajusta as cenas da loja ao tempo da fala) e depois `montar_desejo.py <pasta>` com o roteiro (copiar roteiro-moda.json trocando "k" e "cor").
+- Semijoias: câmera Veo 3.1 Lite (19 créditos, gen 6aebffd78f9fea8ee18d2271); loja Lua de Prata em loja-semijoias/ (fotos do CDN do Kairogen; coração, solitário e riviera ficaram fora por falta de foto).
