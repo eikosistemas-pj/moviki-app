@@ -5714,7 +5714,7 @@ window.mvAbaInicial=function(){
       var chk=await getDoc(doc(db,'parceiro_slugs',slug));
       if(chk.exists()){ av.textContent='Esse apelido já está em uso. Escolha outro.'; btn.disabled=false; btn.textContent=t; return; }
       await setDoc(doc(db,'parceiro_slugs',slug),{uid:usuarioAtual.uid});
-      await setDoc(doc(db,'parceiros',usuarioAtual.uid),{nome:nome,email:usuarioAtual.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:'1.2',em:serverTimestamp()},criadoEm:serverTimestamp()});
+      await setDoc(doc(db,'parceiros',usuarioAtual.uid),{nome:nome,email:usuarioAtual.email,pix:pix,slug:slug,status:'pendente',aceite:{versao:REGULAMENTO_VERSAO,em:serverTimestamp()},criadoEm:serverTimestamp()});   /* 04/11/2026: gravava '1.2' fixo */
       try{ usuarioAtual.getIdToken().then(function(tk){ fetch(ROBO+'/api/novo-parceiro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({idToken:tk,uid:usuarioAtual.uid})}).catch(function(){}); }).catch(function(){}); }catch(_){}
       window._statusParceiro='pendente';
       var ic=el('candPendIcon'), ti=el('candPendTit'), tx=el('candPendTxt');
@@ -8714,7 +8714,7 @@ window.mvAbaInicial=function(){
      caminhos (e-mail, Google e "Termine seu cadastro"). Idempotente: se parceiros/{uid} ja
      existe, so devolve o painel; se o apelido ja foi reservado por esta conta numa tentativa
      que caiu no meio, reaproveita. Apelido ja nasce dentro do apelidoLivre() da regra. */
-  const REGULAMENTO_VERSAO='1.7';   /* regulamento.html: Versao 1.7 de 22/10/2026 */
+  const REGULAMENTO_VERSAO='1.9';   /* regulamento.html: Versao 1.9 de 04/11/2026 (6.3 e 12.3: material de divulgacao e digital). Antes 1.7 */
   const PARC_RESERVADOS=['suporte','oficial','pix','pagamento','pagamentos','admin','ajuda','seguranca','sac','login','atendimento','contato','moviki-oficial'];
   function parcSlugBarrado(s){ return PARC_RESERVADOS.indexOf(s)>=0||s.indexOf('moviki')>=0||/^(https?|www)/.test(s); }
   async function gravarParceiroNaConta(user,d){
