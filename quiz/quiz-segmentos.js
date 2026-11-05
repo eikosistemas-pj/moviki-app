@@ -1,5 +1,5 @@
 /* ==========================================================================
-   versao 2026-10-07-lojas (P75 fase 1: macro "Loja de bairro / Shopping" com 9 ramos + Padaria e Acougue em Alimentacao; o trafego pago de lojas nao achava o proprio ramo)
+   versao 2026-11-05-bolsas (subtipo Bolsas no macro Moda). Antes: 2026-10-07-lojas (P75 fase 1: macro "Loja de bairro / Shopping" com 9 ramos + Padaria e Acougue em Alimentacao; o trafego pago de lojas nao achava o proprio ramo)
    MOVIKI — Registro de Segmentação do Quiz de Onboarding
    Caminho no repo: moviki-app/quiz/quiz-segmentos.js   (pasta NOVA, isolada)
 
@@ -719,6 +719,24 @@ window.MOVIKI_SEGMENTOS = [
           ] },
           { categoria: '👜 Bolsas', produtos: [
             { nome: 'Bolsa Transversal', preco: '45,00', acabando: false }
+          ] }
+        ]
+      },
+      {
+        id: 'bolsas',
+        label: 'Bolsas',
+        emoji: '👜',
+        icone: 'quiz/icones/bolsas.png',
+        molde: 'simples',
+        moldeId: null,
+        cardapioExemplo: [
+          { categoria: '👜 Bolsas', produtos: [
+            { nome: 'Bolsa Tote de Couro', preco: '229,90', acabando: false, descricao: 'Cabe notebook de até 14 polegadas. Pergunte as cores.' },
+            { nome: 'Bolsa Transversal', preco: '89,90', acabando: false }
+          ] },
+          { categoria: '👛 Carteiras e Mochilas', produtos: [
+            { nome: 'Carteira Feminina', preco: '59,90', acabando: false },
+            { nome: 'Mochila Casual', preco: '129,90', acabando: false }
           ] }
         ]
       }

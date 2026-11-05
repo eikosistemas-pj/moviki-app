@@ -1,5 +1,5 @@
 /*!
- * MOVIKI ramos.js | versao 2026-10-29-ramos3 | repo: moviki-app
+ * MOVIKI ramos.js | versao 2026-11-05-ramos4 | repo: moviki-app
  * Endereço público: https://app.moviki.com.br/ramos.js
  *
  * CATÁLOGO ÚNICO DE RAMOS (12/10/2026)
@@ -69,6 +69,7 @@
     { k:'esportes',       n:'Esporte e tênis',       g:'moda', q:'esportes', d:1, m:'moda',      a:['esporte'] },
     { k:'semijoias',      n:'Semijoias',             g:'moda', q:'acessorios', d:1, m:'joalheria', a:['joias'] },
     { k:'bijuteria',      n:'Bijuteria e acessórios',g:'moda', q:'acessorios', d:1, m:'moda' },
+    { k:'bolsas',         n:'Bolsas',                g:'moda', q:'bolsas',   d:1, m:'moda',      a:['bolsa','loja-de-bolsas','bolsas-femininas'] },
 
     /* ---- Casa, presentes e tecnologia ---- */
     { k:'utilidades',         n:'Utilidades do lar',         g:'casa', q:'casa',              d:1, m:'casa' },
@@ -141,7 +142,8 @@
   }
 
   window.MOVIKI_RAMOS = {
-    versao: '2026-10-29-ramos3',   /* 29/10: + hamburgueria (página da /aovivo no mesmo dia); food truck deixa de ser 'Hamburgueria / Food truck' */
+    versao: '2026-11-05-ramos4',   /* 05/11: + bolsas (página da /aovivo e subtipo do quiz no mesmo dia) */
+    /* antes: 2026-10-29-ramos3 */   /* 29/10: + hamburgueria (página da /aovivo no mesmo dia); food truck deixa de ser 'Hamburgueria / Food truck' */
     /* antes: 2026-10-12-ramos2 */   /* 12/10 (manhã): + sertanejos, página da /aovivo publicada no mesmo dia */
     grupos: GRUPOS,
     lista: LISTA,
