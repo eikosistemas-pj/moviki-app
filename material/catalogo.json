@@ -1,6 +1,6 @@
 {
-  "versao": "2026-11-03-faro-blackfriday",
-  "atualizado": "2026-11-03",
+  "versao": "2026-11-05-bolsas",
+  "atualizado": "2026-11-05",
   "eventos": [
     {
       "id": "fundador",
@@ -1948,6 +1948,37 @@
       "novo": false,
       "legenda": "#publi Hoje alguém perto da sua loja procurou um tênis para correr. Achou no celular, na loja que apareceu primeiro — não na que tinha o modelo certo.\n\nNo mapa do Moviki, a sua loja aparece em tempo real para quem está na região. E quando quiser, você entra ao vivo e mostra cores e numerações.\n\nSeu estilo em movimento.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
       "categoria": "moda"
+    },
+    {
+      "id": "story-bolsas-ao-vivo",
+      "tipo": "story",
+      "titulo": "Bolsas: abra a bolsa ao vivo",
+      "formato": "Story 9:16",
+      "arquivo": "material/stories/story-bolsas-ao-vivo.jpg",
+      "capa": "material/capas/story-bolsas-ao-vivo.webp",
+      "w": 1080,
+      "h": 1920,
+      "peso": "221 KB",
+      "novo": true,
+      "legenda": "#publi Bolsa na foto não mostra o que cabe dentro. A cliente quer saber se cabe o notebook, como é o forro e se tem em outra cor.\n\nCom o Moviki, a loja de bolsas abre uma live pelo próprio celular, mostra o couro de perto, abre o zíper ao vivo, responde no chat quem pergunta da cor e recebe o pedido no WhatsApp.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "No story, cole o seu link com a figurinha de Link e escreva #publi no topo.",
+      "categoria": "moda",
+      "ramo": "bolsas"
+    },
+    {
+      "id": "feed-bolsas-ao-vivo",
+      "tipo": "feed",
+      "titulo": "Bolsas: mostre o que cabe dentro, ao vivo",
+      "formato": "Feed 4:5",
+      "arquivo": "material/feed/feed-bolsas-ao-vivo.jpg",
+      "capa": "material/capas/feed-bolsas-ao-vivo.webp",
+      "w": 1080,
+      "h": 1350,
+      "peso": "168 KB",
+      "novo": true,
+      "legenda": "#publi Bolsa na foto não mostra o que cabe dentro.\n\nNa live do Moviki, a loja de bolsas abre a bolsa ao vivo, mostra o que cabe, tira a dúvida da cor no chat e recebe o pedido direto no WhatsApp. Sem aplicativo para baixar, sem estúdio, pelo celular da loja. O Moviki não cobra comissão por venda.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "moda",
+      "ramo": "bolsas"
     },
     {
       "id": "video-comercio-bijuteria",
