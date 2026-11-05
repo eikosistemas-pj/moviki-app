@@ -1,5 +1,5 @@
 {
-  "versao": "2026-11-05-bolsas",
+  "versao": "2026-11-05-bolsas-reel",
   "atualizado": "2026-11-05",
   "eventos": [
     {
@@ -1977,6 +1977,23 @@
       "peso": "168 KB",
       "novo": true,
       "legenda": "#publi Bolsa na foto não mostra o que cabe dentro.\n\nNa live do Moviki, a loja de bolsas abre a bolsa ao vivo, mostra o que cabe, tira a dúvida da cor no chat e recebe o pedido direto no WhatsApp. Sem aplicativo para baixar, sem estúdio, pelo celular da loja. O Moviki não cobra comissão por venda.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "categoria": "moda",
+      "ramo": "bolsas"
+    },
+    {
+      "id": "video-bolsas-ao-vivo",
+      "tipo": "video",
+      "titulo": "Bolsas: a loja ao vivo, do começo ao pedido",
+      "formato": "Reels 9:16",
+      "duracao": "1:18",
+      "peso": "19,4 MB",
+      "arquivo": "https://firebasestorage.googleapis.com/v0/b/moviki-app.firebasestorage.app/o/material%2Freel-bolsas-ao-vivo.mp4?alt=media",
+      "capa": "material/capas/reel-bolsas-ao-vivo.webp",
+      "w": 1080,
+      "h": 1920,
+      "novo": true,
+      "legenda": "#publi Bolsa na foto não mostra o que cabe dentro. Na live, mostra.\n\nCom o Moviki, a loja de bolsas entra ao vivo pelo próprio celular, sem precisar de seguidores: a cliente entra pelo link, sem baixar nada, vê o couro de perto, o zíper e os bolsos, pergunta no chat se cabe o notebook e compra com um toque. Do lado da loja, o pedido chega na tela. E fora da live, a página da loja com catálogo, sacola, entrega ou reserva.\n\nPagamento com Pix e oferta relâmpago com contagem dentro da transmissão: recursos do plano Enterprise. Cena ilustrativa, loja de exemplo.\n\n30 dias grátis. Sem cartão, sem fidelidade — você só continua se fizer sentido.\nComece pelo meu link: {link}",
+      "dica": "Poste como Reels (1min18 passa do limite do Story). Na legenda, deixe o seu link e o #publi.",
       "categoria": "moda",
       "ramo": "bolsas"
     },
