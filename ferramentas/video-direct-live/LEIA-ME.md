@@ -61,3 +61,11 @@ sfx e trilha: os mesmos do DESEJO de moda (skill desejo-ramo).
 - **Kit por ramo:** vídeo do direct carimbado (live-<ramo>.mp4) + capa/miniatura 1080x1920 (capa_live.py <pasta> capa-live-<ramo>.jpg) + versão do feed com a palavra do ramo (quando o funil existir) + item na grade do robô social. As miniaturas de compartilhamento do WhatsApp/Direct (og/aovivo/<ramo>.jpg no site) já existem para os 40 ramos.
 - Lojas de amostra: lojas/build_loja.py <modulo> <pasta_web> monta a página a partir de lojas/loja_<ramo>.py (fotos Seedream 2048 → 900x900, ~13 imagens = ~26 créditos).
 - Calçados: Sola Viva, câmera Veo 3.1 Lite gen 6aec0609d4c0926a31ca03fc (19 cr) + 12 imagens (24 cr).
+
+## Atualização 05/11/2026 (cosméticos, pet, açaí)
+
+- Ramos novos em `ramos/` (cosmeticos, pet, acai) e lojas em `lojas/` (loja_cosmeticos, loja_pet, loja_acai). Monte a loja com `build_loja.py` e copie o `tile.png` do mapa para o `img/` da loja.
+- `cenas_loja_live.py`: 3 cenas da loja (topo + catálogo, sacola/entrega/reserva, mapa em tempo real). `roteiro-live-12cenas.json` é o roteiro com a cena do mapa (trocar `k` e `cor`).
+- Espectadores: `plateia()` começa entre 28 e 46, cresce a cada cena e oscila durante a cena (nunca repete o 37).
+- Produto com rótulo: primeiro quadro no gpt-image (rótulo com nome e detalhe, produto fechado na mão) e depois Veo 3.1 Lite imagem-para-vídeo. Nunca aplicar líquido.
+- Câmera longa sem repetir: dois clipes que saem do MESMO primeiro quadro, o primeiro invertido e o segundo para a frente, emendam sem corte nesse quadro (16 s). O Kairogen não aceita arquivo local como quadro inicial e o Veo 3.1 Lite não respeita o quadro final.

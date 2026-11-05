@@ -1,6 +1,6 @@
 # prepara os clipes do vídeo do direct "live primeiro" de um ramo (05/11/2026)
 # uso: python3 prep_ramo.py <pasta_video>   (a pasta tem rec/G, rec/c1..c9 da bancada da live e loja/grav/c1,c2 da página da loja)
-# c10 = página da loja (topo + catálogo); c11 = sacola, entrega ou reserva, Pix. Cada um ajustado ao tempo da fala (0,25 + fala + 0,45).
+# c10 = página da loja (topo + catálogo); c11 = sacola, entrega ou reserva, Pix; c12 = mapa em tempo real (desde 05/11 01:54, se houver loja/grav/c3). Cada um ajustado ao tempo da fala (0,25 + fala + 0,45).
 import json, os, subprocess, sys
 A = os.path.abspath(sys.argv[1]); L = A + '/loja/grav'
 def run(a): subprocess.run(a, check=True)
@@ -20,7 +20,8 @@ def velho(c, out):  # quadros com tempo variável -> 30 fps constantes
 def ajusta(src, alvo, out):  # acelera se passou; segura o último quadro se faltou
     d = dur(src); vf = f'setpts=PTS*{alvo / d:.5f}' if d > alvo else f'tpad=stop_mode=clone:stop_duration={alvo - d + 0.1:.3f}'
     run(['ffmpeg', '-v', 'error', '-y', '-i', src, '-vf', vf + ',fps=30', '-t', f'{alvo:.3f}', '-c:v', 'libx264', '-crf', '14', '-pix_fmt', 'yuv420p', out])
-for k, c in [(10, 'c1'), (11, 'c2')]:
+for k, c in [(10, 'c1'), (11, 'c2'), (12, 'c3')]:
+    if not os.path.exists(f'{L}/{c}/meta.json'): continue
     velho(c, f'/tmp/v{c}.mp4')
     ajusta(f'/tmp/v{c}.mp4', 0.25 + dur(f'{A}/audio/{k}.mp3') + 0.45 + 0.05, f'{A}/c{k}.mp4')
 print('ok')

@@ -22,6 +22,7 @@ async def pub(br, fake=None, vw=390, vh=844, dsf=2, espera=5):
     ctx, pg, er = await ctxNovo(br, fake or fakeComprador(chat=CHAT0), roboComprador, vw, vh, dsf)
     await pg.goto('http://127.0.0.1:%d/live/%s' % (PS, CFG['slug']))
     if espera: await asyncio.sleep(espera)
+    await pg.evaluate(FLUTUA)
     await pg.evaluate("setInterval(()=>{const d=window.__FAKE.docs['live_sessoes/AV0000000001']; if(d){d.pulsoMs=Date.now(); d.pulsoEm={__ms:Date.now()}; window.__fsRefresh&&window.__fsRefresh();}},8000)")
     return ctx, pg, er
 
@@ -38,7 +39,9 @@ async def c1(br):  # a cliente toca no link e a live abre, sem baixar nada
     async def abre():
         await pg.goto('http://127.0.0.1:%d/live/%s' % (PS, CFG['slug']), wait_until='commit')
     await abre(); await asyncio.sleep(0.15)
-    ev = {150: lambda: realce(pg, '#pillVivo'), 205: lambda: realce(pg, '', False)}
+    async def flut():
+        await pg.evaluate(FLUTUA)
+    ev = {40: flut, 150: lambda: realce(pg, '#pillVivo'), 205: lambda: realce(pg, '', False)}
     await gravar(pg, cdp, nq(1), ev, R + 'c1/', cam0=200); await ctx.close(); return er
 
 async def c2(br):  # produto fixado com foto, preco e desconto

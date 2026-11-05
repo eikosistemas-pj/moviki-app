@@ -176,7 +176,15 @@ def roboComprador(a, b):
     if a == 'compra_status': return {'ok': True, 'status': 'pago' if ESTADO['pago'] else 'aguardando', 'modo': 'pix'}
     return {'ok': True}
 
-def fakeComprador(extra_live=None, chat=None, assist=37):
+import random as _rnd
+_PL = {'n': None}
+def plateia():   # 05/11/2026 (Paulo): o número de espectadores não pode repetir; começa entre 28 e 46 e cresce a cada cena
+    _PL['n'] = _rnd.randint(28, 46) if _PL['n'] is None else _PL['n'] + _rnd.randint(2, 7)
+    return _PL['n']
+FLUTUA = """setInterval(()=>{try{const p='negocios/AV0000000001/estado/live'; const d=Object.assign({},window.__FAKE.docs[p]||{});
+ d.assistindo=Math.max(5,(d.assistindo||30)+[-1,0,1,1,2,3][Math.floor(Math.random()*6)]); window.__fsAdd(p,d);}catch(e){}},5000)"""
+def fakeComprador(extra_live=None, chat=None, assist=None):
+    assist = assist or plateia()
     im = int(time.time() * 1000)
     live = {'titulo': CFG['titulo'], 'sacola': SAC, 'fixado': {'nome': P0}, 'assistindo': assist}
     if extra_live: live.update(extra_live)

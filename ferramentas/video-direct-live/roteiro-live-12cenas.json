@@ -1,0 +1,108 @@
+{
+ "k": "live-acai",
+ "cor": "#5b2a86",
+ "selo": "Loja de exemplo",
+ "gancho": {
+  "clip": "gancho.mp4",
+  "ini": 0,
+  "fim": 99,
+  "vel": 1,
+  "texto": "A sua loja ao vivo, vendendo pra sua própria clientela.",
+  "destaque": [
+   "ao vivo"
+  ]
+ },
+ "cenas": [
+  {
+   "clip": "c1.mp4",
+   "texto": "Sem precisar de seguidores. A cliente entra pelo link, sem baixar nada.",
+   "destaque": [
+    "Sem precisar de seguidores"
+   ]
+  },
+  {
+   "clip": "c2.mp4",
+   "texto": "O produto fica fixado, com preço e desconto da live.",
+   "destaque": [
+    "fixado"
+   ]
+  },
+  {
+   "clip": "c3.mp4",
+   "texto": "Ela pergunta no chat e você responde pra todo mundo.",
+   "destaque": [
+    "pra todo mundo"
+   ]
+  },
+  {
+   "clip": "c4.mp4",
+   "texto": "Um toque em Comprar, a quantidade e como receber.",
+   "destaque": [
+    "Comprar"
+   ]
+  },
+  {
+   "clip": "c5.mp4",
+   "texto": "Pix na conta da sua loja. Sem comissão por venda.",
+   "destaque": [
+    "Sem comissão por venda"
+   ]
+  },
+  {
+   "clip": "c6.mp4",
+   "texto": "Oferta relâmpago, com contagem e estoque na tela.",
+   "destaque": [
+    "Oferta relâmpago"
+   ]
+  },
+  {
+   "clip": "c7.mp4",
+   "texto": "Do seu lado, só o celular. O pedido chega na tela.",
+   "destaque": [
+    "só o celular"
+   ]
+  },
+  {
+   "clip": "c8.mp4",
+   "texto": "Nunca fez live? Faz um ensaio que ninguém vê.",
+   "destaque": [
+    "ensaio"
+   ]
+  },
+  {
+   "clip": "c9.mp4",
+   "texto": "Quem segue a loja é avisado quando você entra ao vivo.",
+   "destaque": [
+    "avisado"
+   ]
+  },
+  {
+   "clip": "c10.mp4",
+   "texto": "Além da live, a página da sua loja com catálogo.",
+   "destaque": [
+    "a página da sua loja"
+   ]
+  },
+  {
+   "clip": "c11.mp4",
+   "texto": "Sacola, entrega ou reserva, e Pix.",
+   "destaque": [
+    "entrega ou reserva"
+   ]
+  },
+  {
+   "clip": "c12.mp4",
+   "texto": "Sua loja no mapa, em tempo real, pra quem está perto.",
+   "destaque": [
+    "em tempo real"
+   ]
+  }
+ ],
+ "fim": {
+  "titulo": [
+   "Sua loja ao vivo",
+   "começa hoje."
+  ],
+  "sub": "Toque em Começar agora grátis"
+ }
+}
