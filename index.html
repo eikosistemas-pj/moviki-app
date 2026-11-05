@@ -2963,8 +2963,8 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
           <span class="mvAccSeta" aria-hidden="true">&#9662;</span>
         </button>
         <div class="mvAccBody" id="acc-perfil-dados-body">
-        <div class="campo"><label for="nome">Nome do negócio</label><input id="nome" type="text" placeholder="Ex.: Caldeirão Nordestino" oninput="atualizarOnboarding(false)"></div>
-        <div class="campo"><label for="apelido">Seu link no Moviki</label><div class="linkCampo"><span class="pref">moviki.com.br/</span><input id="apelido" type="text" placeholder="caldeirao" autocomplete="off" oninput="atualizarOnboarding(false)"></div></div>
+        <div class="mvLinhaCampos"><div class="campo"><label for="nome">Nome do negócio</label><input id="nome" type="text" placeholder="Ex.: Caldeirão Nordestino" oninput="atualizarOnboarding(false)"></div>
+        <div class="campo"><label for="apelido">Seu link no Moviki</label><div class="linkCampo"><span class="pref">moviki.com.br/</span><input id="apelido" type="text" placeholder="caldeirao" autocomplete="off" oninput="atualizarOnboarding(false)"></div></div></div>
         <div id="linkPronto" class="linkPronto escondido"><div class="rot">✅ Link pra divulgar (bio do Instagram, WhatsApp...):</div><div class="linkRow"><a id="linkPublico" href="#" target="_blank" rel="noopener"></a><button onclick="copiarLink()" id="btnCopiar">Copiar</button></div></div>
         <!-- 2026-10-16-lojaonline: link da loja online / link de venda (site, loja de revenda, catalogo). -->
         <div class="campo"><label for="lojaOnline">Link da sua loja online (opcional)</label><input id="lojaOnline" type="url" inputmode="url" maxlength="300" placeholder="Ex.: https://sualoja.com.br" autocomplete="off"><div style="font-size:12.5px;color:var(--mv-txt-3,#8fa6c4);margin-top:6px">Tem site, loja de revenda ou catálogo? Cole o link aqui: vira o botão <b>“Loja online”</b> na sua página.</div></div>
@@ -3324,7 +3324,7 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
 
       <!-- Informações (Fase 2b) -->
       <div class="tabConteudo escondido" id="tab-info">
-        <div class="campo"><label for="infoHorario">Horário de funcionamento</label>
+        <div class="mvLinhaCampos"><div class="campo"><label for="infoHorario">Horário de funcionamento</label>
           <input id="infoHorario" type="text" maxlength="120" placeholder="Ex.: Seg a Sáb, 11h às 23h">
         </div>
         <div class="campo"><label for="infoEntrega">Entrega</label>
@@ -3332,7 +3332,7 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
         </div>
         <div class="campo"><label for="infoPreco">Preço médio por pessoa (opcional)</label>
           <input id="infoPreco" type="text" inputmode="decimal" placeholder="Ex.: 24,90">
-        </div>
+        </div></div>
         <div class="dicaBox"><img class="icoM" src="icones/lampada.png" alt="" loading="lazy" onerror="mvI(this,'&#128161;')">Tudo aqui é opcional e aparece nos <b>cards de informação</b> da sua página pública. Campo em branco simplesmente não aparece pro cliente — nada de dado inventado.</div>
         <!-- ============ P85 Fase 2a (19/10/2026) ============ -->
         <div class="v2Bloco">
@@ -15035,6 +15035,14 @@ html[data-tema="claro"] .mvMapaArte{display:none}
 /* 2026-11-04-responsivo: tela grande usa mais largura; ficha do pedido maior no computador */
 @media(min-width:1680px){ .box.largo{max-width:1520px;} }
 @media(min-width:900px){ .pqFichaBox{max-width:640px} }
+
+/* 2026-11-04-desktop: campos curtos lado a lado no computador (Perfil: nome e
+   link; Informacoes: horario, entrega e preco medio). No celular, um embaixo do outro. */
+@media(min-width:1100px){
+  .mvLinhaCampos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));column-gap:14px;align-items:start}
+}
+.linkCampo .pref{flex:none}
+.linkCampo input{flex:1 1 auto;min-width:0;width:auto}
 </style>
 
 <script>
