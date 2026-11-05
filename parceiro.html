@@ -725,6 +725,30 @@ textarea.cpCampo{min-height:110px;resize:vertical}
 .cpRegras li{margin:6px 0;line-height:1.55;font-size:13px;color:var(--mv-txt-2)}
 .cpRegras b{color:var(--mv-txt)}
 @media(max-width:520px){.cpFmt{grid-template-columns:1fr}.cpPrev,.cpPeca{grid-template-columns:1fr}.cpPrev .cpMidia,.cpPeca .cpMidia{width:100%}}
+
+/* 2026-11-04-responsivo: janelas (folhas) no computador. No celular continuam
+   subindo de baixo; no computador ficam no centro, com cantos redondos, e as
+   que tem muito conteudo ficam mais largas. */
+@media(min-width:900px){
+  .ov{align-items:center;padding:24px}
+  .ov .folha{border-radius:var(--mv-r-xl);max-height:88vh;padding:20px 22px 22px}
+  .ov .folhaAlca{display:none}
+}
+@media(min-width:1024px){
+  #ovConheca .folha{max-width:760px}
+  #ovSaldo .folha,#ovVirarLoj .folha{max-width:640px}
+  #ovMat .folha{max-width:980px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);column-gap:22px;align-content:start}
+  #ovMat .folha>*{grid-column:2}
+  #ovMat .folha>.folhaX{grid-column:auto}
+  #ovMat .folha>.folhaTit{grid-column:1/-1}
+  #ovMat .folha>.matPrev{grid-column:1;grid-row:2/span 20;align-self:start}
+  #ovMat .matPrev,#ovMat .matPrev img,#ovMat .matPrev canvas,#ovMat .matPrev video{max-height:74vh}
+}
+/* Material de apoio e Area do criador usam a largura toda no computador */
+@media(min-width:1120px){
+  body[data-sec="material"] .mvShell,body[data-sec="criador"] .mvShell{grid-template-columns:250px minmax(0,1fr)}
+  body[data-sec="material"] #mvRight,body[data-sec="criador"] #mvRight{display:none}
+}
 </style>
 <script>
   /* Aplicado aqui, no <head>, de proposito: qualquer coisa depois disto
@@ -2019,6 +2043,7 @@ body{background-image:none}
 
   /* ---------- navegação entre seções ---------- */
   function irSec(nome){
+    try{ document.body.setAttribute('data-sec', nome); }catch(_){}   /* 2026-11-04-responsivo */
     document.querySelectorAll('section[data-sec]').forEach(s=>{
       s.classList.toggle('hide', s.getAttribute('data-sec') !== nome);
     });
