@@ -113,6 +113,19 @@ window.mvAtrib = function(){
   #sucesso h2{font-size:21px;font-weight:800;margin:8px 0 8px}
   #sucesso p{font-size:14px;color:#cfe0f5;line-height:1.6}
   #sucesso .box{background:rgba(37,227,155,.1);border:1px solid rgba(37,227,155,.35);border-radius:12px;padding:16px;margin-top:16px;font-size:13.5px;color:#d7f7ec}
+
+  /* 2026-11-04-desktop: no computador, o resumo do programa e o "Depois de
+     enviar" ficam a esquerda e o formulario a direita. No celular, igual. */
+  @media(min-width:1000px){
+    .wrap{max-width:1080px}
+    .card{padding:34px 36px}
+    #form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"info campos" "cam campos" "cam fim";column-gap:40px;align-items:start}
+    #form .spInfo{grid-area:info}
+    #form .spCampos{grid-area:campos}
+    #form .caminho{grid-area:cam;margin-top:18px}
+    #form .spFim{grid-area:fim}
+    #form .spCampos label:first-child{margin-top:0}
+  }
 </style>
 </head>
 <body>
@@ -121,6 +134,7 @@ window.mvAtrib = function(){
   <div class="card">
 
     <div id="form">
+      <div class="spInfo">
       <h1 id="tit">Seja um Parceiro Moviki</h1>
       <p class="sub soCri" style="margin-bottom:6px">Você veio da página dos criadores. É o mesmo Programa de Parceiros, com a mesma regra: o cadastro de criador só pede o seu @ a mais.</p>
       <p class="sub">Indique o Moviki e receba <b>15% da mensalidade</b> de cada assinatura efetivamente paga que vier pelo seu link, enquanto o comerciante seguir pagando. Preencha abaixo pra começar.</p>
@@ -129,6 +143,8 @@ window.mvAtrib = function(){
         <b>O que você vai indicar:</b> o Moviki coloca o negócio no mapa em tempo real, dá a ele uma página própria com cardápio e deixa ele <b>vender ao vivo, em vídeo</b>, para quem está por perto. Feira, food truck, loja de bairro, serviço que vai até o cliente.
         <a class="saiba" href="https://www.moviki.com.br/parceiros-ganhos.html" target="_blank" rel="noopener" data-ev="conhecer_programa">Conhecer o programa antes de me cadastrar →</a>
       </div>
+      </div>
+      <div class="spCampos">
 
       <label for="nome">Nome completo</label>
       <input id="nome" type="text" placeholder="Seu nome" autocomplete="name" maxlength="80">
@@ -167,6 +183,7 @@ window.mvAtrib = function(){
         <label for="aceite" style="margin:0;font-weight:500;color:#cfe0f5">Li e concordo com o <a href="regulamento.html" target="_blank" rel="noopener">Regulamento do Programa de Parceiros</a>.</label>
       </div>
 
+      </div>
       <div class="caminho">
         <div class="tit">Depois de enviar</div>
         <ol>
@@ -177,9 +194,11 @@ window.mvAtrib = function(){
         </ol>
       </div>
 
+      <div class="spFim">
       <button class="btn" id="btn" onclick="cadastrar()">Criar meu cadastro</button>
       <div class="aviso" id="aviso"></div>
       <div class="rodape">Já é parceiro? <a href="parceiro.html">Entrar no seu painel</a></div>
+      </div>
     </div>
 
     <div id="sucesso">
