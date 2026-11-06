@@ -189,11 +189,13 @@ def tela_cta(p):
     pul = 1 + 0.06 * max(0, math.sin(2 * math.pi * (p - 0.6) / 1.1)) if p > 0.6 else 1
     balao(d, W / 2, 470 - 20 * (1 - e) + 10 * math.sin(2 * math.pi * p / 1.4), 1.3 * s, (255, 196, 74, int(255 * e)))
     l1 = C.get('linha1', 'Comente'); d.text(((W - d.textlength(l1, font=FB)) / 2, 640), l1, font=FB, fill=(255, 255, 255, int(255 * e)))
-    pal = C['palavra']; pw = d.textlength(pal, font=FP); bw, bh = (pw + 120) * s * pul, 210 * s * pul
+    pal = C['palavra']; FPp = FP; pw = d.textlength(pal, font=FPp)
+    if pw > 760: FPp = ImageFont.truetype(FD + 'Poppins-Bold.ttf', int(150 * 760 / pw)); pw = d.textlength(pal, font=FPp)  # palavra longa (COSMÉTICO) cabe na tela
+    bw, bh = (pw + 120) * s * pul, 210 * s * pul
     cam = Image.new('RGBA', (W, H), (0, 0, 0, 0)); dc = ImageDraw.Draw(cam)
     dc.rounded_rectangle([W / 2 - bw / 2, 900 - bh / 2, W / 2 + bw / 2, 900 + bh / 2], int(40 * s), fill=(255, 196, 74, 255))
     img.alpha_composite(cam)
-    tx = Image.new('RGBA', (int(pw + 40), 220), (0, 0, 0, 0)); ImageDraw.Draw(tx).text((20, 0), pal, font=FP, fill=(20, 14, 18, 255))
+    tx = Image.new('RGBA', (int(pw + 40), 220), (0, 0, 0, 0)); ImageDraw.Draw(tx).text((20, 0), pal, font=FPp, fill=(20, 14, 18, 255))
     tx = tx.resize((max(1, int(tx.width * s * pul)), max(1, int(tx.height * s * pul))), Image.BICUBIC)
     img.alpha_composite(tx, (int(W / 2 - tx.width / 2), int(900 - tx.height / 2 - 18 * s)))
     e3 = ease_out((p - 0.5) / 0.4); d = ImageDraw.Draw(img)

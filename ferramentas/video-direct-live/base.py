@@ -83,6 +83,12 @@ def ped(i, st, nome, item, q, total, mins, **x):
 def msg(i, nome, texto, tipo='msg', ago=0):
     return ('negocios/AV0000000001/livechat/m%d' % i, {'nome': nome, 'texto': texto, 'tipo': tipo, 'criadoEm': {'__ms': now - ago}})
 
+RELOGIO = """(()=>{const RD=Date; const rn=RD.now.bind(RD); let fixo=null, desl=0;
+ const agora=()=> fixo!==null ? fixo : rn()+desl;
+ class D extends RD{constructor(...a){ if(a.length===0) super(agora()); else super(...a);} static now(){return agora();}}
+ window.Date=D;
+ window.__clk={real:()=>agora(), fix:(t)=>{fixo=t;}, solta:()=>{ if(fixo!==null){desl=fixo-rn(); fixo=null;} }};
+})();"""
 CAMJS = """(()=>{let cur=null; window.__camTotal=%d;
  const carrega=async(i)=>{const im=new Image(); im.src='/__camf/'+i; try{await im.decode();}catch(_){} return im;};
  if(window.__camTotal) carrega(0).then(im=>{cur=im;});
@@ -117,6 +123,7 @@ async def ctxNovo(br, fake, robo, vw, vh, dsf, mobile=True):
                                locale='pt-BR', timezone_id='America/Sao_Paulo', bypass_csp=True)
     await ctx.add_init_script('window.__FAKE=' + json.dumps(fake) + ';window.__FAKE.user&&(window.__FAKE.user.getIdToken=async()=>"tok");try{localStorage.setItem("mv_medicao","nao");localStorage.setItem("moviki_onb_AV0000000001","1");localStorage.setItem("mv_live_nome","Ana");}catch(e){} window.print=()=>{};')
     await ctx.add_init_script("document.addEventListener('DOMContentLoaded',()=>{const s=document.createElement('style');s.textContent=%s;document.head.appendChild(s);});window.mvI=window.mvI||function(img,e){var s=document.createElement('span');s.textContent=e;img.replaceWith(s);};" % json.dumps(CSSLIMPA))
+    await ctx.add_init_script(RELOGIO)
     await ctx.add_init_script(CAMJS)
     pg = await ctx.new_page(); erros = []
     pg.on('pageerror', lambda e: erros.append(str(e)[:200]))
@@ -238,13 +245,22 @@ async def gravar(pg, cdp, n, eventos, O, taxa=0.15, cam0=0):
     # 05/11/2026 (pedido do Paulo): sem vai e volta visível. A cena usa só o trecho de ida da câmera (arquivos a*);
     # se a cena for mais longa que a ida inteira, a câmera anda um pouco mais devagar para caber.
     F = max(1, sum(1 for f in CAMF if f.startswith('a')))
-    if n <= F: ini = cam0 % (F - n + 1); idx = lambda i: ini + i
-    else: idx = lambda i: int(round(i * (F - 1) / max(1, n - 1)))
+    # 05/11/2026 (confeitaria): câmera em vários clipes, todos para a frente (segs.json = [[ini, fim), ...] dos quadros a*).
+    # Cada cena usa um clipe só; a troca de clipe cai no corte entre cenas. Nada de trecho invertido (piscada robótica).
+    SEGS = json.load(open(CAMD + '/segs.json')) if os.path.exists(CAMD + '/segs.json') else [[0, F]]
+    s0, s1 = SEGS[(cam0 // 60) % len(SEGS)]; L = s1 - s0
+    if n <= L: ini = s0 + cam0 % (L - n + 1); idx = lambda i: ini + i
+    else: idx = lambda i: s0 + int(round(i * (L - 1) / max(1, n - 1)))
+    # Relógio da página andando no ritmo do vídeo (30 quadros por segundo), não no da gravação:
+    # sem isso o prazo do Pix e a contagem da oferta corriam ~8x mais rápido (pedido do Paulo, 05/11/2026).
+    tz = await pg.evaluate('()=>window.__clk?window.__clk.real():Date.now()')
     for i in range(n):
+        await pg.evaluate('(t)=>window.__clk&&window.__clk.fix(t)', tz + i * 1000.0 / 30)
         await pg.evaluate('(n)=>window.__setT&&window.__setT(n)', idx(i))
         if i in eventos:
             for fn in (eventos[i] if isinstance(eventos[i], list) else [eventos[i]]): await fn()
         await pg.screenshot(path=O + '%04d.jpg' % (i + 1), type='jpeg', quality=90)
+    await pg.evaluate('()=>window.__clk&&window.__clk.solta()')
     print('  gravou', n, 'quadros em %.1fs' % (time.time() - t0), flush=True)
 
 async def navegador(p):

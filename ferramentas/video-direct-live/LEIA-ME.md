@@ -69,3 +69,10 @@ sfx e trilha: os mesmos do DESEJO de moda (skill desejo-ramo).
 - Espectadores: `plateia()` começa entre 28 e 46, cresce a cada cena e oscila durante a cena (nunca repete o 37).
 - Produto com rótulo: primeiro quadro no gpt-image (rótulo com nome e detalhe, produto fechado na mão) e depois Veo 3.1 Lite imagem-para-vídeo. Nunca aplicar líquido.
 - Câmera longa sem repetir: dois clipes que saem do MESMO primeiro quadro, o primeiro invertido e o segundo para a frente, emendam sem corte nesse quadro (16 s). O Kairogen não aceita arquivo local como quadro inicial e o Veo 3.1 Lite não respeita o quadro final.
+
+## Atualização 05/11/2026 (noite): confeitaria e kit do feed
+
+- **Nunca clipe invertido** na câmera da vendedora: piscada e fala ao contrário parecem robóticas (reprovado pelo Paulo). Câmera em vários clipes para a frente: `cam-<ramo>/segs.json` = `[[ini, fim), ...]`; cada cena usa um clipe só (`(cam0 // 60) % n`), a troca cai no corte entre cenas.
+- **Relógio da página no ritmo do vídeo**: `base.py` (`RELOGIO`) fixa o `Date` da página em 30 quadros por segundo durante a gravação. Antes, o prazo do Pix e a contagem da oferta corriam ~8x mais rápido.
+- Estúdio (cenas 7 e 8) sem o espelho da selfie: rótulo legível.
+- **Kit do feed** de cada ramo: `variantes.py` monta a pasta `-feed` (fim "30 dias grátis · sem cartão" + cartela "Comente <PALAVRA>"); `montar_desejo.py <pasta>-feed` e `--comente`; `kit_resume.sh` faz montagem e carimbo retomáveis (a máquina reinicia); `prs_kit.py` escreve o catálogo do Material de apoio e a grade do robô. Palavra longa (COSMÉTICO) diminui sozinha na cartela.

@@ -95,6 +95,7 @@ async def c7(br):  # lado da loja: so o celular, Entrar ao vivo, pedido chega
     ctx, pg, er = await ctxNovo(br, fakeEstudio(), roboEst, 390, 844, 2)
     await pg.goto('http://127.0.0.1:%d/live.html' % PA)
     await pg.wait_for_selector('#stPronto:not(.escondido)', timeout=25000); await asyncio.sleep(1.5)
+    await pg.add_style_tag(content='video,canvas{transform:none!important}')  # rótulo legível: sem espelho da selfie
     await pg.click('#btnCamera'); await asyncio.sleep(2)
     await rolar(pg, '#btnIniciar')
     cdp = await ctx.new_cdp_session(pg)
@@ -115,6 +116,7 @@ async def c8(br):  # ensaio que ninguem ve
     ctx, pg, er = await ctxNovo(br, fakeEstudio(), roboEst, 390, 844, 2)
     await pg.goto('http://127.0.0.1:%d/live.html' % PA)
     await pg.wait_for_selector('#stPronto:not(.escondido)', timeout=25000); await asyncio.sleep(1.5)
+    await pg.add_style_tag(content='video,canvas{transform:none!important}')  # rótulo legível: sem espelho da selfie
     await pg.click('#btnCamera'); await asyncio.sleep(2)
     await rolar(pg, '#btnEnsaio')
     cdp = await ctx.new_cdp_session(pg)
