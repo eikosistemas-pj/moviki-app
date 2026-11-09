@@ -2804,7 +2804,7 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
           </div>
           <div class="onbSub">Novidades do painel, aulas novas e dicas de live, direto no seu WhatsApp. Só a equipe do Moviki posta, e o seu número fica escondido dos outros participantes.</div>
           <button type="button" class="onbPasso" id="mvComBtn" onclick="mvComEntrar()">
-            <span class="mark">＋</span><span class="txt">Entrar na comunidade</span><span class="seta">›</span>
+            <span class="mark">＋</span><span class="txt" id="mvComTxt">Entrar na comunidade</span><span class="seta">›</span>
           </button>
           <div class="onbFinal" style="font-size:13px;color:#9fc7e6;margin-top:4px">Ficou com dúvida? Toque em <b>Falar com o Vik</b> ou chame o suporte no WhatsApp.</div>
         </div>
@@ -2830,6 +2830,7 @@ label.v2Op input{width:18px;height:18px;padding:0;margin:2px 0 0;flex:0 0 auto}
             fetch('/comunidade.json',{cache:'no-store'}).then(function(r){ return r.ok?r.json():null; }).then(function(j){
               if(!j || !ok(j.link)) return;
               LINK=j.link;
+              if(/\/channel\//.test(LINK)){ var t=document.getElementById('mvComTxt'); if(t) t.textContent='Seguir o canal do Moviki'; }
               var b=document.getElementById('mvComunidade'); if(b) b.classList.remove('escondido');
             }).catch(function(){});
           }
