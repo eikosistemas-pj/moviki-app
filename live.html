@@ -613,7 +613,7 @@ svg{display:block}
             <li>Dados ao vivo: pico, pedidos por produto</li>
             <li>Cortes de 60 s para Reels e Status</li>
             <li>"Estou aqui agora" com botão Como chegar</li>
-            <li>Lives de até 3 horas e sacolinha com 20 produtos</li>
+            <li>Lives de até 4 horas e sacolinha com 20 produtos</li>
           </ul>
           <a class="btnOuro" href="/?plano=enterprise&periodo=mensal">Conhecer o Enterprise</a>
         </div>
@@ -663,7 +663,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer, increment }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-10-27-fechamento';   /* 27/10: o Resumo da live ganhou o botao que abre o Fechamento da live na Central de Pedidos (index.html?fechamento=<id da live>). */ /* antes: 2026-10-18-balcao */   /* 18/10: dica "Tem outra tela?" com o atalho para a aula do balcao de live e aviso ao voltar para o estudio com a live no ar (a camera pode ter parado). */ /* antes: 2026-10-17-vocab */   /* 17/10: "Cardapio" so para comida e bebida; demais ramos veem "Catalogo" (vocab.js). */ /* antes: 2026-10-17-subirplano */   /* 17/10: quem nao tem plano com live ve, embaixo dos botoes, o link 'Veja em 1 minuto o que muda em cada plano' que abre a aula mod-subir-plano no painel (?aula=). Antes: 2026-10-14-provisorio. */ /* anterior: */   /* 14/10: quem esta no teste provisorio (e-mail nao confirmado) ve "Confirme seu e-mail para fazer a live aberta" ao tentar entrar ao vivo; o ensaio continua. */ /* antes: 2026-10-10-pixtexto */   /* 10/10: aba Receber no Pix deixou de mostrar para todos a tarifa e o minimo da subconta antiga (R$ 1,99 e R$ 20). Quem usa Pix direto nao tem tarifa; o texto da subconta so aparece para quem tem subconta. Achado AC-PIX-1 na regravacao da aula mod-live-pix. */ /* antes: 2026-10-07-ensaio */   /* 07/10 (P75 fase 1, B7): botao "Fazer um ensaio" (transmissao de teste sem publico, ate 10 min, 5 por dia, nao conta nas lives do teste gratis), selo ENSAIO com o tempo restante e convite para a live de verdade. */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): botao Avisar a Lista VIP durante a live (so com a chave ligada pelo dono). */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): pedido de envio para outra cidade aparece como Envio (cidade/UF) */ /* antes: 2026-10-03-carrinho */   /* 03/10 (P70): pedido do carrinho da live aparece com todos os itens */   /* 01/10 (P65): conforto visual v2 (sem brilho, escala de letra); estudio segue escuro */ /* antes: 2026-09-30-estoque2 */   /* anterior: 2026-09-30-estoque (30/09 madrugada: texto da aba Oferta, alerta amarelo no aviso de pagamento, Recebi/Depois nao fecham a folha, "1 peca reservada"). Antes: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
+  window.MOVIKI_VERSAO='2026-11-09-escala'; /* 09/11: plano de escala da live: fila automatica quando muita gente entra ao vivo ao mesmo tempo (o servidor responde erro 'fila' e o estudio tenta de novo sozinho, com contagem na tela), contador de quem assiste so grava quando o numero muda, e upsell com lives de ate 4 horas; antes: 2026-10-27-fechamento */ void 0;   /* 27/10: o Resumo da live ganhou o botao que abre o Fechamento da live na Central de Pedidos (index.html?fechamento=<id da live>). */ /* antes: 2026-10-18-balcao */   /* 18/10: dica "Tem outra tela?" com o atalho para a aula do balcao de live e aviso ao voltar para o estudio com a live no ar (a camera pode ter parado). */ /* antes: 2026-10-17-vocab */   /* 17/10: "Cardapio" so para comida e bebida; demais ramos veem "Catalogo" (vocab.js). */ /* antes: 2026-10-17-subirplano */   /* 17/10: quem nao tem plano com live ve, embaixo dos botoes, o link 'Veja em 1 minuto o que muda em cada plano' que abre a aula mod-subir-plano no painel (?aula=). Antes: 2026-10-14-provisorio. */ /* anterior: */   /* 14/10: quem esta no teste provisorio (e-mail nao confirmado) ve "Confirme seu e-mail para fazer a live aberta" ao tentar entrar ao vivo; o ensaio continua. */ /* antes: 2026-10-10-pixtexto */   /* 10/10: aba Receber no Pix deixou de mostrar para todos a tarifa e o minimo da subconta antiga (R$ 1,99 e R$ 20). Quem usa Pix direto nao tem tarifa; o texto da subconta so aparece para quem tem subconta. Achado AC-PIX-1 na regravacao da aula mod-live-pix. */ /* antes: 2026-10-07-ensaio */   /* 07/10 (P75 fase 1, B7): botao "Fazer um ensaio" (transmissao de teste sem publico, ate 10 min, 5 por dia, nao conta nas lives do teste gratis), selo ENSAIO com o tempo restante e convite para a live de verdade. */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): botao Avisar a Lista VIP durante a live (so com a chave ligada pelo dono). */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): pedido de envio para outra cidade aparece como Envio (cidade/UF) */ /* antes: 2026-10-03-carrinho */   /* 03/10 (P70): pedido do carrinho da live aparece com todos os itens */   /* 01/10 (P65): conforto visual v2 (sem brilho, escala de letra); estudio segue escuro */ /* antes: 2026-09-30-estoque2 */   /* anterior: 2026-09-30-estoque (30/09 madrugada: texto da aba Oferta, alerta amarelo no aviso de pagamento, Recebi/Depois nao fecham a folha, "1 peca reservada"). Antes: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -703,7 +703,7 @@ svg{display:block}
   function contarFila(){const abertos=filaAtual.filter(m=>!feitos[m.id]).length;
     [el('nFila'),el('dkFila')].forEach(nf=>{if(!nf)return;nf.textContent=abertos;nf.classList.toggle('escondido',!abertos||!ent());});}
   let stream=null,modoCam='user',pc=null,noAr=false,inicioMs=0,tickT=null,pulsoT=null,contaT=null,chatDes=null,wake=null;
-  let pico=0,assistindo=0,msgs=[],encerrando=false;
+  let pico=0,assistindo=0,msgs=[],encerrando=false,assistGravado=-1;
   /* 07/10 (P75 B7): estado do ENSAIO. Declarado aqui em cima de proposito: as aulas, a chave-mestra e o pagehide leem ensaioNoAr. */
   let ensaioNoAr=false,ensaioPc=null,ensaioFimMs=0,ensaioTickT=null,ensaioPulsoT=null,ensaioInfo=null,ensaioIniciando=false;
   const refLive=()=>doc(db,'negocios',uid,'estado','live');
@@ -1121,7 +1121,23 @@ svg{display:block}
     if(barrar(titulo,'titulo')){volta();return;}
     for(const n of sacola.concat(fixado?[fixado]:[])){if(barrar(n,'inicio')){volta();return;}}
     if(!stream&&!(await ligarCamera())){volta();return;}
-    const r=await chamarApi('iniciar',{titulo,produtos:sacola.concat(fixado?[fixado]:[])});
+    let r=await chamarApi('iniciar',{titulo,produtos:sacola.concat(fixado?[fixado]:[])});
+    /* 09/11 — FILA. Com muita gente entrando ao vivo no mesmo minuto, o servico
+       de video pede uma pausa e o servidor responde 'fila' com quantos segundos
+       esperar. Em vez de erro, o estudio conta na tela e tenta de novo sozinho.
+       O sorteio de alguns segundos espalha as novas tentativas. */
+    for(let tent=0;r&&!r.ok&&r.erro==='fila'&&tent<8;tent++){
+      const seg=Math.min(330,Math.max(5,Number(r.esperaSeg)||30))+Math.floor(Math.random()*15);
+      ev('live_fila',{seg,tent});
+      for(let s=seg;s>0;s--){
+        b.lastChild.textContent='Na fila: '+s+' s';
+        el('erroIniciar').textContent='Muita gente entrando ao vivo agora. Sua live abre sozinha em '+s+' segundos. Deixe esta tela aberta.';
+        el('erroIniciar').classList.remove('escondido');
+        await new Promise(z=>setTimeout(z,1000));
+      }
+      el('erroIniciar').classList.add('escondido'); b.lastChild.textContent='Conectando…';
+      r=await chamarApi('iniciar',{titulo,produtos:sacola.concat(fixado?[fixado]:[])});
+    }
     if(!r.ok){
       if(r.erro==='aceite'){aceiteOk=false;volta();abrirAceite();return;}
       const txt={plano:'A live faz parte do Premium e do Enterprise.',config:'A live ainda está sendo ligada do nosso lado. Tente mais tarde.',cloudflare:'O serviço de vídeo não respondeu. Tente de novo em 1 minuto.',token:'Sua sessão venceu. Volte ao painel e entre de novo.',rede:'Sem internet. Confira o sinal.',firestore:'Falha do nosso lado. Tente de novo em instantes.',
@@ -1135,6 +1151,7 @@ svg{display:block}
         /* O servidor manda quantos segundos faltam — dizer "espere um pouco"
            sem numero e o que faz a pessoa ficar clicando. */
         freio:'Você tentou começar várias vezes seguidas. '+(r.esperaSeg?('Tente de novo em '+(r.esperaSeg>90?(Math.ceil(r.esperaSeg/60)+' minutos'):(r.esperaSeg+' segundos'))+'.'):'Espere um pouco e tente de novo.'),
+        fila:'Muita gente entrando ao vivo agora. Tente de novo em alguns minutos.',
         sessao:'Não consegui abrir a live agora. Tente de novo em instantes.'}[r.erro]||'Não deu para começar agora.';
       el('erroIniciar').textContent=txt; el('erroIniciar').classList.remove('escondido'); b.disabled=false; b.lastChild.textContent='Entrar ao vivo'; return;
     }
@@ -1142,7 +1159,7 @@ svg{display:block}
     try{pc=await conectar(whipAtual);}catch(e){
       el('erroIniciar').textContent='A conexão de vídeo falhou. Troque de Wi-Fi para 4G (ou o contrário) e tente de novo.';el('erroIniciar').classList.remove('escondido');b.disabled=false;b.lastChild.textContent='Entrar ao vivo';return;}
     vigiar(pc);
-    noAr=true; inicioMs=Date.now(); pico=0; msgs=[]; _vidAviso=0; el("saldoVideo").classList.add("escondido"); document.body.classList.add('noAr'); aplicarImersivo(true);
+    noAr=true; inicioMs=Date.now(); pico=0; assistGravado=-1; msgs=[]; _vidAviso=0; el("saldoVideo").classList.add("escondido"); document.body.classList.add('noAr'); aplicarImersivo(true);
     /* CONTEUDO da live. `ativa`, `whep` e `pulso` NAO entram mais aqui: quem
        diz que a live esta no ar, e de onde vem o video, e o servidor
        (estado/liveSessao). Os campos antigos sao zerados de proposito para que
@@ -1238,7 +1255,9 @@ svg{display:block}
       const q=query(collection(db,'negocios',uid,'livepresenca'),where('em','>=',Timestamp.fromMillis(Date.now()-100000)));
       const c=await getCountFromServer(q); assistindo=c.data().count||0; pico=Math.max(pico,assistindo);
       el('nOlho').textContent=assistindo; el('kAgora').textContent=assistindo; el('kPico').textContent=pico;
-      updateDoc(refLive(),{assistindo}).catch(()=>{});
+      /* 09/11: so grava quando o numero muda. Cada gravacao em estado/live e
+         lida por todo mundo que esta assistindo. */
+      if(assistindo!==assistGravado){assistGravado=assistindo;updateDoc(refLive(),{assistindo}).catch(()=>{assistGravado=-1;});}
     }catch(_){}
   }
   el('btnEncerrar').onclick=()=>{if(confirm('Encerrar a live agora?'))encerrar();};
@@ -1396,7 +1415,7 @@ svg{display:block}
     }
     b.classList.remove('escondido'); sub.classList.remove('escondido');
   }
-  const ERR_ENSAIO={ensaio_dia:'Você já fez os ensaios de hoje. Amanhã libera de novo.',
+  const ERR_ENSAIO={fila:'Muita gente entrando ao vivo agora. Tente o ensaio de novo em 1 ou 2 minutos.',ensaio_dia:'Você já fez os ensaios de hoje. Amanhã libera de novo.',
     ensaio_indisponivel:'O ensaio é para quem ainda vai fazer a primeira live.',
     live_no_ar:'Sua live está no ar. Encerre a live antes de ensaiar.',
     plano:'A live faz parte do Premium e do Enterprise.',config:'A live ainda está sendo ligada do nosso lado. Tente mais tarde.',
