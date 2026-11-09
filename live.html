@@ -643,6 +643,31 @@ svg{display:block}
     <button type="button" class="btnSec" id="aceiteNao" style="width:100%;margin-top:8px">Agora não</button>
   </div>
 </div>
+<!-- 09/11/2026: recarga de minutos de video (lib/recargaLive.js no robo). -->
+<div id="recOv" class="escondido" style="position:fixed;inset:0;z-index:61;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center">
+  <div style="width:100%;max-width:560px;max-height:90vh;overflow:auto;background:var(--mv-surf);border-radius:20px 20px 0 0;padding:18px 16px calc(env(safe-area-inset-bottom) + 18px)">
+    <h3 style="margin:0 0 6px;font-size:17px">Comprar minutos extras de vídeo</h3>
+    <p class="sub" id="recSub" style="margin:0 0 12px">Os minutos extras entram assim que o pagamento cai, são usados depois dos minutos do plano e <b>não vencem</b> na virada do mês. 1 pessoa assistindo 1 minuto = 1 minuto de vídeo.</p>
+    <div id="recEscolha">
+      <div id="recPacotes" style="display:grid;gap:8px;margin-bottom:12px"></div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button type="button" class="btnSec recForma" data-forma="pix" style="flex:1">Pix</button>
+        <button type="button" class="btnSec recForma" data-forma="cartao" style="flex:1">Cartão</button>
+      </div>
+      <button type="button" class="btnGrad" id="recComprar" disabled>Escolha o pacote</button>
+      <p class="sub" style="margin:10px 0 0;font-size:12px;opacity:.85">Pagamento avulso, sem renovação automática. Desistiu em até 7 dias? Os minutos não usados voltam em dinheiro. Cláusula 6-E dos <a href="https://moviki.com.br/termos.html" target="_blank" rel="noopener" style="color:var(--mv-ciano)">Termos</a>.</p>
+    </div>
+    <div id="recPagar" class="escondido" style="text-align:center">
+      <img id="recQr" alt="QR Code do Pix" style="width:220px;height:220px;background:#fff;border-radius:12px;padding:8px;display:none;margin:0 auto 10px">
+      <button type="button" class="btnSec" id="recCopiar" style="width:100%;display:none">Copiar o Pix copia e cola</button>
+      <a id="recCartao" class="btnGrad" target="_blank" rel="noopener" style="display:none;text-decoration:none;text-align:center">Pagar no cartão</a>
+      <p class="sub" id="recEspera" style="margin:12px 0 0">Esperando o pagamento… esta tela confere sozinha.</p>
+    </div>
+    <p id="recErro" class="msgErro escondido" style="margin-top:10px"></p>
+    <button type="button" class="btnSec" id="recFechar" style="width:100%;margin-top:10px">Fechar</button>
+  </div>
+</div>
+<button type="button" id="btnRecVivo" class="escondido" style="position:fixed;top:calc(env(safe-area-inset-top) + 56px);right:12px;z-index:45;border:0;border-radius:999px;padding:8px 14px;font:inherit;font-size:13px;font-weight:700;background:var(--mv-ciano);color:#03131f">+ Minutos</button>
 <div id="pedAviso" class="escondido" role="status" aria-live="polite">
   <div class="paTopo">Cliente avisou que pagou</div>
   <div class="paValor" id="paValor">R$ 0,00</div>
@@ -663,7 +688,7 @@ svg{display:block}
   import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, addDoc, query, where, orderBy, limit, serverTimestamp, Timestamp, getCountFromServer, increment }
     from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  window.MOVIKI_VERSAO='2026-11-09-escala'; /* 09/11: plano de escala da live: fila automatica quando muita gente entra ao vivo ao mesmo tempo (o servidor responde erro 'fila' e o estudio tenta de novo sozinho, com contagem na tela), contador de quem assiste so grava quando o numero muda, e upsell com lives de ate 4 horas; antes: 2026-10-27-fechamento */ void 0;   /* 27/10: o Resumo da live ganhou o botao que abre o Fechamento da live na Central de Pedidos (index.html?fechamento=<id da live>). */ /* antes: 2026-10-18-balcao */   /* 18/10: dica "Tem outra tela?" com o atalho para a aula do balcao de live e aviso ao voltar para o estudio com a live no ar (a camera pode ter parado). */ /* antes: 2026-10-17-vocab */   /* 17/10: "Cardapio" so para comida e bebida; demais ramos veem "Catalogo" (vocab.js). */ /* antes: 2026-10-17-subirplano */   /* 17/10: quem nao tem plano com live ve, embaixo dos botoes, o link 'Veja em 1 minuto o que muda em cada plano' que abre a aula mod-subir-plano no painel (?aula=). Antes: 2026-10-14-provisorio. */ /* anterior: */   /* 14/10: quem esta no teste provisorio (e-mail nao confirmado) ve "Confirme seu e-mail para fazer a live aberta" ao tentar entrar ao vivo; o ensaio continua. */ /* antes: 2026-10-10-pixtexto */   /* 10/10: aba Receber no Pix deixou de mostrar para todos a tarifa e o minimo da subconta antiga (R$ 1,99 e R$ 20). Quem usa Pix direto nao tem tarifa; o texto da subconta so aparece para quem tem subconta. Achado AC-PIX-1 na regravacao da aula mod-live-pix. */ /* antes: 2026-10-07-ensaio */   /* 07/10 (P75 fase 1, B7): botao "Fazer um ensaio" (transmissao de teste sem publico, ate 10 min, 5 por dia, nao conta nas lives do teste gratis), selo ENSAIO com o tempo restante e convite para a live de verdade. */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): botao Avisar a Lista VIP durante a live (so com a chave ligada pelo dono). */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): pedido de envio para outra cidade aparece como Envio (cidade/UF) */ /* antes: 2026-10-03-carrinho */   /* 03/10 (P70): pedido do carrinho da live aparece com todos os itens */   /* 01/10 (P65): conforto visual v2 (sem brilho, escala de letra); estudio segue escuro */ /* antes: 2026-09-30-estoque2 */   /* anterior: 2026-09-30-estoque (30/09 madrugada: texto da aba Oferta, alerta amarelo no aviso de pagamento, Recebi/Depois nao fecham a folha, "1 peca reservada"). Antes: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
+  window.MOVIKI_VERSAO='2026-11-09-recarga'; /* 09/11 (recarga): botao + Minutos durante a live a partir de 80% da cota e folha de compra de minutos extras (Pix com QR ou cartao), tambem no saldo antes da live e quando a live cai pelo teto; antes 2026-11-09-escala: plano de escala da live: fila automatica quando muita gente entra ao vivo ao mesmo tempo (o servidor responde erro 'fila' e o estudio tenta de novo sozinho, com contagem na tela), contador de quem assiste so grava quando o numero muda, e upsell com lives de ate 4 horas; antes: 2026-10-27-fechamento */ void 0;   /* 27/10: o Resumo da live ganhou o botao que abre o Fechamento da live na Central de Pedidos (index.html?fechamento=<id da live>). */ /* antes: 2026-10-18-balcao */   /* 18/10: dica "Tem outra tela?" com o atalho para a aula do balcao de live e aviso ao voltar para o estudio com a live no ar (a camera pode ter parado). */ /* antes: 2026-10-17-vocab */   /* 17/10: "Cardapio" so para comida e bebida; demais ramos veem "Catalogo" (vocab.js). */ /* antes: 2026-10-17-subirplano */   /* 17/10: quem nao tem plano com live ve, embaixo dos botoes, o link 'Veja em 1 minuto o que muda em cada plano' que abre a aula mod-subir-plano no painel (?aula=). Antes: 2026-10-14-provisorio. */ /* anterior: */   /* 14/10: quem esta no teste provisorio (e-mail nao confirmado) ve "Confirme seu e-mail para fazer a live aberta" ao tentar entrar ao vivo; o ensaio continua. */ /* antes: 2026-10-10-pixtexto */   /* 10/10: aba Receber no Pix deixou de mostrar para todos a tarifa e o minimo da subconta antiga (R$ 1,99 e R$ 20). Quem usa Pix direto nao tem tarifa; o texto da subconta so aparece para quem tem subconta. Achado AC-PIX-1 na regravacao da aula mod-live-pix. */ /* antes: 2026-10-07-ensaio */   /* 07/10 (P75 fase 1, B7): botao "Fazer um ensaio" (transmissao de teste sem publico, ate 10 min, 5 por dia, nao conta nas lives do teste gratis), selo ENSAIO com o tempo restante e convite para a live de verdade. */ /* antes: 2026-10-03-vip */   /* 03/10 (P70 etapa 4): botao Avisar a Lista VIP durante a live (so com a chave ligada pelo dono). */ /* antes: 2026-10-03-envio */   /* 03/10 (P70 etapa 2): pedido de envio para outra cidade aparece como Envio (cidade/UF) */ /* antes: 2026-10-03-carrinho */   /* 03/10 (P70): pedido do carrinho da live aparece com todos os itens */   /* 01/10 (P65): conforto visual v2 (sem brilho, escala de letra); estudio segue escuro */ /* antes: 2026-09-30-estoque2 */   /* anterior: 2026-09-30-estoque (30/09 madrugada: texto da aba Oferta, alerta amarelo no aviso de pagamento, Recebi/Depois nao fecham a folha, "1 peca reservada"). Antes: 2026-09-30-reserva. 30/09 tarde (P53): estoque do produto na lista (estoque N / ESGOTADO) e alerta de venda confirmada sem estoque. Antes: 2026-09-26-aulasroxo. 30/09: oferta sincronizada com o servidor (vendidos pelo Pix e unidades reservadas), venda no balcao por incremento e alerta de pago fora do prazo */
   /* www PRIMEIRO, de proposito. Conferido na Vercel em 12/09: o dominio
      moviki.com.br esta configurado como "Redirects to www.moviki.com.br".
      Redirecionamento entre origens troca a origem do pedido por "null", o
@@ -784,6 +809,8 @@ svg{display:block}
     getDoc(doc(db,'negocios',uid,'estado','liveAceite')).then(a=>{aceiteOk=!!(a.exists()&&a.data().versao===ACEITE_VERSAO);}).catch(()=>{});
     ligarAulas();
     carregarSaldo();
+    /* 09/11: Meu plano > Comprar minutos extras abre a folha da recarga direto. */
+    try{if(new URLSearchParams(location.search).get('recarga')==='1')setTimeout(()=>abrirRecarga('meuplano'),600);}catch(_){}
     onSnapshot(doc(db,'configuracoes','liveTermos'),t=>{const d=t.exists()?(t.data()||{}):{};
       MV_TERMOS_EXTRAS=Array.isArray(d.extras)?d.extras.filter(x=>typeof x==='string').slice(0,300):[];
       aplicarChaveMestra(d.liveDesligada===true);},()=>{});
@@ -1153,7 +1180,9 @@ svg{display:block}
         freio:'Você tentou começar várias vezes seguidas. '+(r.esperaSeg?('Tente de novo em '+(r.esperaSeg>90?(Math.ceil(r.esperaSeg/60)+' minutos'):(r.esperaSeg+' segundos'))+'.'):'Espere um pouco e tente de novo.'),
         fila:'Muita gente entrando ao vivo agora. Tente de novo em alguns minutos.',
         sessao:'Não consegui abrir a live agora. Tente de novo em instantes.'}[r.erro]||'Não deu para começar agora.';
-      el('erroIniciar').textContent=txt; el('erroIniciar').classList.remove('escondido'); b.disabled=false; b.lastChild.textContent='Entrar ao vivo'; return;
+      el('erroIniciar').textContent=txt; el('erroIniciar').classList.remove('escondido'); b.disabled=false; b.lastChild.textContent='Entrar ao vivo';
+      if(r.erro==='teto_video'&&r.podeRecarregar)abrirRecarga('recusa');
+      return;
     }
     whipAtual=r.whip; whepAtual=r.whep;
     try{pc=await conectar(whipAtual);}catch(e){
@@ -1222,12 +1251,16 @@ svg{display:block}
   var _vidAviso=0;
   function avisarVideo(v){
     const pct=Number(v.videoPct)||0;
+    /* 09/11: com plano pago, a partir de 80% aparece o botao "+ Minutos"
+       (recarga sem sair da live). Comprou, o teto sobe e o aviso volta a zero. */
+    if(v.podeRecarregar&&pct>=80)el('btnRecVivo').classList.remove('escondido');
+    if(pct<80){_vidAviso=0;el('btnRecVivo').classList.add('escondido');}
     if(pct>=100&&_vidAviso<2){_vidAviso=2;
       toast('Você chegou a 100% dos minutos de vídeo do plano.');
-      aviso('Limite do ciclo atingido. Esta live continua por mais cerca de '+Math.max(0,Number(v.videoToleranciaRestamMin)||0)+' minutos de vídeo; a próxima só em '+(v.viraEm||'o próximo ciclo')+'.');
+      aviso('Limite do ciclo atingido. Esta live continua por mais cerca de '+Math.max(0,Number(v.videoToleranciaRestamMin)||0)+' minutos de vídeo'+(v.podeRecarregar?'. Toque em + Minutos para comprar mais sem parar a live.':'; a próxima só em '+(v.viraEm||'o próximo ciclo')+'.'));
       return;}
     if(pct>=80&&_vidAviso<1){_vidAviso=1;
-      aviso('Você já usou '+pct+'% dos minutos de vídeo do plano neste ciclo (restam '+(Number(v.videoRestamMin)||0).toLocaleString('pt-BR')+' min).');
+      aviso('Você já usou '+pct+'% dos minutos de vídeo neste ciclo (restam '+(Number(v.videoRestamMin)||0).toLocaleString('pt-BR')+' min).'+(v.podeRecarregar?' Se precisar, toque em + Minutos.':''));
       setTimeout(function(){if(_vidAviso===1)aviso('');},12000);}
   }
   function statsSessao(){const q=msgs.filter(m=>m.tipo==='quero').length,c=msgs.filter(m=>m.tipo==='msg').length;
@@ -1276,6 +1309,60 @@ svg{display:block}
     el('btnIniciar').disabled=false; el('btnIniciar').lastChild.textContent='Entrar ao vivo de novo';
     mostrarResumo(); encerrando=false; carregarSaldo();
   }
+  /* ================= recarga de minutos (09/11/2026) =================
+     Pacotes e preco vem do robo (live_recarga_ver); a compra manda o preco
+     que a tela mostrou e o robo recusa se mudou. Pix: QR aqui mesmo; cartao:
+     fatura do Asaas em outra aba. A tela confere o pagamento a cada 5 s. */
+  let recPac='',recForma='pix',recPacs=[],recId='',recT=null;
+  const reais=v=>'R$ '+Number(v||0).toFixed(2).replace('.',',');
+  function recErro(t){el('recErro').textContent=t||'';el('recErro').classList.toggle('escondido',!t);}
+  function recBotao(){const b=el('recComprar');const p=recPacs.find(x=>x.id===recPac);b.disabled=!p;b.textContent=p?('Comprar '+p.nome+' por '+reais(p.valor)+(recForma==='pix'?' no Pix':' no cartão')):'Escolha o pacote';
+    document.querySelectorAll('.recForma').forEach(x=>{x.style.outline=x.dataset.forma===recForma?'2px solid var(--mv-ciano)':'';});}
+  async function abrirRecarga(origem){
+    clearInterval(recT);recId='';recErro('');
+    el('recEscolha').classList.remove('escondido');el('recPagar').classList.add('escondido');
+    el('recPacotes').innerHTML='<p class="sub">Carregando os pacotes…</p>';
+    el('recOv').classList.remove('escondido');ev('live_recarga_aberta',{origem:origem||''});
+    const r=await chamarRobo('live_recarga_ver',{});
+    if(!r||!r.ok){el('recPacotes').innerHTML='';recErro('Não deu para carregar agora. Confira a internet.');return;}
+    if(!r.pode){el('recPacotes').innerHTML='';recErro(r.mensagem||'A recarga é para quem tem Premium ou Enterprise ativo.');return;}
+    recPacs=r.pacotes||[];recPac=recPacs.length>1?recPacs[1].id:(recPacs[0]&&recPacs[0].id)||'';
+    el('recPacotes').innerHTML=recPacs.map(p=>'<button type="button" class="btnSec recPac" data-id="'+esc(p.id)+'" style="display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left">'+
+      '<span><b>'+esc(p.nome)+'</b><br><span style="font-size:12px;opacity:.8">cerca de '+fmtMin(p.minutos/10)+' de live com 10 pessoas · '+reais(p.porMil)+' a cada 1.000 min</span></span><b>'+reais(p.valor)+'</b></button>').join('')+
+      (r.extraSaldoMin>0?'<p class="sub" style="margin:4px 0 0">Você já tem '+r.extraSaldoMin.toLocaleString('pt-BR')+' min extras guardados.</p>':'');
+    const pinta=()=>document.querySelectorAll('.recPac').forEach(x=>{x.style.outline=x.dataset.id===recPac?'2px solid var(--mv-ciano)':'';});
+    document.querySelectorAll('.recPac').forEach(x=>{x.onclick=()=>{recPac=x.dataset.id;pinta();recBotao();};});
+    pinta();recBotao();
+  }
+  document.querySelectorAll('.recForma').forEach(x=>{x.onclick=()=>{recForma=x.dataset.forma;recBotao();};});
+  el('btnRecVivo').onclick=()=>abrirRecarga('vivo');
+  el('recFechar').onclick=()=>{el('recOv').classList.add('escondido');clearInterval(recT);};
+  el('recComprar').onclick=async()=>{
+    const p=recPacs.find(x=>x.id===recPac);if(!p)return;
+    const b=el('recComprar');b.disabled=true;b.textContent='Gerando a cobrança…';recErro('');
+    const r=await chamarRobo('live_recarga_comprar',{dados:{pacote:p.id,pagamento:recForma,valorVisto:p.valor,origem:noAr?'vivo':'estudio'}});
+    if(!r||!r.ok){recErro((r&&r.mensagem)||'Não deu para gerar a cobrança agora.');recBotao();return;}
+    recId=r.recarga;ev('live_recarga_cobranca',{pacote:p.id,forma:recForma,valor:p.valor});
+    el('recEscolha').classList.add('escondido');el('recPagar').classList.remove('escondido');
+    const qr=el('recQr'),cp=el('recCopiar'),ct=el('recCartao');
+    qr.style.display='none';cp.style.display='none';ct.style.display='none';
+    if(r.pix){if(r.pix.imagem){qr.src='data:image/png;base64,'+r.pix.imagem;qr.style.display='block';}
+      if(r.pix.copiaECola){cp.style.display='block';cp.onclick=async()=>{try{await navigator.clipboard.writeText(r.pix.copiaECola);toast('Pix copiado. Cole no app do banco.');}catch(_){prompt('Copie o Pix:',r.pix.copiaECola);}};}}
+    if(r.cartaoUrl){ct.href=r.cartaoUrl;ct.style.display='block';window.open(r.cartaoUrl,'_blank','noopener');}
+    el('recEspera').textContent='Esperando o pagamento… esta tela confere sozinha.';
+    clearInterval(recT);let n=0;
+    recT=setInterval(async()=>{
+      if(++n>180){clearInterval(recT);el('recEspera').textContent='Ainda não vimos o pagamento. Se você já pagou, ele aparece no saldo em alguns minutos.';return;}
+      const s=await chamarRobo('live_recarga_status',{dados:{recarga:recId}});
+      if(s&&s.ok&&s.pago){clearInterval(recT);
+        el('recEspera').innerHTML='<b style="color:var(--mv-ok,#22c55e)">Pagamento confirmado: '+Number(s.minutos||p.minutos).toLocaleString('pt-BR')+' minutos no seu saldo.</b>';
+        toast('Minutos extras liberados.');ev('live_recarga_paga',{pacote:p.id,valor:p.valor});
+        _vidAviso=0;el('btnRecVivo').classList.add('escondido');aviso('');
+        const bi=el('btnIniciar');if(!noAr&&bi.lastChild.textContent==='Limite do ciclo atingido'){bi.disabled=false;bi.lastChild.textContent='Entrar ao vivo de novo';el('erroIniciar').classList.add('escondido');}
+        carregarSaldo();
+      }else if(s&&s.situacao==='vencido'){clearInterval(recT);el('recEspera').textContent='O Pix venceu sem pagamento. Feche e gere outro.';}
+    },5000);
+  };
   /* ================= saldo do ciclo (19/09/2026) =================
      O lojista via o limite de minutos de video so DURANTE a live, ou na
      recusa ao tentar comecar. Agora o saldo aparece antes de entrar ao vivo,
@@ -1295,13 +1382,18 @@ svg{display:block}
     if(!(r.tetoMin>0)){p.textContent=pessoas;p.classList.toggle('escondido',!pessoas);return;}
     const resta=Math.max(0,r.tetoMin-r.usadoMin);
     const exemplo=max>0&&resta>0?(' — cerca de '+fmtMin(resta/Math.min(max,10))+' com 10 pessoas assistindo'):'';
+    const extraTxt=(r.extraSaldoMin>0)?(' Inclui '+r.extraSaldoMin.toLocaleString('pt-BR')+' min extras que não vencem.'):'';
+    const linkRec=r.podeRecarregar?' <a href="#" class="recAbrir" style="color:var(--mv-ciano);font-weight:700">Comprar minutos extras</a>':'';
     if(r.bloqueada){
-      p.innerHTML='<b style="color:var(--mv-erro)">Você usou os '+r.tetoMin.toLocaleString('pt-BR')+' minutos de vídeo do plano neste ciclo.</b> A próxima live fica liberada em <b>'+esc(r.viraEm||'')+'</b>.';
+      p.innerHTML='<b style="color:var(--mv-erro)">Você usou os '+r.tetoMin.toLocaleString('pt-BR')+' minutos de vídeo deste ciclo.</b> '+
+        (r.podeRecarregar?'Compre minutos extras para entrar ao vivo agora, ou espere a renovação em <b>'+esc(r.viraEm||'')+'</b>.'+linkRec
+                         :'A próxima live fica liberada em <b>'+esc(r.viraEm||'')+'</b>.');
     }else{
-      p.innerHTML=pessoas+'Minutos de vídeo neste ciclo: <b>'+r.usadoMin.toLocaleString('pt-BR')+' de '+r.tetoMin.toLocaleString('pt-BR')+'</b> ('+r.pct+'%)'+esc(exemplo)+'. Renova em '+esc(r.viraEm||'')+'. '+
-        '<span style="opacity:.8">1 pessoa assistindo 1 minuto = 1 minuto de vídeo.</span>';
+      p.innerHTML=pessoas+'Minutos de vídeo neste ciclo: <b>'+r.usadoMin.toLocaleString('pt-BR')+' de '+r.tetoMin.toLocaleString('pt-BR')+'</b> ('+r.pct+'%)'+esc(exemplo)+'. Renova em '+esc(r.viraEm||'')+'.'+esc(extraTxt)+' '+
+        '<span style="opacity:.8">1 pessoa assistindo 1 minuto = 1 minuto de vídeo.</span>'+(r.pct>=60?linkRec:'');
     }
     p.classList.remove('escondido');
+    p.querySelectorAll('.recAbrir').forEach(a=>{a.onclick=(e)=>{e.preventDefault();abrirRecarga('saldo');};});
   }
   /* A live que o SERVIDOR fechou por limite (relogio da live ou minutos de
      video) chegava aqui pelo snapshot de live_sessoes com ativa:false — e caia
@@ -1313,9 +1405,11 @@ svg{display:block}
     const b=el('btnIniciar');
     let t=mensagem||'';
     if(!t&&tipo==='limite')t='A live chegou ao tempo máximo por transmissão do seu plano ('+(nivel&&nivel.limiteMin>=60?(nivel.limiteMin/60)+' h':(nivel?nivel.limiteMin+' min':''))+'). Você pode começar outra agora.';
-    if(!t)t='Sua live foi encerrada: o plano passou do limite de minutos de vídeo deste ciclo, já contando a tolerância de '+((saldoInfo&&saldoInfo.toleranciaPct)||20)+'%.'+(saldoInfo&&saldoInfo.viraEm?' A próxima live fica liberada em '+saldoInfo.viraEm+'.':'');
+    if(!t)t='Sua live foi encerrada: o plano passou do limite de minutos de vídeo deste ciclo, já contando a tolerância de '+((saldoInfo&&saldoInfo.toleranciaPct)||10)+'%.'+(saldoInfo&&saldoInfo.viraEm?' A próxima live fica liberada em '+saldoInfo.viraEm+'.':'');
     el('erroIniciar').textContent=t; el('erroIniciar').classList.remove('escondido');
     b.disabled=(tipo==='teto_video'); b.lastChild.textContent=tipo==='teto_video'?'Limite do ciclo atingido':'Entrar ao vivo de novo';
+    el('btnRecVivo').classList.add('escondido');
+    if(tipo==='teto_video'&&saldoInfo&&saldoInfo.podeRecarregar)abrirRecarga('encerrada');
     ev('live_encerrada_limite',{tipo});
     carregarSaldo();
   }
