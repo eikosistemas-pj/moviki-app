@@ -1,4 +1,5 @@
-/*! MOVIKI liveaulas.js | versao 2026-10-20-amostra | repo: moviki-app
+/*! MOVIKI liveaulas.js | versao 2026-11-13-aulasyt | repo: moviki-app
+ * 13/11/2026: mod-live-pix (c_K0GvNFxsk, 1:30) e mod-live-oferta (lJDydmBGWXk, 1:55) REGRAVADAS com o estudio, o Financeiro e a live publica de hoje. Mesmas chaves e mesmo `em` (regravacao nao e aula nova). Ids antigos 23jGUqKMaps e L2flcBpTDxw so ficam privados no YouTube depois deste arquivo no ar. Os mesmos ids estao no parceiro.html. Antes: 2026-10-20-amostra.
  * 20/10/2026 (noite): mod-live-cardapio REGRAVADA sobre a loja de amostra completa (Cafe Aurora): 'Sua pagina vendendo sozinha' (QjCq1MhrdZA, 1:26). Mesma chave e mesmo em.
  * 20/10/2026 (P85): mod-live-cardapio REGRAVADA com a pagina publica de hoje (sacola, Pix e pedido na Central): 'Sua pagina vendendo sozinha' (lf4NVwllA0w, 1:26). Plano corrigido para Premium (o Pix no cardapio comeca no Premium; Enterprise e o Pix dentro da live). `em` continua 2026-09-15. Id antigo 2_ty4YrgZ0I sai do YouTube depois deste arquivo no ar. Antes: 2026-10-18-balcao.
  * 18/10/2026: aula NOVA "Monte o seu balcao de live: celular, segunda tela e ajudante" (mod-live-balcao, WM7kWjl2iSM, 1:44) no grupo "Antes e depois da live", antes do ensaio. Opcional, fora da trava; `em` novo (aviso calmo de aula nova). No celular em pe, linha "Gire o celular para ver a aula em tela cheia" embaixo do palco (as aulas sao 16:9). Antes: 2026-10-17-livecapas.
@@ -135,7 +136,8 @@
          nenhum. `em` continua 2026-09-15: regravacao nao e aula nova. */
       { n: 'Receber no Pix', g: 'vender', sel: '.painelAba[data-aba="pix"]', v: [
         { k: 'mod-live-pix', t: 'Como você recebe o dinheiro',
-          d: '1:30', id: '23jGUqKMaps', plano: 'Enterprise', em: '2026-09-15' } ]},
+          /* 13/11/2026: regravada de novo (c_K0GvNFxsk). `em` igual. */
+          d: '1:30', id: 'c_K0GvNFxsk', plano: 'Enterprise', em: '2026-09-15' } ]},
 
       /* PEDIDOS MORAM NO PAINEL, na Central de Pedidos. 27/09/2026: a aula foi
          REGRAVADA para o quadro de colunas e aponta para a aula 2 da Central
@@ -152,7 +154,8 @@
           /* 30/09/2026: regravada com a reserva da oferta (quem gera o Pix segura a
              peca). Regravacao: o 'em' NAO muda, senao vira "aula nova" para quem ja
              estava em dia. Id antigo pbWfLHoKGag so sai do YouTube depois disto no ar. */
-          d: '1:55', id: 'L2flcBpTDxw', plano: 'Enterprise', em: '2026-09-15' } ]},
+          /* 13/11/2026: regravada de novo (lJDydmBGWXk). `em` igual. */
+          d: '1:55', id: 'lJDydmBGWXk', plano: 'Enterprise', em: '2026-09-15' } ]},
 
       { n: 'Cupom e brinde', g: 'durante', sel: '.painelAba[data-aba="cupom"]', v: [
         { k: 'mod-live-cupom', t: 'Cupom, brinde e "Estou aqui agora"',
